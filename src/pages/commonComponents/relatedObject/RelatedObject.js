@@ -24,8 +24,8 @@ class RelatedObject extends React.Component {
 		activeLink: true,
 		onSearchPage: false,
 		isLoading: true,
-		didDelete: false,
 		inCollection: false,
+		isCohortDiscovery: false,
 		publisherLogoURL: '',
 	};
 
@@ -33,13 +33,11 @@ class RelatedObject extends React.Component {
 		super(props);
 		this.state.activeLink = props.activeLink;
 		this.state.onSearchPage = props.onSearchPage;
-		if (props.didDelete) {
-			this.state.didDelete = props.didDelete;
-		}
 		if (props.inCollection) {
 			this.state.inCollection = props.inCollection;
 		}
 		if (props.data) {
+			this.state.isCohortDiscovery = props.data.isCohortDiscovery || false;
 			this.state.data = props.data || [];
 			this.state.isLoading = false;
 		} else if (props.objectId) {
@@ -88,6 +86,7 @@ class RelatedObject extends React.Component {
 			axios.get(baseURL + '/api/v1/relatedobject/' + id).then(res => {
 				this.setState({
 					data: res.data.data[0],
+					isCohortDiscovery: res.data.data[0].isCohortDiscovery || false,
 					isLoading: false,
 				});
 			});
@@ -155,7 +154,7 @@ class RelatedObject extends React.Component {
 		}
 
 		return (
-			<Row className='resource-card-row' data-test-id='related-object-card' key={this.props.key}>
+			<Row className='resource-card-row' key={this.props.key}>
 				<Col>
 					<div
 						className={rectangleClassName}
@@ -197,13 +196,15 @@ class RelatedObject extends React.Component {
 													if (activeLink === true) {
 														return (
 															<a className='gray800-14' href={'/person/' + person.id} key={`perosn-${index}`}>
-																{person.firstname} {person.lastname}{data.persons.length === index + 1 ? '' : ', '}
+																{person.firstname} {person.lastname}
+																{data.persons.length === index + 1 ? '' : ', '}
 															</a>
 														);
 													} else {
 														return (
 															<span className='gray800-14' key={`perosn-${index}`}>
-																{person.firstname} {person.lastname}{data.persons.length === index + 1 ? '' : ', '}
+																{person.firstname} {person.lastname}
+																{data.persons.length === index + 1 ? '' : ', '}
 															</span>
 														);
 													}
@@ -363,13 +364,15 @@ class RelatedObject extends React.Component {
 													if (activeLink === true) {
 														return (
 															<a className='gray800-14' href={'/person/' + person.id} key={`perosn-${index}`}>
-																{person.firstname} {person.lastname}{data.persons.length === index + 1 ? '' : ', '}
+																{person.firstname} {person.lastname}
+																{data.persons.length === index + 1 ? '' : ', '}
 															</a>
 														);
 													} else {
 														return (
 															<span className='gray800-14' key={`perosn-${index}`}>
-																{person.firstname} {person.lastname}{data.persons.length === index + 1 ? '' : ', '}
+																{person.firstname} {person.lastname}
+																{data.persons.length === index + 1 ? '' : ', '}
 															</span>
 														);
 													}
@@ -486,25 +489,23 @@ class RelatedObject extends React.Component {
 											) : (
 												<span className='black-bold-16'> {data.name}</span>
 											)}
-											<br />
-											{!data.persons || data.persons <= 0 ? (
-												<span className='gray800-14'>Author not listed</span>
+
+											<div className='gray800-14' style={{ marginTop: '2px' }}>
+												{data.authorsNew}
+											</div>
+
+											<div className='gray800-14' style={{ marginTop: '10px' }}>
+												{data.journal} {data.journalYear}
+											</div>
+										</Col>
+										<Col sm={2} lg={2} className='pad-right-24'>
+											{this.props.showRelationshipQuestion ? (
+												<Button variant='medium' className='soft-black-14' onClick={this.removeButton}>
+													<SVGIcon name='closeicon' fill={'#979797'} className='buttonSvg mr-2' />
+													Remove
+												</Button>
 											) : (
-												data.persons.map((person, index) => {
-													if (activeLink === true) {
-														return (
-															<a className='gray800-14' href={'/person/' + person.id} key={`perosn-${index}`}>
-																{person.firstname} {person.lastname}{data.persons.length === index + 1 ? '' : ', '}
-															</a>
-														);
-													} else {
-														return (
-															<span className='gray800-14' key={`perosn-${index}`}>
-																{person.firstname} {person.lastname}{data.persons.length === index + 1 ? '' : ', '}
-															</span>
-														);
-													}
-												})
+												''
 											)}
 										</Col>
 										<Col sm={2} lg={2} className='pad-right-24'>
@@ -767,11 +768,7 @@ class RelatedObject extends React.Component {
 									<Row className='noMargin'>
 										<Col sm={10} lg={10} className='pad-left-24'>
 											{activeLink === true ? (
-												<a
-													data-test-id='dataset-card-name'
-													className='purple-bold-16'
-													style={{ cursor: 'pointer' }}
-													href={'/dataset/' + data.pid}>
+												<a className='purple-bold-16' style={{ cursor: 'pointer' }} href={'/dataset/' + data.pid}>
 													{data.name}
 												</a>
 											) : (
@@ -836,6 +833,21 @@ class RelatedObject extends React.Component {
 												<SVGIcon name='dataseticon' fill={'#113328'} className='badgeSvg mr-2' viewBox='-2 -2 22 22' />
 												<span>Dataset</span>
 											</span>
+											{this.state.isCohortDiscovery ? (
+												<span className='badge-project'>
+													<SVGIcon
+														name='cohorticon'
+														fill={'#472505'}
+														className='badgeSvg mr-2'
+														width='22'
+														height='22'
+														viewBox='0 0 10 10'
+													/>
+													<span>Cohort Discovery</span>
+												</span>
+											) : (
+												''
+											)}
 											{(() => {
 												if (phenotypesSeached.length > 0) {
 													if (activeLink === true) {

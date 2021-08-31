@@ -71,7 +71,7 @@ const UserDropdownTeams = props => {
 								) : (
 									''
 								)}
-								{userHasRole(team._id, ['manager', 'metadata editor']) ? (
+								{userHasRole(team._id, ['manager', 'metadata_editor']) ? (
 									<Dropdown.Item href={`/account?tab=datasets&team=${team._id}`} className='black-14 user-dropdown-item'>
 										Datasets
 									</Dropdown.Item>

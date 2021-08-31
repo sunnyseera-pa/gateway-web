@@ -1,5 +1,5 @@
 import React, { Fragment, useState } from 'react';
-import { OverlayTrigger, Tooltip, Row, Button, Accordion, Col } from 'react-bootstrap';
+import { OverlayTrigger, Tooltip, Row, Button, Accordion } from 'react-bootstrap';
 import { isEmpty } from 'lodash';
 import SLA from '../commonComponents/sla/SLA';
 import TimeDuration from './timeDuration/TimeDuration';
@@ -28,7 +28,6 @@ export const DatasetCard = props => {
 		publisher,
 		title,
 		version,
-		isDraft,
 		datasetStatus,
 		completion = {},
 		timeStamps = {},
@@ -42,11 +41,11 @@ export const DatasetCard = props => {
 		<Row key={`dataset_card_${title}`} onClick={() => (window.location.href = `/dataset-onboarding/${id}`)}>
 			<div className='col-md-12'>
 				<div className='layoutCard mb-0'>
-					<div className='header mb-0 mt-2'>
-						<div className='header-title'>
+					<div className='datasetHeader mb-0 mt-2'>
+						<div className='datasetHeader-title'>
 							<h1>{title}</h1>
 						</div>
-						<div className='header-status'>
+						<div className='datasetHeader-status'>
 							{datasetStatus === 'draft' ? (
 								<TimeDuration text={`${DatasetOnboardingHelper.calculateTimeDifference(timeStamps.created)} days since start`} />
 							) : (

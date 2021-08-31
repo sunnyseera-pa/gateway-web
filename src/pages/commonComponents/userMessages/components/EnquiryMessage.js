@@ -286,7 +286,7 @@ export const EnquiryMessage = ({ topic, onDatasetsRequested, onFirstMessageSubmi
 							</div>
 
 							{/* DATASETS  REQUESTED */}
-							<div className='form-group gray800-14' data-test-id='datasetsRequested'>
+							<div className='form-group gray800-14'>
 								<label htmlFor={`datasetsRequested`} className='form-label gray800-14'>
 									Datasets of interest *
 								</label>
@@ -308,7 +308,7 @@ export const EnquiryMessage = ({ topic, onDatasetsRequested, onFirstMessageSubmi
 									Are there other datasets you would like to link with the ones listed above? *
 								</label>
 								<div className='form-check'>
-									<Field type='radio' name='safedata-otherdatasetsintentiontolinkdata' value='Yes' data-test-id='linked-datasets-yes' />
+									<Field type='radio' name='safedata-otherdatasetsintentiontolinkdata' value='Yes' />
 									<label
 										className={`
                         form-check-label 
@@ -318,7 +318,7 @@ export const EnquiryMessage = ({ topic, onDatasetsRequested, onFirstMessageSubmi
 									</label>
 								</div>
 								<div className='form-check'>
-									<Field type='radio' name='safedata-otherdatasetsintentiontolinkdata' value='No' data-test-id='linked-datasets-no' />
+									<Field type='radio' name='safedata-otherdatasetsintentiontolinkdata' value='No' />
 									<label
 										className={`
                         form-check-label 
@@ -360,7 +360,7 @@ export const EnquiryMessage = ({ topic, onDatasetsRequested, onFirstMessageSubmi
 									Do you know which parts of the dataset you are interested in? *
 								</label>
 								<div className='form-check'>
-									<Field type='radio' name='datasetsInterestedIn' value='Yes' data-test-id='dataset-parts-yes' />
+									<Field type='radio' name='datasetsInterestedIn' value='Yes' />
 									<label
 										className={`
                         form-check-label 
@@ -370,7 +370,7 @@ export const EnquiryMessage = ({ topic, onDatasetsRequested, onFirstMessageSubmi
 									</label>
 								</div>
 								<div className='form-check'>
-									<Field type='radio' name='datasetsInterestedIn' value='No' data-test-id='dataset-parts-no' />
+									<Field type='radio' name='datasetsInterestedIn' value='No' />
 									<label
 										className={`
                         form-check-label 
@@ -446,7 +446,7 @@ export const EnquiryMessage = ({ topic, onDatasetsRequested, onFirstMessageSubmi
 
 							{/* SUBMIT */}
 							<div className='d-flex flex-row-reverse p-2'>
-								<button data-test-id='send-first-message-btn' className='button-secondary' type='submit'>
+								<button className='button-secondary' type='submit'>
 									Send message
 								</button>
 							</div>

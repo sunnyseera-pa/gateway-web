@@ -11,7 +11,6 @@ class TypeaheadKeywords extends React.Component {
 		this.state = {
 			value: props.value,
 			options: [],
-			id: props.id,
 			readOnly: props.readOnly || false,
 			className: `addFormInputTypeAhead ${!isEmpty(props.className) ? props.className : ''}`,
 		};
@@ -31,15 +30,16 @@ class TypeaheadKeywords extends React.Component {
 
 	getData() {
 		axios
-			.get(baseURL + '/api/v2/filters/dataset?fields=keys.features')
+			.get(baseURL + '/api/v1/search/filter/feature/dataset')
 			.then(res => {
-				let keywordOptions = res.data.data.keys.features;
 				this.setState({
-					options: keywordOptions,
+					options: res.data.data[0].sort(function (a, b) {
+						return a.toUpperCase() < b.toUpperCase() ? -1 : a.toUpperCase() > b.toUpperCase() ? 1 : 0;
+					}),
 				});
 			})
 			.catch(err => {
-				alert('Failed to fetch keywords');
+				alert('Failed to fetch users');
 			});
 	}
 

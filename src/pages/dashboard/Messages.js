@@ -18,7 +18,6 @@ class YourAccount extends React.Component {
 	// initialize our state
 	state = {
 		newData: [],
-		oldData: [],
 		userState: [],
 		isLoading: true,
 	};
@@ -55,7 +54,7 @@ class YourAccount extends React.Component {
 	}
 
 	render() {
-		const { newData, oldData, isLoading } = this.state;
+		const { newData, isLoading } = this.state;
 
 		if (isLoading) {
 			return <Loading />;

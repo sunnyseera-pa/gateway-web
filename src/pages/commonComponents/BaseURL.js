@@ -1,4 +1,4 @@
-var thisBaseURL = window.location.href;
+var thisBaseURL = window.location.toString();
 
 module.exports = {
 	getURL: function () {

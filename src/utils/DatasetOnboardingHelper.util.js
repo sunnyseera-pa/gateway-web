@@ -191,12 +191,32 @@ let configActionModal = (type = '') => {
 			case 'VALIDATIONERRORS':
 				config = {
 					title: 'Mandatory fields missing',
-					subTitle: 'You cannot submit this dataset for review until you have completed all the mandatory questions.',
+					subTitle: `You cannot submit this dataset for review until you have completed all the mandatory questions. If you need to submit this dataset without the mandatory answers, please raise a support ticket at the following link:`,
+					link: 'https://hdruk.atlassian.net/servicedesk/customer/portal/1',
 					description: false,
 					buttons: {
 						confirmSubmission: {
 							label: 'Ok',
 							action: 'cancel',
+							class: 'btn btn-primary addButton',
+						},
+					},
+				};
+				break;
+			case 'VALIDATIONERRORSADMIN':
+				config = {
+					title: 'Mandatory fields missing',
+					subTitle: `Are you sure that you want to submit this version of this dataset for review? There are mandatory fields missing. You cannot edit this form whilst it is pending.`,
+					description: false,
+					buttons: {
+						cancel: {
+							label: 'No, nevermind',
+							action: 'cancel',
+							class: 'button-secondary mr-2',
+						},
+						confirmSubmission: {
+							label: 'Confirm submission',
+							action: 'confirmSubmission',
 							class: 'btn btn-primary addButton',
 						},
 					},
@@ -340,7 +360,6 @@ let configActionModal = (type = '') => {
 						},
 					},
 				};
-				break;
 			case 'DELETEDRAFT':
 				config = {
 					title: 'Delete draft',
@@ -416,7 +435,7 @@ let modifyQuestionIds = (questionSet, existingUniqueId) => {
 		// 2. ensure we copy the original question deep
 		let question = _.cloneDeep(qValue);
 		// 3. if there is a questionId update
-		if (typeof question.questionId !== undefined) {
+		if (!_.isUndefined(question.questionId)) {
 			question.questionId = `${qValue.questionId}_${uniqueId}`;
 		}
 		// 4. if qObj has input and input.options meaning potential nest, loop over nested options
@@ -460,7 +479,7 @@ let modifyNestedQuestionIds = (questionsArr, uniqueId) => {
 			// 2. for each option in conditional questions loop
 			questionObj.conditionalQuestions.forEach(option => {
 				// 3. test if option has a questionId and if so modify
-				if (typeof option.questionId !== undefined) {
+				if (!_.isUndefined(option.questionId)) {
 					option['questionId'] = `${option.questionId}_${uniqueId}`;
 				}
 				// 4. test the input for options and if options defined means it is another recursive loop call
@@ -487,7 +506,7 @@ let insertSchemaUpdates = (questionSetId, duplicateQuestionSet, schema) => {
 			questions: [question],
 		} = qSet;
 		// 3. get the questionSetId that we need to insert into our questionPanel
-		if (typeof question.input.panelId !== undefined) {
+		if (!_.isUndefined(question.input.panelId)) {
 			let {
 				input: { panelId },
 			} = question;
@@ -546,7 +565,7 @@ let removeQuestionReferences = (questionSetId, questionId, schema) => {
 
 let removeQuestionAnswers = (questionId = '', questionAnswers = {}) => {
 	if (!_.isEmpty(questionId) && !_.isEmpty(questionAnswers)) {
-		let [first, id] = questionId.split('_');
+		let [id] = questionId.split('_');
 		if (typeof id != 'undefined') {
 			Object.keys(questionAnswers).forEach(key => {
 				if (key.includes(id)) {

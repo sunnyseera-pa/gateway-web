@@ -131,6 +131,7 @@ class SearchPage extends React.Component {
 
 	async componentDidMount() {
 		initGA('UA-166025838-1');
+		PageView();
 		// 1. call filters - this will need parameterised when tools, projects etc move to v2
 		await this.getFilters();
 		// 2. fires on first time in or page is refreshed/url loaded / has search location
@@ -180,7 +181,6 @@ class SearchPage extends React.Component {
 			this.setState({ isResultsLoading: true }, () => {
 				this.clearFilterStates();
 			});
-			PageView();
 		}
 	};
 
@@ -1931,8 +1931,8 @@ class SearchPage extends React.Component {
 												{key === 'Papers' ? (
 													<SortDropdown
 														handleSort={this.handleSort}
-														sort={paperSort === '' ? (search === '' ? 'latest' : 'relevance') : paperSort}
-														dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
+														sort={paperSort === '' ? (search === '' ? 'sortbyyear' : 'relevance') : paperSort}
+														dropdownItems={['relevance', 'popularity', 'sortbyyear', 'resources']}
 													/>
 												) : (
 													''
@@ -1943,16 +1943,6 @@ class SearchPage extends React.Component {
 														handleSort={this.handleSort}
 														sort={personSort === '' ? (search === '' ? 'latest' : 'relevance') : personSort}
 														dropdownItems={['relevance', 'popularity', 'latest']}
-													/>
-												) : (
-													''
-												)}
-
-												{key === 'Collections' ? (
-													<SortDropdown
-														handleSort={this.handleSort}
-														sort={collectionSort === '' ? (search === '' ? 'latest' : 'relevance') : collectionSort}
-														dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
 													/>
 												) : (
 													''
