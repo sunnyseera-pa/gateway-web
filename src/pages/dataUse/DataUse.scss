@@ -1,0 +1,20 @@
+@import '../../css/variables';
+
+.datause-card {
+	margin: 32px 130px 0;
+	padding: 24px;
+	box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.09);
+	background-color: #fff;
+
+	.datause-para {
+		line-height: 1px;
+	}
+	.datause-button-grid {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+	.datause-button {
+		background-color: $purple !important;
+	}
+}
