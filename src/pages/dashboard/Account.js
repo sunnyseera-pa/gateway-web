@@ -29,6 +29,7 @@ import { tabTypes } from './Team/teamUtil';
 import { ReactComponent as ChevronRightSvg } from '../../images/chevron-bottom.svg';
 import { ReactComponent as CheckSVG } from '../../images/check.svg';
 import './Dashboard.scss';
+import DataUsePage from '../dataUse/DataUsePage';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -557,6 +558,13 @@ class Account extends Component {
 										</Nav.Link>
 									</div>
 
+									<div className={`${tabId === 'datause' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('datause')}>
+										<Nav.Link eventKey={'datause'} className='verticalNavBar gray700-13'>
+											<SVGIcon name='newprojecticon' fill={'#b3b8bd'} className='accountSvgs' />
+											<span className='navLinkItem'>Data Use</span>
+										</Nav.Link>
+									</div>
+
 									<div className={`${tabId === 'collections' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('collections')}>
 										<Nav.Link eventKey={'collections'} className='verticalNavBar gray700-13'>
 											<SVGIcon name='collections' fill={'#b3b8bd'} className='accountSvgs' />
@@ -675,6 +683,8 @@ class Account extends Component {
 								{tabId === 'courses' ? <AccountCourses userState={userState} /> : ''}
 
 								{tabId === 'dataaccessrequests' ? <DataAccessRequests userState={userState} team={team} alert={alert} /> : ''}
+
+								{tabId === 'datause' ? <DataUsePage /> : ''}
 
 								{tabId === 'collections' ? <AccountCollections userState={userState} /> : ''}
 
