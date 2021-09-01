@@ -4,7 +4,6 @@ import { ReactComponent as CDStar } from '../../../images/cd-star.svg';
 import './AdvancedSearchModal.scss';
 import AdvancedSearchRequestAccessModal from '../../dashboard/AdvancedSearchRequestAccessModal';
 import AdvancedSearchTermsandConditionsModal from '../../dashboard/AdvancedSearchTAndCsModal';
-import _ from 'lodash';
 import axios from 'axios';
 const baseURL = require('../BaseURL').getURL();
 const GENERAL_ACCESS = 'GENERAL_ACCESS';
@@ -143,7 +142,8 @@ const AdvancedSearchModal = ({ open, closed, userProps }) => {
 								<a
 									className='textUnderline gray800-14 cursorPointer'
 									href='https://www.healthdatagateway.org/about/cohort-discovery'
-									target='_blank'>
+									target='_blank'
+									rel='noopener noreferrer'>
 									Learn more
 								</a>
 								{userState.loggedIn ? (
