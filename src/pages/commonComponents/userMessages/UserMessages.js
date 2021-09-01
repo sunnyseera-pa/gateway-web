@@ -12,7 +12,7 @@ import { EnquiryMessage } from './components/EnquiryMessage';
 import './UserMessages.scss';
 
 const UserMessages = ({ userState, topicContext, closed, toggleModal, drawerIsOpen = false, is5Safes, msgDescription }) => {
-	let relatedObjectIds, title, subTitle, datasets, tags, allowNewMessage, requiresModal, dataRequestModalContent;
+	let relatedObjectIds, title, subTitle, datasets, allowNewMessage, requiresModal, dataRequestModalContent;
 
 	let history = useHistory();
 
@@ -22,7 +22,7 @@ const UserMessages = ({ userState, topicContext, closed, toggleModal, drawerIsOp
 			title = '',
 			subTitle = '',
 			datasets = [],
-			tags = [],
+
 			allowNewMessage = false,
 			requiresModal = false,
 			dataRequestModalContent = {},
@@ -168,7 +168,7 @@ const UserMessages = ({ userState, topicContext, closed, toggleModal, drawerIsOp
 					let {
 						data: { topic },
 					} = res;
-					let { datasets: [publisherObj = {}, ...rest] = [] } = topic;
+					let { datasets: [publisherObj = {}] = [] } = topic;
 					const {
 						data: { publisher = {} },
 					} = await getPublisherById(publisherObj.publisher);
