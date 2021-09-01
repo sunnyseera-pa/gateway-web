@@ -80,7 +80,7 @@ const AccessActivity = ({
 				<div className='box'>{publisher}</div>
 				<div className='box'>Applicants</div>
 				<div className='box'>{!_.isEmpty(applicants) ? applicants : '-'}</div>
-				{hasWorkflow == true ? (
+				{hasWorkflow === true ? (
 					<Fragment>
 						<div className='box'>Workflow</div>
 						<div
@@ -97,7 +97,7 @@ const AccessActivity = ({
 				) : (
 					''
 				)}
-				{isTeam == true &&
+				{isTeam === true &&
 				(applicationStatus === DarHelperUtil.darStatus.submitted || applicationStatus === DarHelperUtil.darStatus.inReview) ? (
 					<Fragment>
 						<div className='box'>Action required by</div>
@@ -111,7 +111,7 @@ const AccessActivity = ({
 				<div className='box'>Last activity</div>
 				<div className='box'>
 					{moment(updatedAt).format('D MMMM YYYY HH:mm')}
-					{isTeam == true ? (
+					{isTeam === true ? (
 						<div className='box-meta'>
 							{applicationStatus === DarHelperUtil.darStatus.submitted ? (
 								<button
