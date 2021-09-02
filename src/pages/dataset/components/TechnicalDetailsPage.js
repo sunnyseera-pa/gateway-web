@@ -29,7 +29,6 @@ class TechnicalDetailsPage extends React.Component {
 
 	render() {
 		const { flagClosed, technicalMetadata, allOpen } = this.state;
-		const svgClassName = flagClosed ? '' : 'flipSVG';
 
 		return (
 			<div className='ml-3'>
