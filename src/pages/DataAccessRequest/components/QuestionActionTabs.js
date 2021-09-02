@@ -21,6 +21,7 @@ const QuestionActionTabs = ({
 	isShared,
 	updateCount,
 	publisher,
+	applicationStatus
 }) => {
 	const [activeSettings, setActiveSettings] = useState({ key: '', questionSetId: '', questionId: '' });
 
@@ -69,6 +70,7 @@ const QuestionActionTabs = ({
 									userState={userState}
 									settings={settings}
 									applicationShared={isShared}
+									applicationStatus={applicationStatus}
 									toggleDrawer={toggleDrawer}
 									setMessageDescription={setMessageDescription}
 									userType={userType}
