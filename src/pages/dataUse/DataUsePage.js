@@ -1,5 +1,7 @@
 import React from 'react';
 import { Container, Row, Col, Button, Tab, Tabs } from 'react-bootstrap';
+import Data from './MockData.json';
+import Table from './DataUseTable';
 import './DataUse.scss';
 
 const DataUsePage = () => {
@@ -28,6 +30,7 @@ const DataUsePage = () => {
 					))}
 				</Tabs>
 			</Row>
+			<Table data={Data} />
 		</Container>
 	);
 };
