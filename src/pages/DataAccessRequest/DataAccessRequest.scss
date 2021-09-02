@@ -78,6 +78,12 @@
 	padding: 0 5px;
 }
 
+.toolTipHidden {
+	position: relative;
+	display: inline-block;
+	padding: 0 5px;
+}
+
 .toolTip .toolTipText {
 	visibility: hidden;
 	position: absolute;
