@@ -50,7 +50,7 @@ const Messages = ({
 		if (!message) {
 			return;
 		}
-		if (!isBoolean(applicationIsShared) || !applicationIsShared && applicationStatus === DarHelper.darStatus.inProgress) {
+		if ((!isBoolean(applicationIsShared) || !applicationIsShared) && applicationStatus === DarHelper.darStatus.inProgress) {
 			onShowShareFormModal();
 		} else {
 			sendMessage(message);
