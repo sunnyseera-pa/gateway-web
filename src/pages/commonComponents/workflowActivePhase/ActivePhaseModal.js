@@ -9,7 +9,7 @@ const ActivePhaseModal = ({ open, close, workflow = {}, projectName = '', dataSe
 
 	const onClickAction = (e, action = '') => {
 		e.preventDefault();
-		if (action == 'completePhase') {
+		if (action === 'completePhase') {
 			completeActivePhase();
 		}
 		close('', action);
@@ -42,7 +42,7 @@ const ActivePhaseModal = ({ open, close, workflow = {}, projectName = '', dataSe
 
 	useEffect(() => {
 		getActivePhase();
-	}, []);
+	}, [getActivePhase()]);
 
 	return (
 		<Fragment>
