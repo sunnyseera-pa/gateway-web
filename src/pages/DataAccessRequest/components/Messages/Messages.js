@@ -6,11 +6,13 @@ import ShareFormModal from './ShareFormModal';
 import Loading from '../../../commonComponents/Loading';
 import './Messages.scss';
 import { baseURL } from '../../../../configs/url.config';
+import DarHelper from '../../../../utils/DarHelper.util';
 
 const Messages = ({
 	applicationId,
 	settings,
 	applicationShared = false,
+	applicationStatus,
 	toggleDrawer,
 	setMessageDescription,
 	userState,
@@ -48,7 +50,7 @@ const Messages = ({
 		if (!message) {
 			return;
 		}
-		if (!isBoolean(applicationIsShared) || !applicationIsShared) {
+		if (!isBoolean(applicationIsShared) || !applicationIsShared && applicationStatus === DarHelper.darStatus.inProgress) {
 			onShowShareFormModal();
 		} else {
 			sendMessage(message);
