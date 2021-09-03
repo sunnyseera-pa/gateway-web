@@ -4,6 +4,7 @@ import Data from './MockData.json';
 import Table from './DataUseTable';
 import './DataUse.scss';
 
+//filter the data at this stage and then use it as props for each tab?
 const DataUsePage = () => {
 	const tabs = ['Active', 'Pending approval', 'Rejected', 'Archived'];
 	return (

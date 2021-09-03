@@ -18,9 +18,12 @@ const DataUseTable = ({ data }) => {
 				{data.map(a => (
 					<tr>
 						<td>{a.lastActivity}</td>
-						<td>{a.projectTitle}</td>
-						<td>{a.institution}</td>
+						<td>
+							<p>{a.projectTitle}</p>
+							<p>{a.institution}</p>
+						</td>
 						<td>{a.datasets}</td>
+						<td>buttons here</td>
 					</tr>
 				))}
 			</tbody>
