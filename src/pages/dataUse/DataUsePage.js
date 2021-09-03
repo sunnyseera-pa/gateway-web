@@ -31,7 +31,7 @@ const DataUsePage = () => {
 				<Tabs defaultActiveKey={'Active'} className='gray700-13'>
 					{tabs.map(tabName => (
 						<Tab eventKey={tabName} title={tabName}>
-							{tabName === 'Active' && <Table data={active} />}
+							{tabName === 'Active' && <Table data={active} active={true} />}
 							{tabName === 'Pending approval' && <Table data={pending} />}
 							{tabName === 'Rejected' && <Table data={rejected} />}
 							{tabName === 'Archived' && <Table data={archived} />}

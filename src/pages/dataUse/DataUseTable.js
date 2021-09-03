@@ -1,14 +1,14 @@
 import React from 'react';
-import { Table } from 'react-bootstrap';
+import { Table, Dropdown } from 'react-bootstrap';
 
-const DataUseTable = ({ data }) => (
+const DataUseTable = ({ data, active }) => (
 	<Table striped bordered hover>
 		<thead>
 			<tr>
 				<th>Last activity</th>
 				<th>Project Title</th>
 				<th>Dataset(s)</th>
-				<th></th>
+				{active && <th></th>}
 			</tr>
 		</thead>
 		<tbody>
@@ -20,7 +20,19 @@ const DataUseTable = ({ data }) => (
 						<p>{a.institution}</p>
 					</td>
 					<td>{a.datasets}</td>
-					<td>buttons here</td>
+					{active && (
+						<td>
+							<Dropdown>
+								<Dropdown.Toggle variant='outline-secondary' id='dropdown-basic'>
+									Actions
+								</Dropdown.Toggle>
+								<Dropdown.Menu>
+									<Dropdown.Item href='#/action-1'>Edit</Dropdown.Item>
+									<Dropdown.Item href='#/action-2'>Archive</Dropdown.Item>
+								</Dropdown.Menu>
+							</Dropdown>
+						</td>
+					)}
 				</tr>
 			))}
 		</tbody>
