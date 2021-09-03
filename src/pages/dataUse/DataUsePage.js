@@ -4,27 +4,13 @@ import Data from './MockData.json';
 import Table from './DataUseTable';
 import './DataUse.scss';
 
-//filter the data at this stage and then use it as props for each tab?
-
-// map over the pending, active etc. data here and then send that data down via a prop
-
-// for now have multiple tabs
-
-// and then think about mapping over the tabs AND the status
 const DataUsePage = () => {
 	const tabs = ['Active', 'Pending approval', 'Rejected', 'Archived'];
 
 	const active = Data.filter(a => a.status === 'active');
-	console.log(active);
-
 	const pending = Data.filter(a => a.status === 'pending approval');
-	console.log(pending);
-
 	const rejected = Data.filter(a => a.status === 'rejected');
-	console.log(rejected);
-
 	const archived = Data.filter(a => a.status === 'archived');
-	console.log(archived);
 
 	return (
 		<Container>
