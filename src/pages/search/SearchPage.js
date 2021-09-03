@@ -24,6 +24,7 @@ import SortDropdown from './components/SortDropdown';
 import { ReactComponent as CDStar } from '../../images/cd-star.svg';
 import AdvancedSearchModal from '../commonComponents/AdvancedSearchModal/AdvancedSearchModal';
 import './Search.scss';
+import { upperFirst } from 'lodash';
 
 let baseURL = require('../commonComponents/BaseURL').getURL();
 const typeMapper = {
@@ -106,6 +107,12 @@ class SearchPage extends React.Component {
 		selectedV2Tools: [],
 		filtersV2Projects: [],
 		selectedV2Projects: [],
+		filtersV2Papers: [],
+		selectedV2Papers: [],
+		filtersV2Collections: [],
+		selectedV2Collections: [],
+		filtersV2Courses: [],
+		selectedV2Courses: [],
 		savedSearchPanel: true,
 	};
 
@@ -289,17 +296,24 @@ class SearchPage extends React.Component {
 				}
 			}
 			// 12. set the state of filters and selected options
-			switch (tab) {
-				case 'dataset':
-					this.setState({ filtersV2, selectedV2 });
-					break;
-				case 'tool':
-					this.setState({ filtersV2Tool: filtersV2, selectedV2Tools: selectedV2 });
-					break;
-				case 'project':
-					this.setState({ filtersV2Project: filtersV2, selectedV2Projects: selectedV2 });
-					break;
+			if (tab === 'dataset') {
+				this.setState({ filtersV2, selectedV2 });
+			} else {
+				const entity = upperFirst(tab);
+				this.setState({ [`filtersV2${entity}s`]: filtersV2, [`selectedV2${entity}s`]: selectedV2 });
 			}
+
+			// switch (tab) {
+			// 	case 'dataset':
+			// 		this.setState({ filtersV2, selectedV2 });
+			// 		break;
+			// 	case 'tool':
+			// 		this.setState({ filtersV2Tool: filtersV2, selectedV2Tools: selectedV2 });
+			// 		break;
+			// 	case 'project':
+			// 		this.setState({ filtersV2Project: filtersV2, selectedV2Projects: selectedV2 });
+			// 		break;
+			// }
 		}
 	};
 
@@ -324,53 +338,68 @@ class SearchPage extends React.Component {
 			const selectedV2Projects = [...this.state.selectedV2Projects];
 			this.setSelectedFiltersFromQueryParams(filtersV2Projects, selectedV2Projects, queryParams, 'project');
 		}
+		if (!_.isEmpty(this.state.filtersV2Papers)) {
+			const filtersV2Papers = [...this.state.filtersV2Papers];
+			const selectedV2Papers = [...this.state.selectedV2Papers];
+			this.setSelectedFiltersFromQueryParams(filtersV2Papers, selectedV2Papers, queryParams, 'paper');
+		}
+		if (!_.isEmpty(this.state.filtersV2Courses)) {
+			const filtersV2Courses = [...this.state.filtersV2Courses];
+			const selectedV2Courses = [...this.state.selectedV2Courses];
+			this.setSelectedFiltersFromQueryParams(filtersV2Courses, selectedV2Courses, queryParams, 'course');
+		}
+		if (!_.isEmpty(this.state.filtersV2Collections)) {
+			const filtersV2Collections = [...this.state.filtersV2Collections];
+			const selectedV2Collections = [...this.state.selectedV2Collections];
+			this.setSelectedFiltersFromQueryParams(filtersV2Collections, selectedV2Collections, queryParams, 'collection');
+		}
 		// 14. original filters setting of data remove if entity moves to V2 for correct filter
 		queryParams.search ? this.setState({ search: queryParams.search }) : this.setState({ search: '' });
 		// V1 Papers
-		queryParams.paperfeatures
-			? this.setState({ paperFeaturesSelected: queryParams.paperfeatures.split('::') })
-			: this.setState({ paperFeaturesSelected: [] });
-		queryParams.papertopics
-			? this.setState({ paperTopicsSelected: queryParams.papertopics.split('::') })
-			: this.setState({ paperTopicsSelected: [] });
-		// V1 Courses
-		queryParams.coursestartdates
-			? this.setState({ courseStartDatesSelected: queryParams.coursestartdates.split('::') })
-			: this.setState({ courseStartDatesSelected: [] });
-		queryParams.courseprovider
-			? this.setState({ courseProviderSelected: queryParams.courseprovider.split('::') })
-			: this.setState({ courseProviderSelected: [] });
-		queryParams.courselocation
-			? this.setState({ courseLocationSelected: queryParams.courselocation.split('::') })
-			: this.setState({ courseLocationSelected: [] });
-		queryParams.coursestudymode
-			? this.setState({ courseStudyModeSelected: queryParams.coursestudymode.split('::') })
-			: this.setState({ courseStudyModeSelected: [] });
-		queryParams.courseaward
-			? this.setState({ courseAwardSelected: queryParams.courseaward.split('::') })
-			: this.setState({ courseAwardSelected: [] });
-		queryParams.courseentrylevel
-			? this.setState({ courseEntryLevelSelected: queryParams.courseentrylevel.split('::') })
-			: this.setState({ courseEntryLevelSelected: [] });
-		queryParams.coursedomains
-			? this.setState({ courseDomainsSelected: queryParams.coursedomains.split('::') })
-			: this.setState({ courseDomainsSelected: [] });
-		queryParams.coursekeywords
-			? this.setState({ courseKeywordsSelected: queryParams.coursekeywords.split('::') })
-			: this.setState({ courseKeywordsSelected: [] });
-		queryParams.courseframework
-			? this.setState({ courseFrameworkSelected: queryParams.courseframework.split('::') })
-			: this.setState({ courseFrameworkSelected: [] });
-		queryParams.coursepriority
-			? this.setState({ coursePrioritySelected: queryParams.coursepriority.split('::') })
-			: this.setState({ coursePrioritySelected: [] });
-		// V1 Collections
-		queryParams.collectionkeywords
-			? this.setState({ collectionKeywordsSelected: queryParams.collectionkeywords.split('::') })
-			: this.setState({ collectionKeywordsSelected: [] });
-		queryParams.collectionpublisher
-			? this.setState({ collectionPublisherSelected: queryParams.collectionpublisher.split('::') })
-			: this.setState({ collectionPublisherSelected: [] });
+		// queryParams.paperfeatures
+		// 	? this.setState({ paperFeaturesSelected: queryParams.paperfeatures.split('::') })
+		// 	: this.setState({ paperFeaturesSelected: [] });
+		// queryParams.papertopics
+		// 	? this.setState({ paperTopicsSelected: queryParams.papertopics.split('::') })
+		// 	: this.setState({ paperTopicsSelected: [] });
+		// // V1 Courses
+		// queryParams.coursestartdates
+		// 	? this.setState({ courseStartDatesSelected: queryParams.coursestartdates.split('::') })
+		// 	: this.setState({ courseStartDatesSelected: [] });
+		// queryParams.courseprovider
+		// 	? this.setState({ courseProviderSelected: queryParams.courseprovider.split('::') })
+		// 	: this.setState({ courseProviderSelected: [] });
+		// queryParams.courselocation
+		// 	? this.setState({ courseLocationSelected: queryParams.courselocation.split('::') })
+		// 	: this.setState({ courseLocationSelected: [] });
+		// queryParams.coursestudymode
+		// 	? this.setState({ courseStudyModeSelected: queryParams.coursestudymode.split('::') })
+		// 	: this.setState({ courseStudyModeSelected: [] });
+		// queryParams.courseaward
+		// 	? this.setState({ courseAwardSelected: queryParams.courseaward.split('::') })
+		// 	: this.setState({ courseAwardSelected: [] });
+		// queryParams.courseentrylevel
+		// 	? this.setState({ courseEntryLevelSelected: queryParams.courseentrylevel.split('::') })
+		// 	: this.setState({ courseEntryLevelSelected: [] });
+		// queryParams.coursedomains
+		// 	? this.setState({ courseDomainsSelected: queryParams.coursedomains.split('::') })
+		// 	: this.setState({ courseDomainsSelected: [] });
+		// queryParams.coursekeywords
+		// 	? this.setState({ courseKeywordsSelected: queryParams.coursekeywords.split('::') })
+		// 	: this.setState({ courseKeywordsSelected: [] });
+		// queryParams.courseframework
+		// 	? this.setState({ courseFrameworkSelected: queryParams.courseframework.split('::') })
+		// 	: this.setState({ courseFrameworkSelected: [] });
+		// queryParams.coursepriority
+		// 	? this.setState({ coursePrioritySelected: queryParams.coursepriority.split('::') })
+		// 	: this.setState({ coursePrioritySelected: [] });
+		// // V1 Collections
+		// queryParams.collectionkeywords
+		// 	? this.setState({ collectionKeywordsSelected: queryParams.collectionkeywords.split('::') })
+		// 	: this.setState({ collectionKeywordsSelected: [] });
+		// queryParams.collectionpublisher
+		// 	? this.setState({ collectionPublisherSelected: queryParams.collectionpublisher.split('::') })
+		// 	: this.setState({ collectionPublisherSelected: [] });
 
 		// Tab
 		queryParams.tab ? this.setState({ key: queryParams.tab }) : this.setState({ key: 'Datasets' });
@@ -410,20 +439,26 @@ class SearchPage extends React.Component {
 				selectedV2Tools: [],
 				filtersV2Projects,
 				selectedV2Projects: [],
-				paperFeaturesSelected: [],
-				paperTopicsSelected: [],
-				courseStartDatesSelected: [],
-				courseProviderSelected: [],
-				courseLocationSelected: [],
-				courseStudyModeSelected: [],
-				courseAwardSelected: [],
-				courseEntryLevelSelected: [],
-				courseDomainsSelected: [],
-				courseKeywordsSelected: [],
-				courseFrameworkSelected: [],
-				coursePrioritySelected: [],
-				collectionKeywordsSelected: [],
-				collectionPublisherSelected: [],
+				filtersV2Papers: [],
+				selectedV2Papers: [],
+				filtersV2Collections: [],
+				selectedV2Collections: [],
+				filtersV2Courses: [],
+				selectedV2Courses: [],
+				// paperFeaturesSelected: [],
+				// paperTopicsSelected: [],
+				// courseStartDatesSelected: [],
+				// courseProviderSelected: [],
+				// courseLocationSelected: [],
+				// courseStudyModeSelected: [],
+				// courseAwardSelected: [],
+				// courseEntryLevelSelected: [],
+				// courseDomainsSelected: [],
+				// courseKeywordsSelected: [],
+				// courseFrameworkSelected: [],
+				// coursePrioritySelected: [],
+				// collectionKeywordsSelected: [],
+				// collectionPublisherSelected: [],
 				datasetIndex: 0,
 				toolIndex: 0,
 				projectIndex: 0,
@@ -494,22 +529,25 @@ class SearchPage extends React.Component {
 		let filtersV2 = [];
 		let filtersV2Tools = [];
 		let filtersV2Projects = [];
+		let filtersV2Papers = [];
+		let filtersV2Courses = [];
+		let filtersV2Collections = [];
 		let {
 			userState,
-			paperFeaturesSelected = [],
-			paperTopicsSelected = [],
-			courseStartDatesSelected = [],
-			courseProviderSelected = [],
-			courseLocationSelected = [],
-			courseStudyModeSelected = [],
-			courseAwardSelected = [],
-			courseEntryLevelSelected = [],
-			courseDomainsSelected = [],
-			courseKeywordsSelected = [],
-			courseFrameworkSelected = [],
-			coursePrioritySelected = [],
-			collectionKeywordsSelected = [],
-			collectionPublisherSelected = [],
+			// paperFeaturesSelected = [],
+			// paperTopicsSelected = [],
+			// courseStartDatesSelected = [],
+			// courseProviderSelected = [],
+			// courseLocationSelected = [],
+			// courseStudyModeSelected = [],
+			// courseAwardSelected = [],
+			// courseEntryLevelSelected = [],
+			// courseDomainsSelected = [],
+			// courseKeywordsSelected = [],
+			// courseFrameworkSelected = [],
+			// coursePrioritySelected = [],
+			// collectionKeywordsSelected = [],
+			// collectionPublisherSelected = [],
 			datasetIndex = 0,
 			toolIndex = 0,
 			projectIndex = 0,
@@ -530,40 +568,43 @@ class SearchPage extends React.Component {
 			...this.buildSearchObj(this.state.selectedV2),
 			...this.buildSearchObj(this.state.selectedV2Tools),
 			...this.buildSearchObj(this.state.selectedV2Projects),
+			...this.buildSearchObj(this.state.selectedV2Papers),
+			...this.buildSearchObj(this.state.selectedV2Courses),
+			...this.buildSearchObj(this.state.selectedV2Collections),
 		};
 		// 2. dynamically build the searchUrl v2 only
 		searchURL = this.buildSearchUrl(searchObj);
 		// 3. build up V1 Papers / early filters, no change from original implementation
-		if (paperFeaturesSelected.length > 0)
-			searchURL += '&paperfeatures=' + encodeURIComponent(paperFeaturesSelected.toString().split(',').join('::'));
-		if (paperTopicsSelected.length > 0)
-			searchURL += '&papertopics=' + encodeURIComponent(paperTopicsSelected.toString().split(',').join('::'));
-		// V1 Courses
-		if (courseStartDatesSelected.length > 0)
-			searchURL += '&coursestartdates=' + encodeURIComponent(courseStartDatesSelected.toString().split(',').join('::'));
-		if (courseProviderSelected.length > 0)
-			searchURL += '&courseprovider=' + encodeURIComponent(courseProviderSelected.toString().split(',').join('::'));
-		if (courseLocationSelected.length > 0)
-			searchURL += '&courselocation=' + encodeURIComponent(courseLocationSelected.toString().split(',').join('::'));
-		if (courseStudyModeSelected.length > 0)
-			searchURL += '&coursestudymode=' + encodeURIComponent(courseStudyModeSelected.toString().split(',').join('::'));
-		if (courseAwardSelected.length > 0)
-			searchURL += '&courseaward=' + encodeURIComponent(courseAwardSelected.toString().split(',').join('::'));
-		if (courseEntryLevelSelected.length > 0)
-			searchURL += '&courseentrylevel=' + encodeURIComponent(courseEntryLevelSelected.toString().split(',').join('::'));
-		if (courseDomainsSelected.length > 0)
-			searchURL += '&coursedomains=' + encodeURIComponent(courseDomainsSelected.toString().split(',').join('::'));
-		if (courseKeywordsSelected.length > 0)
-			searchURL += '&coursekeywords=' + encodeURIComponent(courseKeywordsSelected.toString().split(',').join('::'));
-		if (courseFrameworkSelected.length > 0)
-			searchURL += '&courseframework=' + encodeURIComponent(courseFrameworkSelected.toString().split(',').join('::'));
-		if (coursePrioritySelected.length > 0)
-			searchURL += '&coursepriority=' + encodeURIComponent(coursePrioritySelected.toString().split(',').join('::'));
-		// V1 Collections
-		if (collectionKeywordsSelected.length > 0)
-			searchURL += '&collectionkeywords=' + encodeURIComponent(collectionKeywordsSelected.toString().split(',').join('::'));
-		if (collectionPublisherSelected.length > 0)
-			searchURL += '&collectionpublisher=' + encodeURIComponent(collectionPublisherSelected.toString().split(',').join('::'));
+		// if (paperFeaturesSelected.length > 0)
+		// 	searchURL += '&paperfeatures=' + encodeURIComponent(paperFeaturesSelected.toString().split(',').join('::'));
+		// if (paperTopicsSelected.length > 0)
+		// 	searchURL += '&papertopics=' + encodeURIComponent(paperTopicsSelected.toString().split(',').join('::'));
+		// // V1 Courses
+		// if (courseStartDatesSelected.length > 0)
+		// 	searchURL += '&coursestartdates=' + encodeURIComponent(courseStartDatesSelected.toString().split(',').join('::'));
+		// if (courseProviderSelected.length > 0)
+		// 	searchURL += '&courseprovider=' + encodeURIComponent(courseProviderSelected.toString().split(',').join('::'));
+		// if (courseLocationSelected.length > 0)
+		// 	searchURL += '&courselocation=' + encodeURIComponent(courseLocationSelected.toString().split(',').join('::'));
+		// if (courseStudyModeSelected.length > 0)
+		// 	searchURL += '&coursestudymode=' + encodeURIComponent(courseStudyModeSelected.toString().split(',').join('::'));
+		// if (courseAwardSelected.length > 0)
+		// 	searchURL += '&courseaward=' + encodeURIComponent(courseAwardSelected.toString().split(',').join('::'));
+		// if (courseEntryLevelSelected.length > 0)
+		// 	searchURL += '&courseentrylevel=' + encodeURIComponent(courseEntryLevelSelected.toString().split(',').join('::'));
+		// if (courseDomainsSelected.length > 0)
+		// 	searchURL += '&coursedomains=' + encodeURIComponent(courseDomainsSelected.toString().split(',').join('::'));
+		// if (courseKeywordsSelected.length > 0)
+		// 	searchURL += '&coursekeywords=' + encodeURIComponent(courseKeywordsSelected.toString().split(',').join('::'));
+		// if (courseFrameworkSelected.length > 0)
+		// 	searchURL += '&courseframework=' + encodeURIComponent(courseFrameworkSelected.toString().split(',').join('::'));
+		// if (coursePrioritySelected.length > 0)
+		// 	searchURL += '&coursepriority=' + encodeURIComponent(coursePrioritySelected.toString().split(',').join('::'));
+		// // V1 Collections
+		// if (collectionKeywordsSelected.length > 0)
+		// 	searchURL += '&collectionkeywords=' + encodeURIComponent(collectionKeywordsSelected.toString().split(',').join('::'));
+		// if (collectionPublisherSelected.length > 0)
+		// 	searchURL += '&collectionpublisher=' + encodeURIComponent(collectionPublisherSelected.toString().split(',').join('::'));
 		// PageNumbers = (entityNameIndex) N.B. should be datasetPageNo, toolPageNo, projectPageNo, paperPageNo, coursePageNo
 		if (datasetIndex > 0) searchURL += '&datasetIndex=' + encodeURIComponent(datasetIndex);
 		if (toolIndex > 0) searchURL += '&toolIndex=' + encodeURIComponent(toolIndex);
@@ -615,6 +656,18 @@ class SearchPage extends React.Component {
 						let filtersV2ProjectState = this.state.filtersV2Projects || [];
 						filtersV2Projects = this.setHighlightedFilters(filters, [...filtersV2ProjectState]);
 						this.setState({ filtersV2Projects });
+					} else if (entityType === 'paper') {
+						let filtersV2PaperState = this.state.filtersV2Papers || [];
+						filtersV2Papers = this.setHighlightedFilters(filters, [...filtersV2PaperState]);
+						this.setState({ filtersV2Papers });
+					} else if (entityType === 'collection') {
+						let filtersV2CollectionState = this.state.filtersV2Collections || [];
+						filtersV2Collections = this.setHighlightedFilters(filters, [...filtersV2CollectionState]);
+						this.setState({ filtersV2Collections });
+					} else if (entityType === 'course') {
+						let filtersV2CourseState = this.state.filtersV2Courses || [];
+						filtersV2Courses = this.setHighlightedFilters(filters, [...filtersV2CourseState]);
+						this.setState({ filtersV2Courses });
 					} else {
 						this.setState({ ...filters });
 					}
@@ -661,14 +714,14 @@ class SearchPage extends React.Component {
 		const {
 			data: { filters = {}, allFilters = [], filterOptions = [] },
 		} = response;
-		if (tab === 'dataset' || tab === 'tool' || tab === 'project') {
-			return filters;
-		} else {
-			return {
-				allFilters,
-				filterOptions,
-			};
-		}
+		// if (tab === 'dataset' || tab === 'tool' || tab === 'project') {
+		return filters;
+		// } else {
+		// 	return {
+		// 		allFilters,
+		// 		filterOptions,
+		// 	};
+		// }
 	};
 
 	setHighlightedFilters = (filters = {}, tree) => {
@@ -775,6 +828,35 @@ class SearchPage extends React.Component {
 				const filtersV2Projects = this.mapFiltersToDictionary(filterDataProjects, this.state.dataUtilityFilters);
 				this.setState({ filtersV2Projects });
 			}
+
+			const responsePapers = await axios.get(`${baseURL}/api/v2/filters/paper`);
+			const {
+				data: { data: filterDataPapers },
+			} = responsePapers;
+			if (!_.isEmpty(filterDataPapers) && _.isEmpty(this.state.filtersV2Papers)) {
+				const filtersV2Papers = this.mapFiltersToDictionary(filterDataPapers, this.state.dataUtilityFilters);
+				this.setState({ filtersV2Papers });
+			}
+
+			const responseCourses = await axios.get(`${baseURL}/api/v2/filters/course`);
+			const {
+				data: { data: filterDataCourses },
+			} = responseCourses;
+			console.log(this.state.filtersV2Courses);
+			if (!_.isEmpty(filterDataCourses) && _.isEmpty(this.state.filtersV2Courses)) {
+				const filtersV2Courses = this.mapFiltersToDictionary(filterDataCourses, this.state.dataUtilityFilters);
+				this.setState({ filtersV2Courses });
+			}
+			console.log(this.state.filtersV2Courses);
+
+			const responseCollections = await axios.get(`${baseURL}/api/v2/filters/collection`);
+			const {
+				data: { data: filterDataCollections },
+			} = responseCollections;
+			if (!_.isEmpty(filterDataCollections) && _.isEmpty(this.state.filtersV2Collections)) {
+				const filtersV2Collections = this.mapFiltersToDictionary(filterDataCollections, this.state.dataUtilityFilters);
+				this.setState({ filtersV2Collections });
+			}
 		} catch (error) {
 			console.error(error.message);
 		}
@@ -788,6 +870,12 @@ class SearchPage extends React.Component {
 				return _.isEmpty(this.state.filtersV2Tools);
 			case 'project':
 				return _.isEmpty(this.state.filtersV2Projects);
+			case 'paper':
+				return _.isEmpty(this.state.filtersV2Papers);
+			case 'course':
+				return _.isEmpty(this.state.filtersV2Courses);
+			case 'collection':
+				return _.isEmpty(this.state.filtersV2Collections);
 			default:
 				return false;
 		}
@@ -945,6 +1033,21 @@ class SearchPage extends React.Component {
 							break;
 						case 'Projects':
 							this.setState({ filtersV2Projects: filtersV2, selectedV2Projects: selectedV2, isResultsLoading: true }, () => {
+								this.doSearchCall();
+							});
+							break;
+						case 'Papers':
+							this.setState({ filtersV2Papers: filtersV2, selectedV2Papers: selectedV2, isResultsLoading: true }, () => {
+								this.doSearchCall();
+							});
+							break;
+						case 'Courses':
+							this.setState({ filtersV2Courses: filtersV2, selectedV2Courses: selectedV2, isResultsLoading: true }, () => {
+								this.doSearchCall();
+							});
+							break;
+						case 'Collections':
+							this.setState({ filtersV2Collections: filtersV2, selectedV2Collections: selectedV2, isResultsLoading: true }, () => {
 								this.doSearchCall();
 							});
 							break;
@@ -1135,6 +1238,12 @@ class SearchPage extends React.Component {
 				return [...this.state.filtersV2Tools];
 			case 'Projects':
 				return [...this.state.filtersV2Projects];
+			case 'Papers':
+				return [...this.state.filtersV2Papers];
+			case 'Courses':
+				return [...this.state.filtersV2Courses];
+			case 'Collections':
+				return [...this.state.filtersV2Collections];
 			default:
 				return [];
 		}
@@ -1151,6 +1260,12 @@ class SearchPage extends React.Component {
 				return [...this.state.selectedV2Tools];
 			case 'Projects':
 				return [...this.state.selectedV2Projects];
+			case 'Papers':
+				return [...this.state.selectedV2Papers];
+			case 'Course':
+				return [...this.state.selectedV2Courses];
+			case 'Collection':
+				return [...this.state.selectedV2Collections];
 			default:
 				return [];
 		}
@@ -1167,6 +1282,15 @@ class SearchPage extends React.Component {
 			case 'Projects':
 				this.setState({ selectedV2Projects: selectedV2 });
 				break;
+			case 'Papers':
+				this.setState({ selectedV2Papers: selectedV2 });
+				break;
+			case 'Courses':
+				this.setState({ selectedV2Courses: selectedV2 });
+				break;
+			case 'Collections':
+				this.setState({ selectedV2Collections: selectedV2 });
+				break;
 		}
 	};
 	/**
@@ -1182,6 +1306,15 @@ class SearchPage extends React.Component {
 				break;
 			case 'Projects':
 				this.setState({ filtersV2Projects: filtersV2 });
+				break;
+			case 'Papers':
+				this.setState({ filtersV2Papers: filtersV2 });
+				break;
+			case 'Courses':
+				this.setState({ filtersV2Courses: filtersV2 });
+				break;
+			case 'Collections':
+				this.setState({ filtersV2Collections: filtersV2 });
 				break;
 		}
 	};
@@ -1238,6 +1371,21 @@ class SearchPage extends React.Component {
 								this.doSearchCall();
 							});
 							break;
+						case 'Papers':
+							this.setState({ filtersV2Papers: filtersV2, selectedV2Papers: selectedV2, isResultsLoading: true }, () => {
+								this.doSearchCall();
+							});
+							break;
+						case 'Courses':
+							this.setState({ filtersV2Courses: filtersV2, selectedV2Courses: selectedV2, isResultsLoading: true }, () => {
+								this.doSearchCall();
+							});
+							break;
+						case 'Collections':
+							this.setState({ filtersV2Collections: filtersV2, selectedV2Collections: selectedV2, isResultsLoading: true }, () => {
+								this.doSearchCall();
+							});
+							break;
 					}
 				}
 			}
@@ -1270,6 +1418,15 @@ class SearchPage extends React.Component {
 						break;
 					case 'Projects':
 						this.setState({ filtersV2Projects: filtersV2 });
+						break;
+					case 'Papers':
+						this.setState({ filtersV2Papers: filtersV2 });
+						break;
+					case 'Courses':
+						this.setState({ filtersV2Courses: filtersV2 });
+						break;
+					case 'Collections':
+						this.setState({ filtersV2Collections: filtersV2 });
 						break;
 				}
 			}
@@ -1339,6 +1496,7 @@ class SearchPage extends React.Component {
 			paperSort,
 			personSort,
 			collectionSort,
+			courseSort,
 
 			filtersV2,
 			selectedV2,
@@ -1346,6 +1504,12 @@ class SearchPage extends React.Component {
 			selectedV2Tools,
 			filtersV2Projects,
 			selectedV2Projects,
+			filtersV2Papers,
+			selectedV2Papers,
+			filtersV2Courses,
+			selectedV2Courses,
+			filtersV2Collections,
+			selectedV2Collections,
 
 			showDrawer,
 			showModal,
@@ -1355,6 +1519,7 @@ class SearchPage extends React.Component {
 			key,
 		} = this.state;
 
+		console.log(filtersV2Courses);
 		if (isLoading) {
 			return (
 				<Container>
@@ -1564,6 +1729,39 @@ class SearchPage extends React.Component {
 								) : (
 									''
 								)}
+								{this.state.key === 'Papers' ? (
+									<FilterSelection
+										selectedCount={selectedV2Papers.length}
+										selectedItems={selectedV2Papers}
+										onHandleClearSelection={this.handleClearSelection}
+										onHandleClearAll={this.handleClearAll}
+										savedSearches={true}
+									/>
+								) : (
+									''
+								)}
+								{this.state.key === 'Courses' ? (
+									<FilterSelection
+										selectedCount={selectedV2Courses.length}
+										selectedItems={selectedV2Courses}
+										onHandleClearSelection={this.handleClearSelection}
+										onHandleClearAll={this.handleClearAll}
+										savedSearches={true}
+									/>
+								) : (
+									''
+								)}
+								{this.state.key === 'Collections' ? (
+									<FilterSelection
+										selectedCount={selectedV2Collections.length}
+										selectedItems={selectedV2Collections}
+										onHandleClearSelection={this.handleClearSelection}
+										onHandleClearAll={this.handleClearAll}
+										savedSearches={true}
+									/>
+								) : (
+									''
+								)}
 							</Row>
 						</Container>
 					</div>
@@ -1639,413 +1837,73 @@ class SearchPage extends React.Component {
 									) : (
 										''
 									)}
-
-									{key === 'Collections' ? (
-										<>
-											<div className={this.state.savedSearchPanel ? 'filterHolder saved-filterHolder' : 'filterHolder'}>
-												{collectionKeywordsSelected.length !== 0 || collectionPublisherSelected.length !== 0 ? (
-													<div className='filterCard mb-2'>
-														<Row>
-															<Col className='mb-2'>
-																<div className='inlineBlock'>
-																	<div className='gray500-13'>Showing:</div>
-																</div>
-																<div className='floatRight'>
-																	<div className='purple-13 pointer' onClick={() => this.clearFilter('All')}>
-																		Clear all
-																	</div>
-																</div>
-															</Col>
-														</Row>
-
-														{!collectionKeywordsSelected || collectionKeywordsSelected.length <= 0
-															? ''
-															: collectionKeywordsSelected.map(selected => {
-																	return (
-																		<div className='badge-tag'>
-																			{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
-																			<span
-																				className='gray800-14-opacity pointer'
-																				onClick={() => this.clearFilter(selected, 'collectionKeywordsSelected')}>
-																				X
-																			</span>
-																		</div>
-																	);
-															  })}
-
-														{!collectionPublisherSelected || collectionPublisherSelected.length <= 0
-															? ''
-															: collectionPublisherSelected.map(selected => {
-																	if (!_.isNil(allFilters.collectionPublisherFilter)) {
-																		const collectionPublisherFilters = Object.values(allFilters.collectionPublisherFilter);
-
-																		return collectionPublisherFilters.map(filter => {
-																			if (selected === filter.result.toString()) {
-																				return (
-																					<div className='badge-tag'>
-																						{filter.value.substr(0, 80)} {filter.value.length > 80 ? '...' : ''}{' '}
-																						<span
-																							className='gray800-14-opacity pointer'
-																							onClick={() => this.clearFilter(selected, 'collectionPublisherSelected')}>
-																							X
-																						</span>
-																					</div>
-																				);
-																			}
-																		});
-																	}
-															  })}
-													</div>
-												) : (
-													''
-												)}
-												<Filters
-													data={filterOptions.collectionKeywordsFilterOptions}
-													allFilters={allFilters.collectionKeywordFilter}
-													updateOnFilter={this.updateOnFilter}
-													selected={collectionKeywordsSelected}
-													title='Keywords'
-												/>
-												<Filters
-													data={filterOptions.collectionPublisherFilterOptions}
-													allFilters={allFilters.collectionPublisherFilter}
-													updateOnFilter={this.updateOnFilter}
-													selected={collectionPublisherSelected}
-													title='Publisher'
-													isKeyValue={true}
-												/>
-											</div>
-										</>
-									) : (
-										''
-									)}
-
 									{key === 'Papers' ? (
-										<>
-											<div className={this.state.savedSearchPanel ? 'filterHolder saved-filterHolder' : 'filterHolder'}>
-												{paperFeaturesSelected.length !== 0 || paperTopicsSelected.length !== 0 ? (
-													<div className='filterCard mb-2'>
-														<Row>
-															<Col className='mb-2'>
-																<div className='inlineBlock'>
-																	<div className='gray500-13'>Showing:</div>
-																</div>
-																<div className='floatRight'>
-																	<div className='purple-13 pointer' onClick={() => this.clearFilter('All')}>
-																		Clear all
-																	</div>
-																</div>
-															</Col>
-														</Row>
-
-														{!paperFeaturesSelected || paperFeaturesSelected.length <= 0
-															? ''
-															: paperFeaturesSelected.map(selected => {
-																	return (
-																		<div className='badge-tag'>
-																			{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
-																			<span
-																				className='gray800-14-opacity pointer'
-																				onClick={() => this.clearFilter(selected, 'paperFeaturesSelected')}>
-																				X
-																			</span>
-																		</div>
-																	);
-															  })}
-
-														{!paperTopicsSelected || paperTopicsSelected.length <= 0
-															? ''
-															: paperTopicsSelected.map(selected => {
-																	return (
-																		<div className='badge-tag'>
-																			{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
-																			<span
-																				className='gray800-14-opacity pointer'
-																				onClick={() => this.clearFilter(selected, 'paperTopicsSelected')}>
-																				X
-																			</span>
-																		</div>
-																	);
-															  })}
-													</div>
-												) : (
-													''
+										<Fragment>
+											<div className='filterHolder'>
+												{selectedV2Papers.length > 0 && (
+													<FilterSelection
+														selectedCount={selectedV2Papers.length}
+														selectedItems={selectedV2Papers}
+														onHandleClearSelection={this.handleClearSelection}
+														onHandleClearAll={this.handleClearAll}
+													/>
 												)}
-												<Filters
-													data={filterOptions.paperFeaturesFilterOptions}
-													allFilters={allFilters.paperFeatureFilter}
-													updateOnFilter={this.updateOnFilter}
-													selected={paperFeaturesSelected}
-													title='Keywords'
-												/>
-												<Filters
-													data={filterOptions.paperTopicsFilterOptions}
-													allFilters={allFilters.paperTopicFilter}
-													updateOnFilter={this.updateOnFilter}
-													selected={paperTopicsSelected}
-													title='Domain'
+												<Filter
+													data={filtersV2Papers}
+													onHandleInputChange={this.handleInputChange}
+													onHandleClearSection={this.handleClearSection}
+													onHandleToggle={this.handleToggle}
 												/>
 											</div>
-										</>
+										</Fragment>
 									) : (
 										''
 									)}
-
 									{key === 'Courses' ? (
-										<>
-											<div className={this.state.savedSearchPanel ? 'filterHolder saved-filterHolder' : 'filterHolder'}>
-												{courseStartDatesSelected.length !== 0 ||
-												courseProviderSelected.length !== 0 ||
-												courseLocationSelected.length !== 0 ||
-												courseStudyModeSelected.length !== 0 ||
-												courseAwardSelected.length !== 0 ||
-												courseEntryLevelSelected.length !== 0 ||
-												courseDomainsSelected.length !== 0 ||
-												courseKeywordsSelected.length !== 0 ||
-												courseFrameworkSelected.length !== 0 ||
-												coursePrioritySelected.length !== 0 ? (
-													<div className='filterCard mb-2'>
-														<Row>
-															<Col className='mb-2'>
-																<div className='inlineBlock'>
-																	<div className='gray500-13'>Showing:</div>
-																</div>
-																<div className='floatRight'>
-																	<div className='purple-13 pointer' onClick={() => this.clearFilter('All')}>
-																		Clear all
-																	</div>
-																</div>
-															</Col>
-														</Row>
-
-														{!courseStartDatesSelected || courseStartDatesSelected.length <= 0
-															? ''
-															: courseStartDatesSelected.map(selected => {
-																	return (
-																		<div className='badge-tag'>
-																			{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
-																			<span
-																				className='gray800-14-opacity pointer'
-																				onClick={() => this.clearFilter(selected, 'courseStartDatesSelected')}>
-																				X
-																			</span>
-																		</div>
-																	);
-															  })}
-
-														{!courseProviderSelected || courseProviderSelected.length <= 0
-															? ''
-															: courseProviderSelected.map(selected => {
-																	return (
-																		<div className='badge-tag'>
-																			{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
-																			<span
-																				className='gray800-14-opacity pointer'
-																				onClick={() => this.clearFilter(selected, 'courseProviderSelected')}>
-																				X
-																			</span>
-																		</div>
-																	);
-															  })}
-
-														{!courseLocationSelected || courseLocationSelected.length <= 0
-															? ''
-															: courseLocationSelected.map(selected => {
-																	return (
-																		<div className='badge-tag'>
-																			{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
-																			<span
-																				className='gray800-14-opacity pointer'
-																				onClick={() => this.clearFilter(selected, 'courseLocationSelected')}>
-																				X
-																			</span>
-																		</div>
-																	);
-															  })}
-
-														{!courseStudyModeSelected || courseStudyModeSelected.length <= 0
-															? ''
-															: courseStudyModeSelected.map(selected => {
-																	return (
-																		<div className='badge-tag'>
-																			{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
-																			<span
-																				className='gray800-14-opacity pointer'
-																				onClick={() => this.clearFilter(selected, 'courseStudyModeSelected')}>
-																				X
-																			</span>
-																		</div>
-																	);
-															  })}
-
-														{!courseAwardSelected || courseAwardSelected.length <= 0
-															? ''
-															: courseAwardSelected.map(selected => {
-																	return (
-																		<div className='badge-tag'>
-																			{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
-																			<span
-																				className='gray800-14-opacity pointer'
-																				onClick={() => this.clearFilter(selected, 'courseAwardSelected')}>
-																				X
-																			</span>
-																		</div>
-																	);
-															  })}
-
-														{!courseEntryLevelSelected || courseEntryLevelSelected.length <= 0
-															? ''
-															: courseEntryLevelSelected.map(selected => {
-																	return (
-																		<div className='badge-tag'>
-																			{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
-																			<span
-																				className='gray800-14-opacity pointer'
-																				onClick={() => this.clearFilter(selected, 'courseEntryLevelSelected')}>
-																				X
-																			</span>
-																		</div>
-																	);
-															  })}
-
-														{!courseDomainsSelected || courseDomainsSelected.length <= 0
-															? ''
-															: courseDomainsSelected.map(selected => {
-																	return (
-																		<div className='badge-tag'>
-																			{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
-																			<span
-																				className='gray800-14-opacity pointer'
-																				onClick={() => this.clearFilter(selected, 'courseDomainsSelected')}>
-																				X
-																			</span>
-																		</div>
-																	);
-															  })}
-
-														{!courseKeywordsSelected || courseKeywordsSelected.length <= 0
-															? ''
-															: courseKeywordsSelected.map(selected => {
-																	return (
-																		<div className='badge-tag'>
-																			{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
-																			<span
-																				className='gray800-14-opacity pointer'
-																				onClick={() => this.clearFilter(selected, 'courseKeywordsSelected')}>
-																				X
-																			</span>
-																		</div>
-																	);
-															  })}
-
-														{!courseFrameworkSelected || courseFrameworkSelected.length <= 0
-															? ''
-															: courseFrameworkSelected.map(selected => {
-																	return (
-																		<div className='badge-tag'>
-																			{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
-																			<span
-																				className='gray800-14-opacity pointer'
-																				onClick={() => this.clearFilter(selected, 'courseFrameworkSelected')}>
-																				X
-																			</span>
-																		</div>
-																	);
-															  })}
-
-														{!coursePrioritySelected || coursePrioritySelected.length <= 0
-															? ''
-															: coursePrioritySelected.map(selected => {
-																	return (
-																		<div className='badge-tag'>
-																			{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
-																			<span
-																				className='gray800-14-opacity pointer'
-																				onClick={() => this.clearFilter(selected, 'coursePrioritySelected')}>
-																				X
-																			</span>
-																		</div>
-																	);
-															  })}
-													</div>
-												) : (
-													''
+										<Fragment>
+											<div className='filterHolder'>
+												{selectedV2Courses.length > 0 && (
+													<FilterSelection
+														selectedCount={selectedV2Courses.length}
+														selectedItems={selectedV2Courses}
+														onHandleClearSelection={this.handleClearSelection}
+														onHandleClearAll={this.handleClearAll}
+													/>
 												)}
-												<Filters
-													data={filterOptions.courseStartDatesFilterOptions}
-													allFilters={allFilters.courseStartDatesFilter}
-													updateOnFilter={this.updateOnFilter}
-													selected={courseStartDatesSelected}
-													title='Start date'
-												/>
-												<Filters
-													data={filterOptions.courseProviderFilterOptions}
-													allFilters={allFilters.courseProviderFilter}
-													updateOnFilter={this.updateOnFilter}
-													selected={courseProviderSelected}
-													title='Provider'
-												/>
-												<Filters
-													data={filterOptions.courseLocationFilterOptions}
-													allFilters={allFilters.courseLocationFilter}
-													updateOnFilter={this.updateOnFilter}
-													selected={courseLocationSelected}
-													title='Location'
-												/>
-												<Filters
-													data={filterOptions.courseStudyModeFilterOptions}
-													allFilters={allFilters.courseStudyModeFilter}
-													updateOnFilter={this.updateOnFilter}
-													selected={courseStudyModeSelected}
-													title='Study mode'
-												/>
-												<Filters
-													data={filterOptions.courseAwardFilterOptions}
-													allFilters={allFilters.courseAwardFilter}
-													updateOnFilter={this.updateOnFilter}
-													selected={courseAwardSelected}
-													title='Award'
-												/>
-												<Filters
-													data={filterOptions.courseEntryLevelFilterOptions}
-													allFilters={allFilters.courseEntryLevelFilter}
-													updateOnFilter={this.updateOnFilter}
-													selected={courseEntryLevelSelected}
-													title='Entry requirements'
-												/>
-												<Filters
-													data={filterOptions.courseDomainsFilterOptions}
-													allFilters={allFilters.courseDomainsFilter}
-													updateOnFilter={this.updateOnFilter}
-													selected={courseDomainsSelected}
-													title='Domain'
-												/>
-												<Filters
-													data={filterOptions.courseKeywordsFilterOptions}
-													allFilters={allFilters.courseKeywordsFilter}
-													updateOnFilter={this.updateOnFilter}
-													selected={courseKeywordsSelected}
-													title='Keywords'
-												/>
-												<Filters
-													data={filterOptions.courseFrameworkFilterOptions}
-													allFilters={allFilters.courseFrameworkFilter}
-													updateOnFilter={this.updateOnFilter}
-													selected={courseFrameworkSelected}
-													title='Competency framework'
-												/>
-												<Filters
-													data={filterOptions.coursePriorityFilterOptions}
-													allFilters={allFilters.coursePriorityFilter}
-													updateOnFilter={this.updateOnFilter}
-													selected={coursePrioritySelected}
-													title='National priority areas'
+												<Filter
+													data={filtersV2Courses}
+													onHandleInputChange={this.handleInputChange}
+													onHandleClearSection={this.handleClearSection}
+													onHandleToggle={this.handleToggle}
 												/>
 											</div>
-										</>
+										</Fragment>
 									) : (
 										''
 									)}
+									{key === 'Collections' ? (
+										<Fragment>
+											<div className='filterHolder'>
+												{selectedV2Collections.length > 0 && (
+													<FilterSelection
+														selectedCount={selectedV2Collections.length}
+														selectedItems={selectedV2Collections}
+														onHandleClearSelection={this.handleClearSelection}
+														onHandleClearAll={this.handleClearAll}
+													/>
+												)}
+												<Filter
+													data={filtersV2Collections}
+													onHandleInputChange={this.handleInputChange}
+													onHandleClearSection={this.handleClearSection}
+													onHandleToggle={this.handleToggle}
+												/>
+											</div>
+										</Fragment>
+									) : (
+										''
+									)}
+
 									<div className='advanced-search-link-container'>
 										<CDStar fill='#f98e2b' height='20' width='20' />
 										<a
@@ -2105,6 +1963,17 @@ class SearchPage extends React.Component {
 													<SortDropdown
 														handleSort={this.handleSort}
 														sort={collectionSort === '' ? (search === '' ? 'latest' : 'relevance') : collectionSort}
+														dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
+														savedSearch={true}
+													/>
+												) : (
+													''
+												)}
+
+												{key === 'Courses' ? (
+													<SortDropdown
+														handleSort={this.handleSort}
+														sort={courseSort === '' ? (search === '' ? 'latest' : 'relevance') : courseSort}
 														dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
 														savedSearch={true}
 													/>
