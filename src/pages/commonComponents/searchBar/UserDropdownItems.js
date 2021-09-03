@@ -31,6 +31,9 @@ export const UserDropdownItems = isAdmin => {
 			<Dropdown.Item href='/account?tab=collections&team=user' className='black-14 user-dropdown-item' data-test-id='optCollections'>
 				Collections
 			</Dropdown.Item>
+			<Dropdown.Item href='/account?tab=cohorts&team=user' className='black-14 user-dropdown-item' data-test-id='optCohorts'>
+				Cohorts
+			</Dropdown.Item>
 			{isAdmin && (
 				<Dropdown.Item href='/account?tab=usersroles&team=user' className='black-14 user-dropdown-item' data-test-id='optUsersRoles'>
 					Users and roles
