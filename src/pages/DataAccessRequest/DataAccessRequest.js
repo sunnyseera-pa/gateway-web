@@ -2049,6 +2049,7 @@ class DataAccessRequest extends Component {
 									isShared={this.state.isShared}
 									updateCount={this.updateCount}
 									publisher={datasets[0].datasetv2.summary.publisher.name}
+									applicationStatus={applicationStatus}
 								/>
 							</div>
 						</div>
