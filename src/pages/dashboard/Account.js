@@ -11,6 +11,7 @@ import AccountDatasets from './AccountDatasets';
 import AccountPapers from './AccountPapers';
 import AccountCourses from './AccountCourses';
 import AccountCollections from './AccountCollections';
+import AccountCohorts from './AccountCohorts';
 import AccountTeamManagement from './AccountTeamManagement';
 import AccountAnalyticsDashboard from './AccountAnalyticsDashboard';
 import AccountUsers from './AccountUsers';
@@ -564,6 +565,13 @@ class Account extends Component {
 										</Nav.Link>
 									</div>
 
+									<div className={`${tabId === 'cohorts' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('cohorts')}>
+										<Nav.Link eventKey={'cohorts'} className='verticalNavBar gray700-13'>
+											<SVGIcon name='dashboard' fill={'#b3b8bd'} className='accountSvgs' />
+											<span className='navLinkItem'>Cohorts</span>
+										</Nav.Link>
+									</div>
+
 									{userState[0].role === 'Admin' ? (
 										<div className={`${tabId === 'usersroles' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('usersroles')}>
 											<Nav.Link eventKey={'usersroles'} className='verticalNavBar gray700-13'>
@@ -677,6 +685,8 @@ class Account extends Component {
 								{tabId === 'dataaccessrequests' ? <DataAccessRequests userState={userState} team={team} alert={alert} /> : ''}
 
 								{tabId === 'collections' ? <AccountCollections userState={userState} /> : ''}
+
+								{tabId === 'cohorts' ? <AccountCohorts userState={userState} /> : ''}
 
 								{tabId === 'usersroles' ? <AccountUsers userState={userState} /> : ''}
 							</>
