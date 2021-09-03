@@ -245,7 +245,7 @@ export const CollectionPage = props => {
 					getCountOfSearchTerm(data.description) +
 					getCountOfSearchTerm(data.tags.topics) +
 					getCountOfSearchTerm(data.tags.features) +
-					getCountOfSearchTerm(data.categories.category);
+					(_.has(data, 'categories.category') && getCountOfSearchTerm(data.categories.category));
 				data.searchTermInstances = containsSearchTermCount;
 			}
 		});
