@@ -978,7 +978,7 @@ class DatasetOnboarding extends Component {
 	};
 
 	updateApplicationStatus = async (action = {}) => {
-		let { type, statusDesc } = action;
+		let { type } = action;
 		switch (type) {
 			case 'CONFIRMAPPROVALCONDITIONS':
 			case 'CONFIRMREJECTION':
