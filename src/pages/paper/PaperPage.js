@@ -21,7 +21,6 @@ import { baseURL } from '../../configs/url.config';
 import { PageView, initGA } from '../../tracking';
 import SVGIcon from '../../images/SVGIcon';
 import ReactMarkdown from 'react-markdown';
-import moment from 'moment';
 import _ from 'lodash';
 import { ReactComponent as InfoSVG } from '../../images/info.svg';
 import './Paper.scss';
