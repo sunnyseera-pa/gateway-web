@@ -297,7 +297,7 @@ class Account extends Component {
 				return filterPublishers.map((pub, index) => {
 					return (
 						<>
-							{index == 0 ? <hr /> : ''}
+							{index === 0 ? <hr /> : ''}
 							<Dropdown.Item
 								className='gray700-13'
 								onClick={e => {
@@ -403,7 +403,7 @@ class Account extends Component {
 						else tab.tabId = 'teamManagement';
 					}
 				}
-			} else if (localStorage.getItem('HDR_TEAM') == '') localStorage.setItem('HDR_TEAM', 'user');
+			} else if (localStorage.getItem('HDR_TEAM') === '') localStorage.setItem('HDR_TEAM', 'user');
 			// 5. set state
 			this.setState({
 				tabId: tab.tabId,
