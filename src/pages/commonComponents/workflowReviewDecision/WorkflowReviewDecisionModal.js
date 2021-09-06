@@ -21,7 +21,7 @@ const WorkflowReviewDecisionModal = ({
 	const onClickAction = (e, action = '') => {
 		e.preventDefault();
 		// 1. check for errors
-		if (action == 'reviewDecision') {
+		if (action === 'reviewDecision') {
 			if (_.isEmpty(comments)) return setErrors(true);
 
 			if (wordCount >= 1500) return setErrors(true);
