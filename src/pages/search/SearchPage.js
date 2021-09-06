@@ -489,7 +489,6 @@ class SearchPage extends React.Component {
 		};
 		// 2. dynamically build the searchUrl v2 only
 		searchURL = this.buildSearchUrl(searchObj);
-
 		if (datasetIndex > 0) searchURL += '&datasetIndex=' + encodeURIComponent(datasetIndex);
 		if (toolIndex > 0) searchURL += '&toolIndex=' + encodeURIComponent(toolIndex);
 		if (projectIndex > 0) searchURL += '&projectIndex=' + encodeURIComponent(projectIndex);
@@ -1222,6 +1221,7 @@ class SearchPage extends React.Component {
 			key,
 		} = this.state;
 
+		console.log(filtersV2Courses);
 		if (isLoading) {
 			return (
 				<Container>
@@ -1605,6 +1605,7 @@ class SearchPage extends React.Component {
 									) : (
 										''
 									)}
+
 									<div className='advanced-search-link-container'>
 										<CDStar fill='#f98e2b' height='20' width='20' />
 										<a
