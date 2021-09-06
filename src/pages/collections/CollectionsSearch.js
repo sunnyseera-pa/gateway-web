@@ -5,7 +5,6 @@ import '../commonComponents/searchBar/SearchBar.scss';
 import SortDropdown from '../search/components/SortDropdown';
 
 const CollectionsSearch = props => {
-	const {} = props;
 	const [searchValue, setSearchValue] = useState('');
 
 	let col1Size = 7;
