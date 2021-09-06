@@ -875,12 +875,11 @@ class SearchPage extends React.Component {
 					// 8. remove from selectedV2 array
 					selectedV2 = this.handleSelected(selectedNode, false);
 					// 9. set state
-					this.setState(
-						{ [`filtersV2${this.state.key}`]: filtersV2, [`selectedV2${this.state.key}`]: selectedV2, isResultsLoading: true },
-						() => {
-							this.doSearchCall();
-						}
-					);
+					const filtersV2Entity = `filtersV2${this.state.key}`;
+					const selectedV2Entity = `selectedV2${this.state.key}`;
+					this.setState({ [filtersV2Entity]: filtersV2, [selectedV2Entity]: selectedV2, isResultsLoading: true }, () => {
+						this.doSearchCall();
+					});
 				}
 			}
 		}
@@ -920,7 +919,9 @@ class SearchPage extends React.Component {
 		// 2. resets the filters UI tree back to default
 		let filtersV2 = this.resetTreeChecked(filtersV2Data);
 		// 3. set state and call search
-		this.setState({ [`filtersV2${this.state.key}`]: filtersV2, [`selectedV2${this.state.key}`]: [], isResultsLoading: true }, () => {
+		const filtersV2Entity = `filtersV2${this.state.key}`;
+		const selectedV2Entity = `selectedV2${this.state.key}`;
+		this.setState({ [filtersV2Entity]: filtersV2, [selectedV2Entity]: [], isResultsLoading: true }, () => {
 			this.doSearchCall();
 		});
 	};
@@ -1033,7 +1034,9 @@ class SearchPage extends React.Component {
 					}
 				});
 				// 9. set state
-				this.setState({ [`filtersV2${this.state.key}`]: filtersV2, [`selectedV2${this.state.key}`]: [], isResultsLoading: true }, () => {
+				const filtersV2Entity = `filtersV2${this.state.key}`;
+				const selectedV2Entity = `selectedV2${this.state.key}`;
+				this.setState({ [filtersV2Entity]: filtersV2, [selectedV2Entity]: [], isResultsLoading: true }, () => {
 					this.doSearchCall();
 				});
 			}
@@ -1121,12 +1124,11 @@ class SearchPage extends React.Component {
 					// 7. fn for handling the *selected showing* returns new state
 					const selectedV2 = this.handleSelected(selectedNode, checkValue);
 					// 8. set state
-					this.setState(
-						{ [`filtersV2${this.state.key}`]: filtersV2, [`selectedV2${this.state.key}`]: selectedV2, isResultsLoading: true },
-						() => {
-							this.doSearchCall();
-						}
-					);
+					const filtersV2Entity = `filtersV2${this.state.key}`;
+					const selectedV2Entity = `selectedV2${this.state.key}`;
+					this.setState({ [filtersV2Entity]: filtersV2, [selectedV2Entity]: selectedV2, isResultsLoading: true }, () => {
+						this.doSearchCall();
+					});
 				}
 			}
 		}
@@ -1149,8 +1151,8 @@ class SearchPage extends React.Component {
 			parentNode = this.findParentNode(filtersV2, key);
 			if (!_.isEmpty(parentNode)) {
 				parentNode.closed = !parentNode.closed;
-
-				this.setState({ [`filtersV2${this.state.key}`]: filtersV2 });
+				const filtersV2Entity = `filtersV2${this.state.key}`;
+				this.setState({ [filtersV2Entity]: filtersV2 });
 			}
 		}
 	};
