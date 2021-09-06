@@ -493,11 +493,11 @@ class DatasetOnboarding extends Component {
 			// 1. Data = {key: jsonSchema || questionAnswers, data: { object of data}}
 			let { key, data = {} } = obj;
 			// 2. Id of data access request
-			let { _id: id } = this.state;
+			//let { _id: id } = this.state;
 			// 3. Set up body params
-			let params = {
+			/*let params = {
 				[`${key}`]: JSON.stringify(data),
-			};
+			};*/
 			// 4. PATCH the data
 			//const response = await axios.patch(`${baseURL}/api/v1/dataset-onboarding/${id}`, params);
 			// 6. Get saved time
@@ -983,11 +983,11 @@ class DatasetOnboarding extends Component {
 			case 'CONFIRMAPPROVALCONDITIONS':
 			case 'CONFIRMREJECTION':
 			case 'CONFIRMAPPROVAL':
-				let { _id } = this.state;
-				const body = {
+				//let { _id } = this.state;
+				/*const body = {
 					applicationStatus: this.applicationState[type],
 					applicationStatusDesc: statusDesc,
-				};
+				};*/
 
 				/* // 1. Update action status
 				const response = await axios.put(`${baseURL}/api/v1/data-access-request/${_id}`, body);
