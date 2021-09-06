@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Container, Row, Col, Button, Tab, Tabs } from 'react-bootstrap';
 import Data from './MockData.json';
 import Table from './DataUseTable';
@@ -9,10 +9,6 @@ const DataUsePage = () => {
 	const [row, setRow] = useState([]);
 	const [currentPage, setCurrentPage] = useState(1);
 	const [rowsPerPage, setRowsPerPage] = useState(2);
-
-	useEffect(() => {
-		setRow(Data);
-	}, []);
 
 	const indexOfLastRow = currentPage * rowsPerPage;
 	const indexOfFirstRow = indexOfLastRow - rowsPerPage;
