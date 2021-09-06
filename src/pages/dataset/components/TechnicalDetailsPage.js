@@ -28,7 +28,7 @@ class TechnicalDetailsPage extends React.Component {
 	};
 
 	render() {
-		const { flagClosed, technicalMetadata, allOpen } = this.state;
+		const { technicalMetadata, allOpen } = this.state;
 
 		return (
 			<div className='ml-3'>
