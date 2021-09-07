@@ -5,10 +5,10 @@ import Table from './DataUseTable';
 import Pagination from './DataUsePagination';
 import './DataUse.scss';
 
-const DataUsePage = () => {
+const DataUsePage = ({ userState }) => {
 	const [row, setRow] = useState([]);
 	const [currentPage, setCurrentPage] = useState(1);
-	const [rowsPerPage, setRowsPerPage] = useState(1);
+	const [rowsPerPage, setRowsPerPage] = useState(2);
 
 	useEffect(() => {
 		setRow(Data);
@@ -30,6 +30,7 @@ const DataUsePage = () => {
 	const currentArchived = archived.slice(indexOfFirstRow, indexOfLastRow);
 
 	const paginate = pageNumber => setCurrentPage(pageNumber);
+	const role = userState.map(a => a.role).toString();
 
 	return (
 		<Container>
@@ -46,20 +47,20 @@ const DataUsePage = () => {
 					<Button className='datause-button'>+ Upload data uses</Button>
 				</Col>
 			</Row>
-			<Tabs defaultActiveKey={'Active'} className='gray700-13 data-use-tabs'>
+			<Tabs defaultActiveKey={role === 'User' ? 'Active' : 'Pending approval'} className='gray700-13 data-use-tabs'>
 				{tabs.map(tabName => (
 					<Tab
 						eventKey={tabName}
 						title={
-							(tabName === 'Active' && tabName + ' (' + active.length + ')') ||
-							(tabName === 'Pending approval' && tabName + ' (' + pending.length + ')') ||
-							(tabName === 'Rejected' && tabName + ' (' + rejected.length + ')') ||
-							(tabName === 'Archived' && tabName + ' (' + archived.length + ')')
+							((role === 'User' || role === 'Custodian') && tabName === 'Active' && tabName + ' (' + active.length + ')') ||
+							((role === 'Admin' || role === 'Custodian') && tabName === 'Pending approval' && tabName + ' (' + pending.length + ')') ||
+							(role === 'Custodian' && tabName === 'Rejected' && tabName + ' (' + rejected.length + ')') ||
+							(role === 'Custodian' && tabName === 'Archived' && tabName + ' (' + archived.length + ')')
 						}>
-						{tabName === 'Active' && <Table data={currentActive} active={true} />}
-						{tabName === 'Pending approval' && <Table data={currentPending} pending={true} />}
-						{tabName === 'Rejected' && <Table data={currentRejected} />}
-						{tabName === 'Archived' && <Table data={currentArchived} archived={true} />}
+						{(role === 'User' || role === 'Custodian') && tabName === 'Active' && <Table data={currentActive} active={true} />}
+						{(role === 'Admin' || role === 'Custodian') && tabName === 'Pending approval' && <Table data={currentPending} pending={true} />}
+						{role === 'Custodian' && tabName === 'Rejected' && <Table data={currentRejected} />}
+						{role === 'Custodian' && tabName === 'Archived' && <Table data={currentArchived} archived={true} />}
 						<Pagination
 							rowsPerPage={rowsPerPage}
 							totalRows={

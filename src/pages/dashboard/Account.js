@@ -684,7 +684,7 @@ class Account extends Component {
 
 								{tabId === 'dataaccessrequests' ? <DataAccessRequests userState={userState} team={team} alert={alert} /> : ''}
 
-								{tabId === 'datause' ? <DataUsePage /> : ''}
+								{tabId === 'datause' ? <DataUsePage userState={userState} team={team} /> : ''}
 
 								{tabId === 'collections' ? <AccountCollections userState={userState} /> : ''}
 
@@ -701,6 +701,8 @@ class Account extends Component {
 								{(this.userHasRole(team, ['manager', 'metadata_editor']) || team === 'admin') && (
 									<>{tabId === 'datasets' ? <AccountDatasets userState={userState} team={team} alert={alert} /> : ''}</>
 								)}
+
+								{tabId === 'datause' ? <DataUsePage /> : ''}
 
 								{allowWorkflow && this.userHasRole(team, 'manager') && (
 									<>{tabId === 'workflows' ? <WorkflowDashboard userState={userState} team={team} /> : ''}</>
