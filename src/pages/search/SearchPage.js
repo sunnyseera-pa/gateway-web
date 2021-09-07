@@ -808,7 +808,7 @@ class SearchPage extends React.Component {
 				results = [...selectedV2, selected];
 			} else {
 				// id important to filter by as labels are not unique
-				results = [...selectedV2].filter(node => node.id != selected.id);
+				results = [...selectedV2].filter(node => node.id !== selected.id);
 			}
 		}
 		return results;
@@ -895,7 +895,7 @@ class SearchPage extends React.Component {
 						// 5. increment highest parent count
 						--parentNode.selectedCount;
 						// 7. fn for handling the *selected showing* returns new state
-						selectedV2 = [...selectedV2].filter(node => node.id != foundNode.id);
+						selectedV2 = [...selectedV2].filter(node => node.id !== foundNode.id);
 						// searchObj = this.buildSearchObj(selectedV2);
 					}
 				});
@@ -928,7 +928,7 @@ class SearchPage extends React.Component {
 			if (!_.isEmpty(foundNode)) {
 				// find if the node already exists in the selectedV2 - if so we are unchecking / removing
 				const exists = [...this.state.selectedV2].some(selected => selected.id === foundNode.id);
-				if (!exists || (exists && foundNode.checked != checkValue)) {
+				if (!exists || (exists && foundNode.checked !== checkValue)) {
 					// 4. set check value
 					foundNode.checked = checkValue;
 					// 5. increment highest parent count
@@ -1958,16 +1958,14 @@ class SearchPage extends React.Component {
 											datasetData.map(dataset => {
 												let datasetPublisher;
 												let datasetLogo;
-												{
-													!_.isEmpty(dataset.datasetv2) && _.has(dataset, 'datasetv2.summary.publisher.name')
-														? (datasetPublisher = dataset.datasetv2.summary.publisher.name)
-														: (datasetPublisher = '');
-												}
-												{
-													!_.isEmpty(dataset.datasetv2) && _.has(dataset, 'datasetv2.summary.publisher.logo')
-														? (datasetLogo = dataset.datasetv2.summary.publisher.logo)
-														: (datasetLogo = '');
-												}
+
+												!_.isEmpty(dataset.datasetv2) && _.has(dataset, 'datasetv2.summary.publisher.name')
+													? (datasetPublisher = dataset.datasetv2.summary.publisher.name)
+													: (datasetPublisher = '');
+
+												!_.isEmpty(dataset.datasetv2) && _.has(dataset, 'datasetv2.summary.publisher.logo')
+													? (datasetLogo = dataset.datasetv2.summary.publisher.logo)
+													: (datasetLogo = '');
 
 												return (
 													<RelatedObject
