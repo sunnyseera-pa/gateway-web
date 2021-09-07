@@ -91,6 +91,8 @@ class TypaheadMultiUser extends React.Component {
 						alert('Failed to fetch users');
 					});
 				break;
+			default:
+				return this.state.apiCall;
 		}
 	}
 
