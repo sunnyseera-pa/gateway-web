@@ -50,10 +50,10 @@ const DataUsePage = () => {
 				<Tabs defaultActiveKey={'Active'} className='gray700-13'>
 					{tabs.map(tabName => (
 						<Tab eventKey={tabName} title={tabName}>
-							{tabName === 'Active' && <Table data={tabName === 'Active' && currentActive} active={tabName === 'Active' && true} />}
-							{tabName === 'Pending approval' && <Table data={currentPending} />}
+							{tabName === 'Active' && <Table data={currentActive} active={true} />}
+							{tabName === 'Pending approval' && <Table data={currentPending} pending={true} />}
 							{tabName === 'Rejected' && <Table data={currentRejected} />}
-							{tabName === 'Archived' && <Table data={currentArchived} />}
+							{tabName === 'Archived' && <Table data={currentArchived} archived={true} />}
 							<Pagination
 								rowsPerPage={rowsPerPage}
 								totalRows={
