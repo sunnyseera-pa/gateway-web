@@ -1120,7 +1120,6 @@ class DataAccessRequest extends Component {
 	onHandleDataSetChange = (value = []) => {
 		// 1. Deconstruct current state
 		let { aboutApplication, allowedNavigation, topicContext } = { ...this.state };
-
 		aboutApplication.selectedDatasets = [...value];
 
 		// 3. If no datasets are passed, set invalid and incomplete step, and update message context

@@ -83,6 +83,8 @@
 	border-right: 4px solid $teal !important;
 	a,
 	button {
+		display: flex;
+		align-items: center;
 		background-color: #f6f7f8;
 	}
 }

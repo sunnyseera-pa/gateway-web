@@ -1918,17 +1918,17 @@ class SearchPage extends React.Component {
 													''
 												)}
 
-												{key === 'Collections' ? (
+												{key === 'Papers' ? (
 													<SortDropdown
 														handleSort={this.handleSort}
-														sort={collectionSort === '' ? (search === '' ? 'latest' : 'relevance') : collectionSort}
+														sort={paperSort === '' ? (search === '' ? 'latest' : 'relevance') : paperSort}
 														dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
 													/>
 												) : (
 													''
 												)}
 
-												{key === 'Papers' ? (
+												{key === 'People' ? (
 													<SortDropdown
 														handleSort={this.handleSort}
 														sort={paperSort === '' ? (search === '' ? 'sortbyyear' : 'relevance') : paperSort}
@@ -1938,11 +1938,11 @@ class SearchPage extends React.Component {
 													''
 												)}
 
-												{key === 'People' ? (
+												{key === 'Collections' ? (
 													<SortDropdown
 														handleSort={this.handleSort}
-														sort={personSort === '' ? (search === '' ? 'latest' : 'relevance') : personSort}
-														dropdownItems={['relevance', 'popularity', 'latest']}
+														sort={collectionSort === '' ? (search === '' ? 'latest' : 'relevance') : collectionSort}
+														dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
 													/>
 												) : (
 													''
