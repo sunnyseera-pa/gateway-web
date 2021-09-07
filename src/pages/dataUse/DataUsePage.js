@@ -24,6 +24,11 @@ const DataUsePage = () => {
 	const rejected = Data.filter(a => a.status === 'rejected');
 	const archived = Data.filter(a => a.status === 'archived');
 
+	console.log(active.length);
+	console.log(pending.length);
+	console.log(rejected.length);
+	console.log(archived.length);
+
 	const currentActive = active.slice(indexOfFirstRow, indexOfLastRow);
 	const currentPending = pending.slice(indexOfFirstRow, indexOfLastRow);
 	const currentRejected = rejected.slice(indexOfFirstRow, indexOfLastRow);
@@ -48,7 +53,14 @@ const DataUsePage = () => {
 			</Row>
 			<Tabs defaultActiveKey={'Active'} className='gray700-13 data-use-tabs'>
 				{tabs.map(tabName => (
-					<Tab eventKey={tabName} title={tabName}>
+					<Tab
+						eventKey={tabName}
+						title={
+							(tabName === 'Active' && tabName + ' (' + active.length + ')') ||
+							(tabName === 'Pending approval' && tabName + ' (' + pending.length + ')') ||
+							(tabName === 'Rejected' && tabName + ' (' + rejected.length + ')') ||
+							(tabName === 'Archived' && tabName + ' (' + archived.length + ')')
+						}>
 						{tabName === 'Active' && <Table data={currentActive} active={true} />}
 						{tabName === 'Pending approval' && <Table data={currentPending} pending={true} />}
 						{tabName === 'Rejected' && <Table data={currentRejected} />}
