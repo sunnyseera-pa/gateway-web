@@ -46,33 +46,31 @@ const DataUsePage = () => {
 					<Button className='datause-button'>+ Upload data uses</Button>
 				</Col>
 			</Row>
-			<Row>
-				<Tabs defaultActiveKey={'Active'} className='gray700-13'>
-					{tabs.map(tabName => (
-						<Tab eventKey={tabName} title={tabName}>
-							{tabName === 'Active' && <Table data={currentActive} active={true} />}
-							{tabName === 'Pending approval' && <Table data={currentPending} pending={true} />}
-							{tabName === 'Rejected' && <Table data={currentRejected} />}
-							{tabName === 'Archived' && <Table data={currentArchived} archived={true} />}
-							<Pagination
-								rowsPerPage={rowsPerPage}
-								totalRows={
-									tabName === 'Active'
-										? active.length
-										: tabName === 'Pending approval'
-										? pending.length
-										: tabName === 'Rejected'
-										? rejected.length
-										: tabName === 'Archived'
-										? archived.length
-										: row.length
-								}
-								paginate={paginate}
-							/>
-						</Tab>
-					))}
-				</Tabs>
-			</Row>
+			<Tabs defaultActiveKey={'Active'} className='gray700-13 data-use-tabs'>
+				{tabs.map(tabName => (
+					<Tab eventKey={tabName} title={tabName}>
+						{tabName === 'Active' && <Table data={currentActive} active={true} />}
+						{tabName === 'Pending approval' && <Table data={currentPending} pending={true} />}
+						{tabName === 'Rejected' && <Table data={currentRejected} />}
+						{tabName === 'Archived' && <Table data={currentArchived} archived={true} />}
+						<Pagination
+							rowsPerPage={rowsPerPage}
+							totalRows={
+								tabName === 'Active'
+									? active.length
+									: tabName === 'Pending approval'
+									? pending.length
+									: tabName === 'Rejected'
+									? rejected.length
+									: tabName === 'Archived'
+									? archived.length
+									: row.length
+							}
+							paginate={paginate}
+						/>
+					</Tab>
+				))}
+			</Tabs>
 		</Container>
 	);
 };
