@@ -47,7 +47,7 @@ const AboutApplication = props => {
 		datasetsAmendedDate= ''
 	} = props;
 
-	const datasetsAmendedMessage = `${datasetsAmendedBy} submitted an amendment on ${moment(datasetsAmendedDate).format('Do MMM YYYY')}`;
+	const datasetsAmendedMessage = `Applicant has requested this as an amendment to the approved application on ${moment(datasetsAmendedDate).format('Do MMM YYYY')}`;
 	
 	return (
 		<div className='aboutAccordion'>

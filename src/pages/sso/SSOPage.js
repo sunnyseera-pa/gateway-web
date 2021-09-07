@@ -15,7 +15,6 @@ class SSOPage extends Component {
 				name: null,
 			},
 		],
-		isLoading: false,
 		renderPage: false,
 		searchString: '',
 	};

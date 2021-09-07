@@ -1931,8 +1931,8 @@ class SearchPage extends React.Component {
 												{key === 'People' ? (
 													<SortDropdown
 														handleSort={this.handleSort}
-														sort={personSort === '' ? (search === '' ? 'latest' : 'relevance') : personSort}
-														dropdownItems={['relevance', 'popularity', 'latest']}
+														sort={paperSort === '' ? (search === '' ? 'sortbyyear' : 'relevance') : paperSort}
+														dropdownItems={['relevance', 'popularity', 'sortbyyear', 'resources']}
 													/>
 												) : (
 													''

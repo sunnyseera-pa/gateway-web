@@ -11,7 +11,6 @@ class TypeaheadDataset extends React.Component {
 		this.state = {
 			value: props.selectedDatasets,
 			options: [],
-			id: props.id,
 			readOnly: props.readOnly || false,
 			publisher: null,
 			typeaheadClass: `addFormInputTypeAhead ${!_.isEmpty(props.typeaheadClass) ? props.typeaheadClass : ''}`,
@@ -34,7 +33,8 @@ class TypeaheadDataset extends React.Component {
 		}
 
 		if (this.props.typeaheadClass !== prevProps.typeaheadClass) {
-			this.setState({ typeaheadClass: `addFormInputTypeAhead ${this.props.typeaheadClass}` });
+			let typeaheadClass = this.props.typeaheadClass;
+			this.setState({ typeaheadClass: `addFormInputTypeAhead ${typeaheadClass}` });
 		}
 	}
 
