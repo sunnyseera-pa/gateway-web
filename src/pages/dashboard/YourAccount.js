@@ -213,44 +213,38 @@ const YourAccountForm = props => {
 	const [showingSector, setShowSector] = useState(showSector);
 	const toggleSector = () => {
 		setShowSector(!showingSector);
-		{
-			formik.setFieldValue('showSector', !showingSector);
-		}
+
+		formik.setFieldValue('showSector', !showingSector);
 	};
 	const [showingOrg, setShowOrg] = useState(showOrg);
 	const toggleOrg = () => {
 		setShowOrg(!showingOrg);
-		{
-			formik.setFieldValue('showOrganisation', !showingOrg);
-		}
+
+		formik.setFieldValue('showOrganisation', !showingOrg);
 	};
 	const [showingBio, setShowBio] = useState(showBio);
 	const toggleBio = () => {
 		setShowBio(!showingBio);
-		{
-			formik.setFieldValue('showBio', !showingBio);
-		}
+
+		formik.setFieldValue('showBio', !showingBio);
 	};
 	const [showingDomain, setShowDomain] = useState(showDomain);
 	const toggleDomain = () => {
 		setShowDomain(!showingDomain);
-		{
-			formik.setFieldValue('showDomain', !showingDomain);
-		}
+
+		formik.setFieldValue('showDomain', !showingDomain);
 	};
 	const [showingLink, setShowLink] = useState(showLink);
 	const toggleLink = () => {
 		setShowLink(!showingLink);
-		{
-			formik.setFieldValue('showLink', !showingLink);
-		}
+
+		formik.setFieldValue('showLink', !showingLink);
 	};
 	const [showingOrcid, setShowOrcid] = useState(showOrcid);
 	const toggleOrcid = () => {
 		setShowOrcid(!showingOrcid);
-		{
-			formik.setFieldValue('showOrcid', !showingOrcid);
-		}
+
+		formik.setFieldValue('showOrcid', !showingOrcid);
 	};
 
 	// Pass the useFormik() hook initial form values and a submit function that will
@@ -298,9 +292,7 @@ const YourAccountForm = props => {
 	});
 
 	const handleSectorSelect = key => {
-		{
-			formik.setFieldValue('sector', key);
-		}
+		formik.setFieldValue('sector', key);
 	};
 
 	function bioCount(e) {
