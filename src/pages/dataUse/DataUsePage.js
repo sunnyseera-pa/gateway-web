@@ -47,7 +47,7 @@ const DataUsePage = ({ userState }) => {
 					<Button className='datause-button'>+ Upload data uses</Button>
 				</Col>
 			</Row>
-			<Tabs defaultActiveKey={role === 'User' ? 'Active' : 'Pending approval'} className='gray700-13 data-use-tabs'>
+			<Tabs defaultActiveKey={role === 'User' || role === 'Custodian' ? 'Active' : 'Pending approval'} className='gray700-13 data-use-tabs'>
 				{tabs.map(tabName => (
 					<Tab
 						eventKey={tabName}
@@ -57,8 +57,12 @@ const DataUsePage = ({ userState }) => {
 							(role === 'Custodian' && tabName === 'Rejected' && tabName + ' (' + rejected.length + ')') ||
 							(role === 'Custodian' && tabName === 'Archived' && tabName + ' (' + archived.length + ')')
 						}>
-						{(role === 'User' || role === 'Custodian') && tabName === 'Active' && <Table data={currentActive} active={true} />}
-						{(role === 'Admin' || role === 'Custodian') && tabName === 'Pending approval' && <Table data={currentPending} pending={true} />}
+						{(role === 'User' || role === 'Custodian') && tabName === 'Active' && (
+							<Table data={currentActive} active={true} userState={role} />
+						)}
+						{(role === 'Admin' || role === 'Custodian') && tabName === 'Pending approval' && (
+							<Table data={currentPending} pending={true} userState={role} />
+						)}
 						{role === 'Custodian' && tabName === 'Rejected' && <Table data={currentRejected} />}
 						{role === 'Custodian' && tabName === 'Archived' && <Table data={currentArchived} archived={true} />}
 						<Pagination

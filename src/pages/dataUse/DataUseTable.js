@@ -1,7 +1,7 @@
 import React from 'react';
 import { Table, Dropdown } from 'react-bootstrap';
 
-const DataUseTable = ({ data, active, pending, archived }) => (
+const DataUseTable = ({ data, active, pending, archived, userState }) => (
 	<Table className='data-use-table black-14'>
 		<tr>
 			<th>Last activity</th>
@@ -36,11 +36,13 @@ const DataUseTable = ({ data, active, pending, archived }) => (
 										<Dropdown.Item href='#/action-2'>Reject</Dropdown.Item>
 									</Dropdown.Menu>
 								)}
-								{archived && (
-									<Dropdown.Menu>
-										<Dropdown.Item href='#/action-1'>Unarchive</Dropdown.Item>
-									</Dropdown.Menu>
-								)}
+								{archived &&
+									role ===
+										'Custodian'(
+											<Dropdown.Menu>
+												<Dropdown.Item href='#/action-1'>Unarchive</Dropdown.Item>
+											</Dropdown.Menu>
+										)}
 							</Dropdown>
 						</td>
 					)}
