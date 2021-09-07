@@ -8,7 +8,7 @@ import './DataUse.scss';
 const DataUsePage = () => {
 	const [row, setRow] = useState([]);
 	const [currentPage, setCurrentPage] = useState(1);
-	const [rowsPerPage, setRowsPerPage] = useState(2);
+	const [rowsPerPage, setRowsPerPage] = useState(1);
 
 	useEffect(() => {
 		setRow(Data);
@@ -23,11 +23,6 @@ const DataUsePage = () => {
 	const pending = Data.filter(a => a.status === 'pending approval');
 	const rejected = Data.filter(a => a.status === 'rejected');
 	const archived = Data.filter(a => a.status === 'archived');
-
-	console.log(active.length);
-	console.log(pending.length);
-	console.log(rejected.length);
-	console.log(archived.length);
 
 	const currentActive = active.slice(indexOfFirstRow, indexOfLastRow);
 	const currentPending = pending.slice(indexOfFirstRow, indexOfLastRow);
