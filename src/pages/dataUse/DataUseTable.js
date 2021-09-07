@@ -37,7 +37,7 @@ const DataUseTable = ({ data, active, pending, archived, userState }) => (
 									</Dropdown.Menu>
 								)}
 								{archived &&
-									role ===
+									userState ===
 										'Custodian'(
 											<Dropdown.Menu>
 												<Dropdown.Item href='#/action-1'>Unarchive</Dropdown.Item>
