@@ -2,15 +2,13 @@ import React from 'react';
 import { Table, Dropdown } from 'react-bootstrap';
 
 const DataUseTable = ({ data, active, pending, archived }) => (
-	<Table striped bordered hover className='data-use-table'>
-		<thead>
-			<tr>
-				<th>Last activity</th>
-				<th>Project Title</th>
-				<th>Dataset(s)</th>
-				{(active || pending || archived) && <th></th>}
-			</tr>
-		</thead>
+	<Table className='data-use-table black-14'>
+		<tr>
+			<th>Last activity</th>
+			<th>Project Title</th>
+			<th>Dataset(s)</th>
+			{(active || pending || archived) && <th></th>}
+		</tr>
 		<tbody>
 			{data.map(a => (
 				<tr>

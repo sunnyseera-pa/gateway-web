@@ -30,6 +30,7 @@
 
 .data-use-table {
 	margin-top: 16px;
+	background-color: white !important;
 }
 
 .tab-content {
@@ -40,4 +41,11 @@
 .tab-content {
 	margin-left: -15px;
 	margin-right: -15px;
+}
+
+.table th,
+.table td {
+	padding: 15px !important;
+	border-top: none !important;
+	border-bottom: 2px solid #eeeeee;
 }
