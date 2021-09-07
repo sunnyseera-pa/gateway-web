@@ -118,6 +118,12 @@ class SearchBar extends React.Component {
 		document.removeEventListener('mousedown', this.handleClick);
 	}
 
+	componentDidUpdate(prevProps) {
+		if (prevProps.search !== this.props.search) {
+			this.setState(() => ({ textValue: this.props.search }));
+		}
+	}
+
 	handleScroll = () => {
 		const { prevScrollpos } = this.state;
 		const currentScrollPos = window.pageYOffset;
