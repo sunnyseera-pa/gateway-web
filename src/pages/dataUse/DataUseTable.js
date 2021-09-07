@@ -2,7 +2,7 @@ import React from 'react';
 import { Table, Dropdown } from 'react-bootstrap';
 
 const DataUseTable = ({ data, active, pending, archived }) => (
-	<Table striped bordered hover>
+	<Table striped bordered hover className='data-use-table'>
 		<thead>
 			<tr>
 				<th>Last activity</th>
