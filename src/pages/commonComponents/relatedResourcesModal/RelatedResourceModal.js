@@ -1,7 +1,6 @@
 import React, { Fragment } from 'react';
 import { Row, Col, Tab, Tabs, Container, Pagination } from 'react-bootstrap';
 import _ from 'lodash';
-
 import SimpleSearchBar from '../searchBar/SimpleSearchBar';
 import RelatedObject from '../relatedObject/RelatedObject';
 import './RelatedResourcesModal.scss';
@@ -62,7 +61,7 @@ class RelatedResourcesModal extends React.Component {
 	};
 
 	render() {
-		const { userState, datasetIndex, toolIndex, projectIndex, paperIndex, personIndex, courseIndex, selected } = this.state;
+		const { datasetIndex, toolIndex, projectIndex, paperIndex, personIndex, courseIndex, selected } = this.state;
 		let { key } = this.state;
 
 		let datasetCount = this.props.summary.datasetCount || 0;
@@ -240,6 +239,8 @@ class RelatedResourcesModal extends React.Component {
 							}
 						});
 						break;
+					default:
+						return object.objectId;
 				}
 			});
 		}
@@ -322,16 +323,14 @@ class RelatedResourcesModal extends React.Component {
 											} else {
 												let datasetPublisher;
 												let datasetLogo;
-												{
-													!_.isEmpty(dataset.datasetv2) && _.has(dataset, 'datasetv2.summary.publisher.name')
-														? (datasetPublisher = dataset.datasetv2.summary.publisher.name)
-														: (datasetPublisher = '');
-												}
-												{
-													!_.isEmpty(dataset.datasetv2) && _.has(dataset, 'datasetv2.summary.publisher.logo')
-														? (datasetLogo = dataset.datasetv2.summary.publisher.logo)
-														: (datasetLogo = '');
-												}
+
+												!_.isEmpty(dataset.datasetv2) && _.has(dataset, 'datasetv2.summary.publisher.name')
+													? (datasetPublisher = dataset.datasetv2.summary.publisher.name)
+													: (datasetPublisher = '');
+
+												!_.isEmpty(dataset.datasetv2) && _.has(dataset, 'datasetv2.summary.publisher.logo')
+													? (datasetLogo = dataset.datasetv2.summary.publisher.logo)
+													: (datasetLogo = '');
 
 												return (
 													<RelatedObject
