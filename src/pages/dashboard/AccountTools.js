@@ -508,6 +508,8 @@ export const AccountTools = props => {
 											)}
 										</div>
 									);
+								default:
+									return key;
 							}
 						})()}
 
