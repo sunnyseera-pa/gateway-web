@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Button, Tab, Tabs } from 'react-bootstrap';
 import Data from './MockData.json';
 import Table from './DataUseTable';
@@ -9,6 +9,10 @@ const DataUsePage = () => {
 	const [row, setRow] = useState([]);
 	const [currentPage, setCurrentPage] = useState(1);
 	const [rowsPerPage, setRowsPerPage] = useState(2);
+
+	useEffect(() => {
+		setRow(Data);
+	}, []);
 
 	const indexOfLastRow = currentPage * rowsPerPage;
 	const indexOfFirstRow = indexOfLastRow - rowsPerPage;
@@ -46,7 +50,7 @@ const DataUsePage = () => {
 				<Tabs defaultActiveKey={'Active'} className='gray700-13'>
 					{tabs.map(tabName => (
 						<Tab eventKey={tabName} title={tabName}>
-							{tabName === 'Active' && <Table data={currentActive} active={true} />}
+							{tabName === 'Active' && <Table data={tabName === 'Active' && currentActive} active={tabName === 'Active' && true} />}
 							{tabName === 'Pending approval' && <Table data={currentPending} />}
 							{tabName === 'Rejected' && <Table data={currentRejected} />}
 							{tabName === 'Archived' && <Table data={currentArchived} />}
