@@ -5,13 +5,11 @@ import './Dashboard.scss';
 class AccountDatasets extends React.Component {
 	// initialize our state
 	state = {
-		userState: [],
 		activeAccordionCard: 0,
 	};
 
 	constructor(props) {
 		super(props);
-		this.state.userState = props.userState;
 	}
 
 	toggleCard = (e, eventKey) => {

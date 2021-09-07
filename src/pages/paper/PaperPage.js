@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import queryString from 'query-string';
 import * as Sentry from '@sentry/react';
-import { Row, Col, Tabs, Tab, Container, Alert, Button } from 'react-bootstrap';
+import { Row, Col, Tabs, Tab, Container, Alert } from 'react-bootstrap';
 import NotFound from '../commonComponents/NotFound';
 import Uploader from '../commonComponents/Uploader';
 import Loading from '../commonComponents/Loading';
@@ -429,14 +429,6 @@ export const PaperDetail = props => {
 															</Row>
 														</Fragment>
 													)}
-													<Row className='mt-2'>
-														<Col sm={2}>
-															<span className='gray800-14'>Last update</span>
-														</Col>
-														<Col sm={10}>
-															<span className='gray800-14'>{moment(paperData.updatedon).format('DD MMMM YYYY')}</span>
-														</Col>
-													</Row>
 													{paperData.authorsNew ? (
 														<Row className='mt-2'>
 															<Col sm={2}>

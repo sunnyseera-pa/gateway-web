@@ -80,12 +80,10 @@ class SearchBar extends React.Component {
 			},
 		],
 		dropdownOpen: false,
-		clearMessages: false,
 		count: 0,
 		messageCount: 0,
 		prevScrollpos: window.pageYOffset,
 		visible: true,
-		showToast: true,
 		isHovering: false,
 		isLoading: true,
 	};
@@ -121,7 +119,7 @@ class SearchBar extends React.Component {
 	handleScroll = () => {
 		const { prevScrollpos } = this.state;
 		const currentScrollPos = window.pageYOffset;
-		var visible = this.state.visible;
+		let visible;
 
 		if (window.innerWidth < 769) {
 			visible = true;
@@ -166,7 +164,6 @@ class SearchBar extends React.Component {
 				this.setState({
 					newData: res.data.newData,
 					isLoading: false,
-					isRead: res.data.isRead,
 				});
 			}
 		});
@@ -246,7 +243,6 @@ class SearchBar extends React.Component {
 	checkRedirectToast() {
 		if (window.localStorage.getItem('redirectMsg') != null) {
 			//rerender the Search bar so Toast notification will appear
-			this.setState({ showToast: true });
 			//Display Toast Notification based on local storage variable
 			NotificationManager.warning(window.localStorage.getItem('redirectMsg'), 'Page not found', 10000);
 			window.localStorage.removeItem('redirectMsg');
@@ -299,21 +295,6 @@ class SearchBar extends React.Component {
 		if (isLoading) {
 			return <></>;
 		}
-
-		const monthNames = [
-			'January',
-			'February',
-			'March',
-			'April',
-			'May',
-			'June',
-			'July',
-			'August',
-			'September',
-			'October',
-			'November',
-			'December',
-		];
 
 		let communityLink = 'https://discourse-dev.healthresearch.tools/';
 		if (window.location.href.includes('.www.')) communityLink = 'https://discourse.healthdatagateway.org/';
@@ -710,6 +691,41 @@ class SearchBar extends React.Component {
 																							<div className='notificationDate'>{messageDateString + '\n'}</div>
 																							<div className='notificationInfoHolder'>
 																								<span class='notificationInfo'>{dat.messageDescription}</span>
+																							</div>
+																						</Col>
+																						<Col xs={2}>
+																							{dat.isRead === 'false' && !clearMessage ? (
+																								<SVGIcon
+																									name='newnotificationicon'
+																									width={20}
+																									height={20}
+																									visble='true'
+																									style={{
+																										float: 'right',
+																										fill: '#3db28c',
+																										paddingRight: '0px',
+																										marginRight: '10px',
+																										marginTop: '5px',
+																									}}
+																									fill={'#3db28c'}
+																									stroke='none'
+																								/>
+																							) : null}
+																						</Col>
+																					</Row>
+																					<Dropdown.Divider style={{ margin: '0px' }} />
+																				</Fragment>
+																			);
+																		} else if (dat.messageType === 'team added') {
+																			return (
+																				<Fragment key={`message-${index}`}>
+																					<Row className={dat.isRead === 'true' || clearMessage ? 'notificationReadBackground' : ''}>
+																						<Col xs={10}>
+																							<div className='notificationDate'>{messageDateString + '\n'}</div>
+																							<div className='notificationInfoHolder'>
+																								<a href={`/account?tab=teamManagement&team=${dat.publisherName}`} class='notificationInfo'>
+																									{dat.messageDescription}
+																								</a>
 																							</div>
 																						</Col>
 																						<Col xs={2}>

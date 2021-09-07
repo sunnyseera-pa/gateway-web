@@ -342,7 +342,7 @@ const ReplyButton = props => {
 	return (
 		<>
 			{props.userState[0].loggedIn === true && props.data.authors.includes(props.userState[0].id) && !props.review.reply ? (
-				<Button variant='light' id='' onClick={handleShow}>
+				<Button variant='light' onClick={handleShow}>
 					Reply to review
 				</Button>
 			) : (
