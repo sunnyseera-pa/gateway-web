@@ -502,6 +502,8 @@ export const AccountPapers = props => {
 											)}
 										</div>
 									);
+								default:
+									return key;
 							}
 						})()}
 

@@ -509,6 +509,8 @@ export const AccountProjects = props => {
 											)}
 										</div>
 									);
+								default:
+									return key;
 							}
 						})()}
 

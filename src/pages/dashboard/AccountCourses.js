@@ -512,6 +512,8 @@ export const AccountCourses = props => {
 											)}
 										</div>
 									);
+								default:
+									return key;
 							}
 						})()}
 
