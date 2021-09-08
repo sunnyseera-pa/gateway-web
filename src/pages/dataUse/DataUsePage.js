@@ -85,8 +85,6 @@ const DataUsePage = ({ userState }) => {
 						{custodianAcc && tabName === 'Archived' && (
 							<Table data={currentArchived} archived={true} showUnarchiveModal={ShowUnArchiveModal} />
 						)}
-						{showModal && <Modal archive={true} show={ShowArchiveModal} hide={HideArchiveModal} />}
-						{showUnarchiveModal && <Modal archive={false} show={ShowUnArchiveModal} hide={HideUnArchiveModal} />}
 
 						<Pagination
 							rowsPerPage={rowsPerPage}
@@ -106,6 +104,8 @@ const DataUsePage = ({ userState }) => {
 					</Tab>
 				))}
 			</Tabs>
+			{showModal && <Modal archive={true} show={ShowArchiveModal} hide={HideArchiveModal} />}
+			{showUnarchiveModal && <Modal archive={false} show={ShowUnArchiveModal} hide={HideUnArchiveModal} />}
 		</Container>
 	);
 };

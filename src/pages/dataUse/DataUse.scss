@@ -49,3 +49,12 @@
 	border-top: none !important;
 	border-bottom: 2px solid #eeeeee;
 }
+
+.data-use-no {
+	border-color: $teal !important;
+	color: $indigo !important;
+}
+
+.data-use-no:hover {
+	background-color: $teal !important;
+}
