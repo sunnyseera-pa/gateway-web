@@ -31,7 +31,10 @@ const DataUsePage = ({ userState }) => {
 
 	const paginate = pageNumber => setCurrentPage(pageNumber);
 	const role = userState.map(a => a.role).toString();
+	const custodianAcc = userState.map(a => a.teams.length > 0);
+	console.log(custodianAcc);
 
+	console.log(userState);
 	return (
 		<Container>
 			<Row className='datause-card'>
@@ -47,24 +50,22 @@ const DataUsePage = ({ userState }) => {
 					<Button className='datause-button'>+ Upload data uses</Button>
 				</Col>
 			</Row>
-			<Tabs defaultActiveKey={role === 'User' || role === 'Custodian' ? 'Active' : 'Pending approval'} className='gray700-13 data-use-tabs'>
+			<Tabs defaultActiveKey={role === 'User' || custodianAcc ? 'Active' : 'Pending approval'} className='gray700-13 data-use-tabs'>
 				{tabs.map(tabName => (
 					<Tab
 						eventKey={tabName}
 						title={
-							((role === 'User' || role === 'Custodian') && tabName === 'Active' && tabName + ' (' + active.length + ')') ||
-							((role === 'Admin' || role === 'Custodian') && tabName === 'Pending approval' && tabName + ' (' + pending.length + ')') ||
-							(role === 'Custodian' && tabName === 'Rejected' && tabName + ' (' + rejected.length + ')') ||
-							(role === 'Custodian' && tabName === 'Archived' && tabName + ' (' + archived.length + ')')
+							((role === 'User' || custodianAcc) && tabName === 'Active' && tabName + ' (' + active.length + ')') ||
+							((role === 'Admin' || custodianAcc) && tabName === 'Pending approval' && tabName + ' (' + pending.length + ')') ||
+							(custodianAcc && tabName === 'Rejected' && tabName + ' (' + rejected.length + ')') ||
+							(custodianAcc && tabName === 'Archived' && tabName + ' (' + archived.length + ')')
 						}>
-						{(role === 'User' || role === 'Custodian') && tabName === 'Active' && (
-							<Table data={currentActive} active={true} userState={role} />
+						{(role === 'User' || custodianAcc) && tabName === 'Active' && <Table data={currentActive} active={true} userState={role} />}
+						{(role === 'Admin' || custodianAcc) && tabName === 'Pending approval' && (
+							<Table data={currentPending} pending={true} custodian={custodianAcc} />
 						)}
-						{(role === 'Admin' || role === 'Custodian') && tabName === 'Pending approval' && (
-							<Table data={currentPending} pending={true} userState={role} />
-						)}
-						{role === 'Custodian' && tabName === 'Rejected' && <Table data={currentRejected} />}
-						{role === 'Custodian' && tabName === 'Archived' && <Table data={currentArchived} archived={true} />}
+						{custodianAcc && tabName === 'Rejected' && <Table data={currentRejected} />}
+						{custodianAcc && tabName === 'Archived' && <Table data={currentArchived} archived={true} />}
 						<Pagination
 							rowsPerPage={rowsPerPage}
 							totalRows={
