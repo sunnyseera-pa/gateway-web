@@ -1,0 +1,65 @@
+@import '../../css/variables';
+
+.datause-card {
+	margin: 32px 130px 0;
+	padding: 24px;
+	box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.09);
+	background-color: #fff;
+
+	.datause-para {
+		line-height: 1px;
+	}
+	.datause-button-grid {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+	.datause-button {
+		background-color: $purple !important;
+	}
+}
+
+.data-use-tabs {
+	border-top: 1px solid $gray-200;
+	justify-content: center !important;
+	background-color: white;
+	margin-left: -15px;
+	margin-right: -15px;
+	box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.09);
+}
+
+.data-use-table {
+	margin-top: 16px;
+	background-color: white !important;
+}
+
+.tab-content {
+	border-top: none !important;
+	border-right: none !important;
+}
+
+.tab-content {
+	margin-left: -15px;
+	margin-right: -15px;
+}
+
+.table th,
+.table td {
+	padding: 15px !important;
+	border-top: none !important;
+	border-bottom: 2px solid #eeeeee;
+}
+
+.data-use-no {
+	border-color: $teal !important;
+	color: $indigo !important;
+}
+
+.data-use-no:hover {
+	background-color: $teal !important;
+}
+
+.data-use-action:focus,
+.data-use-action:hover {
+	background-color: $gray-400 !important;
+}
