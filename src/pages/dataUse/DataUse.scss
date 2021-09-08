@@ -58,3 +58,8 @@
 .data-use-no:hover {
 	background-color: $teal !important;
 }
+
+.data-use-action:focus,
+.data-use-action:hover {
+	background-color: $gray-400 !important;
+}

@@ -30,7 +30,7 @@ const DataUseTable = ({ data, active, pending, archived, showModal, showUnarchiv
 						{(active || pending || archived) && (
 							<td>
 								<Dropdown>
-									<Dropdown.Toggle variant='outline-secondary' id='dropdown-basic'>
+									<Dropdown.Toggle variant='outline-secondary' className='data-use-action'>
 										Actions
 									</Dropdown.Toggle>
 									{active && (
