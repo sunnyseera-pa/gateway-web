@@ -24,7 +24,7 @@ const AccountCohorts = props => {
 	const [isResultsLoading, setIsResultsLoading] = useState(true);
 	const [cohortSaved, setCohortSaved] = useState(false);
 	const [bcpBaseUrl, setBcpBaseUrl] = useState('');
-	const [userState, setUserState] = useState(props.userState[0]);
+	const [userState] = useState(props.userState[0]);
 	const maxResult = 40;
 
 	useEffect(() => {

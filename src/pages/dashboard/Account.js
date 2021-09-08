@@ -173,6 +173,7 @@ class Account extends Component {
 		if (window.location.search) {
 			let values = queryString.parse(window.location.search);
 			let team = 'user';
+			let cohortSaved = this.state.cohortSaved;
 			if (values.tab !== this.state.tabId || typeof values.tab !== 'undefined' || typeof values.tab !== null) {
 				if (values.tab !== 'youraccount' && this.state.accountUpdated) {
 					this.setState({ accountUpdated: false });
@@ -195,7 +196,7 @@ class Account extends Component {
 					isReviewRejected: values.reviewRejected,
 					team,
 					activeAccordion: values.tab === 'dataaccessrequests' || values.tab === 'workflows' ? '0' : -1,
-					cohortSaved: this.state.cohortSaved,
+					cohortSaved: cohortSaved,
 				});
 
 				if (team !== 'user' && team !== 'admin') {
