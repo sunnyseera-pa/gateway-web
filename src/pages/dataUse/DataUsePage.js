@@ -3,16 +3,26 @@ import { Container, Row, Col, Button, Tab, Tabs } from 'react-bootstrap';
 import Data from './MockData.json';
 import Table from './DataUseTable';
 import Pagination from './DataUsePagination';
+import Modal from './ArchiveModal';
 import './DataUse.scss';
 
 const DataUsePage = ({ userState }) => {
 	const [row, setRow] = useState([]);
 	const [currentPage, setCurrentPage] = useState(1);
 	const [rowsPerPage, setRowsPerPage] = useState(2);
+	const [showModal, setShowModal] = useState(false);
 
 	useEffect(() => {
 		setRow(Data);
 	}, []);
+
+	const ShowArchiveModal = () => {
+		setShowModal(true);
+	};
+
+	const HideArchiveModal = () => {
+		setShowModal(false);
+	};
 
 	const indexOfLastRow = currentPage * rowsPerPage;
 	const indexOfFirstRow = indexOfLastRow - rowsPerPage;
@@ -58,10 +68,13 @@ const DataUsePage = ({ userState }) => {
 							(custodianAcc && tabName === 'Rejected' && tabName + ' (' + rejected.length + ')') ||
 							(custodianAcc && tabName === 'Archived' && tabName + ' (' + archived.length + ')')
 						}>
-						{(role === 'User' || custodianAcc) && tabName === 'Active' && <Table data={currentActive} active={true} userState={role} />}
+						{(role === 'User' || custodianAcc) && tabName === 'Active' && (
+							<Table data={currentActive} active={true} userState={role} showModal={ShowArchiveModal} />
+						)}
 						{(role === 'Admin' || custodianAcc) && tabName === 'Pending approval' && <Table data={currentPending} pending={true} />}
 						{custodianAcc && tabName === 'Rejected' && <Table data={currentRejected} />}
 						{custodianAcc && tabName === 'Archived' && <Table data={currentArchived} archived={true} />}
+						{showModal && <Modal show={ShowArchiveModal} hide={HideArchiveModal} />}
 						<Pagination
 							rowsPerPage={rowsPerPage}
 							totalRows={
