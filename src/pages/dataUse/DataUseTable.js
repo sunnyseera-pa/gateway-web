@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
 import { Table, Dropdown } from 'react-bootstrap';
 
-const DataUseTable = ({ data, active, pending, archived, showModal }) => {
+const DataUseTable = ({ data, active, pending, archived, showModal, showUnarchiveModal }) => {
 	const Modal = () => {
 		showModal(true);
+	};
+
+	const UnArchiveModal = () => {
+		showUnarchiveModal(true);
 	};
 
 	return (
@@ -43,7 +47,7 @@ const DataUseTable = ({ data, active, pending, archived, showModal }) => {
 									)}
 									{archived && (
 										<Dropdown.Menu>
-											<Dropdown.Item>Unarchive</Dropdown.Item>
+											<Dropdown.Item onClick={UnArchiveModal}>Unarchive</Dropdown.Item>
 										</Dropdown.Menu>
 									)}
 								</Dropdown>

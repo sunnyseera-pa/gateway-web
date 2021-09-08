@@ -11,6 +11,7 @@ const DataUsePage = ({ userState }) => {
 	const [currentPage, setCurrentPage] = useState(1);
 	const [rowsPerPage, setRowsPerPage] = useState(2);
 	const [showModal, setShowModal] = useState(false);
+	const [showUnarchiveModal, setShowUnarchiveModal] = useState(false);
 
 	useEffect(() => {
 		setRow(Data);
@@ -22,6 +23,14 @@ const DataUsePage = ({ userState }) => {
 
 	const HideArchiveModal = () => {
 		setShowModal(false);
+	};
+
+	const ShowUnArchiveModal = () => {
+		setShowUnarchiveModal(true);
+	};
+
+	const HideUnArchiveModal = () => {
+		setShowUnarchiveModal(false);
 	};
 
 	const indexOfLastRow = currentPage * rowsPerPage;
@@ -73,8 +82,12 @@ const DataUsePage = ({ userState }) => {
 						)}
 						{(role === 'Admin' || custodianAcc) && tabName === 'Pending approval' && <Table data={currentPending} pending={true} />}
 						{custodianAcc && tabName === 'Rejected' && <Table data={currentRejected} />}
-						{custodianAcc && tabName === 'Archived' && <Table data={currentArchived} archived={true} />}
-						{showModal && <Modal show={ShowArchiveModal} hide={HideArchiveModal} />}
+						{custodianAcc && tabName === 'Archived' && (
+							<Table data={currentArchived} archived={true} showUnarchiveModal={ShowUnArchiveModal} />
+						)}
+						{showModal && <Modal archive={true} show={ShowArchiveModal} hide={HideArchiveModal} />}
+						{showUnarchiveModal && <Modal archive={false} show={ShowUnArchiveModal} hide={HideUnArchiveModal} />}
+
 						<Pagination
 							rowsPerPage={rowsPerPage}
 							totalRows={
