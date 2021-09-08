@@ -715,7 +715,7 @@ class Account extends Component {
 									<>{tabId === 'datasets' ? <AccountDatasets userState={userState} team={team} alert={alert} /> : ''}</>
 								)}
 
-								{tabId === 'datause' ? <DataUsePage /> : ''}
+								{tabId === 'datause' ? <DataUsePage userState={userState} team={team} /> : ''}
 
 								{allowWorkflow && this.userHasRole(team, 'manager') && (
 									<>{tabId === 'workflows' ? <WorkflowDashboard userState={userState} team={team} /> : ''}</>
