@@ -61,9 +61,7 @@ const DataUsePage = ({ userState }) => {
 							(custodianAcc && tabName === 'Archived' && tabName + ' (' + archived.length + ')')
 						}>
 						{(role === 'User' || custodianAcc) && tabName === 'Active' && <Table data={currentActive} active={true} userState={role} />}
-						{(role === 'Admin' || custodianAcc) && tabName === 'Pending approval' && (
-							<Table data={currentPending} pending={true} custodian={custodianAcc} />
-						)}
+						{(role === 'Admin' || custodianAcc) && tabName === 'Pending approval' && <Table data={currentPending} pending={true} />}
 						{custodianAcc && tabName === 'Rejected' && <Table data={currentRejected} />}
 						{custodianAcc && tabName === 'Archived' && <Table data={currentArchived} archived={true} />}
 						<Pagination

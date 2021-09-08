@@ -1,7 +1,7 @@
 import React from 'react';
 import { Table, Dropdown } from 'react-bootstrap';
 
-const DataUseTable = ({ data, active, pending, archived, custodian }) => (
+const DataUseTable = ({ data, active, pending, archived }) => (
 	<Table className='data-use-table black-14'>
 		<tr>
 			<th>Last activity</th>
