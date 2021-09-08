@@ -595,6 +595,13 @@ class Account extends Component {
 											<span style={{ 'margin-left': '11px' }}>Datasets</span>
 										</Nav.Link>
 									</div>
+
+									<div className={`${tabId === 'datause' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('datause')}>
+										<Nav.Link eventKey={'datause'} className='verticalNavBar gray700-13'>
+											<SVGIcon name='datauseicon' fill={'#b3b8bd'} className='accountSvgs' />
+											<span className='navLinkItem'>Data Use</span>
+										</Nav.Link>
+									</div>
 								</Fragment>
 							) : (
 								''
@@ -652,6 +659,12 @@ class Account extends Component {
 											</Nav.Link>
 										</div>
 									)}
+									<div className={`${tabId === 'datause' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('datause')}>
+										<Nav.Link eventKey={'datause'} className='verticalNavBar gray700-13'>
+											<SVGIcon name='datauseicon' fill={'#b3b8bd'} className='accountSvgs' />
+											<span className='navLinkItem'>Data Use</span>
+										</Nav.Link>
+									</div>
 									<div className={`${tabId === 'help' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('help')}>
 										<Nav.Link className='verticalNavBar gray700-13'>
 											<SVGIcon name='info' fill={'#b3b8bd'} className='accountSvgs' />
