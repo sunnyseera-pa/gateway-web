@@ -9,7 +9,7 @@ import './DataUse.scss';
 const DataUsePage = ({ userState }) => {
 	const [row, setRow] = useState([]);
 	const [currentPage, setCurrentPage] = useState(1);
-	const [rowsPerPage, setRowsPerPage] = useState(2);
+	const [rowsPerPage] = useState(2);
 	const [showModal, setShowModal] = useState(false);
 	const [showUnarchiveModal, setShowUnarchiveModal] = useState(false);
 
