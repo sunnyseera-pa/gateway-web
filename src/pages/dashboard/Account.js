@@ -472,7 +472,6 @@ class Account extends Component {
 			accountUpdated,
 		} = this.state;
 
-
 		return (
 			<Fragment>
 				<SearchBar
@@ -605,9 +604,13 @@ class Account extends Component {
 										<Nav.Link eventKey={'datause'} className='verticalNavBar gray700-13'>
 											<SVGIcon name='datauseicon' fill={'#b3b8bd'} className='accountSvgs' />
 											<span className='navLinkItem'>Data Use</span>
+										</Nav.Link>
+									</div>
 									<div className={`${tabId === 'teams' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('teams')}>
 										<Nav.Link className='verticalNavBar gray700-13'>
-											<span className='grey-circle-border'><SVGIcon name='plusChunky' fill={'#b3b8bd'} viewBox='-1 -1 26 26' className='accountSvgs' /></span>
+											<span className='grey-circle-border'>
+												<SVGIcon name='plusChunky' fill={'#b3b8bd'} viewBox='-1 -1 26 26' className='accountSvgs' />
+											</span>
 											<span style={{ 'margin-left': '5px' }}>Teams</span>
 										</Nav.Link>
 									</div>
