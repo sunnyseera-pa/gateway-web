@@ -10,14 +10,14 @@ const DataUseTable = ({ data, active, pending, archived }) => (
 			{(active || pending || archived) && <th></th>}
 		</tr>
 		<tbody>
-			{data.map(a => (
+			{data.map(dataUse => (
 				<tr>
-					<td>{a.lastActivity}</td>
+					<td>{dataUse.lastActivity}</td>
 					<td>
-						<p>{a.projectTitle}</p>
-						<p>{a.institution}</p>
+						<p>{dataUse.projectTitle}</p>
+						<p>{dataUse.institution}</p>
 					</td>
-					<td>{a.datasets}</td>
+					<td>{dataUse.datasets}</td>
 					{(active || pending || archived) && (
 						<td>
 							<Dropdown>

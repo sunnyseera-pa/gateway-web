@@ -19,10 +19,10 @@ const DataUsePage = ({ userState }) => {
 
 	const tabs = ['Active', 'Pending approval', 'Rejected', 'Archived'];
 
-	const active = Data.filter(a => a.status === 'active');
-	const pending = Data.filter(a => a.status === 'pending approval');
-	const rejected = Data.filter(a => a.status === 'rejected');
-	const archived = Data.filter(a => a.status === 'archived');
+	const active = Data.filter(active => active.status === 'active');
+	const pending = Data.filter(pending => pending.status === 'pending approval');
+	const rejected = Data.filter(rejected => rejected.status === 'rejected');
+	const archived = Data.filter(archived => archived.status === 'archived');
 
 	const currentActive = active.slice(indexOfFirstRow, indexOfLastRow);
 	const currentPending = pending.slice(indexOfFirstRow, indexOfLastRow);
@@ -30,11 +30,9 @@ const DataUsePage = ({ userState }) => {
 	const currentArchived = archived.slice(indexOfFirstRow, indexOfLastRow);
 
 	const paginate = pageNumber => setCurrentPage(pageNumber);
-	const role = userState.map(a => a.role).toString();
-	const custodianAcc = userState.map(a => a.teams.length > 0);
-	console.log(custodianAcc);
+	const role = userState.map(roleType => roleType.role).toString();
+	const custodianAcc = userState.map(groups => groups.teams.length > 0);
 
-	console.log(userState);
 	return (
 		<Container>
 			<Row className='datause-card'>
