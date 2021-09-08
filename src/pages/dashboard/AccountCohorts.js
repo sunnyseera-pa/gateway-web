@@ -197,7 +197,7 @@ const AccountCohorts = props => {
 					</Col>
 					<Col sm={12} lg={5} className='pt-2'>
 						{key === 'draft' ? (
-							cohort.name
+							<span className='black-14'>{cohort.name}</span>
 						) : (
 							<a href={'/cohort/' + cohort.id} className='black-14'>
 								{cohort.name}
