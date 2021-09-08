@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Table, Dropdown } from 'react-bootstrap';
 
 const DataUseTable = ({ data, active, pending, archived, showModal, showUnarchiveModal }) => {
