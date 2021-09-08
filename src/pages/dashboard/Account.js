@@ -30,6 +30,7 @@ import { ReactComponent as ChevronRightSvg } from '../../images/chevron-bottom.s
 import { ReactComponent as CheckSVG } from '../../images/check.svg';
 import './Dashboard.scss';
 import DataUsePage from '../dataUse/DataUsePage';
+import AccountTeams from './AccountTeams';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -443,6 +444,10 @@ class Account extends Component {
 		this.setState({ teamManagementTab: teamManagementTab });
 	};
 
+	onTeamsTabChange = teamsTab => {
+		this.setState({ teamsTab: teamsTab });
+	};
+
 	onClearInnerTab = () => {
 		this.setState({ innertab: '' });
 	};
@@ -466,6 +471,7 @@ class Account extends Component {
 			teamManagementTab,
 			accountUpdated,
 		} = this.state;
+
 
 		return (
 			<Fragment>
@@ -595,11 +601,14 @@ class Account extends Component {
 											<span style={{ 'margin-left': '11px' }}>Datasets</span>
 										</Nav.Link>
 									</div>
-
 									<div className={`${tabId === 'datause' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('datause')}>
 										<Nav.Link eventKey={'datause'} className='verticalNavBar gray700-13'>
 											<SVGIcon name='datauseicon' fill={'#b3b8bd'} className='accountSvgs' />
 											<span className='navLinkItem'>Data Use</span>
+									<div className={`${tabId === 'teams' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('teams')}>
+										<Nav.Link className='verticalNavBar gray700-13'>
+											<span className='grey-circle-border'><SVGIcon name='plusChunky' fill={'#b3b8bd'} viewBox='-1 -1 26 26' className='accountSvgs' /></span>
+											<span style={{ 'margin-left': '5px' }}>Teams</span>
 										</Nav.Link>
 									</div>
 								</Fragment>
@@ -713,6 +722,15 @@ class Account extends Component {
 
 								{(this.userHasRole(team, ['manager', 'metadata_editor']) || team === 'admin') && (
 									<>{tabId === 'datasets' ? <AccountDatasets userState={userState} team={team} alert={alert} /> : ''}</>
+								)}
+								{team === 'admin' && (
+									<>
+										{tabId === 'teams' ? (
+											<AccountTeams userState={userState} onTeamsTabChange={this.onTeamsTabChange} team={team} alert={alert} />
+										) : (
+											''
+										)}
+									</>
 								)}
 
 								{tabId === 'datause' ? <DataUsePage userState={userState} team={team} /> : ''}
