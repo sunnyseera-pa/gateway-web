@@ -26,6 +26,8 @@ export const EntityActionButton = props => {
 			title = 'Unarchive';
 			pastTense = 'unarchived';
 			break;
+		case 'editCriteria':
+			title = 'New version: edit inclusion/exclusion criteria';
 		default:
 			break;
 	}
@@ -39,19 +41,27 @@ export const EntityActionButton = props => {
 			<Modal show={show} onHide={handleClose}>
 				<Modal.Header closeButton>
 					<Modal.Title>
-						{title} this {!_.isEmpty(props.entity) ? props.entity : 'entity'}?
+						{props.actionType === 'editCriteria' ? `${title}` : `${title} this ${!_.isEmpty(props.entity) ? props.entity : 'entity'}?`}
 					</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
-					This {!_.isEmpty(props.entity) ? props.entity : 'entity'} will be {pastTense} from the directory.
+					{props.actionType === 'editCriteria'
+						? `You must return to the Cohort Discovery tool to edit the inlusion/exclusion criteria. You’ll need to run a new search and save. When saving, choose save as a new version and select the appropriate cohort from the list.`
+						: `This ${!_.isEmpty(props.entity) ? props.entity : 'entity'} will be ${pastTense} from the directory.`}
 				</Modal.Body>
 				<Modal.Footer>
 					<Button variant='secondary' onClick={handleClose}>
 						No, nevermind
 					</Button>
-					<Button variant='primary' onClick={performAction}>
-						Yes, {title.toLowerCase()}
-					</Button>
+					{props.actionType === 'editCriteria' ? (
+						<a href={props.bcpLink}>
+							<Button variant='primary'>Go to Cohort Discovery</Button>
+						</a>
+					) : (
+						<Button variant='primary' onClick={performAction}>
+							Yes, {title.toLowerCase()}
+						</Button>
+					)}
 				</Modal.Footer>
 			</Modal>
 		</Fragment>
