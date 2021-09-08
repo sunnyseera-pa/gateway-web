@@ -560,7 +560,7 @@ class Account extends Component {
 
 									<div className={`${tabId === 'datause' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('datause')}>
 										<Nav.Link eventKey={'datause'} className='verticalNavBar gray700-13'>
-											<SVGIcon name='newprojecticon' fill={'#b3b8bd'} className='accountSvgs' />
+											<SVGIcon name='datauseicon' fill={'#b3b8bd'} className='accountSvgs' />
 											<span className='navLinkItem'>Data Use</span>
 										</Nav.Link>
 									</div>
