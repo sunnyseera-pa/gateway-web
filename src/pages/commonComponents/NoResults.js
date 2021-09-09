@@ -100,7 +100,7 @@ class NoResults extends React.Component {
 										<span>
 											{' '}
 											Try searching for ‘
-											<a href={'/search?search=' + 'COVID-19'} className='purple-14'>
+											<a href={'/search?search=COVID-19'} className='purple-14'>
 												COVID-19
 											</a>
 											’ if you want to see examples of {type}{' '}
