@@ -360,6 +360,7 @@ let configActionModal = (type = '') => {
 						},
 					},
 				};
+				break;
 			case 'DELETEDRAFT':
 				config = {
 					title: 'Delete draft',
@@ -379,6 +380,7 @@ let configActionModal = (type = '') => {
 						},
 					},
 				};
+				break;
 			case 'DUPLICATE':
 				config = {
 					title: 'Duplicate this dataset metadata?',
@@ -398,6 +400,7 @@ let configActionModal = (type = '') => {
 						},
 					},
 				};
+				break;
 		}
 	}
 
