@@ -53,7 +53,7 @@ import DatasetOnboardingHelperUtil from '../../utils/DatasetOnboardingHelper.uti
 
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
 	<a
-		href=''
+		href='!#'
 		ref={ref}
 		onClick={e => {
 			e.preventDefault();
