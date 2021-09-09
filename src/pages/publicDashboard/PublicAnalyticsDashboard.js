@@ -663,6 +663,8 @@ class PublicAnalyticsDashboard extends React.Component {
 														</Row>
 													</div>
 												);
+											default:
+												return key;
 										}
 								  })()}
 						</Col>
