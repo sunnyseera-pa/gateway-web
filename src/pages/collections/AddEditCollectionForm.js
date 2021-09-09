@@ -111,9 +111,8 @@ const AddEditCollectionForm = props => {
 	}
 
 	const updatePublicFlag = () => {
-		{
-			formik.setFieldValue('publicflag', !props.publicFlag);
-		}
+		formik.setFieldValue('publicflag', !props.publicFlag);
+
 		props.updatePublicFlag(!props.publicFlag);
 	};
 
