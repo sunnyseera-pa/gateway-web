@@ -151,7 +151,10 @@ const AdvancedSearchModal = ({ open, closed, userProps }) => {
 										Search using cohort discovery
 									</button>
 								) : (
-									<a className='textUnderline gray800-14 cursorPointer advanced-search-learn-more' onClick={() => showLoginModal()}>
+									<a
+										href='!#'
+										className='textUnderline gray800-14 cursorPointer advanced-search-learn-more'
+										onClick={() => showLoginModal()}>
 										You must be signed in to use cohort discovery
 									</a>
 								)}
