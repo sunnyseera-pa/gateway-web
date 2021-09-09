@@ -6,7 +6,7 @@ import { Row } from 'react-bootstrap';
 const CustodianActionButtons = ({ allowedNavigation = false, onNextClick, onActionClick, roles }) => {
 	const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
 		<a
-			href=''
+			href='!#'
 			ref={ref}
 			onClick={e => {
 				e.preventDefault();
