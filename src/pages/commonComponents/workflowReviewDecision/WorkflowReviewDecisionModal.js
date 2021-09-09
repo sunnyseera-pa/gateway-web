@@ -81,7 +81,7 @@ const WorkflowReviewDecisionModal = ({
 
 	useEffect(() => {
 		getActivePhase();
-	}, [getActivePhase]);
+	}, []);
 
 	return (
 		<Fragment>
