@@ -239,6 +239,8 @@ let configActionModal = (type = '') => {
 						},
 					},
 				};
+			default:
+				return type;
 		}
 	}
 
@@ -331,7 +333,7 @@ let totalQuestionsAnswered = (component, panelId = '', questionAnswers = {}, jso
 		}
 		let { questionPanels = [], questionSets = [] } = jsonSchema;
 		// 2. omits out blank null, undefined, and [] values from this.state.answers
-		questionAnswers = _.pickBy({ ...questionAnswers }, v => v !== null && v !== undefined && v.length != 0);
+		questionAnswers = _.pickBy({ ...questionAnswers }, v => v !== null && v !== undefined && v.length !== 0);
 		// 3. find the relevant questionSetIds within the panel
 		const qPanel = questionPanels.find(qp => qp.panelId === panelId);
 		if (!_.isNil(qPanel)) {
