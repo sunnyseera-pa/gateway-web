@@ -19,7 +19,7 @@ const ApplicantActionButtons = ({
 	return (
 		<Fragment>
 			{showDeleteDraft ? (
-				<a onClick={e => onShowDeleteDraftModal()}>
+				<a href='!#' onClick={e => onShowDeleteDraftModal()}>
 					{' '}
 					<span class='rejected-red-semibold-14 deleteDraftDataset cursorPointer'>Delete draft</span>{' '}
 				</a>
