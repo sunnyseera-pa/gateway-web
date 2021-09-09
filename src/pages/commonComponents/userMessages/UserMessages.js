@@ -11,18 +11,7 @@ import MessageFooter from './components/MessageFooter';
 import { EnquiryMessage } from './components/EnquiryMessage';
 import './UserMessages.scss';
 
-const UserMessages = ({
-	userState,
-	topicContext,
-	closed,
-	toggleModal,
-	drawerIsOpen = false,
-	is5Safes,
-	msgDescription,
-	selectedTopicId,
-}) => {
-	const defaultMessage =
-		'Use messages to clarify questions with the data custodian before starting your application to request access to the data. Provide a brief description of your project and what datasets you are interested in.';
+const UserMessages = ({ userState, topicContext, closed, toggleModal, drawerIsOpen = false, is5Safes, msgDescription, selectedTopicId }) => {
 
 	let relatedObjectIds, title, subTitle, datasets, tags, allowNewMessage, requiresModal, dataRequestModalContent;
 

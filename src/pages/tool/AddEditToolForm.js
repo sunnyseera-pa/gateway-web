@@ -15,6 +15,9 @@ import ActionBar from '../commonComponents/actionbar/ActionBar';
 import SVGIcon from '../../images/SVGIcon';
 import './Tool.scss';
 
+const baseURL = require('../commonComponents/BaseURL').getURL();
+let windowUrl = window.location.origin;
+
 const initialValues = {
 	programmingLanguage: [{ programmingLanguage: '', version: '' }],
 };
@@ -33,8 +36,6 @@ const validateSchema = Yup.object().shape({
 		})
 	),
 });
-
-var baseURL = require('../commonComponents/BaseURL').getURL();
 
 const AddEditToolForm = props => {
 	const [uploadersList, setUploadersList] = useState([]);
@@ -96,11 +97,11 @@ const AddEditToolForm = props => {
 			values.authors = uploadersList.map(uploader => uploader.id);
 			if (props.isEdit) {
 				axios.put(baseURL + '/api/v1/tools/' + props.data.id, values).then(res => {
-					window.location.href = window.location.search + '/tool/' + props.data.id + '/?toolEdited=true';
+					window.location.href = windowUrl + '/tool/' + props.data.id + '/?toolEdited=true';
 				});
 			} else {
 				axios.post(baseURL + '/api/v1/tools', values).then(res => {
-					window.location.href = window.location.search + '/tool/' + res.data.response.id + '/?toolAdded=true';
+					window.location.href = windowUrl + '/tool/' + res.data.response.id + '/?toolAdded=true';
 				});
 			}
 		},
@@ -176,7 +177,6 @@ const AddEditToolForm = props => {
 	}
 
 	function descriptionCount(e) {
-		var input = e.target.value;
 		document.getElementById('currentCount').innerHTML = e.target.value.length;
 	}
 

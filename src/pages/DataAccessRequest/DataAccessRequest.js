@@ -843,8 +843,9 @@ class DataAccessRequest extends Component {
 			}
 
 			// reset guidance - due to on change of panel
+			let jsonSchema = this.state.jsonSchema;
 			this.setState({
-				jsonSchema: { ...this.state.jsonSchema, pages: newFormState },
+				jsonSchema: { ...jsonSchema, pages: newFormState },
 				activePanelId: panelId,
 				isWideForm: panelId === 'about' || panelId === 'files',
 				totalQuestions: totalQuestions,
@@ -2045,6 +2046,7 @@ class DataAccessRequest extends Component {
 									isShared={this.state.isShared}
 									updateCount={this.updateCount}
 									publisher={datasets[0].datasetv2.summary.publisher.name}
+									applicationStatus={applicationStatus}
 								/>
 							</div>
 						</div>

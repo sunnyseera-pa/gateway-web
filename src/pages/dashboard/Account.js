@@ -31,6 +31,8 @@ import { ReactComponent as ChevronRightSvg } from '../../images/chevron-bottom.s
 import { ReactComponent as CheckSVG } from '../../images/check.svg';
 import './Dashboard.scss';
 import ActivityLog from '../DataAccessRequest/components/ActivityLog/ActivityLog';
+import AccountTeams from './AccountTeams';
+
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -143,7 +145,7 @@ class Account extends Component {
 		if (window.location.search) {
 			let tab = '';
 			let values = queryString.parse(window.location.search);
-			if (values.tab !== this.state.tabId || typeof values.tab !== 'undefined' || typeof values.tab !== null) {
+			if (values.tab !== this.state.tabId || !_.isUndefined(values.tab) || !_.isNull(values.tab)) {
 				tab = this.checkRedirect(values);
 				this.setState({
 					tabId: tab,
@@ -172,7 +174,7 @@ class Account extends Component {
 		if (window.location.search) {
 			let values = queryString.parse(window.location.search);
 			let team = 'user';
-			if (values.tab !== this.state.tabId || typeof values.tab !== 'undefined' || typeof values.tab !== null) {
+			if (values.tab !== this.state.tabId || !_.isUndefined(values.tab) || !_.isNull(values.tab)) {
 				if (values.tab !== 'youraccount' && this.state.accountUpdated) {
 					this.setState({ accountUpdated: false });
 				}
@@ -449,6 +451,10 @@ class Account extends Component {
 		this.setState({ teamManagementTab: teamManagementTab });
 	};
 
+	onTeamsTabChange = teamsTab => {
+		this.setState({ teamsTab: teamsTab });
+	};
+
 	onClearInnerTab = () => {
 		this.setState({ innertab: '' });
 	};
@@ -509,6 +515,7 @@ class Account extends Component {
 			accountUpdated,
 			dataaccessrequest,
 		} = this.state;
+
 
 		return (
 			<Fragment>
@@ -629,6 +636,12 @@ class Account extends Component {
 										<Nav.Link className='verticalNavBar gray700-13'>
 											<SVGIcon name='dataseticon' fill={'#b3b8bd'} className='accountSvgs' />
 											<span style={{ 'margin-left': '11px' }}>Datasets</span>
+										</Nav.Link>
+									</div>
+									<div className={`${tabId === 'teams' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('teams')}>
+										<Nav.Link className='verticalNavBar gray700-13'>
+											<span className='grey-circle-border'><SVGIcon name='plusChunky' fill={'#b3b8bd'} viewBox='-1 -1 26 26' className='accountSvgs' /></span>
+											<span style={{ 'margin-left': '5px' }}>Teams</span>
 										</Nav.Link>
 									</div>
 								</Fragment>
@@ -773,6 +786,15 @@ class Account extends Component {
 								{(this.userHasRole(team, ['manager', 'metadata_editor']) || team === 'admin') && (
 									<>{tabId === 'datasets' ? <AccountDatasets userState={userState} team={team} alert={alert} /> : ''}</>
 								)}
+								{team === 'admin' && (
+									<>
+										{tabId === 'teams' ? (
+											<AccountTeams userState={userState} onTeamsTabChange={this.onTeamsTabChange} team={team} alert={alert} />
+										) : (
+											''
+										)}
+									</>
+								)}
 
 								{allowWorkflow && this.userHasRole(team, 'manager') && (
 									<>{tabId === 'workflows' ? <WorkflowDashboard userState={userState} team={team} /> : ''}</>
@@ -827,7 +849,7 @@ class Account extends Component {
 						selectedTopicId={this.state.selectedTopicId}
 					/>
 				</SideDrawer>
-				{tabId === 'teamManagement' && teamManagementTab == tabTypes.Notifications && (
+				{tabId === 'teamManagement' && teamManagementTab === tabTypes.Notifications && (
 					<ActionBar userState={userState}>
 						<div>
 							<button

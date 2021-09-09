@@ -1,15 +1,14 @@
 import _ from 'lodash';
 
 export const isEditMode = (url = '') => {
-  if(!_.isEmpty(url)) {
-    let src = url.toLowerCase();
-    if(src.includes('edit'))
-      return true;
+	if (!_.isEmpty(url)) {
+		let src = url.toLowerCase();
+		if (src.includes('edit')) return true;
 
-      return false
-  }
-  return false;
-}
+		return false;
+	}
+	return false;
+};
 
 export const toTitleCase = str => {
 	return str.replace(/\w\S*/g, function (txt) {
@@ -18,13 +17,13 @@ export const toTitleCase = str => {
 };
 
 export const isPDFLink = link => {
-  return /\.pdf$/.test(link);
+	return /\.pdf$/.test(link);
 };
 
 export const removeArrayItem = (arr, value) => {
-  const index = arr.indexOf(value);
-  if (index > -1) {
-    arr.splice(index, 1);
-  }
-  return arr;
-}
+	const index = arr.indexOf(value);
+	if (index > -1) {
+		arr.splice(index, 1);
+	}
+	return arr;
+};
