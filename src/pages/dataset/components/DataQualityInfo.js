@@ -590,7 +590,7 @@ class DataQualityInfo extends React.Component {
 						</div>
 					);
 				}
-
+				break;
 			case 'TechQuality':
 				if (techQualitySection === true) {
 					return (
@@ -666,7 +666,7 @@ class DataQualityInfo extends React.Component {
 						</div>
 					);
 				}
-
+				break;
 			case 'Access':
 				if (accessProvisionSection === true) {
 					return (
@@ -771,7 +771,7 @@ class DataQualityInfo extends React.Component {
 						</div>
 					);
 				}
-
+				break;
 			case 'Value':
 				if (valueInterestSection === true) {
 					return (
@@ -846,7 +846,7 @@ class DataQualityInfo extends React.Component {
 						</div>
 					);
 				}
-
+				break;
 			case 'Coverage':
 				if (coverageSection === true) {
 					return (
@@ -921,6 +921,9 @@ class DataQualityInfo extends React.Component {
 						</div>
 					);
 				}
+				break;
+			default:
+				return section;
 		}
 	}
 }
