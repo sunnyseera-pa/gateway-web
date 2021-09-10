@@ -45,6 +45,7 @@ const AddEditPaperForm = props => {
 	const originalUploader = props.isEdit ? props.data.uploader : props.userState[0].id;
 	useEffect(() => {
 		buildListOfUploaders();
+		// eslint-disable-next-line
 	}, []);
 
 	// Pass the useFormik() hook initial form values and a submit function that will

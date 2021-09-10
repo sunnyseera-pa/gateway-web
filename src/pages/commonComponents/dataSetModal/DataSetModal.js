@@ -53,6 +53,7 @@ const DataSetModal = ({ open, closed, context, userState, is5Safes, showLoginMod
 		axios.get(url + '/Non5SafesModalContent', { withCredentials: false }).then(res => {
 			setNon5SafesData(res.data);
 		});
+		// eslint-disable-next-line
 	}, [open, context]);
 
 	return (

@@ -63,6 +63,7 @@ export const CmsDropdown = props => {
 			.then(res => {
 				setDropdownLinks(res.data);
 			});
+		// eslint-disable-next-line
 	}, []);
 
 	const getDropdownTitle = dropdownUrl => {

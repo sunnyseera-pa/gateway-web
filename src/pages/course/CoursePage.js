@@ -62,6 +62,7 @@ export const CourseDetail = props => {
 			await getCourseDataFromDb();
 		}
 		invokeCourseDataCall();
+		// eslint-disable-next-line
 	}, []);
 
 	const getCourseDataFromDb = async () => {

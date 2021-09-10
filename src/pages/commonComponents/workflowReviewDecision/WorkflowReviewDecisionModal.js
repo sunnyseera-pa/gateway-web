@@ -45,16 +45,6 @@ const WorkflowReviewDecisionModal = ({
 		setWordCount(e.currentTarget.value.length);
 	};
 
-	const getActivePhase = () => {
-		if (!_.isEmpty(workflow)) {
-			let { steps } = workflow;
-			if (!_.isEmpty(steps)) {
-				let activeStep = [...steps].find(s => s.active) || {};
-				setPhase(activeStep);
-			}
-		}
-	};
-
 	const reset = () => {
 		setComments('');
 		setWordCount('');
@@ -80,8 +70,17 @@ const WorkflowReviewDecisionModal = ({
 	};
 
 	useEffect(() => {
+		const getActivePhase = () => {
+			if (!_.isEmpty(workflow)) {
+				let { steps } = workflow;
+				if (!_.isEmpty(steps)) {
+					let activeStep = [...steps].find(s => s.active) || {};
+					setPhase(activeStep);
+				}
+			}
+		};
 		getActivePhase();
-	}, []);
+	}, [workflow]);
 
 	return (
 		<Fragment>

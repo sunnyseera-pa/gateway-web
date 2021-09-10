@@ -66,6 +66,7 @@ export const PaperDetail = props => {
 			PageView();
 		}
 		getPaperDataFromDb();
+		// eslint-disable-next-line
 	}, []);
 
 	//componentDidUpdate - on render of page detail page were id is different

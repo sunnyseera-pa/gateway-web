@@ -69,6 +69,7 @@ export const ToolDetail = props => {
 		initGA('UA-166025838-1');
 		PageView();
 		getToolDataFromDb();
+		// eslint-disable-next-line
 	}, []);
 
 	//componentDidUpdate - on render of tool detail page were id is different

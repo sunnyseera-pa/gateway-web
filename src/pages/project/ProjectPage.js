@@ -60,6 +60,7 @@ export const ProjectDetail = props => {
 		getProjectDataFromDb();
 		initGA('UA-166025838-1');
 		PageView();
+		// eslint-disable-next-line
 	}, []);
 
 	//componentDidUpdate - on render of project detail page were id is different
