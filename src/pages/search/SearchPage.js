@@ -825,11 +825,8 @@ class SearchPage extends React.Component {
 	findParentNode = (tree, key) => {
 		// 1. find if matches key || alias if provided for an override for the queryParam if it conflicts with another key from
 		// another entity
-		let found = tree.find(node => {
-			if (typeof node.alias !== 'undefined' && node.alias === key) return node;
+		let found = tree.find(node => ((typeof node.alias !== 'undefined' && node.alias === key) || node.key === key ? node : ''));
 
-			if (node.key === key) return node;
-		});
 		// 2. if not found start recursive loop
 		if (!found) {
 			let i = 0;

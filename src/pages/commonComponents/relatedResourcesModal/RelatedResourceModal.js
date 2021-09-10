@@ -193,51 +193,39 @@ class RelatedResourcesModal extends React.Component {
 
 				switch (object.objectType) {
 					case 'tool':
-						this.props.toolData.map(tool => {
-							if (object.objectId === tool.id || object.objectId === JSON.stringify(tool.id)) {
-								selected.tools++;
-							}
-						});
+						this.props.toolData.map(tool =>
+							object.objectId === tool.id || object.objectId === JSON.stringify(tool.id) ? selected.tools++ : ''
+						);
 						break;
 					case 'project':
-						this.props.projectData.map(project => {
-							if (object.objectId === project.id || object.objectId === JSON.stringify(project.id)) {
-								selected.projects++;
-							}
-						});
+						this.props.projectData.map(project =>
+							object.objectId === project.id || object.objectId === JSON.stringify(project.id) ? selected.projects++ : ''
+						);
 						break;
 					case 'paper':
-						this.props.paperData.map(paper => {
-							if (object.objectId === paper.id || object.objectId === JSON.stringify(paper.id)) {
-								selected.papers++;
-							}
-						});
+						this.props.paperData.map(paper =>
+							object.objectId === paper.id || object.objectId === JSON.stringify(paper.id) ? selected.papers++ : ''
+						);
 						break;
 					case 'person':
-						this.props.personData.map(person => {
-							if (object.objectId === person.id || object.objectId === JSON.stringify(person.id)) {
-								selected.persons++;
-							}
-						});
+						this.props.personData.map(person =>
+							object.objectId === person.id || object.objectId === JSON.stringify(person.id) ? selected.persons++ : ''
+						);
 						break;
 					case 'dataset':
-						this.props.datasetData.map(dataset => {
-							if (
-								object.objectId === dataset.datasetid ||
-								object.objectId === JSON.stringify(dataset.datasetid) ||
-								object.pid === dataset.pid ||
-								object.pid === JSON.stringify(dataset.pid)
-							) {
-								selected.datasets++;
-							}
-						});
+						this.props.datasetData.map(dataset =>
+							object.objectId === dataset.datasetid ||
+							object.objectId === JSON.stringify(dataset.datasetid) ||
+							object.pid === dataset.pid ||
+							object.pid === JSON.stringify(dataset.pid)
+								? selected.datasets++
+								: ''
+						);
 						break;
 					case 'course':
-						this.props.courseData.map(course => {
-							if (object.objectId === course.id || object.objectId === JSON.stringify(course.id)) {
-								selected.courses++;
-							}
-						});
+						this.props.courseData.map(course =>
+							object.objectId === course.id || object.objectId === JSON.stringify(course.id) ? selected.courses++ : ''
+						);
 						break;
 					default:
 						return object.objectId;
