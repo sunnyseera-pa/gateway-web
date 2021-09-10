@@ -360,6 +360,7 @@ let configActionModal = (type = '') => {
 						},
 					},
 				};
+				break;
 			case 'DELETEDRAFT':
 				config = {
 					title: 'Delete draft',
@@ -379,6 +380,9 @@ let configActionModal = (type = '') => {
 						},
 					},
 				};
+				break;
+			default:
+				return type;
 		}
 	}
 
