@@ -7,7 +7,7 @@ import TopDatasets from './TopDatasets';
 import { Row, Col, Tabs, Tab, DropdownButton, Dropdown } from 'react-bootstrap';
 import DashboardKPI from './DARComponents/DashboardKPI';
 import Loading from '../commonComponents/Loading';
-import { initGA } from '../../tracking';
+import googleAnalytics from '../../tracking';
 import './Dashboard.scss';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
@@ -40,7 +40,7 @@ class AccountAnalyticsDashboard extends React.Component {
 
 	async componentDidMount() {
 		isMounted = true;
-		initGA('UA-166025838-1');
+		googleAnalytics.initialise('UA-166025838-1');
 		await Promise.all([this.getUnmetDemand(), this.getTopSearches()]);
 
 		await Promise.all([

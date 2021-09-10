@@ -18,8 +18,7 @@ import { ReactComponent as MetadataGold } from '../../images/goldNew.svg';
 import { ReactComponent as MetadataPlatinum } from '../../images/platinumNew.svg';
 import { ReactComponent as MetadataNotRated } from '../../images/notRatedNew.svg';
 import { ReactComponent as GoldStar } from '../../images/cd-star.svg';
-import { PageView, initGA } from '../../tracking';
-import { Event } from '../../tracking';
+import googleAnalytics from '../../tracking';
 import Linkify from 'react-linkify';
 import DatasetSchema from './DatasetSchema';
 import TechnicalMetadata from './components/TechnicalMetadata';
@@ -123,8 +122,8 @@ class DatasetDetail extends Component {
 	async componentDidMount() {
 		await this.getDataset();
 		this.checkAlerts();
-		initGA('UA-166025838-1');
-		PageView();
+		googleAnalytics.initialise('UA-166025838-1');
+		googleAnalytics.recordPageView();
 	}
 
 	// on loading of tool detail page were id is different
@@ -643,7 +642,7 @@ class DatasetDetail extends Component {
 		} else if (action === 'SUBMIT_APPLICATION') {
 			console.log('Take user to application');
 			const { publisher } = this.topicContext.datasets[0];
-			Event('Buttons', 'Click', 'Request Access');
+			googleAnalytics.recordEvent('Buttons', 'Click', 'Request Access');
 			this.props.history.push({ pathname: `/data-access-request/publisher/${publisher}` }, { datasets: this.topicContext.datasets });
 		}
 	};
@@ -893,7 +892,7 @@ class DatasetDetail extends Component {
 													className='btn btn-primary addButton pointer float-right'
 													onClick={() => {
 														this.toggleModal();
-														Event('Buttons', 'Click', 'Request Access');
+														googleAnalytics.recordEvent('Buttons', 'Click', 'Request Access');
 													}}>
 													How to request access
 												</button>

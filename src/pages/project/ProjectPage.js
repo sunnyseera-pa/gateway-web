@@ -20,7 +20,7 @@ import ResourcePageButtons from '../commonComponents/resourcePageButtons/Resourc
 import ErrorModal from '../commonComponents/errorModal/ErrorModal';
 import CollectionCard from '../commonComponents/collectionCard/CollectionCard';
 import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
-import { PageView, initGA } from '../../tracking';
+import googleAnalytics from '../../tracking';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -58,8 +58,8 @@ export const ProjectDetail = props => {
 			setProjectEdited(values.projectEdited);
 		}
 		getProjectDataFromDb();
-		initGA('UA-166025838-1');
-		PageView();
+		googleAnalytics.initialise('UA-166025838-1');
+		googleAnalytics.recordPageView();
 	}, []);
 
 	//componentDidUpdate - on render of project detail page were id is different

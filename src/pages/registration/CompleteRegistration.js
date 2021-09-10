@@ -9,7 +9,7 @@ import Loading from '../commonComponents/Loading';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
 import UserMessages from '../commonComponents/userMessages/UserMessages';
 import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
-import { Event, initGA } from '../../tracking';
+import googleAnalytics from '../../tracking';
 import 'react-tabs/style/react-tabs.css';
 import SVGIcon from '../../images/SVGIcon';
 
@@ -114,7 +114,7 @@ class CompleteRegistration extends Component {
 	}
 
 	componentDidMount() {
-		initGA('UA-166025838-1');
+		googleAnalytics.initialise('UA-166025838-1');
 		this.setState({ isLoading: true });
 		this.doFilterCall();
 		this.doOrganisationsCall();
@@ -322,7 +322,7 @@ const YourAccountForm = props => {
 			}
 
 			axios.post(baseURL + '/api/v1/auth/register', values).then(res => {
-				Event('User related', 'Account change', 'New user registered');
+				googleAnalytics.recordEvent('User related', 'Account change', 'New user registered');
 				const url = `${windowUrl}${res.data.data}`;
 				window.location.href = `${url}${url.includes('?') ? '&' : '?'}registrationCompleted=true`;
 			});

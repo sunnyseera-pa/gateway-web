@@ -6,7 +6,7 @@ import NotFound from '../commonComponents/NotFound';
 import Loading from '../commonComponents/Loading';
 import './Dashboard.scss';
 import { EntityActionButton } from './EntityActionButton.jsx';
-import { Event, initGA } from '../../tracking';
+import googleAnalytics from '../../tracking';
 import { PaginationHelper } from '../commonComponents/PaginationHelper';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
@@ -23,9 +23,7 @@ const AccountCollections = props => {
 	const maxResult = 40;
 
 	useEffect(() => {
-		if (process.env.NODE_ENV === 'production') {
-			initGA('UA-166025838-1');
-		}
+		googleAnalytics.initialise('UA-166025838-1');
 		doCollectionsCall('active', true, 0, true);
 	}, []);
 
@@ -166,7 +164,7 @@ const AccountCollections = props => {
 								variant='primary'
 								href='/collection/add'
 								className='addButton'
-								onClick={() => Event('Buttons', 'Click', 'Add a new collection')}>
+								onClick={() => googleAnalytics.recordEvent('Buttons', 'Click', 'Add a new collection')}>
 								+ Create a collection
 							</Button>
 						</Col>

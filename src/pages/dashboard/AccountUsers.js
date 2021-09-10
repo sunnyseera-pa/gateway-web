@@ -8,7 +8,7 @@ import NotFound from '../commonComponents/NotFound';
 import Loading from '../commonComponents/Loading';
 import './Dashboard.scss';
 
-import { initGA } from '../../tracking';
+import googleAnalytics from '../../tracking';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -31,7 +31,7 @@ class AccountUsers extends React.Component {
 	};
 
 	componentDidMount() {
-		initGA('UA-166025838-1');
+		googleAnalytics.initialise('UA-166025838-1');
 		this.doUsersCall();
 	}
 

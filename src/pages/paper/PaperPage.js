@@ -18,10 +18,9 @@ import ErrorModal from '../commonComponents/errorModal/ErrorModal';
 import CollectionCard from '../commonComponents/collectionCard/CollectionCard';
 import 'react-tabs/style/react-tabs.css';
 import { baseURL } from '../../configs/url.config';
-import { PageView, initGA } from '../../tracking';
+import googleAnalytics from '../../tracking';
 import SVGIcon from '../../images/SVGIcon';
 import ReactMarkdown from 'react-markdown';
-import moment from 'moment';
 import _ from 'lodash';
 import { ReactComponent as InfoSVG } from '../../images/info.svg';
 import './Paper.scss';
@@ -62,10 +61,8 @@ export const PaperDetail = props => {
 			setPaperAdded(values.toolAdded);
 			setPaperEdited(values.toolEdited);
 		}
-		if (process.env.NODE_ENV === 'production') {
-			initGA('UA-166025838-1');
-			PageView();
-		}
+		googleAnalytics.initialise('UA-166025838-1');
+		googleAnalytics.recordPageView();
 		getPaperDataFromDb();
 	}, []);
 

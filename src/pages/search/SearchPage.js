@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import axios from 'axios';
-import { PageView, initGA } from '../../tracking';
+import googleAnalytics from '../../tracking';
 import queryString from 'query-string';
 import * as Sentry from '@sentry/react';
 import { Container, Row, Col, Tabs, Tab, Pagination } from 'react-bootstrap';
@@ -130,8 +130,8 @@ class SearchPage extends React.Component {
 	};
 
 	async componentDidMount() {
-		initGA('UA-166025838-1');
-		PageView();
+		googleAnalytics.initialise('UA-166025838-1');
+		googleAnalytics.recordPageView();
 		// 1. call filters - this will need parameterised when tools, projects etc move to v2
 		await this.getFilters();
 		// 2. fires on first time in or page is refreshed/url loaded / has search location
@@ -632,6 +632,8 @@ class SearchPage extends React.Component {
 	};
 
 	handleSelect = key => {
+		const entityType = typeMapper[`${this.state.key}`];
+		googleAnalytics.recordVirtualPageView(`${key} results page ${this.state[`${entityType}Index`] + 1}`);
 		let values = queryString.parse(window.location.search);
 		values.tab = key;
 		this.props.history.push(window.location.pathname + '?' + queryString.stringify(values));
@@ -649,6 +651,7 @@ class SearchPage extends React.Component {
 
 	handlePagination = (type = '', page = 0) => {
 		if (!_.isEmpty(type)) {
+			googleAnalytics.recordVirtualPageView(`${_.startCase(_.toLower(type))}s results page ${page / 40 + 1}`);
 			this.setState({ [`${type}Index`]: page, isResultsLoading: true }, () => {
 				window.scrollTo(0, 0);
 				this.doSearchCall();

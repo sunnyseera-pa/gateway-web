@@ -2,33 +2,45 @@ import ReactGA from 'react-ga';
 
 var disableGA = false;
 
-export const initGA = trackingID => {
-	// Disable tracking if the opt-out cookie exists.
-	var disableStr = 'ga-disable-UA-166025838-1';
-	if (document.cookie.indexOf(disableStr + '=true') > -1) {
-		window[disableStr] = true;
-		disableGA = true;
-	}
-	if (disableGA === false) {
-		ReactGA.initialize(trackingID);
+const initialise = trackingID => {
+	// // Disable tracking if the opt-out cookie exists.
+	// var disableStr = 'ga-disable-UA-166025838-1';
+	// if (document.cookie.indexOf(disableStr + '=true') > -1) {
+	// 	window[disableStr] = true;
+	// 	disableGA = true;
+	// }
+	// if (disableGA === false) {
+	// 	ReactGA.initialize(trackingID);
+	// }
+};
+
+const recordPageView = () => {
+	// if (disableGA === false) {
+	// 	ReactGA.pageview(window.location.pathname + window.location.search);
+	// }
+};
+
+const recordVirtualPageView = pageTitle => {
+	let dataLayer = window.dataLayer;
+
+	if (dataLayer) {
+		dataLayer.push({ 'gtm.newHistoryState': pageTitle, event: 'virtual-page-view' });
 	}
 };
 
-//'UA-166025838-1'
-
-export const PageView = () => {
-	if (disableGA === false) {
-		ReactGA.pageview(window.location.pathname + window.location.search);
-	}
+const recordEvent = (category, action, label) => {
+	// if (disableGA === false) {
+	// 	ReactGA.event({
+	// 		category: category,
+	// 		action: action,
+	// 		label: label,
+	// 	});
+	// }
 };
 
-//Can also add a numerical value to an event...
-export const Event = (category, action, label) => {
-	if (disableGA === false) {
-		ReactGA.event({
-			category: category,
-			action: action,
-			label: label,
-		});
-	}
+export default {
+	initialise,
+	recordPageView,
+	recordVirtualPageView,
+	recordEvent,
 };

@@ -8,7 +8,7 @@ import TopDatasets from '../dashboard/TopDatasets';
 import { Container, Row, Col, Tabs, Tab, DropdownButton, Dropdown } from 'react-bootstrap';
 import DashboardKPI from '../dashboard/DARComponents/DashboardKPI';
 import Loading from '../commonComponents/Loading';
-import { initGA } from '../../tracking';
+import googleAnalytics from '../../tracking';
 import SearchBar from '../commonComponents/searchBar/SearchBar';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
 import UserMessages from '../commonComponents/userMessages/UserMessages';
@@ -83,7 +83,7 @@ class PublicAnalyticsDashboard extends React.Component {
 	}
 
 	async componentDidMount() {
-		initGA('UA-166025838-1');
+		googleAnalytics.initialise('UA-166025838-1');
 		await Promise.all([this.getUnmetDemand(), this.getTopSearches()]);
 
 		await Promise.all([
