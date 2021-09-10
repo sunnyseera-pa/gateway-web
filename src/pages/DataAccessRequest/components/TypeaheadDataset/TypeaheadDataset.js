@@ -125,7 +125,7 @@ class TypeaheadDataset extends React.Component {
 	render() {
 		let selectedValues = [];
 		this.state.value.map(selectedValue => {
-			selectedValues.push(_.toString(selectedValue._id));
+			return selectedValues.push(_.toString(selectedValue._id));
 		});
 
 		let filteredOptions = this.state.options.filter(datasetOption => !selectedValues.includes(datasetOption._id));
