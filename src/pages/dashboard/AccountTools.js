@@ -7,7 +7,7 @@ import Loading from '../commonComponents/Loading';
 import './Dashboard.scss';
 import ActionModal from '../commonComponents/ActionModal/ActionModal';
 import _ from 'lodash';
-import { Event, initGA } from '../../tracking';
+import googleAnalytics from '../../tracking';
 import { EntityActionButton } from './EntityActionButton.jsx';
 import { PaginationHelper } from '../commonComponents/PaginationHelper';
 
@@ -34,9 +34,7 @@ export const AccountTools = props => {
 	const maxResult = 40;
 
 	useEffect(() => {
-		if (process.env.NODE_ENV === 'production') {
-			initGA('UA-166025838-1');
-		}
+		googleAnalytics.initialise('UA-166025838-1');
 		doToolsCall('active', true, 0, true);
 	}, []);
 
@@ -192,7 +190,7 @@ export const AccountTools = props => {
 								variant='primary'
 								href='/tool/add'
 								className='addButton'
-								onClick={() => Event('Buttons', 'Click', 'Add a new tool')}>
+								onClick={() => googleAnalytics.recordEvent('Buttons', 'Click', 'Add a new tool')}>
 								+ Add a new tool
 							</Button>
 						</Col>

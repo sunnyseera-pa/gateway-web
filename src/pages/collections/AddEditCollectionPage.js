@@ -4,7 +4,7 @@ import { Container } from 'react-bootstrap';
 import SearchBar from '../commonComponents/searchBar/SearchBar';
 import Loading from '../commonComponents/Loading';
 import moment from 'moment';
-import { initGA } from '../../tracking';
+import googleAnalytics from '../../tracking';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
 import UserMessages from '../commonComponents/userMessages/UserMessages';
 import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
@@ -47,7 +47,7 @@ class AddEditCollectionPage extends React.Component {
 	};
 
 	async componentDidMount() {
-		initGA('UA-166025838-1');
+		googleAnalytics.initialise('UA-166025838-1');
 		await Promise.all([this.doGetUsersCall(), this.doGetKeywordsCall()]);
 
 		if (this.state.isEdit) this.getDataSearchFromDb();

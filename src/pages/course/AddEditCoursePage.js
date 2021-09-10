@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import { initGA } from '../../tracking';
+import googleAnalytics from '../../tracking';
 import moment from 'moment';
 import { Container } from 'react-bootstrap';
 import SearchBar from '../commonComponents/searchBar/SearchBar';
@@ -47,7 +47,7 @@ class AddEditCoursePage extends React.Component {
 	};
 
 	async componentDidMount() {
-		initGA('UA-166025838-1');
+		googleAnalytics.initialise('UA-166025838-1');
 		await Promise.all([this.doGetDomainsCall(), this.doGetKeywordsCall(), this.doGetAwardsCall()]);
 		if (this.state.isEdit) this.getToolFromDb();
 		else this.setState({ isLoading: false });

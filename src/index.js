@@ -4,6 +4,7 @@ import 'core-js';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import HDRRouter from './HDRRouter';
+
 // import * as serviceWorker from './serviceWorker';
 
 import './css/custom-css-bootstrap-magic-2020-02-10.css';
@@ -11,14 +12,13 @@ import 'react-datepicker/dist/react-datepicker.css';
 import './css/styles.scss';
 
 import TagManager from 'react-gtm-module';
-
-const tagManagerArgs = {
-	gtmId: 'GTM-NL9B25X',
-    auth: 'OaO70X9Iqr1iIzTL76PNAQ',
-    preview: 'env-4'
-};
-
-TagManager.initialize(tagManagerArgs);
+if (window.gtmId && window.gtmAuth) {
+	const tagManagerArgs = {
+		gtmId: window.gtmId,
+		auth: window.gtmAuth,
+	};
+	TagManager.initialize(tagManagerArgs);
+}
 
 ReactDOM.render(<HDRRouter />, document.getElementById('root'));
 

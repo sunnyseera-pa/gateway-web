@@ -12,7 +12,7 @@ import Project from '../commonComponents/Project';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
 import UserMessages from '../commonComponents/userMessages/UserMessages';
 import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
-import { PageView, initGA } from '../../tracking';
+import googleAnalytics from '../../tracking';
 import _ from 'lodash';
 let baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -37,8 +37,8 @@ const PersonDetail = props => {
 
 	useEffect(() => {
 		getDataSearchFromDb();
-		initGA('UA-166025838-1');
-		PageView();
+		googleAnalytics.initialise('UA-166025838-1');
+		googleAnalytics.recordPageView();
 	}, []);
 
 	const getDataSearchFromDb = () => {

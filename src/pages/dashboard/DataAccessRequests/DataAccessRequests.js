@@ -11,7 +11,7 @@ import TimeDuration from '../../commonComponents/timeDuration/TimeDuration';
 import WorkflowReviewStepsModal from '../../commonComponents/workflowReviewStepsModal/WorkflowReviewStepsModal';
 import CommentItem from './CommentItem/CommentItem';
 import AccessActivity from './AccessActivity/AccessActivity';
-import { initGA } from '../../../tracking';
+import googleAnalytics from '../../../tracking';
 import { baseURL } from '../../../configs/url.config';
 import DarHelperUtil from '../../../utils/DarHelper.util';
 import VersionSelector from '../../commonComponents/versionSelector/VersionSelector';
@@ -63,7 +63,7 @@ class DataAccessRequestsNew extends React.Component {
 
 	componentDidMount() {
 		window.scrollTo(0, 0);
-		initGA('UA-166025838-1');
+		googleAnalytics.initialise('UA-166025838-1');
 		this.fetchDataAccessRequests(this.state);
 	}
 
