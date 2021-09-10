@@ -504,19 +504,18 @@ export const CourseDetail = props => {
 																		Course fees
 																	</Col>
 																	{courseOption.fees && courseOption.fees[0].feeDescription && courseOption.fees[0].feeAmount ? (
-																		courseOption.fees.map((fee, index) => {
-																			if (fee.feeDescription && fee.feeAmount) {
-																				return (
-																					<>
-																						{index > 0 ? <Col sm={2} /> : ''}
-																						<Col sm={10} className='gray-deep-14 overflowWrap' data-test-id='course-fees'>
-																							{fee.feeDescription} | £{fee.feeAmount}{' '}
-																							{fee.feePer ? <>per {fee.feePer.toLowerCase()}</> : ''}
-																						</Col>
-																					</>
-																				);
-																			}
-																		})
+																		courseOption.fees.map((fee, index) =>
+																			fee.feeDescription && fee.feeAmount ? (
+																				<>
+																					{index > 0 ? <Col sm={2} /> : ''}
+																					<Col sm={10} className='gray-deep-14 overflowWrap' data-test-id='course-fees'>
+																						{fee.feeDescription} | £{fee.feeAmount} {fee.feePer ? <>per {fee.feePer.toLowerCase()}</> : ''}
+																					</Col>
+																				</>
+																			) : (
+																				''
+																			)
+																		)
 																	) : (
 																		<Col sm={10} className='gray-deep-14 overflowWrap'>
 																			<span className='gray800-14-opacity'>Not specified</span>
@@ -542,26 +541,24 @@ export const CourseDetail = props => {
 														</Col>
 														<Col sm={9} className='gray800-14'>
 															{courseData.entries && courseData.entries[0].level ? (
-																courseData.entries.map((entry, index) => {
-																	if (entry.level && entry.subject) {
-																		return (
-																			<a href={'/search?search=&tab=Courses&courseentrylevel=' + entry.level}>
-																				<div className='badge-version'>
-																					<span data-test-id='entry-level'>{entry.level}</span>
-																					<span data-test-id='entry-subject'>{entry.subject}</span>
-																				</div>
-																			</a>
-																		);
-																	} else if (entry.level && !entry.subject) {
-																		return (
-																			<a href={'/search?search=&tab=Courses&courseentrylevel=' + entry.level}>
-																				<div className='badge-tag'>
-																					<span>{entry.level}</span>
-																				</div>
-																			</a>
-																		);
-																	}
-																})
+																courseData.entries.map((entry, index) =>
+																	entry.level && entry.subject ? (
+																		<a href={'/search?search=&tab=Courses&courseentrylevel=' + entry.level}>
+																			<div className='badge-version'>
+																				<span data-test-id='entry-level'>{entry.level}</span>
+																				<span data-test-id='entry-subject'>{entry.subject}</span>
+																			</div>
+																		</a>
+																	) : entry.level && !entry.subject ? (
+																		<a href={'/search?search=&tab=Courses&courseentrylevel=' + entry.level}>
+																			<div className='badge-tag'>
+																				<span>{entry.level}</span>
+																			</div>
+																		</a>
+																	) : (
+																		''
+																	)
+																)
 															) : (
 																<span className='gray800-14-opacity'>Not specified</span>
 															)}

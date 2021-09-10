@@ -194,12 +194,12 @@ export const CollectionPage = props => {
 		}
 	};
 
-	const sortByMetadataQuality = () => {
-		filteredData.sort((a, b) => {
-			if (_.has(a, 'datasetfields.metadataquality.quality_score') && _.has(b, 'datasetfields.metadataquality.quality_score'))
-				return b.datasetfields.metadataquality.quality_score - a.datasetfields.metadataquality.quality_score;
-		});
-	};
+	const sortByMetadataQuality = () =>
+		filteredData.sort((a, b) =>
+			_.has(a, 'datasetfields.metadataquality.quality_score') && _.has(b, 'datasetfields.metadataquality.quality_score')
+				? b.datasetfields.metadataquality.quality_score - a.datasetfields.metadataquality.quality_score
+				: ''
+		);
 
 	const sortByRecentlyAdded = () => {
 		return filteredData.sort((a, b) => b.updated - a.updated);
