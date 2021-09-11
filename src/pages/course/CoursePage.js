@@ -20,7 +20,6 @@ import ErrorModal from '../commonComponents/errorModal/ErrorModal';
 import CollectionCard from '../commonComponents/collectionCard/CollectionCard';
 import './Course.scss';
 import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
-import googleAnalytics from '../../tracking';
 
 let baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -56,8 +55,6 @@ export const CourseDetail = props => {
 			setCourseAdded(values.courseAdded);
 			setCourseEdited(values.courseEdited);
 		}
-		googleAnalytics.initialise('UA-166025838-1');
-		googleAnalytics.recordPageView();
 		async function invokeCourseDataCall() {
 			await getCourseDataFromDb();
 		}

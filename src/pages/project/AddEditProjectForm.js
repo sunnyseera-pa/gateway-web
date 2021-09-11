@@ -13,6 +13,7 @@ import 'react-bootstrap-typeahead/css/Typeahead.css';
 import SVGIcon from '../../images/SVGIcon';
 import RemoveUploaderModal from '../commonComponents/RemoveUploaderModal';
 import RemoveUploaderErrorModal from '../commonComponents/RemoveUploaderErrorModal';
+import googleAnalytics from '../../tracking';
 
 const baseURL = require('../commonComponents/BaseURL').getURL();
 let windowUrl = window.location.origin;
@@ -529,7 +530,13 @@ const AddEditProjectForm = props => {
 						</Button>
 					</a>
 
-					<Button onClick={() => relatedResourcesRef.current.showModal()} variant='white' className='techDetailButton mr-2'>
+					<Button
+						onClick={() => {
+							relatedResourcesRef.current.showModal();
+							googleAnalytics.recordVirtualPageView('Related resources modal');
+						}}
+						variant='white'
+						className='techDetailButton mr-2'>
 						+ Add resource
 					</Button>
 

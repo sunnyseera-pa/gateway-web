@@ -122,8 +122,6 @@ class DatasetDetail extends Component {
 	async componentDidMount() {
 		await this.getDataset();
 		this.checkAlerts();
-		googleAnalytics.initialise('UA-166025838-1');
-		googleAnalytics.recordPageView();
 	}
 
 	// on loading of tool detail page were id is different
@@ -642,7 +640,7 @@ class DatasetDetail extends Component {
 		} else if (action === 'SUBMIT_APPLICATION') {
 			console.log('Take user to application');
 			const { publisher } = this.topicContext.datasets[0];
-			googleAnalytics.recordEvent('Buttons', 'Click', 'Request Access');
+			googleAnalytics.recordEvent('Data access request', 'Start application', 'Modal button clicked');
 			this.props.history.push({ pathname: `/data-access-request/publisher/${publisher}` }, { datasets: this.topicContext.datasets });
 		}
 	};
@@ -892,7 +890,7 @@ class DatasetDetail extends Component {
 													className='btn btn-primary addButton pointer float-right'
 													onClick={() => {
 														this.toggleModal();
-														googleAnalytics.recordEvent('Buttons', 'Click', 'Request Access');
+														googleAnalytics.recordEvent('Data access request', 'How to request access', 'Dataset page primary button clicked');
 													}}>
 													How to request access
 												</button>

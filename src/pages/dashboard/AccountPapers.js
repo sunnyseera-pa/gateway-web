@@ -34,7 +34,6 @@ export const AccountPapers = props => {
 	const maxResult = 40;
 
 	useEffect(() => {
-		googleAnalytics.initialise('UA-166025838-1');
 		doPapersCall('active', true, 0, true);
 	}, []);
 
@@ -193,7 +192,7 @@ export const AccountPapers = props => {
 								variant='primary'
 								href='/paper/add'
 								className='addButton'
-								onClick={() => googleAnalytics.recordEvent('Buttons', 'Click', 'Add a new paper')}>
+								onClick={() => googleAnalytics.recordEvent('Papers', 'Add a new paper', 'Papers dashboard button clicked')}>
 								+ Add a new paper
 							</Button>
 						</Col>

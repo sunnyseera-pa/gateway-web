@@ -23,7 +23,6 @@ const AccountCollections = props => {
 	const maxResult = 40;
 
 	useEffect(() => {
-		googleAnalytics.initialise('UA-166025838-1');
 		doCollectionsCall('active', true, 0, true);
 	}, []);
 
@@ -164,7 +163,7 @@ const AccountCollections = props => {
 								variant='primary'
 								href='/collection/add'
 								className='addButton'
-								onClick={() => googleAnalytics.recordEvent('Buttons', 'Click', 'Add a new collection')}>
+								onClick={() => googleAnalytics.recordEvent('Collections', 'Add a new collection', 'Collections dashboard button clicked')}>
 								+ Create a collection
 							</Button>
 						</Col>

@@ -34,7 +34,6 @@ export const AccountProjects = props => {
 	const maxResult = 40;
 
 	useEffect(() => {
-		googleAnalytics.initialise('UA-166025838-1');
 		doProjectsCall('active', true, 0, true);
 	}, []);
 
@@ -191,7 +190,7 @@ export const AccountProjects = props => {
 								variant='primary'
 								href='/project/add'
 								className='addButton'
-								onClick={() => googleAnalytics.recordEvent('Buttons', 'Click', 'Add a new project')}>
+								onClick={() => googleAnalytics.recordEvent('Projects', 'Add a new project', 'Projects dashboard button clicked')}>
 								+ Add a new project
 							</Button>
 						</Col>

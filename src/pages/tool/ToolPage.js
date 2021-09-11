@@ -12,7 +12,6 @@ import SearchBar from '../commonComponents/searchBar/SearchBar';
 import DiscourseTopic from '../discourse/DiscourseTopic';
 import 'react-tabs/style/react-tabs.css';
 import { baseURL } from '../../configs/url.config';
-import googleAnalytics from '../../tracking';
 import ReactMarkdown from 'react-markdown';
 import Rating from 'react-rating';
 import moment from 'moment';
@@ -66,8 +65,6 @@ export const ToolDetail = props => {
 			setReviewAdded(values.reviewAdded);
 			setReplyAdded(values.replyAdded);
 		}
-		//googleAnalytics.initialise('UA-166025838-1');
-		//googleAnalytics.recordPageView();
 		getToolDataFromDb();
 	}, []);
 

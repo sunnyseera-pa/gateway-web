@@ -7,7 +7,6 @@ import Loading from '../commonComponents/Loading';
 import '../../css/styles.scss';
 import './Dashboard.scss';
 import AccountMembersModal from './AccountMemberModal';
-import googleAnalytics from '../../tracking';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -24,7 +23,6 @@ export const AccountMembers = props => {
 	}, [props]);
 
 	useEffect(() => {
-		googleAnalytics.initialise('UA-166025838-1');
 		doMembersCall();
 	}, [accountMembersId]);
 

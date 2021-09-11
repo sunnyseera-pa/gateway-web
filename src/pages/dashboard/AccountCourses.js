@@ -34,7 +34,6 @@ export const AccountCourses = props => {
 	const maxResult = 40;
 
 	useEffect(() => {
-		googleAnalytics.initialise('UA-166025838-1');
 		doCoursesCall('active', true, 0, true);
 	}, []);
 
@@ -192,7 +191,7 @@ export const AccountCourses = props => {
 								variant='primary'
 								href='/course/add'
 								className='addButton'
-								onClick={() => googleAnalytics.recordEvent('Buttons', 'Click', 'Add a new course')}>
+								onClick={() => googleAnalytics.recordEvent('Courses', 'Add a new course', 'Courses dashboard button clicked')}>
 								+ Add a new course
 							</Button>
 						</Col>
