@@ -28,7 +28,6 @@ const AccountDatasets = props => {
 	}, [props]);
 
 	useEffect(() => {
-		googleAnalytics.initialise('UA-166025838-1');
 		setIsLoading(true);
 		doDatasetsCall();
 	}, [team]);
@@ -149,7 +148,8 @@ const AccountDatasets = props => {
 								<Button
 									variant='primary'
 									className='addButton'
-									onClick={(() => googleAnalytics.recordEvent('Buttons', 'Click', 'Add a new paper'), createNewDataset)}>
+									onClick={(() => googleAnalytics.recordEvent('Datasets', 'Add a new dataset', 'Datasets dashboard button clicked'), createNewDataset)}>
+										
 									+ Add a new dataset
 								</Button>
 							</Col>

@@ -361,7 +361,7 @@ const DatasetAboutCard = ({ v2data, section, showEmpty, toggleModal }) => {
 											className='purple-14 pointer float-right'
 											onClick={() => {
 												toggleModal();
-												googleAnalytics.recordEvent('Buttons', 'Click', 'Request Access');
+												googleAnalytics.recordEvent('Data access request', 'How to request access', 'Dataset page secondary button clicked');
 											}}>
 											How to request access
 										</span>

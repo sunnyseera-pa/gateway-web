@@ -1,6 +1,5 @@
 import React from 'react';
 import axios from 'axios';
-import googleAnalytics from '../../tracking';
 import moment from 'moment';
 import { Container } from 'react-bootstrap';
 import SearchBar from '../commonComponents/searchBar/SearchBar';
@@ -50,7 +49,6 @@ class AddEditToolPage extends React.Component {
 	};
 
 	async componentDidMount() {
-		googleAnalytics.initialise('UA-166025838-1');
 		await Promise.all([
 			this.doGetTopicsCall(),
 			this.doGetFeaturesCall(),

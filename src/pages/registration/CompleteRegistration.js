@@ -114,7 +114,6 @@ class CompleteRegistration extends Component {
 	}
 
 	componentDidMount() {
-		googleAnalytics.initialise('UA-166025838-1');
 		this.setState({ isLoading: true });
 		this.doFilterCall();
 		this.doOrganisationsCall();
@@ -322,7 +321,7 @@ const YourAccountForm = props => {
 			}
 
 			axios.post(baseURL + '/api/v1/auth/register', values).then(res => {
-				googleAnalytics.recordEvent('User related', 'Account change', 'New user registered');
+				googleAnalytics.recordEvent('User accounts', 'New user registered', 'Clicked complete registration button');
 				const url = `${windowUrl}${res.data.data}`;
 				window.location.href = `${url}${url.includes('?') ? '&' : '?'}registrationCompleted=true`;
 			});

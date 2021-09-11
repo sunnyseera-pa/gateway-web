@@ -34,7 +34,6 @@ export const AccountTools = props => {
 	const maxResult = 40;
 
 	useEffect(() => {
-		googleAnalytics.initialise('UA-166025838-1');
 		doToolsCall('active', true, 0, true);
 	}, []);
 
@@ -190,7 +189,7 @@ export const AccountTools = props => {
 								variant='primary'
 								href='/tool/add'
 								className='addButton'
-								onClick={() => googleAnalytics.recordEvent('Buttons', 'Click', 'Add a new tool')}>
+								onClick={() => googleAnalytics.recordEvent('Tools', 'Add a new tool', 'Tools dashboard button clicked')}>
 								+ Add a new tool
 							</Button>
 						</Col>

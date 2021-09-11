@@ -130,8 +130,6 @@ class SearchPage extends React.Component {
 	};
 
 	async componentDidMount() {
-		googleAnalytics.initialise('UA-166025838-1');
-		googleAnalytics.recordPageView();
 		// 1. call filters - this will need parameterised when tools, projects etc move to v2
 		await this.getFilters();
 		// 2. fires on first time in or page is refreshed/url loaded / has search location

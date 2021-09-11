@@ -12,10 +12,10 @@ import 'react-datepicker/dist/react-datepicker.css';
 import './css/styles.scss';
 
 import TagManager from 'react-gtm-module';
-if (window.gtmId && window.gtmAuth) {
+
+if (window.gtmId && window.gaConsent === true) {
 	const tagManagerArgs = {
 		gtmId: window.gtmId,
-		auth: window.gtmAuth,
 	};
 	TagManager.initialize(tagManagerArgs);
 }
