@@ -10,7 +10,6 @@ import '../Dataset.scss';
 class TechnicalDetailsPage extends React.Component {
 	state = {
 		technicalMetadata: null,
-		flagClosed: true,
 		allOpen: false,
 	};
 

@@ -7,14 +7,6 @@ import './RelatedResourcesModal.scss';
 
 class RelatedResourcesModal extends React.Component {
 	state = {
-		userState: [
-			{
-				loggedIn: false,
-				role: 'Reader',
-				id: null,
-				name: null,
-			},
-		],
 		key: '',
 		datasetIndex: 0,
 		toolIndex: 0,
@@ -35,7 +27,6 @@ class RelatedResourcesModal extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.state.userState = props.userState;
 		this.state.relatedObjectIds = [];
 	}
 
