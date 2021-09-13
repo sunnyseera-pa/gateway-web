@@ -34,6 +34,7 @@ const typeMapper = {
 	People: 'person',
 	Courses: 'course',
 	Collections: 'collection',
+	Cohorts: 'cohort',
 };
 
 class SearchPage extends React.Component {
@@ -45,6 +46,7 @@ class SearchPage extends React.Component {
 		paperSort: '',
 		personSort: '',
 		courseSort: '',
+		cohortSort: '',
 		collectionSort: '',
 		datasetIndex: 0,
 		toolIndex: 0,
@@ -112,6 +114,8 @@ class SearchPage extends React.Component {
 		selectedV2Collections: [],
 		filtersV2Courses: [],
 		selectedV2Courses: [],
+		filtersV2Cohorts: [],
+		selectedV2Cohorts: [],
 		savedSearchPanel: true,
 	};
 
@@ -334,6 +338,11 @@ class SearchPage extends React.Component {
 			const selectedV2Collections = [...this.state.selectedV2Collections];
 			this.setSelectedFiltersFromQueryParams(filtersV2Collections, selectedV2Collections, queryParams, 'collection');
 		}
+		if (!_.isEmpty(this.state.filtersV2Cohorts)) {
+			const filtersV2Cohorts = [...this.state.filtersV2Cohorts];
+			const selectedV2Cohorts = [...this.state.selectedV2Cohorts];
+			this.setSelectedFiltersFromQueryParams(filtersV2Cohorts, selectedV2Cohorts, queryParams, 'cohort');
+		}
 		// 14. original filters setting of data remove if entity moves to V2 for correct filter
 		queryParams.search ? this.setState({ search: queryParams.search }) : this.setState({ search: '' });
 
@@ -346,6 +355,7 @@ class SearchPage extends React.Component {
 		queryParams.paperIndex ? this.setState({ paperIndex: queryParams.paperIndex }) : this.setState({ paperIndex: 0 });
 		queryParams.personIndex ? this.setState({ personIndex: queryParams.personIndex }) : this.setState({ personIndex: 0 });
 		queryParams.courseIndex ? this.setState({ courseIndex: queryParams.courseIndex }) : this.setState({ courseIndex: 0 });
+		queryParams.cohortIndex ? this.setState({ cohortIndex: queryParams.cohortIndex }) : this.setState({ cohortIndex: 0 });
 		queryParams.collectionIndex ? this.setState({ collectionIndex: queryParams.collectionIndex }) : this.setState({ collectionIndex: 0 });
 		// Sort for each tab
 		queryParams.datasetSort ? this.setState({ datasetSort: queryParams.datasetSort }) : this.setState({ datasetSort: '' });
@@ -354,6 +364,7 @@ class SearchPage extends React.Component {
 		queryParams.paperSort ? this.setState({ paperSort: queryParams.paperSort }) : this.setState({ paperSort: '' });
 		queryParams.personSort ? this.setState({ personSort: queryParams.personSort }) : this.setState({ personSort: '' });
 		queryParams.courseSort ? this.setState({ courseSort: queryParams.courseSort }) : this.setState({ courseSort: '' });
+		queryParams.cohortSort ? this.setState({ cohortSort: queryParams.cohortSort }) : this.setState({ cohortSort: '' });
 		queryParams.collectionSort ? this.setState({ collectionSort: queryParams.collectionSort }) : this.setState({ collectionSort: '' });
 	}
 
@@ -364,6 +375,7 @@ class SearchPage extends React.Component {
 		let filtersV2ProjectsData = !_.isNil(this.state.filtersV2Projects) ? [...this.state.filtersV2Projects] : [];
 		let filtersV2CollectionsData = !_.isNil(this.state.filtersV2Collections) ? [...this.state.filtersV2Collections] : [];
 		let filtersV2CoursesData = !_.isNil(this.state.filtersV2Courses) ? [...this.state.filtersV2Courses] : [];
+		let filtersV2CohortsData = !_.isNil(this.state.filtersV2Cohorts) ? [...this.state.filtersV2Cohorts] : [];
 		let filtersV2PapersData = !_.isNil(this.state.filtersV2Papers) ? [...this.state.filtersV2Papers] : [];
 
 		// 2. v2 resets the filters UI tree back to default
@@ -372,6 +384,7 @@ class SearchPage extends React.Component {
 		let filtersV2Projects = this.resetTreeChecked(filtersV2ProjectsData);
 		let filtersV2Collections = this.resetTreeChecked(filtersV2CollectionsData);
 		let filtersV2Courses = this.resetTreeChecked(filtersV2CoursesData);
+		let filtersV2Cohorts = this.resetTreeChecked(filtersV2CohortsData);
 		let filtersV2Papers = this.resetTreeChecked(filtersV2PapersData);
 
 		this.setState(
@@ -388,6 +401,8 @@ class SearchPage extends React.Component {
 				selectedV2Collections: [],
 				filtersV2Courses,
 				selectedV2Courses: [],
+				filtersV2Cohorts,
+				selectedV2Cohorts: [],
 				datasetIndex: 0,
 				toolIndex: 0,
 				projectIndex: 0,
@@ -461,6 +476,7 @@ class SearchPage extends React.Component {
 		let filtersV2Papers = [];
 		let filtersV2Courses = [];
 		let filtersV2Collections = [];
+		let filtersV2Cohorts = [];
 		let {
 			userState,
 			datasetIndex = 0,
@@ -470,6 +486,7 @@ class SearchPage extends React.Component {
 			personIndex = 0,
 			courseIndex = 0,
 			collectionIndex = 0,
+			cohortIndex = 0,
 			datasetSort = '',
 			toolSort = '',
 			projectSort = '',
@@ -477,6 +494,7 @@ class SearchPage extends React.Component {
 			personSort = '',
 			courseSort = '',
 			collectionSort = '',
+			cohortSort = '',
 		} = this.state;
 		// 1. build search object from list of selected fitlers v2 only
 		let searchObj = {
@@ -485,6 +503,7 @@ class SearchPage extends React.Component {
 			...this.buildSearchObj(this.state.selectedV2Projects),
 			...this.buildSearchObj(this.state.selectedV2Papers),
 			...this.buildSearchObj(this.state.selectedV2Courses),
+			...this.buildSearchObj(this.state.selectedV2Cohorts),
 			...this.buildSearchObj(this.state.selectedV2Collections),
 		};
 		// 2. dynamically build the searchUrl v2 only
@@ -495,6 +514,7 @@ class SearchPage extends React.Component {
 		if (paperIndex > 0) searchURL += '&paperIndex=' + encodeURIComponent(paperIndex);
 		if (personIndex > 0) searchURL += '&personIndex=' + encodeURIComponent(personIndex);
 		if (courseIndex > 0) searchURL += '&courseIndex=' + encodeURIComponent(courseIndex);
+		if (cohortIndex > 0) searchURL += '&cohortIndex=' + encodeURIComponent(cohortIndex);
 		if (collectionIndex > 0) searchURL += '&collectionIndex=' + encodeURIComponent(collectionIndex);
 		// sorting across the filter range
 		if (datasetSort !== '') searchURL += '&datasetSort=' + encodeURIComponent(datasetSort);
@@ -503,6 +523,7 @@ class SearchPage extends React.Component {
 		if (paperSort !== '') searchURL += '&paperSort=' + encodeURIComponent(paperSort);
 		if (personSort !== '') searchURL += '&personSort=' + encodeURIComponent(personSort);
 		if (courseSort !== '') searchURL += '&courseSort=' + encodeURIComponent(courseSort);
+		if (cohortSort !== '') searchURL += '&cohortSort=' + encodeURIComponent(cohortSort);
 		if (collectionSort !== '') searchURL += '&collectionSort=' + encodeURIComponent(collectionSort);
 		// login status handler
 		if (userState[0].loggedIn === false) {
@@ -551,6 +572,10 @@ class SearchPage extends React.Component {
 						let filtersV2CourseState = this.state.filtersV2Courses || [];
 						filtersV2Courses = this.setHighlightedFilters(filters, [...filtersV2CourseState]);
 						this.setState({ filtersV2Courses });
+					} else if (entityType === 'cohort') {
+						let filtersV2CohortState = this.state.filtersV2Cohorts || [];
+						filtersV2Cohorts = this.setHighlightedFilters(filters, [...filtersV2CohortState]);
+						this.setState({ filtersV2Cohorts });
 					} else {
 						this.setState({ ...filters });
 					}
@@ -721,6 +746,15 @@ class SearchPage extends React.Component {
 			if (!_.isEmpty(filterDataCourses) && _.isEmpty(this.state.filtersV2Courses)) {
 				const filtersV2Courses = this.mapFiltersToDictionary(filterDataCourses, this.state.dataUtilityFilters);
 				this.setState({ filtersV2Courses });
+			}
+
+			const responseCohorts = await axios.get(`${baseURL}/api/v2/filters/cohort`);
+			const {
+				data: { data: filterDataCohorts },
+			} = responseCohorts;
+			if (!_.isEmpty(filterDataCohorts) && _.isEmpty(this.state.filtersV2Cohorts)) {
+				const filtersV2Cohorts = this.mapFiltersToDictionary(filterDataCohorts, this.state.dataUtilityFilters);
+				this.setState({ filtersV2Cohorts });
 			}
 
 			const responseCollections = await axios.get(`${baseURL}/api/v2/filters/collection`);
@@ -1058,6 +1092,8 @@ class SearchPage extends React.Component {
 				return [...this.state.filtersV2Papers];
 			case 'Courses':
 				return [...this.state.filtersV2Courses];
+			case 'Cohorts':
+				return [...this.state.filtersV2Cohorts];
 			case 'Collections':
 				return [...this.state.filtersV2Collections];
 			default:
@@ -1080,6 +1116,8 @@ class SearchPage extends React.Component {
 				return [...this.state.selectedV2Papers];
 			case 'Courses':
 				return [...this.state.selectedV2Courses];
+			case 'Cohorts':
+				return [...this.state.selectedV2Cohorts];
 			case 'Collections':
 				return [...this.state.selectedV2Collections];
 			default:
@@ -1183,6 +1221,7 @@ class SearchPage extends React.Component {
 			personData,
 			courseData,
 			collectionData,
+			cohortData,
 			userState,
 			isLoading,
 			isResultsLoading,
@@ -1193,6 +1232,7 @@ class SearchPage extends React.Component {
 			personIndex,
 			courseIndex,
 			collectionIndex,
+			cohortIndex,
 
 			datasetSort,
 			toolSort,
@@ -1200,6 +1240,7 @@ class SearchPage extends React.Component {
 			paperSort,
 			personSort,
 			collectionSort,
+			cohortSort,
 			courseSort,
 
 			filtersV2Datasets,
@@ -1212,6 +1253,8 @@ class SearchPage extends React.Component {
 			selectedV2Papers,
 			filtersV2Courses,
 			selectedV2Courses,
+			filtersV2Cohorts,
+			selectedV2Cohorts,
 			filtersV2Collections,
 			selectedV2Collections,
 
@@ -1222,6 +1265,10 @@ class SearchPage extends React.Component {
 
 			key,
 		} = this.state;
+
+		// START: DELETE THIS TEST DATA
+		let cohortCount = 2;
+		// END: DELETE THIS TEST DATA
 
 		console.log(filtersV2Courses);
 		if (isLoading) {
@@ -1240,6 +1287,7 @@ class SearchPage extends React.Component {
 			personCount = 0,
 			courseCount = 0,
 			collectionCount = 0,
+			// cohortCount = 0,
 		} = summary;
 		// clean needed here at later date
 		if (key === '' || typeof key === 'undefined') {
@@ -1257,6 +1305,8 @@ class SearchPage extends React.Component {
 				key = 'Course';
 			} else if (collectionCount > 0) {
 				key = 'Collections';
+			} else if (cohortCount > 0) {
+				key = 'Cohorts';
 			} else {
 				key = 'Datasets';
 			}
@@ -1271,6 +1321,7 @@ class SearchPage extends React.Component {
 		if (key === 'People' && personCount === 0) showSort = false;
 		if (key === 'Courses' && courseCount === 0) showSort = false;
 		if (key === 'Collections' && collectionCount === 0) showSort = false;
+		if (key === 'Cohorts' && cohortCount === 0) showSort = false;
 
 		let datasetPaginationItems = [];
 		let toolPaginationItems = [];
@@ -1279,6 +1330,7 @@ class SearchPage extends React.Component {
 		let personPaginationItems = [];
 		let coursePaginationItems = [];
 		let collectionPaginationItems = [];
+		let cohortPaginationItems = [];
 		let maxResult = 40;
 		// Dataset pagination
 		for (let i = 1; i <= Math.max(Math.ceil(datasetCount / maxResult), 1); i++) {
@@ -1357,6 +1409,17 @@ class SearchPage extends React.Component {
 				</Pagination.Item>
 			);
 		}
+		// Cohort Pagination
+		for (let i = 1; i <= Math.ceil(cohortCount / maxResult); i++) {
+			cohortPaginationItems.push(
+				<Pagination.Item
+					key={i}
+					active={i === cohortIndex / maxResult + 1}
+					onClick={() => this.handlePagination(typeMapper.Cohorts, (i - 1) * maxResult)}>
+					{i}
+				</Pagination.Item>
+			);
+		}
 
 		return (
 			<Sentry.ErrorBoundary fallback={<ErrorModal show={this.showModal} handleClose={this.hideModal} />}>
@@ -1380,6 +1443,7 @@ class SearchPage extends React.Component {
 								<Tab eventKey='Collections' title={'Collections (' + collectionCount + ')'} />
 								<Tab eventKey='Courses' title={'Courses (' + courseCount + ')'} />
 								<Tab eventKey='Papers' title={'Papers (' + paperCount + ')'} />
+								<Tab eventKey='Cohorts' title={'Cohorts (' + cohortCount + ')'} />
 								<Tab eventKey='People' title={'People (' + personCount + ')'}>
 									{personCount <= 0 && !isResultsLoading ? <NoResults type='profiles' search={search} /> : ''}
 								</Tab>
@@ -1448,6 +1512,17 @@ class SearchPage extends React.Component {
 									<FilterSelection
 										selectedCount={selectedV2Courses.length}
 										selectedItems={selectedV2Courses}
+										onHandleClearSelection={this.handleClearSelection}
+										onHandleClearAll={this.handleClearAll}
+										savedSearches={true}
+									/>
+								) : (
+									''
+								)}
+								{this.state.key === 'Cohorts' ? (
+									<FilterSelection
+										selectedCount={selectedV2Cohorts.length}
+										selectedItems={selectedV2Cohorts}
 										onHandleClearSelection={this.handleClearSelection}
 										onHandleClearAll={this.handleClearAll}
 										savedSearches={true}
@@ -1585,6 +1660,28 @@ class SearchPage extends React.Component {
 									) : (
 										''
 									)}
+									{key === 'Cohorts' ? (
+										<Fragment>
+											<div className='filterHolder'>
+												{selectedV2Cohorts.length > 0 && (
+													<FilterSelection
+														selectedCount={selectedV2Cohorts.length}
+														selectedItems={selectedV2Cohorts}
+														onHandleClearSelection={this.handleClearSelection}
+														onHandleClearAll={this.handleClearAll}
+													/>
+												)}
+												<Filter
+													data={filtersV2Cohorts}
+													onHandleInputChange={this.handleInputChange}
+													onHandleClearSection={this.handleClearSection}
+													onHandleToggle={this.handleToggle}
+												/>
+											</div>
+										</Fragment>
+									) : (
+										''
+									)}
 									{key === 'Collections' ? (
 										<Fragment>
 											<div className='filterHolder'>
@@ -1690,6 +1787,17 @@ class SearchPage extends React.Component {
 														handleSort={this.handleSort}
 														sort={paperSort === '' ? (search === '' ? 'latest' : 'relevance') : paperSort}
 														dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
+														savedSearch={true}
+													/>
+												) : (
+													''
+												)}
+
+												{key === 'Cohorts' ? (
+													<SortDropdown
+														handleSort={this.handleSort}
+														sort={cohortSort === '' ? (search === '' ? 'latest' : 'relevance') : cohortSort}
+														dropdownItems={['relevance', 'popularity', 'latest', 'resources', 'entries', 'datasets']}
 														savedSearch={true}
 													/>
 												) : (
@@ -1823,6 +1931,26 @@ class SearchPage extends React.Component {
 										''
 									)}
 
+									{key === 'Cohorts' ? (
+										cohortCount <= 0 ? (
+											<NoResults type='cohorts' search={search} />
+										) : (
+											cohortData.map(cohort => {
+												return (
+													<RelatedObject
+														key={cohort.id}
+														data={{ ...cohort, type: 'cohort' }}
+														activeLink={true}
+														onSearchPage={true}
+														updateOnFilterBadge={this.updateOnFilterBadge}
+													/>
+												);
+											})
+										)
+									) : (
+										''
+									)}
+
 									{key === 'People'
 										? personData.map(person => {
 												return (
@@ -1897,6 +2025,8 @@ class SearchPage extends React.Component {
 										{key === 'Courses' && courseCount > maxResult ? <Pagination>{coursePaginationItems}</Pagination> : ''}
 
 										{key === 'Collections' && collectionCount > maxResult ? <Pagination>{collectionPaginationItems}</Pagination> : ''}
+
+										{key === 'Cohorts' && cohortCount > maxResult ? <Pagination>{cohortPaginationItems}</Pagination> : ''}
 									</div>
 								</Col>
 							) : (
