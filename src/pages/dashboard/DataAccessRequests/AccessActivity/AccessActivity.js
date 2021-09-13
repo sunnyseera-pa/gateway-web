@@ -24,8 +24,9 @@ const AccessActivity = ({
 	isReviewer = false,
 	stepName = '',
 	remainingActioners = [],
-	applicationId,
+	latestVersion,
 	amendmentStatus = '',
+	isStartReviewEnabled,
 }) => {
 	const setActivityMeta = () => {
 		let reviewDecision;
@@ -64,7 +65,6 @@ const AccessActivity = ({
 	const onClickStartReview = e => {
 		navigateToLocation(e, applicationId, applicationStatus);
 	};
-
 	const buildAccessRequest = () => {
 		const hasWorkflow = !_.isEmpty(workflowName) ? true : false;
 		const isTeam = team !== 'user' ? true : false;
@@ -127,6 +127,26 @@ const AccessActivity = ({
 							) : (
 								''
 							)}
+							{applicationStatus === DarHelperUtil.darStatus.submitted && isStartReviewEnabled
+								? (Object.values(latestVersion.versionTree) || [])
+										.filter(version => version.applicationStatus === DarHelperUtil.darStatus.submitted)
+										.map(submittedVersion => {
+											return (
+												team !== 'user' && (
+													<button
+														id='startReview'
+														className='button-primary'
+														onClick={e => {
+															navigateToLocation(e, submittedVersion.applicationId);
+														}}>
+														Start review: {submittedVersion.displayTitle}
+													</button>
+												)
+											);
+										})
+								: !_.isEmpty(reviewStatus) || !_.isEmpty(amendmentStatus)
+								? setActivityMeta()
+								: ''}
 						</div>
 					) : !_.isEmpty(amendmentStatus) ? (
 						setActivityMeta()

@@ -113,6 +113,7 @@ const AdvancedSearchModal = ({ open, closed, userProps }) => {
 			<Modal
 				show={open}
 				onHide={handleClose}
+				enforceFocus={false}
 				className='advanced-search-modal'
 				size='lg'
 				aria-labelledby='contained-modal-title-vcenter'
