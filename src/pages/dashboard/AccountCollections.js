@@ -178,7 +178,7 @@ const AccountCollections = props => {
 								<Tab eventKey='active' title={'Active (' + activeCount + ')'}>
 									{' '}
 								</Tab>
-								<Tab eventKey='archive' title={'Archive (' + archiveCount + ')'}>
+								<Tab eventKey='archive' title={'Archived (' + archiveCount + ')'}>
 									{' '}
 								</Tab>
 							</Tabs>

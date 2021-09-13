@@ -212,7 +212,7 @@ export const AccountCourses = props => {
 								<Tab eventKey='rejected' title={'Rejected (' + rejectedCount + ')'}>
 									{' '}
 								</Tab>
-								<Tab eventKey='archive' title={'Archive (' + archiveCount + ')'}>
+								<Tab eventKey='archive' title={'Archived (' + archiveCount + ')'}>
 									{' '}
 								</Tab>
 							</Tabs>

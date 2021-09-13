@@ -11,6 +11,7 @@ import AccountDatasets from './AccountDatasets';
 import AccountPapers from './AccountPapers';
 import AccountCourses from './AccountCourses';
 import AccountCollections from './AccountCollections';
+import AccountCohorts from './AccountCohorts';
 import AccountTeamManagement from './AccountTeamManagement';
 import AccountAnalyticsDashboard from './AccountAnalyticsDashboard';
 import AccountUsers from './AccountUsers';
@@ -94,6 +95,7 @@ class Account extends Component {
 		isSubmitting: false,
 		teamManagementInternalTab: 'Notifications',
 		accountUpdated: false,
+		cohortSaved: false,
 	};
 
 	constructor(props) {
@@ -128,6 +130,10 @@ class Account extends Component {
 			localStorage.setItem('HDR_TEAM', 'user');
 		}
 
+		if (_.has(values, 'cohortSaved')) {
+			this.state.cohortSaved = values.cohortSaved;
+		}
+
 		if (_.has(props, 'profileComplete')) {
 			this.state.profileComplete = props.profileComplete;
 		}
@@ -150,6 +156,7 @@ class Account extends Component {
 					isReviewApproved: values.reviewApproved,
 					isReviewRejected: values.reviewRejected,
 					accountUpdated: !!values.accountUpdated,
+					cohortSaved: values.cohortSaved,
 				});
 				this.toggleNav(tab);
 			}
@@ -166,6 +173,7 @@ class Account extends Component {
 		if (window.location.search) {
 			let values = queryString.parse(window.location.search);
 			let team = 'user';
+			let cohortSaved = this.state.cohortSaved;
 			if (values.tab !== this.state.tabId || typeof values.tab !== 'undefined' || typeof values.tab !== null) {
 				if (values.tab !== 'youraccount' && this.state.accountUpdated) {
 					this.setState({ accountUpdated: false });
@@ -188,6 +196,7 @@ class Account extends Component {
 					isReviewRejected: values.reviewRejected,
 					team,
 					activeAccordion: values.tab === 'dataaccessrequests' || values.tab === 'workflows' ? '0' : -1,
+					cohortSaved: cohortSaved,
 				});
 
 				if (team !== 'user' && team !== 'admin') {
@@ -375,6 +384,7 @@ class Account extends Component {
 		let {
 			activeAccordion,
 			alert,
+			cohortSaved,
 			userState: [user],
 		} = { ...this.state };
 		// 1. if alert set tabId as page has been redirected
@@ -411,6 +421,7 @@ class Account extends Component {
 				activeKey: tab.tabId,
 				alert: !_.isEmpty(alert) ? alert : {},
 				activeAccordion,
+				cohortSaved: !_.isEmpty(cohortSaved) ? cohortSaved : false,
 			});
 			// 6. push state
 			this.props.history.push({ pathname: window.location.pathname, search: `?tab=${tab.tabId}`, state: { team: tab.team } });
@@ -464,6 +475,7 @@ class Account extends Component {
 			isSubmitting,
 			teamManagementTab,
 			accountUpdated,
+			cohortSaved,
 		} = this.state;
 
 		return (
@@ -552,7 +564,7 @@ class Account extends Component {
 										className={`${tabId === 'dataaccessrequests' ? 'activeCard' : 'accountNav'}`}
 										onClick={e => this.toggleNav('dataaccessrequests')}>
 										<Nav.Link eventKey={'dataaccessrequests'} className='verticalNavBar gray700-13'>
-											<SVGIcon name='newprojecticon' fill={'#b3b8bd'} className='accountSvgs' />
+											<SVGIcon name='newdaricon' fill={'#b3b8bd'} className='accountSvgs' />
 											<span className='navLinkItem'>Data access requests</span>
 										</Nav.Link>
 									</div>
@@ -561,6 +573,13 @@ class Account extends Component {
 										<Nav.Link eventKey={'collections'} className='verticalNavBar gray700-13'>
 											<SVGIcon name='collections' fill={'#b3b8bd'} className='accountSvgs' />
 											<span className='navLinkItem'>Collections</span>
+										</Nav.Link>
+									</div>
+
+									<div className={`${tabId === 'cohorts' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('cohorts')}>
+										<Nav.Link eventKey={'cohorts'} className='verticalNavBar gray700-13'>
+											<SVGIcon name='newcohorticon' fill={'#b3b8bd'} className='accountSvgs' />
+											<span className='navLinkItem'>Cohorts</span>
 										</Nav.Link>
 									</div>
 
@@ -677,6 +696,8 @@ class Account extends Component {
 								{tabId === 'dataaccessrequests' ? <DataAccessRequests userState={userState} team={team} alert={alert} /> : ''}
 
 								{tabId === 'collections' ? <AccountCollections userState={userState} /> : ''}
+
+								{tabId === 'cohorts' ? <AccountCohorts userState={userState} cohortSaved={cohortSaved} /> : ''}
 
 								{tabId === 'usersroles' ? <AccountUsers userState={userState} /> : ''}
 							</>
