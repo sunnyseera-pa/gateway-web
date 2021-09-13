@@ -118,6 +118,12 @@ class SearchBar extends React.Component {
 		document.removeEventListener('mousedown', this.handleClick);
 	}
 
+	componentDidUpdate(prevProps) {
+		if (prevProps.search !== this.props.search) {
+			this.setState(() => ({ textValue: this.props.search }));
+		}
+	}
+
 	handleScroll = () => {
 		const { prevScrollpos } = this.state;
 		const currentScrollPos = window.pageYOffset;
@@ -964,8 +970,8 @@ class SearchBar extends React.Component {
 														{this.checkRedirectToast()}
 													</div>
 													<div className='navBarAvatarSpacing'>
-														<div class='avatar-circle'>
-															<span class='initials'>{this.getUserInitials(userState[0].name)}</span>
+														<div className='avatar-circle'>
+															<span className='initials'>{this.getUserInitials(userState[0].name)}</span>
 														</div>
 													</div>
 												</Fragment>

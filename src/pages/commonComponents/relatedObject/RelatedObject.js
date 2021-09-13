@@ -50,7 +50,7 @@ class RelatedObject extends React.Component {
 			this.getRelatedObjectFromDb(props.objectId, props.objectType);
 		} else {
 			this.state.relatedObject = props.relatedObject;
-		this.getRelatedObjectFromDb(this.state.relatedObject.objectId, this.state.relatedObject.objectType);
+			this.getRelatedObjectFromDb(this.state.relatedObject.objectId, this.state.relatedObject.objectType);
 		}
 	}
 
@@ -158,7 +158,7 @@ class RelatedObject extends React.Component {
 		}
 
 		return (
-			<Row className='resource-card-row' key={this.props.key}>
+			<Row className='resource-card-row'>
 				<Col>
 					<div
 						className={rectangleClassName}
@@ -199,14 +199,14 @@ class RelatedObject extends React.Component {
 												data.persons.map((person, index) => {
 													if (activeLink === true) {
 														return (
-															<a className='gray800-14' href={'/person/' + person.id} key={`perosn-${index}`}>
+															<a className='gray800-14' href={'/person/' + person.id} key={`person-${index}`}>
 																{person.firstname} {person.lastname}
 																{data.persons.length === index + 1 ? '' : ', '}
 															</a>
 														);
 													} else {
 														return (
-															<span className='gray800-14' key={`perosn-${index}`}>
+															<span className='gray800-14' key={`person-${index}`}>
 																{person.firstname} {person.lastname}
 																{data.persons.length === index + 1 ? '' : ', '}
 															</span>
@@ -367,14 +367,14 @@ class RelatedObject extends React.Component {
 												data.persons.map((person, index) => {
 													if (activeLink === true) {
 														return (
-															<a className='gray800-14' href={'/person/' + person.id} key={`perosn-${index}`}>
+															<a className='gray800-14' href={'/person/' + person.id} key={`person-${index}`}>
 																{person.firstname} {person.lastname}
 																{data.persons.length === index + 1 ? '' : ', '}
 															</a>
 														);
 													} else {
 														return (
-															<span className='gray800-14' key={`perosn-${index}`}>
+															<span className='gray800-14' key={`person-${index}`}>
 																{person.firstname} {person.lastname}
 																{data.persons.length === index + 1 ? '' : ', '}
 															</span>
@@ -500,14 +500,14 @@ class RelatedObject extends React.Component {
 												data.persons.map((person, index) => {
 													if (activeLink === true) {
 														return (
-															<a className='gray800-14' href={'/person/' + person.id} key={`perosn-${index}`}>
+															<a className='gray800-14' href={'/person/' + person.id} key={`person-${index}`}>
 																{person.firstname} {person.lastname}
 																{data.persons.length === index + 1 ? '' : ', '}
 															</a>
 														);
 													} else {
 														return (
-															<span className='gray800-14' key={`perosn-${index}`}>
+															<span className='gray800-14' key={`person-${index}`}>
 																{person.firstname} {person.lastname}
 																{data.persons.length === index + 1 ? '' : ', '}
 															</span>
@@ -747,6 +747,80 @@ class RelatedObject extends React.Component {
 										)}
 									</Row>
 								);
+							} else if (data.type === 'cohort') {
+								return (
+									<Row data-test-id='related-cohort-object' className='noMargin'>
+										<Col sm={10} lg={10} className='pad-left-24'>
+											{activeLink === true ? (
+												<a className='purple-bold-16' style={{ cursor: 'pointer' }} href={'/cohort/' + data.id}>
+													{data.name}
+												</a>
+											) : (
+												<span className='black-bold-16'> {data.name}</span>
+											)}
+											<br />
+											{!data.persons || data.persons <= 0 ? (
+												<span className='gray800-14'>Author not listed</span>
+											) : (
+												data.persons.map((person, index) => {
+													if (activeLink === true) {
+														return (
+															<a className='gray800-14' href={'/person/' + person.id} key={`person-${index}`}>
+																{person.firstname} {person.lastname}
+																{data.persons.length === index + 1 ? '' : ', '}
+															</a>
+														);
+													} else {
+														return (
+															<span className='gray800-14' key={`person-${index}`}>
+																{person.firstname} {person.lastname}
+																{data.persons.length === index + 1 ? '' : ', '}
+															</span>
+														);
+													}
+												})
+											)}
+										</Col>
+										<Col sm={2} lg={2} className='pad-right-24'>
+											{this.props.showRelationshipQuestion ? (
+												<Button variant='medium' className='soft-black-14' onClick={this.removeButton}>
+													<SVGIcon name='closeicon' fill={'#979797'} className='buttonSvg mr-2' />
+													Remove
+												</Button>
+											) : (
+												''
+											)}
+										</Col>
+										<Col sm={12} lg={12} className='pad-left-24 pad-right-24 pad-top-16'>
+											<span className='badge-paper'>
+												<SVGIcon name='cohort' fill={'#3c3c3b'} className='badgeSvg mr-2' />
+												<span>Cohort</span>
+											</span>
+											{data.inclusionExclusionCriteria.map(criteria => {
+												if (activeLink) {
+													if (onSearchPage) {
+														return (
+															<span className='pointer' onClick={event => this.updateOnFilterBadge('courseCriteriasSelected', criteria)}>
+																<div className='badge-tag'>{criteria}</div>
+															</span>
+														);
+													} else {
+														return (
+															<a href={'/search?search=&tab=Cohorts&cohortcriterias=' + criteria}>
+																<div className='badge-tag'>{criteria}</div>
+															</a>
+														);
+													}
+												} else {
+													return <div className='badge-tag'>{criteria}</div>;
+												}
+											})}
+										</Col>
+										<div class='pad-left-24 pad-right-24 pad-top-24 pad-bottom-16 col-lg-12 col-sm-12'>
+											<span className='gray800-14'>X entries across Y datasets</span>
+										</div>
+									</Row>
+								);
 							} else {
 								//default to dataset
 								if (data.type === 'dataset' && data.activeflag === 'archive') {
@@ -916,11 +990,12 @@ class RelatedObject extends React.Component {
 
 											{!data.tags.features || data.tags.features.length <= 0
 												? ''
-												: data.tags.features.map(feature => {
+												: data.tags.features.map((feature, index) => {
 														if (activeLink === true) {
 															if (onSearchPage === true) {
 																return (
 																	<span
+																		key={`feature-${index}`}
 																		className='pointer'
 																		onClick={event =>
 																			this.updateOnFilterBadge('datasetfeatures', { label: feature, parentKey: 'datasetfeatures' })
