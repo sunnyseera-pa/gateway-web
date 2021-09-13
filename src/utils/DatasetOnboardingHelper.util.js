@@ -381,7 +381,27 @@ let configActionModal = (type = '') => {
 					},
 				};
 				break;
-			default:
+			case 'DUPLICATE':
+				config = {
+					title: 'Duplicate this dataset metadata?',
+					subTitle:
+						'Are you sure you want to duplicate this dataset? All team members will be notified of this duplication.',
+					description: false,
+					buttons: {
+						cancel: {
+							label: 'No, nevermind',
+							action: 'cancel',
+							class: 'button-secondary mr-2',
+						},
+						confirmSubmission: {
+							label: 'Duplicate',
+							action: 'duplicate',
+							class: 'btn btn-primary addButton',
+						},
+					},
+				};
+				break;
+       default:
 				return type;
 		}
 	}
