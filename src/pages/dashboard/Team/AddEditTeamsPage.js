@@ -6,7 +6,6 @@ import * as Yup from 'yup';
 import Loading from '../../commonComponents/Loading';
 import { useFormik } from 'formik';
 import '../Dashboard.scss';
-import _ from 'lodash';
 
 var baseURL = require('../../commonComponents/BaseURL').getURL();
 const AddEditTeamsPage = ({

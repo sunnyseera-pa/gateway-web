@@ -244,7 +244,7 @@ class DataAccessRequestsNew extends React.Component {
 		return '';
 	};
 
-	renderDuration = (accessRequest) => {
+	renderDuration = accessRequest => {
 		const {
 			applicationStatus = '',
 			createdAt,
@@ -411,7 +411,6 @@ class DataAccessRequestsNew extends React.Component {
 								isReviewer = false,
 								stepName = '',
 								remainingActioners = [],
-								_id,
 								decisionDate,
 								amendmentStatus = '',
 								versions = [],

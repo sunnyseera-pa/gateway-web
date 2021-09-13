@@ -12,7 +12,7 @@ import { EnquiryMessage } from './components/EnquiryMessage';
 import './UserMessages.scss';
 
 const UserMessages = ({ userState, topicContext, closed, toggleModal, drawerIsOpen = false, is5Safes, msgDescription }) => {
-	let relatedObjectIds, title, subTitle, datasets, allowNewMessage, requiresModal, dataRequestModalContent;
+	let relatedObjectIds, title, subTitle, datasets, tags, allowNewMessage, requiresModal, dataRequestModalContent;
 
 	let history = useHistory();
 
@@ -22,7 +22,7 @@ const UserMessages = ({ userState, topicContext, closed, toggleModal, drawerIsOp
 			title = '',
 			subTitle = '',
 			datasets = [],
-
+			tags = [],
 			allowNewMessage = false,
 			requiresModal = false,
 			dataRequestModalContent = {},
@@ -50,22 +50,15 @@ const UserMessages = ({ userState, topicContext, closed, toggleModal, drawerIsOp
 				// 1. clone topics
 				let topicsArr = [...topics];
 				// 2. check if  dataset id has been passed
-				if (_.isEmpty(datasets) && !_.isEmpty(topicsArr) && !selectedTopicId) {
+				if (_.isEmpty(datasets) && !_.isEmpty(topicsArr)) {
 					const initialTopic = topicsArr[0];
 					topicsArr[0].active = true;
 					await getTopicById(initialTopic._id);
 					setTopics(topicsArr);
 					return;
 				}
-				// 3. attempt to select a matching existing topic
-				let existingTopicIdx;
-				if (selectedTopicId) {
-					//if a selected topic has been passed, find it
-					existingTopicIdx = topicsArr.findIndex(topic => topic._id === selectedTopicId);
-				} else {
-					//check if existing relatedObjectIds already in topic arr
-					existingTopicIdx = checkTopicExists(topicsArr, relatedObjectIds);
-				}
+				// 3. check if existing relatedObjectIds already in topic arr
+				const existingTopicIdx = checkTopicExists(topicsArr, relatedObjectIds);
 				// 4. if topics exists
 				if (existingTopicIdx > -1) {
 					// 4a. get topic in arr
@@ -175,7 +168,7 @@ const UserMessages = ({ userState, topicContext, closed, toggleModal, drawerIsOp
 					let {
 						data: { topic },
 					} = res;
-					let { datasets: [publisherObj = {}] = [] } = topic;
+					let { datasets: [publisherObj = {}, ...rest] = [] } = topic;
 					const {
 						data: { publisher = {} },
 					} = await getPublisherById(publisherObj.publisher);
