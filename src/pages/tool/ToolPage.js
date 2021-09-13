@@ -153,16 +153,13 @@ export const ToolDetail = props => {
 						let datasetPublisher;
 						let datasetLogo;
 
-						{
-							!_.isEmpty(res.data.data[0].datasetv2) && _.has(res.data.data[0], 'datasetv2.summary.publisher.name')
-								? (datasetPublisher = res.data.data[0].datasetv2.summary.publisher.name)
-								: (datasetPublisher = '');
-						}
-						{
-							!_.isEmpty(res.data.data[0].datasetv2) && _.has(res.data.data[0], 'datasetv2.summary.publisher.logo')
-								? (datasetLogo = res.data.data[0].datasetv2.summary.publisher.logo)
-								: (datasetLogo = '');
-						}
+						!_.isEmpty(res.data.data[0].datasetv2) && _.has(res.data.data[0], 'datasetv2.summary.publisher.name')
+							? (datasetPublisher = res.data.data[0].datasetv2.summary.publisher.name)
+							: (datasetPublisher = '');
+
+						!_.isEmpty(res.data.data[0].datasetv2) && _.has(res.data.data[0], 'datasetv2.summary.publisher.logo')
+							? (datasetLogo = res.data.data[0].datasetv2.summary.publisher.logo)
+							: (datasetLogo = '');
 
 						tempObjects.push({
 							id: object.objectId,

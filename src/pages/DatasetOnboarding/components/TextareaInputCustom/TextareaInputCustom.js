@@ -1,5 +1,4 @@
 import React from 'react';
-import _ from 'lodash';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 
 class TextareaInputCustom extends React.Component {

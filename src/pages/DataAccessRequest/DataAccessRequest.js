@@ -1511,18 +1511,18 @@ class DataAccessRequest extends Component {
 	};
 
 	updateApplicationStatus = async (action = {}) => {
-		let { type, statusDesc } = action;
+		let { type } = action;
 		switch (type) {
 			case 'CONFIRMAPPROVALCONDITIONS':
 			case 'CONFIRMREJECTION':
 			case 'CONFIRMAPPROVAL':
-				let { _id } = this.state;
-				const body = {
+				// let { _id } = this.state;
+				/* const body = {
 					applicationStatus: this.applicationState[type],
 					applicationStatusDesc: statusDesc,
-				};
+				};*/
 				// 1. Update action status
-				const response = await axios.put(`${baseURL}/api/v1/data-access-request/${_id}`, body);
+				//const response = await axios.put(`${baseURL}/api/v1/data-access-request/${_id}`, body);
 				// 2. set alert object for screen
 				let alert = {
 					publisher: this.state.publisher || '',

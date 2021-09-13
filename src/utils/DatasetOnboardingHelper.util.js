@@ -401,6 +401,8 @@ let configActionModal = (type = '') => {
 					},
 				};
 				break;
+       default:
+				return type;
 		}
 	}
 

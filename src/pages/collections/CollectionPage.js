@@ -193,15 +193,17 @@ export const CollectionPage = props => {
 				sortByPopularity();
 				break;
 			}
+			default:
+				return sort;
 		}
 	};
 
-	const sortByMetadataQuality = () => {
-		filteredData.sort((a, b) => {
-			if (_.has(a, 'datasetfields.metadataquality.quality_score') && _.has(b, 'datasetfields.metadataquality.quality_score'))
-				return b.datasetfields.metadataquality.quality_score - a.datasetfields.metadataquality.quality_score;
-		});
-	};
+	const sortByMetadataQuality = () =>
+		filteredData.sort((a, b) =>
+			_.has(a, 'datasetfields.metadataquality.quality_score') && _.has(b, 'datasetfields.metadataquality.quality_score')
+				? b.datasetfields.metadataquality.quality_score - a.datasetfields.metadataquality.quality_score
+				: ''
+		);
 
 	const sortByRecentlyAdded = () => {
 		return filteredData.sort((a, b) => b.updated - a.updated);
@@ -670,16 +672,13 @@ export const CollectionPage = props => {
 												);
 											}
 
-											{
-												!_.isEmpty(object.datasetv2) && _.has(object, 'datasetv2.summary.publisher.name')
-													? (datasetPublisher = object.datasetv2.summary.publisher.name)
-													: (datasetPublisher = '');
-											}
-											{
-												!_.isEmpty(object.datasetv2) && _.has(object, 'datasetv2.summary.publisher.logo')
-													? (datasetLogo = object.datasetv2.summary.publisher.logo)
-													: (datasetLogo = '');
-											}
+											!_.isEmpty(object.datasetv2) && _.has(object, 'datasetv2.summary.publisher.name')
+												? (datasetPublisher = object.datasetv2.summary.publisher.name)
+												: (datasetPublisher = '');
+
+											!_.isEmpty(object.datasetv2) && _.has(object, 'datasetv2.summary.publisher.logo')
+												? (datasetLogo = object.datasetv2.summary.publisher.logo)
+												: (datasetLogo = '');
 
 											collectionData.relatedObjects.map(dat => {
 												if (dat.objectId === object.datasetid) {

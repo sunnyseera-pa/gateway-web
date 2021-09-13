@@ -29,7 +29,7 @@ const urlEnv = require('../BaseURL').getURLEnv();
 
 const CustomToggle = React.forwardRef(({ children, onClick, subToggle }, ref) => (
 	<a
-		href=''
+		href='!#'
 		ref={ref}
 		onClick={e => {
 			e.preventDefault();
@@ -1306,7 +1306,9 @@ class SearchBar extends React.Component {
 																							<Col xs={10}>
 																								<div className='notificationDate'>{messageDateString + '\n'}</div>
 																								<div className='notificationInfoHolder'>
-																									<a className='notificationInfo'>{dat.messageDescription}</a>
+																									<a href='!#' class='notificationInfo'>
+																										{dat.messageDescription}
+																									</a>
 																								</div>
 																							</Col>
 																							<Col xs={2}>

@@ -53,7 +53,7 @@ import DatasetOnboardingHelperUtil from '../../utils/DatasetOnboardingHelper.uti
 
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
 	<a
-		href=''
+		href='!#'
 		ref={ref}
 		onClick={e => {
 			e.preventDefault();
@@ -1005,16 +1005,16 @@ class DatasetOnboarding extends Component {
 	};
 
 	updateApplicationStatus = async (action = {}) => {
-		let { type, statusDesc } = action;
+		let { type } = action;
 		switch (type) {
 			case 'CONFIRMAPPROVALCONDITIONS':
 			case 'CONFIRMREJECTION':
 			case 'CONFIRMAPPROVAL':
-				let { _id } = this.state;
-				const body = {
+				//let { _id } = this.state;
+				/*const body = {
 					applicationStatus: this.applicationState[type],
 					applicationStatusDesc: statusDesc,
-				};
+				};*/
 
 				/* // 1. Update action status
 				const response = await axios.put(`${baseURL}/api/v1/data-access-request/${_id}`, body);
