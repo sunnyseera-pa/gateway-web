@@ -538,7 +538,7 @@ class SearchPage extends React.Component {
 		// login status handler
 		if (userState[0].loggedIn === false) {
 			let values = queryString.parse(window.location.search);
-			if (values.showLogin === 'true' && values.loginReferrer !== '')
+			if (values.showLogin === 'true' && values.loginReferrer && values.loginReferrer !== '')
 				searchURL += '&loginReferrer=' + encodeURIComponent(values.loginReferrer);
 			else if (values.showLogin === 'true' && document.referrer !== '')
 				searchURL += '&loginReferrer=' + encodeURIComponent(document.referrer);
