@@ -752,13 +752,13 @@ class DataAccessRequest extends Component {
 			// 1. Data = {key: jsonSchema || questionAnswers, data: { object of data}}
 			let { key, data = {} } = obj;
 			// 2. Id of data access request
-			// let { _id: id } = this.state;
+			let { _id: id } = this.state;
 			// 3. Set up body params
-			/*let params = {
+			let params = {
 				[`${key}`]: data,
-			};*/
+			};
 			// 4. PATCH the data
-			//const response = await axios.patch(`${baseURL}/api/v1/data-access-request/${id}`, params);
+			const response = await axios.patch(`${baseURL}/api/v1/data-access-request/${id}`, params);
 			// 6. Get saved time
 			const lastSaved = DarHelper.saveTime();
 			// 5. Set state
