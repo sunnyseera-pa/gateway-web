@@ -19,6 +19,7 @@ import ResourcePageButtons from '../commonComponents/resourcePageButtons/Resourc
 import SVGIcon from '../../images/SVGIcon';
 import './Collections.scss';
 import CollectionsSearch from './CollectionsSearch';
+import googleAnalytics from '../../tracking';
 
 export const CollectionPage = props => {
 	const [collectionData, setCollectionData] = useState([]);
@@ -167,6 +168,7 @@ export const CollectionPage = props => {
 	};
 
 	const handleSort = sort => {
+		googleAnalytics.recordEvent('Collections', `Sorted collection entities by ${sort}`, 'Sort dropdown option changed');
 		setCollectionsPageSort(sort);
 		switch (sort) {
 			case 'metadata': {
