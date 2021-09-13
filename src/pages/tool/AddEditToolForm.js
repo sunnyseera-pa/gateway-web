@@ -46,7 +46,6 @@ const AddEditToolForm = props => {
 	const originalUploader = props.isEdit ? props.data.uploader : props.userState[0].id;
 	useEffect(() => {
 		buildListOfUploaders();
-		// eslint-disable-next-line
 	}, []);
 
 	const formik = useFormik({
