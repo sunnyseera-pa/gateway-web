@@ -149,7 +149,6 @@ const AccountDatasets = props => {
 									variant='primary'
 									className='addButton'
 									onClick={(() => googleAnalytics.recordEvent('Datasets', 'Add a new dataset', 'Datasets dashboard button clicked'), createNewDataset)}>
-										
 									+ Add a new dataset
 								</Button>
 							</Col>
