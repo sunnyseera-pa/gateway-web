@@ -823,6 +823,10 @@ class DatasetOnboarding extends Component {
 		this.toggleActionModal('DELETEDRAFT');
 	};
 
+	toggleDuplicateModal = () => {
+		this.toggleActionModal('DUPLICATE');
+	}
+
 	toggleActionModal = (type = '') => {
 		let actionModalConfig = {};
 		// 1. get basic modal config
@@ -971,6 +975,29 @@ class DatasetOnboarding extends Component {
 					console.log(err);
 				}
 
+				break;
+			case 'DUPLICATE':
+				try {
+					let { _id } = this.state;
+					let duplicateDataset;
+
+					await axios.post(`${baseURL}/api/v1/dataset-onboarding/duplicate/${_id}`).then(res => {
+						duplicateDataset = res.data.datasetName;
+					});
+
+					let alert = {
+						tab: 'active',
+						message: `You have successfully duplicated ${duplicateDataset}`,
+					};
+
+					this.props.history.push({
+						pathname: '/account',
+						search: '?tab=datasets',
+						state: { alert, team: this.state.publisher },
+					});
+				} catch (err) {
+					console.log(err);
+				}
 				break;
 			default:
 				this.toggleActionModal();
@@ -1491,6 +1518,7 @@ class DatasetOnboarding extends Component {
 									showUnArchive={this.state.showUnArchive}
 									showDeleteDraft={this.state.showDeleteDraft}
 									onShowDeleteDraftModal={this.toggleDeleteDraftModal}
+									onShowDuplicateModal={this.toggleDuplicateModal}
 								/>
 							) : (
 								<CustodianActionButtons
