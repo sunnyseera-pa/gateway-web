@@ -39,7 +39,7 @@ const PersonDetail = props => {
 		getDataSearchFromDb();
 		initGA('UA-166025838-1');
 		PageView();
-	}, [getDataSearchFromDb()]);
+	}, []);
 
 	const getDataSearchFromDb = () => {
 		setIsLoading(true);

@@ -42,7 +42,7 @@ const ActivePhaseModal = ({ open, close, workflow = {}, projectName = '', dataSe
 
 	useEffect(() => {
 		getActivePhase();
-	}, [getActivePhase()]);
+	}, []);
 
 	return (
 		<Fragment>
