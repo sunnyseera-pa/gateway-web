@@ -24,9 +24,7 @@ const AddEditTeamsPage = ({
 	const memberOfSelect = ['ALLIANCE', 'HUBS', 'OTHER', 'NCS'];
 
 	const handleMemberOfSelect = key => {
-		{
-			formik.setFieldValue('memberOf', key);
-		}
+		formik.setFieldValue('memberOf', key);
 	};
 
 	const getTeamManagerData = () => {
