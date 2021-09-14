@@ -608,14 +608,22 @@ export const CollectionPage = props => {
 			</div>
 
 			<div>
-				<Tabs className='tabsBackground gray700-13' activeKey={key} onSelect={handleSelect} data-testid='collectionPageTabs'>
+				<Tabs
+					className='tabsBackground gray700-13'
+					activeKey={key}
+					onSelect={key => {
+						handleSelect(key);
+						googleAnalytics.recordVirtualPageView(`${key} tab`);
+						googleAnalytics.recordEvent('Collections', `Clicked ${key} tab`, `Viewing ${key}`);
+					}}
+					data-testid='collectionPageTabs'>
 					<Tab eventKey='dataset' title={'Datasets (' + datasetCount + ')'}></Tab>
 					<Tab eventKey='tool' title={'Tools (' + toolCount + ')'}></Tab>
 					<Tab eventKey='paper' title={'Papers (' + paperCount + ')'}></Tab>
 					<Tab eventKey='project' title={'Projects (' + projectCount + ')'}></Tab>
 					<Tab eventKey='person' title={'People (' + personCount + ')'}></Tab>
 					<Tab eventKey='course' title={'Course (' + courseCount + ')'}></Tab>
-					<Tab eventKey='Collaboration' title={`Discussion (${discoursePostCount})`}>
+					<Tab eventKey='discussion' title={`Discussion (${discoursePostCount})`}>
 						<Container className='resource-card'>
 							<Row>
 								<Col sm={1} lg={1} />
@@ -640,7 +648,7 @@ export const CollectionPage = props => {
 						</Col>
 					</Row>
 				)}
-				{key !== 'Collaboration' && (
+				{key !== 'discussion' && (
 					<CollectionsSearch
 						doCollectionsSearchMethod={doCollectionsSearch}
 						doUpdateCollectionsSearchString={updateCollectionsSearchString}

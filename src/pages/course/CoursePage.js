@@ -20,6 +20,8 @@ import ErrorModal from '../commonComponents/errorModal/ErrorModal';
 import CollectionCard from '../commonComponents/collectionCard/CollectionCard';
 import './Course.scss';
 import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
+import googleAnalytics from '../../tracking';
+
 
 let baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -328,7 +330,12 @@ export const CourseDetail = props => {
 						<Col sm={1} lg={1} />
 						<Col sm={10} lg={10}>
 							<div>
-								<Tabs className='tabsBackground gray700-13 margin-bottom-16'>
+								<Tabs
+									className='tabsBackground gray700-13 margin-bottom-16'
+									onSelect={key => {
+										googleAnalytics.recordVirtualPageView(`${key} tab`);
+										googleAnalytics.recordEvent('Courses', `Clicked ${key} tab`, `Viewing ${key}`);
+									}}>
 									<Tab eventKey='About' title={'About'}>
 										<Row>
 											<Col sm={12} lg={12}>
@@ -630,7 +637,7 @@ export const CourseDetail = props => {
 										</Row>
 									</Tab>
 
-									<Tab eventKey='Collaboration' title={`Discussion (${discoursePostCount})`}>
+									<Tab eventKey='Discussion' title={`Discussion (${discoursePostCount})`}>
 										<DiscourseTopic
 											toolId={courseData.id}
 											topicId={courseData.discourseTopicId || 0}
@@ -638,7 +645,7 @@ export const CourseDetail = props => {
 											onUpdateDiscoursePostCount={updateDiscoursePostCount}
 										/>
 									</Tab>
-									<Tab eventKey='Projects' title={'Related resources (' + relatedObjects.length + ')'}>
+									<Tab eventKey='Related resources' title={'Related resources (' + relatedObjects.length + ')'}>
 										{relatedObjects.length <= 0 ? (
 											<NotFound word='related resources' />
 										) : (

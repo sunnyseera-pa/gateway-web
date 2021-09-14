@@ -24,6 +24,7 @@ import _ from 'lodash';
 import { ReactComponent as InfoSVG } from '../../images/info.svg';
 import './Paper.scss';
 import { Fragment } from 'react';
+import googleAnalytics from '../../tracking';
 
 export const PaperDetail = props => {
 	const [id] = useState('');
@@ -338,7 +339,10 @@ export const PaperDetail = props => {
 						<Col sm={1} lg={1} />
 						<Col sm={10} lg={10}>
 							<div>
-								<Tabs className='tabsBackground gray700-13 margin-bottom-16'>
+								<Tabs className='tabsBackground gray700-13 margin-bottom-16' onSelect={key => {
+										googleAnalytics.recordVirtualPageView(`${key} tab`);
+										googleAnalytics.recordEvent('Papers', `Clicked ${key} tab`, `Viewing ${key}`);
+									}}>
 									<Tab eventKey='about' title={'About'}>
 										<Row className='mt-2'>
 											<Col>
@@ -539,7 +543,7 @@ export const PaperDetail = props => {
 										)}
 									</Tab>
 
-									<Tab eventKey='Collaboration' title={`Discussion (${discoursePostCount})`}>
+									<Tab eventKey='Discussion' title={`Discussion (${discoursePostCount})`}>
 										<DiscourseTopic
 											toolId={paperData.id}
 											topicId={paperData.discourseTopicId || 0}
@@ -547,7 +551,7 @@ export const PaperDetail = props => {
 											onUpdateDiscoursePostCount={updateDiscoursePostCount}
 										/>
 									</Tab>
-									<Tab eventKey='Projects' title={'Related resources (' + relatedObjects.length + ')'}>
+									<Tab eventKey='Related resources' title={'Related resources (' + relatedObjects.length + ')'}>
 										{relatedObjects.length <= 0 ? (
 											<NotFound word='related resources' />
 										) : (
