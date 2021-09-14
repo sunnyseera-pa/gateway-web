@@ -39,7 +39,8 @@ class TypeaheadDataset extends React.Component {
 	}
 
 	getData() {
-		const { selectedDatasets, allowAllCustodians } = this.props;
+		debugger;
+		const { selectedDatasets, allowAllCustodians, only5Safes = true } = this.props;
 		let { publisher } = this.state;
 
 		if (selectedDatasets && selectedDatasets.length > 0) {
@@ -60,7 +61,7 @@ class TypeaheadDataset extends React.Component {
 							fields: 'datasetid,name,description,datasetfields.abstract,_id,datasetfields.publisher,datasetfields.contactPoint',
 							populate: 'publisher',
 							sort: 'datasetfields.publisher, name',
-							is5Safes: true,
+							...(only5Safes ? { is5Safes: true } : {}),
 							...(publisher ? { ['datasetfields.publisher']: publisher } : {}),
 						},
 					})
