@@ -50,7 +50,7 @@ class RelatedObject extends React.Component {
 			this.getRelatedObjectFromDb(props.objectId, props.objectType);
 		} else {
 			this.state.relatedObject = props.relatedObject;
-		this.getRelatedObjectFromDb(this.state.relatedObject.objectId, this.state.relatedObject.objectType);
+			this.getRelatedObjectFromDb(this.state.relatedObject.objectId, this.state.relatedObject.objectType);
 		}
 	}
 
@@ -237,7 +237,12 @@ class RelatedObject extends React.Component {
 												onSearchPage === true ? (
 													<span
 														className='pointer'
-														onClick={event => this.updateOnFilterBadge('toolCategoriesSelected', data.categories.category)}>
+														onClick={event =>
+															this.updateOnFilterBadge('toolCategoriesSelected', {
+																label: data.categories.category,
+																parentKey: 'toolcategories',
+															})
+														}>
 														<div className='badge-tag'>{data.categories.category}</div>
 													</span>
 												) : (
@@ -257,7 +262,12 @@ class RelatedObject extends React.Component {
 																return (
 																	<span
 																		className='pointer'
-																		onClick={event => this.updateOnFilterBadge('toolProgrammingLanguageSelected', p.programmingLanguage)}>
+																		onClick={event =>
+																			this.updateOnFilterBadge('toolProgrammingLanguageSelected', {
+																				label: p.programmingLanguage,
+																				parentKey: 'toolprogrammingLanguage',
+																			})
+																		}>
 																		<div className='badge-version' key={i}>
 																			<span>{p.programmingLanguage}</span>
 																			<span>{p.version}</span>
@@ -292,7 +302,9 @@ class RelatedObject extends React.Component {
 																return (
 																	<span
 																		className='pointer'
-																		onClick={event => this.updateOnFilterBadge('toolFeaturesSelected', feature)}
+																		onClick={event =>
+																			this.updateOnFilterBadge('toolFeaturesSelected', { label: feature, parentKey: 'toolfeatures' })
+																		}
 																		key={`feature-${index}`}>
 																		<div className='badge-tag'>{feature}</div>
 																	</span>
@@ -321,7 +333,9 @@ class RelatedObject extends React.Component {
 																return (
 																	<span
 																		className='pointer'
-																		onClick={event => this.updateOnFilterBadge('toolTopicsSelected', topic)}
+																		onClick={event =>
+																			this.updateOnFilterBadge('toolTopicsSelected', { label: topic, parentKey: 'tooltopics' })
+																		}
 																		key={`topic-${index}`}>
 																		<div className='badge-tag'>{topic}</div>
 																	</span>
@@ -405,7 +419,12 @@ class RelatedObject extends React.Component {
 												onSearchPage === true ? (
 													<span
 														className='pointer'
-														onClick={event => this.updateOnFilterBadge('projectCategoriesSelected', data.categories.category)}>
+														onClick={event =>
+															this.updateOnFilterBadge('projectCategoriesSelected', {
+																label: data.categories.category,
+																parentKey: 'projectcategories',
+															})
+														}>
 														<div className='badge-tag'>{data.categories.category}</div>
 													</span>
 												) : (
@@ -425,7 +444,9 @@ class RelatedObject extends React.Component {
 																return (
 																	<span
 																		className='pointer'
-																		onClick={event => this.updateOnFilterBadge('projectFeaturesSelected', feature)}
+																		onClick={event =>
+																			this.updateOnFilterBadge('projectFeaturesSelected', { label: feature, parentKey: 'projectfeatures' })
+																		}
 																		key={`tagFeature-${index}`}>
 																		<div className='badge-tag'>{feature}</div>
 																	</span>
@@ -454,7 +475,9 @@ class RelatedObject extends React.Component {
 																return (
 																	<span
 																		className='pointer'
-																		onClick={event => this.updateOnFilterBadge('projectTopicsSelected', topic)}
+																		onClick={event =>
+																			this.updateOnFilterBadge('projectTopicsSelected', { label: topic, parentKey: 'projecttopics' })
+																		}
 																		key={`tagTopic-${index}`}>
 																		<div className='badge-tag'>{topic}</div>
 																	</span>
@@ -537,7 +560,11 @@ class RelatedObject extends React.Component {
 														if (activeLink === true) {
 															if (onSearchPage === true) {
 																return (
-																	<span className='pointer' onClick={event => this.updateOnFilterBadge('paperFeaturesSelected', feature)}>
+																	<span
+																		className='pointer'
+																		onClick={event =>
+																			this.updateOnFilterBadge('paperFeaturesSelected', { label: feature, parentKey: 'paperfeatures' })
+																		}>
 																		<div className='badge-tag'>{feature}</div>
 																	</span>
 																);
@@ -559,7 +586,11 @@ class RelatedObject extends React.Component {
 														if (activeLink === true) {
 															if (onSearchPage === true) {
 																return (
-																	<span className='pointer' onClick={event => this.updateOnFilterBadge('paperTopicsSelected', topic)}>
+																	<span
+																		className='pointer'
+																		onClick={event =>
+																			this.updateOnFilterBadge('paperTopicsSelected', { label: topic, parentKey: 'papertopics' })
+																		}>
 																		<div className='badge-tag'>{topic}</div>
 																	</span>
 																);
@@ -702,7 +733,11 @@ class RelatedObject extends React.Component {
 														if (activeLink === true) {
 															if (onSearchPage === true) {
 																return (
-																	<span className='pointer' onClick={event => this.updateOnFilterBadge('courseAwardSelected', award)}>
+																	<span
+																		className='pointer'
+																		onClick={event =>
+																			this.updateOnFilterBadge('courseAwardSelected', { label: award, parentKey: 'courseaward' })
+																		}>
 																		<div className='badge-tag'>{award}</div>
 																	</span>
 																);
@@ -724,7 +759,11 @@ class RelatedObject extends React.Component {
 														if (activeLink === true) {
 															if (onSearchPage === true) {
 																return (
-																	<span className='pointer' onClick={event => this.updateOnFilterBadge('courseDomainsSelected', domain)}>
+																	<span
+																		className='pointer'
+																		onClick={event =>
+																			this.updateOnFilterBadge('courseDomainsSelected', { label: domain, parentKey: 'coursedomains' })
+																		}>
 																		<div className='badge-tag'>{domain}</div>
 																	</span>
 																);
