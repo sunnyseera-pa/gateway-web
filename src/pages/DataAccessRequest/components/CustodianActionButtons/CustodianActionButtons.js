@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react';
 import DarHelper from '../../../../utils/DarHelper.util';
 import ActionBarMenu from '../../../commonComponents/ActionBarMenu/ActionBarMenu';
+import googleAnalytics from '../../../../tracking';
 
 const CustodianActionButtons = ({
 	activeParty = '',
@@ -41,7 +42,10 @@ const CustodianActionButtons = ({
 				{
 					title: 'View recommendations',
 					description: 'View assigned workflow and phase recommendations',
-					onClick: onWorkflowReview,
+					onClick: () => {
+						onWorkflowReview();
+						googleAnalytics.recordVirtualPageView('workflow recommendations modal');
+					},
 					isVisible: applicationStatus === DarHelper.darStatus.inReview,
 				},
 			],
@@ -56,6 +60,7 @@ const CustodianActionButtons = ({
 					title: 'Issues found',
 					onClick: () => {
 						onWorkflowReviewDecisionClick(false);
+						googleAnalytics.recordEvent('Data access request', 'Issues found clicked', 'Workflow phase review decision made');
 					},
 					isVisible: showRecommendationDropdown && showReviewOptions,
 				},
@@ -63,6 +68,7 @@ const CustodianActionButtons = ({
 					title: 'No issues found',
 					onClick: () => {
 						onWorkflowReviewDecisionClick(true);
+						googleAnalytics.recordEvent('Data access request', 'No issues found clicked', 'Workflow phase review decision made');
 					},
 					isVisible: showRecommendationDropdown && showReviewOptions,
 				},
@@ -76,6 +82,7 @@ const CustodianActionButtons = ({
 					title: 'Approve',
 					onClick: () => {
 						onActionClick('Approve');
+						googleAnalytics.recordEvent('Data access request', 'Application approved', 'Application final decision made');
 					},
 					isVisible: showRecommendationDropdown && roles.includes('manager'),
 				},
@@ -83,6 +90,7 @@ const CustodianActionButtons = ({
 					title: 'Approve with conditions',
 					onClick: () => {
 						onActionClick('ApproveWithConditions');
+						googleAnalytics.recordEvent('Data access request', 'Application approved with conditions', 'Application final decision made');
 					},
 					isVisible: showRecommendationDropdown && roles.includes('manager'),
 				},
@@ -90,6 +98,7 @@ const CustodianActionButtons = ({
 					title: 'Reject',
 					onClick: () => {
 						onActionClick('Reject');
+						googleAnalytics.recordEvent('Data access request', 'Application rejected', 'Application final decision made');
 					},
 					isVisible: showRecommendationDropdown && roles.includes('manager'),
 				},
@@ -113,18 +122,33 @@ const CustodianActionButtons = ({
 			<ActionBarMenu label='Make a decision' options={availableDecisionOptions} />
 
 			{showAssignWorkflow && (
-				<button className='button-secondary' onClick={e => onActionClick('AssignWorkflow')}>
+				<button
+					className='button-secondary'
+					onClick={e => {
+						onActionClick('AssignWorkflow');
+						googleAnalytics.recordVirtualPageView('assign workflow modal');
+					}}>
 					Assign a workflow
 				</button>
 			)}
 
 			{showSendUpdateRequest && (
-				<button className='button-secondary' onClick={e => onUpdateRequest(e)}>
+				<button
+					className='button-secondary'
+					onClick={e => {
+						onUpdateRequest(e);
+						googleAnalytics.recordVirtualPageView('send update request modal');
+					}}>
 					Send update request
 				</button>
 			)}
 
-			<button className={`button-primary ${allowedNavigation ? '' : 'disabled'}`} onClick={e => onNextClick()}>
+			<button
+				className={`button-primary ${allowedNavigation ? '' : 'disabled'}`}
+				onClick={e => {
+					onNextClick();
+					googleAnalytics.recordEvent('Data access request', 'Clicked next', 'Navigate to next page');
+				}}>
 				Next
 			</button>
 		</Fragment>

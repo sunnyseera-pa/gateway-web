@@ -3,18 +3,19 @@ import _ from 'lodash';
 import { Modal } from 'react-bootstrap';
 import { ReactComponent as CloseButtonSvg } from '../../../../images/close-alt.svg';
 import './SubmitAmendmentModal.scss';
+import googleAnalytics from '../../../../tracking';
 
 const SubmitAmendmentModal = ({ open, close, onHandleSubmit }) => {
 	const [count, setCount] = useState(0);
 	const [formState, setFormState] = useState({ amendDesc: '', invalid: false, invalidMessage: '', submitted: false });
 
-	const onSubmit = (e) => {
+	const onSubmit = e => {
 		e.preventDefault();
 		setFormState({ ...formState, submitted: true });
 		const { amendDesc } = formState;
 
 		const isInvalid = isFormInvalid();
-		
+
 		if (!isInvalid) {
 			onHandleSubmit(amendDesc);
 			setFormState({ amendDesc: '', invalid: false, invalidMessage: '', submitted: false });
@@ -41,7 +42,7 @@ const SubmitAmendmentModal = ({ open, close, onHandleSubmit }) => {
 			submitted: true,
 			invalid: amendDesc.length > 1500 || _.isEmpty(amendDesc),
 			invalidMessage:
-			amendDesc.length > 1500
+				amendDesc.length > 1500
 					? 'Description can not exceed 1500 characters'
 					: _.isEmpty(amendDesc)
 					? 'Description must not be blank'
@@ -85,7 +86,12 @@ const SubmitAmendmentModal = ({ open, close, onHandleSubmit }) => {
 						<button className='button-secondary' onClick={() => close()}>
 							No, nevermind
 						</button>
-						<button className='button-primary' onClick={(e) => onSubmit(e)}>
+						<button
+							className='button-primary'
+							onClick={e => {
+								googleAnalytics.recordEvent('Data access request', 'Clicked submit amendment', 'Submitted amendment');
+								onSubmit(e);
+							}}>
 							Submit amendment
 						</button>
 					</div>
