@@ -14,7 +14,7 @@ import ProjectPage from './pages/project/ProjectPage';
 import PaperPage from './pages/paper/PaperPage';
 import CoursePage from './pages/course/CoursePage';
 import DatasetPage from './pages/dataset/DatasetPage';
-import DataUsePage from './pages/dataUse/DataUsePage';
+import ViewDataUsePage from './pages/dataUse/view/ViewDataUse';
 import SearchPage from './pages/search/SearchPage';
 import CollectionPage from './pages/collections/CollectionPage';
 import PublicAnalyticsDashboard from './pages/publicDashboard/PublicAnalyticsDashboard';
@@ -208,7 +208,7 @@ class HDRRouter extends Component {
 						<Route path='/loginerror' render={props => <LoginErrorPage {...props} userState={userState} />} />
 						<Route path='/person/:personID' render={props => <PersonPage {...props} userState={userState} />} />
 						<Route path='/dataset/:datasetID' render={props => <DatasetPage {...props} userState={userState} />} />
-						<Route path='/datause' render={props => <DataUsePage {...props} userState={userState} />} />
+						<Route path='/viewdatause' render={props => <ViewDataUsePage {...props} userState={userState} />} />
 						<Route path='/completeRegistration/:personID' render={props => <CompleteRegistration {...props} userState={userState} />} />
 						<Route path='/sso' render={props => <SSOPage {...props} userState={userState} />} />
 						<Route path='/account/unsubscribe/:userObjectID' render={props => <Unsubscribe {...props} userState={userState} />} />
