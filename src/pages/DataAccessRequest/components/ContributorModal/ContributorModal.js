@@ -2,11 +2,13 @@ import React, { Fragment } from 'react';
 import { Modal } from 'react-bootstrap';
 import { ReactComponent as CloseButtonSvg } from '../../../../images/close-alt.svg';
 import SLA from '../../../commonComponents/sla/SLA';
+import googleAnalytics from '../../../../tracking';
 
 import './ContributorModal.scss';
 
 const ContributorModal = ({ open, close, mainApplicant, children, handleOnSaveChanges }) => {
 	const onSaveChanges = () => {
+		googleAnalytics.recordEvent('Data access request', 'Clicked save changes', 'Updated application contributors');
 		handleOnSaveChanges();
 		close();
 	};
