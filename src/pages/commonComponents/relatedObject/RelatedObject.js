@@ -661,7 +661,7 @@ class RelatedObject extends React.Component {
 
 																!_.isEmpty(data.courseOptions[0]) &&
 																	data.courseOptions.map((courseOption, index) => {
-																		courseRender.push(
+																		return courseRender.push(
 																			<>{index > 0 ? <span> ,{courseOption.studyMode} </span> : <span> {courseOption.studyMode} </span>}</>
 																		);
 																	});

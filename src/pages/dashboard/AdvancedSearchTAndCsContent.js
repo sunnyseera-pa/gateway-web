@@ -1,5 +1,4 @@
 import React, { Fragment } from 'react';
-import _ from 'lodash';
 import './AdvancedSearchRequestAccessModal.scss';
 import { Form } from 'react-bootstrap';
 
@@ -82,13 +81,13 @@ const AdvancedSearchTAndCsContent = props => {
 					individual user:
 					<ul className='termsBulletList'>
 						<li>
-							<a className='link' href='https://www.hdruk.ac.uk/privacy-policy/' target='_blank'>
+							<a className='link' href='https://www.hdruk.ac.uk/privacy-policy/' target='_blank' rel='noopener noreferrer'>
 								Privacy Policy
 							</a>
 							, which sets out how we will use your personal data.
 						</li>
 						<li>
-							<a className='link' href='https://www.hdruk.ac.uk/terms-and-conditions/cookies/' target='_blank'>
+							<a className='link' href='https://www.hdruk.ac.uk/terms-and-conditions/cookies/' target='_blank' rel='noopener noreferrer'>
 								Cookie Policy
 							</a>
 							, which sets out information about the cookies on our site.

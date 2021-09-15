@@ -11,7 +11,7 @@ const ResourcePageButtons = props => {
 		} else {
 			setType(props.data.type);
 		}
-	}, []);
+	}, [props.data.type, props.isCollection]);
 
 	return (
 		<div className='floatRight row'>

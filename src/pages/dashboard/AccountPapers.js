@@ -6,7 +6,6 @@ import NotFound from '../commonComponents/NotFound';
 import Loading from '../commonComponents/Loading';
 import './Dashboard.scss';
 import ActionModal from '../commonComponents/ActionModal/ActionModal';
-import _ from 'lodash';
 import { EntityActionButton } from './EntityActionButton.jsx';
 import googleAnalytics from '../../tracking';
 import { PaginationHelper } from '../commonComponents/PaginationHelper';
@@ -500,6 +499,8 @@ export const AccountPapers = props => {
 											)}
 										</div>
 									);
+								default:
+									return key;
 							}
 						})()}
 

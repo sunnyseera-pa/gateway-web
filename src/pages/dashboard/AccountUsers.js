@@ -168,6 +168,8 @@ class AccountUsers extends React.Component {
 											)}
 										</div>
 									);
+								default:
+									return userCount <= 0;
 							}
 						})()}
 					</Col>

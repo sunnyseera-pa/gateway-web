@@ -32,6 +32,7 @@ const DataUtitlityFramework = props => {
 							<a
 								href='https://www.hdruk.ac.uk/helping-with-health-data/ways-to-improve-data-quality/data-utility-evaluation/'
 								target='_blank'
+								rel='noopener noreferrer'
 								className='purple-14 pad-bottom-32'>
 								Understanding the data utility evaluation
 							</a>

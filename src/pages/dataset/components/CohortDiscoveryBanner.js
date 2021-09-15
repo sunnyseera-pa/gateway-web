@@ -4,7 +4,6 @@ import AdvancedSearchRequestAccessModal from '../../dashboard/AdvancedSearchRequ
 import AdvancedSearchTermsandConditionsModal from '../../dashboard/AdvancedSearchTAndCsModal';
 import { ReactComponent as GoldStar } from '../../../images/cd-star.svg';
 import { ReactComponent as ChevronRightSvg } from '../../../images/chevron-right.svg';
-import _ from 'lodash';
 import axios from 'axios';
 const baseURL = require('../../commonComponents/BaseURL').getURL();
 const GENERAL_ACCESS = 'GENERAL_ACCESS';
@@ -114,7 +113,7 @@ const CohortDiscoveryBanner = ({ userProps }) => {
 						<Row className='gray800-14-bold'>
 							<Col sm={11} lg={11} className='gray800-14'>
 								<div className='black-16-semibold mr-3'>
-									<GoldStar fill={'#f98e2b'} height='16' width='16' viewBox="0 0 21 21" className='mr-2' />
+									<GoldStar fill={'#f98e2b'} height='16' width='16' viewBox='0 0 21 21' className='mr-2' />
 									Explore this dataset with cohort discovery
 									<span className='beta-title ml-2'>BETA</span>
 								</div>
@@ -124,7 +123,8 @@ const CohortDiscoveryBanner = ({ userProps }) => {
 									<a
 										className='textUnderline gray800-14 cursorPointer'
 										href='https://www.healthdatagateway.org/about/cohort-discovery'
-										target='_blank'>
+										target='_blank'
+										rel='noopener noreferrer'>
 										Learn more
 									</a>
 								</div>
