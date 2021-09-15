@@ -2,9 +2,8 @@ import React from 'react';
 import { Row, Col, Container, Dropdown, DropdownButton } from 'react-bootstrap';
 
 const RelatedResources = ({ data }) => {
-	console.log(data);
 	return (
-		<Container>
+		<>
 			<Row>
 				<Col>
 					<input />
@@ -35,7 +34,7 @@ const RelatedResources = ({ data }) => {
 					{a.comments.description}
 				</Container>
 			))}
-		</Container>
+		</>
 	);
 };
 

@@ -51,7 +51,7 @@ const View = ({ ...props }) => {
 			<Container className='datause-view'>
 				<Row className='datause-card'>Summary section</Row>
 
-				<Tabs defaultActiveKey='About' classNameclassName='gray700-13 data-use-tabs'>
+				<Tabs defaultActiveKey='About' className='gray700-13 data-use-tabs'>
 					{tabs.map(tabName => (
 						<Tab eventKey={tabName} title={tabName}>
 							{tabName === 'About' && <About data={Data.filter(a => a.tab === 'About')} />}
