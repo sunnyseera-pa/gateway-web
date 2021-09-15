@@ -435,10 +435,6 @@ class SearchPage extends React.Component {
 			};
 			// 3. the filter will contain {label, parentKey (parentKey is defined the filters.mapper API)}
 			this.handleInputChange(node, parentKey, true);
-		} else if (!this.state[filterGroup].find(x => x === filter)) {
-			// 4. V1 for Tools, Projects, Papers, Collections, Courses
-			this.state[filterGroup].push(filter);
-			this.updateOnFilter();
 		} else {
 			return;
 		}
