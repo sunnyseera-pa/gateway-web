@@ -6,7 +6,6 @@ import { useFormik } from 'formik';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import queryString from 'query-string';
 import Loading from '../commonComponents/Loading';
-import _ from 'lodash';
 import './Dashboard.scss';
 import SVGIcon from '../../images/SVGIcon';
 import AlertBannerBlue from '../commonComponents/AlertBannerBlue';
@@ -214,44 +213,38 @@ const YourAccountForm = props => {
 	const [showingSector, setShowSector] = useState(showSector);
 	const toggleSector = () => {
 		setShowSector(!showingSector);
-		{
-			formik.setFieldValue('showSector', !showingSector);
-		}
+
+		formik.setFieldValue('showSector', !showingSector);
 	};
 	const [showingOrg, setShowOrg] = useState(showOrg);
 	const toggleOrg = () => {
 		setShowOrg(!showingOrg);
-		{
-			formik.setFieldValue('showOrganisation', !showingOrg);
-		}
+
+		formik.setFieldValue('showOrganisation', !showingOrg);
 	};
 	const [showingBio, setShowBio] = useState(showBio);
 	const toggleBio = () => {
 		setShowBio(!showingBio);
-		{
-			formik.setFieldValue('showBio', !showingBio);
-		}
+
+		formik.setFieldValue('showBio', !showingBio);
 	};
 	const [showingDomain, setShowDomain] = useState(showDomain);
 	const toggleDomain = () => {
 		setShowDomain(!showingDomain);
-		{
-			formik.setFieldValue('showDomain', !showingDomain);
-		}
+
+		formik.setFieldValue('showDomain', !showingDomain);
 	};
 	const [showingLink, setShowLink] = useState(showLink);
 	const toggleLink = () => {
 		setShowLink(!showingLink);
-		{
-			formik.setFieldValue('showLink', !showingLink);
-		}
+
+		formik.setFieldValue('showLink', !showingLink);
 	};
 	const [showingOrcid, setShowOrcid] = useState(showOrcid);
 	const toggleOrcid = () => {
 		setShowOrcid(!showingOrcid);
-		{
-			formik.setFieldValue('showOrcid', !showingOrcid);
-		}
+
+		formik.setFieldValue('showOrcid', !showingOrcid);
 	};
 
 	// Pass the useFormik() hook initial form values and a submit function that will
@@ -299,9 +292,7 @@ const YourAccountForm = props => {
 	});
 
 	const handleSectorSelect = key => {
-		{
-			formik.setFieldValue('sector', key);
-		}
+		formik.setFieldValue('sector', key);
 	};
 
 	function bioCount(e) {
@@ -816,6 +807,7 @@ const YourAccountForm = props => {
 										<a
 											href='https://www.hdruk.ac.uk/infrastructure/gateway/terms-and-conditions/'
 											target='_blank'
+											rel='noopener noreferrer'
 											data-test-id='user-account-terms-conditions-link'>
 											Terms and Conditions
 										</a>
@@ -880,7 +872,10 @@ const YourAccountForm = props => {
 									</Col>
 									<Col md={10} sm={8} xs={6} className='gray800-14 pl-0'>
 										I want to receive news, updates and curated marketing from the Gateway&nbsp;&nbsp;&nbsp;&nbsp;
-										<a target='_blank' href='https://mailchi.mp/hdruk.ac.uk/explore-and-access-the-uks-health-research-datasets'>
+										<a
+											target='_blank'
+											rel='noopener noreferrer'
+											href='https://mailchi.mp/hdruk.ac.uk/explore-and-access-the-uks-health-research-datasets'>
 											Show me an example
 										</a>
 									</Col>
@@ -891,7 +886,7 @@ const YourAccountForm = props => {
 								<span className='divider-lines' />
 								<Col sm={12}>
 									As a user of the Gateway we take the privacy and security of your personal data seriously. Our{' '}
-									<a target='_blank' href='https://www.hdruk.ac.uk/infrastructure/gateway/privacy-policy/'>
+									<a target='_blank' rel='noopener noreferrer' href='https://www.hdruk.ac.uk/infrastructure/gateway/privacy-policy/'>
 										privacy policy
 									</a>{' '}
 									aims to give you information on how Health Data Research UK collects and processes your personal data through your use of

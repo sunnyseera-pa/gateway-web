@@ -300,6 +300,8 @@ const AccountDatasets = props => {
 										)}
 									</div>
 								);
+							default:
+								return key;
 						}
 					})()}
 				</Col>

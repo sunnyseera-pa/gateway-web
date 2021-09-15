@@ -1,18 +1,12 @@
 import React, { Fragment } from 'react';
-import DarHelper from '../../../../utils/DarHelper.util';
 import '../../DatasetOnboarding.scss';
 import Dropdown from 'react-bootstrap/Dropdown';
 import { Row } from 'react-bootstrap';
 
-const CustodianActionButtons = ({
-	allowedNavigation = false,
-	onNextClick,
-	onActionClick,
-	roles
-}) => {
+const CustodianActionButtons = ({ allowedNavigation = false, onNextClick, onActionClick, roles }) => {
 	const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
 		<a
-			href=''
+			href='!#'
 			ref={ref}
 			onClick={e => {
 				e.preventDefault();
@@ -20,7 +14,7 @@ const CustodianActionButtons = ({
 			}}>
 			{children}
 		</a>
-  ));
+	));
 
 	return (
 		<Fragment>

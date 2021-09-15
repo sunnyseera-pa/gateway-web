@@ -21,7 +21,6 @@ import { baseURL } from '../../configs/url.config';
 import { PageView, initGA } from '../../tracking';
 import SVGIcon from '../../images/SVGIcon';
 import ReactMarkdown from 'react-markdown';
-import moment from 'moment';
 import _ from 'lodash';
 import { ReactComponent as InfoSVG } from '../../images/info.svg';
 import './Paper.scss';
@@ -152,16 +151,13 @@ export const PaperDetail = props => {
 						let datasetPublisher;
 						let datasetLogo;
 
-						{
-							!_.isEmpty(res.data.data[0].datasetv2) && _.has(res.data.data[0], 'datasetv2.summary.publisher.name')
-								? (datasetPublisher = res.data.data[0].datasetv2.summary.publisher.name)
-								: (datasetPublisher = '');
-						}
-						{
-							!_.isEmpty(res.data.data[0].datasetv2) && _.has(res.data.data[0], 'datasetv2.summary.publisher.logo')
-								? (datasetLogo = res.data.data[0].datasetv2.summary.publisher.logo)
-								: (datasetLogo = '');
-						}
+						!_.isEmpty(res.data.data[0].datasetv2) && _.has(res.data.data[0], 'datasetv2.summary.publisher.name')
+							? (datasetPublisher = res.data.data[0].datasetv2.summary.publisher.name)
+							: (datasetPublisher = '');
+
+						!_.isEmpty(res.data.data[0].datasetv2) && _.has(res.data.data[0], 'datasetv2.summary.publisher.logo')
+							? (datasetLogo = res.data.data[0].datasetv2.summary.publisher.logo)
+							: (datasetLogo = '');
 
 						tempObjects.push({
 							id: object.objectId,

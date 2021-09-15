@@ -6,7 +6,6 @@ import NotFound from '../commonComponents/NotFound';
 import Loading from '../commonComponents/Loading';
 import './Dashboard.scss';
 import ActionModal from '../commonComponents/ActionModal/ActionModal';
-import _ from 'lodash';
 import { Event, initGA } from '../../tracking';
 import { EntityActionButton } from './EntityActionButton.jsx';
 import { PaginationHelper } from '../commonComponents/PaginationHelper';
@@ -509,6 +508,8 @@ export const AccountTools = props => {
 											)}
 										</div>
 									);
+								default:
+									return key;
 							}
 						})()}
 

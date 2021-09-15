@@ -316,6 +316,8 @@ class DataUtilityModalInfo extends React.Component {
 						</Collapse>
 					</div>
 				);
+			default:
+				return section;
 		}
 	}
 }

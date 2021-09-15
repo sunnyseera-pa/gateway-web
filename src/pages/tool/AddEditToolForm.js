@@ -632,23 +632,23 @@ const AddEditToolForm = props => {
 												''
 											) : (
 												<div className='rectangle'>
-													{props.relatedObjects.map(object => {
-														if (!isNil(object.objectId)) {
-															return (
-																<RelatedObject
-																	showRelationshipQuestion={true}
-																	objectId={object.objectId}
-																	pid={object.pid}
-																	objectType={object.objectType}
-																	doRemoveObject={props.doRemoveObject}
-																	doUpdateReason={updateReason}
-																	reason={object.reason}
-																	didDelete={props.didDelete}
-																	updateDeleteFlag={props.updateDeleteFlag}
-																/>
-															);
-														}
-													})}
+													{props.relatedObjects.map(object =>
+														!isNil(object.objectId) ? (
+															<RelatedObject
+																showRelationshipQuestion={true}
+																objectId={object.objectId}
+																pid={object.pid}
+																objectType={object.objectType}
+																doRemoveObject={props.doRemoveObject}
+																doUpdateReason={updateReason}
+																reason={object.reason}
+																didDelete={props.didDelete}
+																updateDeleteFlag={props.updateDeleteFlag}
+															/>
+														) : (
+															''
+														)
+													)}
 												</div>
 											)}
 

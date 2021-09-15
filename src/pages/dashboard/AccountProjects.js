@@ -6,7 +6,6 @@ import NotFound from '../commonComponents/NotFound';
 import Loading from '../commonComponents/Loading';
 import ActionModal from '../commonComponents/ActionModal/ActionModal';
 import './Dashboard.scss';
-import _ from 'lodash';
 import { EntityActionButton } from './EntityActionButton.jsx';
 import { Event, initGA } from '../../tracking';
 import { PaginationHelper } from '../commonComponents/PaginationHelper';
@@ -510,6 +509,8 @@ export const AccountProjects = props => {
 											)}
 										</div>
 									);
+								default:
+									return key;
 							}
 						})()}
 
