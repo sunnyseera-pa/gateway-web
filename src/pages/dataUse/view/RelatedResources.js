@@ -17,8 +17,24 @@ const RelatedResources = ({ data }) => {
 					</DropdownButton>
 				</Col>
 			</Row>
-
-			<Row className='datause-card'>Cards</Row>
+			{data.map(a => (
+				<Container className='datause-card'>
+					<Row>
+						<p>{a.title}</p>
+						<p>{a.org}</p>
+					</Row>
+					<Row>{a.keywordType}</Row>
+					<Row>
+						{a.keywords}
+						{a.custodian}
+					</Row>
+					<Row>
+						<Col>{a.comments.author}</Col>
+						<Col>{a.comments.date}</Col>
+					</Row>
+					{a.comments.description}
+				</Container>
+			))}
 		</Container>
 	);
 };

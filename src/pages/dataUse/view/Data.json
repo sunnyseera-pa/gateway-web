@@ -4,15 +4,14 @@
 		"org": "University of Oxford",
 		"keywordType": "Data use",
 		"keywords": ["Active Adult Survey", "Delta dataset", "Bowel Screening Wales"],
+		"custodian": "HQIP",
 		"tab": "Related resources",
 		"version": 1,
-		"comments": [
-			{
-				"author": "Sarah Jones",
-				"date": "12 June 2019",
-				"description": "The first submission of this data access request"
-			}
-		]
+		"comments": {
+			"author": "Sarah Jones",
+			"date": "12 June 2019",
+			"description": "The first submission of this data access request"
+		}
 	},
 	{
 		"title": "PRINCIPLE: Platform Randomised trial of INterventions against COVID-19 In older peoPLE",
