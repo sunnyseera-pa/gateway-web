@@ -648,7 +648,6 @@ class DataAccessRequest extends Component {
 						this.state.userType,
 						this.state.areDatasetsAmended
 					);
-				debugger;
 				let schemaUpdates = _.omitBy(
 					{
 						unansweredAmendments,
