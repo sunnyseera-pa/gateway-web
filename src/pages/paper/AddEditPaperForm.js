@@ -17,6 +17,7 @@ import SVGIcon from '../../images/SVGIcon';
 import { ReactComponent as InfoSVG } from '../../images/info.svg';
 import './Paper.scss';
 const baseURL = require('../commonComponents/BaseURL').getURL();
+let windowUrl = window.location.origin;
 
 const initialValues = {
 	document_links: {
@@ -107,11 +108,11 @@ const AddEditPaperForm = props => {
 			values.authors = uploadersList.map(uploader => uploader.id);
 			if (props.isEdit) {
 				axios.put(baseURL + '/api/v1/papers/' + props.data.id, values).then(res => {
-					window.location.href = window.location.search + '/paper/' + props.data.id + '/?paperEdited=true';
+					window.location.href = windowUrl + '/paper/' + props.data.id + '/?paperEdited=true';
 				});
 			} else {
 				axios.post(baseURL + '/api/v1/papers/', values).then(res => {
-					window.location.href = window.location.search + '/paper/' + res.data.response.id + '/?paperAdded=true';
+					window.location.href = windowUrl + '/paper/' + res.data.response.id + '/?paperAdded=true';
 				});
 			}
 		},
@@ -187,7 +188,6 @@ const AddEditPaperForm = props => {
 	}
 
 	function descriptionCount(e) {
-		var input = e.target.value;
 		document.getElementById('currentCount').innerHTML = e.target.value.length;
 	}
 
@@ -620,23 +620,23 @@ const AddEditPaperForm = props => {
 												''
 											) : (
 												<div className='rectangle'>
-													{props.relatedObjects.map(object => {
-														if (!isNil(object.objectId)) {
-															return (
-																<RelatedObject
-																	showRelationshipQuestion={true}
-																	objectId={object.objectId}
-																	pid={object.pid}
-																	objectType={object.objectType}
-																	doRemoveObject={props.doRemoveObject}
-																	doUpdateReason={updateReason}
-																	reason={object.reason}
-																	didDelete={props.didDelete}
-																	updateDeleteFlag={props.updateDeleteFlag}
-																/>
-															);
-														}
-													})}
+													{props.relatedObjects.map(object =>
+														!isNil(object.objectId) ? (
+															<RelatedObject
+																showRelationshipQuestion={true}
+																objectId={object.objectId}
+																pid={object.pid}
+																objectType={object.objectType}
+																doRemoveObject={props.doRemoveObject}
+																doUpdateReason={updateReason}
+																reason={object.reason}
+																didDelete={props.didDelete}
+																updateDeleteFlag={props.updateDeleteFlag}
+															/>
+														) : (
+															''
+														)
+													)}
 												</div>
 											)}
 

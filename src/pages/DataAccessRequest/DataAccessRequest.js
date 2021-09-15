@@ -843,8 +843,9 @@ class DataAccessRequest extends Component {
 			}
 
 			// reset guidance - due to on change of panel
+			let jsonSchema = this.state.jsonSchema;
 			this.setState({
-				jsonSchema: { ...this.state.jsonSchema, pages: newFormState },
+				jsonSchema: { ...jsonSchema, pages: newFormState },
 				activePanelId: panelId,
 				isWideForm: panelId === 'about' || panelId === 'files',
 				totalQuestions: totalQuestions,
@@ -1510,18 +1511,18 @@ class DataAccessRequest extends Component {
 	};
 
 	updateApplicationStatus = async (action = {}) => {
-		let { type, statusDesc } = action;
+		let { type } = action;
 		switch (type) {
 			case 'CONFIRMAPPROVALCONDITIONS':
 			case 'CONFIRMREJECTION':
 			case 'CONFIRMAPPROVAL':
-				let { _id } = this.state;
-				const body = {
+				// let { _id } = this.state;
+				/* const body = {
 					applicationStatus: this.applicationState[type],
 					applicationStatusDesc: statusDesc,
-				};
+				};*/
 				// 1. Update action status
-				const response = await axios.put(`${baseURL}/api/v1/data-access-request/${_id}`, body);
+				//const response = await axios.put(`${baseURL}/api/v1/data-access-request/${_id}`, body);
 				// 2. set alert object for screen
 				let alert = {
 					publisher: this.state.publisher || '',
@@ -2045,6 +2046,7 @@ class DataAccessRequest extends Component {
 									isShared={this.state.isShared}
 									updateCount={this.updateCount}
 									publisher={datasets[0].datasetv2.summary.publisher.name}
+									applicationStatus={applicationStatus}
 								/>
 							</div>
 						</div>

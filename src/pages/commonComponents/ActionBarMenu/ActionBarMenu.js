@@ -4,7 +4,7 @@ import Dropdown from 'react-bootstrap/Dropdown';
 const ActionBarMenu = ({ label, options = [], disabled, buttonClass = 'button-secondary' }) => {
 	const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
 		<a
-			href=''
+			href='!#'
 			ref={ref}
 			onClick={e => {
 				e.preventDefault();

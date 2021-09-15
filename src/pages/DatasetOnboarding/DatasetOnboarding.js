@@ -1,5 +1,5 @@
 import React, { Component, Fragment, useState } from 'react';
-import { OverlayTrigger, Tooltip, Container, Row, Col, Alert } from 'react-bootstrap';
+import { OverlayTrigger, Tooltip, Container, Row, Col } from 'react-bootstrap';
 import Winterfell from 'winterfell';
 import _ from 'lodash';
 import axios from 'axios';
@@ -53,7 +53,7 @@ import DatasetOnboardingHelperUtil from '../../utils/DatasetOnboardingHelper.uti
 
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
 	<a
-		href=''
+		href='!#'
 		ref={ref}
 		onClick={e => {
 			e.preventDefault();
@@ -85,34 +85,21 @@ class DatasetOnboarding extends Component {
 
 		this.state = {
 			_id: '',
-			activeParty: '',
 			activePanelId: '',
 			activeGuidance: '',
 			amendmentIterations: [],
-			fullAmendments: {},
 			jsonSchema: {},
 			questionAnswers: {},
 			structuralMetadataErrors: [],
 			structuralMetadata: [],
 			listOfDatasets: [],
-			hasRecommended: false,
 			applicationStatus: '',
 			searchString: '',
-			key: 'beforeYouBegin',
 			totalQuestions: '',
 			validationErrors: {},
 			lastSaved: '',
 			lookup: [],
 			isLoading: true,
-			formSubmitted: false,
-			datasets: [
-				{
-					name: '',
-					datasetfields: {
-						publisher: '',
-					},
-				},
-			],
 			name: '',
 			datasetVersion: '',
 			activeflag: '',
@@ -120,7 +107,6 @@ class DatasetOnboarding extends Component {
 			showDrawer: false,
 			showActionModal: false,
 			actionModalConfig: {},
-			showCreateNewVersionModal: false,
 
 			readOnly: false,
 			userType: '',
@@ -128,11 +114,9 @@ class DatasetOnboarding extends Component {
 			unansweredAmendments: 0,
 			isWideForm: false,
 			isTableForm: false,
-			allowsMultipleDatasets: false,
 			activeAccordionCard: 0,
 			allowedNavigation: true,
 			topicContext: {},
-			authorIds: [],
 			reviewSections: [],
 			roles: [],
 			inReviewMode: false,
@@ -225,12 +209,10 @@ class DatasetOnboarding extends Component {
 		// 1. Destructure DAR context containing questions and any application progress
 		let {
 			jsonSchema,
-			activeParty = '',
 			questionAnswers = {},
 			structuralMetadata = [],
 			listOfDatasets = [],
 			_id,
-			hasRecommended,
 			amendmentIterations = [],
 			applicationStatus,
 			dataset,
@@ -238,18 +220,11 @@ class DatasetOnboarding extends Component {
 			userType = 'EDITOR',
 			unansweredAmendments = 0,
 			answeredAmendments = 0,
-			userId,
-			authorIds,
 			inReviewMode = false,
 			reviewSections = [],
 		} = context;
 
-		let {
-			name,
-			datasetVersion,
-			activeflag,
-			datasetfields: { publisher },
-		} = dataset;
+		let { name, datasetVersion, activeflag } = dataset;
 
 		let showSubmit = false;
 		let submitButtonText = 'Submit for review';
@@ -258,7 +233,7 @@ class DatasetOnboarding extends Component {
 		let showUnArchive = false;
 		let showDeleteDraft = false;
 
-		publisher = dataset.datasetv2.summary.publisher.identifier;
+		let publisher = dataset.datasetv2.summary.publisher.identifier;
 
 		this.setState({ roles: this.getUserRoles() });
 		if (this.state.roles.includes('admin') && applicationStatus === DatasetOnboardingHelper.datasetStatus.inReview) userType = 'ADMIN';
@@ -290,13 +265,11 @@ class DatasetOnboarding extends Component {
 		// 9. Set state
 		this.setState({
 			jsonSchema: { ...jsonSchema, ...classSchema },
-			activeParty,
 			dataset,
 			questionAnswers,
 			structuralMetadata,
 			listOfDatasets,
 			_id,
-			hasRecommended,
 			amendmentIterations,
 			applicationStatus,
 			activePanelId: initialPanel,
@@ -311,8 +284,6 @@ class DatasetOnboarding extends Component {
 			answeredAmendments,
 			unansweredAmendments,
 			userType,
-			userId,
-			authorIds,
 			showSubmit,
 			submitButtonText,
 			showCreateNewVersion,
@@ -503,6 +474,8 @@ class DatasetOnboarding extends Component {
 
 		if (isValid) {
 			this.toggleActionModal('SUBMITFORREVIEW');
+		} else if (this.userRoleIsAdmin(this.state.publisher)) {
+			this.toggleActionModal('VALIDATIONERRORSADMIN');
 		} else {
 			let activePage = _.get(_.keys({ ...errors }), 0);
 			let activePanel = _.get(_.keys({ ...errors }[activePage]), 0);
@@ -540,8 +513,9 @@ class DatasetOnboarding extends Component {
 		// 1. If in the about panel, we go to the next step.  Otherwise next panel.
 		if (this.state.activePanelId === 'beforeYouBegin') {
 			// 2. Set new state
+			let currentActiveAccordionCard = this.state.activeAccordionCard;
 			this.setState({
-				activeAccordionCard: ++this.state.activeAccordionCard,
+				activeAccordionCard: ++currentActiveAccordionCard,
 			});
 
 			// 3. If we have reached the end of the about accordion, reset active accordion so all are closed
@@ -576,7 +550,6 @@ class DatasetOnboarding extends Component {
 	 */
 	updateNavigation = (newForm, validationErrors = {}) => {
 		if (this.state.allowedNavigation) {
-			let reviewWarning = false;
 			// reset scroll to 0, 0
 			window.scrollTo(0, 0);
 			let panelId = '';
@@ -584,7 +557,6 @@ class DatasetOnboarding extends Component {
 			const pages = [...this.state.jsonSchema.pages];
 			// get the index of new form
 			const newPageindex = pages.findIndex(page => page.pageId === newForm.pageId);
-			reviewWarning = !pages[newPageindex].inReview && this.state.inReviewMode;
 			// reset the current state of active to false for all pages
 			const newFormState = [...this.state.jsonSchema.pages].map(item => {
 				return { ...item, active: false };
@@ -618,14 +590,14 @@ class DatasetOnboarding extends Component {
 			else percentageCompleted.updatedCompletion.structural = 0;
 
 			// reset guidance - due to on change of panel
+			let jsonSchema = this.state.jsonSchema;
 			this.setState({
-				jsonSchema: { ...this.state.jsonSchema, pages: newFormState },
+				jsonSchema: { ...jsonSchema, pages: newFormState },
 				activePanelId: panelId,
 				isWideForm: panelId === 'beforeYouBegin',
 				isTableForm: panelId === 'structural',
 				totalQuestions: totalQuestions,
 				validationErrors,
-				reviewWarning,
 				activeGuidance: '',
 				completion: percentageCompleted.updatedCompletion,
 			});
@@ -646,7 +618,7 @@ class DatasetOnboarding extends Component {
 	 * @param   {string}  questionId     [questionId]
 	 */
 	onQuestionClick = async (questionSetId = '', questionId = '') => {
-		let questionSet, jsonSchema, questionAnswers, data, schema;
+		let questionSet, jsonSchema, questionAnswers, schema;
 
 		questionSet = DatasetOnboardingHelperUtil.findQuestionSet(questionSetId, { ...this.state.jsonSchema });
 
@@ -851,6 +823,10 @@ class DatasetOnboarding extends Component {
 		this.toggleActionModal('DELETEDRAFT');
 	};
 
+	toggleDuplicateModal = () => {
+		this.toggleActionModal('DUPLICATE');
+	}
+
 	toggleActionModal = (type = '') => {
 		let actionModalConfig = {};
 		// 1. get basic modal config
@@ -1000,22 +976,45 @@ class DatasetOnboarding extends Component {
 				}
 
 				break;
+			case 'DUPLICATE':
+				try {
+					let { _id } = this.state;
+					let duplicateDataset;
+
+					await axios.post(`${baseURL}/api/v1/dataset-onboarding/duplicate/${_id}`).then(res => {
+						duplicateDataset = res.data.datasetName;
+					});
+
+					let alert = {
+						tab: 'active',
+						message: `You have successfully duplicated ${duplicateDataset}`,
+					};
+
+					this.props.history.push({
+						pathname: '/account',
+						search: '?tab=datasets',
+						state: { alert, team: this.state.publisher },
+					});
+				} catch (err) {
+					console.log(err);
+				}
+				break;
 			default:
 				this.toggleActionModal();
 		}
 	};
 
 	updateApplicationStatus = async (action = {}) => {
-		let { type, statusDesc } = action;
+		let { type } = action;
 		switch (type) {
 			case 'CONFIRMAPPROVALCONDITIONS':
 			case 'CONFIRMREJECTION':
 			case 'CONFIRMAPPROVAL':
-				let { _id } = this.state;
-				const body = {
+				//let { _id } = this.state;
+				/*const body = {
 					applicationStatus: this.applicationState[type],
 					applicationStatusDesc: statusDesc,
-				};
+				};*/
 
 				/* // 1. Update action status
 				const response = await axios.put(`${baseURL}/api/v1/data-access-request/${_id}`, body);
@@ -1065,6 +1064,20 @@ class DatasetOnboarding extends Component {
 
 		return foundTeam[0]._id; */
 	}
+
+	userHasRole = (teamId, role) => {
+		const team = this.props.userState[0].teams.filter(t => {
+			return t._id === teamId;
+		})[0];
+		return team && team.roles.includes(role);
+	};
+
+	userRoleIsAdmin = teamId => {
+		const team = this.props.userState[0].teams.filter(t => {
+			return t._id === teamId;
+		})[0];
+		return team && team.isAdmin;
+	};
 
 	/* renderTooltip = props => (
 		<Tooltip className='tool-tip' style={{ width: '240px' }}>
@@ -1198,7 +1211,6 @@ class DatasetOnboarding extends Component {
 			activeflag,
 			listOfDatasets,
 			showDrawer,
-			showCreateNewVersionModal,
 			showActionModal,
 			actionModalConfig,
 			isWideForm,
@@ -1210,7 +1222,7 @@ class DatasetOnboarding extends Component {
 			completion,
 			dataset,
 		} = this.state;
-		const { userState, location } = this.props;
+		const { userState } = this.props;
 
 		Winterfell.addInputType('typeaheadCustom', TypeaheadCustom);
 		Winterfell.addInputType('typeaheadCustomKeyValue', TypeaheadCustomKeyValue);
@@ -1394,7 +1406,6 @@ class DatasetOnboarding extends Component {
 
 											{(() => {
 												let isSubPanel = false;
-												const baseClasses = 'dar-nav-item text-size-small ';
 												[...this.state.jsonSchema.questionPanels].map((item2, index) => {
 													if (item.pageId === item2.pageId && item2.navHeader) {
 														console.log(item.pageId + ' === ' + item2.pageId + ' && ' + item2.navHeader);
@@ -1507,6 +1518,7 @@ class DatasetOnboarding extends Component {
 									showUnArchive={this.state.showUnArchive}
 									showDeleteDraft={this.state.showDeleteDraft}
 									onShowDeleteDraftModal={this.toggleDeleteDraftModal}
+									onShowDuplicateModal={this.toggleDuplicateModal}
 								/>
 							) : (
 								<CustodianActionButtons

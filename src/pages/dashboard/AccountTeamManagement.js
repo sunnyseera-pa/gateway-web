@@ -86,16 +86,6 @@ const AccountTeamManagement = ({
 		return '';
 	};
 
-	const getTeamId = team => {
-		const { teams } = userState[0];
-		if (!isEmpty(teams)) {
-			return teams.filter(t => {
-				return t.name.toUpperCase() === team.toUpperCase();
-			})[0]._id;
-		}
-		return null;
-	};
-
 	const hasTeamNotificationOptIns = () => {
 		if (!isEmpty(teamGatewayNotifications)) {
 			return teamGatewayNotifications.some(notification => notification.optIn === true);
@@ -107,7 +97,7 @@ const AccountTeamManagement = ({
 	};
 
 	const getMemberNotification = notificationType => {
-		return memberNotifications.findIndex(notification => notification.notificationType == notificationType);
+		return memberNotifications.findIndex(notification => notification.notificationType === notificationType);
 	};
 
 	const userHasRole = (teamId, role) => {
@@ -117,12 +107,19 @@ const AccountTeamManagement = ({
 		return team && team.roles.includes(role);
 	};
 
+	const userRoleIsAdmin = teamId => {
+		const team = userState[0].teams.filter(t => {
+			return t._id === teamId;
+		})[0];
+		return team && team.isAdmin;
+	};
+
 	const getTotalGatewayTeamEmails = (data = []) => {
 		// 1. if the user has passed in data ie set team emails to that data
 		if (!isEmpty(data)) {
 			let teamEmails = [...data];
 			// 3. if the emails are not empty and are clear of errors return the count else 0;
-			return [...teamEmails].filter(item => item.value != '' && isEmpty(item.error)).length;
+			return [...teamEmails].filter(item => item.value !== '' && isEmpty(item.error)).length;
 		}
 		return 0;
 	};
@@ -401,9 +398,14 @@ const AccountTeamManagement = ({
 			localStorage.setItem('HDR_TEAM', team);
 		}
 
-		if (!isEmpty(innertab) && innertab === tabTypes.Notifications) {
-			onTabChange(innertab);
-			onClearInnerTab();
+		if (!userRoleIsAdmin(team)) {
+			if (!isEmpty(innertab) && innertab === tabTypes.Notifications) {
+				onTabChange(innertab);
+				onClearInnerTab();
+			}
+		} else {
+			setActiveTab(tabTypes.Members);
+			onTeamManagementTabChange(tabTypes.Members);
 		}
 
 		// get and set teamId
@@ -413,7 +415,7 @@ const AccountTeamManagement = ({
 
 		// only call get teamNotifications on tab change
 		if (activeTabKey === tabTypes.Notifications) getTeamNotifications(teamId);
-	}, [activeTabKey]);
+	}, [activeTabKey, team]);
 
 	if (isLoading) {
 		return (
@@ -445,9 +447,11 @@ const AccountTeamManagement = ({
 					<div className='tabsBackground'>
 						<Col sm={12} lg={12}>
 							<Tabs className='dataAccessTabs gray700-14' activeKey={activeTabKey} onSelect={onTabChange}>
-								{Object.keys(tabTypes).map((keyName, i) => (
-									<Tab key={i} eventKey={`${tabTypes[keyName]}`} title={`${upperFirst(tabTypes[keyName])}`}></Tab>
-								))}
+								{!userRoleIsAdmin(teamId)
+									? Object.keys(tabTypes).map((keyName, i) => (
+											<Tab key={i} eventKey={`${tabTypes[keyName]}`} title={`${upperFirst(tabTypes[keyName])}`}></Tab>
+									  ))
+									: ''}
 							</Tabs>
 						</Col>
 					</div>
@@ -456,7 +460,7 @@ const AccountTeamManagement = ({
 				<Col xs={1}></Col>
 			</Row>
 
-			{activeTabKey == tabTypes.Members && <AccountMembers userState={userState} team={team} teamId={teamId} />}
+			{activeTabKey === tabTypes.Members && <AccountMembers userState={userState} team={team} teamId={teamId} />}
 
 			{activeTabKey === tabTypes.Notifications && (
 				<Row>

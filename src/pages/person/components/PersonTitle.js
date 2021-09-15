@@ -6,15 +6,9 @@ import '../../../css/styles.scss';
 var baseURL = require('../../commonComponents/BaseURL').getURL();
 
 class PersonTitle extends Component {
-	constructor(props) {
-		super(props);
-	}
-
 	// initialize our state
 	state = {
 		data: this.props.data || [],
-		id: this.props.data.id,
-		counter: this.props.data.counter || 1,
 	};
 
 	componentDidMount(props) {

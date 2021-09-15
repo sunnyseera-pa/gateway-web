@@ -11,7 +11,6 @@ class TypeaheadDataset extends React.Component {
 		this.state = {
 			value: props.selectedDatasets,
 			options: [],
-			id: props.id,
 			readOnly: props.readOnly || false,
 			publisher: null,
 			typeaheadClass: `addFormInputTypeAhead ${!_.isEmpty(props.typeaheadClass) ? props.typeaheadClass : ''}`,
@@ -34,12 +33,13 @@ class TypeaheadDataset extends React.Component {
 		}
 
 		if (this.props.typeaheadClass !== prevProps.typeaheadClass) {
-			this.setState({ typeaheadClass: `addFormInputTypeAhead ${this.props.typeaheadClass}` });
+			let typeaheadClass = this.props.typeaheadClass;
+			this.setState({ typeaheadClass: `addFormInputTypeAhead ${typeaheadClass}` });
 		}
 	}
 
 	getData() {
-		const { selectedDatasets, allowAllCustodians } = this.props;
+		const { selectedDatasets, allowAllCustodians, only5Safes } = this.props;
 		let { publisher } = this.state;
 
 		if (selectedDatasets && selectedDatasets.length > 0) {
@@ -60,7 +60,7 @@ class TypeaheadDataset extends React.Component {
 							fields: 'datasetid,name,description,datasetfields.abstract,_id,datasetfields.publisher,datasetfields.contactPoint',
 							populate: 'publisher',
 							sort: 'datasetfields.publisher, name',
-							is5Safes: true,
+							...(only5Safes ? { is5Safes: true } : {}),
 							...(publisher ? { ['datasetfields.publisher']: publisher } : {}),
 						},
 					})
@@ -125,7 +125,7 @@ class TypeaheadDataset extends React.Component {
 	render() {
 		let selectedValues = [];
 		this.state.value.map(selectedValue => {
-			selectedValues.push(_.toString(selectedValue._id));
+			return selectedValues.push(_.toString(selectedValue._id));
 		});
 
 		let filteredOptions = this.state.options.filter(datasetOption => !selectedValues.includes(datasetOption._id));

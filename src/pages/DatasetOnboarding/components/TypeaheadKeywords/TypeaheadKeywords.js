@@ -11,7 +11,6 @@ class TypeaheadKeywords extends React.Component {
 		this.state = {
 			value: props.value,
 			options: [],
-			id: props.id,
 			readOnly: props.readOnly || false,
 			className: `addFormInputTypeAhead ${!isEmpty(props.className) ? props.className : ''}`,
 		};

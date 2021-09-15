@@ -20,7 +20,7 @@ const AccountDatasets = props => {
 	const [archiveCount, setArchiveCount] = useState(0);
 	const [rejectedCount, setRejectedCount] = useState(0);
 	const [alert] = useState(props.alert);
-	const [team, setTeam, getTeam] = useState(props.team);
+	const [team, setTeam] = useState(props.team);
 	const [publisherID, setPublisherID] = useState('');
 
 	useEffect(() => {
@@ -300,6 +300,8 @@ const AccountDatasets = props => {
 										)}
 									</div>
 								);
+							default:
+								return key;
 						}
 					})()}
 				</Col>

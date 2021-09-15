@@ -6,7 +6,7 @@ import './Search.scss';
 
 const CustomToggle = React.forwardRef(({ children, onClick, title }, ref) => (
 	<a
-		href=''
+		href='!#'
 		aria-label={'Filter for ' + title}
 		ref={ref}
 		onClick={e => {
@@ -38,17 +38,17 @@ class Filters extends Component {
 			title: props.title || '',
 			allFilters: props.allFilters && props.length !== 0 ? props.allFilters : [],
 			filterOpen: false,
-			isKeyValue: props.isKeyValue
+			isKeyValue: props.isKeyValue,
 		};
 	}
 
 	componentWillReceiveProps(props) {
-		this.setState({ 
+		this.setState({
 			data: props.data || [],
 			selected: props.selected || [],
 			title: props.title || '',
 			allFilters: props.allFilters && props.length !== 0 ? props.allFilters : [],
-			isKeyValue: props.isKeyValue
+			isKeyValue: props.isKeyValue,
 		});
 	}
 

@@ -167,7 +167,7 @@ const WorkflowDashboard = ({ userState, team }) => {
 		setLoading(true);
 		getWorkflows(teamId);
 		window.scrollTo(0, 0);
-	}, [team, viewWorkflows]);
+	}, [team, viewWorkflows, getTeamById()]);
 
 	return (
 		<Fragment>

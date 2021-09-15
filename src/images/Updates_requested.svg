@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="30px" height="30px" viewBox="0 0 30 30" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Updates_requested</title>
+    <g id="✅-Activity-Log" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Activity-log:-Spec" transform="translate(-402.000000, -2786.000000)">
+            <g id="Stacked-Group" transform="translate(370.000000, 360.000000)">
+                <g id="Version-1" transform="translate(0.000000, 800.000000)">
+                    <g id="Stacked-Group-2" transform="translate(24.000000, 1276.000001)">
+                        <g id="Stacked-Group" transform="translate(0.000000, 27.000000)">
+                            <g id="Group-11" transform="translate(0.000000, 315.000000)">
+                                <g id="Updates_requested" transform="translate(8.000000, 8.000000)">
+                                    <circle id="Oval" fill="#F0BB24" cx="15" cy="15" r="15"></circle>
+                                    <path d="M15,22.7854534 C13.832182,22.7854534 13.0536367,22.0069081 13.0536367,20.83909 C13.0536367,19.671272 13.832182,18.8927267 15,18.8927267 C16.167818,18.8927267 16.9463633,19.671272 16.9463633,20.83909 C16.9463633,22.0069081 16.167818,22.7854534 15,22.7854534 Z" id="Path" fill="#FFFFFF" fill-rule="nonzero"></path>
+                                    <polygon id="Path" fill="#FFFFFF" fill-rule="nonzero" points="16.9463633 16.9463633 13.0536367 16.9463633 13.0536367 7.2145466 16.9463633 7.2145466"></polygon>
+                                </g>
+                            </g>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
