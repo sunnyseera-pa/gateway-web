@@ -1,28 +1,26 @@
 import React from 'react';
-import { Row, Col, Container, Dropdown, DropdownButton, Button } from 'react-bootstrap';
+import { Row, Col, Container, Dropdown, DropdownButton } from 'react-bootstrap';
 
-const RelatedResources = () => (
-	<Container>
-		<Row>
-			<Col>
-				<input />
-			</Col>
-			<Col>
-				<DropdownButton id='dropdown-basic-button' title='Dropdown button'>
-					<Dropdown.Item href='#/action-1'>Action</Dropdown.Item>
-					<Dropdown.Item href='#/action-2'>Another action</Dropdown.Item>
-					<Dropdown.Item href='#/action-3'>Something else</Dropdown.Item>
-				</DropdownButton>
-			</Col>
-		</Row>
-		<Row>
+const RelatedResources = ({ data }) => {
+	console.log(data);
+	return (
+		<Container>
+			<Row>
+				<Col>
+					<input />
+				</Col>
+				<Col>
+					<DropdownButton id='dropdown-basic-button' title='Dropdown button'>
+						<Dropdown.Item href='#/action-1'>Action</Dropdown.Item>
+						<Dropdown.Item href='#/action-2'>Another action</Dropdown.Item>
+						<Dropdown.Item href='#/action-3'>Something else</Dropdown.Item>
+					</DropdownButton>
+				</Col>
+			</Row>
+
 			<Row className='datause-card'>Cards</Row>
-		</Row>
-		<Row className='datause-card'>
-			<Button>Technical details</Button>
-			<Button>Add to collection</Button>
-		</Row>
-	</Container>
-);
+		</Container>
+	);
+};
 
 export default RelatedResources;

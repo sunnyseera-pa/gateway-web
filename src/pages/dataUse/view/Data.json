@@ -1,0 +1,89 @@
+[
+	{
+		"title": "Project Delta",
+		"org": "University of Oxford",
+		"keywordType": "Data use",
+		"keywords": ["Active Adult Survey", "Delta dataset", "Bowel Screening Wales"],
+		"tab": "Related resources",
+		"version": 1,
+		"comments": [
+			{
+				"author": "Sarah Jones",
+				"date": "12 June 2019",
+				"description": "The first submission of this data access request"
+			}
+		]
+	},
+	{
+		"title": "PRINCIPLE: Platform Randomised trial of INterventions against COVID-19 In older peoPLE",
+		"org": "University of Oxford",
+		"keywordType": "Data Use",
+		"keywords": ["one", "two", "three"],
+		"tab": "About",
+		"safePeople": {
+			"orgID": "3781-3813-9861",
+			"orgSector": "Academic",
+			"applicantNames": ["Christopher C Butler"],
+			"applicantID": "3781-3813-9861",
+			"funders": ["National Institue for Health Research (NIHR)", "Medical Research Council (MRC)"],
+			"accreditationStatus": "Unknown",
+			"subLicence": "No"
+		},
+		"safeProjects": {
+			"projectID": "",
+			"laySummary": "We do not yet have any treatments for COVID-19 patients, so we are now running a clinical trial to test out drugs which may work. Most COVID 19 cases are managed in the community and it is essential that we find treatments that help reduce hospital admission and speed recovery. The risk of complications from suspected COVID-19 infection is generally greater in people aged 50 years and older with underlying health conditions and in those aged 65 years and older. Therefore, we will ask these two groups to take part in our trial. The first drug we will evaluate is hydroxychloroquine, which is already used for other illnesses, but but it has not been tested in patients with suspected COVIS-19 in the community. Therefore, we do not yet know if hydroxychloroquine, (or any future treatments that we include in the trial), given to COVID-19 patients, will help reduce the need for hospitalisation or speed up recovery. All people initially included in the study will have a test for COVID-19, and will either receive usual best care, or usual best care plus the drug we are testing, currently hydroxychloroquine. We will include 3000 people in the study in the first instance.",
+			"publicBenefitStatement": "The trial has co-primary endpoints: 1) Time taken to self-reported recovery; and 2) hospitalisation and/or death. The main objective of the trial is to assess the effectiveness of the interventions in reducing time to recovery and in reducing the incidence of hospitalisation and/or death for covid-19 patients. Key secondary outcomes include: Hospital assessment without admission; Oxygen administration; Intensive Care Unit admission; Mechanical ventilation (components of the WHO Ordinal Scale); Duration of hospital admission; Duration of severe symptoms; Sustained recovery; Contacts with the health services; Consumption of antibiotics; Effects in those with a positive test for COVID-19 infection; WHO Well-being Index. Original target date - recruit 3000 by Dec 2020. New target to continue recruiting beyond the 4,500 patients already recruited at time of second amendment to this agreement in March 2021.",
+			"requestCategoryType": "",
+			"technicalSummary": "",
+			"otherApprovalCommittees": "",
+			"projectStartDate": "",
+			"projectEndDate": "",
+			"lastestApprovalDate": "2020-11-27"
+		},
+		"safeData": {
+			"datasetNames": [
+				"COVID-19 Hospitalization in England Surveillance System",
+				"Civil Registration - Deaths",
+				"Secondary Uses Service Payment By Results Accident & Emergency",
+				"Secondary Uses Service Payment By Results Episodes, Secondary Uses Service Payment By Results Outpatients, Secondary Uses Service Payment By Results Spells"
+			],
+			"dataSensitvityLevel": "Personally Identifiable",
+			"legalBasis": "CV19: Regulation 3 (4) of the Health Service (Control of Patient Information) Regulations 2002",
+			"commonLawConfidentiality": "Consent",
+			"nationalOpt": "No",
+			"requestFrequency": "Recurring",
+			"descriptionUsage": [
+				"The processing of the data will be as follows:",
+				"• On a daily basis (seven days a week) NHS Digital will interrogate the Pillar 2 dataset and extract up to 500 individuals at random who are 50 or over who have received a positive COVID 19 test result in the previous 24 hours.",
+				"• The individuals will be England-only.",
+				"• Filters will be applied to remove patients who have registered a national opt-out, as well as special categories of people for whom the data should not be disseminated, such as prisoners.",
+				"• Individuals who have signed up for the Telephone Preference Service will need to be taken into account.",
+				"• The flow from NHS Digital to University of Oxford will be automated via a SEFT account.",
+				"• University of Oxford will use the data provided to make outbound to ask if the individuals would be interested in being recruited into the trial. ",
+				"• The aim is to recruit 100 people into the trial per day.",
+				"• The number of individual contact details supplied by NHS Digital to University of Oxford will be reviewed once the take-up rate is better understood.",
+				"",
+				"The trial team in Oxford will hold the data securely adhering to all IG Policies in the Dept., the team will call these contacts to inform them of the trial, screen, consent and randomise them. ",
+				"The identifiable data received from NHS Digital will be deleted on a weekly basis as the trial team will no longer require it.",
+				"",
+				"********************",
+				"• Request to use SCR for consented participants:",
+				"As per section 5A, once participants are recruited into PRINCIPLE, the trial team will access their Summary Care Record. This will be through ‘SCR Core’ or ‘SCR Additional Information’, depending on what is available for each participant.",
+				"",
+				"SCR Core includes:",
+				"• current medication",
+				"• allergies and details of any previous bad reactions to medicines",
+				"• the name, address, date of birth and NHS number of the patient"
+			],
+			"descriptionConfidentialUsage": "",
+			"releaseAccessDate": "2021-05-04"
+		},
+		"safeSetting": {
+			"trustedResearchEnv": "",
+			"dataProcessPrivacy": ""
+		},
+		"safeOutput": {
+			"link": "https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(21)00461-X/fulltext"
+		}
+	}
+]

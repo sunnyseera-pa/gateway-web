@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
+import Data from './Data.json';
 import About from './About';
 import RelatedResources from './RelatedResources';
 import SearchBar from '../../commonComponents/searchBar/SearchBar';
-import { Row, Container, Tab, Tabs } from 'react-bootstrap';
+import { Row, Container, Tab, Tabs, Button } from 'react-bootstrap';
 
 const View = ({ ...props }) => {
 	const [searchBar] = useState(React.createRef());
@@ -12,7 +13,7 @@ const View = ({ ...props }) => {
 		props.userState || [
 			{
 				loggedIn: false,
-				role: 'Reader',
+				role: 'User',
 				id: null,
 				name: null,
 			},
@@ -53,12 +54,15 @@ const View = ({ ...props }) => {
 				<Tabs defaultActiveKey='About' classNameclassName='gray700-13 data-use-tabs'>
 					{tabs.map(tabName => (
 						<Tab eventKey={tabName} title={tabName}>
-							{tabName === 'About' && <About />}
-							{tabName === 'Related resources' && <RelatedResources />}
+							{tabName === 'About' && <About data={Data.filter(a => a.tab === 'About')} />}
+							{tabName === 'Related resources' && <RelatedResources data={Data.filter(a => a.tab === 'Related resources')} />}
 						</Tab>
 					))}
 				</Tabs>
 			</Container>
+			<Row className='datause-card'>
+				<Button>Add to collection</Button>
+			</Row>
 		</div>
 	);
 };
