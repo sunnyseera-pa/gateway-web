@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Dropdown } from 'react-bootstrap';
 import { ReactComponent as ChevronBottom } from '../../../images/chevron-bottom.svg';
+import googleAnalytics from '../../../tracking';
 import './AddNewEntity.scss';
 
 const CustomMenu = React.forwardRef(({ children, style, className, 'aria-labelledby': labeledBy }, ref) => {
@@ -48,19 +49,39 @@ const AddNewEntity = props => {
 			</Dropdown.Toggle>
 
 			<Dropdown.Menu as={CustomMenu} className='addNewEntityMenu'>
-				<Dropdown.Item href='/collection/add' className='black-14' data-test-id='addNewCollection'>
+				<Dropdown.Item
+					href='/collection/add'
+					className='black-14'
+					data-test-id='addNewCollection'
+					onClick={() => googleAnalytics.recordEvent('Collections', 'Add a new collection', 'Search bar add new link clicked')}>
 					Collection
 				</Dropdown.Item>
-				<Dropdown.Item href='/course/add' className='black-14' data-test-id='addNewCourse'>
+				<Dropdown.Item
+					href='/course/add'
+					className='black-14'
+					data-test-id='addNewCourse'
+					onClick={() => googleAnalytics.recordEvent('Courses', 'Add a new course', 'Search bar add new link clicked')}>
 					Course
 				</Dropdown.Item>
-				<Dropdown.Item href='/paper/add' className='black-14' data-test-id='addNewPaper'>
+				<Dropdown.Item
+					href='/paper/add'
+					className='black-14'
+					data-test-id='addNewPaper'
+					onClick={() => googleAnalytics.recordEvent('Papers', 'Add a new paper', 'Search bar add new link clicked')}>
 					Paper
 				</Dropdown.Item>
-				<Dropdown.Item href='/project/add' className='black-14' data-test-id='addNewProject'>
+				<Dropdown.Item
+					href='/project/add'
+					className='black-14'
+					data-test-id='addNewProject'
+					onClick={() => googleAnalytics.recordEvent('Projects', 'Add a new project', 'Search bar add new link clicked')}>
 					Project
 				</Dropdown.Item>
-				<Dropdown.Item href='/tool/add' className='black-14 ' data-test-id='addNewTool'>
+				<Dropdown.Item
+					href='/tool/add'
+					className='black-14 '
+					data-test-id='addNewTool'
+					onClick={() => googleAnalytics.recordEvent('Tools', 'Add a new tool', 'Search bar add new link clicked')}>
 					Tool
 				</Dropdown.Item>
 			</Dropdown.Menu>

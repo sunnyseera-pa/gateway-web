@@ -32,6 +32,7 @@ import { ReactComponent as CheckSVG } from '../../images/check.svg';
 import './Dashboard.scss';
 import ActivityLog from '../DataAccessRequest/components/ActivityLog/ActivityLog';
 import AccountTeams from './AccountTeams';
+import googleAnalytics from '../../tracking';
 
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
@@ -380,6 +381,7 @@ class Account extends Component {
 	}
 
 	toggleNav = (tabId = '') => {
+		googleAnalytics.recordVirtualPageView(tabId);
 		let {
 			activeAccordion,
 			alert,

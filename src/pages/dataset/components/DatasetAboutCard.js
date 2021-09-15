@@ -3,7 +3,7 @@ import { Col, Row, Table } from 'react-bootstrap';
 import '../Dataset.scss';
 import AboutCardElement from './AboutCardElement';
 import { isEmpty } from 'lodash';
-import { Event } from '../../../tracking';
+import googleAnalytics from '../../../tracking';
 
 const DatasetAboutCard = ({ v2data, section, showEmpty, toggleModal }) => {
 	let temporalCoverage = '';
@@ -361,7 +361,7 @@ const DatasetAboutCard = ({ v2data, section, showEmpty, toggleModal }) => {
 											className='purple-14 pointer float-right'
 											onClick={() => {
 												toggleModal();
-												Event('Buttons', 'Click', 'Request Access');
+												googleAnalytics.recordEvent('Data access request', 'How to request access', 'Dataset page secondary button clicked');
 											}}>
 											How to request access
 										</span>

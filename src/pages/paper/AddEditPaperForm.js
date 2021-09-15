@@ -16,6 +16,8 @@ import 'react-bootstrap-typeahead/css/Typeahead.css';
 import SVGIcon from '../../images/SVGIcon';
 import { ReactComponent as InfoSVG } from '../../images/info.svg';
 import './Paper.scss';
+import googleAnalytics from '../../tracking';
+
 const baseURL = require('../commonComponents/BaseURL').getURL();
 let windowUrl = window.location.origin;
 
@@ -688,7 +690,13 @@ const AddEditPaperForm = props => {
 						</Button>
 					</a>
 
-					<Button onClick={() => relatedResourcesRef.current.showModal()} variant='white' className='techDetailButton mr-2'>
+					<Button
+						onClick={() => {
+							relatedResourcesRef.current.showModal();
+							googleAnalytics.recordVirtualPageView('Related resources modal');
+						}}
+						variant='white'
+						className='techDetailButton mr-2'>
 						+ Add resource
 					</Button>
 

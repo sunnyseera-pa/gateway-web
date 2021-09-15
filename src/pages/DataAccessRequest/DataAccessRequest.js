@@ -52,6 +52,7 @@ import MinorVersionBlockedModal from './components/MinorVersionBlockedModal/Mino
 import ActionNotAllowedModal from './components/ActionNotAllowedModal/ActionNotAllowedModal';
 import SelectDatasetModal from './components/SelectDatasetModal/SelectDatasetModal';
 import VersionSelector from '../commonComponents/versionSelector/VersionSelector';
+import googleAnalytics from '../../tracking';
 
 class DataAccessRequest extends Component {
 	constructor(props) {
@@ -1548,6 +1549,8 @@ class DataAccessRequest extends Component {
 		if (_.isEmpty(appIdToCloneInto) && _.isEmpty(selectedDatasets)) {
 			return;
 		}
+
+		googleAnalytics.recordEvent('Data access request', 'Clicked duplicate application', 'Duplicated application')
 
 		const { versionNumber } = this.state;
 		let datasetIds = [];
