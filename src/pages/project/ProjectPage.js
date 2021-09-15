@@ -20,7 +20,7 @@ import ResourcePageButtons from '../commonComponents/resourcePageButtons/Resourc
 import ErrorModal from '../commonComponents/errorModal/ErrorModal';
 import CollectionCard from '../commonComponents/collectionCard/CollectionCard';
 import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
-import { PageView, initGA } from '../../tracking';
+import googleAnalytics from '../../tracking';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -58,8 +58,6 @@ export const ProjectDetail = props => {
 			setProjectEdited(values.projectEdited);
 		}
 		getProjectDataFromDb();
-		initGA('UA-166025838-1');
-		PageView();
 	}, []);
 
 	//componentDidUpdate - on render of project detail page were id is different
@@ -312,7 +310,12 @@ export const ProjectDetail = props => {
 						<Col sm={1} lg={1} />
 						<Col sm={10} lg={10}>
 							<div>
-								<Tabs className='tabsBackground gray700-13 margin-bottom-16'>
+								<Tabs
+									className='tabsBackground gray700-13 margin-bottom-16'
+									onSelect={key => {
+										googleAnalytics.recordVirtualPageView(`${key} tab`);
+										googleAnalytics.recordEvent('Projects', `Clicked ${key} tab`, `Viewing ${key}`);
+									}}>
 									<Tab eventKey='About' title={'About'}>
 										<Row className='mt-2'>
 											<Col sm={12} lg={12}>
@@ -459,7 +462,7 @@ export const ProjectDetail = props => {
 										</Row>
 									</Tab>
 
-									<Tab eventKey='Collaboration' title={`Discussion (${discoursePostCount})`}>
+									<Tab eventKey='Discussion' title={`Discussion (${discoursePostCount})`}>
 										<DiscourseTopic
 											toolId={projectData.id}
 											topicId={projectData.discourseTopicId || 0}
@@ -467,7 +470,7 @@ export const ProjectDetail = props => {
 											onUpdateDiscoursePostCount={updateDiscoursePostCount}
 										/>
 									</Tab>
-									<Tab eventKey='Projects' title={'Related resources (' + relatedObjects.length + ')'}>
+									<Tab eventKey='Related resources' title={'Related resources (' + relatedObjects.length + ')'}>
 										{relatedObjects.length <= 0 ? (
 											<NotFound word='related resources' />
 										) : (

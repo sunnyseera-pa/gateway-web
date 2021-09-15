@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Button, Modal } from 'react-bootstrap';
 import RelatedResourcesModal from '../relatedResourcesModal/RelatedResourceModal';
 import { ReactComponent as CloseButtonSvg } from '../../../images/close-alt.svg';
+import googleAnalytics from '../../../tracking';
 import './RelatedResources.scss';
 
 const RelatedResources = React.forwardRef((props, ref) => {
@@ -27,7 +28,16 @@ const RelatedResources = React.forwardRef((props, ref) => {
 
 	return (
 		<div className='flexCenter'>
-			<Button variant='white' href={''} target='_blank' className='techDetailButton mr-2' onClick={handleShow} ref={ref}>
+			<Button
+				variant='white'
+				href={''}
+				target='_blank'
+				className='techDetailButton mr-2'
+				onClick={() => {
+					handleShow();
+					googleAnalytics.recordVirtualPageView('Related resources modal');
+				}}
+				ref={ref}>
 				+ Add resource
 			</Button>
 			<Modal show={show} onHide={handleClose} aria-labelledby='contained-modal-title-vcenter' className='relatedResourcesModal'>

@@ -8,7 +8,7 @@ import ActionModal from '../commonComponents/ActionModal/ActionModal';
 import './Dashboard.scss';
 import _ from 'lodash';
 import { EntityActionButton } from './EntityActionButton.jsx';
-import { Event, initGA } from '../../tracking';
+import googleAnalytics from '../../tracking';
 import { PaginationHelper } from '../commonComponents/PaginationHelper';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
@@ -34,9 +34,6 @@ export const AccountProjects = props => {
 	const maxResult = 40;
 
 	useEffect(() => {
-		if (process.env.NODE_ENV === 'production') {
-			initGA('UA-166025838-1');
-		}
 		doProjectsCall('active', true, 0, true);
 	}, []);
 
@@ -193,7 +190,7 @@ export const AccountProjects = props => {
 								variant='primary'
 								href='/project/add'
 								className='addButton'
-								onClick={() => Event('Buttons', 'Click', 'Add a new project')}>
+								onClick={() => googleAnalytics.recordEvent('Projects', 'Add a new project', 'Projects dashboard button clicked')}>
 								+ Add a new project
 							</Button>
 						</Col>
