@@ -473,7 +473,8 @@ class DataAccessRequest extends Component {
 			showSubmit = true;
 		} else if (
 			activeParty === 'applicant' &&
-			(applicationStatus === DarHelper.darStatus.inReview || applicationStatus === DarHelper.darStatus.submitted)
+			((applicationStatus === DarHelper.darStatus.inReview && answeredAmendments > 0 && unansweredAmendments === 0) ||
+				applicationStatus === DarHelper.darStatus.submitted)
 		) {
 			showSubmit = true;
 			submitButtonText = 'Submit updates';
@@ -647,17 +648,16 @@ class DataAccessRequest extends Component {
 						this.state.userType,
 						this.state.areDatasetsAmended
 					);
-
+				debugger;
 				let schemaUpdates = _.omitBy(
 					{
 						unansweredAmendments,
 						answeredAmendments,
-						showSubmit: applicationStatus === DarHelper.darStatus.inProgress || answeredAmendments > 0,
+						showSubmit: applicationStatus === DarHelper.darStatus.inProgress || unansweredAmendments === 0,
 						jsonSchema,
 					},
 					_.isNil
 				);
-
 				this.setState({
 					...schemaUpdates,
 				});
@@ -1059,6 +1059,9 @@ class DataAccessRequest extends Component {
 				answeredAmendments,
 				unansweredAmendments,
 				amendmentIterations,
+				showSubmit:
+					this.state.applicationStatus === DarHelper.darStatus.inProgress ||
+					(unansweredAmendments === 0 && answeredAmendments > 0 && this.state.userType === DarHelper.userTypes.APPLICANT),
 			},
 			_.isNil
 		);
@@ -1550,7 +1553,7 @@ class DataAccessRequest extends Component {
 			return;
 		}
 
-		googleAnalytics.recordEvent('Data access request', 'Clicked duplicate application', 'Duplicated application')
+		googleAnalytics.recordEvent('Data access request', 'Clicked duplicate application', 'Duplicated application');
 
 		const { versionNumber } = this.state;
 		let datasetIds = [];
