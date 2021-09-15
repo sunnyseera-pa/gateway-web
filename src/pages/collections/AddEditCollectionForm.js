@@ -11,6 +11,7 @@ import 'react-bootstrap-typeahead/css/Typeahead.css';
 import SVGIcon from '../../images/SVGIcon';
 import ToolTip from '../../images/imageURL-ToolTip.gif';
 import ActionBar from '../commonComponents/actionbar/ActionBar';
+import googleAnalytics from '../../tracking';
 import './Collections.scss';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
@@ -343,7 +344,10 @@ const AddEditCollectionForm = props => {
 
 					<Button
 						data-test-id='add-resource'
-						onClick={() => relatedResourcesRef.current.showModal()}
+						onClick={() => {
+							relatedResourcesRef.current.showModal();
+							googleAnalytics.recordVirtualPageView('Related resources modal');
+						}}
 						variant='white'
 						className='techDetailButton mr-2'>
 						+ Add resource
