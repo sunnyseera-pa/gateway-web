@@ -1,8 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Container, Row, Col, Button, Tooltip, OverlayTrigger } from 'react-bootstrap';
 import SVGIcon from '../../../images/SVGIcon';
 
 const About = ({ data }) => {
+	const [closedLaySummary, setClosedLaySummary] = useState(true);
+	const [closedPublicBenefit, setClosedPublicBenefit] = useState(true);
+	const [closedDataUse, setClosedDataUse] = useState(true);
+
 	const exampleTooltip = props => (
 		<Tooltip className='datause-info-icon-tooltip' {...props}>
 			Example tooltip
@@ -109,22 +113,44 @@ const About = ({ data }) => {
 							<Col>{a.title}</Col>
 						</Row>
 						<Row className='soft-black-14 datause-view-grid'>
-							<Col>Lay summary</Col>
+							<Col>
+								Lay summary
+								<button
+									className='datause-arrow'
+									onClick={() => (!closedLaySummary ? setClosedLaySummary(true) : setClosedLaySummary(false))}>
+									<SVGIcon width='20px' height='20px' name='chevronbottom' fill={'#475da7'} className={closedLaySummary ? 'flip180' : ''} />
+								</button>
+							</Col>
 							<OverlayTrigger placement='top' overlay={exampleTooltip}>
 								<Button className='datause-info-icon-button'>
 									<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
 								</Button>
 							</OverlayTrigger>
-							<Col>{a.safeProjects.laySummary}</Col>
+							<Col>{closedLaySummary ? a.safeProjects.laySummary.substr(0, 250) : a.safeProjects.laySummary}</Col>
 						</Row>
 						<Row className='soft-black-14 datause-view-grid'>
-							<Col>Public benefit statement</Col>
+							<Col>
+								Public benefit statement
+								<button
+									className='datause-arrow'
+									onClick={() => (!closedPublicBenefit ? setClosedPublicBenefit(true) : setClosedPublicBenefit(false))}>
+									<SVGIcon
+										width='20px'
+										height='20px'
+										name='chevronbottom'
+										fill={'#475da7'}
+										className={closedPublicBenefit ? 'flip180' : ''}
+									/>
+								</button>
+							</Col>
 							<OverlayTrigger placement='top' overlay={exampleTooltip}>
 								<Button className='datause-info-icon-button'>
 									<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
 								</Button>
 							</OverlayTrigger>
-							<Col>{a.safeProjects.publicBenefitStatement}</Col>
+							<Col>
+								{closedPublicBenefit ? a.safeProjects.publicBenefitStatement.substr(0, 250) : a.safeProjects.publicBenefitStatement}
+							</Col>
 						</Row>
 						<Row className='soft-black-14 datause-view-grid'>
 							<Col>Request category type</Col>
@@ -238,13 +264,18 @@ const About = ({ data }) => {
 							<Col>{a.safeData.requestFrequency}</Col>
 						</Row>
 						<Row className='soft-black-14 datause-view-grid'>
-							<Col>Description of how the data will be used</Col>
+							<Col>
+								Description of how the data will be used
+								<button className='datause-arrow' onClick={() => (!closedDataUse ? setClosedDataUse(true) : setClosedDataUse(false))}>
+									<SVGIcon width='20px' height='20px' name='chevronbottom' fill={'#475da7'} className={closedDataUse ? 'flip180' : ''} />
+								</button>
+							</Col>
 							<OverlayTrigger placement='top' overlay={exampleTooltip}>
 								<Button className='datause-info-icon-button'>
 									<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
 								</Button>
 							</OverlayTrigger>
-							<Col>{a.safeData.descriptionUsage}</Col>
+							<Col>{closedDataUse ? a.safeData.descriptionUsage.join().substr(0, 150) : a.safeData.descriptionUsage}</Col>
 						</Row>
 						<Row className='soft-black-14 datause-view-grid'>
 							<Col>Description of the confidential data being used</Col>

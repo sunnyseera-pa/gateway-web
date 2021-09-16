@@ -152,3 +152,12 @@
 .datause-info-icon-tooltip {
 	margin-top: -100px;
 }
+
+.datause-arrow {
+	background: none;
+	border: none;
+}
+
+.datause-arrow:focus {
+	outline: none;
+}

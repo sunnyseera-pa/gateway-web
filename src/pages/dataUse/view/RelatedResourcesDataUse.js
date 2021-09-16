@@ -1,6 +1,6 @@
 import React from 'react';
 import DropdownMenu from './DataUseDropdown';
-import { Row, Col, Container, Dropdown, DropdownButton } from 'react-bootstrap';
+import { Row, Col, Container } from 'react-bootstrap';
 
 const RelatedResources = ({ data }) => {
 	return (
