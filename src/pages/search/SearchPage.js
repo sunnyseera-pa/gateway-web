@@ -540,7 +540,7 @@ class SearchPage extends React.Component {
 			courseSort = '',
 			collectionSort = '',
 		} = this.state;
-
+		
 		this.toggleDataUtilityBanner(false);
 
 		// 1. build search object from list of selected fitlers v2 only
