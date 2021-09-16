@@ -131,7 +131,7 @@ export const DatasetCard = props => {
 													<>
 														{datasetVersion.datasetVersion !== version ? (
 															<a
-																href='!#'
+																href='javascript:void(0)'
 																className='version-list'
 																onClick={e => {
 																	e.stopPropagation();
