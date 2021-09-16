@@ -30,7 +30,7 @@ const urlEnv = require('../BaseURL').getURLEnv();
 
 const CustomToggle = React.forwardRef(({ children, onClick, subToggle }, ref) => (
 	<a
-		href='!#'
+		href='javascript:void(0)'
 		ref={ref}
 		onClick={e => {
 			googleAnalytics.recordEvent('Search bar', 'Opened user notifications', 'Clicked search bar notification icon');
@@ -1324,7 +1324,7 @@ class SearchBar extends React.Component {
 																							<Col xs={10}>
 																								<div className='notificationDate'>{messageDateString + '\n'}</div>
 																								<div className='notificationInfoHolder'>
-																									<a href='!#' class='notificationInfo'>
+																									<a href='javascript:void(0)' class='notificationInfo'>
 																										{dat.messageDescription}
 																									</a>
 																								</div>

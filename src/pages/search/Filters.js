@@ -6,7 +6,7 @@ import './Search.scss';
 
 const CustomToggle = React.forwardRef(({ children, onClick, title }, ref) => (
 	<a
-		href='!#'
+		href='javascript:void(0)'
 		aria-label={'Filter for ' + title}
 		ref={ref}
 		onClick={e => {
