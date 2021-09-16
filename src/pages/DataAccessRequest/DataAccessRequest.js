@@ -410,10 +410,8 @@ class DataAccessRequest extends Component {
 			showSubmit = true;
 		} else if (
 			activeParty === 'applicant' &&
-			(applicationStatus === DarHelper.darStatus.inReview || applicationStatus === DarHelper.darStatus.submitted)(
-				(applicationStatus === DarHelper.darStatus.inReview && answeredAmendments > 0 && unansweredAmendments === 0) ||
-					applicationStatus === DarHelper.darStatus.submitted
-			)
+			((applicationStatus === DarHelper.darStatus.inReview && answeredAmendments > 0 && unansweredAmendments === 0) ||
+				applicationStatus === DarHelper.darStatus.submitted)
 		) {
 			showSubmit = true;
 			submitButtonText = 'Submit updates';
