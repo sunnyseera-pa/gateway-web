@@ -1948,7 +1948,7 @@ class DataAccessRequest extends Component {
 							<a
 								className={`linkButton white-14-semibold ml-2 ${allowedNavigation ? '' : 'disabled'}`}
 								onClick={this.onClickSave}
-								href='!#'>
+								href='javascript:void(0)'>
 								Save now
 							</a>
 						}
