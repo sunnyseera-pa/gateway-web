@@ -6,6 +6,8 @@ const About = ({ data }) => {
 	const [closedLaySummary, setClosedLaySummary] = useState(true);
 	const [closedPublicBenefit, setClosedPublicBenefit] = useState(true);
 	const [closedDataUse, setClosedDataUse] = useState(true);
+	const [hide, setHide] = useState(false);
+	const [notSpecified, setNotSpecified] = useState(true);
 
 	const exampleTooltip = props => (
 		<Tooltip className='datause-info-icon-tooltip' {...props}>
@@ -26,7 +28,7 @@ const About = ({ data }) => {
 									<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
 								</Button>
 							</OverlayTrigger>
-							<Col>{a.org}</Col>
+							<Col>{a.org.length > 0 ? a.org : <p className='gray800-14-opacity'>Not specified</p>}</Col>
 						</Row>
 						<Row className='soft-black-14 datause-view-grid'>
 							<Col>Organisation ID</Col>
@@ -35,7 +37,7 @@ const About = ({ data }) => {
 									<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
 								</Button>
 							</OverlayTrigger>
-							<Col>{a.safePeople.orgID}</Col>
+							<Col>{a.safePeople.orgID.length > 0 ? a.safePeople.orgID : <p className='gray800-14-opacity'>Not specified</p>}</Col>
 						</Row>
 						<Row className='soft-black-14 datause-view-grid'>
 							<Col>Organisation sector</Col>
@@ -44,7 +46,7 @@ const About = ({ data }) => {
 									<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
 								</Button>
 							</OverlayTrigger>
-							<Col>{a.safePeople.orgSector}</Col>
+							<Col>{a.safePeople.orgSector.length > 0 ? a.safePeople.orgSector : <p className='gray800-14-opacity'>Not specified</p>}</Col>
 						</Row>
 						<Row className='soft-black-14 datause-view-grid'>
 							<Col>Applicant name(s)</Col>
@@ -53,7 +55,9 @@ const About = ({ data }) => {
 									<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
 								</Button>
 							</OverlayTrigger>
-							<Col>{a.safePeople.applicantNames}</Col>
+							<Col>
+								{a.safePeople.applicantNames.length > 0 ? a.safePeople.applicantNames : <p className='gray800-14-opacity'>Not specified</p>}
+							</Col>
 						</Row>
 						<Row className='soft-black-14 datause-view-grid'>
 							<Col>Applicant ID</Col>
@@ -62,7 +66,13 @@ const About = ({ data }) => {
 									<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
 								</Button>
 							</OverlayTrigger>
-							<Col>{a.safePeople.applicantID}</Col>
+							<Col>
+								{a.safePeople.applicantID.length > 0
+									? a.safePeople.applicantID
+									: <p className='gray800-14-opacity'>Not specified</p> && notSpecified
+									? hide(true)
+									: ''}
+							</Col>
 						</Row>
 						<Row className='soft-black-14 datause-view-grid'>
 							<Col>Funders/Sponsor</Col>
@@ -71,7 +81,9 @@ const About = ({ data }) => {
 									<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
 								</Button>
 							</OverlayTrigger>
-							<Col>{a.safePeople.funders}</Col>
+							<Col>
+								{a.safePeople.funders.length > 0 ? a.safePeople.funders.length : <p className='gray800-14-opacity'>Not specified</p>}
+							</Col>
 						</Row>
 						<Row className='soft-black-14 datause-view-grid'>
 							<Col>DEA accredited researcher status</Col>
@@ -80,7 +92,13 @@ const About = ({ data }) => {
 									<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
 								</Button>
 							</OverlayTrigger>
-							<Col>{a.safePeople.accreditationStatus}</Col>
+							<Col>
+								{a.safePeople.accreditationStatus.length > 0 ? (
+									a.safePeople.accreditationStatus
+								) : (
+									<p className='gray800-14-opacity'>Not specified</p>
+								)}
+							</Col>
 						</Row>
 						<Row className='soft-black-14 datause-view-grid'>
 							<Col>Sub-licence arrangements (if any)?</Col>
@@ -89,7 +107,9 @@ const About = ({ data }) => {
 									<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
 								</Button>
 							</OverlayTrigger>
-							<Col>{a.safePeople.subLicence}</Col>
+							<Col>
+								{a.safePeople.subLicence.length > 0 ? a.safePeople.subLicence : <p className='gray800-14-opacity'>Not specified</p>}
+							</Col>
 						</Row>
 					</Container>
 					<Container className='datause-card'>
@@ -101,7 +121,9 @@ const About = ({ data }) => {
 									<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
 								</Button>
 							</OverlayTrigger>
-							<Col>{a.safeProjects.projectID}</Col>
+							<Col>
+								{a.safeProjects.projectID.length > 0 ? a.safeProjects.projectID : <p className='gray800-14-opacity'>Not specified</p>}
+							</Col>
 						</Row>
 						<Row className='soft-black-14 datause-view-grid'>
 							<Col>Project title</Col>
@@ -110,7 +132,7 @@ const About = ({ data }) => {
 									<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
 								</Button>
 							</OverlayTrigger>
-							<Col>{a.title}</Col>
+							<Col>{a.title.length > 0 ? a.title : <p className='gray800-14-opacity'>Not specified</p>}</Col>
 						</Row>
 						<Row className='soft-black-14 datause-view-grid'>
 							<Col>
@@ -126,7 +148,17 @@ const About = ({ data }) => {
 									<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
 								</Button>
 							</OverlayTrigger>
-							<Col>{closedLaySummary ? a.safeProjects.laySummary.substr(0, 250) : a.safeProjects.laySummary}</Col>
+							<Col>
+								{a.safeProjects.laySummary.length > 0 ? (
+									closedLaySummary ? (
+										a.safeProjects.laySummary.substr(0, 250)
+									) : (
+										a.safeProjects.laySummary
+									)
+								) : (
+									<p className='gray800-14-opacity'>Not specified</p>
+								)}
+							</Col>
 						</Row>
 						<Row className='soft-black-14 datause-view-grid'>
 							<Col>
@@ -149,7 +181,15 @@ const About = ({ data }) => {
 								</Button>
 							</OverlayTrigger>
 							<Col>
-								{closedPublicBenefit ? a.safeProjects.publicBenefitStatement.substr(0, 250) : a.safeProjects.publicBenefitStatement}
+								{a.safeProjects.publicBenefitStatement.length > 0 ? (
+									closedPublicBenefit ? (
+										a.safeProjects.publicBenefitStatement.substr(0, 250)
+									) : (
+										a.safeProjects.publicBenefitStatement
+									)
+								) : (
+									<p className='gray800-14-opacity'>Not specified</p>
+								)}
 							</Col>
 						</Row>
 						<Row className='soft-black-14 datause-view-grid'>
@@ -159,7 +199,13 @@ const About = ({ data }) => {
 									<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
 								</Button>
 							</OverlayTrigger>
-							<Col>{a.safeProjects.requestCategoryType}</Col>
+							<Col>
+								{a.safeProjects.requestCategoryType.length > 0 ? (
+									a.safeProjects.requestCategoryType
+								) : (
+									<p className='gray800-14-opacity'>Not specified</p>
+								)}
+							</Col>
 						</Row>
 						<Row className='soft-black-14 datause-view-grid'>
 							<Col>Technical summary</Col>
@@ -168,7 +214,13 @@ const About = ({ data }) => {
 									<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
 								</Button>
 							</OverlayTrigger>
-							<Col>{a.safeProjects.technicalSummary}</Col>
+							<Col>
+								{a.safeProjects.technicalSummary.length > 0 ? (
+									a.safeProjects.technicalSummary
+								) : (
+									<p className='gray800-14-opacity'>Not specified</p>
+								)}
+							</Col>
 						</Row>
 						<Row className='soft-black-14 datause-view-grid'>
 							<Col>Other approval committees</Col>
@@ -177,7 +229,13 @@ const About = ({ data }) => {
 									<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
 								</Button>
 							</OverlayTrigger>
-							<Col>{a.safeProjects.OtherApprovalCommittees}</Col>
+							<Col>
+								{a.safeProjects.otherApprovalCommittees.length > 0 ? (
+									a.safeProjects.otherApprovalCommittees
+								) : (
+									<p className='gray800-14-opacity'>Not specified</p>
+								)}
+							</Col>
 						</Row>
 						<Row className='soft-black-14 datause-view-grid'>
 							<Col>Project start date</Col>
@@ -186,7 +244,13 @@ const About = ({ data }) => {
 									<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
 								</Button>
 							</OverlayTrigger>
-							<Col>{a.safeProjects.projectStartDate}</Col>
+							<Col>
+								{a.safeProjects.projectStartDate.length > 0 ? (
+									a.safeProjects.projectStartDate
+								) : (
+									<p className='gray800-14-opacity'>Not specified</p>
+								)}
+							</Col>
 						</Row>
 						<Row className='soft-black-14 datause-view-grid'>
 							<Col>Project end date</Col>
@@ -195,7 +259,13 @@ const About = ({ data }) => {
 									<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
 								</Button>
 							</OverlayTrigger>
-							<Col>{a.safeProjects.projectEndDate}</Col>
+							<Col>
+								{a.safeProjects.projectEndDate.length > 0 ? (
+									a.safeProjects.projectEndDate
+								) : (
+									<p className='gray800-14-opacity'>Not specified</p>
+								)}
+							</Col>
 						</Row>
 						<Row className='soft-black-14 datause-view-grid'>
 							<Col>Latest approval date</Col>
@@ -204,7 +274,13 @@ const About = ({ data }) => {
 									<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
 								</Button>
 							</OverlayTrigger>
-							<Col>{a.safeProjects.latestApprovalDate}</Col>
+							<Col>
+								{a.safeProjects.latestApprovalDate.length > 0 ? (
+									a.safeProjects.latestApprovalDate
+								) : (
+									<p className='gray800-14-opacity'>Not specified</p>
+								)}
+							</Col>
 						</Row>
 					</Container>
 					<Container className='datause-card datause-view-grid'>
@@ -216,7 +292,9 @@ const About = ({ data }) => {
 									<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
 								</Button>
 							</OverlayTrigger>
-							<Col>{a.safeData.datasetNames}</Col>
+							<Col>
+								{a.safeData.datasetNames.length > 0 ? a.safeData.datasetNames : <p className='gray800-14-opacity'>Not specified</p>}
+							</Col>
 						</Row>
 						<Row className='soft-black-14 datause-view-grid'>
 							<Col>Data sensitivity level</Col>
@@ -225,7 +303,13 @@ const About = ({ data }) => {
 									<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
 								</Button>
 							</OverlayTrigger>
-							<Col>{a.safeData.dataSensitvityLevel}</Col>
+							<Col>
+								{a.safeData.dataSensitvityLevel.length > 0 ? (
+									a.safeData.dataSensitvityLevel
+								) : (
+									<p className='gray800-14-opacity'>Not specified</p>
+								)}
+							</Col>
 						</Row>
 						<Row className='soft-black-14 datause-view-grid'>
 							<Col>Legal basis for provision of data</Col>
@@ -234,7 +318,7 @@ const About = ({ data }) => {
 									<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
 								</Button>
 							</OverlayTrigger>
-							<Col>{a.safeData.legalBasis}</Col>
+							<Col>{a.safeData.legalBasis.length > 0 ? a.safeData.legalBasis : <p className='gray800-14-opacity'>Not specified</p>}</Col>
 						</Row>
 						<Row className='soft-black-14 datause-view-grid'>
 							<Col>Common law of duty of confidentiality</Col>
@@ -252,7 +336,7 @@ const About = ({ data }) => {
 									<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
 								</Button>
 							</OverlayTrigger>
-							<Col>{a.safeData.nationalOpt}</Col>
+							<Col>{a.safeData.nationalOpt.length > 0 ? a.safeData.nationalOpt : <p className='gray800-14-opacity'>Not specified</p>}</Col>
 						</Row>
 						<Row className='soft-black-14 datause-view-grid'>
 							<Col>Request frequency</Col>
@@ -261,7 +345,9 @@ const About = ({ data }) => {
 									<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
 								</Button>
 							</OverlayTrigger>
-							<Col>{a.safeData.requestFrequency}</Col>
+							<Col>
+								{a.safeData.requestFrequency.length > 0 ? a.safeData.requestFrequency : <p className='gray800-14-opacity'>Not specified</p>}
+							</Col>
 						</Row>
 						<Row className='soft-black-14 datause-view-grid'>
 							<Col>
@@ -284,7 +370,13 @@ const About = ({ data }) => {
 									<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
 								</Button>
 							</OverlayTrigger>
-							<Col>{a.safeData.descriptionConfidentialUsage}</Col>
+							<Col>
+								{a.safeData.descriptionConfidentialUsage.length > 0 ? (
+									a.safeData.descriptionConfidentialUsage
+								) : (
+									<p className='gray800-14-opacity'>Not specified</p>
+								)}
+							</Col>
 						</Row>
 						<Row className='soft-black-14 datause-view-grid'>
 							<Col>Release/Access date</Col>
@@ -293,7 +385,13 @@ const About = ({ data }) => {
 									<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
 								</Button>
 							</OverlayTrigger>
-							<Col>{a.safeData.releaseAccessDate}</Col>
+							<Col>
+								{a.safeData.releaseAccessDate.length > 0 ? (
+									a.safeData.releaseAccessDate
+								) : (
+									<p className='gray800-14-opacity'>Not specified</p>
+								)}
+							</Col>
 						</Row>
 					</Container>
 					<Container className='datause-card'>
@@ -305,7 +403,13 @@ const About = ({ data }) => {
 									<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
 								</Button>
 							</OverlayTrigger>
-							<Col>{a.safeSetting.dataProcessPrivacy}</Col>
+							<Col>
+								{a.safeSetting.dataProcessPrivacy.length > 0 ? (
+									a.safeSetting.dataProcessPrivacy
+								) : (
+									<p className='gray800-14-opacity'>Not specified</p>
+								)}
+							</Col>
 						</Row>
 						<Row className='soft-black-14 datause-view-grid'>
 							<Col>How has data been processed to enhance privacy?</Col>
@@ -314,7 +418,13 @@ const About = ({ data }) => {
 									<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
 								</Button>
 							</OverlayTrigger>
-							<Col>{a.safeSetting.trustedResearchEnv}</Col>
+							<Col>
+								{a.safeSetting.trustedResearchEnv.length > 0 ? (
+									a.safeSetting.trustedResearchEnv
+								) : (
+									<p className='gray800-14-opacity'>Not specified</p>
+								)}
+							</Col>
 						</Row>
 					</Container>
 					<Container className='datause-card'>
