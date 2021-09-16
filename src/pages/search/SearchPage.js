@@ -3,7 +3,7 @@ import axios from 'axios';
 import googleAnalytics from '../../tracking';
 import queryString from 'query-string';
 import * as Sentry from '@sentry/react';
-import { Container, Row, Col, Tabs, Tab, Pagination, Button } from 'react-bootstrap';
+import { Container, Row, Col, Tabs, Tab, Pagination, Button, Alert } from 'react-bootstrap';
 import moment from 'moment';
 import _ from 'lodash';
 import { toTitleCase } from '../../utils/GeneralHelper.util';
@@ -22,6 +22,9 @@ import ErrorModal from '../commonComponents/errorModal/ErrorModal';
 import SortDropdown from './components/SortDropdown';
 import { ReactComponent as CDStar } from '../../images/cd-star.svg';
 import AdvancedSearchModal from '../commonComponents/AdvancedSearchModal/AdvancedSearchModal';
+import SaveModal from '../commonComponents/saveModal/SaveModal';
+import DataUtilityWizardModal from '../commonComponents/DataUtilityWizard/DataUtilityWizardModal';
+import SVGIcon from '../../images/SVGIcon';
 import './Search.scss';
 import { upperFirst } from 'lodash';
 
@@ -90,6 +93,7 @@ class SearchPage extends React.Component {
 		showDrawer: false,
 		showModal: false,
 		showAdvancedSearchModal: false,
+		showSavedModal: false,
 		showError: false,
 		context: {},
 		userState: [
@@ -113,6 +117,12 @@ class SearchPage extends React.Component {
 		filtersV2Courses: [],
 		selectedV2Courses: [],
 		savedSearchPanel: true,
+		saveSuccess: false,
+		showLoggedInModal: true,
+		showSavedName: '',
+		showDataUtilityWizardModal: false,
+		showDataUtilityBanner: false,
+		activeDataUtilityWizardStep: 1,
 	};
 
 	constructor(props) {
@@ -126,6 +136,9 @@ class SearchPage extends React.Component {
 		this.searchBar = React.createRef();
 		this.updateFilterStates = this.updateFilterStates.bind(this);
 		this.doSearchCall = this.doSearchCall.bind(this);
+		this.openDataUtilityWizard = this.openDataUtilityWizard.bind(this);
+		this.toggleDataUtilityBanner = this.toggleDataUtilityBanner.bind(this);
+		this.onWizardStepChange = this.onWizardStepChange.bind(this);
 	}
 
 	showModal = () => {
@@ -136,6 +149,23 @@ class SearchPage extends React.Component {
 		this.setState({ showError: false });
 	};
 
+	hideSavedModal = () => {
+		this.setState({ showSavedModal: false });
+	};
+
+	hideNoSaveSearchModal = () => {
+		this.setState({ showSavedModal: false });
+		this.setState({ saveSuccess: false });
+	};
+
+	showSuccessMessage = () => {
+		this.setState({ saveSuccess: true });
+	};
+
+	showSavedName = data => {
+		this.setState({ showSavedName: data });
+	};
+
 	toggleAdvancedSearchModal = () => {
 		if (!this.state.showAdvancedSearchModal) {
 			googleAnalytics.recordVirtualPageView('Advanced search modal');
@@ -143,6 +173,41 @@ class SearchPage extends React.Component {
 		this.setState(prevState => {
 			return { showAdvancedSearchModal: !prevState.showAdvancedSearchModal };
 		});
+	};
+
+	openDataUtilityWizard(activeStep) {
+		this.setState({ showDataUtilityWizardModal: true, activeDataUtilityWizardStep: activeStep });
+	}
+
+	onWizardStepChange(activeStep) {
+		this.setState({ activeDataUtilityWizardStep: activeStep });
+	}
+
+	toggleDataUtilityBanner(show) {
+		this.setState({ showDataUtilityBanner: show });
+	}
+
+	toggleDataUtilityWizardModal = () => {
+		this.setState({ showDataUtilityWizardModal: false });
+	};
+
+	showLoginModal = () => {
+		// 1. add class to body to stop background scroll
+		document.body.classList.add('modal-open');
+
+		document.getElementById('myModal').style.display = 'block';
+		document.getElementById('loginWayFinder').style.display = 'none';
+		document.getElementById('loginButtons').style.display = 'block';
+		document.getElementById('loginModalTitle').innerHTML = 'Sign in or create a new account';
+		document.getElementById('modalRequestSection').style.display = 'none';
+
+		window.onclick = function (event) {
+			if (event.target === document.getElementById('myModal')) {
+				// 2. remove class modal-open from body
+				document.body.classList.remove('modal-open');
+				document.getElementById('myModal').style.display = 'none';
+			}
+		};
 	};
 
 	async componentDidMount() {
@@ -475,6 +540,9 @@ class SearchPage extends React.Component {
 			courseSort = '',
 			collectionSort = '',
 		} = this.state;
+
+		this.toggleDataUtilityBanner(false);
+
 		// 1. build search object from list of selected fitlers v2 only
 		let searchObj = {
 			...this.buildSearchObj(this.state.selectedV2Datasets),
@@ -636,7 +704,7 @@ class SearchPage extends React.Component {
 
 	handleSort = sort => {
 		const entityType = typeMapper[`${this.state.key}`];
-		googleAnalytics.recordEvent(`${entityType}s``Sorted search results by ${sort}`, 'Sort dropdown option changed');
+		googleAnalytics.recordEvent(`${entityType}s`, `Sorted search results by ${sort}`, 'Sort dropdown option changed');
 		this.setState({ [`${entityType}Sort`]: sort, isResultsLoading: true }, () => {
 			this.doSearchCall();
 		});
@@ -1218,6 +1286,7 @@ class SearchPage extends React.Component {
 			showModal,
 			showAdvancedSearchModal,
 			context,
+			activeDataUtilityWizardStep,
 
 			key,
 		} = this.state;
@@ -1357,6 +1426,79 @@ class SearchPage extends React.Component {
 			);
 		}
 
+		const dropdownMenu = (
+			<Col
+				className={
+					this.state.savedSearchPanel
+						? key === 'Tools' || key === 'Projects' || key === 'Collections' || key === 'Courses' || key === 'Papers' || key === 'People'
+							? this.state.saveSuccess
+								? 'text-right save-dropdown saved-dropdown-small'
+								: 'text-right save-dropdown '
+							: 'text-right save-dropdown save-dropdown-search'
+						: 'text-right'
+				}>
+				{key === 'Tools' ? (
+					<SortDropdown
+						handleSort={this.handleSort}
+						sort={toolSort === '' ? (search === '' ? 'latest' : 'relevance') : toolSort}
+						dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
+					/>
+				) : (
+					''
+				)}
+
+				{key === 'Datasets' ? (
+					<SortDropdown
+						handleSort={this.handleSort}
+						sort={datasetSort === '' ? (search === '' ? 'metadata' : 'relevance') : datasetSort}
+						dropdownItems={['relevance', 'popularity', 'metadata', 'latest', 'resources']}
+					/>
+				) : (
+					''
+				)}
+
+				{key === 'Projects' ? (
+					<SortDropdown
+						handleSort={this.handleSort}
+						sort={projectSort === '' ? (search === '' ? 'latest' : 'relevance') : projectSort}
+						dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
+					/>
+				) : (
+					''
+				)}
+
+				{key === 'Collections' ? (
+					<SortDropdown
+						handleSort={this.handleSort}
+						sort={collectionSort === '' ? (search === '' ? 'latest' : 'relevance') : collectionSort}
+						dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
+					/>
+				) : (
+					''
+				)}
+
+				{key === 'Papers' ? (
+					<SortDropdown
+						handleSort={this.handleSort}
+						sort={paperSort === '' ? (search === '' ? 'sortbyyear' : 'relevance') : paperSort}
+						dropdownItems={['relevance', 'popularity', 'sortbyyear', 'resources']}
+					/>
+				) : (
+					''
+				)}
+
+				{key === 'People' ? (
+					<SortDropdown
+						handleSort={this.handleSort}
+						sort={personSort === '' ? (search === '' ? 'latest' : 'relevance') : personSort}
+						dropdownItems={['relevance', 'popularity', 'latest']}
+					/>
+				) : (
+					''
+				)}
+			</Col>
+		);
+
 		return (
 			<Sentry.ErrorBoundary fallback={<ErrorModal show={this.showModal} handleClose={this.hideModal} />}>
 				<div>
@@ -1385,17 +1527,91 @@ class SearchPage extends React.Component {
 							</Tabs>
 						</div>
 					</div>
+
 					<div className='container'>
-						<Container>
+						{this.state.showDataUtilityBanner && (
+							<Alert variant='primary' className='blue-banner saved-preference-banner'>
+								<Row>
+									<Col>
+										<h5 className='indigo-bold-14'>Data utility wizard applied: Customer filters</h5>
+									</Col>
+								</Row>
+								<Row>
+									<Col md={9}>
+										You can continue to customise your filters below or edit alongside the search term in the data utility wizard.
+									</Col>
+									<Col md={3} className='data-utility-banner'>
+										<p
+											className='data-utility-link'
+											onClick={() => {
+												googleAnalytics.recordVirtualPageView('Data utility wizard');
+												googleAnalytics.recordEvent('Datasets', 'Clicked edit data utility wizard', 'Reopened data utility wizard modal');
+												this.openDataUtilityWizard(activeDataUtilityWizardStep);
+											}}>
+											Edit in data utility wizard
+										</p>
+									</Col>
+								</Row>
+							</Alert>
+						)}
+
+						{this.state.saveSuccess && !this.state.showSavedModal && (
+							<Alert variant='primary' className='blue-banner saved-preference-banner'>
+								Saved preference: {this.state.showSavedName}
+							</Alert>
+						)}
+						<Container className={this.state.saveSuccess && 'container-saved-preference-banner'}>
 							<Row className='filters filter-save'>
-								<Col className='title'>Showing # results of 'query'</Col>
-								<Col className='saved-buttons'>
-									<Button variant='outline-success' className='saved'>
-										Save
+								<Col className='title'>
+									Showing {key === 'Datasets' ? <>{datasetCount} </> : ''}
+									{key === 'Tools' ? <>{toolCount} </> : ''}
+									{key === 'Projects' ? <>{projectCount} </> : ''}
+									{key === 'Collections' ? <>{collectionCount} </> : ''}
+									{key === 'Courses' ? <>{courseCount} </> : ''}
+									{key === 'Papers' ? <>{paperCount} </> : ''}
+									{key === 'People' ? <>{personCount} </> : ''}
+									results for {this.state.search}
+								</Col>
+								<Col
+									className={
+										key === 'Datasets'
+											? 'saved-buttons'
+											: key === 'Courses'
+											? 'saved-buttons saved-buttons-courses'
+											: 'saved-buttons saved-buttons-small'
+									}>
+									{this.state.saveSuccess ? (
+										<Button variant='success' className='saved-disabled button-teal button-teal' disabled>
+											<SVGIcon width='15px' height='15px' name='tick' fill={'#fff'} /> Saved
+										</Button>
+									) : this.state.userState[0].loggedIn === false ? (
+										<Button variant='outline-success' className='saved button-teal' onClick={() => this.showLoginModal()}>
+											Save
+										</Button>
+									) : (
+										<Button variant='outline-success' className='saved button-teal' onClick={() => this.setState({ showSavedModal: true })}>
+											Save
+										</Button>
+									)}
+
+									{this.state.showSavedModal && (
+										<SaveModal
+											show={this.state.showSavedModal}
+											onHide={this.hideSavedModal}
+											onSaveHide={this.hideNoSaveSearchModal}
+											saveSuccess={this.showSuccessMessage}
+											saveName={this.showSavedName}
+											search={this.state.search}
+											filters={this.state.allFilters}
+											sort={this.state.filtersV2}
+											loggedIn={this.state.userState}
+										/>
+									)}
+
+									<Button variant='light' className='saved-preference button-tertiary'>
+										Saved preferences
 									</Button>
-									<Button variant='light' className='saved-preference'>
-										Saved preference
-									</Button>
+									{dropdownMenu}
 								</Col>
 							</Row>
 							<Row>
@@ -1475,7 +1691,7 @@ class SearchPage extends React.Component {
 									{key === 'Datasets' ? (
 										<Fragment>
 											<div className={this.state.savedSearchPanel ? 'filterHolder saved-filterHolder' : 'filterHolder'}>
-												{selectedV2Datasets.length > 0 && (
+												{selectedV2Datasets.length > 0 && !this.state.savedSearchPanel && (
 													<FilterSelection
 														selectedCount={selectedV2Datasets.length}
 														selectedItems={selectedV2Datasets}
@@ -1626,91 +1842,7 @@ class SearchPage extends React.Component {
 
 							{!isResultsLoading ? (
 								<Col sm={12} md={12} lg={9} className='mt-4 mb-5'>
-									{!showSort ? (
-										''
-									) : (
-										<Row>
-											<Col className='text-right'>
-												{key === 'Tools' ? (
-													<SortDropdown
-														handleSort={this.handleSort}
-														sort={toolSort === '' ? (search === '' ? 'latest' : 'relevance') : toolSort}
-														dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
-														savedSearch={true}
-													/>
-												) : (
-													''
-												)}
-
-												{key === 'Datasets' ? (
-													<SortDropdown
-														handleSort={this.handleSort}
-														sort={datasetSort === '' ? (search === '' ? 'metadata' : 'relevance') : datasetSort}
-														dropdownItems={['relevance', 'popularity', 'metadata', 'latest', 'resources']}
-														savedSearch={true}
-													/>
-												) : (
-													''
-												)}
-
-												{key === 'Projects' ? (
-													<SortDropdown
-														handleSort={this.handleSort}
-														sort={projectSort === '' ? (search === '' ? 'latest' : 'relevance') : projectSort}
-														dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
-														savedSearch={true}
-													/>
-												) : (
-													''
-												)}
-
-												{key === 'Collections' ? (
-													<SortDropdown
-														handleSort={this.handleSort}
-														sort={collectionSort === '' ? (search === '' ? 'latest' : 'relevance') : collectionSort}
-														dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
-														savedSearch={true}
-													/>
-												) : (
-													''
-												)}
-
-												{key === 'Courses' ? (
-													<SortDropdown
-														handleSort={this.handleSort}
-														sort={courseSort === '' ? (search === '' ? 'latest' : 'relevance') : courseSort}
-														dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
-														savedSearch={true}
-													/>
-												) : (
-													''
-												)}
-
-												{key === 'Papers' ? (
-													<SortDropdown
-														handleSort={this.handleSort}
-														sort={paperSort === '' ? (search === '' ? 'sortbyyear' : 'relevance') : paperSort}
-														dropdownItems={['relevance', 'popularity', 'sortbyyear', 'resources']}
-														savedSearch={true}
-													/>
-												) : (
-													''
-												)}
-
-												{key === 'People' ? (
-													<SortDropdown
-														handleSort={this.handleSort}
-														sort={personSort === '' ? (search === '' ? 'latest' : 'relevance') : personSort}
-														dropdownItems={['relevance', 'popularity', 'latest']}
-														savedSearch={true}
-													/>
-												) : (
-													''
-												)}
-											</Col>
-										</Row>
-									)}
-
+									{!showSort ? '' : <Fragment>{!this.state.savedSearchPanel && <Row>{dropdownMenu}</Row>}</Fragment>}
 									{key === 'Datasets' ? (
 										datasetCount <= 0 ? (
 											<NoResults type='datasets' search={search} />
@@ -1917,16 +2049,26 @@ class SearchPage extends React.Component {
 
 					<AdvancedSearchModal
 						open={showAdvancedSearchModal}
-						context={context}
 						closed={this.toggleAdvancedSearchModal}
 						userProps={userState[0]}
+						startDataUtilityWizardJourney={this.openDataUtilityWizard}
+					/>
+
+					<DataUtilityWizardModal
+						open={this.state.showDataUtilityWizardModal}
+						closed={() => {
+							this.toggleDataUtilityWizardModal();
+						}}
 						dataUtilityWizardSteps={this.state.dataUtilityWizardSteps}
 						updateFilterStates={this.updateFilterStates}
-						doSearchCall={this.doSearchCall}
-						handleClearSelection={this.handleClearSelection}
 						datasetCount={datasetCount}
+						doSearchCall={this.doSearchCall}
 						selectedItems={selectedV2Datasets}
-						wizardSearchValue={search}
+						handleClearSelection={this.handleClearSelection}
+						searchValue={this.state.search}
+						activeStep={activeDataUtilityWizardStep}
+						onWizardComplete={this.toggleDataUtilityBanner}
+						onStepChange={this.onWizardStepChange}
 					/>
 
 					<DataSetModal open={showModal} context={context} closed={this.toggleModal} userState={userState[0]} />

@@ -9,6 +9,7 @@ import moment from 'moment';
 import { ReactComponent as CalendarSvg } from '../../../images/calendaricon.svg';
 import _ from 'lodash';
 import removeMd from 'remove-markdown';
+import googleAnalytics from '../../../tracking';
 
 var baseURL = require('../BaseURL').getURL();
 var cmsURL = require('../BaseURL').getCMSURL();
@@ -807,7 +808,13 @@ class RelatedObject extends React.Component {
 									<Row className='noMargin'>
 										<Col sm={10} lg={10} className='pad-left-24'>
 											{activeLink === true ? (
-												<a className='purple-bold-16' style={{ cursor: 'pointer' }} href={'/dataset/' + data.pid}>
+												<a
+													onClick={() => {
+														googleAnalytics.recordEvent('Datasets', 'Clicked on dataset to open', `Dataset name: ${data.name}`);
+													}}
+													className='purple-bold-16'
+													style={{ cursor: 'pointer' }}
+													href={'/dataset/' + data.pid}>
 													{data.name}
 												</a>
 											) : (

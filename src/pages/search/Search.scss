@@ -489,6 +489,7 @@
 	height: 40px;
 	margin: 15px 8px;
 	padding: 12px 18.5px 11px;
+	cursor: pointer;
 }
 
 .saved-preference:hover {
@@ -506,8 +507,10 @@
 }
 
 .save-dropdown {
-	margin-top: -180px;
-	margin-right: 15px;
+	margin-top: -55px;
+	height: 100%;
+	width: 58% !important;
+	margin-left: 215px;
 }
 
 .saved-buttons {
@@ -518,8 +521,65 @@
 .filter-save {
 	padding: 0 16px 24px;
 	margin-top: 32px;
+	border-bottom: 1px solid #e7e9ed;
 }
 
 .saved-filterHolder {
 	margin-top: 10px;
+}
+
+.saved-search-arrow {
+	background: none;
+	border: none;
+}
+.saved-search-arrow:focus {
+	outline: none;
+}
+
+.saved-filters-title {
+	margin-right: 800px;
+}
+
+.saved-dropdown-small {
+	margin-left: 235px;
+}
+
+.save-dropdown-search {
+	margin-left: 228px !important;
+}
+
+.saved-buttons-small {
+	margin-left: 300px;
+}
+
+.saved-buttons-courses {
+	margin-left: 580px;
+}
+
+.saved-preference-banner {
+	border-color: $purple !important;
+	background-color: #cdd7f7 !important;
+	color: $indigo !important;
+	font-weight: $font-weight-semibold !important;
+	margin-top: 32px;
+}
+
+.container-saved-preference-banner {
+	margin-top: -20px;
+}
+
+.saved-disabled {
+	background-color: $teal !important;
+	border-color: $teal !important;
+	text-align: center !important;
+	cursor: default !important;
+}
+
+.data-utility-banner {
+	text-align: right;
+	text-decoration: underline;
+}
+
+.data-utility-link {
+	cursor: pointer;
 }

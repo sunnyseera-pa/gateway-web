@@ -16,12 +16,15 @@ const DataUtilityWizardModal = ({
 	selectedItems,
 	handleClearSelection,
 	searchValue,
+	activeStep,
+	onWizardComplete,
+	onStepChange,
 }) => {
 	const [stepCounter, setStepCounter] = useState(1);
 	let [typeaheadOption, setTypeaheadOption] = useState([]);
 
 	useEffect(() => {
-		setStepCounter(1);
+		setStepCounter(activeStep);
 	}, [open]);
 
 	const changeFilter = async (stepKey, impliedValues) => {
@@ -139,15 +142,29 @@ const DataUtilityWizardModal = ({
 						<button
 							className='button-tertiary'
 							style={{ marginRight: 'auto' }}
-							onClick={() => setStepCounter(stepCounter => stepCounter - 1)}>
+							onClick={() => {
+								setStepCounter(stepCounter => stepCounter - 1);
+								onStepChange(stepCounter - 1);
+							}}>
 							Back
 						</button>
 					)}
-					<button className='button-secondary' style={{ marginLeft: 'auto' }} onClick={closed}>
+					<button
+						className='button-secondary'
+						style={{ marginLeft: 'auto' }}
+						onClick={() => {
+							closed();
+							onWizardComplete(true);
+						}}>
 						View {datasetCount} dataset matches
 					</button>
 					{stepCounter < dataUtilityWizardSteps.length && (
-						<button className='button-primary ml-3' onClick={() => setStepCounter(stepCounter => stepCounter + 1)}>
+						<button
+							className='button-primary ml-3'
+							onClick={() => {
+								setStepCounter(stepCounter => stepCounter + 1);
+								onStepChange(stepCounter + 1);
+							}}>
 							Next
 						</button>
 					)}
