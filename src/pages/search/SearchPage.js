@@ -642,7 +642,7 @@ class SearchPage extends React.Component {
 
 	handleSort = sort => {
 		const entityType = typeMapper[`${this.state.key}`];
-		googleAnalytics.recordEvent(`${entityType}s` `Sorted search results by ${sort}`, 'Sort dropdown option changed');
+		googleAnalytics.recordEvent(`${entityType}s`, `Sorted search results by ${sort}`, 'Sort dropdown option changed');
 		this.setState({ [`${entityType}Sort`]: sort, isResultsLoading: true }, () => {
 			this.doSearchCall();
 		});
