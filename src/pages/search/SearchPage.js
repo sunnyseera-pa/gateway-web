@@ -137,6 +137,9 @@ class SearchPage extends React.Component {
 	};
 
 	toggleAdvancedSearchModal = () => {
+		if (!this.state.showAdvancedSearchModal) {
+			googleAnalytics.recordVirtualPageView('Advanced search modal');
+		}
 		this.setState(prevState => {
 			return { showAdvancedSearchModal: !prevState.showAdvancedSearchModal };
 		});
@@ -633,7 +636,7 @@ class SearchPage extends React.Component {
 
 	handleSort = sort => {
 		const entityType = typeMapper[`${this.state.key}`];
-		googleAnalytics.recordEvent(`${entityType}s` `Sorted search results by ${sort}`, 'Sort dropdown option changed');
+		googleAnalytics.recordEvent(`${entityType}s``Sorted search results by ${sort}`, 'Sort dropdown option changed');
 		this.setState({ [`${entityType}Sort`]: sort, isResultsLoading: true }, () => {
 			this.doSearchCall();
 		});
@@ -1610,6 +1613,7 @@ class SearchPage extends React.Component {
 											href='javascript:void(0)'
 											className='textUnderline gray800-14 cursorPointer'
 											onClick={() => {
+												googleAnalytics.recordEvent('Datasets', 'User clicked advanced search link', 'Advanced search modal opened');
 												this.toggleAdvancedSearchModal();
 											}}>
 											Advanced Search

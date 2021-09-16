@@ -9,6 +9,7 @@ import AdvancedSearchModalBody from './AdvancedSearchModalBody';
 import cohortDiscoveryImage from '../../../images/cohort-discovery.jpg';
 import dataUtilityImage from '../../../images/data-utility.png';
 import DataUtilityWizardModal from '../DataUtilityWizard/DataUtilityWizardModal';
+import googleAnalytics from '../../../tracking';
 const baseURL = require('../BaseURL').getURL();
 const GENERAL_ACCESS = 'GENERAL_ACCESS';
 const BANNED = 'BANNED';
@@ -37,6 +38,8 @@ const AdvancedSearchModal = ({
 		if (approvedUser && userState.acceptedAdvancedSearchTerms) {
 			console.log('Redirecting to RQuest');
 			if (urlEnv === 'prod') {
+				googleAnalytics.recordVirtualPageView('Cohort discovery tool');
+				googleAnalytics.recordEvent('Datasets', 'Clicked search using cohort discovery', 'Opened cohort discovery tool');
 				window.location.assign('https://rquest.prod.healthdatagateway.org/bcrquest/');
 			} else {
 				window.location.assign('https://rquest.test.healthdatagateway.org/bcrquest/');
@@ -107,6 +110,8 @@ const AdvancedSearchModal = ({
 	};
 
 	const startDataUtilityWizardJourney = () => {
+		googleAnalytics.recordVirtualPageView('Data utility wizard');
+		googleAnalytics.recordEvent('Datasets', 'Clicked search using data utility wizard', 'Opened data utility wizard modal')
 		handleClose();
 		setShowDataUtilityWizardModal(!showDataUtilityWizardModal);
 	};
