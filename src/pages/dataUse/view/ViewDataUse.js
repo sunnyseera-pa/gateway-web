@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Data from './Data.json';
 import About from './About';
-import RelatedResources from './RelatedResources';
+import RelatedResources from './RelatedResourcesDataUse';
 import SearchBar from '../../commonComponents/searchBar/SearchBar';
 import { Row, Container, Tab, Tabs, Button } from 'react-bootstrap';
 
