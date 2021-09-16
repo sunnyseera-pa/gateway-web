@@ -540,7 +540,7 @@ class SearchPage extends React.Component {
 			courseSort = '',
 			collectionSort = '',
 		} = this.state;
-		
+
 		this.toggleDataUtilityBanner(false);
 
 		// 1. build search object from list of selected fitlers v2 only
@@ -1196,6 +1196,13 @@ class SearchPage extends React.Component {
 					this.setState({ [filtersV2Entity]: filtersV2, [selectedV2Entity]: selectedV2, isResultsLoading: true }, () => {
 						this.doSearchCall();
 					});
+					googleAnalytics.recordEvent(
+						'Datasets',
+						`${checkValue ? 'Applied' : 'Removed'} ${parentNode.label} filter ${
+							this.state.showDataUtilityBanner ? 'after utility wizard search' : ''
+						}`,
+						`Filter value: ${selectedNode.label}`
+					);
 				}
 			}
 		}
@@ -1291,7 +1298,6 @@ class SearchPage extends React.Component {
 			key,
 		} = this.state;
 
-		console.log(filtersV2Courses);
 		if (isLoading) {
 			return (
 				<Container>
