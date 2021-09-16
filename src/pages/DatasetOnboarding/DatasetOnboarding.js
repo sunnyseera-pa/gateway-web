@@ -53,7 +53,7 @@ import DatasetOnboardingHelperUtil from '../../utils/DatasetOnboardingHelper.uti
 
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
 	<a
-		href='!#'
+		href='javascript:void(0)'
 		ref={ref}
 		onClick={e => {
 			e.preventDefault();
@@ -1365,7 +1365,7 @@ class DatasetOnboarding extends Component {
 							<a
 								className={`linkButton white-14-semibold ml-2 ${allowedNavigation ? '' : 'disabled'}`}
 								onClick={this.onClickSave}
-								href='!#'>
+								href='javascript:void(0)'>
 								Save now
 							</a>
 						}
