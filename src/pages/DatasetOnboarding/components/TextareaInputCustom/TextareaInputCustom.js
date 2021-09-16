@@ -1,5 +1,4 @@
 import React from 'react';
-import _ from 'lodash';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 
 class TextareaInputCustom extends React.Component {
@@ -23,16 +22,18 @@ class TextareaInputCustom extends React.Component {
 	}
 
 	descriptionCount(e) {
-		var input = e.target.value;
 		document.getElementById('currentCount').innerHTML = e.target.value.length;
 	}
 
 	render() {
 		return (
 			<>
-                <div className='wordCount'>
-                    <span>{this.state.length} character limit</span> <span>(<span id='currentCount'>{this.state.value ? this.state.value.length : 0}</span>/{this.state.length})</span>
-                </div>
+				<div className='wordCount'>
+					<span>{this.state.length} character limit</span>{' '}
+					<span>
+						(<span id='currentCount'>{this.state.value ? this.state.value.length : 0}</span>/{this.state.length})
+					</span>
+				</div>
 
 				<textarea
 					type='text'

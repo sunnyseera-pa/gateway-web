@@ -4,7 +4,6 @@ import { ReactComponent as CDStar } from '../../../images/cd-star.svg';
 import './AdvancedSearchModal.scss';
 import AdvancedSearchRequestAccessModal from '../../dashboard/AdvancedSearchRequestAccessModal';
 import AdvancedSearchTermsandConditionsModal from '../../dashboard/AdvancedSearchTAndCsModal';
-import _ from 'lodash';
 import axios from 'axios';
 import AdvancedSearchModalBody from './AdvancedSearchModalBody';
 import cohortDiscoveryImage from '../../../images/cohort-discovery.jpg';
@@ -140,6 +139,7 @@ const AdvancedSearchModal = ({
 			<Modal
 				show={open}
 				onHide={handleClose}
+				enforceFocus={false}
 				className='advanced-search-modal'
 				size='lg'
 				aria-labelledby='contained-modal-title-vcenter'

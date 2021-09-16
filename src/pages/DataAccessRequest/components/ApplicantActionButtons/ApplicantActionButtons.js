@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react';
 import DarHelper from '../../../../utils/DarHelper.util';
 import ActionBarMenu from '../../../commonComponents/ActionBarMenu/ActionBarMenu';
+import googleAnalytics from '../../../../tracking';
 
 const ApplicantActionButtons = ({
 	allowedNavigation = false,
@@ -13,7 +14,7 @@ const ApplicantActionButtons = ({
 	onDeleteDraftClick,
 	applicationStatus,
 	onDuplicateClick,
-	onShowAmendApplicationModal
+	onShowAmendApplicationModal,
 }) => {
 	const options = [
 		{
@@ -23,6 +24,7 @@ const ApplicantActionButtons = ({
 					title: 'Contributors',
 					description: 'Add or remove others to help with this application',
 					onClick: () => {
+						googleAnalytics.recordVirtualPageView('contributors modal');
 						onShowContributorModal();
 					},
 					isVisible: true,
@@ -31,6 +33,7 @@ const ApplicantActionButtons = ({
 					title: 'Amend application',
 					description: 'Add or remove datasets and edit answers in approved applications',
 					onClick: () => {
+						googleAnalytics.recordVirtualPageView('amend application modal');
 						onShowAmendApplicationModal();
 					},
 					isVisible:
@@ -42,6 +45,7 @@ const ApplicantActionButtons = ({
 					title: 'Duplicate application',
 					description: 'Copy answers into a new or existing pre-submission application',
 					onClick: () => {
+						googleAnalytics.recordVirtualPageView('duplicate application modal');
 						onDuplicateClick();
 					},
 					isVisible: isCloneable,
@@ -50,6 +54,7 @@ const ApplicantActionButtons = ({
 					title: 'Delete draft',
 					description: 'Delete and close this draft application',
 					onClick: () => {
+						googleAnalytics.recordVirtualPageView('delete draft application modal');
 						onDeleteDraftClick();
 					},
 					isVisible: applicationStatus === DarHelper.darStatus.inProgress,
@@ -68,12 +73,22 @@ const ApplicantActionButtons = ({
 			<ActionBarMenu label='Manage application' options={availableOptions} disabled={!allowedNavigation} buttonClass='button-tertiary' />
 
 			{showSubmit && (
-				<button className={`button-secondary ${allowedNavigation ? '' : 'disabled'}`} onClick={() => onSubmitClick()}>
+				<button
+					className={`button-secondary ${allowedNavigation ? '' : 'disabled'}`}
+					onClick={() => {
+						onSubmitClick();
+						googleAnalytics.recordVirtualPageView('submit application modal');
+					}}>
 					{submitButtonText}
 				</button>
 			)}
 
-			<button className={`button-primary ${allowedNavigation ? '' : 'disabled'}`} onClick={() => onNextClick()}>
+			<button
+				className={`button-primary ${allowedNavigation ? '' : 'disabled'}`}
+				onClick={() => {
+					onNextClick();
+					googleAnalytics.recordEvent('Data access request', 'Clicked next', 'Navigate to next page');
+				}}>
 				Next
 			</button>
 		</Fragment>

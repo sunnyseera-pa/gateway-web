@@ -17,8 +17,8 @@ import { ReactComponent as MetadataSilver } from '../../images/silverNew.svg';
 import { ReactComponent as MetadataGold } from '../../images/goldNew.svg';
 import { ReactComponent as MetadataPlatinum } from '../../images/platinumNew.svg';
 import { ReactComponent as MetadataNotRated } from '../../images/notRatedNew.svg';
-import { PageView, initGA } from '../../tracking';
-import { Event } from '../../tracking';
+import { ReactComponent as GoldStar } from '../../images/cd-star.svg';
+import googleAnalytics from '../../tracking';
 import Linkify from 'react-linkify';
 import DatasetSchema from './DatasetSchema';
 import TechnicalMetadata from './components/TechnicalMetadata';
@@ -53,10 +53,6 @@ class DatasetDetail extends Component {
 		collections: [],
 		dataClassOpen: -1,
 		relatedObjects: [],
-		datarequest: [],
-		DBData: [],
-		activeKey: false,
-		selectedItem: 'tab-1',
 		isLoading: true,
 		userState: [
 			{
@@ -83,9 +79,6 @@ class DatasetDetail extends Component {
 		showModal: false,
 		showCustodianModal: false,
 		showError: false,
-		allowsMessaging: false,
-		allowNewMessage: false,
-		dataRequestModalContent: {},
 		showAllPhenotype: false,
 		showAllLinkedDatasets: false,
 		showEmpty: false,
@@ -101,6 +94,8 @@ class DatasetDetail extends Component {
 		publisherLogoURL: '',
 		isLatestVersion: true,
 		isDatasetArchived: false,
+		cohortProfiling: [],
+		datasetHasCohortProfiling: false,
 		isCohortDiscovery: false,
 	};
 
@@ -127,8 +122,6 @@ class DatasetDetail extends Component {
 	async componentDidMount() {
 		await this.getDataset();
 		this.checkAlerts();
-		initGA('UA-166025838-1');
-		PageView();
 	}
 
 	// on loading of tool detail page were id is different
@@ -153,7 +146,7 @@ class DatasetDetail extends Component {
 					isLatestVersion: res.data.isLatestVersion,
 					isDatasetArchived: res.data.isDatasetArchived,
 				});
-				this.getTechnicalMetadata();
+				await this.getTechnicalMetadata();
 				this.getCollections();
 				if (!isEmpty(res.data.data.datasetv2)) {
 					this.updateV2Flags(res.data.data.datasetv2);
@@ -216,18 +209,68 @@ class DatasetDetail extends Component {
 		});
 	};
 
-	getTechnicalMetadata() {
-		axios.get(baseURL + '/api/v1/datasets/' + this.state.data.datasetid).then(res => {
-			if (res.data) {
-				const {
-					data: {
-						datasetfields: { technicaldetails: technicalMetadata = [] },
-					},
-				} = res.data;
+	async getTechnicalMetadata() {
+		let tablesWithProfilingData = [];
+		let cohortProfilingTechnicalMetadata = {};
+		await axios
+			.get(
+				baseURL +
+					'/api/v1/cohortProfiling?pid=' +
+					this.props.match.params.datasetID +
+					'&fields=dataClasses.dataElements.field,dataClasses.name,dataClasses.dataElements.completeness'
+			)
+			.then(res => {
+				const datasetHasCohortProfiling = res.data.cohortProfiling.length > 0;
+
+				if (datasetHasCohortProfiling) {
+					cohortProfilingTechnicalMetadata = res.data.cohortProfiling[0];
+					tablesWithProfilingData = cohortProfilingTechnicalMetadata.dataClasses.map(dataClass => {
+						return dataClass.name;
+					});
+				}
 				this.setState({
-					technicalMetadata,
+					datasetHasCohortProfiling,
 				});
-			}
+			});
+
+		if (this.state.data) {
+			const {
+				datasetfields: { technicaldetails: technicalMetadata = [] },
+			} = this.state.data;
+			const technicalMetadataWithProfiling = technicalMetadata.map(dataClass => {
+				// If cohortProfilingTechnicalMetadata exists then at least some dataClasses will have profiling data
+				// 1. Find the dataClasses that have profiling data
+				const dataClassProfilingData = tablesWithProfilingData.includes(dataClass.label);
+				return {
+					...dataClass,
+					elements:
+						!isEmpty(cohortProfilingTechnicalMetadata) && dataClassProfilingData
+							? this.appendCohortProfilingCompletenessToDataElements(dataClass, cohortProfilingTechnicalMetadata)
+							: dataClass.elements,
+					hasProfilingData: dataClassProfilingData,
+				};
+			});
+			this.setState({
+				technicalMetadata: [...technicalMetadataWithProfiling],
+				isLoading: false,
+			});
+		}
+	}
+
+	appendCohortProfilingCompletenessToDataElements(dataClass, cohortProfilingTechnicalMetadata) {
+		return dataClass.elements.map(element => {
+			// 2. Find which of their data elements have profiling data
+			const currentElement = cohortProfilingTechnicalMetadata.dataClasses
+				.find(table => {
+					return table.name === dataClass.label;
+				})
+				.dataElements.find(dataElement => {
+					return dataElement.field === element.label;
+				});
+			// 3. Find the completeness % for those data elements and include it in the return object
+			const completenessForCurrentElement = has(currentElement, 'completeness') ? currentElement.completeness : undefined;
+
+			return { ...element, completeness: completenessForCurrentElement };
 		});
 	}
 
@@ -597,7 +640,7 @@ class DatasetDetail extends Component {
 		} else if (action === 'SUBMIT_APPLICATION') {
 			console.log('Take user to application');
 			const { publisher } = this.topicContext.datasets[0];
-			Event('Buttons', 'Click', 'Request Access');
+			googleAnalytics.recordEvent('Data access request', 'Start application', 'Modal button clicked');
 			this.props.history.push({ pathname: `/data-access-request/publisher/${publisher}` }, { datasets: this.topicContext.datasets });
 		}
 	};
@@ -848,7 +891,11 @@ class DatasetDetail extends Component {
 													className='btn btn-primary addButton pointer float-right'
 													onClick={() => {
 														this.toggleModal();
-														Event('Buttons', 'Click', 'Request Access');
+														googleAnalytics.recordEvent(
+															'Data access request',
+															'How to request access',
+															'Dataset page primary button clicked'
+														);
 													}}>
 													How to request access
 												</button>
@@ -864,7 +911,12 @@ class DatasetDetail extends Component {
 							<Col sm={1} />
 							<Col sm={10}>
 								<div>
-									<Tabs className='tabsBackground gray700-13 margin-bottom-16'>
+									<Tabs
+										className='tabsBackground gray700-13 margin-bottom-16'
+										onSelect={key => {
+											googleAnalytics.recordVirtualPageView(`${key} tab`);
+											googleAnalytics.recordEvent('Datasets', `Clicked ${key} tab`, `Viewing ${key}`);
+										}}>
 										<Tab eventKey='About' title={'About'}>
 											{!isEmpty(v2data.summary.abstract) ? (
 												<Row className='mt-1'>
@@ -1210,7 +1262,17 @@ class DatasetDetail extends Component {
 											)}
 										</Tab>
 
-										<Tab eventKey='TechDetails' title={`Technical details`}>
+										<Tab
+											eventKey='Technical details'
+											title={
+												this.state.datasetHasCohortProfiling ? (
+													<span style={{ display: 'flex' }}>
+														<GoldStar fill={'#f98e2b'} height='16' width='16' viewBox='0 0 21 21' className='mr-2' /> Technical details
+													</span>
+												) : (
+													`Technical details`
+												)
+											}>
 											{dataClassOpen === -1 ? (
 												<Fragment>
 													{this.state.isCohortDiscovery ? <CohortDiscoveryBanner userProps={userState[0]} /> : ''}
@@ -1255,6 +1317,7 @@ class DatasetDetail extends Component {
 												<Row style={{ width: '-webkit-fill-available' }}>
 													<Col sm={12} lg={12}>
 														<TechnicalDetailsPage
+															datasetID={this.props.match.params.datasetID}
 															technicalMetadata={technicalMetadata[dataClassOpen]}
 															doUpdateDataClassOpen={this.doUpdateDataClassOpen}
 														/>
@@ -1263,7 +1326,7 @@ class DatasetDetail extends Component {
 											)}
 										</Tab>
 
-										<Tab eventKey='DataUtility' title={`Data utility`}>
+										<Tab eventKey='Data utility' title={`Data utility`}>
 											<Row className='mt-2'>
 												<Col sm={12}>
 													<div className='rectangle pad-bottom-16'>
@@ -1302,7 +1365,7 @@ class DatasetDetail extends Component {
 											</Row>
 										</Tab>
 
-										<Tab eventKey='Collaboration' title={`Discussion (${discoursePostCount})`}>
+										<Tab eventKey='Discussion' title={`Discussion (${discoursePostCount})`}>
 											<DiscourseTopic
 												toolId={data.id}
 												topicId={data.discourseTopicId || 0}
@@ -1310,7 +1373,8 @@ class DatasetDetail extends Component {
 												onUpdateDiscoursePostCount={this.updateDiscoursePostCount}
 											/>
 										</Tab>
-										<Tab eventKey='Projects' title={'Related resources (' + relatedObjects.length + ')'}>
+
+										<Tab eventKey='Related resources' title={'Related resources (' + relatedObjects.length + ')'}>
 											{data.relatedObjects && data.relatedObjects.length <= 0 ? (
 												<NotFound word='related resources' />
 											) : (
@@ -1321,6 +1385,7 @@ class DatasetDetail extends Component {
 												))
 											)}
 										</Tab>
+
 										<Tab eventKey='Collections' title={'Collections (' + collections.length + ')'}>
 											{!collections || collections.length <= 0 ? (
 												<NotFound text='This dataset has not been featured on any collections yet.' />

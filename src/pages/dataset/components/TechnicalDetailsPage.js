@@ -1,17 +1,15 @@
 import React from 'react';
 import { Col, Row } from 'react-bootstrap';
-import SVGIcon from '../../../images/SVGIcon';
+import { ReactComponent as GoldStar } from '../../../images/cd-star.svg';
 import { ReactComponent as CloseButtonSvg } from '../../../images/close-alt.svg';
-
 import { ReactComponent as TableSvg } from '../../../images/table.svg';
 import TechnicalMetadataVariables from './TechnicalMetadataVariables';
+import CohortProfilingVariables from './CohortProfilingVariables';
 import '../Dataset.scss';
 
 class TechnicalDetailsPage extends React.Component {
 	state = {
 		technicalMetadata: null,
-		flagClosed: true,
-		customType: false,
 		allOpen: false,
 	};
 
@@ -29,12 +27,7 @@ class TechnicalDetailsPage extends React.Component {
 	};
 
 	render() {
-		const { flagClosed, customType, technicalMetadata, allOpen } = this.state;
-
-		var svgClassName = '';
-		if (flagClosed === false) {
-			svgClassName = 'flipSVG';
-		}
+		const { technicalMetadata, allOpen } = this.state;
 
 		return (
 			<div className='ml-3'>
@@ -48,7 +41,16 @@ class TechnicalDetailsPage extends React.Component {
 											<Col sm={9} lg={11}>
 												<Row>
 													<TableSvg className='margin-top-2' />
-													<span className='pad-left-8 black-18'>{technicalMetadata ? technicalMetadata.label : ''}</span>
+													<span className='pad-left-8 black-18'>
+														{technicalMetadata && technicalMetadata.hasProfilingData ? (
+															<span className='centerSpan'>
+																<GoldStar fill={'#f98e2b'} height='20' width='20' className='ml-1' />
+																{technicalMetadata.label}
+															</span>
+														) : (
+															<span className='centerSpan'>{technicalMetadata.label}</span>
+														)}
+													</span>
 												</Row>
 											</Col>
 
@@ -77,10 +79,20 @@ class TechnicalDetailsPage extends React.Component {
 									</div>
 								</Col>
 							</Row>
-
-							{technicalMetadata.elements.map(element => (
-								<TechnicalMetadataVariables techMetadataVariables={element} open={allOpen} />
-							))}
+							{technicalMetadata &&
+								technicalMetadata.label &&
+								technicalMetadata.elements.map(element =>
+									element.completeness >= 0 ? (
+										<CohortProfilingVariables
+											cohortProfilingVariables={element}
+											tableName={technicalMetadata.label}
+											datasetID={this.props.datasetID}
+											allOpen={allOpen}
+										/>
+									) : (
+										<TechnicalMetadataVariables techMetadataVariables={element} open={allOpen} />
+									)
+								)}
 							<div className='height-16' />
 						</div>
 					</Col>

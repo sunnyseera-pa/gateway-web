@@ -449,6 +449,25 @@ button.dropdown-toggle.btn.btn-outline-secondary::after {
 	top: 4.5px;
 }
 
+.grey-circle-border {
+	padding: 2px;
+	border: solid 2px #b3b8bd;
+	border-radius: 50%;
+	display: inline-flex;
+}
+
+.teams-alert {
+	width: 100%;
+}
+
+.memberOfValue {
+	margin-left: -20px;
+}
+
+.addEditTeamBorder {
+	border-top: 1px solid $gray-pale;
+}
+
 .datasetHeader {
 	display: flex;
 	flex-flow: column nowrap;

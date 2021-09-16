@@ -1,5 +1,5 @@
 import React, { Fragment, useState } from 'react';
-import { OverlayTrigger, Tooltip, Row, Button, Accordion, Col } from 'react-bootstrap';
+import { OverlayTrigger, Tooltip, Row, Button, Accordion } from 'react-bootstrap';
 import { isEmpty } from 'lodash';
 import SLA from '../commonComponents/sla/SLA';
 import TimeDuration from './timeDuration/TimeDuration';
@@ -28,7 +28,6 @@ export const DatasetCard = props => {
 		publisher,
 		title,
 		version,
-		isDraft,
 		datasetStatus,
 		completion = {},
 		timeStamps = {},
@@ -132,7 +131,7 @@ export const DatasetCard = props => {
 													<>
 														{datasetVersion.datasetVersion !== version ? (
 															<a
-																href='#'
+																href='javascript:void(0)'
 																className='version-list'
 																onClick={e => {
 																	e.stopPropagation();
