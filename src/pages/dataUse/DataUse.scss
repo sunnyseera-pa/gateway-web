@@ -120,3 +120,35 @@
 	height: 48px;
 	text-align: left;
 }
+
+.datause-hidefields-button {
+	justify-content: center;
+}
+
+.datause-about-info {
+	padding-top: 10px;
+	text-align: center;
+}
+
+.datause-info-icon {
+	margin-top: 4px;
+}
+
+.datause-info-icon-button {
+	background-color: transparent !important;
+	border-color: transparent !important;
+	padding: 0;
+	height: 8px;
+	width: 8px;
+	margin-top: -12px;
+	margin-left: -9px;
+}
+
+.datause-info-icon-button:hover {
+	background-color: transparent !important;
+	border-color: transparent !important;
+}
+
+.datause-info-icon-tooltip {
+	margin-top: -100px;
+}
