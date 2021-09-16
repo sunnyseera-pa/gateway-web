@@ -16,7 +16,7 @@ const RelatedResources = ({ data }) => {
 			{data.map(a => (
 				<Container className='datause-card datause-relatedresource-cointainer'>
 					<Row className='purple-bold-16'>
-						<Col>{a.title.length}</Col>
+						<Col>{a.title}</Col>
 					</Row>
 					<Row className='black-14'>
 						<Col>{a.org}</Col>

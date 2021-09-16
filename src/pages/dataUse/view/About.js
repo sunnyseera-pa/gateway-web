@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import { Container, Row, Col, Button, Tooltip, OverlayTrigger } from 'react-bootstrap';
 import SVGIcon from '../../../images/SVGIcon';
 
-const About = ({ data }) => {
+const About = ({ data, aboutComp }) => {
 	const [closedLaySummary, setClosedLaySummary] = useState(true);
 	const [closedPublicBenefit, setClosedPublicBenefit] = useState(true);
 	const [closedDataUse, setClosedDataUse] = useState(true);
 	const [hide, setHide] = useState(false);
-	const [notSpecified, setNotSpecified] = useState(true);
+	const [notSpecified, setNotSpecified] = useState(false);
 
 	const exampleTooltip = props => (
 		<Tooltip className='datause-info-icon-tooltip' {...props}>
@@ -21,8 +21,10 @@ const About = ({ data }) => {
 				<>
 					<Container className='datause-card'>
 						<p className='black-14-bold'>Safe people</p>
+						{a.org.length > 0 && !hide && 'one'}
+						{a.org.length < 0 && !hide && 'two'}
 						<Row className='soft-black-14 datause-view-grid'>
-							<Col>Organisation name</Col>
+							<Col>Project ID</Col>
 							<OverlayTrigger placement='top' overlay={exampleTooltip}>
 								<Button className='datause-info-icon-button'>
 									<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
@@ -30,6 +32,7 @@ const About = ({ data }) => {
 							</OverlayTrigger>
 							<Col>{a.org.length > 0 ? a.org : <p className='gray800-14-opacity'>Not specified</p>}</Col>
 						</Row>
+
 						<Row className='soft-black-14 datause-view-grid'>
 							<Col>Organisation ID</Col>
 							<OverlayTrigger placement='top' overlay={exampleTooltip}>
@@ -67,11 +70,7 @@ const About = ({ data }) => {
 								</Button>
 							</OverlayTrigger>
 							<Col>
-								{a.safePeople.applicantID.length > 0
-									? a.safePeople.applicantID
-									: <p className='gray800-14-opacity'>Not specified</p> && notSpecified
-									? hide(true)
-									: ''}
+								{a.safePeople.applicantID.length > 0 ? a.safePeople.applicantID : <p className='gray800-14-opacity'>Not specified</p>}
 							</Col>
 						</Row>
 						<Row className='soft-black-14 datause-view-grid'>
@@ -114,8 +113,9 @@ const About = ({ data }) => {
 					</Container>
 					<Container className='datause-card'>
 						<p className='black-14-bold'>Safe projects</p>
+
 						<Row className='soft-black-14 datause-view-grid'>
-							<Col>Project ID</Col>
+							{!hide && a.org.length > 0 && <Col>Project ID</Col>}
 							<OverlayTrigger placement='top' overlay={exampleTooltip}>
 								<Button className='datause-info-icon-button'>
 									<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
@@ -327,7 +327,13 @@ const About = ({ data }) => {
 									<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
 								</Button>
 							</OverlayTrigger>
-							<Col>{a.safeData.commonLawConfidentiality}</Col>
+							<Col>
+								{a.safeData.commonLawConfidentiality.length > 0 ? (
+									a.safeData.commonLawConfidentiality
+								) : (
+									<p className='gray800-14-opacity'>Not specified</p>
+								)}
+							</Col>
 						</Row>
 						<Row className='soft-black-14 datause-view-grid'>
 							<Col>National data opt-out applied?</Col>
@@ -436,7 +442,7 @@ const About = ({ data }) => {
 									<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
 								</Button>
 							</OverlayTrigger>
-							<Col>{a.safeOutput.link}</Col>
+							<Col>{a.safeOutput.link.length > 0 ? a.safeOutput.link : <p className='gray800-14-opacity'>Not specified</p>}</Col>
 						</Row>
 					</Container>
 				</>
@@ -450,7 +456,7 @@ const About = ({ data }) => {
 				</Col>
 			</Row>
 			<Row className='datause-hidefields-button'>
-				<Button>Show/Hide all empty fields</Button>
+				<Button onClick={() => (hide ? setHide(false) : setHide(true))}>Show/Hide all empty fields</Button>
 			</Row>
 		</>
 	);

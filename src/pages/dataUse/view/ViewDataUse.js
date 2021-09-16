@@ -6,6 +6,8 @@ import SearchBar from '../../commonComponents/searchBar/SearchBar';
 import { Row, Container, Tab, Tabs, Button } from 'react-bootstrap';
 
 const View = ({ ...props }) => {
+	const [about, setAbout] = useState(false);
+	const [relatedResource, setRelatedResource] = useState(false);
 	const [searchBar] = useState(React.createRef());
 	const [searchString, setSearchString] = useState('');
 	const [showDrawer, setShowDrawer] = useState(false);
@@ -35,6 +37,9 @@ const View = ({ ...props }) => {
 		}
 		setShowDrawer(!showDrawer);
 	};
+
+	const aboutComp = () => setAbout(true);
+	const relatedResourcesComp = () => setRelatedResource(true);
 
 	const tabs = ['About', 'Discussion', 'Related resources', 'Collections'];
 
