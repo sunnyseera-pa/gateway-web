@@ -1,11 +1,13 @@
 import React, { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
-import { Accordion, Card, Overlay, OverlayTrigger } from 'react-bootstrap';
+import { Accordion, Card, OverlayTrigger } from 'react-bootstrap';
 import DarHelper from '../../../../utils/DarHelper.util';
 import SVGIcon from '../../../../images/SVGIcon';
 import { ReactComponent as InfoSVG } from '../../../../images/info.svg';
 import TypeaheadDataset from '../TypeaheadDataset/TypeaheadDataset';
+import AlertBox from '../AlertBox/AlertBox';
+import moment from 'moment';
 
 import { useTranslation } from 'react-i18next';
 
@@ -42,9 +44,15 @@ const AboutApplication = props => {
 		toggleMrcModal,
 		toggleContributorModal,
 		context,
+		areDatasetsAmended = false,
+		datasetsAmendedDate = '',
 	} = props;
 
 	const { t } = useTranslation('common');
+
+	const datasetsAmendedMessage = `Applicant has requested this as an amendment to the approved application on ${moment(
+		datasetsAmendedDate
+	).format('Do MMM YYYY')}`;
 
 	return (
 		<div className='aboutAccordion'>
@@ -86,11 +94,9 @@ const AboutApplication = props => {
 										allowAllCustodians={false}
 									/>
 								</div>
-								{_.isEmpty(selectedDatasets) ? (
-									<div className='errorMessages'>{t('dataAccessRequestForm.aboutThisApplicationSection.datasets.errorOne')}</div>
-								) : null}
-								<div className='panConfirm'>
-									{userType.toUpperCase() === 'APPLICANT' ? (
+								{_.isEmpty(selectedDatasets) ? <div className='errorMessages'>You must select at least one dataset</div> : null}
+								<div className='panConfirm d-flex justify-content-end'>
+									{userType.toUpperCase() === 'APPLICANT' && !readOnly && (
 										<button
 											type='input'
 											className={`button-primary ${allowedNavigation ? '' : 'disabled'}`}
@@ -100,11 +106,10 @@ const AboutApplication = props => {
 											}}>
 											{t('button.confirm')}
 										</button>
-									) : (
-										''
 									)}
 								</div>
 							</div>
+							{areDatasetsAmended && <AlertBox text={datasetsAmendedMessage} status='WARNING' />}
 						</Card.Body>
 					</Accordion.Collapse>
 				</Card>
@@ -141,8 +146,41 @@ const AboutApplication = props => {
 										<div className='errorMessages'>{t('dataAccessRequestForm.aboutThisApplicationSection.applicationName.errorOne')}</div>
 									) : null}
 								</div>
-								<div className='panConfirm'>
-									{userType.toUpperCase() === 'APPLICANT' ? (
+								{isNationalCoreStudies ? (
+									<Fragment>
+										<div className='margin-top-24'>
+											<span>National Core Studies project</span>
+											<OverlayTrigger
+												placement='top'
+												delay={{ show: 250, hide: 400 }}
+												overlay={renderTooltip(
+													'Projects must be added to the Gateway first using the appropriate tags associated with the National Core Studies.'
+												)}>
+												<InfoSVG className='margin-left-8 pointer' viewBox='0 0 24 16' />
+											</OverlayTrigger>
+										</div>
+										<div className='form-group'>
+											<select
+												id='ddlNationalCoreStudiesProject'
+												className='form-input-dropdown'
+												value={nationalCoreStudiesProjectId}
+												onChange={e => onHandleNCSProjectChange(e.target.value)}
+												disabled={readOnly}>
+												<option key='' value=''>
+													Select a project
+												</option>
+												{nationalCoreStudiesProjects.map(item => (
+													<option key={item.id} value={item.id}>
+														{item.name}
+													</option>
+												))}
+											</select>
+											{!ncsValid ? <div className='errorMessages'>You must indicate a project or untick the option above</div> : null}
+										</div>
+									</Fragment>
+								) : null}
+								<div className='panConfirm d-flex justify-content-end'>
+									{userType.toUpperCase() === 'APPLICANT' && !readOnly && (
 										<button
 											type='input'
 											className={`button-primary ${allowedNavigation ? '' : 'disabled'}`}
@@ -150,8 +188,6 @@ const AboutApplication = props => {
 											onClick={e => onNextStep(allowedNavigation)}>
 											{t('button.confirm')}
 										</button>
-									) : (
-										''
 									)}
 								</div>
 							</div>
@@ -180,12 +216,10 @@ const AboutApplication = props => {
 								{t('dataAccessRequestForm.aboutThisApplicationSection.contributors.paragraphOne')}
 								</div>
 								<div className='dar-form-check-group'>
-									{userType.toUpperCase() !== 'CUSTODIAN' ? (
-										<button className='button-secondary' type='button' onClick={(e) => toggleContributorModal()}>
-											{t('dataAccessRequestForm.aboutThisApplicationSection.contributors.addContributorsButton')}
+									{userType.toUpperCase() !== 'CUSTODIAN' && !readOnly && (
+										<button className='button-secondary' type='button' onClick={e => toggleContributorModal()}>
+											Add contributors
 										</button>
-									) : (
-										''
 									)}
 									<input
 										type='checkbox'
@@ -273,12 +307,10 @@ const AboutApplication = props => {
 								{t('dataAccessRequestForm.aboutThisApplicationSection.dataCustodianCommunication.paragraphOne')}
 								</div>
 								<div className='dar-form-check-group'>
-									{userType.toUpperCase() !== 'CUSTODIAN' ? (
-										<button className='button-secondary' type='button' onClick={(e) => toggleDrawer()}>
-											{t('button.sendMessage')}
+									{userType.toUpperCase() !== 'CUSTODIAN' && (
+										<button className='button-secondary' type='button' onClick={e => toggleDrawer()}>
+											Send message
 										</button>
-									) : (
-										''
 									)}
 									<input
 										type='checkbox'

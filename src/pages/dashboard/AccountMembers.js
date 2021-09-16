@@ -1,13 +1,13 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import axios from 'axios';
-import { isEmpty, upperFirst } from 'lodash';
 import { Row, Col, Button } from 'react-bootstrap';
+import { isEmpty } from 'lodash';
 import NotFound from '../commonComponents/NotFound';
 import Loading from '../commonComponents/Loading';
-import AccountMembersModal from './AccountMemberModal';
-import { initGA } from '../../tracking';
 import '../../css/styles.scss';
 import './Dashboard.scss';
+import AccountMembersModal from './AccountMemberModal';
+import { initGA } from '../../tracking';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -17,7 +17,11 @@ export const AccountMembers = props => {
 	const [members, setMembers] = useState([]);
 	const [userIsManager, setUserIsManager] = useState(false);
 	const [showAccountAddMemberModal, setShowAccountAddMemberModal] = useState(false);
-	const [teamId, setTeamId] = useState('');
+	const [accountMembersId, setAccountMembersId] = useState(props.team);
+
+	useEffect(() => {
+		setAccountMembersId(props.team);
+	}, [props]);
 
 	useEffect(() => {
 		initGA('UA-183238557-1');
@@ -26,24 +30,14 @@ export const AccountMembers = props => {
 			setTeamId(foundTeamId);
 		}
 		doMembersCall();
-	}, [teamId]);
-
-	const getTeamId = team => {
-		const { teams } = userState[0];
-		if (!isEmpty(teams)) {
-			return teams.filter(t => {
-				return t.name.toUpperCase() === team.toUpperCase();
-			})[0]._id;
-		}
-		return null;
-	};
+	}, [accountMembersId]);
 
 	const doMembersCall = async () => {
-		if (!isEmpty(teamId)) {
+		if (accountMembersId) {
 			setIsLoading(true);
-			await axios.get(baseURL + `/api/v1/teams/${teamId}/members`).then(async res => {
+			await axios.get(baseURL + `/api/v1/teams/${accountMembersId}/members`).then(async res => {
 				setMembers(res.data.members);
-				setUserIsManager(res.data.members.filter(m => m.id === userState[0].id).map(m => m.roles.includes('manager')));
+				setUserIsManager(res.data.members.filter(m => m.id === userState[0].id).map(m => m.roles[0] === 'manager')[0]);
 			});
 		}
 		setIsLoading(false);
@@ -63,7 +57,13 @@ export const AccountMembers = props => {
 			return sortedRoles.map(role => `${upperFirst(role)}${roles.length > 1 && roles.indexOf(role) !== roles.length - 1 ? ', ' : ' '}`);
 		}
 		return '';
-	}
+	};
+
+	let roleList = {
+		manager: 'Manager',
+		reviewer: 'Reviewer',
+		metadata_editor: 'Metadata Editor',
+	};
 
 	if (isLoading) {
 		return (
@@ -163,7 +163,7 @@ export const AccountMembers = props => {
 								<AccountMembersModal
 									open={showAccountAddMemberModal}
 									close={onShowAccountMembersModal}
-									teamId={teamId}
+									teamId={accountMembersId}
 									onMemberAdded={onMemberAdded}></AccountMembersModal>
 							</div>
 						);

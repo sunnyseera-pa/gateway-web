@@ -6,7 +6,6 @@ import NotFound from '../commonComponents/NotFound';
 import Loading from '../commonComponents/Loading';
 import './Dashboard.scss';
 import ActionModal from '../commonComponents/ActionModal/ActionModal';
-import _ from 'lodash';
 import { EntityActionButton } from './EntityActionButton.jsx';
 import { Event, initGA } from '../../tracking';
 import { PaginationHelper } from '../commonComponents/PaginationHelper';
@@ -190,6 +189,7 @@ export const AccountCourses = props => {
 						</Col>
 						<Col sm={12} md={4} style={{ textAlign: 'right' }}>
 							<Button
+								data-test-id='add-course-btn'
 								variant='primary'
 								href='/course/add'
 								className='addButton'
@@ -512,6 +512,8 @@ export const AccountCourses = props => {
 											)}
 										</div>
 									);
+								default:
+									return key;
 							}
 						})()}
 

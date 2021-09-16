@@ -99,7 +99,7 @@ class AddEditCollectionPage extends React.Component {
 
 	doSearch = e => {
 		//fires on enter on searchbar
-		if (e.key === 'Enter') window.location.href = '/search?search=' + this.state.searchString;
+		if (e.key === 'Enter') window.location.href = `/search?search=${encodeURIComponent(this.state.searchString)}`;
 	};
 
 	updateSearchString = searchString => {
@@ -113,11 +113,12 @@ class AddEditCollectionPage extends React.Component {
 			if (type === 'dataset' && page > 0) searchURL += '&datasetIndex=' + page;
 			if (type === 'tool' && page > 0) searchURL += '&toolIndex=' + page;
 			if (type === 'project' && page > 0) searchURL += '&projectIndex=' + page;
+			if (type === 'paper' && page > 0) searchURL += '&paperIndex=' + page;
 			if (type === 'person' && page > 0) searchURL += '&personIndex=' + page;
 			if (type === 'course' && page > 0) searchURL += '&courseIndex=' + page;
 
 			axios
-				.get(baseURL + '/api/v1/search?search=' + this.state.searchString + searchURL, {
+				.get(baseURL + '/api/v1/search?search=' + encodeURIComponent(this.state.searchString) + searchURL, {
 					params: {
 						form: true,
 						userID: this.state.userState[0].id,
@@ -139,12 +140,13 @@ class AddEditCollectionPage extends React.Component {
 	};
 
 	addToTempRelatedObjects = (id, type, pid) => {
+		let updatedTempRelatedObjectIds = [...this.state.tempRelatedObjectIds];
 		if (this.state.tempRelatedObjectIds && this.state.tempRelatedObjectIds.some(object => object.objectId === id)) {
-			this.state.tempRelatedObjectIds = this.state.tempRelatedObjectIds.filter(object => object.objectId !== id);
+			updatedTempRelatedObjectIds = updatedTempRelatedObjectIds.filter(object => object.objectId !== id);
 		} else {
-			this.state.tempRelatedObjectIds.push({ objectId: id, type: type, pid: pid });
+			updatedTempRelatedObjectIds.push({ objectId: id, type: type, pid: pid });
 		}
-		this.setState({ tempRelatedObjectIds: this.state.tempRelatedObjectIds });
+		this.setState({ tempRelatedObjectIds: updatedTempRelatedObjectIds });
 	};
 
 	addToRelatedObjects = () => {

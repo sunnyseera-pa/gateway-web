@@ -16,8 +16,6 @@ class ProjectTitle extends Component {
 	// initialize our state
 	state = {
 		data: [],
-		id: this.props.data.id,
-		counter: this.props.data.counter,
 	};
 
 	componentDidMount(props) {

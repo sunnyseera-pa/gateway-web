@@ -1,5 +1,4 @@
 import React, { Fragment } from 'react';
-import _ from 'lodash';
 import { Col, Modal, Row } from 'react-bootstrap';
 import { ReactComponent as CloseButtonSvg } from '../../images/close-alt.svg';
 import axios from 'axios';
@@ -31,11 +30,18 @@ const AccountMemberModal = ({ open, close, teamId, onMemberAdded }) => {
 	const roleSelect = [
 		{
 			role: 'Manager',
+			value: 'manager',
 			roleDescription: 'Can add, edit or remove members and resources. Can assign workflows and review applications.',
 		},
 		{
 			role: 'Reviewer',
+			value: 'reviewer',
 			roleDescription: 'Can review applications assigned to them.',
+		},
+		{
+			role: 'Metadata editor',
+			value: 'metadata_editor',
+			roleDescription: 'Can add and create new versions of datasets',
 		},
 	];
 
@@ -62,7 +68,10 @@ const AccountMemberModal = ({ open, close, teamId, onMemberAdded }) => {
 			try {
 				const payload = {
 					members: values.members.map(m => {
-						return { memberid: m.user._id, roles: [m.role.toLowerCase()] };
+						var roleValue = roleSelect.find(roleObject => {
+							return roleObject.role === m.role;
+						});
+						return { memberid: m.user._id, roles: [roleValue.value] };
 					}),
 				};
 

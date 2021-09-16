@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import { Col, Row, Button, Accordion } from 'react-bootstrap';
+import { Col, Row } from 'react-bootstrap';
 import './Dashboard.scss';
 
 class TopSearches extends React.Component {
@@ -11,10 +11,6 @@ class TopSearches extends React.Component {
 		super(props);
 		//binding the method to be able to use state
 		this.state.data = props.data;
-	}
-
-	componentDidMount() {
-		this.setState({ state: this.state });
 	}
 
 	render() {
@@ -35,7 +31,9 @@ class TopSearches extends React.Component {
 						</span>
 					</Col>
 					<Col sm={2} lg={2} className='gray800-14'>
-						<span style={{ float: 'left' }} data-test-id='topSearches-search-count'>{!data || !data.count ? 'number of searches' : data.count}</span>
+						<span style={{ float: 'left' }} data-test-id='topSearches-search-count'>
+							{!data || !data.count ? 'number of searches' : data.count}
+						</span>
 					</Col>
 					<Col sm={5} lg={4} className='gray800-14'>
 						<span style={{ paddingRight: '0px' }} data-test-id='topSearches-search-results'>

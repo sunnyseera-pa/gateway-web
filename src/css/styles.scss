@@ -2,12 +2,19 @@
 @import './typography';
 @import './mixins';
 
+* {
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	text-rendering: optimizeLegibility;
+	text-shadow: rgba(0, 0, 0, 0.01) 0 0 1px;
+}
+
 body {
 	margin: 0;
 	padding: 0;
 	background-color: $background;
 	height: 100vh;
-	-webkit-text-size-adjust: 100%; //fix for iOS
+	-webkit-text-size-adjust: 100%; //fix for i OS
 }
 
 a {
@@ -186,7 +193,6 @@ button {
 }
 
 .subHeader {
-	display: flex;
 	box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.09);
 	background-color: $white;
 	width: 100%;
@@ -233,6 +239,10 @@ button {
 
 .padding-left-20 {
 	padding-left: 20px !important;
+}
+
+.padding-left-25 {
+	padding-left: 25px !important;
 }
 
 .nav-tabs {
@@ -427,6 +437,10 @@ input[type='radio']:checked:after {
 	display: inline-block;
 	visibility: visible;
 	border: solid 2px #d6d6d6;
+}
+
+.modal-title {
+	@include font-source(20px, $gray-800, $font-weight-semibold);
 }
 
 .modal-body input[type='radio']:after {
@@ -811,10 +825,9 @@ textarea:focus {
 .initials {
 	position: relative;
 	top: 5px; /* 25% of parent */
-	font-size: 16px; /* 50% of parent */
+	font-size: 14px; /* 50% of parent */
 	line-height: 16px; /* 50% of parent */
 	color: #fff;
-	font-weight: bold;
 }
 
 .formBottomGap {
@@ -953,7 +966,7 @@ iframe#discourse-embed-frame {
 	overflow-x: hidden;
 	position: -webkit-sticky; /* Safari */
 	position: sticky;
-	top: 0;
+	top: 81px;
 	margin-bottom: 50px;
 }
 
@@ -1250,6 +1263,10 @@ button a {
 	margin-top: 2px !important;
 }
 
+.margin-top-0 {
+	margin-top: 0px !important;
+}
+
 .margin-left-6 {
 	margin-left: 6px !important;
 }
@@ -1274,8 +1291,16 @@ button a {
 	margin-right: 1px !important;
 }
 
+.margin-right-4 {
+	margin-right: 4px !important;
+}
+
 .margin-right-8 {
 	margin-right: 8px !important;
+}
+
+.margin-right-12 {
+	margin-right: 12px !important;
 }
 
 .margin-right-15 {
@@ -1516,7 +1541,7 @@ button a {
 }
 
 .textUnderline {
-	text-decoration: underline;
+	text-decoration: underline !important;
 }
 
 .collectionCheckSvg {
@@ -1640,4 +1665,8 @@ button a {
 	position: relative;
 	margin: 0 14px 0 14px;
 	padding-top: 10px;
+}
+
+.cursorPointer {
+	cursor: pointer;
 }

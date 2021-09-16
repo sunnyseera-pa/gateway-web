@@ -17,6 +17,9 @@ import SVGIcon from '../../images/SVGIcon';
 import { ReactComponent as CloseButtonSvg } from '../../images/close-alt.svg';
 import './Course.scss';
 
+const baseURL = require('../commonComponents/BaseURL').getURL();
+let windowUrl = window.location.origin;
+
 class Fees {
 	constructor() {
 		this.feeDescription = '';
@@ -51,8 +54,6 @@ const initialValues = {
 		},
 	],
 };
-
-var baseURL = require('../commonComponents/BaseURL').getURL();
 
 const AddEditCourseForm = props => {
 	const courseOptions = {
@@ -135,11 +136,11 @@ const AddEditCourseForm = props => {
 			values.relatedObjects = props.relatedObjects;
 			if (props.isEdit) {
 				axios.put(baseURL + '/api/v1/course/' + props.data.id, values).then(res => {
-					window.location.href = window.location.search + '/course/' + props.data.id + '/?courseEdited=true';
+					window.location.href = windowUrl + '/course/' + props.data.id + '/?courseEdited=true';
 				});
 			} else {
 				axios.post(baseURL + '/api/v1/course', values).then(res => {
-					window.location.href = window.location.search + '/course/' + res.data.response.id + '/?courseAdded=true';
+					window.location.href = windowUrl + '/course/' + res.data.response.id + '/?courseAdded=true';
 				});
 			}
 		},
@@ -237,6 +238,7 @@ const AddEditCourseForm = props => {
 												<Form.Group>
 													<span className='gray800-14'>Course title</span>
 													<Form.Control
+														data-test-id='title'
 														id='title'
 														name='title'
 														type='text'
@@ -252,6 +254,7 @@ const AddEditCourseForm = props => {
 													<p className='gray800-14 margin-bottom-0 pad-bottom-4'>URL</p>
 													<p className='gray700-13 margin-bottom-0'>Where can users sign up and find more information about this course?</p>
 													<Form.Control
+														data-test-id='url'
 														id='link'
 														name='link'
 														type='text'
@@ -267,6 +270,7 @@ const AddEditCourseForm = props => {
 													<p className='gray800-14 margin-bottom-0 pad-bottom-4'>Course provider</p>
 													<p className='gray700-13 margin-bottom-0'>Who is providing this course?</p>
 													<Form.Control
+														data-test-id='provider'
 														id='provider'
 														name='provider'
 														type='text'
@@ -320,6 +324,7 @@ const AddEditCourseForm = props => {
 																Where is this course being held? e.g. London, Manchester, Wales, Scotland
 															</p>
 															<Form.Control
+																data-test-id='location'
 																id='location'
 																name='location'
 																type='text'
@@ -344,6 +349,7 @@ const AddEditCourseForm = props => {
 														</span>
 													</div>
 													<Form.Control
+														data-test-id='description'
 														as='textarea'
 														id='description'
 														name='description'
@@ -445,6 +451,7 @@ const AddEditCourseForm = props => {
 																							</small>
 																							<div className='row mb-2'>
 																								<Form.Control
+																									data-test-id='flexible-dates'
 																									type='checkbox'
 																									className='checker'
 																									id={`courseOptions[${index}].flexibleDates`}
@@ -461,6 +468,10 @@ const AddEditCourseForm = props => {
 																								<DatePicker
 																									name={`courseOptions[${index}].startDate`}
 																									dateFormat='dd/MM/yyyy'
+																									peekNextMonth
+																									showMonthDropdown
+																									showYearDropdown
+																									dropdownMode='select'
 																									selected={
 																										formik.values.courseOptions[index].startDate
 																											? new Date(formik.values.courseOptions[index].startDate)
@@ -505,6 +516,7 @@ const AddEditCourseForm = props => {
 																						<Row className='mt-2'>
 																							<Col sm={4} className='pad-right-0'>
 																								<DropdownButton
+																									data-test-id='study-mode'
 																									variant='white'
 																									title={
 																										formik.values.courseOptions[index].studyMode || (
@@ -517,7 +529,11 @@ const AddEditCourseForm = props => {
 																									onBlur={formik.handleBlur}
 																									onSelect={selected => (formik.values.courseOptions[index].studyMode = selected)}>
 																									{studyMode.map((study, i) => (
-																										<Dropdown.Item className='gray800-14 width-100' key={study} eventKey={study}>
+																										<Dropdown.Item
+																											data-test-id={`study-mode-${study}`}
+																											className='gray800-14 width-100'
+																											key={study}
+																											eventKey={study}>
 																											{study}
 																										</Dropdown.Item>
 																									))}
@@ -525,6 +541,7 @@ const AddEditCourseForm = props => {
 																							</Col>
 																							<Col sm={4} className='pad-right-0'>
 																								<Form.Control
+																									data-test-id='study-duration-number'
 																									id={`courseOptions[${index}].studyDurationNumber`}
 																									name={`courseOptions[${index}].studyDurationNumber`}
 																									type='text'
@@ -555,6 +572,7 @@ const AddEditCourseForm = props => {
 																							</Col>
 																							<Col sm={4}>
 																								<DropdownButton
+																									data-test-id='study-duration-measure'
 																									variant='white'
 																									title={
 																										formik.values.courseOptions[index].studyDurationMeasure || (
@@ -569,7 +587,11 @@ const AddEditCourseForm = props => {
 																										(formik.values.courseOptions[index].studyDurationMeasure = selected)
 																									}>
 																									{studyDurationMeasure.map((study, i) => (
-																										<Dropdown.Item className='gray800-14 width-100' key={study} eventKey={study}>
+																										<Dropdown.Item
+																											data-test-id={`duration-measure-${study}`}
+																											className='gray800-14 width-100'
+																											key={study}
+																											eventKey={study}>
 																											{study}
 																										</Dropdown.Item>
 																									))}
@@ -607,6 +629,7 @@ const AddEditCourseForm = props => {
 																													<Col sm={6} className='pad-right-0 pad-bottom-4'>
 																														<div className=''>
 																															<Form.Control
+																																data-test-id='fee-description'
 																																id={`courseOptions[${index}].fees[${indexB}].feeDescription`}
 																																name={`courseOptions[${index}].fees[${indexB}].feeDescription`}
 																																type='text'
@@ -620,6 +643,7 @@ const AddEditCourseForm = props => {
 																													<Col sm={2} className='pad-right-0 pad-bottom-4'>
 																														<div className=''>
 																															<Form.Control
+																																data-test-id='fee-amount'
 																																id={`courseOptions[${index}].fees[${indexB}].feeAmount`}
 																																name={`courseOptions[${index}].fees[${indexB}].feeAmount`}
 																																type='text'
@@ -660,6 +684,7 @@ const AddEditCourseForm = props => {
 																													<Col sm={2} className='pad-right-0 pad-bottom-4'>
 																														<div className=''>
 																															<DropdownButton
+																																data-test-id='fee-per'
 																																variant='white'
 																																title={
 																																	formik.values.courseOptions[index].fees[indexB].feePer || (
@@ -675,6 +700,7 @@ const AddEditCourseForm = props => {
 																																}>
 																																{feePer.map((study, i) => (
 																																	<Dropdown.Item
+																																		data-test-id={`fee-per-${study}`}
 																																		className='gray800-14 width-100'
 																																		key={study}
 																																		eventKey={study}>
@@ -788,6 +814,7 @@ const AddEditCourseForm = props => {
 																		<Fragment>
 																			<Col sm={5} className='pad-right-0 pad-bottom-4'>
 																				<DropdownButton
+																					data-test-id='entry-level'
 																					variant='white'
 																					title={formik.values.entries[indexC].level || <option disabled selected value></option>}
 																					className='gray700-13 custom-dropdown padding-right-0'
@@ -796,7 +823,11 @@ const AddEditCourseForm = props => {
 																					onBlur={formik.handleBlur}
 																					onSelect={selected => (formik.values.entries[indexC].level = selected)}>
 																					{level.map((l, i) => (
-																						<Dropdown.Item className='gray800-14 width-100' key={l} eventKey={l}>
+																						<Dropdown.Item
+																							data-test-id={`entry-level-${l}`}
+																							className='gray800-14 width-100'
+																							key={l}
+																							eventKey={l}>
 																							{l}
 																						</Dropdown.Item>
 																					))}
@@ -805,6 +836,7 @@ const AddEditCourseForm = props => {
 																			<Col sm={5} className='pad-right-0 pad-bottom-4'>
 																				<div className=''>
 																					<Form.Control
+																						data-test-id='entry-subject'
 																						id={`entries[${indexC}].subject`}
 																						name={`entries[${indexC}].subject`}
 																						type='text'
@@ -1006,7 +1038,12 @@ const AddEditCourseForm = props => {
 					<Button onClick={() => relatedResourcesRef.current.showModal()} variant='white' className='techDetailButton mr-2'>
 						+ Add resource
 					</Button>
-					<Button variant='primary' className='publishButton white-14-semibold mr-2' type='submit' onClick={formik.handleSubmit}>
+					<Button
+						data-test-id='add-course-publish'
+						variant='primary'
+						className='publishButton white-14-semibold mr-2'
+						type='submit'
+						onClick={formik.handleSubmit}>
 						{props.isEdit ? 'Update' : 'Publish'}
 					</Button>
 				</div>

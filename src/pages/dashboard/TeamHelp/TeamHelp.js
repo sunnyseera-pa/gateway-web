@@ -1,5 +1,4 @@
 import React, { Fragment, useState, useEffect } from 'react';
-import _ from 'lodash';
 import { Col, Row, Container } from 'react-bootstrap';
 import { ReactComponent as ArrowDownSvg } from '../../../images/stock.svg';
 import { SlideDown } from 'react-slidedown';

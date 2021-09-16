@@ -2,7 +2,9 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
+import { createBrowserHistory } from 'history';
 import * as Sentry from '@sentry/react';
+import { Integrations } from '@sentry/tracing';
 import _ from 'lodash';
 import Container from 'react-bootstrap/Container';
 import SSOPage from './pages/sso/SSOPage';
@@ -35,13 +37,28 @@ import CookiePage from './pages/commonComponents/CookiePage';
 import { withTranslation } from 'react-i18next';
 import { GuardedRoute } from './pages/commonComponents/GuardedRoute';
 import AdvancedSearchTAndCs from './pages/dashboard/AdvancedSearchTAndCs';
-
+import DatasetOnboarding from './pages/DatasetOnboarding/DatasetOnboarding';
 const DataAccessRequestTranslated = withTranslation('common')(DataAccessRequest);
 const AboutPageTranslated = withTranslation('common')(AboutPage);
 const CookiePageTranslated = withTranslation('common')(CookiePage);
 
 var baseURL = require('./pages/commonComponents/BaseURL').getURL();
+const urlEnv = require('./pages/commonComponents/BaseURL').getURLEnv();
 let actionBar, footer;
+
+const history = createBrowserHistory();
+
+Sentry.init({
+	dsn: 'https://c7c564a153884dc0a6b676943b172121@o444579.ingest.sentry.io/5419637',
+	environment: urlEnv,
+	integrations: [
+		new Integrations.BrowserTracing({
+			// Can also use reactRouterV4Instrumentation
+			routingInstrumentation: Sentry.reactRouterV5Instrumentation(history),
+		}),
+	],
+	tracesSampleRate: 1.0,
+});
 
 class HDRRouter extends Component {
 	// initialize our state
@@ -110,14 +127,14 @@ class HDRRouter extends Component {
 				return response;
 			},
 			function (error) {
-				if (error) {
-					if (error.response.status !== 404) {
-						console.log(error);
-						Sentry.captureException(error);
-						return Promise.reject(error).then(currentComponent.setState({ showError: true }));
-					}
+				// allow 404 errors to be handled by frontend logic
+				if (error.response && error.response.status === 404) {
 					return error;
 				}
+				// catch all and report any other error type to Sentry
+				console.error(error);
+				Sentry.captureException(error);
+				return Promise.reject(error).then(currentComponent.setState({ showError: true }));
 			}
 		);
 
@@ -138,6 +155,7 @@ class HDRRouter extends Component {
 							provider: res.data.data[0].provider,
 							advancedSearchRoles: res.data.data[0].advancedSearchRoles,
 							acceptedAdvancedSearchTerms: res.data.data[0].acceptedAdvancedSearchTerms,
+							terms: person.data.person.terms,
 						},
 					],
 					isLoading: false,
@@ -207,6 +225,7 @@ class HDRRouter extends Component {
 							userState={userState}
 						/>
 						<GuardedRoute path='/data-access-request/:accessId' component={DataAccessRequestTranslated} userState={userState} />
+						<GuardedRoute path='/dataset-onboarding/:id' component={DatasetOnboarding} userState={userState} />
 						<GuardedRoute path='/account' component={Account} userState={userState} />
 						<GuardedRoute path='/collection/add' component={AddEditCollectionPage} userState={userState} />
 						<GuardedRoute path='/collection/edit/:collectionID' component={AddEditCollectionPage} userState={userState} />

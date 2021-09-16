@@ -1,4 +1,4 @@
-import React, { Component, Fragment, useState } from 'react';
+import React, { Component, Fragment, useState, useRef } from 'react';
 import axios from 'axios';
 import { useFormik } from 'formik';
 import { Typeahead } from 'react-bootstrap-typeahead';
@@ -9,10 +9,12 @@ import Loading from '../commonComponents/Loading';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
 import UserMessages from '../commonComponents/userMessages/UserMessages';
 import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
+import { Event, initGA } from '../../tracking';
 import 'react-tabs/style/react-tabs.css';
 import SVGIcon from '../../images/SVGIcon';
 
-var baseURL = require('../commonComponents/BaseURL').getURL();
+const baseURL = require('../commonComponents/BaseURL').getURL();
+let windowUrl = window.location.origin;
 
 class CompleteRegistration extends Component {
 	constructor(props) {
@@ -22,9 +24,7 @@ class CompleteRegistration extends Component {
 
 	state = {
 		searchString: '',
-		id: '',
 		userdata: [],
-		userState: [],
 		isLoading: true,
 		showDrawer: false,
 		userState: [
@@ -48,7 +48,7 @@ class CompleteRegistration extends Component {
 
 	doSearch = e => {
 		//fires on enter on searchbar
-		if (e.key === 'Enter') window.location.href = '/search?search=' + this.state.searchString;
+		if (e.key === 'Enter') window.location.href = `/search?search=${encodeURIComponent(this.state.searchString)}`;
 	};
 
 	updateSearchString = searchString => {
@@ -114,6 +114,7 @@ class CompleteRegistration extends Component {
 	}
 
 	componentDidMount() {
+		initGA('UA-166025838-1');
 		this.setState({ isLoading: true });
 		this.doFilterCall();
 		this.doOrganisationsCall();
@@ -213,6 +214,7 @@ const YourAccountForm = props => {
 	let showDomain = props.showDomain;
 	let showLink = props.showLink;
 	let showOrcid = props.showOrcid;
+	let btnRef = useRef();
 
 	//tool tips for eyes
 	const mandatoryShowFieldMsg = 'This will be visible to others. You cannot change this.';
@@ -237,44 +239,38 @@ const YourAccountForm = props => {
 	const [showingSector, setShowSector] = useState(showSector);
 	const toggleSector = () => {
 		setShowSector(!showingSector);
-		{
-			formik.setFieldValue('showSector', !showingSector);
-		}
+
+		formik.setFieldValue('showSector', !showingSector);
 	};
 	const [showingOrg, setShowOrg] = useState(showOrg);
 	const toggleOrg = () => {
 		setShowOrg(!showingOrg);
-		{
-			formik.setFieldValue('showOrganisation', !showingOrg);
-		}
+
+		formik.setFieldValue('showOrganisation', !showingOrg);
 	};
 	const [showingBio, setShowBio] = useState(showBio);
 	const toggleBio = () => {
 		setShowBio(!showingBio);
-		{
-			formik.setFieldValue('showBio', !showingBio);
-		}
+
+		formik.setFieldValue('showBio', !showingBio);
 	};
 	const [showingDomain, setShowDomain] = useState(showDomain);
 	const toggleDomain = () => {
 		setShowDomain(!showingDomain);
-		{
-			formik.setFieldValue('showDomain', !showingDomain);
-		}
+
+		formik.setFieldValue('showDomain', !showingDomain);
 	};
 	const [showingLink, setShowLink] = useState(showLink);
 	const toggleLink = () => {
 		setShowLink(!showingLink);
-		{
-			formik.setFieldValue('showLink', !showingLink);
-		}
+
+		formik.setFieldValue('showLink', !showingLink);
 	};
 	const [showingOrcid, setShowOrcid] = useState(showOrcid);
 	const toggleOrcid = () => {
 		setShowOrcid(!showingOrcid);
-		{
-			formik.setFieldValue('showOrcid', !showingOrcid);
-		}
+
+		formik.setFieldValue('showOrcid', !showingOrcid);
 	};
 
 	// Pass the useFormik() hook initial form values and a submit function that will
@@ -315,17 +311,20 @@ const YourAccountForm = props => {
 		}),
 
 		onSubmit: values => {
+			if (btnRef.current) {
+				btnRef.current.setAttribute('disabled', 'disabled');
+			}
+
 			axios.post(baseURL + '/api/v1/auth/register', values).then(res => {
-				const url = `${window.location.search}${res.data.data}`;
+				Event('User related', 'Account change', 'New user registered');
+				const url = `${windowUrl}${res.data.data}`;
 				window.location.href = `${url}${url.includes('?') ? '&' : '?'}registrationCompleted=true`;
 			});
 		},
 	});
 
 	const handleSectorSelect = key => {
-		{
-			formik.setFieldValue('sector', key);
-		}
+		formik.setFieldValue('sector', key);
 	};
 
 	function bioCount(e) {
@@ -788,7 +787,10 @@ const YourAccountForm = props => {
 									/>
 									<span className='gray800-14 ml-4 margin-top-2'>
 										I agree to the HDRUK{' '}
-										<a href='https://www.hdruk.ac.uk/infrastructure/gateway/terms-and-conditions/' target='_blank'>
+										<a
+											href='https://www.hdruk.ac.uk/infrastructure/gateway/terms-and-conditions/'
+											target='_blank'
+											rel='noopener noreferrer'>
 											Terms and Conditions
 										</a>
 									</span>
@@ -850,7 +852,10 @@ const YourAccountForm = props => {
 							</Col>
 							<Col md={10} sm={8} xs={6} className='gray800-14 pl-0'>
 								I want to receive news, updates and curated marketing from the Gateway&nbsp;&nbsp;&nbsp;&nbsp;
-								<a target='_blank' href='https://mailchi.mp/hdruk.ac.uk/explore-and-access-the-uks-health-research-datasets'>
+								<a
+									target='_blank'
+									rel='noopener noreferrer'
+									href='https://mailchi.mp/hdruk.ac.uk/explore-and-access-the-uks-health-research-datasets'>
 									Show me an example
 								</a>
 							</Col>
@@ -861,7 +866,7 @@ const YourAccountForm = props => {
 						<span className='divider-lines' />
 						<Col sm={12}>
 							As a user of the Gateway we take the privacy and security of your personal data seriously. Our{' '}
-							<a target='_blank' href='https://www.hdruk.ac.uk/infrastructure/gateway/privacy-policy/'>
+							<a target='_blank' rel='noopener noreferrer' href='https://www.hdruk.ac.uk/infrastructure/gateway/privacy-policy/'>
 								privacy policy
 							</a>{' '}
 							aims to give you information on how Health Data Research UK collects and processes your personal data through your use of this
@@ -872,7 +877,7 @@ const YourAccountForm = props => {
 
 				<Row className='mt-3'>
 					<Col className='text-right'>
-						<Button variant='primary' type='submit' className='addButton'>
+						<Button ref={btnRef} variant='primary' type='submit' className='addButton'>
 							Update Details
 						</Button>
 					</Col>

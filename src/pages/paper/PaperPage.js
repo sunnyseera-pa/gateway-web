@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import queryString from 'query-string';
 import * as Sentry from '@sentry/react';
-import { Row, Col, Tabs, Tab, Container, Alert, Button } from 'react-bootstrap';
+import { Row, Col, Tabs, Tab, Container, Alert } from 'react-bootstrap';
 import NotFound from '../commonComponents/NotFound';
-import Creators from '../commonComponents/Creators';
+import Uploader from '../commonComponents/Uploader';
 import Loading from '../commonComponents/Loading';
 import RelatedObject from '../commonComponents/relatedObject/RelatedObject';
 import SearchBar from '../commonComponents/searchBar/SearchBar';
@@ -21,7 +21,6 @@ import { baseURL } from '../../configs/url.config';
 import { PageView, initGA } from '../../tracking';
 import SVGIcon from '../../images/SVGIcon';
 import ReactMarkdown from 'react-markdown';
-import moment from 'moment';
 import _ from 'lodash';
 import { ReactComponent as InfoSVG } from '../../images/info.svg';
 import './Paper.scss';
@@ -121,7 +120,7 @@ export const PaperDetail = props => {
 
 	const doSearch = e => {
 		//fires on enter on searchbar
-		if (e.key === 'Enter') window.location.href = '/search?search=' + searchString;
+		if (e.key === 'Enter') window.location.href = `/search?search=${encodeURIComponent(searchString)}`;
 	};
 
 	const updateSearchString = searchString => {
@@ -152,16 +151,13 @@ export const PaperDetail = props => {
 						let datasetPublisher;
 						let datasetLogo;
 
-						{
-							!_.isEmpty(res.data.data[0].datasetv2) && _.has(res.data.data[0], 'datasetv2.summary.publisher.name')
-								? (datasetPublisher = res.data.data[0].datasetv2.summary.publisher.name)
-								: (datasetPublisher = '');
-						}
-						{
-							!_.isEmpty(res.data.data[0].datasetv2) && _.has(res.data.data[0], 'datasetv2.summary.publisher.logo')
-								? (datasetLogo = res.data.data[0].datasetv2.summary.publisher.logo)
-								: (datasetLogo = '');
-						}
+						!_.isEmpty(res.data.data[0].datasetv2) && _.has(res.data.data[0], 'datasetv2.summary.publisher.name')
+							? (datasetPublisher = res.data.data[0].datasetv2.summary.publisher.name)
+							: (datasetPublisher = '');
+
+						!_.isEmpty(res.data.data[0].datasetv2) && _.has(res.data.data[0], 'datasetv2.summary.publisher.logo')
+							? (datasetLogo = res.data.data[0].datasetv2.summary.publisher.logo)
+							: (datasetLogo = '');
 
 						tempObjects.push({
 							id: object.objectId,
@@ -429,26 +425,30 @@ export const PaperDetail = props => {
 															</Row>
 														</Fragment>
 													)}
-													<Row className='mt-2'>
-														<Col sm={2}>
-															<span className='gray800-14'>Last update</span>
-														</Col>
-														<Col sm={10}>
-															<span className='gray800-14'>{moment(paperData.updatedon).format('DD MMMM YYYY')}</span>
-														</Col>
-													</Row>
-													{paperData.uploader ? (
+													{paperData.authorsNew ? (
 														<Row className='mt-2'>
-															<Col sm={2} className='gray800-14'>
-																Uploader
+															<Col sm={2}>
+																<span className='gray800-14'>Authors</span>
 															</Col>
-															<Col sm={10} className='gray800-14 overflowWrap'>
-																{paperData.uploader}
+															<Col sm={10} className='gray800-14 overflowWrap' data-test-id='paper-authors'>
+																{paperData.authorsNew}
 															</Col>
 														</Row>
 													) : (
 														''
 													)}
+													<Row className='mt-3'>
+														<Col sm={2}>
+															<span className='gray800-14'>Uploaders</span>
+														</Col>
+														<Col sm={10} className='gray800-14 overflowWrap'>
+															{paperData.persons.map(uploader => (
+																<span key={uploader.id}>
+																	<Uploader key={uploader.id} uploader={uploader} />
+																</span>
+															))}
+														</Col>
+													</Row>
 													<Row className='mt-2'>
 														<Col sm={2}>
 															<span className='gray800-14'>Keywords</span>
@@ -539,25 +539,6 @@ export const PaperDetail = props => {
 										) : (
 											''
 										)}
-
-										<Row className='mt-2'>
-											<Col className='mb-5'>
-												<div className='rectangle'>
-													<Row>
-														<Col>
-															<span className='gray800-14-bold'>Authors</span>
-														</Col>
-													</Row>
-													<Row className='mt-3'>
-														{paperData.persons.map(author => (
-															<Col sm={6} key={author.id}>
-																<Creators key={author.id} author={author} />
-															</Col>
-														))}
-													</Row>
-												</div>
-											</Col>
-										</Row>
 									</Tab>
 
 									<Tab eventKey='Collaboration' title={`Discussion (${discoursePostCount})`}>

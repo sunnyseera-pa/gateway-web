@@ -2,7 +2,7 @@ import React, { Fragment, useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import _ from 'lodash';
 
-const MessageHeader = ({ userState, topic, modalRequired, onRequestAccess, onShowModal }) => {
+const MessageHeader = ({ userState, topic, modalRequired, onRequestAccess, onShowModal, is5Safes }) => {
 	let [showDashboard, setShowDashboard] = useState(false);
 	let [publisher, setPubliser] = useState('');
 	let history = useHistory();
@@ -31,29 +31,36 @@ const MessageHeader = ({ userState, topic, modalRequired, onRequestAccess, onSho
 	return (
 		<Fragment>
 			<div className='messageArea-header-desc'>
-				<h1 className='black-20 '>{topic.title}</h1>
+				<h1 className='black-20 ' data-test-id='headerTitle'>
+					{topic.title}
+				</h1>
 				{topic.tags.map((tag, index) => (
-					<div key={`tag-${index}`} className='badge-tag'>
-						{tag}
+					<div key={`tag-${index}`} className='badge-tag' data-test-id={`headerTag-${index}`}>
+						{tag.name || tag}
 					</div>
 				))}
 			</div>
 			<div className='messageArea-header-action'>
-				{showDashboard ? (
-					<div className='purple-14 mr-2 pointer' onClick={e => onRouteChange(e)}>
-						Show applications
-					</div>
+				{modalRequired && showDashboard ? (
+					<Fragment>
+						<div className='purple-14 mr-2 pointer' onClick={e => onRouteChange(e)}>
+							Show applications
+						</div>
+						<button className='button-tertiary' onClick={e => onShowModal(e)}>
+							How to request access
+						</button>
+					</Fragment>
 				) : (
-					''
-				)}
-				{modalRequired ? (
-					<button className='button-tertiary' onClick={e => onShowModal(e)}>
-						How to request access
-					</button>
-				) : (
-					<button className='btn btn-primary ml-2 addButton' onClick={e => onRequestAccess(e)}>
-						Request access
-					</button>
+					<Fragment>
+						<button className='button-tertiary' onClick={e => onShowModal(e)}>
+							How to request access
+						</button>
+						{(topic.is5Safes) || (topic.createdDate === "New message" && is5Safes)? (
+							<button className='button-secondary ml-2' onClick={e => onRequestAccess(e)}>
+								Start application
+							</button>
+						) : null}
+					</Fragment>
 				)}
 			</div>
 		</Fragment>

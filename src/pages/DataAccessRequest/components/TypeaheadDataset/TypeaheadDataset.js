@@ -8,13 +8,12 @@ import { baseURL } from '../../../../configs/url.config';
 class TypeaheadDataset extends React.Component {
 	constructor(props) {
 		super(props);
-
 		this.state = {
 			value: props.selectedDatasets,
 			options: [],
-			id: props.id,
 			readOnly: props.readOnly || false,
 			publisher: null,
+			typeaheadClass: `addFormInputTypeAhead ${!_.isEmpty(props.typeaheadClass) ? props.typeaheadClass : ''}`,
 		};
 	}
 
@@ -32,6 +31,11 @@ class TypeaheadDataset extends React.Component {
 				value: selectedDatasets,
 			});
 		}
+
+		if (this.props.typeaheadClass !== prevProps.typeaheadClass) {
+			let typeaheadClass = this.props.typeaheadClass;
+			this.setState({ typeaheadClass: `addFormInputTypeAhead ${typeaheadClass}` });
+		}
 	}
 
 	getData() {
@@ -44,52 +48,55 @@ class TypeaheadDataset extends React.Component {
 			publisher = null;
 		}
 
-		this.setState({
-			publisher,
-		});
-
-		axios
-			.get(`${baseURL}/api/v2/datasets`, {
-				params: {
-					activeflag: 'active',
-					fields: 'datasetid,name,description,datasetfields.abstract,_id,datasetfields.publisher,datasetfields.contactPoint',
-					populate: 'publisher',
-					sort: 'datasetfields.publisher, name',
-					is5Safes: true,
-					...(publisher ? { ['datasetfields.publisher']: publisher } : {}),
-				},
-			})
-			.then(res => {
-				const {
-					data: { datasets = [] },
-				} = res;
-				const formattedDatasets = datasets.map(dataset => {
-					let {
-						_id,
-						datasetid: datasetId,
-						name,
-						description,
-						publisher: publisherObj,
-						datasetfields: { abstract, publisher, contactPoint },
-					} = dataset;
-					return {
-						_id,
-						datasetId,
-						name,
-						description,
-						abstract,
-						publisher,
-						publisherObj,
-						contactPoint,
-					};
-				});
-				let value = [...this.state.value];
-				this.setState({ options: [...formattedDatasets], value });
-			})
-			.catch(err => {
-				console.error(err);
-				alert('Failed to fetch publisher datasets');
-			});
+		this.setState(
+			{
+				publisher,
+			},
+			() => {
+				axios
+					.get(`${baseURL}/api/v2/datasets`, {
+						params: {
+							activeflag: 'active',
+							fields: 'datasetid,name,description,datasetfields.abstract,_id,datasetfields.publisher,datasetfields.contactPoint',
+							populate: 'publisher',
+							sort: 'datasetfields.publisher, name',
+							is5Safes: true,
+							...(publisher ? { ['datasetfields.publisher']: publisher } : {}),
+						},
+					})
+					.then(res => {
+						const {
+							data: { datasets = [] },
+						} = res;
+						const formattedDatasets = datasets.map(dataset => {
+							let {
+								_id,
+								datasetid: datasetId,
+								name,
+								description,
+								publisher: publisherObj,
+								datasetfields: { abstract, publisher, contactPoint },
+							} = dataset;
+							return {
+								_id,
+								datasetId,
+								name,
+								description,
+								abstract,
+								publisher,
+								publisherObj,
+								contactPoint,
+							};
+						});
+						let value = [...this.state.value];
+						this.setState({ options: formattedDatasets, value });
+					})
+					.catch(err => {
+						console.error(err);
+						alert('Failed to fetch publisher datasets');
+					});
+			}
+		);
 	}
 
 	handleChange(e) {
@@ -116,11 +123,19 @@ class TypeaheadDataset extends React.Component {
 		option.name.toLowerCase().indexOf(props.text.toLowerCase()) !== -1;
 
 	render() {
+		let selectedValues = [];
+		this.state.value.map(selectedValue => {
+			return selectedValues.push(_.toString(selectedValue._id));
+		});
+
+		let filteredOptions = this.state.options.filter(datasetOption => !selectedValues.includes(datasetOption._id));
+
 		return (
 			<Typeahead
+				multiple
 				id={'typeaheadDataset'}
-				className={`addFormInputTypeAhead ${_.isEmpty(this.state.value) ? 'emptyFormInputTypeAhead' : ''}`}
-				options={this.state.options}
+				className={this.state.typeaheadClass}
+				options={filteredOptions}
 				ref={typeahead => (this._typeahead = typeahead)}
 				onChange={e => {
 					this.handleChange(e);
@@ -128,7 +143,6 @@ class TypeaheadDataset extends React.Component {
 				minLength={this.state.publisher === null ? 2 : 0}
 				selected={this.state.value}
 				filterBy={this.filterByCallback}
-				multiple
 				disabled={this.state.readOnly}
 				defaultSelected={this.state.value}
 				labelKey={options => `${options.name}`}

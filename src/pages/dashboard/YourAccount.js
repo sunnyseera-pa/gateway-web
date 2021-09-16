@@ -6,11 +6,10 @@ import { useFormik } from 'formik';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import queryString from 'query-string';
 import Loading from '../commonComponents/Loading';
-import _ from 'lodash';
 import './Dashboard.scss';
 import SVGIcon from '../../images/SVGIcon';
-import DevelopmentAndImprovementBanner from '../commonComponents/DevelopmentAndImprovementBanner';
-import {useTranslation} from "react-i18next";
+import { useTranslation } from 'react-i18next';
+import AlertBannerBlue from '../commonComponents/AlertBannerBlue';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -22,7 +21,7 @@ class YourAccount extends React.Component {
 		userState: [],
 		topicData: [],
 		isLoading: true,
-		isUpdated: false,
+		accountUpdated: false,
 		showOrg: true,
 		combinedOrganisations: [],
 		showSector: true,
@@ -37,6 +36,7 @@ class YourAccount extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state.userState = props.userState;
+		this.state.accountUpdated = props.accountUpdated;
 	}
 
 	componentDidMount() {
@@ -130,6 +130,7 @@ class YourAccount extends React.Component {
 			showLink,
 			showOrcid,
 			showOrganisation,
+			accountUpdated,
 		} = this.state;
 
 		if (isLoading) {
@@ -154,6 +155,7 @@ class YourAccount extends React.Component {
 							userdata={userdata}
 							isUpdated={isUpdated}
 							profileComplete={profileComplete}
+							accountUpdated={accountUpdated}
 							topicData={topicData}
 							combinedOrganisations={combinedOrganisations}
 							showOrg={showOrg}
@@ -172,7 +174,6 @@ class YourAccount extends React.Component {
 	}
 }
 
-
 //Your Account Form
 const YourAccountForm = props => {
 	//Set initial state
@@ -184,9 +185,9 @@ const YourAccountForm = props => {
 	let showOrcid = props.showOrcid;
 
 	let profileComplete = props.profileComplete;
-	let initialTerms = profileComplete ? props.data.terms || false : false;
-	let optInFeedback = props.optInFeedback || false;
-	let optInNews = props.optInNews || false;
+	let initialTerms = props.data.terms || false;
+	let optInFeedback = props.data.feedback || false;
+	let optInNews = props.data.news || false;
 
 	//tool tips for eyes
 	const mandatoryShowFieldMsg = 'This will be visible to others. You cannot change this.';
@@ -211,44 +212,38 @@ const YourAccountForm = props => {
 	const [showingSector, setShowSector] = useState(showSector);
 	const toggleSector = () => {
 		setShowSector(!showingSector);
-		{
-			formik.setFieldValue('showSector', !showingSector);
-		}
+
+		formik.setFieldValue('showSector', !showingSector);
 	};
 	const [showingOrg, setShowOrg] = useState(showOrg);
 	const toggleOrg = () => {
 		setShowOrg(!showingOrg);
-		{
-			formik.setFieldValue('showOrganisation', !showingOrg);
-		}
+
+		formik.setFieldValue('showOrganisation', !showingOrg);
 	};
 	const [showingBio, setShowBio] = useState(showBio);
 	const toggleBio = () => {
 		setShowBio(!showingBio);
-		{
-			formik.setFieldValue('showBio', !showingBio);
-		}
+
+		formik.setFieldValue('showBio', !showingBio);
 	};
 	const [showingDomain, setShowDomain] = useState(showDomain);
 	const toggleDomain = () => {
 		setShowDomain(!showingDomain);
-		{
-			formik.setFieldValue('showDomain', !showingDomain);
-		}
+
+		formik.setFieldValue('showDomain', !showingDomain);
 	};
 	const [showingLink, setShowLink] = useState(showLink);
 	const toggleLink = () => {
 		setShowLink(!showingLink);
-		{
-			formik.setFieldValue('showLink', !showingLink);
-		}
+
+		formik.setFieldValue('showLink', !showingLink);
 	};
 	const [showingOrcid, setShowOrcid] = useState(showOrcid);
 	const toggleOrcid = () => {
 		setShowOrcid(!showingOrcid);
-		{
-			formik.setFieldValue('showOrcid', !showingOrcid);
-		}
+
+		formik.setFieldValue('showOrcid', !showingOrcid);
 	};
 
 	// Pass the useFormik() hook initial form values and a submit function that will
@@ -296,37 +291,39 @@ const YourAccountForm = props => {
 	});
 
 	const handleSectorSelect = key => {
-		{
-			formik.setFieldValue('sector', key);
-		}
+		formik.setFieldValue('sector', key);
 	};
 
 	function bioCount(e) {
 		document.getElementById('bioCurrentCount').innerHTML = e.target.value.length;
 	}
 
-	const {t, i18n} = useTranslation('common');
+	const { t, i18n } = useTranslation('common');
 
 	return (
 		<div>
-			{props.profileComplete ? (
+			{initialTerms ? (
 				''
 			) : (
 				<Row className='accountBanner'>
-					<Col className='pad-left-24'>
-						Please accept the updated Terms and Conditions and update your profile details. You can now control the visibility of certain
-						fields.
-					</Col>
+					<Col className='pad-left-24'>Please accept the updated Terms and Conditions and update your profile details.</Col>
 				</Row>
 			)}
-			{props.isUpdated ? (
-				<Alert variant='success' className='mt-3'>
-					Done! Your account details have been updated
-				</Alert>
-			) : (
+			{props.profileComplete ? (
 				''
+			) : (
+				<AlertBannerBlue
+					className='margin-bottom-12'
+					message='Our new account page allows you to easily update your preferences regarding participating in feedback and receiving our
+				newsletter.'
+				/>
 			)}
-			<DevelopmentAndImprovementBanner />
+			{props.accountUpdated ? <Alert variant='success'>Done! Your account details have been updated</Alert> : ''}
+			<AlertBannerBlue
+				message='Want to get involved in shaping the Gateway? Join our development and improvement group.'
+				href='https://discourse.healthdatagateway.org/t/about-the-development-and-improvement-group/498'
+				dataTestId='dev-and-improvement'
+			/>
 			<Row className='pixelGapBottom margin-top-24'>
 				<Col>
 					<div className='rectangle pad-bottom-2'>
@@ -492,7 +489,7 @@ const YourAccountForm = props => {
 											touched={formik.touched.sector}
 											onSelect={selected => handleSectorSelect(selected)}
 											id='user-account-sector'>
-											 {t('industrySectors',{ returnObjects: true }).map((sec, i) => (
+											{t('industrySectors', { returnObjects: true }).map((sec, i) => (
 												<Dropdown.Item
 													className='gray800-14 width-100'
 													key={sec}
@@ -811,6 +808,7 @@ const YourAccountForm = props => {
 										<a
 											href='https://icoda-research.org/terms-conditions/'
 											target='_blank'
+											rel='noopener noreferrer'
 											data-test-id='user-account-terms-conditions-link'>
 											Terms and Conditions
 										</a>
@@ -844,6 +842,7 @@ const YourAccountForm = props => {
 											type='checkbox'
 											className='checker'
 											id='feedback'
+											name='feedback'
 											checked={formik.values.feedback}
 											onChange={formik.handleChange}
 											data-test-id='user-account-feedback'
@@ -866,6 +865,7 @@ const YourAccountForm = props => {
 											type='checkbox'
 											className='checker'
 											id='news'
+											name='news'
 											checked={formik.values.news}
 											onChange={formik.handleChange}
 											data-test-id='user-account-news'
@@ -873,7 +873,10 @@ const YourAccountForm = props => {
 									</Col>
 									<Col md={10} sm={8} xs={6} className='gray800-14 pl-0'>
 										I want to receive news, updates and curated marketing from the Gateway&nbsp;&nbsp;&nbsp;&nbsp;
-										<a target='_blank' href='https://mailchi.mp/hdruk.ac.uk/explore-and-access-the-uks-health-research-datasets'>
+										<a
+											target='_blank'
+											rel='noopener noreferrer'
+											href='https://mailchi.mp/hdruk.ac.uk/explore-and-access-the-uks-health-research-datasets'>
 											Show me an example
 										</a>
 									</Col>
@@ -884,7 +887,7 @@ const YourAccountForm = props => {
 								<span className='divider-lines' />
 								<Col sm={12}>
 									As a user of the Gateway we take the privacy and security of your personal data seriously. Our{' '}
-									<a target='_blank' href='https://www.hdruk.ac.uk/infrastructure/gateway/privacy-policy/'>
+									<a target='_blank' rel='noopener noreferrer' href='https://www.hdruk.ac.uk/infrastructure/gateway/privacy-policy/'>
 										privacy policy
 									</a>{' '}
 									aims to give you information on how Health Data Research UK collects and processes your personal data through your use of

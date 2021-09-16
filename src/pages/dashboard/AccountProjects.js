@@ -6,7 +6,6 @@ import NotFound from '../commonComponents/NotFound';
 import Loading from '../commonComponents/Loading';
 import ActionModal from '../commonComponents/ActionModal/ActionModal';
 import './Dashboard.scss';
-import _ from 'lodash';
 import { EntityActionButton } from './EntityActionButton.jsx';
 import { Event, initGA } from '../../tracking';
 import { PaginationHelper } from '../commonComponents/PaginationHelper';
@@ -238,7 +237,7 @@ export const AccountProjects = props => {
 												<Row className='subHeader mt-3 gray800-14-bold'>
 													<Col xs={2}>Last activity</Col>
 													<Col xs={5}>Name</Col>
-													<Col xs={2}>Author</Col>
+													<Col xs={2}>Uploader(s)</Col>
 													<Col xs={3}></Col>
 												</Row>
 											)}
@@ -510,6 +509,8 @@ export const AccountProjects = props => {
 											)}
 										</div>
 									);
+								default:
+									return key;
 							}
 						})()}
 

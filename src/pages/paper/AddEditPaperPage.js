@@ -37,7 +37,6 @@ class AddEditPaperPage extends React.Component {
 		courseData: [],
 		summary: [],
 		tempRelatedObjectIds: [],
-		relatedObjectIds: [],
 		relatedObjects: [],
 		didDelete: false,
 		isEdit: isEditMode(window.location.pathname),
@@ -183,7 +182,7 @@ class AddEditPaperPage extends React.Component {
 
 	doSearch = e => {
 		//fires on enter on searchbar
-		if (e.key === 'Enter') window.location.href = '/search?search=' + this.state.searchString;
+		if (e.key === 'Enter') window.location.href = `/search?search=${encodeURIComponent(this.state.searchString)}`;
 	};
 
 	updateSearchString = searchString => {
@@ -202,7 +201,7 @@ class AddEditPaperPage extends React.Component {
 			if (type === 'course' && page > 0) searchURL += '&courseIndex=' + page;
 
 			axios
-				.get(baseURL + '/api/v1/search?search=' + this.state.searchString + searchURL, {
+				.get(baseURL + '/api/v1/search?search=' + encodeURIComponent(this.state.searchString) + searchURL, {
 					params: {
 						form: true,
 						userID: this.state.userState[0].id,
@@ -224,12 +223,13 @@ class AddEditPaperPage extends React.Component {
 	};
 
 	addToTempRelatedObjects = (id, type, pid) => {
+		let updatedTempRelatedObjectIds = [...this.state.tempRelatedObjectIds];
 		if (this.state.tempRelatedObjectIds && this.state.tempRelatedObjectIds.some(object => object.objectId === id)) {
-			this.state.tempRelatedObjectIds = this.state.tempRelatedObjectIds.filter(object => object.objectId !== id);
+			updatedTempRelatedObjectIds = updatedTempRelatedObjectIds.filter(object => object.objectId !== id);
 		} else {
-			this.state.tempRelatedObjectIds.push({ objectId: id, objectType: type, pid: pid });
+			updatedTempRelatedObjectIds.push({ objectId: id, objectType: type, pid: pid });
 		}
-		this.setState({ tempRelatedObjectIds: this.state.tempRelatedObjectIds });
+		this.setState({ tempRelatedObjectIds: updatedTempRelatedObjectIds });
 	};
 
 	addToRelatedObjects = () => {
@@ -294,9 +294,6 @@ class AddEditPaperPage extends React.Component {
 			isEdit,
 			combinedTopic,
 			combinedFeatures,
-			combinedLanguages,
-			combinedCategories,
-			combinedLicenses,
 			combinedUsers,
 			isLoading,
 			userState,
@@ -338,9 +335,6 @@ class AddEditPaperPage extends React.Component {
 					isEdit={isEdit}
 					combinedTopic={combinedTopic}
 					combinedFeatures={combinedFeatures}
-					combinedLanguages={combinedLanguages}
-					combinedCategories={combinedCategories}
-					combinedLicenses={combinedLicenses}
 					combinedUsers={combinedUsers}
 					userState={userState}
 					searchString={searchString}

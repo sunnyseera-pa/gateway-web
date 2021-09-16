@@ -1,19 +1,22 @@
-import React, { Fragment } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import axios from 'axios';
-
 import { Formik, useFormik, FieldArray } from 'formik';
 import * as Yup from 'yup';
 import { Typeahead } from 'react-bootstrap-typeahead';
-import _ from 'lodash';
 import moment from 'moment';
 import { Form, Button, Row, Col } from 'react-bootstrap';
+import { isNil, isEmpty } from 'lodash';
 
+import RemoveUploaderModal from '../commonComponents/RemoveUploaderModal';
+import RemoveUploaderErrorModal from '../commonComponents/RemoveUploaderErrorModal';
 import RelatedResources from '../commonComponents/relatedResources/RelatedResources';
 import RelatedObject from '../commonComponents/relatedObject/RelatedObject';
 import ActionBar from '../commonComponents/actionbar/ActionBar';
-
 import SVGIcon from '../../images/SVGIcon';
 import './Tool.scss';
+
+const baseURL = require('../commonComponents/BaseURL').getURL();
+let windowUrl = window.location.origin;
 
 const initialValues = {
 	programmingLanguage: [{ programmingLanguage: '', version: '' }],
@@ -34,9 +37,17 @@ const validateSchema = Yup.object().shape({
 	),
 });
 
-var baseURL = require('../commonComponents/BaseURL').getURL();
-
 const AddEditToolForm = props => {
+	const [uploadersList, setUploadersList] = useState([]);
+	const [uploaderToBeRemoved, setUploaderToBeRemoved] = useState({});
+	const [showRemoveUploaderModal, setShowRemoveUploaderModal] = useState(false);
+	const [showRemoveUploaderErrorModal, setShowRemoveUploaderErrorModal] = useState(false);
+	const [removingOriginalUploader, setRemovingOriginalUploader] = useState(false);
+	const originalUploader = props.isEdit ? props.data.uploader : props.userState[0].id;
+	useEffect(() => {
+		buildListOfUploaders();
+	}, []);
+
 	const formik = useFormik({
 		initialValues: {
 			id: props.data.id || '',
@@ -45,6 +56,7 @@ const AddEditToolForm = props => {
 			link: props.data.link || '',
 			description: props.data.description || '',
 			resultsInsights: props.data.resultsInsights || '',
+			authorsNew: props.data.authorsNew || '',
 			categories: props.data.categories || {
 				category: '',
 			},
@@ -82,45 +94,62 @@ const AddEditToolForm = props => {
 		onSubmit: values => {
 			values.relatedObjects = props.relatedObjects;
 			values.toolCreator = props.userState[0];
+			values.authors = uploadersList.map(uploader => uploader.id);
 			if (props.isEdit) {
 				axios.put(baseURL + '/api/v1/tools/' + props.data.id, values).then(res => {
-					window.location.href = window.location.search + '/tool/' + props.data.id + '/?toolEdited=true';
+					window.location.href = windowUrl + '/tool/' + props.data.id + '/?toolEdited=true';
 				});
 			} else {
 				axios.post(baseURL + '/api/v1/tools', values).then(res => {
-					window.location.href = window.location.search + '/tool/' + res.data.response.id + '/?toolAdded=true';
+					window.location.href = windowUrl + '/tool/' + res.data.response.id + '/?toolAdded=true';
 				});
 			}
 		},
 	});
 
-	var listOfAuthors = [];
+	const buildListOfUploaders = () => {
+		let listOfUploaders = [];
 
-	if (props.isEdit) {
-		props.data.authors.forEach(author => {
-			props.combinedUsers.forEach(user => {
-				if (user.id === author) {
-					if (props.userState[0].id === user.id) {
-						listOfAuthors.push({ id: user.id, name: user.name + ' (You)' });
-						if (!user.name.includes('(You)')) {
-							user.name = user.name + ' (You)';
+		if (props.isEdit) {
+			props.data.authors.forEach(uploader => {
+				props.combinedUsers.forEach(user => {
+					if (user.id === uploader) {
+						if (props.userState[0].id === user.id) {
+							listOfUploaders.push({ id: user.id, name: user.name + ' (You)' });
+							if (!user.name.includes('(You)')) {
+								user.name = user.name + ' (You)';
+							}
+						} else {
+							listOfUploaders.push({ id: user.id, name: user.name });
 						}
-					} else {
-						listOfAuthors.push({ id: user.id, name: user.name });
+					}
+				});
+			});
+		} else {
+			props.combinedUsers.forEach(user => {
+				if (user.id === props.userState[0].id) {
+					listOfUploaders.push({ id: user.id, name: user.name + ' (You)' });
+					if (!user.name.includes('(You)')) {
+						user.name = user.name + ' (You)';
 					}
 				}
 			});
-		});
-	} else {
-		props.combinedUsers.forEach(user => {
-			if (user.id === props.userState[0].id) {
-				listOfAuthors.push({ id: user.id, name: user.name + ' (You)' });
-				if (!user.name.includes('(You)')) {
-					user.name = user.name + ' (You)';
-				}
-			}
-		});
-	}
+		}
+		setUploadersList(listOfUploaders);
+	};
+
+	const cancelUploaderRemoval = () => {
+		setUploaderToBeRemoved({});
+		setRemovingOriginalUploader(false);
+		setShowRemoveUploaderModal(false);
+		setShowRemoveUploaderErrorModal(false);
+	};
+
+	const confirmUploaderRemoval = () => {
+		setUploadersList(uploadersList.filter(uploader => uploader.id !== uploaderToBeRemoved.id));
+		setUploaderToBeRemoved({});
+		setShowRemoveUploaderModal(false);
+	};
 
 	function updateReason(id, reason, type, pid) {
 		let inRelatedObject = false;
@@ -148,7 +177,6 @@ const AddEditToolForm = props => {
 	}
 
 	function descriptionCount(e) {
-		var input = e.target.value;
 		document.getElementById('currentCount').innerHTML = e.target.value.length;
 	}
 
@@ -161,6 +189,20 @@ const AddEditToolForm = props => {
 	return (
 		<div>
 			<div className={'container'}>
+				<RemoveUploaderModal
+					open={showRemoveUploaderModal}
+					cancelUploaderRemoval={cancelUploaderRemoval}
+					confirmUploaderRemoval={confirmUploaderRemoval}
+					entityType={'tool'}
+					userState={props.userState}
+					uploaderToBeRemoved={uploaderToBeRemoved}></RemoveUploaderModal>
+
+				<RemoveUploaderErrorModal
+					open={showRemoveUploaderErrorModal}
+					cancelUploaderRemoval={cancelUploaderRemoval}
+					entityType={'tool'}
+					uploaderToBeRemoved={uploaderToBeRemoved}
+					removingOriginalUploader={removingOriginalUploader}></RemoveUploaderErrorModal>
 				<Formik
 					initialValues={initialValues}
 					validationSchema={validateSchema}
@@ -323,31 +365,19 @@ const AddEditToolForm = props => {
 													) : null}
 												</Form.Group>
 
-												<Form.Group>
-													<span className='gray800-14'>Authors on the Gateway</span>
-													<Typeahead
-														id='authors'
-														labelKey={authors => `${authors.name}`}
-														defaultSelected={listOfAuthors}
-														multiple
-														options={props.combinedUsers}
-														className={
-															formik.touched.authors && formik.errors.authors
-																? 'emptyFormInputTypeAhead addFormInputTypeAhead'
-																: 'addFormInputTypeAhead'
-														}
-														onChange={selected => {
-															var tempSelected = [];
-															selected.forEach(selectedItem => {
-																tempSelected.push(selectedItem.id);
-															});
-															formik.values.authors = tempSelected;
-														}}
-													/>
-													{formik.touched.authors && formik.errors.authors ? (
-														<div className='errorMessages'>{formik.errors.authors}</div>
-													) : null}
-												</Form.Group>
+												<span className='gray800-14'>Authors (optional)</span>
+												<p className='gray700-13 margin-bottom-0'>
+													Please add the names of the people who authored this tool, using a comma to separate the names
+												</p>
+												<Form.Control
+													id='authorsNew'
+													data-test-id='authors'
+													name='authorsNew'
+													type='text'
+													className='addFormInput gray700-13'
+													onChange={formik.handleChange}
+													value={formik.values.authorsNew}
+												/>
 
 												<Row className='mt-2'>
 													<Col sm={12} md={8}>
@@ -537,6 +567,56 @@ const AddEditToolForm = props => {
 														}}
 													/>
 												</Form.Group>
+
+												<Form.Group data-test-id='uploaders'>
+													<p className='gray800-14 margin-bottom-0 pad-bottom-4'>Uploaders</p>
+													<p className='gray700-13 margin-bottom-0'>Uploaders are Gateway members with editing rights on this tool.</p>
+													<Typeahead
+														id='authors'
+														labelKey={authors => `${authors.name}`}
+														defaultSelected={uploadersList}
+														multiple
+														className={
+															formik.touched.authors && formik.errors.authors
+																? 'emptyFormInputTypeAhead addFormInputTypeAhead'
+																: 'addFormInputTypeAhead'
+														}
+														options={props.combinedUsers}
+														selected={uploadersList}
+														onChange={selectedOptions => {
+															// 1. Check if removing any uploader
+															const removedUploader = uploadersList.filter(
+																uploader => !selectedOptions.map(selectedOpt => selectedOpt.id).includes(uploader.id)
+															)[0];
+															if (!isEmpty(removedUploader)) {
+																// 2. Check if removing original uploader
+																if (removedUploader.id === originalUploader) {
+																	setRemovingOriginalUploader(true);
+																	setShowRemoveUploaderErrorModal(true);
+																}
+																// 3. Check if removing last uploader
+																else if (isEmpty(selectedOptions)) {
+																	setUploaderToBeRemoved(removedUploader);
+																	setShowRemoveUploaderErrorModal(true);
+																} else {
+																	// 4. If removing a regular uploader show regular remove uploader modal
+																	setUploaderToBeRemoved(removedUploader);
+																	setShowRemoveUploaderModal(true);
+																}
+															} else {
+																// 5. If not removing uploader, user is adding uploader
+																const addedUploader = selectedOptions
+																	.filter(selectedOpt => !uploadersList.map(uploader => uploader.id).includes(selectedOpt.id))
+																	.map(newUploader => {
+																		return { id: newUploader.id, name: newUploader.name };
+																	})[0];
+																if (!isEmpty(addedUploader)) {
+																	setUploadersList([...uploadersList, addedUploader]);
+																}
+															}
+														}}
+													/>
+												</Form.Group>
 											</div>
 
 											<div className='rectangle mt-2'>
@@ -552,23 +632,23 @@ const AddEditToolForm = props => {
 												''
 											) : (
 												<div className='rectangle'>
-													{props.relatedObjects.map(object => {
-														if (!_.isNil(object.objectId)) {
-															return (
-																<RelatedObject
-																	showRelationshipQuestion={true}
-																	objectId={object.objectId}
-																	pid={object.pid}
-																	objectType={object.objectType}
-																	doRemoveObject={props.doRemoveObject}
-																	doUpdateReason={updateReason}
-																	reason={object.reason}
-																	didDelete={props.didDelete}
-																	updateDeleteFlag={props.updateDeleteFlag}
-																/>
-															);
-														}
-													})}
+													{props.relatedObjects.map(object =>
+														!isNil(object.objectId) ? (
+															<RelatedObject
+																showRelationshipQuestion={true}
+																objectId={object.objectId}
+																pid={object.pid}
+																objectType={object.objectType}
+																doRemoveObject={props.doRemoveObject}
+																doUpdateReason={updateReason}
+																reason={object.reason}
+																didDelete={props.didDelete}
+																updateDeleteFlag={props.updateDeleteFlag}
+															/>
+														) : (
+															''
+														)
+													)}
 												</div>
 											)}
 
