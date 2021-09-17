@@ -24,11 +24,6 @@ export const AccountMembers = props => {
 	}, [props]);
 
 	useEffect(() => {
-		initGA('UA-183238557-1');
-		if (!isEmpty(props.team) && isEmpty(teamId)) {
-			const foundTeamId = getTeamId(props.team);
-			setTeamId(foundTeamId);
-		}
 		doMembersCall();
 	}, [accountMembersId]);
 
@@ -54,7 +49,7 @@ export const AccountMembers = props => {
 	const renderRoles = roles => {
 		if (!isEmpty(roles)) {
 			let sortedRoles = roles.sort();
-			return sortedRoles.map(role => `${upperFirst(role)}${roles.length > 1 && roles.indexOf(role) !== roles.length - 1 ? ', ' : ' '}`);
+			return sortedRoles.map(role => `${roleList[role]}${roles.length > 1 && roles.indexOf(role) !== roles.length - 1 ? ', ' : ' '}`);
 		}
 		return '';
 	};

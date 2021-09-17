@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { has, isNil, isEmpty, isUndefined } from 'lodash';
 import axios from 'axios';
+import _ from 'lodash';
 import * as Sentry from '@sentry/react';
 import { Row, Col, Container, Tabs, Tab, Alert, Tooltip, Button, OverlayTrigger } from 'react-bootstrap/';
 import NotFound from '../commonComponents/NotFound';
@@ -80,6 +81,8 @@ class DatasetDetail extends Component {
 		showModal: false,
 		showCustodianModal: false,
 		showError: false,
+		requiresModal: false,
+		allowsMessaging: false,
 		showAllPhenotype: false,
 		showAllLinkedDatasets: false,
 		showEmpty: false,
@@ -584,6 +587,7 @@ class DatasetDetail extends Component {
 					},
 				} = response;
 				const stateObj = {
+					requiresModal: !_.isEmpty(dataRequestModalContent) ? true : false,
 					allowNewMessage: allowsMessaging && isEmpty(dataRequestModalContent) ? true : false,
 					allowsMessaging,
 					dataRequestModalContent,
@@ -668,6 +672,7 @@ class DatasetDetail extends Component {
 			dataClassOpen,
 			relatedObjects,
 			discoursePostCount,
+			requiresModal,
 			showDrawer,
 			showModal,
 			showCustodianModal,
@@ -992,6 +997,7 @@ class DatasetDetail extends Component {
 													section='Data access request'
 													v2data={v2data}
 													showEmpty={showEmpty}
+													requiresModal={this.state.requiresModal}
 													toggleModal={this.toggleModal}
 													showLoginModal={() => {
 														this.showLoginModal(data.name);
