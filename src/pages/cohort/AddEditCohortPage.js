@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { initGA } from '../../tracking';
 import moment from 'moment';
 import { Container } from 'react-bootstrap';
 import SearchBar from '../commonComponents/searchBar/SearchBar';
@@ -48,7 +47,6 @@ const AddEditCohortPage = props => {
 	);
 
 	useEffect(async () => {
-		initGA('UA-166025838-1');
 		await doGetUsersCall();
 		if (isEdit) getCohortFromDb();
 		else setIsLoading(false);
