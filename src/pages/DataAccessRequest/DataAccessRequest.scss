@@ -31,7 +31,10 @@
 .danger {
 	color: #dc3645;
 }
-
+.action-bar--questions,
+.action-bar-status {
+	margin-left: 75px;
+}
 .alert {
 	margin-bottom: 8px !important;
 	font-size: 14px;
@@ -361,7 +364,10 @@ span.toolTipText:after {
 	#darRightCol {
 		display: none !important;
 	}
-
+	.action-bar--questions,
+	.action-bar-status {
+		margin-left: 50px;
+	}
 	#darDropdownNav {
 		display: block;
 		width: 100%;
