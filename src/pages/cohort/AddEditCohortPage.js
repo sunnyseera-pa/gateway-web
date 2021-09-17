@@ -181,7 +181,6 @@ const AddEditCohortPage = props => {
 	}
 	return (
 		<div>
-			{console.log(`FUNCTIONAL`)}
 			<SearchBar
 				ref={searchBar}
 				doSearchMethod={doSearch}
