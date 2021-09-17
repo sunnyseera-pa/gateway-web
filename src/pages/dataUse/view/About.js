@@ -2,17 +2,26 @@ import React, { useState } from 'react';
 import { Container, Row, Col, Button, Tooltip, OverlayTrigger } from 'react-bootstrap';
 import SVGIcon from '../../../images/SVGIcon';
 
-const About = ({ data, aboutComp }) => {
+const About = ({ data, aboutComp, aboutSummary }) => {
 	const [closedLaySummary, setClosedLaySummary] = useState(true);
 	const [closedPublicBenefit, setClosedPublicBenefit] = useState(true);
 	const [closedDataUse, setClosedDataUse] = useState(true);
 	const [hide, setHide] = useState(false);
+	const [sendData, setSendData] = useState(data);
 
 	const exampleTooltip = props => (
 		<Tooltip className='datause-info-icon-tooltip' {...props}>
 			Example tooltip
 		</Tooltip>
 	);
+
+	const aboutSummaryDetails = () => {
+		aboutSummary({
+			title: sendData.title,
+			org: sendData.org,
+		});
+	};
+	console.log(sendData);
 
 	return (
 		<>

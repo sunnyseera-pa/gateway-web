@@ -59,7 +59,7 @@ const View = ({ ...props }) => {
 				<Tabs defaultActiveKey='About' className='gray700-13 data-use-tabs'>
 					{tabs.map(tabName => (
 						<Tab eventKey={tabName} title={tabName}>
-							{tabName === 'About' && <About data={Data.filter(a => a.tab === 'About')} />}
+							{tabName === 'About' && <About data={Data.filter(a => a.tab === 'About')} aboutComp={aboutComp} aboutSummary />}
 							{tabName === 'Related resources' && <RelatedResources data={Data.filter(a => a.tab === 'Related resources')} />}
 						</Tab>
 					))}

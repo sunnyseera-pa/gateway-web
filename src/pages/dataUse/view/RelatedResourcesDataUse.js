@@ -1,13 +1,21 @@
 import React from 'react';
 import DropdownMenu from './DataUseDropdown';
 import { Row, Col, Container } from 'react-bootstrap';
+import SVGIcon from '../../../images/SVGIcon';
 
 const RelatedResources = ({ data }) => {
 	return (
 		<>
 			<Row className='datause-relatedresource-search'>
 				<Col md={9}>
-					<input className='datause-relatedresource-input' type='text' placeholder='Search within related resources' />
+					<span className='datause-relatedresources-search  form-control'>
+						<span className='datause-relatedresources-searchicon'>
+							<SVGIcon name='searchicon' width={20} height={20} fill={'#2c8267'} stroke='none' type='submit' />
+						</span>
+						<span>
+							<input className='datause-relatedresources-search-input' type='text' placeholder='Search within related resources' />
+						</span>
+					</span>
 				</Col>
 				<Col md={3}>
 					<DropdownMenu />
