@@ -19,7 +19,7 @@ const VersionSelector = ({ selectedVersion = 'Version 1.0', versionList, display
 	const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
 		<a
 			id='versionSelector'
-			href=''
+			href='javascript:void(0)'
 			ref={ref}
 			onClick={e => {
 				e.preventDefault();

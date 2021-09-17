@@ -8,10 +8,6 @@ class DataUtilityModal extends React.Component {
 		allOpen: false,
 	};
 
-	constructor(props) {
-		super(props);
-	}
-
 	updateAllOpen = allOpen => {
 		if (allOpen === false) {
 			this.setState({ allOpen: true });

@@ -6,7 +6,6 @@ import * as Yup from 'yup';
 import Loading from '../../commonComponents/Loading';
 import { useFormik } from 'formik';
 import '../Dashboard.scss';
-import _ from 'lodash';
 
 var baseURL = require('../../commonComponents/BaseURL').getURL();
 const AddEditTeamsPage = ({
@@ -25,9 +24,7 @@ const AddEditTeamsPage = ({
 	const memberOfSelect = ['ALLIANCE', 'HUBS', 'OTHER', 'NCS'];
 
 	const handleMemberOfSelect = key => {
-		{
-			formik.setFieldValue('memberOf', key);
-		}
+		formik.setFieldValue('memberOf', key);
 	};
 
 	const getTeamManagerData = () => {

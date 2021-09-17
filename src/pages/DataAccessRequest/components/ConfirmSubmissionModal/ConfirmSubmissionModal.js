@@ -2,6 +2,7 @@ import React, { Fragment } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import { ReactComponent as CloseButtonSvg } from '../../../../images/close-alt.svg';
 import './ConfirmSubmissionModal.scss';
+import googleAnalytics from '../../../../tracking';
 
 const ConfirmSubmissionModal = ({ open, close, confirm }) => {
 	return (
@@ -19,7 +20,13 @@ const ConfirmSubmissionModal = ({ open, close, confirm }) => {
 						<Button variant='white' className='techDetailButton mr-2' onClick={close}>
 							No, nevermind
 						</Button>
-						<Button variant='primary' className='white-14-semibold' onClick={confirm}>
+						<Button
+							variant='primary'
+							className='white-14-semibold'
+							onClick={() => {
+								confirm();
+								googleAnalytics.recordEvent('Data access request', 'Clicked submit application', 'Submitted application')
+							}}>
 							Submit application
 						</Button>
 					</div>

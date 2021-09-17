@@ -402,6 +402,8 @@ class ReviewTools extends React.Component {
 											)}
 										</div>
 									);
+								default:
+									return key;
 							}
 						})()}
 					</Col>
