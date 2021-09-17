@@ -835,7 +835,7 @@ class DatasetDetail extends Component {
 										{this.state.isLatestVersion && !this.state.isDatasetArchived && (
 											<Col sm={6} className='text-right'>
 												{!userState[0].loggedIn ? (
-													<button className='btn button-tertiary dark-14 float-right' onClick={() => this.showLoginModal(data.name)}>
+													<button className='btn button-tertiary dark-14 float-right ' onClick={() => this.showLoginModal(data.name)}>
 														Request access
 													</button>
 												) : requiresModal ? (
@@ -857,6 +857,7 @@ class DatasetDetail extends Component {
 														) : null}
 														<Link
 															className='btn button-primary addButton pointer'
+															id='requestAccess'
 															to={{
 																pathname: `/data-access-request/dataset/${data.datasetid}`,
 															}}
