@@ -4,6 +4,7 @@ import queryString from 'query-string';
 import { Row, Col, Button, Alert } from 'react-bootstrap';
 import Loading from '../Loading';
 import SVGIcon from '../../../images/SVGIcon';
+import { ReactComponent as LockSVG } from '../../../images/icon-security.svg';
 import './RelatedObject.scss';
 import moment from 'moment';
 import { ReactComponent as CalendarSvg } from '../../../images/calendaricon.svg';
@@ -888,7 +889,7 @@ class RelatedObject extends React.Component {
 												</span>
 											)}
 										</Col>
-										<Col sm={2} lg={2} className='pad-right-24'>
+										<Col sm={2} lg={2} className={this.props.isLocked ? 'lockSVG pad-right-24' : 'pad-right-24'}>
 											{!_.isEmpty(publisherLogo) && (
 												<div
 													className='datasetLogoCircle floatRight'
@@ -902,10 +903,14 @@ class RelatedObject extends React.Component {
 												/>
 											)}
 											{this.props.showRelationshipQuestion ? (
-												<Button variant='medium' className='soft-black-14' onClick={this.removeButton}>
-													<SVGIcon name='closeicon' fill={'#979797'} className='buttonSvg mr-2' />
-													Remove
-												</Button>
+												this.props.isLocked ? (
+													<LockSVG />
+												) : (
+													<Button variant='medium' className='soft-black-14' onClick={this.removeButton}>
+														<SVGIcon name='closeicon' fill={'#979797'} className='buttonSvg mr-2' />
+														Remove
+													</Button>
+												)
 											) : (
 												''
 											)}
@@ -1035,7 +1040,11 @@ class RelatedObject extends React.Component {
 							}
 						})()}
 						{(() => {
-							if (this.props.showRelationshipQuestion && !(data.type === 'dataset' && data.activeflag === 'archive')) {
+							if (
+								this.props.showRelationshipQuestion &&
+								!(data.type === 'dataset' && data.activeflag === 'archive') &&
+								this.props.isLocked !== true
+							) {
 								return (
 									<>
 										<Row className='pad-top-24 noMargin'>
