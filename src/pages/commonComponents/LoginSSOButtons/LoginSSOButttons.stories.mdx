@@ -1,0 +1,28 @@
+<!--- Checkbox.stories.mdx -->
+
+import { Meta, Story, Canvas } from '@storybook/addon-docs';
+
+import LoginSSOButtons from './LoginSSOButtons';
+import { ssoBtnsConfig } from '../../../configs/ssoBtnsConfig';
+
+<Meta
+	title='LoginSSOButtons'
+	component={LoginSSOButtons}
+	args={{
+		communityLink: 'test',
+		lastChoice: 'google',
+		ssoBtnsConfig: ssoBtnsConfig,
+	}}
+/>
+
+<Canvas>
+	<Story name='Basic'>
+		{props => {
+			const [lastChoice, setLastChoice] = React.useState('');
+			const handleClick = (id, authURL) => {
+				setLastChoice(id);
+			};
+			return <LoginSSOButtons {...props} clickHandler={handleClick} lastChoice={lastChoice} />;
+		}}
+	</Story>
+</Canvas>

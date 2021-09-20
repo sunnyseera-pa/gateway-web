@@ -1,0 +1,97 @@
+import React, { useEffect, useReducer, Fragment } from 'react';
+import { Row, Col } from 'react-bootstrap';
+import PropTypes from 'prop-types';
+import _ from 'lodash';
+import '../CommonComponents.scss';
+import lastChoiceSVG from '../../../images/lastChoice.svg';
+
+const reducer = (ssoBtnsState, lastChoice) => {
+	return ssoBtnsState.map(value => {
+		value.active = false;
+		if (value.id === lastChoice) {
+			value.active = true;
+		}
+		return value;
+	});
+};
+
+function LoginSSOButtons({ ssoBtnsConfig, communityLink, clickHandler, lastChoice }) {
+	const [ssoBtnsState, dispatch] = useReducer(reducer, ssoBtnsConfig);
+
+	useEffect(() => {
+		if (!_.isEmpty(lastChoice)) {
+			dispatch(lastChoice);
+		}
+	}, [lastChoice]);
+
+	return (
+		<div>
+			{_.map(_.chunk(ssoBtnsState, 2), (arr, index) => (
+				<Fragment key={index}>
+					<br />
+					<Row className='mt-2'>
+						<Col sm={0} lg={1} />
+						{_.map(arr, (value, i) => (
+							<Col sm={6} lg={5} key={value.id + i} className='mt-1'>
+								<div className='gray800-14'>
+									<button
+										data-testid={value.id}
+										className='btn btn-outline-secondary btn-block'
+										style={{ textAlign: 'left' }}
+										onClick={() => clickHandler(value.id, value.authURL)}>
+										<img src={value.img} width='20' style={{ float: 'left' }} alt={value.id} />
+										&nbsp; {value.text}
+										{value.active === true ? (
+											<img
+												src={lastChoiceSVG}
+												width='20'
+												style={{ float: 'right', marginRight: '-10px' }}
+												data-testid={value.id + '-lastChoice'}
+												alt='lastChoice'
+											/>
+										) : null}
+									</button>
+								</div>
+							</Col>
+						))}
+						<Col sm={0} lg={1} key={'col-1-' + index} />
+					</Row>
+				</Fragment>
+			))}
+			<div style={{ fontSize: '12px' }}>
+				<Row className='mt-5 '>
+					<Col sm={0} lg={1} />
+					<Col sm={6} lg={5}>
+						<span>
+							{' '}
+							<a
+								target='_blank'
+								href={`${communityLink}/t/about-the-site-feedback-category/1`}
+								data-testid='communityLink'
+								rel='noopener noreferrer'>
+								Suggest another Indentity Provider
+							</a>
+						</span>
+					</Col>
+					<Col sm={6} lg={5}>
+						{lastChoice ? (
+							<span>
+								<img src={lastChoiceSVG} width='20' data-testid='lastChoiceNote' alt='lastChoice' /> Last Time you clicked this button
+							</span>
+						) : null}
+					</Col>
+					<Col sm={0} lg={1} />
+				</Row>
+			</div>
+		</div>
+	);
+}
+
+LoginSSOButtons.propTypes = {
+	clickHandler: PropTypes.func.isRequired,
+	communityLink: PropTypes.string.isRequired,
+	lastChoiceSVG: PropTypes.string,
+	ssoBtnsConfig: PropTypes.array.isRequired,
+};
+
+export default LoginSSOButtons;
