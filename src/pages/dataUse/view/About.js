@@ -6,7 +6,7 @@ const About = ({ data, aboutComp, aboutSummary }) => {
 	const [closedLaySummary, setClosedLaySummary] = useState(true);
 	const [closedPublicBenefit, setClosedPublicBenefit] = useState(true);
 	const [closedDataUse, setClosedDataUse] = useState(true);
-	const [hide, setHide] = useState(false);
+	const [hide, setHide] = useState(true);
 	const [sendData, setSendData] = useState(data);
 
 	const exampleTooltip = props => (
@@ -15,13 +15,16 @@ const About = ({ data, aboutComp, aboutSummary }) => {
 		</Tooltip>
 	);
 
-	const aboutSummaryDetails = () => {
+	/*const aboutSummaryDetails = () => {
 		aboutSummary({
 			title: sendData.title,
 			org: sendData.org,
 		});
-	};
-	console.log(sendData);
+	};*/
+
+	let count = data.reduce(function recur(sum, obj) {
+		return sum + (obj === '' || (Object(obj) === obj && Object.values(obj).reduce(recur, 0)));
+	}, 0);
 
 	return (
 		<>
@@ -39,7 +42,7 @@ const About = ({ data, aboutComp, aboutSummary }) => {
 										<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
 									</Button>
 								</OverlayTrigger>
-								<Col>{a.org.length > 0 ? a.org : hide && <p className='gray800-14-opacity'>Not specified</p>}</Col>
+								<Col>{a.org.length > 0 ? a.org : <p className='gray800-14-opacity'>Not specified</p>}</Col>
 							</Row>
 						)}
 						{!a.safePeople.orgID > 0 && hide ? (
@@ -608,7 +611,7 @@ const About = ({ data, aboutComp, aboutSummary }) => {
 			</Row>
 			<Row className='datause-hidefields-button'>
 				<Button className='datause-emptyfields-button' onClick={() => (hide ? setHide(false) : setHide(true))}>
-					{!hide ? 'Hide all empty fields' : 'Show all empty fields'}
+					{!hide ? 'Hide all empty fields (' + count + ')' : 'Show all empty fields (' + count + ')'}
 				</Button>
 			</Row>
 		</>
