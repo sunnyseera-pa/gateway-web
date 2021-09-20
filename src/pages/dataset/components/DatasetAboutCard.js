@@ -6,6 +6,8 @@ import AboutCardElement from './AboutCardElement';
 import _ from 'lodash';
 import { Event } from '../../../tracking';
 
+// TODO: change lines 61, 72, 90, 99
+
 class DatasetAboutCard extends React.Component {
 	state = {
 		v2data: {},
