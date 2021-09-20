@@ -408,11 +408,13 @@ class DataAccessRequest extends Component {
 		// 6. Hide show submit application
 		if (applicationStatus === DarHelper.darStatus.inProgress) {
 			showSubmit = true;
-		} else if (applicationStatus === DarHelper.darStatus.inReview || applicationStatus === DarHelper.darStatus.submitted) {
-			if (activeParty === 'applicant' && answeredAmendments > 0) {
-				showSubmit = true;
-				submitButtonText = 'Submit updates';
-			}
+		} else if (
+			activeParty === 'applicant' &&
+			((applicationStatus === DarHelper.darStatus.inReview && answeredAmendments > 0 && unansweredAmendments === 0) ||
+				applicationStatus === DarHelper.darStatus.submitted)
+		) {
+			showSubmit = true;
+			submitButtonText = 'Submit updates';
 		}
 
 		// 7. Set initial panel as selected and scroll to top of view port
@@ -569,7 +571,7 @@ class DataAccessRequest extends Component {
 					{
 						unansweredAmendments,
 						answeredAmendments,
-						showSubmit: applicationStatus === DarHelper.darStatus.inProgress || answeredAmendments > 0,
+						showSubmit: applicationStatus === DarHelper.darStatus.inProgress || unansweredAmendments === 0,
 						jsonSchema,
 					},
 					_.isNil
@@ -903,6 +905,9 @@ class DataAccessRequest extends Component {
 				answeredAmendments,
 				unansweredAmendments,
 				amendmentIterations,
+				showSubmit:
+					this.state.applicationStatus === DarHelper.darStatus.inProgress ||
+					(unansweredAmendments === 0 && answeredAmendments > 0 && this.state.userType === DarHelper.userTypes.APPLICANT),
 			},
 			_.isNil
 		);
