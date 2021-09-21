@@ -42,7 +42,9 @@ const About = ({ data, aboutComp, aboutSummary }) => {
 										<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
 									</Button>
 								</OverlayTrigger>
-								<Col>{a.org.length > 0 ? a.org : <p className='gray800-14-opacity'>Not specified</p>}</Col>
+								<Col>
+									{a.org.length > 0 ? <span className='badge-tag'>{a.org}</span> : <p className='gray800-14-opacity'>Not specified</p>}
+								</Col>
 							</Row>
 						)}
 						{!a.safePeople.orgID > 0 && hide ? (
@@ -69,7 +71,11 @@ const About = ({ data, aboutComp, aboutSummary }) => {
 									</Button>
 								</OverlayTrigger>
 								<Col>
-									{a.safePeople.orgSector.length > 0 ? a.safePeople.orgSector : <p className='gray800-14-opacity'>Not specified</p>}
+									{a.safePeople.orgSector.length > 0 ? (
+										<span className='badge-tag'>{a.safePeople.orgSector}</span>
+									) : (
+										<p className='gray800-14-opacity'>Not specified</p>
+									)}
 								</Col>
 							</Row>
 						)}
@@ -85,7 +91,16 @@ const About = ({ data, aboutComp, aboutSummary }) => {
 								</OverlayTrigger>
 								<Col>
 									{a.safePeople.applicantNames.length > 0 ? (
-										a.safePeople.applicantNames
+										a.safePeople.applicantNames.map(a => (
+											<span className={a.hdrUser ? 'hdruser badge-tag' : 'nonhdruser badge-tag'}>
+												{a.hdrUser && (
+													<span className='datatuse-personicon-bg'>
+														<SVGIcon name='personicon' width={10} height={10} fill={'#3db28c'} />
+													</span>
+												)}
+												{a.name}
+											</span>
+										))
 									) : (
 										<p className='gray800-14-opacity'>Not specified</p>
 									)}
@@ -120,7 +135,11 @@ const About = ({ data, aboutComp, aboutSummary }) => {
 									</Button>
 								</OverlayTrigger>
 								<Col>
-									{a.safePeople.funders.length > 0 ? a.safePeople.funders.length : <p className='gray800-14-opacity'>Not specified</p>}
+									{a.safePeople.funders.length > 0 ? (
+										a.safePeople.funders.map(a => <span className='badge-tag'>{a}</span>)
+									) : (
+										<p className='gray800-14-opacity'>Not specified</p>
+									)}
 								</Col>
 							</Row>
 						)}

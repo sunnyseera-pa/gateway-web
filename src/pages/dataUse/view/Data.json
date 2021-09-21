@@ -22,7 +22,19 @@
 		"safePeople": {
 			"orgID": "3781-3813-9861",
 			"orgSector": "Academic",
-			"applicantNames": ["Christopher C Butler"],
+			"applicantNames": [{
+				"name": "Christopher C Butler", 
+				"hdrUser": true
+			},
+			{
+				"name": "Lorna Fraser", 
+				"hdrUser": true
+			},
+			{
+				"name": "Anna Bone", 
+				"hdrUser": false
+			}],
+				
 			"applicantID": "3781-3813-9861",
 			"funders": ["National Institue for Health Research (NIHR)", "Medical Research Council (MRC)"],
 			"accreditationStatus": "Unknown",
