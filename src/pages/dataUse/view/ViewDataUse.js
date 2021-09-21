@@ -4,6 +4,7 @@ import About from './About';
 import RelatedResources from './RelatedResourcesDataUse';
 import SearchBar from '../../commonComponents/searchBar/SearchBar';
 import { Row, Container, Tab, Tabs, Button } from 'react-bootstrap';
+import SVGIcon from '../../../images/SVGIcon';
 
 const View = ({ ...props }) => {
 	const [searchBar] = useState(React.createRef());
@@ -61,10 +62,12 @@ const View = ({ ...props }) => {
 					))}
 					{mockDataRelatedResource.map(a => (
 						<div>
-							<p className='badge-datause badge-tag'>{a.keywordType}</p>
+							<span className='badge-datause badge-tag badge-datause-bold'>
+								<SVGIcon name='datauseicon' width={12} height={12} fill={'#fff'} /> {a.keywordType}
+							</span>
 							{a.keywords.map(a => (
-								<a href={`/search?search=&datasetfeatures=${a}&tab=Datasets`}>
-									<p className='badge-tag'>{a}</p>
+								<a href={`/search?search=&datasetfeatures=${a}&tab=Datasets`} className='badge-tag badge-datause-bold'>
+									{a}
 								</a>
 							))}
 						</div>

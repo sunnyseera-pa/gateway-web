@@ -15,13 +15,6 @@ const About = ({ data, aboutComp, aboutSummary }) => {
 		</Tooltip>
 	);
 
-	/*const aboutSummaryDetails = () => {
-		aboutSummary({
-			title: sendData.title,
-			org: sendData.org,
-		});
-	};*/
-
 	let count = data.reduce(function recur(sum, obj) {
 		return sum + (obj === '' || (Object(obj) === obj && Object.values(obj).reduce(recur, 0)));
 	}, 0);
@@ -43,7 +36,11 @@ const About = ({ data, aboutComp, aboutSummary }) => {
 									</Button>
 								</OverlayTrigger>
 								<Col>
-									{a.org.length > 0 ? <span className='badge-tag'>{a.org}</span> : <p className='gray800-14-opacity'>Not specified</p>}
+									{a.org.length > 0 ? (
+										<span className='badge-tag badge-datause-bold'>{a.org}</span>
+									) : (
+										<p className='gray800-14-opacity'>Not specified</p>
+									)}
 								</Col>
 							</Row>
 						)}
@@ -72,7 +69,7 @@ const About = ({ data, aboutComp, aboutSummary }) => {
 								</OverlayTrigger>
 								<Col>
 									{a.safePeople.orgSector.length > 0 ? (
-										<span className='badge-tag'>{a.safePeople.orgSector}</span>
+										<span className='badge-tag badge-datause-bold'>{a.safePeople.orgSector}</span>
 									) : (
 										<p className='gray800-14-opacity'>Not specified</p>
 									)}
@@ -92,14 +89,14 @@ const About = ({ data, aboutComp, aboutSummary }) => {
 								<Col>
 									{a.safePeople.applicantNames.length > 0 ? (
 										a.safePeople.applicantNames.map(a => (
-											<span className={a.hdrUser ? 'hdruser badge-tag' : 'nonhdruser badge-tag'}>
+											<span className={a.hdrUser ? 'hdruser badge-tag' : 'nonhdruser badge-datause-bold badge-tag'}>
 												{a.hdrUser && (
 													<span className='datatuse-personicon-bg'>
 														<SVGIcon name='personicon' width={10} height={10} fill={'#3db28c'} />
 													</span>
 												)}
 												{a.hdrUser ? (
-													<a href='/person/{id}' className='soft-black-14 '>
+													<a href='/person/{id}' className='soft-black-14 badge-datause-bold'>
 														{a.name}
 													</a>
 												) : (
@@ -142,7 +139,7 @@ const About = ({ data, aboutComp, aboutSummary }) => {
 								</OverlayTrigger>
 								<Col>
 									{a.safePeople.funders.length > 0 ? (
-										a.safePeople.funders.map(a => <span className='badge-tag'>{a}</span>)
+										a.safePeople.funders.map(a => <span className='badge-tag badge-datause-bold'>{a}</span>)
 									) : (
 										<p className='gray800-14-opacity'>Not specified</p>
 									)}
@@ -620,7 +617,15 @@ const About = ({ data, aboutComp, aboutSummary }) => {
 										<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
 									</Button>
 								</OverlayTrigger>
-								<Col>{a.safeOutput.link.length > 0 ? a.safeOutput.link : <p className='gray800-14-opacity'>Not specified</p>}</Col>
+								<Col>
+									{a.safeOutput.link.length > 0 ? (
+										<a href={a.safeOutput.link} className='purple-blue-14'>
+											{a.safeOutput.link}
+										</a>
+									) : (
+										<p className='gray800-14-opacity'>Not specified</p>
+									)}
+								</Col>
 							</Row>
 						)}
 					</Container>
