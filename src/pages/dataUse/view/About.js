@@ -36,7 +36,7 @@ const About = ({ data, aboutComp, aboutSummary }) => {
 							''
 						) : (
 							<Row className='soft-black-14 datause-view-grid'>
-								<Col>Project ID</Col>
+								<Col>Organisation name</Col>
 								<OverlayTrigger placement='top' overlay={exampleTooltip}>
 									<Button className='datause-info-icon-button'>
 										<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
