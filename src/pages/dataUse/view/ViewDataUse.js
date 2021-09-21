@@ -62,7 +62,9 @@ const View = ({ ...props }) => {
 					{mockDataRelatedResource.map(a => (
 						<div>
 							<p className='badge-datause badge-tag'>{a.keywordType}</p>
-							<p className='badge-tag'>{a.keywords}</p>
+							{a.keywords.map(a => (
+								<p className='badge-tag'>{a}</p>
+							))}
 						</div>
 					))}
 				</Row>
