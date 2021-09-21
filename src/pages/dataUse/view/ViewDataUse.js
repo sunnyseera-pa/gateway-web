@@ -6,8 +6,6 @@ import SearchBar from '../../commonComponents/searchBar/SearchBar';
 import { Row, Container, Tab, Tabs, Button } from 'react-bootstrap';
 
 const View = ({ ...props }) => {
-	const [about, setAbout] = useState(false);
-	const [relatedResource, setRelatedResource] = useState(false);
 	const [searchBar] = useState(React.createRef());
 	const [searchString, setSearchString] = useState('');
 	const [showDrawer, setShowDrawer] = useState(false);
@@ -38,10 +36,10 @@ const View = ({ ...props }) => {
 		setShowDrawer(!showDrawer);
 	};
 
-	const aboutComp = () => setAbout(true);
-	const relatedResourcesComp = () => setRelatedResource(true);
-
 	const tabs = ['About', 'Discussion', 'Related resources', 'Collections'];
+
+	const mockDataAbout = Data.filter(a => a.tab === 'About');
+	const mockDataRelatedResource = Data.filter(a => a.tab === 'Related resources');
 
 	return (
 		<div>
@@ -54,13 +52,26 @@ const View = ({ ...props }) => {
 				doToggleDrawer={toggleDrawer}
 			/>
 			<Container className='datause-view'>
-				<Row className='datause-card'>Summary section</Row>
+				<Row className='datause-card'>
+					{mockDataAbout.map(a => (
+						<div>
+							<p className='black-20-semibold'>{a.title}</p>
+							<p className='black-16-semibold'>{a.org}</p>
+						</div>
+					))}
+					{mockDataRelatedResource.map(a => (
+						<div>
+							<p className='badge-datause badge-tag'>{a.keywordType}</p>
+							<p className='badge-tag'>{a.keywords}</p>
+						</div>
+					))}
+				</Row>
 
 				<Tabs defaultActiveKey='About' className='gray700-13 data-use-tabs'>
 					{tabs.map(tabName => (
 						<Tab eventKey={tabName} title={tabName}>
-							{tabName === 'About' && <About data={Data.filter(a => a.tab === 'About')} aboutComp={aboutComp} aboutSummary />}
-							{tabName === 'Related resources' && <RelatedResources data={Data.filter(a => a.tab === 'Related resources')} />}
+							{tabName === 'About' && <About data={mockDataAbout} />}
+							{tabName === 'Related resources' && <RelatedResources data={mockDataRelatedResource} />}
 						</Tab>
 					))}
 				</Tabs>
