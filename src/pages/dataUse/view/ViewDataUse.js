@@ -63,7 +63,9 @@ const View = ({ ...props }) => {
 						<div>
 							<p className='badge-datause badge-tag'>{a.keywordType}</p>
 							{a.keywords.map(a => (
-								<p className='badge-tag'>{a}</p>
+								<a href={`/search?search=&datasetfeatures=${a}&tab=Datasets`}>
+									<p className='badge-tag'>{a}</p>
+								</a>
 							))}
 						</div>
 					))}
