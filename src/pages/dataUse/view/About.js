@@ -610,7 +610,7 @@ const About = ({ data, aboutComp, aboutSummary }) => {
 				</Col>
 			</Row>
 			<Row className='datause-hidefields-button'>
-				<Button className='datause-emptyfields-button' onClick={() => (hide ? setHide(false) : setHide(true))}>
+				<Button className='datause-button' onClick={() => (hide ? setHide(false) : setHide(true))}>
 					{!hide ? 'Hide all empty fields (' + count + ')' : 'Show all empty fields (' + count + ')'}
 				</Button>
 			</Row>

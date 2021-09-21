@@ -78,8 +78,8 @@ const View = ({ ...props }) => {
 					))}
 				</Tabs>
 			</Container>
-			<Row className='datause-card'>
-				<Button>Add to collection</Button>
+			<Row className='datause-card datause-bottombanner'>
+				<Button className='datause-addcollection'>Add to collection</Button>
 			</Row>
 		</div>
 	);
