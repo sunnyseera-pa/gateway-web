@@ -98,7 +98,13 @@ const About = ({ data, aboutComp, aboutSummary }) => {
 														<SVGIcon name='personicon' width={10} height={10} fill={'#3db28c'} />
 													</span>
 												)}
-												{a.name}
+												{a.hdrUser ? (
+													<a href='/person/{id}' className='soft-black-14 '>
+														{a.name}
+													</a>
+												) : (
+													a.name
+												)}
 											</span>
 										))
 									) : (
