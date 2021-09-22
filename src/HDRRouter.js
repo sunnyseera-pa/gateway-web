@@ -34,6 +34,7 @@ import ErrorModal from './pages/commonComponents/errorModal/ErrorModal';
 import DatasetOnboarding from './pages/DatasetOnboarding/DatasetOnboarding';
 import { GuardedRoute } from './pages/commonComponents/GuardedRoute';
 import AdvancedSearchTAndCs from './pages/dashboard/AdvancedSearchTAndCs';
+import CohortPage from './pages/cohort/CohortPage';
 
 const baseURL = require('./pages/commonComponents/BaseURL').getURL();
 const urlEnv = require('./pages/commonComponents/BaseURL').getURLEnv();
@@ -232,6 +233,7 @@ class HDRRouter extends Component {
 						<GuardedRoute path='/course/edit/:courseID' component={AddEditCoursePage} userState={userState} />
 						<Route path='/course/:courseID' render={props => <CoursePage {...props} userState={userState} />} />
 						<Route path='/advanced-search-terms/' render={props => <AdvancedSearchTAndCs {...props} userState={userState} />} />
+						<Route path='/cohort/:cohortID' render={props => <CohortPage {...props} userState={userState} />} />
 						<Redirect to='/search?search=' />
 					</Switch>
 				</div>
