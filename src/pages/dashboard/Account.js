@@ -31,6 +31,7 @@ import { ReactComponent as CheckSVG } from '../../images/check.svg';
 import './Dashboard.scss';
 import DataUsePage from '../dataUse/DataUsePage';
 import AccountTeams from './AccountTeams';
+import DataUseUpload from '../dataUse/upload/DataUseUpload';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -96,6 +97,7 @@ class Account extends Component {
 		isSubmitting: false,
 		teamManagementInternalTab: 'Notifications',
 		accountUpdated: false,
+		showDataUseUploadPage: false,
 	};
 
 	constructor(props) {
@@ -452,6 +454,10 @@ class Account extends Component {
 		this.setState({ innertab: '' });
 	};
 
+	showDataUseUploadPage = () => {
+		this.setState({ showDataUseUploadPage: true });
+	};
+
 	render() {
 		const {
 			searchString,
@@ -470,6 +476,7 @@ class Account extends Component {
 			isSubmitting,
 			teamManagementTab,
 			accountUpdated,
+			showDataUseUploadPage,
 		} = this.state;
 
 		return (
@@ -709,7 +716,15 @@ class Account extends Component {
 
 								{tabId === 'dataaccessrequests' ? <DataAccessRequests userState={userState} team={team} alert={alert} /> : ''}
 
-								{tabId === 'datause' ? <DataUsePage userState={userState} team={team} /> : ''}
+								{tabId === 'datause' ? (
+									showDataUseUploadPage ? (
+										<DataUseUpload userState={userState} team={team} />
+									) : (
+										<DataUsePage userState={userState} team={team} onClickDataUseUpload={this.showDataUseUploadPage} />
+									)
+								) : (
+									''
+								)}
 
 								{tabId === 'collections' ? <AccountCollections userState={userState} /> : ''}
 
@@ -736,7 +751,15 @@ class Account extends Component {
 									</>
 								)}
 
-								{tabId === 'datause' ? <DataUsePage userState={userState} team={team} /> : ''}
+								{tabId === 'datause' ? (
+									showDataUseUploadPage ? (
+										<DataUseUpload userState={userState} team={team} />
+									) : (
+										<DataUsePage userState={userState} team={team} onClickDataUseUpload={this.showDataUseUploadPage} />
+									)
+								) : (
+									''
+								)}
 
 								{allowWorkflow && this.userHasRole(team, 'manager') && (
 									<>{tabId === 'workflows' ? <WorkflowDashboard userState={userState} team={team} /> : ''}</>

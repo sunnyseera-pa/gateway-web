@@ -6,7 +6,7 @@ import Pagination from './DataUsePagination';
 import Modal from './ArchiveModal';
 import './DataUse.scss';
 
-const DataUsePage = ({ userState }) => {
+const DataUsePage = ({ userState, onClickDataUseUpload }) => {
 	const [row, setRow] = useState([]);
 	const [currentPage, setCurrentPage] = useState(1);
 	const [rowsPerPage] = useState(2);
@@ -64,7 +64,9 @@ const DataUsePage = ({ userState }) => {
 					</Row>
 				</Col>
 				<Col md={2} className='datause-button-grid'>
-					<Button className='datause-button'>+ Upload data uses</Button>
+					<Button className='datause-button' onClick={onClickDataUseUpload}>
+						+ Upload data uses
+					</Button>
 				</Col>
 			</Row>
 			<Tabs defaultActiveKey={role === 'User' || custodianAcc ? 'Active' : 'Pending approval'} className='gray700-13 data-use-tabs'>
