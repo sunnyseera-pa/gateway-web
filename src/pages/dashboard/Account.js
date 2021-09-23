@@ -415,6 +415,7 @@ class Account extends Component {
 				activeKey: tab.tabId,
 				alert: !_.isEmpty(alert) ? alert : {},
 				activeAccordion,
+				showDataUseUploadPage: false,
 			});
 			// 6. push state
 			this.props.history.push({ pathname: window.location.pathname, search: `?tab=${tab.tabId}`, state: { team: tab.team } });
