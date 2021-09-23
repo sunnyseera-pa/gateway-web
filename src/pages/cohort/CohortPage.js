@@ -278,10 +278,10 @@ export const CohortPage = props => {
 														</Col>
 														<Col sm={10} className='gray800-14'>
 															<span>
-																<Uploader uploader={'Joan Admin'} />
+																<Uploader uploader={{ firstname: 'Joan Admin' }} />
 															</span>
 															<span>
-																<Uploader uploader={'Tanika patel'} />
+																<Uploader uploader={{ firstname: 'Tanika patel' }} />
 															</span>
 														</Col>
 													</Row>
@@ -307,13 +307,13 @@ export const CohortPage = props => {
 									</Tab>
 									<Tab eventKey='Related resources' title='Related resources'>
 										{/* <RelatedObject
-													relatedObject=''
-													objectType=''
-													activeLink={true}
-													showRelationshipAnswer={true}
-													datasetPublisher=''
-													datasetLogo=''
-												/> */}
+											relatedObject=''
+											objectType=''
+											activeLink=''
+											showRelationshipAnswer=''
+											datasetPublisher=''
+											datasetLogo=''
+										/> */}
 									</Tab>
 								</Tabs>
 							</div>
