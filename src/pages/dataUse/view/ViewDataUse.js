@@ -6,6 +6,7 @@ import SearchBar from '../../commonComponents/searchBar/SearchBar';
 import { Row, Container, Tab, Tabs, Button } from 'react-bootstrap';
 import SVGIcon from '../../../images/SVGIcon';
 import axios from 'axios';
+import { map } from 'lodash';
 
 var baseURL = require('../../commonComponents/BaseURL').getURL();
 
@@ -28,7 +29,6 @@ const View = ({ ...props }) => {
 	useEffect(() => {
 		axios.get(baseURL + '/api/v2/data-use-registers/614b43a51a819e12f93c54b7').then(res => {
 			setDataAPI(res.data);
-			console.log(res.data);
 		});
 	}, []);
 
@@ -52,7 +52,7 @@ const View = ({ ...props }) => {
 
 	const mockDataAbout = Data.filter(a => a.tab === 'About');
 	const mockDataRelatedResource = Data.filter(a => a.tab === 'Related resources');
-
+	console.log(dataAPI ? 'no' : dataAPI.map(a => a.keywords));
 	return (
 		<div>
 			<SearchBar
@@ -75,15 +75,15 @@ const View = ({ ...props }) => {
 							<SVGIcon name='datauseicon' width={12} height={12} fill={'#fff'} /> {dataAPI.type}
 						</span>
 					</div>
-					{mockDataRelatedResource.map(a => (
-						<div>
-							{a.keywords.map(a => (
+					<div>
+						{dataAPI &&
+							dataAPI.keywords &&
+							dataAPI.keywords.map(a => (
 								<a href={`/search?search=&datasetfeatures=${a}&tab=Datasets`} className='badge-tag badge-datause-bold'>
 									{a}
 								</a>
 							))}
-						</div>
-					))}
+					</div>
 				</Row>
 
 				<Tabs defaultActiveKey='About' className='gray700-13 data-use-tabs'>
