@@ -8,162 +8,11 @@ const About = ({ data, dataAPI }) => {
 	const [closedDataUse, setClosedDataUse] = useState(true);
 	const [hide, setHide] = useState(true);
 
-	const orgName = props => (
+	const tooltipDescriptions = ['a', 'b', 'c'];
+
+	const exampleTooltip = props => (
 		<Tooltip className='datause-info-icon-tooltip' {...props}>
-			The name of the legal entity that signs the contract to access the data.
-		</Tooltip>
-	);
-	const orgID = props => (
-		<Tooltip className='datause-info-icon-tooltip' {...props}>
-			A unique identifier for an organisation that is preferably an industry used standard such as Grid.ac
-		</Tooltip>
-	);
-	const orgSector = props => (
-		<Tooltip className='datause-info-icon-tooltip' {...props}>
-			Sector which the applicant(s) work falls under.
-		</Tooltip>
-	);
-	const appName = props => (
-		<Tooltip className='datause-info-icon-tooltip' {...props}>
-			The name of the Principal Investigator, as well as any other individuals that have been authorised to use the data.
-		</Tooltip>
-	);
-	const appID = props => (
-		<Tooltip className='datause-info-icon-tooltip' {...props}>
-			A unique identifier for the applicant that is preferably an industry used standard such as Grid.ac
-		</Tooltip>
-	);
-	const funderSponsors = props => (
-		<Tooltip className='datause-info-icon-tooltip' {...props}>
-			The name of any funders or sponsors involved in the project.
-		</Tooltip>
-	);
-	const accreditedStatus = props => (
-		<Tooltip className='datause-info-icon-tooltip' {...props}>
-			The accreditation status of the Principal Investigator/applicant, as defined by the ONS Research Code of Practice and Accreditation
-			criteria.
-		</Tooltip>
-	);
-	const subLicence = props => (
-		<Tooltip className='datause-info-icon-tooltip' {...props}>
-			Identifies whether there are any permissions for the applicant to share the data beyond the named parties.
-		</Tooltip>
-	);
-	const projectID = props => (
-		<Tooltip className='datause-info-icon-tooltip' {...props}>
-			A unique identifier for the project that is preferably an industry used standard, such as IRAS ID. However for non-research projects,
-			a unique reference number created by the data custodian on receipt of the application is sufficient.
-		</Tooltip>
-	);
-	const projectTitle = props => (
-		<Tooltip className='datause-info-icon-tooltip' {...props}>
-			The title of the project/research study/request that the applicant is investigating through the use of health data.
-		</Tooltip>
-	);
-	const laySummary = props => (
-		<Tooltip className='datause-info-icon-tooltip' {...props}>
-			A concise and clear description of the project, (e.g. as required by URKI in funding applications). It should outline the problem,
-			objectives and expected outcomes in language that is understandable to the general public and contain a maximum of 300 words.
-		</Tooltip>
-	);
-	const publicBenefitStatement = props => (
-		<Tooltip className='datause-info-icon-tooltip' {...props}>
-			A description in plain English of the anticipated outcomes, or impact of project on the general public.
-		</Tooltip>
-	);
-	const requestType = props => (
-		<Tooltip className='datause-info-icon-tooltip' {...props}>
-			This categorises the main purpose of the data being shared.
-		</Tooltip>
-	);
-	const technicalSummary = props => (
-		<Tooltip className='datause-info-icon-tooltip' {...props}>
-			A summary of the proposed research, in a manner that is suitable for a specialist reader.
-		</Tooltip>
-	);
-	const otherApprovalCommittees = props => (
-		<Tooltip className='datause-info-icon-tooltip' {...props}>
-			Reference to other decision-making bodies that the project has already been authorised by.
-		</Tooltip>
-	);
-	const projectStartDate = props => (
-		<Tooltip className='datause-info-icon-tooltip' {...props}>
-			The date the project is scheduled to start or actual start date.
-		</Tooltip>
-	);
-	const projectEndDate = props => (
-		<Tooltip className='datause-info-icon-tooltip' {...props}>
-			The date the project is scheduled to finish or actual end date.
-		</Tooltip>
-	);
-	const latestApprovalDate = props => (
-		<Tooltip className='datause-info-icon-tooltip' {...props}>
-			The last date the data access request for this project was approved by a data custodian.
-		</Tooltip>
-	);
-	const datasetNames = props => (
-		<Tooltip className='datause-info-icon-tooltip' {...props}>
-			The name of the dataset(s) being accessed.
-		</Tooltip>
-	);
-	const dataSensitivityLevel = props => (
-		<Tooltip className='datause-info-icon-tooltip' {...props}>
-			The level of identifiability of the data being accessed, as defined by Understanding Patient Data. In the case of multiple datasets
-			being accessed, the sensitivity level for the dataset with the most sensitive data should be used: Personally Identifiable >
-			De-Personalised > Anonymous
-		</Tooltip>
-	);
-	const legalBasis = props => (
-		<Tooltip className='datause-info-icon-tooltip' {...props}>
-			The legal basis that allows the applicant to lawfully process personally identifiable data, as specified by NHS Digital.
-		</Tooltip>
-	);
-	const commonLawConfidentiality = props => (
-		<Tooltip className='datause-info-icon-tooltip' {...props}>
-			In the application of the Common Law Duty of Confidentiality there are 2 options that enable a release: Consent (Reasonable
-			Expectation) or Section 251 NHS Act 2006.
-		</Tooltip>
-	);
-	const nationalDatalOptOut = props => (
-		<Tooltip className='datause-info-icon-tooltip' {...props}>
-			Specifies whether the preference for people to opt-out of their confidential patient information being used for secondary use has been
-			applied to the data prior to release.
-		</Tooltip>
-	);
-	const requestFrequency = props => (
-		<Tooltip className='datause-info-icon-tooltip' {...props}>
-			Determines whether this a 'one-off' request or a recurring dataset to be provided over a specific time period.
-		</Tooltip>
-	);
-	const dataProcessing = props => (
-		<Tooltip className='datause-info-icon-tooltip' {...props}>
-			Details of how the data requested will be processed (including how the data will be analysed or linked to other datasets).
-		</Tooltip>
-	);
-	const confidentialDataUse = props => (
-		<Tooltip className='datause-info-icon-tooltip' {...props}>
-			A description of the specific patient identifiable fields that have been included in the dataset(s) being accessed.
-		</Tooltip>
-	);
-	const releaseAccessDate = props => (
-		<Tooltip className='datause-info-icon-tooltip' {...props}>
-			The date the data access was granted and active research started.
-		</Tooltip>
-	);
-	const trustedResearchEnv = props => (
-		<Tooltip className='datause-info-icon-tooltip' {...props}>
-			These are highly secure spaces for researchers to access sensitive data (also known as Data Safe Havens). ‘Other’ represents any other
-			location that has been used for data access.
-		</Tooltip>
-	);
-	const dataProcessEnahncePrivacy = props => (
-		<Tooltip className='datause-info-icon-tooltip' {...props}>
-			Description of the tools or software used to reduce level of identifiable data being shared.
-		</Tooltip>
-	);
-	const linkToResearchOutputs = props => (
-		<Tooltip className='datause-info-icon-tooltip' {...props}>
-			A URL link to any academic or non-academic research outputs, as they become available, including code used.
+			Example tooltip
 		</Tooltip>
 	);
 
@@ -172,26 +21,25 @@ const About = ({ data, dataAPI }) => {
 	}, 0);
 
 	console.log(dataAPI);
-
 	return (
 		<>
-			{data.map(a => (
+			{dataAPI.map(a => (
 				<>
 					<Container className='datause-card'>
 						<p className='black-14-bold'>Safe people</p>
-						{!a.org > 0 && hide ? (
+						{!a.organisationName > 0 && hide ? (
 							''
 						) : (
 							<Row className='soft-black-14 datause-view-grid'>
 								<Col>Organisation name</Col>
-								<OverlayTrigger placement='top' overlay={orgName}>
+								<OverlayTrigger placement='top' overlay={exampleTooltip}>
 									<Button className='datause-info-icon-button'>
 										<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
 									</Button>
 								</OverlayTrigger>
 								<Col>
-									{a.org.length > 0 ? (
-										<span className='badge-tag badge-datause-bold'>{a.org}</span>
+									{a.organisationName.length > 0 ? (
+										<span className='badge-tag badge-datause-bold'>{a.organisationName}</span>
 									) : (
 										<p className='gray800-14-opacity'>Not specified</p>
 									)}
@@ -203,7 +51,7 @@ const About = ({ data, dataAPI }) => {
 						) : (
 							<Row className='soft-black-14 datause-view-grid'>
 								<Col>Organisation ID</Col>
-								<OverlayTrigger placement='top' overlay={orgID}>
+								<OverlayTrigger placement='top' overlay={exampleTooltip}>
 									<Button className='datause-info-icon-button'>
 										<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
 									</Button>
@@ -216,7 +64,7 @@ const About = ({ data, dataAPI }) => {
 						) : (
 							<Row className='soft-black-14 datause-view-grid'>
 								<Col>Organisation sector</Col>
-								<OverlayTrigger placement='top' overlay={orgSector}>
+								<OverlayTrigger placement='top' overlay={exampleTooltip}>
 									<Button className='datause-info-icon-button'>
 										<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
 									</Button>
@@ -235,7 +83,7 @@ const About = ({ data, dataAPI }) => {
 						) : (
 							<Row className='soft-black-14 datause-view-grid'>
 								<Col>Applicant name(s)</Col>
-								<OverlayTrigger placement='top' overlay={appName}>
+								<OverlayTrigger placement='top' overlay={exampleTooltip}>
 									<Button className='datause-info-icon-button'>
 										<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
 									</Button>
@@ -270,7 +118,7 @@ const About = ({ data, dataAPI }) => {
 						) : (
 							<Row className='soft-black-14 datause-view-grid'>
 								<Col>Applicant ID</Col>
-								<OverlayTrigger placement='top' overlay={appID}>
+								<OverlayTrigger placement='top' overlay={exampleTooltip}>
 									<Button className='datause-info-icon-button'>
 										<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
 									</Button>
@@ -286,7 +134,7 @@ const About = ({ data, dataAPI }) => {
 						) : (
 							<Row className='soft-black-14 datause-view-grid'>
 								<Col>Funders/Sponsor</Col>
-								<OverlayTrigger placement='top' overlay={funderSponsors}>
+								<OverlayTrigger placement='top' overlay={exampleTooltip}>
 									<Button className='datause-info-icon-button'>
 										<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
 									</Button>
@@ -306,7 +154,7 @@ const About = ({ data, dataAPI }) => {
 						) : (
 							<Row className='soft-black-14 datause-view-grid'>
 								<Col>DEA accredited researcher status</Col>
-								<OverlayTrigger placement='top' overlay={accreditedStatus}>
+								<OverlayTrigger placement='top' overlay={exampleTooltip}>
 									<Button className='datause-info-icon-button'>
 										<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
 									</Button>
@@ -326,7 +174,7 @@ const About = ({ data, dataAPI }) => {
 						) : (
 							<Row className='soft-black-14 datause-view-grid'>
 								<Col>Sub-licence arrangements (if any)?</Col>
-								<OverlayTrigger placement='top' overlay={subLicence}>
+								<OverlayTrigger placement='top' overlay={exampleTooltip}>
 									<Button className='datause-info-icon-button'>
 										<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
 									</Button>
@@ -344,7 +192,7 @@ const About = ({ data, dataAPI }) => {
 						) : (
 							<Row className='soft-black-14 datause-view-grid'>
 								<Col>Project ID</Col>
-								<OverlayTrigger placement='top' overlay={projectID}>
+								<OverlayTrigger placement='top' overlay={exampleTooltip}>
 									<Button className='datause-info-icon-button'>
 										<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
 									</Button>
@@ -359,7 +207,7 @@ const About = ({ data, dataAPI }) => {
 						) : (
 							<Row className='soft-black-14 datause-view-grid'>
 								<Col>Project title</Col>
-								<OverlayTrigger placement='top' overlay={projectTitle}>
+								<OverlayTrigger placement='top' overlay={exampleTooltip}>
 									<Button className='datause-info-icon-button'>
 										<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
 									</Button>
@@ -385,7 +233,7 @@ const About = ({ data, dataAPI }) => {
 										/>
 									</button>
 								</Col>
-								<OverlayTrigger placement='top' overlay={laySummary}>
+								<OverlayTrigger placement='top' overlay={exampleTooltip}>
 									<Button className='datause-info-icon-button'>
 										<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
 									</Button>
@@ -421,7 +269,7 @@ const About = ({ data, dataAPI }) => {
 										/>
 									</button>
 								</Col>
-								<OverlayTrigger placement='top' overlay={publicBenefitStatement}>
+								<OverlayTrigger placement='top' overlay={exampleTooltip}>
 									<Button className='datause-info-icon-button'>
 										<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
 									</Button>
@@ -444,7 +292,7 @@ const About = ({ data, dataAPI }) => {
 						) : (
 							<Row className='soft-black-14 datause-view-grid'>
 								<Col>Request category type</Col>
-								<OverlayTrigger placement='top' overlay={requestType}>
+								<OverlayTrigger placement='top' overlay={exampleTooltip}>
 									<Button className='datause-info-icon-button'>
 										<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
 									</Button>
@@ -463,7 +311,7 @@ const About = ({ data, dataAPI }) => {
 						) : (
 							<Row className='soft-black-14 datause-view-grid'>
 								<Col>Technical summary</Col>
-								<OverlayTrigger placement='top' overlay={technicalSummary}>
+								<OverlayTrigger placement='top' overlay={exampleTooltip}>
 									<Button className='datause-info-icon-button'>
 										<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
 									</Button>
@@ -483,7 +331,7 @@ const About = ({ data, dataAPI }) => {
 						) : (
 							<Row className='soft-black-14 datause-view-grid'>
 								<Col>Other approval committees</Col>
-								<OverlayTrigger placement='top' overlay={otherApprovalCommittees}>
+								<OverlayTrigger placement='top' overlay={exampleTooltip}>
 									<Button className='datause-info-icon-button'>
 										<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
 									</Button>
@@ -503,7 +351,7 @@ const About = ({ data, dataAPI }) => {
 						) : (
 							<Row className='soft-black-14 datause-view-grid'>
 								<Col>Project start date</Col>
-								<OverlayTrigger placement='top' overlay={projectStartDate}>
+								<OverlayTrigger placement='top' overlay={exampleTooltip}>
 									<Button className='datause-info-icon-button'>
 										<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
 									</Button>
@@ -523,7 +371,7 @@ const About = ({ data, dataAPI }) => {
 						) : (
 							<Row className='soft-black-14 datause-view-grid'>
 								<Col>Project end date</Col>
-								<OverlayTrigger placement='top' overlay={projectEndDate}>
+								<OverlayTrigger placement='top' overlay={exampleTooltip}>
 									<Button className='datause-info-icon-button'>
 										<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
 									</Button>
@@ -543,7 +391,7 @@ const About = ({ data, dataAPI }) => {
 						) : (
 							<Row className='soft-black-14 datause-view-grid'>
 								<Col>Latest approval date</Col>
-								<OverlayTrigger placement='top' overlay={latestApprovalDate}>
+								<OverlayTrigger placement='top' overlay={exampleTooltip}>
 									<Button className='datause-info-icon-button'>
 										<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
 									</Button>
@@ -565,7 +413,7 @@ const About = ({ data, dataAPI }) => {
 						) : (
 							<Row className='soft-black-14'>
 								<Col>Dataset(s) name</Col>
-								<OverlayTrigger placement='top' overlay={datasetNames}>
+								<OverlayTrigger placement='top' overlay={exampleTooltip}>
 									<Button className='datause-info-icon-button'>
 										<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
 									</Button>
@@ -580,7 +428,7 @@ const About = ({ data, dataAPI }) => {
 						) : (
 							<Row className='soft-black-14 datause-view-grid'>
 								<Col>Data sensitivity level</Col>
-								<OverlayTrigger placement='top' overlay={dataSensitivityLevel}>
+								<OverlayTrigger placement='top' overlay={exampleTooltip}>
 									<Button className='datause-info-icon-button'>
 										<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
 									</Button>
@@ -599,7 +447,7 @@ const About = ({ data, dataAPI }) => {
 						) : (
 							<Row className='soft-black-14 datause-view-grid'>
 								<Col>Legal basis for provision of data</Col>
-								<OverlayTrigger placement='top' overlay={legalBasis}>
+								<OverlayTrigger placement='top' overlay={exampleTooltip}>
 									<Button className='datause-info-icon-button'>
 										<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
 									</Button>
@@ -612,7 +460,7 @@ const About = ({ data, dataAPI }) => {
 						) : (
 							<Row className='soft-black-14 datause-view-grid'>
 								<Col>Common law of duty of confidentiality</Col>
-								<OverlayTrigger placement='top' overlay={commonLawConfidentiality}>
+								<OverlayTrigger placement='top' overlay={exampleTooltip}>
 									<Button className='datause-info-icon-button'>
 										<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
 									</Button>
@@ -631,7 +479,7 @@ const About = ({ data, dataAPI }) => {
 						) : (
 							<Row className='soft-black-14 datause-view-grid'>
 								<Col>National data opt-out applied?</Col>
-								<OverlayTrigger placement='top' overlay={nationalDatalOptOut}>
+								<OverlayTrigger placement='top' overlay={exampleTooltip}>
 									<Button className='datause-info-icon-button'>
 										<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
 									</Button>
@@ -646,7 +494,7 @@ const About = ({ data, dataAPI }) => {
 						) : (
 							<Row className='soft-black-14 datause-view-grid'>
 								<Col>Request frequency</Col>
-								<OverlayTrigger placement='top' overlay={requestFrequency}>
+								<OverlayTrigger placement='top' overlay={exampleTooltip}>
 									<Button className='datause-info-icon-button'>
 										<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
 									</Button>
@@ -670,7 +518,7 @@ const About = ({ data, dataAPI }) => {
 										<SVGIcon width='20px' height='20px' name='chevronbottom' fill={'#475da7'} className={closedDataUse ? 'flip180' : ''} />
 									</button>
 								</Col>
-								<OverlayTrigger placement='top' overlay={dataProcessing}>
+								<OverlayTrigger placement='top' overlay={exampleTooltip}>
 									<Button className='datause-info-icon-button'>
 										<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
 									</Button>
@@ -683,7 +531,7 @@ const About = ({ data, dataAPI }) => {
 						) : (
 							<Row className='soft-black-14 datause-view-grid'>
 								<Col>Description of the confidential data being used</Col>
-								<OverlayTrigger placement='top' overlay={confidentialDataUse}>
+								<OverlayTrigger placement='top' overlay={exampleTooltip}>
 									<Button className='datause-info-icon-button'>
 										<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
 									</Button>
@@ -702,7 +550,7 @@ const About = ({ data, dataAPI }) => {
 						) : (
 							<Row className='soft-black-14 datause-view-grid'>
 								<Col>Release/Access date</Col>
-								<OverlayTrigger placement='top' overlay={releaseAccessDate}>
+								<OverlayTrigger placement='top' overlay={exampleTooltip}>
 									<Button className='datause-info-icon-button'>
 										<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
 									</Button>
@@ -724,7 +572,7 @@ const About = ({ data, dataAPI }) => {
 						) : (
 							<Row className='soft-black-14 datause-view-grid'>
 								<Col>Trusted research environment or any other specified location</Col>
-								<OverlayTrigger placement='top' overlay={trustedResearchEnv}>
+								<OverlayTrigger placement='top' overlay={exampleTooltip}>
 									<Button className='datause-info-icon-button'>
 										<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
 									</Button>
@@ -744,7 +592,7 @@ const About = ({ data, dataAPI }) => {
 						) : (
 							<Row className='soft-black-14 datause-view-grid'>
 								<Col>How has data been processed to enhance privacy?</Col>
-								<OverlayTrigger placement='top' overlay={dataProcessEnahncePrivacy}>
+								<OverlayTrigger placement='top' overlay={exampleTooltip}>
 									<Button className='datause-info-icon-button'>
 										<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
 									</Button>
@@ -766,7 +614,7 @@ const About = ({ data, dataAPI }) => {
 						) : (
 							<Row className='soft-black-14'>
 								<Col>Link to research outputs</Col>
-								<OverlayTrigger placement='top' overlay={linkToResearchOutputs}>
+								<OverlayTrigger placement='top' overlay={exampleTooltip}>
 									<Button className='datause-info-icon-button'>
 										<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
 									</Button>

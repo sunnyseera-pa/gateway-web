@@ -52,7 +52,6 @@ const DataUsePage = ({ userState }) => {
 	const role = userState.map(roleType => roleType.role).toString();
 	const custodianAcc = userState.map(groups => groups.teams.length > 0);
 
-	console.log(userState);
 	return (
 		<Container>
 			<Row className='datause-card'>

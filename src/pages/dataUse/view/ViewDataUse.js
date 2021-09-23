@@ -1,25 +1,36 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Data from './Data.json';
 import About from './About';
 import RelatedResources from './RelatedResourcesDataUse';
 import SearchBar from '../../commonComponents/searchBar/SearchBar';
 import { Row, Container, Tab, Tabs, Button } from 'react-bootstrap';
 import SVGIcon from '../../../images/SVGIcon';
+import axios from 'axios';
+
+var baseURL = require('../../commonComponents/BaseURL').getURL();
 
 const View = ({ ...props }) => {
 	const [searchBar] = useState(React.createRef());
 	const [searchString, setSearchString] = useState('');
 	const [showDrawer, setShowDrawer] = useState(false);
+	const [dataAPI, setDataAPI] = useState([]);
 	const [userState] = useState(
 		props.userState || [
 			{
 				loggedIn: false,
-				role: 'User',
+				role: 'user',
 				id: null,
 				name: null,
 			},
 		]
 	);
+
+	useEffect(() => {
+		axios.get(baseURL + '/api/v2/data-use-registers/614b43a51a819e12f93c54b7').then(res => {
+			setDataAPI(res.data);
+			console.log(res.data);
+		});
+	}, []);
 
 	const doSearch = e => {
 		//fires on enter on searchbar
@@ -54,17 +65,18 @@ const View = ({ ...props }) => {
 			/>
 			<Container className='datause-view'>
 				<Row className='datause-card'>
-					{mockDataAbout.map(a => (
-						<div>
-							<p className='black-20-semibold'>{a.title}</p>
-							<p className='black-16-semibold'>{a.org}</p>
-						</div>
-					))}
+					<div>
+						<p className='black-20-semibold'>{dataAPI.projectTitle}</p>
+						<p className='black-16-semibold'>{dataAPI.organisationName}</p>
+					</div>
+
+					<div>
+						<span className='badge-datause badge-tag badge-datause-bold'>
+							<SVGIcon name='datauseicon' width={12} height={12} fill={'#fff'} /> {dataAPI.type}
+						</span>
+					</div>
 					{mockDataRelatedResource.map(a => (
 						<div>
-							<span className='badge-datause badge-tag badge-datause-bold'>
-								<SVGIcon name='datauseicon' width={12} height={12} fill={'#fff'} /> {a.keywordType}
-							</span>
 							{a.keywords.map(a => (
 								<a href={`/search?search=&datasetfeatures=${a}&tab=Datasets`} className='badge-tag badge-datause-bold'>
 									{a}
@@ -77,7 +89,7 @@ const View = ({ ...props }) => {
 				<Tabs defaultActiveKey='About' className='gray700-13 data-use-tabs'>
 					{tabs.map(tabName => (
 						<Tab eventKey={tabName} title={tabName}>
-							{tabName === 'About' && <About data={mockDataAbout} />}
+							{tabName === 'About' && <About data={mockDataAbout} dataAPI={dataAPI} />}
 							{tabName === 'Related resources' && <RelatedResources data={mockDataRelatedResource} />}
 						</Tab>
 					))}
