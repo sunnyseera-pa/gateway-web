@@ -1,0 +1,13 @@
+@import '../../css/variables';
+
+.alertLink,
+.alertLink:hover {
+	color: #856505;
+	text-decoration: underline;
+	font-weight: bold;
+}
+
+.versionNumber {
+	color: $purple;
+	margin-right: 5px;
+}

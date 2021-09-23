@@ -2,22 +2,17 @@ import React, { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import * as Sentry from '@sentry/react';
 import { Container, Row, Col, Tabs, Tab, Alert, Button, Accordion } from 'react-bootstrap';
-import RelatedObject from '../commonComponents/relatedObject/RelatedObject';
 import NotFound from '../commonComponents/NotFound';
 import SearchBar from '../commonComponents/searchBar/SearchBar';
 import Loading from '../commonComponents/Loading';
 import Uploader from '../commonComponents/Uploader';
 import SVGIcon from '../../images/SVGIcon';
 import DiscourseTopic from '../discourse/DiscourseTopic';
-import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
-import UserMessages from '../commonComponents/userMessages/UserMessages';
 import ActionBar from '../commonComponents/actionbar/ActionBar';
-import ResourcePageButtons from '../commonComponents/resourcePageButtons/ResourcePageButtons';
 import ErrorModal from '../commonComponents/errorModal/ErrorModal';
-import CollectionCard from '../commonComponents/collectionCard/CollectionCard';
-import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
 import googleAnalytics from '../../tracking';
 import CohortDiscoveryBanner from '../dataset/components/CohortDiscoveryBanner';
+import './CohortPage.scss';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -92,16 +87,21 @@ export const CohortPage = props => {
 					userState={userState}
 				/>
 				<Container className='margin-bottom-48'>
-					<Row className=''>
+					<Row className='mt-2'>
 						<Col sm={1} lg={1} />
 						<Col sm={10} lg={10}>
 							<Alert variant='warning' className='mt-3' data-test-id='project-pending-banner'>
 								This is an old version of this cohort.
+								<span className='float-right'>
+									<a href='/' className='alertLink'>
+										Go to the latest version
+									</a>
+								</span>
 							</Alert>
 						</Col>
 					</Row>
 
-					<Row className='mt-4'>
+					<Row className='mt-2'>
 						<Col sm={1} lg={1} />
 						<Col sm={10} lg={10}>
 							<div className='rectangle'>
@@ -112,8 +112,8 @@ export const CohortPage = props => {
 								</Row>
 								<Row className='margin-top-16'>
 									<Col xs={12}>
-										<span className='badge-project'>
-											<SVGIcon name='newestprojecticon' fill={'#472505'} className='badgeSvg mr-2' viewBox='-2 -2 22 22' />
+										<span className='badge-cohort'>
+											<SVGIcon name='dashboard' fill={'#472505'} className='badgeSvg mr-2' viewBox='-2 -2 22 22' />
 											<span>Cohort</span>
 										</span>
 										<a href='/search?search=&tab=Projects&projectcategories='>
@@ -140,13 +140,13 @@ export const CohortPage = props => {
 						<Col sm={10} lg={10}>
 							<div>
 								<Tabs
-									className='tabsBackground gray700-13 margin-bottom-16'
+									className='tabsBackground gray700-13 margin-bottom-8'
 									onSelect={key => {
 										googleAnalytics.recordVirtualPageView(`${key} tab`);
 										googleAnalytics.recordEvent('Projects', `Clicked ${key} tab`, `Viewing ${key}`);
 									}}>
 									<Tab eventKey='About' title={'About'}>
-										<Row className='mt-2'>
+										<Row>
 											<Col sm={12} lg={12}>
 												<div className='rectangle'>
 													<Row className='gray800-14-bold'>
@@ -201,14 +201,25 @@ export const CohortPage = props => {
 																		<SVGIcon
 																			name='chevronbottom'
 																			fill={'#475da7'}
-																			style={{ width: '18px', height: '18px', paddingLeft: '4px' }}
+																			style={{ width: '18px', height: '18px', paddingLeft: '4px', marginTop: '-2px' }}
 																			className={flagClosed === true ? 'svg-24' : 'svg-24 flipSVG'}
 																		/>
 																	</div>
 																</Accordion.Toggle>
 															</Col>
 															<Col sm={10} data-test-id='link' className='gray800-14'>
-																<div className='box'>
+																<div>
+																	<>
+																		<a
+																			href='!#'
+																			className='version-list'
+																			onClick={e => {
+																				e.stopPropagation();
+																				window.location.href = `/dataset-onboarding/${1}`;
+																			}}>
+																			<span className='versionNumber'>2.0</span> Additional phenotypes included
+																		</a>
+																	</>
 																	<Accordion.Collapse eventKey='0' style={{ paddingRight: '20px' }}>
 																		<>
 																			<>
@@ -219,7 +230,7 @@ export const CohortPage = props => {
 																						e.stopPropagation();
 																						window.location.href = `/dataset-onboarding/${1}`;
 																					}}>
-																					2.0 Additional phenotypes included
+																					<span className='versionNumber'>1.3</span> Fixed typo on header
 																				</a>
 																			</>
 																			<>
@@ -230,7 +241,7 @@ export const CohortPage = props => {
 																						e.stopPropagation();
 																						window.location.href = `/dataset-onboarding/${1}`;
 																					}}>
-																					1.3 Fixed typo on header
+																					<span className='versionNumber'>1.2</span>
 																				</a>
 																			</>
 																			<>
@@ -241,7 +252,7 @@ export const CohortPage = props => {
 																						e.stopPropagation();
 																						window.location.href = `/dataset-onboarding/${1}`;
 																					}}>
-																					1.2
+																					<span className='versionNumber'>1.1</span> Added uploaders
 																				</a>
 																			</>
 																			<>
@@ -252,18 +263,7 @@ export const CohortPage = props => {
 																						e.stopPropagation();
 																						window.location.href = `/dataset-onboarding/${1}`;
 																					}}>
-																					1.1 Added uploaders
-																				</a>
-																			</>
-																			<>
-																				<a
-																					href='!#'
-																					className='version-list'
-																					onClick={e => {
-																						e.stopPropagation();
-																						window.location.href = `/dataset-onboarding/${1}`;
-																					}}>
-																					1.0
+																					<span className='versionNumber'>1.0</span>
 																				</a>
 																			</>
 																		</>
@@ -288,11 +288,17 @@ export const CohortPage = props => {
 												</div>
 											</Col>
 										</Row>
+
+										<Row className='mt-1'>
+											<Col sm={12} lg={12}>
+												<CohortDiscoveryBanner userProps={' '} />
+											</Col>
+										</Row>
 									</Tab>
 
 									<Tab eventKey='Datasets' title='Datasets'>
 										<>
-											<NotFound text='This project appears on the collections below. A collection is a group of resources on the same theme.' />
+											<NotFound text='' />
 
 											<Row>
 												<Col sm={12} md={12} lg={6} className='flexCenter'>
@@ -317,22 +323,25 @@ export const CohortPage = props => {
 									</Tab>
 								</Tabs>
 							</div>
-
-							<CohortDiscoveryBanner userProps={' '} />
 						</Col>
 						<Col sm={1} lg={1} />
 					</Row>
 				</Container>
 
-				{/* <SideDrawer open={showDrawer} closed={toggleDrawer}>
-					<UserMessages userState={userState[0]} closed={toggleDrawer} toggleModal={toggleModal} drawerIsOpen={showDrawer} />
-				</SideDrawer> */}
-
-				{/* <ActionBar userState={userState}>
-					<ResourcePageButtons data='' userState={userState} />
-				</ActionBar> */}
-
-				{/* <DataSetModal open={showModal} context={context} closed={toggleModal} userState={userState[0]} /> */}
+				<ActionBar userState={props.userState}>
+					<div className='floatRight'>
+						<Button
+							data-test-id='add-resource'
+							onClick={() => {
+								// relatedResourcesRef.current.showModal();
+								googleAnalytics.recordVirtualPageView('Related resources modal');
+							}}
+							variant='white'
+							className='techDetailButton mr-2'>
+							Create a new version
+						</Button>
+					</div>
+				</ActionBar>
 			</div>
 		</Sentry.ErrorBoundary>
 	);
