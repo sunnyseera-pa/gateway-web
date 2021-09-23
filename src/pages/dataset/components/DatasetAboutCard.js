@@ -84,7 +84,7 @@ class DatasetAboutCard extends React.Component {
 									) : (
 										<AboutCardElement
 											label={'Creation date'}
-											description={v2data.issued}
+											description={v2data.issued.substring(0, 10)}
 											tooltip={'Date when the information about this dataset was added to our database.'}
 										/>
 									)}
@@ -93,7 +93,7 @@ class DatasetAboutCard extends React.Component {
 									) : (
 										<AboutCardElement
 											label={'Last updated '}
-											description={v2data.modified}
+											description={v2data.modified.substring(0, 10)}
 											tooltip={'The last date when the information about this dataset was updated'}
 										/>
 									)}
