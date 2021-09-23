@@ -32,13 +32,14 @@ import { ReactComponent as CheckSVG } from '../../images/check.svg';
 import './Dashboard.scss';
 import ActivityLog from '../DataAccessRequest/components/ActivityLog/ActivityLog';
 import AccountTeams from './AccountTeams';
+import googleAnalytics from '../../tracking';
 
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
 	<a
-		href=''
+		href='javascript:void(0)'
 		ref={ref}
 		onClick={e => {
 			e.preventDefault();
@@ -305,7 +306,7 @@ class Account extends Component {
 				return filterPublishers.map((pub, index) => {
 					return (
 						<>
-							{index == 0 ? <hr /> : ''}
+							{index === 0 ? <hr /> : ''}
 							<Dropdown.Item
 								className='gray700-13'
 								onClick={e => {
@@ -380,6 +381,7 @@ class Account extends Component {
 	}
 
 	toggleNav = (tabId = '') => {
+		googleAnalytics.recordVirtualPageView(tabId);
 		let {
 			activeAccordion,
 			alert,
@@ -411,7 +413,7 @@ class Account extends Component {
 						else tab.tabId = 'teamManagement';
 					}
 				}
-			} else if (localStorage.getItem('HDR_TEAM') == '') localStorage.setItem('HDR_TEAM', 'user');
+			} else if (localStorage.getItem('HDR_TEAM') === '') localStorage.setItem('HDR_TEAM', 'user');
 			// 5. set state
 			this.setState({
 				tabId: tab.tabId,

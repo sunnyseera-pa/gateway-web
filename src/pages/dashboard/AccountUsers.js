@@ -8,8 +8,6 @@ import NotFound from '../commonComponents/NotFound';
 import Loading from '../commonComponents/Loading';
 import './Dashboard.scss';
 
-import { initGA } from '../../tracking';
-
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
 class AccountUsers extends React.Component {
@@ -31,7 +29,6 @@ class AccountUsers extends React.Component {
 	};
 
 	componentDidMount() {
-		initGA('UA-166025838-1');
 		this.doUsersCall();
 	}
 
@@ -171,6 +168,8 @@ class AccountUsers extends React.Component {
 											)}
 										</div>
 									);
+								default:
+									return userCount <= 0;
 							}
 						})()}
 					</Col>

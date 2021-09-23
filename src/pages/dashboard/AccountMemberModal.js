@@ -1,5 +1,4 @@
 import React, { Fragment } from 'react';
-import _ from 'lodash';
 import { Col, Modal, Row } from 'react-bootstrap';
 import { ReactComponent as CloseButtonSvg } from '../../images/close-alt.svg';
 import axios from 'axios';

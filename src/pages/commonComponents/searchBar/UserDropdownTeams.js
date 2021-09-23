@@ -5,7 +5,7 @@ import { ReactComponent as ChevronBottom } from '../../../images/chevron-bottom.
 
 const CustomToggleInner = React.forwardRef(({ children, onClick }, ref) => (
 	<a
-		href=''
+		href='javascript:void(0)'
 		ref={ref}
 		onClick={e => {
 			e.preventDefault();

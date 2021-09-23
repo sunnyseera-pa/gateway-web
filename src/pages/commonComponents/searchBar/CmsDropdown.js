@@ -11,7 +11,7 @@ const local = 'local';
 
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
 	<a
-		href=''
+		href='javascript:void(0)'
 		ref={ref}
 		className='cmsDropdownTitle'
 		onClick={e => {

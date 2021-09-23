@@ -21,6 +21,7 @@ import { ReactComponent as ChevronBottom } from '../../../images/chevron-bottom.
 import UserDropdownItems from './UserDropdownItems';
 import UserDropdownTeams from './UserDropdownTeams';
 import UatBanner from '../uatBanner/UatBanner';
+import googleAnalytics from '../../../tracking';
 
 import CmsDropdown from './CmsDropdown';
 
@@ -29,9 +30,10 @@ const urlEnv = require('../BaseURL').getURLEnv();
 
 const CustomToggle = React.forwardRef(({ children, onClick, subToggle }, ref) => (
 	<a
-		href=''
+		href='javascript:void(0)'
 		ref={ref}
 		onClick={e => {
+			googleAnalytics.recordEvent('Search bar', 'Opened user notifications', 'Clicked search bar notification icon');
 			e.preventDefault();
 			onClick(e);
 		}}
@@ -338,12 +340,23 @@ class SearchBar extends React.Component {
 								</div>
 
 								<div className='navBarLinkSpacing'>
-									<a href={cmsURL + '/pages/latest-news'} className='black-14 cmsDropdownTitle'>
+									<a
+										href={cmsURL + '/pages/latest-news'}
+										className='black-14 cmsDropdownTitle'
+										onClick={() => {
+											googleAnalytics.recordEvent('Search bar', 'Navigated to latest news', 'Clicked search bar navigation link');
+										}}>
 										News
 									</a>
 								</div>
 								<div className='navBarLinkSpacing'>
-									<a href={communityLink} className='black-14 cmsDropdownTitle' data-test-id='lnkCommunity'>
+									<a
+										href={communityLink}
+										className='black-14 cmsDropdownTitle'
+										data-test-id='lnkCommunity'
+										onClick={() => {
+											googleAnalytics.recordEvent('Search bar', 'Navigated to discourse', 'Clicked search bar navigation link');
+										}}>
 										Community
 									</a>
 								</div>
@@ -395,7 +408,12 @@ class SearchBar extends React.Component {
 										if (userState[0].loggedIn === true) {
 											return (
 												<Fragment key='userNotifications'>
-													<div className='navBarNotificationSpacing' onClick={this.props.doToggleDrawer} data-test-id='imgMessageBadge'>
+													<div
+														className='navBarNotificationSpacing'
+														onClick={() => {
+															this.props.doToggleDrawer();
+														}}
+														data-test-id='imgMessageBadge'>
 														<NotificationBadge
 															count={this.state.messageCount}
 															style={{ backgroundColor: '#29235c' }}
@@ -1306,7 +1324,9 @@ class SearchBar extends React.Component {
 																							<Col xs={10}>
 																								<div className='notificationDate'>{messageDateString + '\n'}</div>
 																								<div className='notificationInfoHolder'>
-																									<a className='notificationInfo'>{dat.messageDescription}</a>
+																									<a href='javascript:void(0)' class='notificationInfo'>
+																										{dat.messageDescription}
+																									</a>
 																								</div>
 																							</Col>
 																							<Col xs={2}>

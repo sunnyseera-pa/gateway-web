@@ -77,6 +77,8 @@ const AddEditWorkflow = props => {
 					setModelVisible(!modalVisible);
 					if (redirect) switchWorkflowView();
 					break;
+				default:
+					return actionName;
 			}
 		}
 	};
@@ -266,9 +268,7 @@ const AddEditWorkflow = props => {
 																				<label htmlFor={`steps[${index}].reviewers`} className='form-label'>
 																					Reviewers
 																				</label>
-																				<small className='form-text mb-2'>
-																					Only members of your team can be added as reviewers.
-																				</small>
+																				<small className='form-text mb-2'>Only members of your team can be added as reviewers.</small>
 																				<TypaheadMultiUser
 																					apiCall='teams'
 																					team={team}

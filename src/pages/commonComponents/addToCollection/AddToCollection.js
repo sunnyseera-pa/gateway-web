@@ -10,7 +10,7 @@ var baseURL = require('../BaseURL').getURL();
 
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
 	<a
-		href=''
+		href='javascript:void(0)'
 		ref={ref}
 		onClick={e => {
 			e.preventDefault();
@@ -107,7 +107,7 @@ class AddToCollection extends Component {
 	}
 
 	render() {
-		const { resourceData, collectionsData, userState } = this.state;
+		const { collectionsData, userState } = this.state;
 		collectionsData.sort((a, b) =>
 			a.name.toUpperCase() > b.name.toUpperCase() ? 1 : b.name.toUpperCase() > a.name.toUpperCase() ? -1 : 0
 		);

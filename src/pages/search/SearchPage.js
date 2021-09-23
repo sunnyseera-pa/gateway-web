@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import axios from 'axios';
-import { PageView, initGA } from '../../tracking';
+import googleAnalytics from '../../tracking';
 import queryString from 'query-string';
 import * as Sentry from '@sentry/react';
 import { Container, Row, Col, Tabs, Tab, Pagination } from 'react-bootstrap';
@@ -130,8 +130,6 @@ class SearchPage extends React.Component {
 	};
 
 	async componentDidMount() {
-		initGA('UA-166025838-1');
-		PageView();
 		// 1. call filters - this will need parameterised when tools, projects etc move to v2
 		await this.getFilters();
 		// 2. fires on first time in or page is refreshed/url loaded / has search location
@@ -632,6 +630,8 @@ class SearchPage extends React.Component {
 	};
 
 	handleSelect = key => {
+		const entityType = typeMapper[`${this.state.key}`];
+		googleAnalytics.recordVirtualPageView(`${key} results page ${this.state[`${entityType}Index`] + 1}`);
 		let values = queryString.parse(window.location.search);
 		values.tab = key;
 		this.props.history.push(window.location.pathname + '?' + queryString.stringify(values));
@@ -642,6 +642,7 @@ class SearchPage extends React.Component {
 
 	handleSort = sort => {
 		const entityType = typeMapper[`${this.state.key}`];
+		googleAnalytics.recordEvent(`${entityType}s`, `Sorted search results by ${sort}`, 'Sort dropdown option changed');
 		this.setState({ [`${entityType}Sort`]: sort, isResultsLoading: true }, () => {
 			this.doSearchCall();
 		});
@@ -649,6 +650,7 @@ class SearchPage extends React.Component {
 
 	handlePagination = (type = '', page = 0) => {
 		if (!_.isEmpty(type)) {
+			googleAnalytics.recordVirtualPageView(`${_.startCase(_.toLower(type))}s results page ${page / 40 + 1}`);
 			this.setState({ [`${type}Index`]: page, isResultsLoading: true }, () => {
 				window.scrollTo(0, 0);
 				this.doSearchCall();
@@ -808,7 +810,7 @@ class SearchPage extends React.Component {
 				results = [...selectedV2, selected];
 			} else {
 				// id important to filter by as labels are not unique
-				results = [...selectedV2].filter(node => node.id != selected.id);
+				results = [...selectedV2].filter(node => node.id !== selected.id);
 			}
 		}
 		return results;
@@ -825,11 +827,8 @@ class SearchPage extends React.Component {
 	findParentNode = (tree, key) => {
 		// 1. find if matches key || alias if provided for an override for the queryParam if it conflicts with another key from
 		// another entity
-		let found = tree.find(node => {
-			if (typeof node.alias !== 'undefined' && node.alias === key) return node;
+		let found = tree.find(node => ((typeof node.alias !== 'undefined' && node.alias === key) || node.key === key ? node : ''));
 
-			if (node.key === key) return node;
-		});
 		// 2. if not found start recursive loop
 		if (!found) {
 			let i = 0;
@@ -895,7 +894,7 @@ class SearchPage extends React.Component {
 						// 5. increment highest parent count
 						--parentNode.selectedCount;
 						// 7. fn for handling the *selected showing* returns new state
-						selectedV2 = [...selectedV2].filter(node => node.id != foundNode.id);
+						selectedV2 = [...selectedV2].filter(node => node.id !== foundNode.id);
 						// searchObj = this.buildSearchObj(selectedV2);
 					}
 				});
@@ -928,7 +927,7 @@ class SearchPage extends React.Component {
 			if (!_.isEmpty(foundNode)) {
 				// find if the node already exists in the selectedV2 - if so we are unchecking / removing
 				const exists = [...this.state.selectedV2].some(selected => selected.id === foundNode.id);
-				if (!exists || (exists && foundNode.checked != checkValue)) {
+				if (!exists || (exists && foundNode.checked !== checkValue)) {
 					// 4. set check value
 					foundNode.checked = checkValue;
 					// 5. increment highest parent count
@@ -1869,6 +1868,7 @@ class SearchPage extends React.Component {
 									<div className='advanced-search-link-container'>
 										<CDStar fill='#f98e2b' height='20' width='20' />
 										<a
+											href='!#'
 											className='textUnderline gray800-14 cursorPointer'
 											onClick={() => {
 												this.toggleAdvancedSearchModal();
@@ -1958,16 +1958,14 @@ class SearchPage extends React.Component {
 											datasetData.map(dataset => {
 												let datasetPublisher;
 												let datasetLogo;
-												{
-													!_.isEmpty(dataset.datasetv2) && _.has(dataset, 'datasetv2.summary.publisher.name')
-														? (datasetPublisher = dataset.datasetv2.summary.publisher.name)
-														: (datasetPublisher = '');
-												}
-												{
-													!_.isEmpty(dataset.datasetv2) && _.has(dataset, 'datasetv2.summary.publisher.logo')
-														? (datasetLogo = dataset.datasetv2.summary.publisher.logo)
-														: (datasetLogo = '');
-												}
+
+												!_.isEmpty(dataset.datasetv2) && _.has(dataset, 'datasetv2.summary.publisher.name')
+													? (datasetPublisher = dataset.datasetv2.summary.publisher.name)
+													: (datasetPublisher = '');
+
+												!_.isEmpty(dataset.datasetv2) && _.has(dataset, 'datasetv2.summary.publisher.logo')
+													? (datasetLogo = dataset.datasetv2.summary.publisher.logo)
+													: (datasetLogo = '');
 
 												return (
 													<RelatedObject
