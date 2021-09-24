@@ -251,7 +251,7 @@ const About = ({ dataAPI }) => {
 												</span>
 											)}
 											{dataAPI && dataAPI.gatewayApplicants && (
-												<a href='/person/{id}' className='soft-black-14 badge-datause-bold'>
+												<a href={`/person/${dataAPI.gatewayApplicants}`} className='soft-black-14 badge-datause-bold'>
 													{dataAPI.gatewayApplicants}
 												</a>
 											)}
