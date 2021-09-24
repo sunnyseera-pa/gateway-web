@@ -14,6 +14,7 @@ import googleAnalytics from '../../tracking';
 import CohortDiscoveryBanner from '../dataset/components/CohortDiscoveryBanner';
 import ActionBar from '../commonComponents/actionbar/ActionBar';
 import './CohortPage.scss';
+import { ReactComponent as InfoSVG } from '../../images/info.svg';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -153,7 +154,12 @@ export const CohortPage = props => {
 											<Col sm={12} lg={12}>
 												<div className='rectangle'>
 													<Row className='gray800-14-bold'>
-														<Col sm={12}>Inclusion / exclusion criteria</Col>
+														<Col sm={12}>
+															Inclusion / exclusion criteria{' '}
+															<span>
+																<InfoSVG id='datasetTooltipSvg' />
+															</span>
+														</Col>
 													</Row>
 													<Row className='mt-3'>
 														<Col sm={12} className='gray800-14 hdruk-section-body' data-test-id='project-description'>
@@ -220,6 +226,9 @@ export const CohortPage = props => {
 																				e.stopPropagation();
 																				window.location.href = `/dataset-onboarding/${1}`;
 																			}}>
+																			<span>
+																				<InfoSVG id='datasetTooltipSvg' />
+																			</span>
 																			<span className='versionNumber'>2.0</span> Additional phenotypes included
 																		</a>
 																	</>
@@ -280,6 +289,9 @@ export const CohortPage = props => {
 															Uploaders
 														</Col>
 														<Col sm={10} className='gray800-14'>
+															<span>
+																<InfoSVG id='datasetTooltipSvg' />
+															</span>
 															<span>
 																<Uploader uploader={{ firstname: 'Joan Admin' }} />
 															</span>
