@@ -30,8 +30,8 @@ const View = ({ ...props }) => {
 
 	useEffect(() => {
 		const getData = () => {
-			axios.get(baseURL + '/api/v2/data-use-registers/614b43a51a819e12f93c54b7').then(res => setDataAPI(res.data));
-			//axios.get(baseURL + '/api/v2/data-use-registers/'+ props.match.params.datauseID).then(res => setDataAPI(res.data));
+			//axios.get(baseURL + '/api/v2/data-use-registers/614b43a51a819e12f93c54b7').then(res => setDataAPI(res.data));
+			axios.get(baseURL + '/api/v2/data-use-registers/' + props.match.params.datauseID).then(res => setDataAPI(res.data));
 		};
 		getData();
 	}, []);
@@ -56,8 +56,6 @@ const View = ({ ...props }) => {
 
 	const mockDataAbout = Data.filter(a => a.tab === 'About');
 	const mockDataRelatedResource = Data.filter(a => a.tab === 'Related resources');
-
-	console.log(props.match.params.id);
 
 	return (
 		<div>
