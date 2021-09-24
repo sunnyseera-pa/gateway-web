@@ -1,0 +1,51 @@
+@import '../../../css/variables';
+
+.save-modal-preferences {
+	width: 65% !important;
+	max-width: none !important;
+}
+
+.saved-preferences-cancel {
+	color: $indigo !important;
+	border: none !important;
+	cursor: pointer;
+	background: $gray-200 !important;
+}
+
+.saved-preference-modal-footer {
+	justify-content: left !important;
+	margin-left: -17px;
+}
+
+.delete-view-buttons {
+	margin-left: 44vw !important;
+}
+
+.delete-button {
+	width: 80px !important;
+	margin-right: 8px;
+}
+
+.saved-card-click {
+	cursor: pointer;
+}
+
+.save-tabsBackground {
+	border-top: 1px solid $gray-200;
+}
+
+.save-searchTabsHolder {
+	margin: 0 auto;
+}
+
+.saved-preferences-tabs {
+	justify-content: center;
+}
+
+.saved-filter-chip {
+	display: inline-block !important;
+}
+
+.save-searchterm {
+	display: inline !important;
+}

@@ -17,7 +17,7 @@ const SaveModal = ({ ...props }) => {
 			filterCriteria: {
 				searchTerm: props.search || '',
 				filters: props.filters || [],
-				tab: 'Datasets',
+				tab: props.tab || '',
 				sort: props.sort || '',
 				loggedIn: props.loggedIn || '',
 			},
@@ -40,7 +40,6 @@ const SaveModal = ({ ...props }) => {
 				});
 		},
 	});
-
 	return (
 		<Modal show={props.show} onHide={props.onSaveHide} className='save-modal'>
 			<Modal.Header closeButton>

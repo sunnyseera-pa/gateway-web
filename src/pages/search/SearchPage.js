@@ -22,6 +22,7 @@ import ErrorModal from '../commonComponents/errorModal/ErrorModal';
 import SortDropdown from './components/SortDropdown';
 import { ReactComponent as CDStar } from '../../images/cd-star.svg';
 import AdvancedSearchModal from '../commonComponents/AdvancedSearchModal/AdvancedSearchModal';
+import SavedPreferencesModal from '../commonComponents/savedPreferencesModal/SavedPreferencesModal';
 import SaveModal from '../commonComponents/saveModal/SaveModal';
 import DataUtilityWizardModal from '../commonComponents/DataUtilityWizard/DataUtilityWizardModal';
 import SVGIcon from '../../images/SVGIcon';
@@ -93,6 +94,7 @@ class SearchPage extends React.Component {
 		showDrawer: false,
 		showModal: false,
 		showAdvancedSearchModal: false,
+		showSavedPreferencesModal: false,
 		showSavedModal: false,
 		showError: false,
 		context: {},
@@ -120,6 +122,8 @@ class SearchPage extends React.Component {
 		saveSuccess: false,
 		showLoggedInModal: true,
 		showSavedName: '',
+		perferencesSort: '',
+		savedFilters: [],
 		showDataUtilityWizardModal: false,
 		showDataUtilityBanner: false,
 		activeDataUtilityWizardStep: 1,
@@ -147,6 +151,10 @@ class SearchPage extends React.Component {
 
 	hideModal = () => {
 		this.setState({ showError: false });
+	};
+
+	hideSavedPreferencesModal = () => {
+		this.setState({ showSavedPreferencesModal: false });
 	};
 
 	hideSavedModal = () => {
@@ -209,7 +217,6 @@ class SearchPage extends React.Component {
 			}
 		};
 	};
-
 	async componentDidMount() {
 		// 1. fires on first time in or page is refreshed/url loaded / has search location
 		if (!!window.location.search) {
@@ -1246,6 +1253,74 @@ class SearchPage extends React.Component {
 		});
 	};
 
+	saveFiltersUpdate = viewSaved => {
+		this.setState({ showSavedPreferencesModal: false });
+		// 1. v2 take copy of data
+		let filtersV2Data = [...this.state.filtersV2];
+		// 2. v2 resets the filters UI tree back to default
+		let filtersV2 = this.resetTreeChecked(filtersV2Data);
+
+		this.setState(
+			prevState => ({
+				filtersV2,
+				selectedV2: [],
+				toolCategoriesSelected: [],
+				toolProgrammingLanguageSelected: [],
+				toolFeaturesSelected: [],
+				toolTopicsSelected: [],
+				projectCategoriesSelected: [],
+				projectFeaturesSelected: [],
+				projectTopicsSelected: [],
+				paperFeaturesSelected: [],
+				paperTopicsSelected: [],
+				courseStartDatesSelected: [],
+				courseProviderSelected: [],
+				courseLocationSelected: [],
+				courseStudyModeSelected: [],
+				courseAwardSelected: [],
+				courseEntryLevelSelected: [],
+				courseDomainsSelected: [],
+				courseKeywordsSelected: [],
+				courseFrameworkSelected: [],
+				coursePrioritySelected: [],
+				collectionKeywordsSelected: [],
+				collectionPublisherSelected: [],
+				datasetIndex: 0,
+				toolIndex: 0,
+				projectIndex: 0,
+				paperIndex: 0,
+				personIndex: 0,
+				courseIndex: 0,
+				collectionIndex: 0,
+				datasetSort: '',
+				toolSort: '',
+				projectSort: '',
+				paperSort: '',
+				personSort: '',
+				courseSort: '',
+				collectionSort: '',
+			}),
+			() => {
+				let sort = '';
+				if (viewSaved.tab === 'Datasets') {
+					this.setState({ datasetSort: viewSaved.sort });
+				} else if (viewSaved.tab === 'Tools') {
+					this.setState({ toolSort: viewSaved.sort });
+				} else if (viewSaved.tab === 'Projects') {
+					this.setState({ projectSort: viewSaved.sort });
+				} else if (viewSaved.tab === 'People') {
+					this.setState({ personSort: viewSaved.sort });
+				} else if (viewSaved.tab === 'Collections') {
+					this.setState({ collectionSort: viewSaved.sort });
+				}
+
+				this.setState({ search: viewSaved.search, key: viewSaved.tab, selectedV2: viewSaved.filters }, () => {
+					this.doSearchCall();
+				});
+			}
+		);
+	};
+
 	render() {
 		let {
 			summary,
@@ -1505,6 +1580,21 @@ class SearchPage extends React.Component {
 			</Col>
 		);
 
+		let perferenceSort = '';
+		if (key === 'Datasets') {
+			perferenceSort = datasetSort;
+		} else if (key === 'Tools') {
+			perferenceSort = toolSort;
+		} else if (key === 'Projects') {
+			perferenceSort = projectSort;
+		} else if (key === 'Paper') {
+			perferenceSort = paperSort;
+		} else if (key === 'People') {
+			perferenceSort = personSort;
+		} else if (key === 'Collection') {
+			perferenceSort = collectionSort;
+		}
+
 		return (
 			<Sentry.ErrorBoundary fallback={<ErrorModal show={this.showModal} handleClose={this.hideModal} />}>
 				<div>
@@ -1576,7 +1666,7 @@ class SearchPage extends React.Component {
 									{key === 'Courses' ? <>{courseCount} </> : ''}
 									{key === 'Papers' ? <>{paperCount} </> : ''}
 									{key === 'People' ? <>{personCount} </> : ''}
-									results for {this.state.search}
+									results {this.state.search != '' && 'for'} {this.state.search}
 								</Col>
 								<Col
 									className={
@@ -1608,15 +1698,33 @@ class SearchPage extends React.Component {
 											saveSuccess={this.showSuccessMessage}
 											saveName={this.showSavedName}
 											search={this.state.search}
-											filters={this.state.allFilters}
-											sort={this.state.filtersV2}
+											filters={this.state.selectedV2}
+											sort={perferenceSort}
 											loggedIn={this.state.userState}
+											tab={this.state.key}
 										/>
 									)}
 
-									<Button variant='light' className='saved-preference button-tertiary'>
+									<Button
+										variant='light'
+										className='saved-preference button-tertiary'
+										onClick={
+											this.state.userState[0].loggedIn === false
+												? () => this.showLoginModal()
+												: () => this.setState({ showSavedPreferencesModal: true })
+										}>
+										{' '}
 										Saved preferences
 									</Button>
+									{this.state.showSavedPreferencesModal && (
+										<SavedPreferencesModal
+											show={this.state.showSavedPreferencesModal}
+											onHide={this.hideSavedPreferencesModal}
+											viewMatchesLink={this.viewMatches}
+											viewSaved={this.saveFiltersUpdate}
+										/>
+									)}
+
 									{dropdownMenu}
 								</Col>
 							</Row>
