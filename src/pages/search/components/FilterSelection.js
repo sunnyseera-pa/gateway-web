@@ -3,10 +3,10 @@ import FilterChip from './FilterChip';
 import { FilterCount } from './FilterCount';
 import SVGIcon from '../../../images/SVGIcon';
 
-const FilterSelection = ({ selectedCount, selectedItems, onHandleClearSelection, onHandelClearAll, savedSearches }) => {
+const FilterSelection = ({ selectedCount, selectedItems, onHandleClearSelection, onHandleClearAll, savedSearches }) => {
 	const clearSelection = e => {
 		e.preventDefault();
-		onHandelClearAll();
+		onHandleClearAll();
 	};
 
 	const [closed, setClosed] = useState(true);

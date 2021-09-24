@@ -20,8 +20,9 @@ class TypeaheadMultiField extends React.Component {
 	}
 
 	handleAddShareholder = () => {
+		let value = this.state.value.concat([{ name: '' }]);
 		this.setState({
-			value: this.state.value.concat([{ name: '' }]),
+			value: value,
 		});
 	};
 

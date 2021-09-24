@@ -21,7 +21,7 @@ const WorkflowReviewDecisionModal = ({
 	const onClickAction = (e, action = '') => {
 		e.preventDefault();
 		// 1. check for errors
-		if (action == 'reviewDecision') {
+		if (action === 'reviewDecision') {
 			if (_.isEmpty(comments)) return setErrors(true);
 
 			if (wordCount >= 1500) return setErrors(true);
@@ -43,16 +43,6 @@ const WorkflowReviewDecisionModal = ({
 	const onTextChange = e => {
 		setComments(e.currentTarget.value);
 		setWordCount(e.currentTarget.value.length);
-	};
-
-	const getActivePhase = () => {
-		if (!_.isEmpty(workflow)) {
-			let { steps } = workflow;
-			if (!_.isEmpty(steps)) {
-				let activeStep = [...steps].find(s => s.active) || {};
-				setPhase(activeStep);
-			}
-		}
 	};
 
 	const reset = () => {
@@ -80,8 +70,17 @@ const WorkflowReviewDecisionModal = ({
 	};
 
 	useEffect(() => {
+		const getActivePhase = () => {
+			if (!_.isEmpty(workflow)) {
+				let { steps } = workflow;
+				if (!_.isEmpty(steps)) {
+					let activeStep = [...steps].find(s => s.active) || {};
+					setPhase(activeStep);
+				}
+			}
+		};
 		getActivePhase();
-	}, []);
+	}, [workflow]);
 
 	return (
 		<Fragment>

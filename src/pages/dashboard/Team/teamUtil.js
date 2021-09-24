@@ -5,5 +5,6 @@ export const userTypes = {
 
 export const tabTypes = {
   Members: 'members',
-  Notifications: 'notifications'
+  Notifications: 'notifications',
+  Teams: 'teams'
 };

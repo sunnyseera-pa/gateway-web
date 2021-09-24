@@ -24,10 +24,6 @@ class UnmetDemand extends React.Component {
 		}
 	}
 
-	componentDidMount() {
-		this.setState({ state: this.state });
-	}
-
 	getNumberOfResults(data) {
 		let numResults;
 		switch (data.entity) {
@@ -49,17 +45,14 @@ class UnmetDemand extends React.Component {
 			case 'person':
 				numResults = data.maxPeople || 0;
 				break;
+			default:
+				numResults = 0;
 		}
 		return numResults;
 	}
 
 	render() {
 		const { flagClosed, data } = this.state;
-
-		var svgClassName = '';
-		if (flagClosed === false) {
-			svgClassName = 'flipSVG';
-		}
 
 		return (
 			<div>
@@ -90,10 +83,14 @@ class UnmetDemand extends React.Component {
 										</span>
 									</Col>
 									<Col sm={2} lg={2} className='gray800-14'>
-										<span style={{ float: 'left' }} data-test-id='unmetDemand-search-count'>{!data || !data.count ? 'number of searches' : data.count}</span>
+										<span style={{ float: 'left' }} data-test-id='unmetDemand-search-count'>
+											{!data || !data.count ? 'number of searches' : data.count}
+										</span>
 									</Col>
 									<Col sm={2} lg={2} className='gray800-14'>
-										<span style={{ float: 'left' }} data-test-id='unmetDemand-search-results'>{this.getNumberOfResults(data)}</span>
+										<span style={{ float: 'left' }} data-test-id='unmetDemand-search-results'>
+											{this.getNumberOfResults(data)}
+										</span>
 									</Col>
 								</Row>
 							</Accordion.Toggle>
@@ -103,17 +100,17 @@ class UnmetDemand extends React.Component {
 									<Col sm={2} lg={2} className='pl-4'>
 										<span className='gray700-13-bold'>Other results</span>
 										<br />
-										{data.entity == 'dataset' ? null : <span className='gray700-13'>{data.maxDatasets || 0} datasets</span>}
-										{data.entity == 'dataset' ? null : <br />}
-										{data.entity == 'tool' ? null : <span className='gray700-13'>{data.maxTools || 0} tools</span>}
-										{data.entity == 'tool' ? null : <br />}
-										{data.entity == 'project' ? null : <span className='gray700-13'>{data.maxProjects || 0} projects</span>}
-										{data.entity == 'project' ? null : <br />}
-										{data.entity == 'course' ? null : <span className='gray700-13'>{data.maxCourses || 0} courses</span>}
-										{data.entity == 'course' ? null : <br />}
-										{data.entity == 'paper' ? null : <span className='gray700-13'>{data.maxPapers || 0} papers</span>}
-										{data.entity == 'paper' ? null : <br />}
-										{data.entity == 'person' ? null : <span className='gray700-13'>{data.maxPeople || 0} people</span>}
+										{data.entity === 'dataset' ? null : <span className='gray700-13'>{data.maxDatasets || 0} datasets</span>}
+										{data.entity === 'dataset' ? null : <br />}
+										{data.entity === 'tool' ? null : <span className='gray700-13'>{data.maxTools || 0} tools</span>}
+										{data.entity === 'tool' ? null : <br />}
+										{data.entity === 'project' ? null : <span className='gray700-13'>{data.maxProjects || 0} projects</span>}
+										{data.entity === 'project' ? null : <br />}
+										{data.entity === 'course' ? null : <span className='gray700-13'>{data.maxCourses || 0} courses</span>}
+										{data.entity === 'course' ? null : <br />}
+										{data.entity === 'paper' ? null : <span className='gray700-13'>{data.maxPapers || 0} papers</span>}
+										{data.entity === 'paper' ? null : <br />}
+										{data.entity === 'person' ? null : <span className='gray700-13'>{data.maxPeople || 0} people</span>}
 									</Col>
 								</Row>
 							</Accordion.Collapse>

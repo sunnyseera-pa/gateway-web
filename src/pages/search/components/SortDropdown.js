@@ -19,14 +19,15 @@ const SortDropdown = ({ handleSort, sort, dropdownItems, isCollectionsSearch }) 
 					else if (sorting === 'resources') return 'Sort by related resources';
 					else if (sorting === 'latest') return 'Sort by latest';
 					else if (sorting === 'recentlyadded') return 'Sort by recently added';
+					else if (sorting === 'sortbyyear') return 'Sort by year';
 					else return 'Sort by match to search terms';
 				})()}
 				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			</Dropdown.Toggle>
 			<Dropdown.Menu>
-				{dropdownItems.map(item => {
+				{dropdownItems.map((item, index) => {
 					return (
-						<Row
+						<Row key={`ddl-item-${index}`}
 							className={
 								sorting === item ? 'sort-dropdown-item sort-dropdown-item-selected sortingDropdown' : 'sort-dropdown-item sortingDropdown'
 							}>
@@ -39,6 +40,7 @@ const SortDropdown = ({ handleSort, sort, dropdownItems, isCollectionsSearch }) 
 										else if (item === 'latest') return 'Latest (recently updated first)';
 										else if (item === 'recentlyadded') return 'Recently added to collection (newest first)';
 										else if (item === 'relevance') return 'Match to search terms (closest first)';
+										else if (item === 'sortbyyear') return 'Sort by year (latest first)';
 									})()}
 								</Dropdown.Item>
 							</Col>

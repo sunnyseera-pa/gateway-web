@@ -8,7 +8,6 @@ import TopDatasets from '../dashboard/TopDatasets';
 import { Container, Row, Col, Tabs, Tab, DropdownButton, Dropdown } from 'react-bootstrap';
 import DashboardKPI from '../dashboard/DARComponents/DashboardKPI';
 import Loading from '../commonComponents/Loading';
-import { initGA } from '../../tracking';
 import SearchBar from '../commonComponents/searchBar/SearchBar';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
 import UserMessages from '../commonComponents/userMessages/UserMessages';
@@ -24,7 +23,6 @@ class PublicAnalyticsDashboard extends React.Component {
 		data: [],
 		topSearches: [],
 		statsDataType: [],
-		statsDataTime: [],
 		totalGAUsers: 0,
 		gaUsers: 0,
 		searchesWithResults: 0,
@@ -61,7 +59,8 @@ class PublicAnalyticsDashboard extends React.Component {
 		if (eventKey === null) {
 			eventKey = 0;
 		}
-		this.setState({ selectedOption: this.state.dates[eventKey] });
+		let selectedDate = this.state.dates[eventKey];
+		this.setState({ selectedOption: selectedDate });
 		await Promise.all([this.getUnmetDemand(this.state.dates[eventKey]), this.getTopSearches(this.state.dates[eventKey])]);
 
 		this.setState({ isLoading: false });
@@ -78,11 +77,11 @@ class PublicAnalyticsDashboard extends React.Component {
 			this.getDatasetsWithTechMetadata(),
 			this.getTopDatasets(this.state.dates[eventKey]),
 		]);
-		this.setState({ uniqueUsers: (this.state.statsDataType.person / this.state.totalGAUsers) * 100 });
+		let uniqueUsers = (this.state.statsDataType.person / this.state.totalGAUsers) * 100;
+		this.setState({ uniqueUsers: uniqueUsers });
 	}
 
 	async componentDidMount() {
-		initGA('UA-166025838-1');
 		await Promise.all([this.getUnmetDemand(), this.getTopSearches()]);
 
 		await Promise.all([
@@ -98,7 +97,8 @@ class PublicAnalyticsDashboard extends React.Component {
 			this.getTopDatasets(this.state.selectedOption),
 		]);
 
-		this.setState({ uniqueUsers: (this.state.statsDataType.person / this.state.totalGAUsers) * 100, isLoading: false });
+		let uniqueUsers = (this.state.statsDataType.person / this.state.totalGAUsers) * 100;
+		this.setState({ uniqueUsers: uniqueUsers, isLoading: false });
 	}
 
 	getUnmetDemand(selectedOption) {
@@ -141,7 +141,6 @@ class PublicAnalyticsDashboard extends React.Component {
 			axios.get(baseURL + '/api/v1/stats').then(res => {
 				this.setState({
 					statsDataType: res.data.data.typecounts,
-					statsDataTime: res.data.data.daycounts,
 				});
 				resolve();
 			});
@@ -662,6 +661,8 @@ class PublicAnalyticsDashboard extends React.Component {
 														</Row>
 													</div>
 												);
+											default:
+												return key;
 										}
 								  })()}
 						</Col>

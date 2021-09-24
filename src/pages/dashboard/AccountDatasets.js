@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Col, Row, Button, Tabs, Tab, Alert } from 'react-bootstrap';
-import { Event, initGA } from '../../tracking';
+import googleAnalytics from '../../tracking';
 import _ from 'lodash';
 import Loading from '../commonComponents/Loading';
 import DatasetCard from '../commonComponents/DatasetCard';
@@ -20,7 +20,7 @@ const AccountDatasets = props => {
 	const [archiveCount, setArchiveCount] = useState(0);
 	const [rejectedCount, setRejectedCount] = useState(0);
 	const [alert] = useState(props.alert);
-	const [team, setTeam, getTeam] = useState(props.team);
+	const [team, setTeam] = useState(props.team);
 	const [publisherID, setPublisherID] = useState('');
 
 	useEffect(() => {
@@ -28,7 +28,6 @@ const AccountDatasets = props => {
 	}, [props]);
 
 	useEffect(() => {
-		initGA('UA-166025838-1');
 		setIsLoading(true);
 		doDatasetsCall();
 	}, [team]);
@@ -149,7 +148,7 @@ const AccountDatasets = props => {
 								<Button
 									variant='primary'
 									className='addButton'
-									onClick={(() => Event('Buttons', 'Click', 'Add a new paper'), createNewDataset)}>
+									onClick={(() => googleAnalytics.recordEvent('Datasets', 'Add a new dataset', 'Datasets dashboard button clicked'), createNewDataset)}>
 									+ Add a new dataset
 								</Button>
 							</Col>
@@ -300,6 +299,8 @@ const AccountDatasets = props => {
 										)}
 									</div>
 								);
+							default:
+								return key;
 						}
 					})()}
 				</Col>

@@ -10,7 +10,7 @@ var baseURL = require('../BaseURL').getURL();
 
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
 	<a
-		href=''
+		href='javascript:void(0)'
 		ref={ref}
 		onClick={e => {
 			e.preventDefault();
@@ -58,7 +58,9 @@ class AddToCollection extends Component {
 	doCollectionsCall() {
 		if (this.state.userState[0].loggedIn === true) {
 			axios.get(baseURL + '/api/v1/accounts/collections?id=' + this.state.userState[0].id + '').then(res => {
-				this.setState({ collectionsData: res.data.data, isLoading: false });
+				this.setState({
+					collectionsData: res.data.data,
+				});
 			});
 		}
 	}
@@ -74,8 +76,8 @@ class AddToCollection extends Component {
 		};
 		switch (this.state.resourceData.type) {
 			case 'dataset':
-				if (dat.relatedObjects.some(e => e.objectId === this.state.resourceData.datasetid)) {
-					dat.relatedObjects = dat.relatedObjects.filter(obj => obj.objectId !== this.state.resourceData.datasetid);
+				if (dat.relatedObjects.some(e => e.pid === this.state.resourceData.pid)) {
+					dat.relatedObjects = dat.relatedObjects.filter(obj => obj.pid !== this.state.resourceData.pid);
 				} else {
 					dat.relatedObjects.push(tempRelatedObject);
 				}
@@ -96,6 +98,7 @@ class AddToCollection extends Component {
 			imageLink: dat.imageLink,
 			authors: dat.authors,
 			relatedObjects: dat.relatedObjects,
+			publicflag: dat.publicflag,
 		};
 
 		axios.put(baseURL + `/api/v1/collections/edit/${dat.id}`, values).then(() => {
@@ -104,7 +107,7 @@ class AddToCollection extends Component {
 	}
 
 	render() {
-		const { resourceData, collectionsData, userState } = this.state;
+		const { collectionsData, userState } = this.state;
 		collectionsData.sort((a, b) =>
 			a.name.toUpperCase() > b.name.toUpperCase() ? 1 : b.name.toUpperCase() > a.name.toUpperCase() ? -1 : 0
 		);
@@ -135,7 +138,7 @@ class AddToCollection extends Component {
 														</Col>
 														<Col sm={1} lg={1} style={{ 'align-self': 'center' }}>
 															{this.state.resourceData.type === 'dataset'
-																? dat.relatedObjects.some(e => e.objectId === this.state.resourceData.datasetid) && (
+																? dat.relatedObjects.some(e => e.pid === this.state.resourceData.pid) && (
 																		<SVGIcon
 																			className='collectionCheckSvg'
 																			name='checkicon'

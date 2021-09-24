@@ -13,7 +13,11 @@ import RelatedResources from '../commonComponents/relatedResources/RelatedResour
 import RelatedObject from '../commonComponents/relatedObject/RelatedObject';
 import ActionBar from '../commonComponents/actionbar/ActionBar';
 import SVGIcon from '../../images/SVGIcon';
+import googleAnalytics from '../../tracking';
 import './Tool.scss';
+
+const baseURL = require('../commonComponents/BaseURL').getURL();
+let windowUrl = window.location.origin;
 
 const initialValues = {
 	programmingLanguage: [{ programmingLanguage: '', version: '' }],
@@ -33,8 +37,6 @@ const validateSchema = Yup.object().shape({
 		})
 	),
 });
-
-var baseURL = require('../commonComponents/BaseURL').getURL();
 
 const AddEditToolForm = props => {
 	const [uploadersList, setUploadersList] = useState([]);
@@ -96,11 +98,11 @@ const AddEditToolForm = props => {
 			values.authors = uploadersList.map(uploader => uploader.id);
 			if (props.isEdit) {
 				axios.put(baseURL + '/api/v1/tools/' + props.data.id, values).then(res => {
-					window.location.href = window.location.search + '/tool/' + props.data.id + '/?toolEdited=true';
+					window.location.href = windowUrl + '/tool/' + props.data.id + '/?toolEdited=true';
 				});
 			} else {
 				axios.post(baseURL + '/api/v1/tools', values).then(res => {
-					window.location.href = window.location.search + '/tool/' + res.data.response.id + '/?toolAdded=true';
+					window.location.href = windowUrl + '/tool/' + res.data.response.id + '/?toolAdded=true';
 				});
 			}
 		},
@@ -176,7 +178,6 @@ const AddEditToolForm = props => {
 	}
 
 	function descriptionCount(e) {
-		var input = e.target.value;
 		document.getElementById('currentCount').innerHTML = e.target.value.length;
 	}
 
@@ -632,23 +633,23 @@ const AddEditToolForm = props => {
 												''
 											) : (
 												<div className='rectangle'>
-													{props.relatedObjects.map(object => {
-														if (!isNil(object.objectId)) {
-															return (
-																<RelatedObject
-																	showRelationshipQuestion={true}
-																	objectId={object.objectId}
-																	pid={object.pid}
-																	objectType={object.objectType}
-																	doRemoveObject={props.doRemoveObject}
-																	doUpdateReason={updateReason}
-																	reason={object.reason}
-																	didDelete={props.didDelete}
-																	updateDeleteFlag={props.updateDeleteFlag}
-																/>
-															);
-														}
-													})}
+													{props.relatedObjects.map(object =>
+														!isNil(object.objectId) ? (
+															<RelatedObject
+																showRelationshipQuestion={true}
+																objectId={object.objectId}
+																pid={object.pid}
+																objectType={object.objectType}
+																doRemoveObject={props.doRemoveObject}
+																doUpdateReason={updateReason}
+																reason={object.reason}
+																didDelete={props.didDelete}
+																updateDeleteFlag={props.updateDeleteFlag}
+															/>
+														) : (
+															''
+														)
+													)}
 												</div>
 											)}
 
@@ -698,7 +699,13 @@ const AddEditToolForm = props => {
 							Cancel
 						</Button>
 					</a>
-					<Button onClick={() => relatedResourcesRef.current.showModal()} variant='white' className='techDetailButton mr-2'>
+					<Button
+						onClick={() => {
+							relatedResourcesRef.current.showModal();
+							googleAnalytics.recordVirtualPageView('Related resources modal');
+						}}
+						variant='white'
+						className='techDetailButton mr-2'>
 						+ Add resource
 					</Button>
 					<Button
