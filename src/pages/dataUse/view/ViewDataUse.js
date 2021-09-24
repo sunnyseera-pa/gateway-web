@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Data from './Data.json';
 import About from './About';
-import AboutTwo from './AboutTwo';
 import RelatedResources from './RelatedResourcesDataUse';
 import SearchBar from '../../commonComponents/searchBar/SearchBar';
 import { Row, Container, Tab, Tabs, Button, Tooltip } from 'react-bootstrap';
@@ -30,7 +29,6 @@ const View = ({ ...props }) => {
 
 	useEffect(() => {
 		const getData = () => {
-			//axios.get(baseURL + '/api/v2/data-use-registers/614b43a51a819e12f93c54b7').then(res => setDataAPI(res.data));
 			axios.get(baseURL + '/api/v2/data-use-registers/' + props.match.params.datauseID).then(res => setDataAPI(res.data));
 		};
 		getData();
@@ -54,7 +52,6 @@ const View = ({ ...props }) => {
 
 	const tabs = ['About', 'Discussion', 'Related resources', 'Collections'];
 
-	const mockDataAbout = Data.filter(a => a.tab === 'About');
 	const mockDataRelatedResource = Data.filter(a => a.tab === 'Related resources');
 
 	const renderTooltip = props => (
@@ -99,7 +96,7 @@ const View = ({ ...props }) => {
 				<Tabs defaultActiveKey='About' className='gray700-13 data-use-tabs'>
 					{tabs.map(tabName => (
 						<Tab eventKey={tabName} title={tabName}>
-							{tabName === 'About' && <AboutTwo dataAPI={dataAPI} renderTooltip={renderTooltip} />}
+							{tabName === 'About' && <About dataAPI={dataAPI} renderTooltip={renderTooltip} />}
 							{tabName === 'Related resources' && <RelatedResources data={mockDataRelatedResource} />}
 						</Tab>
 					))}
