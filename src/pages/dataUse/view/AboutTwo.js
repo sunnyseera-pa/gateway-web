@@ -712,7 +712,7 @@ const About = ({ dataAPI }) => {
 								</Button>
 							</OverlayTrigger>
 							<Col>
-								{dataAPI.privacyEnhancementslength > 0 ? dataAPI.privacyEnhancements : <p className='gray800-14-opacity'>Not specified</p>}
+								{dataAPI.privacyEnhancements.length > 0 ? dataAPI.privacyEnhancements : <p className='gray800-14-opacity'>Not specified</p>}
 							</Col>
 						</Row>
 					)}
@@ -730,7 +730,7 @@ const About = ({ dataAPI }) => {
 								</Button>
 							</OverlayTrigger>
 							<Col>
-								{dataAPI.researchOutputslength > 0 ? (
+								{dataAPI.researchOutputs.length > 0 ? (
 									<a href={dataAPI.researchOutputs} className='purple-blue-14'>
 										{dataAPI.researchOutputs}
 									</a>

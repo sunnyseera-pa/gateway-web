@@ -93,7 +93,7 @@ const View = ({ ...props }) => {
 				<Tabs defaultActiveKey='About' className='gray700-13 data-use-tabs'>
 					{tabs.map(tabName => (
 						<Tab eventKey={tabName} title={tabName}>
-							{tabName === 'About' && dataAPI && <AboutTwo dataAPI={dataAPI} />}
+							{tabName === 'About' && <AboutTwo dataAPI={dataAPI} />}
 							{tabName === 'Related resources' && <RelatedResources data={mockDataRelatedResource} />}
 						</Tab>
 					))}
