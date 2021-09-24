@@ -167,13 +167,13 @@ const About = ({ dataAPI }) => {
 		</Tooltip>
 	);
 
-	/*let count =
-		dataAPI &&
-		dataAPI.reduce(function recur(sum, obj) {
-			return sum + (obj === '' || (Object(obj) === obj && Object.values(obj).reduce(recur, 0)));
-		}, 0);*/
-
-	console.log(dataAPI);
+	let count =
+		Object.keys(dataAPI).length === 0
+			? dataAPI &&
+			  dataAPI.reduce(function recur(sum, obj) {
+					return sum + (obj === '' || (Object(obj) === obj && Object.values(obj).reduce(recur, 0)));
+			  }, 0)
+			: 0;
 
 	return (
 		<>
@@ -749,7 +749,7 @@ const About = ({ dataAPI }) => {
 			</Row>
 			<Row className='datause-hidefields-button'>
 				<Button className='datause-button' onClick={() => (hide ? setHide(false) : setHide(true))}>
-					{!hide ? 'Hide all empty fields ' : 'Show all empty fields '}
+					{!hide ? 'Hide all empty fields (' + count + ')' : 'Show all empty fields (' + count + ')'}
 				</Button>
 			</Row>
 		</>
