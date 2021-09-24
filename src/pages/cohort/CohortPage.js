@@ -8,10 +8,11 @@ import Loading from '../commonComponents/Loading';
 import Uploader from '../commonComponents/Uploader';
 import SVGIcon from '../../images/SVGIcon';
 import DiscourseTopic from '../discourse/DiscourseTopic';
-import ActionBar from '../commonComponents/actionbar/ActionBar';
+import ApplicantActionButtons from './components/ApplicantActionButtons';
 import ErrorModal from '../commonComponents/errorModal/ErrorModal';
 import googleAnalytics from '../../tracking';
 import CohortDiscoveryBanner from '../dataset/components/CohortDiscoveryBanner';
+import ActionBar from '../commonComponents/actionbar/ActionBar';
 import './CohortPage.scss';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
@@ -66,6 +67,8 @@ export const CohortPage = props => {
 	};
 
 	const [flagClosed, setFlagClosed] = useState(true);
+
+	const relatedResourcesRef = React.useRef();
 
 	if (isLoading) {
 		return (
@@ -302,7 +305,6 @@ export const CohortPage = props => {
 
 											<Row>
 												<Col sm={12} md={12} lg={6} className='flexCenter'>
-													{/* <CollectionCard data={[]} /> */}
 												</Col>
 											</Row>
 										</>
@@ -312,14 +314,6 @@ export const CohortPage = props => {
 										<DiscourseTopic toolId='' topicId='' userState={userState} onUpdateDiscoursePostCount='' />
 									</Tab>
 									<Tab eventKey='Related resources' title='Related resources'>
-										{/* <RelatedObject
-											relatedObject=''
-											objectType=''
-											activeLink=''
-											showRelationshipAnswer=''
-											datasetPublisher=''
-											datasetLogo=''
-										/> */}
 									</Tab>
 								</Tabs>
 							</div>
@@ -329,19 +323,11 @@ export const CohortPage = props => {
 				</Container>
 
 				<ActionBar userState={props.userState}>
-					<div className='floatRight'>
-						<Button
-							data-test-id='add-resource'
-							onClick={() => {
-								// relatedResourcesRef.current.showModal();
-								googleAnalytics.recordVirtualPageView('Related resources modal');
-							}}
-							variant='white'
-							className='techDetailButton mr-2'>
-							Create a new version
-						</Button>
-					</div>
+				<div className='action-bar-actions'>
+					<ApplicantActionButtons allowedNavigation={true} />
+				</div>
 				</ActionBar>
+
 			</div>
 		</Sentry.ErrorBoundary>
 	);
