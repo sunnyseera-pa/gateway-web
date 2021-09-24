@@ -1,10 +1,11 @@
 import React, { Fragment } from 'react';
-import ActionBarMenu from '../../commonComponents/ActionBarMenu/ActionBarMenu';
+import ActionBarMenu from '../../../commonComponents/ActionBarMenu/ActionBarMenu';
+import '../../CohortPage.scss';
 
 const ApplicantActionButtons = ({ allowedNavigation = false }) => {
 	const options = [
 		{
-			description: 'Manage dataset:',
+			description: '',
 			actions: [
 				{
 					title: 'New version: edit metadata',

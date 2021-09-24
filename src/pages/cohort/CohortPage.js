@@ -8,7 +8,7 @@ import Loading from '../commonComponents/Loading';
 import Uploader from '../commonComponents/Uploader';
 import SVGIcon from '../../images/SVGIcon';
 import DiscourseTopic from '../discourse/DiscourseTopic';
-import ApplicantActionButtons from './components/ApplicantActionButtons';
+import ApplicantActionButtons from './components/ApplicantActionButtons/ApplicantActionButtons';
 import ErrorModal from '../commonComponents/errorModal/ErrorModal';
 import googleAnalytics from '../../tracking';
 import CohortDiscoveryBanner from '../dataset/components/CohortDiscoveryBanner';
@@ -304,8 +304,7 @@ export const CohortPage = props => {
 											<NotFound text='' />
 
 											<Row>
-												<Col sm={12} md={12} lg={6} className='flexCenter'>
-												</Col>
+												<Col sm={12} md={12} lg={6} className='flexCenter'></Col>
 											</Row>
 										</>
 									</Tab>
@@ -313,8 +312,7 @@ export const CohortPage = props => {
 									<Tab eventKey='Discussion' title='Discussions'>
 										<DiscourseTopic toolId='' topicId='' userState={userState} onUpdateDiscoursePostCount='' />
 									</Tab>
-									<Tab eventKey='Related resources' title='Related resources'>
-									</Tab>
+									<Tab eventKey='Related resources' title='Related resources'></Tab>
 								</Tabs>
 							</div>
 						</Col>
@@ -323,11 +321,10 @@ export const CohortPage = props => {
 				</Container>
 
 				<ActionBar userState={props.userState}>
-				<div className='action-bar-actions'>
-					<ApplicantActionButtons allowedNavigation={true} />
-				</div>
+					<div className='action-bar-actions'>
+						<ApplicantActionButtons allowedNavigation={true} />
+					</div>
 				</ActionBar>
-
 			</div>
 		</Sentry.ErrorBoundary>
 	);
