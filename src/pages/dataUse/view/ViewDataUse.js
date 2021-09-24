@@ -26,6 +26,8 @@ const View = ({ ...props }) => {
 		]
 	);
 
+	//baseURL + datause/1
+
 	useEffect(() => {
 		const getData = () => {
 			axios.get(baseURL + '/api/v2/data-use-registers/614b43a51a819e12f93c54b7').then(res => setDataAPI(res.data));
