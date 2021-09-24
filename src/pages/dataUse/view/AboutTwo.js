@@ -242,27 +242,31 @@ const About = ({ dataAPI }) => {
 								</Button>
 							</OverlayTrigger>
 							<Col>
-								{/*dataAPI.gatewayApplicants.length > 0 && dataAPI.nonGatewayApplicants.length > 0 ? (
-									dataAPI.gatewayApplicants.map(a => (
-										<span className={a.dataAPI.gatewayApplicants ? 'hdruser badge-tag' : 'nonhdruser badge-datause-bold badge-tag'}>
+								{dataAPI.gatewayApplicants.length > 0 && dataAPI.nonGatewayApplicants.length > 0 ? (
+									<>
+										<span className='hdruser badge-tag'>
 											{dataAPI && dataAPI.gatewayApplicants && (
 												<span className='datatuse-personicon-bg'>
 													<SVGIcon name='personicon' width={10} height={10} fill={'#3db28c'} />
 												</span>
 											)}
-											{dataAPI && dataAPI.gatewayApplicants ? (
+											{dataAPI && dataAPI.gatewayApplicants && (
 												<a href='/person/{id}' className='soft-black-14 badge-datause-bold'>
-													{a.name}
+													{dataAPI.gatewayApplicants}
 												</a>
-											) : (
-												a.nonGatewayApplicants.map(a => a)
 											)}
 										</span>
-									))
+										<span className='nonhdruser badge-datause-bold badge-tag'>
+											{dataAPI && dataAPI.nonGatewayApplicants && (
+												<a href='/person/{id}' className='soft-black-14 badge-datause-bold'>
+													{dataAPI.nonGatewayApplicants}
+												</a>
+											)}
+										</span>
+									</>
 								) : (
 									<p className='gray800-14-opacity'>Not specified</p>
-								)*/}
-								applicants names
+								)}
 							</Col>
 						</Row>
 					)}
