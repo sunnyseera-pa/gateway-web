@@ -4,7 +4,7 @@ import About from './About';
 import AboutTwo from './AboutTwo';
 import RelatedResources from './RelatedResourcesDataUse';
 import SearchBar from '../../commonComponents/searchBar/SearchBar';
-import { Row, Container, Tab, Tabs, Button } from 'react-bootstrap';
+import { Row, Container, Tab, Tabs, Button, Tooltip } from 'react-bootstrap';
 import SVGIcon from '../../../images/SVGIcon';
 import axios from 'axios';
 
@@ -57,6 +57,12 @@ const View = ({ ...props }) => {
 	const mockDataAbout = Data.filter(a => a.tab === 'About');
 	const mockDataRelatedResource = Data.filter(a => a.tab === 'Related resources');
 
+	const renderTooltip = props => (
+		<Tooltip className='tool-tip' style={{ width: '240px' }}>
+			{props}
+		</Tooltip>
+	);
+
 	return (
 		<div>
 			<SearchBar
@@ -93,7 +99,7 @@ const View = ({ ...props }) => {
 				<Tabs defaultActiveKey='About' className='gray700-13 data-use-tabs'>
 					{tabs.map(tabName => (
 						<Tab eventKey={tabName} title={tabName}>
-							{tabName === 'About' && <AboutTwo dataAPI={dataAPI} />}
+							{tabName === 'About' && <AboutTwo dataAPI={dataAPI} renderTooltip={renderTooltip} />}
 							{tabName === 'Related resources' && <RelatedResources data={mockDataRelatedResource} />}
 						</Tab>
 					))}
