@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { Fragment, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import * as Sentry from '@sentry/react';
 import { Container, Row, Col, Tabs, Tab, Alert, Button, Accordion } from 'react-bootstrap';
@@ -8,22 +8,18 @@ import Loading from '../commonComponents/Loading';
 import Uploader from '../commonComponents/Uploader';
 import SVGIcon from '../../images/SVGIcon';
 import DiscourseTopic from '../discourse/DiscourseTopic';
-import ApplicantActionButtons from './components/ApplicantActionButtons/ApplicantActionButtons';
 import ErrorModal from '../commonComponents/errorModal/ErrorModal';
-import googleAnalytics from '../../tracking';
 import CohortDiscoveryBanner from '../dataset/components/CohortDiscoveryBanner';
 import ActionBar from '../commonComponents/actionbar/ActionBar';
+import ApplicantActionButtons from './components/ApplicantActionButtons/ApplicantActionButtons';
+import ToolTips from '../commonComponents/ToolTips/ToolTips';
 import './CohortPage.scss';
 import { ReactComponent as InfoSVG } from '../../images/info.svg';
-
-var baseURL = require('../commonComponents/BaseURL').getURL();
 
 export const CohortPage = props => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [searchString, setSearchString] = useState('');
 	const [showDrawer, setShowDrawer] = useState(false);
-	const [showModal, setShowModal] = useState(false);
-	const [context, setContext] = useState({});
 	const [searchBar] = useState(React.createRef());
 	const [userState] = useState(
 		props.userState || [
@@ -61,15 +57,7 @@ export const CohortPage = props => {
 		setShowDrawer(!showDrawer);
 	};
 
-	const toggleModal = (showEnquiry = false, context = {}) => {
-		setShowModal(!showModal);
-		setContext(context);
-		setShowDrawer(showEnquiry);
-	};
-
 	const [flagClosed, setFlagClosed] = useState(true);
-
-	const relatedResourcesRef = React.useRef();
 
 	if (isLoading) {
 		return (
@@ -94,7 +82,7 @@ export const CohortPage = props => {
 					<Row className='mt-2'>
 						<Col sm={1} lg={1} />
 						<Col sm={10} lg={10}>
-							<Alert variant='warning' className='mt-3' data-test-id='project-pending-banner'>
+							<Alert variant='warning' className='mt-3'>
 								This is an old version of this cohort.
 								<span className='float-right'>
 									<a href='/' className='alertLink'>
@@ -110,7 +98,7 @@ export const CohortPage = props => {
 						<Col sm={10} lg={10}>
 							<div className='rectangle'>
 								<Row>
-									<Col data-test-id='project-name' className='line-height-normal'>
+									<Col className='line-height-normal'>
 										<span className='black-16'>Females with Asthma</span>
 									</Col>
 								</Row>
@@ -120,10 +108,10 @@ export const CohortPage = props => {
 											<SVGIcon name='dashboard' fill={'#472505'} className='badgeSvg mr-2' viewBox='-2 -2 22 22' />
 											<span>Cohort</span>
 										</span>
-										<a href='/search?search=&tab=Projects&projectcategories='>
+										<a href='/'>
 											<div className='badge-tag'>Female</div>
 										</a>
-										<a href='/search?search=&tab=Projects&projectcategories='>
+										<a href='/'>
 											<div className='badge-tag'>Asthma</div>
 										</a>
 									</Col>
@@ -143,26 +131,16 @@ export const CohortPage = props => {
 						<Col sm={1} lg={1} />
 						<Col sm={10} lg={10}>
 							<div>
-								<Tabs
-									className='tabsBackground gray700-13 margin-bottom-8'
-									onSelect={key => {
-										googleAnalytics.recordVirtualPageView(`${key} tab`);
-										googleAnalytics.recordEvent('Projects', `Clicked ${key} tab`, `Viewing ${key}`);
-									}}>
+								<Tabs className='tabsBackground gray700-13 margin-bottom-8'>
 									<Tab eventKey='About' title={'About'}>
 										<Row>
 											<Col sm={12} lg={12}>
 												<div className='rectangle'>
 													<Row className='gray800-14-bold'>
-														<Col sm={12}>
-															Inclusion / exclusion criteria{' '}
-															<span>
-																<InfoSVG id='datasetTooltipSvg' />
-															</span>
-														</Col>
+														<Col sm={12}>Inclusion / exclusion criteria</Col>
 													</Row>
 													<Row className='mt-3'>
-														<Col sm={12} className='gray800-14 hdruk-section-body' data-test-id='project-description'>
+														<Col sm={12} className='gray800-14 hdruk-section-body'>
 															<ReactMarkdown source='' />
 														</Col>
 													</Row>
@@ -177,7 +155,7 @@ export const CohortPage = props => {
 														<Col sm={12}>Description</Col>
 													</Row>
 													<Row className='mt-3'>
-														<Col sm={12} className='gray800-14 hdruk-section-body' data-test-id='project-results'>
+														<Col sm={12} className='gray800-14 hdruk-section-body'>
 															<ReactMarkdown source='Word Sense Disambiguation (WSD), the automatic identification of the meanings of ambiguous terms in a document, is an important stage in text processing. We describe a WSD system that has been developed specifically for the types of ambiguities found in biomedical documents. This system uses a range of knowledge sources. It employs both linguistic features, such as local collocations, and features derived from domain-specific knowledge sources, the Unified Medical Language System (UMLS) and Medical Subject Headings (MeSH). This system is applied to three types of ambiguities found in Medline abstracts: ambiguous terms, abbreviations with multiple expansions and names that are ambiguous between genes.' />
 														</Col>
 													</Row>
@@ -216,69 +194,59 @@ export const CohortPage = props => {
 																	</div>
 																</Accordion.Toggle>
 															</Col>
-															<Col sm={10} data-test-id='link' className='gray800-14'>
+															<Col sm={10} className='gray800-14 contents'>
+																<ToolTips content='Dataset metadata version' class='margin-right-8'>
+																	<InfoSVG />
+																</ToolTips>
 																<div>
-																	<>
-																		<a
-																			href='!#'
-																			className='version-list'
-																			onClick={e => {
-																				e.stopPropagation();
-																				window.location.href = `/dataset-onboarding/${1}`;
-																			}}>
-																			<span>
-																				<InfoSVG id='datasetTooltipSvg' />
-																			</span>
-																			<span className='versionNumber'>2.0</span> Additional phenotypes included
-																		</a>
-																	</>
+																	<a
+																		href='!#'
+																		className='version-list'
+																		onClick={e => {
+																			e.stopPropagation();
+																			window.location.href = `/`;
+																		}}>
+																		<span className='versionNumber'>2.0</span> Additional phenotypes included
+																	</a>
 																	<Accordion.Collapse eventKey='0' style={{ paddingRight: '20px' }}>
-																		<>
-																			<>
-																				<a
-																					href='!#'
-																					className='version-list'
-																					onClick={e => {
-																						e.stopPropagation();
-																						window.location.href = `/dataset-onboarding/${1}`;
-																					}}>
-																					<span className='versionNumber'>1.3</span> Fixed typo on header
-																				</a>
-																			</>
-																			<>
-																				<a
-																					href='!#'
-																					className='version-list'
-																					onClick={e => {
-																						e.stopPropagation();
-																						window.location.href = `/dataset-onboarding/${1}`;
-																					}}>
-																					<span className='versionNumber'>1.2</span>
-																				</a>
-																			</>
-																			<>
-																				<a
-																					href='!#'
-																					className='version-list'
-																					onClick={e => {
-																						e.stopPropagation();
-																						window.location.href = `/dataset-onboarding/${1}`;
-																					}}>
-																					<span className='versionNumber'>1.1</span> Added uploaders
-																				</a>
-																			</>
-																			<>
-																				<a
-																					href='!#'
-																					className='version-list'
-																					onClick={e => {
-																						e.stopPropagation();
-																						window.location.href = `/dataset-onboarding/${1}`;
-																					}}>
-																					<span className='versionNumber'>1.0</span>
-																				</a>
-																			</>
-																		</>
+																		<Fragment>
+																			<a
+																				href='!#'
+																				className='version-list'
+																				onClick={e => {
+																					e.stopPropagation();
+																					window.location.href = `/`;
+																				}}>
+																				<span className='versionNumber'>1.3</span> Fixed typo on header
+																			</a>
+																			<a
+																				href='!#'
+																				className='version-list'
+																				onClick={e => {
+																					e.stopPropagation();
+																					window.location.href = `/`;
+																				}}>
+																				<span className='versionNumber'>1.2</span>
+																			</a>
+																			<a
+																				href='!#'
+																				className='version-list'
+																				onClick={e => {
+																					e.stopPropagation();
+																					window.location.href = `/`;
+																				}}>
+																				<span className='versionNumber'>1.1</span> Added uploaders
+																			</a>
+																			<a
+																				href='!#'
+																				className='version-list'
+																				onClick={e => {
+																					e.stopPropagation();
+																					window.location.href = `/`;
+																				}}>
+																				<span className='versionNumber'>1.0</span>
+																			</a>
+																		</Fragment>
 																	</Accordion.Collapse>
 																</div>
 															</Col>
@@ -288,16 +256,12 @@ export const CohortPage = props => {
 														<Col sm={2} className='gray800-14'>
 															Uploaders
 														</Col>
-														<Col sm={10} className='gray800-14'>
-															<span>
-																<InfoSVG id='datasetTooltipSvg' />
-															</span>
-															<span>
-																<Uploader uploader={{ firstname: 'Joan Admin' }} />
-															</span>
-															<span>
-																<Uploader uploader={{ firstname: 'Tanika patel' }} />
-															</span>
+														<ToolTips content='Uploaders' class='margin-right-8'>
+															<InfoSVG />
+														</ToolTips>
+														<Col sm={10} className='gray800-14 contents'>
+															<Uploader uploader={{ firstname: 'Joan Admin' }} />
+															<Uploader uploader={{ firstname: 'Tanika patel' }} />
 														</Col>
 													</Row>
 												</div>
