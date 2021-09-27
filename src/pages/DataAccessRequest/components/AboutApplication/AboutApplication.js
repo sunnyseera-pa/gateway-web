@@ -290,11 +290,12 @@ const AboutApplication = props => {
 										<Link
 											id='howToRequestAccessLink'
 											className={allowedNavigation && userType.toUpperCase() !== 'CUSTODIAN' ? '' : 'disabled'}
-											onClick={e =>
+											onClick={e => {
+												e.preventDefault();
 												toggleModal(false, {
 													...context,
 													showActionButtons: false,
-												})
+												})}
 											}>
 											how to request access
 										</Link>
