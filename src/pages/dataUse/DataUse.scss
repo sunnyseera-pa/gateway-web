@@ -136,21 +136,20 @@
 
 .datause-info-icon-button {
 	background-color: transparent !important;
-	border-color: transparent !important;
+	border: none !important;
 	padding: 0;
-	height: 8px;
-	width: 8px;
-	margin-top: -12px;
+	height: 17px;
+	width: 17px;
+	margin-top: -3px;
 	margin-left: -9px;
+}
+.datause-info-icon-button:focus {
+	outline: none;
 }
 
 .datause-info-icon-button:hover {
 	background-color: transparent !important;
 	border-color: transparent !important;
-}
-
-.datause-info-icon-tooltip {
-	margin-top: -100px;
 }
 
 .datause-arrow {
@@ -226,19 +225,24 @@
 }
 
 .nonhdruser {
-	border: 1px solid #e5f7f1;
+	border: 2px solid #e5f7f1;
 	background-color: white;
 }
 
 .datatuse-personicon-bg {
-	width: 15px;
-	height: 15px;
+	width: 17px;
+	height: 17px;
 	border-radius: 50%;
 	background-color: #a1e6cf;
 	display: inline-block;
-	margin: 0 auto;
+	margin-top: 3px;
 }
 
 .badge-datause-bold {
 	font-weight: 500 !important;
+	margin-top: -3px;
+}
+
+.datatuse-summary {
+	flex-direction: column;
 }

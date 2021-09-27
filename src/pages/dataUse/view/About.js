@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
-import { Container, Row, Col, Button, Tooltip, OverlayTrigger } from 'react-bootstrap';
+import { Container, Row, Col, Button, OverlayTrigger } from 'react-bootstrap';
 import SVGIcon from '../../../images/SVGIcon';
 
-const About = ({ dataAPI, renderTooltip }) => {
+const About = ({ data, renderTooltip }) => {
 	const [closedLaySummary, setClosedLaySummary] = useState(true);
 	const [closedPublicBenefit, setClosedPublicBenefit] = useState(true);
 	const [closedDataUse, setClosedDataUse] = useState(true);
 	const [hide, setHide] = useState(true);
 
 	let count =
-		Object.keys(dataAPI).length === 0
-			? dataAPI &&
-			  dataAPI.reduce(function recur(sum, obj) {
+		Object.keys(data).length === 0
+			? data &&
+			  data.reduce(function recur(sum, obj) {
 					return sum + (obj === '' || (Object(obj) === obj && Object.values(obj).reduce(recur, 0)));
 			  }, 0)
 			: 0;
@@ -21,97 +21,93 @@ const About = ({ dataAPI, renderTooltip }) => {
 			<>
 				<Container className='datause-card'>
 					<p className='black-14-bold'>Safe people</p>
-					{!dataAPI.organisationName > 0 && hide ? (
+					{!data.organisationName > 0 && hide ? (
 						''
 					) : (
 						<Row className='soft-black-14 datause-view-grid'>
-							<Col>Organisation name</Col>
+							<Col md={4}>Organisation name</Col>
 							<OverlayTrigger
 								placement='top'
 								overlay={renderTooltip('The name of the legal entity that signs the contract to access the data.')}>
-								<Button className='datause-info-icon-button'>
+								<button className='datause-info-icon-button'>
 									<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
-								</Button>
+								</button>
 							</OverlayTrigger>
-							<Col>
-								{dataAPI.organisationName.length > 0 ? (
-									<span className='badge-tag badge-datause-bold'>{dataAPI.organisationName}</span>
+							<Col md={6}>
+								{data.organisationName.length > 0 ? (
+									<span className='badge-tag badge-datause-bold'>{data.organisationName}</span>
 								) : (
 									<p className='gray800-14-opacity'>Not specified</p>
 								)}
 							</Col>
 						</Row>
 					)}
-					{!dataAPI.applicantID > 0 && hide ? (
+					{!data.applicantID > 0 && hide ? (
 						''
 					) : (
 						<Row className='soft-black-14 datause-view-grid'>
-							<Col>Organisation ID</Col>
+							<Col md={4}>Organisation ID</Col>
 							<OverlayTrigger
 								placement='top'
 								overlay={renderTooltip('The name of the legal entity that signs the contract to access the data.')}>
-								<Button className='datause-info-icon-button'>
+								<button className='datause-info-icon-button'>
 									<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
-								</Button>
+								</button>
 							</OverlayTrigger>
-							<Col>{dataAPI.applicantID.length > 0 ? dataAPI.applicantID : <p className='gray800-14-opacity'>Not specified</p>}</Col>
+							<Col>{data.applicantID.length > 0 ? data.applicantID : <p className='gray800-14-opacity'>Not specified</p>}</Col>
 						</Row>
 					)}
-					{!dataAPI.organisationSector > 0 && hide ? (
+					{!data.organisationSector > 0 && hide ? (
 						''
 					) : (
 						<Row className='soft-black-14 datause-view-grid'>
-							<Col>Organisation sector</Col>
+							<Col md={4}>Organisation sector</Col>
 							<OverlayTrigger placement='top' overlay={renderTooltip('Sector which the applicant(s) work falls under.')}>
-								<Button className='datause-info-icon-button'>
+								<button className='datause-info-icon-button'>
 									<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
-								</Button>
+								</button>
 							</OverlayTrigger>
-							<Col>
-								{dataAPI.organisationSector.length > 0 ? (
-									<span className='badge-tag badge-datause-bold'>{dataAPI.organisationSector}</span>
+							<Col md={6}>
+								{data.organisationSector.length > 0 ? (
+									<span className='badge-tag badge-datause-bold'>{data.organisationSector}</span>
 								) : (
 									<p className='gray800-14-opacity'>Not specified</p>
 								)}
 							</Col>
 						</Row>
 					)}
-					{!dataAPI.gatewayApplicants > 0 && !dataAPI.nonGatewayApplicants > 0 && hide ? (
+					{!data.gatewayApplicants > 0 && !data.nonGatewayApplicants > 0 && hide ? (
 						''
 					) : (
 						<Row className='soft-black-14 datause-view-grid'>
-							<Col>Applicant name(s)</Col>
+							<Col md={4}>Applicant name(s)</Col>
 							<OverlayTrigger
 								placement='top'
 								overlay={renderTooltip(
 									'The name of the Principal Investigator, as well as any other individuals that have been authorised to use the data.'
 								)}>
-								<Button className='datause-info-icon-button'>
+								<button className='datause-info-icon-button'>
 									<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
-								</Button>
+								</button>
 							</OverlayTrigger>
-							<Col>
-								{dataAPI.gatewayApplicants.length > 0 && dataAPI.nonGatewayApplicants.length > 0 ? (
+							<Col md={6}>
+								{data.gatewayApplicants.length > 0 && data.nonGatewayApplicants.length > 0 ? (
 									<>
-										<span className='hdruser badge-tag'>
-											{dataAPI && dataAPI.gatewayApplicants && (
-												<span className='datatuse-personicon-bg'>
-													<SVGIcon name='personicon' width={10} height={10} fill={'#3db28c'} />
+										{data &&
+											data.gatewayApplicants.map(gatewayApplicant => (
+												<span className='hdruser badge-tag'>
+													<span className='datatuse-personicon-bg'>
+														<SVGIcon name='personiconwithbg' width={17} height={16} fill={'#3db28c'} />
+													</span>
+													<a href={`/person/${gatewayApplicant}`} className='soft-black-14 badge-datause-bold'>
+														{gatewayApplicant}
+													</a>
 												</span>
-											)}
-											{dataAPI && dataAPI.gatewayApplicants && (
-												<a href={`/person/${dataAPI.gatewayApplicants}`} className='soft-black-14 badge-datause-bold'>
-													{dataAPI.gatewayApplicants}
-												</a>
-											)}
-										</span>
-										<span className='nonhdruser badge-datause-bold badge-tag'>
-											{dataAPI && dataAPI.nonGatewayApplicants && (
-												<a href='/person/{id}' className='soft-black-14 badge-datause-bold'>
-													{dataAPI.nonGatewayApplicants}
-												</a>
-											)}
-										</span>
+											))}
+										{data &&
+											data.nonGatewayApplicants.map(nonGatewayApplicant => (
+												<span className='nonhdruser badge-datause-bold badge-tag'>{nonGatewayApplicant}</span>
+											))}
 									</>
 								) : (
 									<p className='gray800-14-opacity'>Not specified</p>
@@ -119,134 +115,126 @@ const About = ({ dataAPI, renderTooltip }) => {
 							</Col>
 						</Row>
 					)}
-
-					{!dataAPI.applicantID > 0 && hide ? (
+					{!data.applicantID > 0 && hide ? (
 						''
 					) : (
 						<Row className='soft-black-14 datause-view-grid'>
-							<Col>Applicant ID</Col>
+							<Col md={4}>Applicant ID</Col>
 							<OverlayTrigger
 								placement='top'
 								overlay={renderTooltip(
 									'A unique identifier for the applicant that is preferably an industry used standard such as Grid.ac'
 								)}>
-								<Button className='datause-info-icon-button'>
+								<button className='datause-info-icon-button'>
 									<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
-								</Button>
+								</button>
 							</OverlayTrigger>
-							<Col>{dataAPI.applicantID.length > 0 ? dataAPI.applicantID : <p className='gray800-14-opacity'>Not specified</p>}</Col>
+							<Col md={6}>{data.applicantID.length > 0 ? data.applicantID : <p className='gray800-14-opacity'>Not specified</p>}</Col>
 						</Row>
 					)}
-
-					{!dataAPI.fundersAndSponsors > 0 && hide ? (
+					{!data.fundersAndSponsors > 0 && hide ? (
 						''
 					) : (
 						<Row className='soft-black-14 datause-view-grid'>
-							<Col>Funders/Sponsor</Col>
+							<Col md={4}>Funders/Sponsor</Col>
 							<OverlayTrigger placement='top' overlay={renderTooltip('The name of any funders or sponsors involved in the project.')}>
-								<Button className='datause-info-icon-button'>
+								<button className='datause-info-icon-button'>
 									<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
-								</Button>
+								</button>
 							</OverlayTrigger>
-							<Col>
-								{dataAPI.fundersAndSponsors.length > 0 ? (
-									dataAPI.fundersAndSponsors.map(a => <span className='badge-tag badge-datause-bold'>{a}</span>)
+							<Col md={6}>
+								{data.fundersAndSponsors.length > 0 ? (
+									data.fundersAndSponsors.map(a => <span className='badge-tag badge-datause-bold'>{a}</span>)
 								) : (
 									<p className='gray800-14-opacity'>Not specified</p>
 								)}
 							</Col>
 						</Row>
 					)}
-
-					{!dataAPI.accreditedResearcherStatus > 0 && hide ? (
+					{!data.accreditedResearcherStatus > 0 && hide ? (
 						''
 					) : (
 						<Row className='soft-black-14 datause-view-grid'>
-							<Col>DEA accredited researcher status</Col>
+							<Col md={4}>DEA accredited researcher status</Col>
 							<OverlayTrigger
 								placement='top'
 								overlay={renderTooltip(
 									'The accreditation status of the Principal Investigator/applicant, as defined by the ONS Research Code of Practice and Accreditation criteria.'
 								)}>
-								<Button className='datause-info-icon-button'>
+								<button className='datause-info-icon-button'>
 									<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
-								</Button>
+								</button>
 							</OverlayTrigger>
-							<Col>
-								{dataAPI.accreditedResearcherStatus.length > 0 ? (
-									dataAPI.accreditedResearcherStatus
+							<Col md={6}>
+								{data.accreditedResearcherStatus.length > 0 ? (
+									data.accreditedResearcherStatus
 								) : (
 									<p className='gray800-14-opacity'>Not specified</p>
 								)}
 							</Col>
 						</Row>
 					)}
-
-					{!dataAPI.sublicenceArrangements > 0 && hide ? (
+					{!data.sublicenceArrangements > 0 && hide ? (
 						''
 					) : (
 						<Row className='soft-black-14 datause-view-grid'>
-							<Col>Sub-licence arrangements (if any)?</Col>
+							<Col md={4}>Sub-licence arrangements (if any)?</Col>
 							<OverlayTrigger
 								placement='top'
 								overlay={renderTooltip(
 									'Identifies whether there are any permissions for the applicant to share the data beyond the named parties.'
 								)}>
-								<Button className='datause-info-icon-button'>
+								<button className='datause-info-icon-button'>
 									<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
-								</Button>
+								</button>
 							</OverlayTrigger>
-							<Col>
-								{dataAPI.sublicenceArrangements.length > 0 ? (
-									dataAPI.sublicenceArrangements
-								) : (
-									<p className='gray800-14-opacity'>Not specified</p>
-								)}
+							<Col md={6}>
+								{data.sublicenceArrangements.length > 0 ? data.sublicenceArrangements : <p className='gray800-14-opacity'>Not specified</p>}
 							</Col>
 						</Row>
 					)}
 				</Container>
 				<Container className='datause-card'>
 					<p className='black-14-bold'>Safe projects</p>
-					{!dataAPI.projectId > 0 && hide ? (
+					{!data.projectId > 0 && hide ? (
 						''
 					) : (
 						<Row className='soft-black-14 datause-view-grid'>
-							<Col>Project ID</Col>
+							<Col md={4}>Project ID</Col>
 							<OverlayTrigger
 								placement='top'
 								overlay={renderTooltip(
 									'A unique identifier for the project that is preferably an industry used standard, such as IRAS ID. However for non-research projects, a unique reference number created by the data custodian on receipt of the application is sufficient.'
 								)}>
-								<Button className='datause-info-icon-button'>
+								<button className='datause-info-icon-button'>
 									<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
-								</Button>
+								</button>
 							</OverlayTrigger>
-							<Col>{dataAPI.projectId.length > 0 ? dataAPI.projectId : <p className='gray800-14-opacity'>Not specified</p>}</Col>
+							<Col md={6}>{data.projectId.length > 0 ? data.projectId : <p className='gray800-14-opacity'>Not specified</p>}</Col>
 						</Row>
 					)}
-					{!dataAPI.projectTitle > 0 && hide ? (
+					{!data.projectTitle > 0 && hide ? (
 						''
 					) : (
 						<Row className='soft-black-14 datause-view-grid'>
-							<Col>Project title</Col>
+							<Col md={4}>Project title</Col>
 							<OverlayTrigger
 								placement='top'
 								overlay={renderTooltip(
 									'The title of the project/research study/request that the applicant is investigating through the use of health data.'
 								)}>
-								<Button className='datause-info-icon-button'>
+								<button className='datause-info-icon-button'>
 									<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
-								</Button>
+								</button>
 							</OverlayTrigger>
-							<Col>{dataAPI.projectTitle.length > 0 ? dataAPI.projectTitle : <p className='gray800-14-opacity'>Not specified</p>}</Col>
+							<Col md={6}>{data.projectTitle.length > 0 ? data.projectTitle : <p className='gray800-14-opacity'>Not specified</p>}</Col>
 						</Row>
 					)}
-					{!dataAPI.laySummary > 0 && hide ? (
+					{!data.laySummary > 0 && hide ? (
 						''
 					) : (
 						<Row className='soft-black-14 datause-view-grid'>
-							<Col>
+							<Col md={4}>
 								Lay summary
 								<button
 									className='datause-arrow'
@@ -259,16 +247,16 @@ const About = ({ dataAPI, renderTooltip }) => {
 								overlay={renderTooltip(
 									'A concise and clear description of the project, (e.g. as required by URKI in funding applications). It should outline the problem, objectives and expected outcomes in language that is understandable to the general public and contain a maximum of 300 words.'
 								)}>
-								<Button className='datause-info-icon-button'>
+								<button className='datause-info-icon-button'>
 									<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
-								</Button>
+								</button>
 							</OverlayTrigger>
-							<Col>
-								{dataAPI.laySummary.length > 0 ? (
+							<Col md={6}>
+								{data.laySummary.length > 0 ? (
 									closedLaySummary ? (
-										dataAPI.laySummary.substr(0, 250)
+										data.laySummary.substr(0, 250)
 									) : (
-										dataAPI.laySummary
+										data.laySummary
 									)
 								) : (
 									<p className='gray800-14-opacity'>Not specified</p>
@@ -276,11 +264,11 @@ const About = ({ dataAPI, renderTooltip }) => {
 							</Col>
 						</Row>
 					)}
-					{!dataAPI.publicBenefitStatement > 0 && hide ? (
+					{!data.publicBenefitStatement > 0 && hide ? (
 						''
 					) : (
 						<Row className='soft-black-14 datause-view-grid'>
-							<Col>
+							<Col md={4}>
 								Public benefit statement
 								<button
 									className='datause-arrow'
@@ -299,16 +287,16 @@ const About = ({ dataAPI, renderTooltip }) => {
 								overlay={renderTooltip(
 									'A description in plain English of the anticipated outcomes, or impact of project on the general public.'
 								)}>
-								<Button className='datause-info-icon-button'>
+								<button className='datause-info-icon-button'>
 									<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
-								</Button>
+								</button>
 							</OverlayTrigger>
-							<Col>
-								{dataAPI.publicBenefitStatement.length > 0 ? (
+							<Col md={6}>
+								{data.publicBenefitStatement.length > 0 ? (
 									closedPublicBenefit ? (
-										dataAPI.publicBenefitStatement.substr(0, 250)
+										data.publicBenefitStatement.substr(0, 250)
 									) : (
-										dataAPI.publicBenefitStatement
+										data.publicBenefitStatement
 									)
 								) : (
 									<p className='gray800-14-opacity'>Not specified</p>
@@ -316,232 +304,220 @@ const About = ({ dataAPI, renderTooltip }) => {
 							</Col>
 						</Row>
 					)}
-					{!dataAPI.requestCategoryType && hide ? (
+					{!data.requestCategoryType && hide ? (
 						''
 					) : (
 						<Row className='soft-black-14 datause-view-grid'>
-							<Col>Request category type</Col>
+							<Col md={4}>Request category type</Col>
 							<OverlayTrigger placement='top' overlay={renderTooltip('This categorises the main purpose of the data being shared.')}>
-								<Button className='datause-info-icon-button'>
+								<button className='datause-info-icon-button'>
 									<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
-								</Button>
+								</button>
 							</OverlayTrigger>
-							<Col>
-								{dataAPI.requestCategoryType.length > 0 ? dataAPI.requestCategoryType : <p className='gray800-14-opacity'>Not specified</p>}
+							<Col md={6}>
+								{data.requestCategoryType.length > 0 ? data.requestCategoryType : <p className='gray800-14-opacity'>Not specified</p>}
 							</Col>
 						</Row>
 					)}
-					{!dataAPI.technicalSummary && hide ? (
+					{!data.technicalSummary && hide ? (
 						''
 					) : (
 						<Row className='soft-black-14 datause-view-grid'>
-							<Col>Technical summary</Col>
+							<Col md={4}>Technical summary</Col>
 							<OverlayTrigger
 								placement='top'
 								overlay={renderTooltip('A summary of the proposed research, in a manner that is suitable for a specialist reader.')}>
-								<Button className='datause-info-icon-button'>
+								<button className='datause-info-icon-button'>
 									<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
-								</Button>
+								</button>
 							</OverlayTrigger>
-							<Col>
-								{dataAPI.technicalSummary.length > 0 ? dataAPI.technicalSummary : <p className='gray800-14-opacity'>Not specified</p>}
+							<Col md={6}>
+								{data.technicalSummary.length > 0 ? data.technicalSummary : <p className='gray800-14-opacity'>Not specified</p>}
 							</Col>
 						</Row>
 					)}
-
-					{!dataAPI.otherApprovalCommittees && hide ? (
+					{!data.otherApprovalCommittees && hide ? (
 						''
 					) : (
 						<Row className='soft-black-14 datause-view-grid'>
-							<Col>Other approval committees</Col>
+							<Col md={4}>Other approval committees</Col>
 							<OverlayTrigger
 								placement='top'
 								overlay={renderTooltip('Reference to other decision-making bodies that the project has already been authorised by.')}>
-								<Button className='datause-info-icon-button'>
+								<button className='datause-info-icon-button'>
 									<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
-								</Button>
+								</button>
 							</OverlayTrigger>
-							<Col>
-								{dataAPI.otherApprovalCommittees.length > 0 ? (
-									dataAPI.otherApprovalCommittees
+							<Col md={6}>
+								{data.otherApprovalCommittees.length > 0 ? (
+									data.otherApprovalCommittees
 								) : (
 									<p className='gray800-14-opacity'>Not specified</p>
 								)}
 							</Col>
 						</Row>
 					)}
-
-					{!dataAPI.projectStartDate > 0 && hide ? (
+					{!data.projectStartDate > 0 && hide ? (
 						''
 					) : (
 						<Row className='soft-black-14 datause-view-grid'>
-							<Col>Project start date</Col>
+							<Col md={4}>Project start date</Col>
 							<OverlayTrigger placement='top' overlay={renderTooltip('The date the project is scheduled to start or actual start date.')}>
-								<Button className='datause-info-icon-button'>
+								<button className='datause-info-icon-button'>
 									<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
-								</Button>
+								</button>
 							</OverlayTrigger>
-							<Col>
-								{dataAPI.projectStartDate.length > 0 ? dataAPI.projectStartDate : <p className='gray800-14-opacity'>Not specified</p>}
+							<Col md={6}>
+								{data.projectStartDate.length > 0 ? data.projectStartDate : <p className='gray800-14-opacity'>Not specified</p>}
 							</Col>
 						</Row>
 					)}
-
-					{!dataAPI.projectEndDate > 0 && hide ? (
+					{!data.projectEndDate > 0 && hide ? (
 						''
 					) : (
 						<Row className='soft-black-14 datause-view-grid'>
-							<Col>Project end date</Col>
+							<Col md={4}>Project end date</Col>
 							<OverlayTrigger placement='top' overlay={renderTooltip('The date the project is scheduled to finish or actual end date.')}>
-								<Button className='datause-info-icon-button'>
+								<button className='datause-info-icon-button'>
 									<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
-								</Button>
+								</button>
 							</OverlayTrigger>
-							<Col>{dataAPI.projectEndDate.length > 0 ? dataAPI.projectEndDate : <p className='gray800-14-opacity'>Not specified</p>}</Col>
+							<Col md={6}>{data.projectEndDate.length > 0 ? data.projectEndDate : <p className='gray800-14-opacity'>Not specified</p>}</Col>
 						</Row>
 					)}
-
-					{!dataAPI.latestApprovalDate > 0 && hide ? (
+					{!data.latestApprovalDate > 0 && hide ? (
 						''
 					) : (
 						<Row className='soft-black-14 datause-view-grid'>
-							<Col>Latest approval date</Col>
+							<Col md={4}>Latest approval date</Col>
 							<OverlayTrigger
 								placement='top'
 								overlay={renderTooltip('The last date the data access request for this project was approved by a data custodian.')}>
-								<Button className='datause-info-icon-button'>
+								<button className='datause-info-icon-button'>
 									<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
-								</Button>
+								</button>
 							</OverlayTrigger>
-							<Col>
-								{dataAPI.latestApprovalDate.length > 0 ? dataAPI.latestApprovalDate : <p className='gray800-14-opacity'>Not specified</p>}
+							<Col md={6}>
+								{data.latestApprovalDate.length > 0 ? data.latestApprovalDate : <p className='gray800-14-opacity'>Not specified</p>}
 							</Col>
 						</Row>
 					)}
 				</Container>
 				<Container className='datause-card datause-view-grid'>
 					<p className='black-14-bold'>Safe data</p>
-					{!dataAPI.datasetTitles > 0 && hide ? (
+					{!data.datasetTitles > 0 && hide ? (
 						''
 					) : (
 						<Row className='soft-black-14'>
-							<Col>Dataset(s) name</Col>
+							<Col md={4}>Dataset(s) name</Col>
 							<OverlayTrigger placement='top' overlay={renderTooltip('The name of the dataset(s) being accessed.')}>
-								<Button className='datause-info-icon-button'>
+								<button className='datause-info-icon-button'>
 									<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
-								</Button>
+								</button>
 							</OverlayTrigger>
-							<Col>{dataAPI.datasetTitles.length > 0 ? dataAPI.datasetTitles : <p className='gray800-14-opacity'>Not specified</p>}</Col>
+							<Col md={6}>{data.datasetTitles.length > 0 ? data.datasetTitles : <p className='gray800-14-opacity'>Not specified</p>}</Col>
 						</Row>
 					)}
-					{!dataAPI.dataSensitivityLevel > 0 && hide ? (
+					{!data.dataSensitivityLevel > 0 && hide ? (
 						''
 					) : (
 						<Row className='soft-black-14 datause-view-grid'>
-							<Col>Data sensitivity level</Col>
+							<Col md={4}>Data sensitivity level</Col>
 							<OverlayTrigger
 								placement='top'
 								overlay={renderTooltip(
 									'The level of identifiability of the data being accessed, as defined by Understanding Patient Data. In the case of multiple datasets being accessed, the sensitivity level for the dataset with the most sensitive data should be used: Personally Identifiable > De-Personalised > Anonymous'
 								)}>
-								<Button className='datause-info-icon-button'>
+								<button className='datause-info-icon-button'>
 									<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
-								</Button>
+								</button>
 							</OverlayTrigger>
-							<Col>
-								{dataAPI.dataSensitivityLevel.length > 0 ? (
-									dataAPI.dataSensitivityLevel
-								) : (
-									<p className='gray800-14-opacity'>Not specified</p>
-								)}
+							<Col md={6}>
+								{data.dataSensitivityLevel.length > 0 ? data.dataSensitivityLevel : <p className='gray800-14-opacity'>Not specified</p>}
 							</Col>
 						</Row>
 					)}
-					{!dataAPI.legalBasisForData > 0 && hide ? (
+					{!data.legalBasisForData > 0 && hide ? (
 						''
 					) : (
 						<Row className='soft-black-14 datause-view-grid'>
-							<Col>Legal basis for provision of data</Col>
+							<Col md={4}>Legal basis for provision of data</Col>
 							<OverlayTrigger
 								placement='top'
 								overlay={renderTooltip(
 									'The legal basis that allows the applicant to lawfully process personally identifiable data, as specified by NHS Digital.'
 								)}>
-								<Button className='datause-info-icon-button'>
+								<button className='datause-info-icon-button'>
 									<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
-								</Button>
+								</button>
 							</OverlayTrigger>
-							<Col>
-								{dataAPI.legalBasisForData.length > 0 ? dataAPI.legalBasisForData : <p className='gray800-14-opacity'>Not specified</p>}
+							<Col md={6}>
+								{data.legalBasisForData.length > 0 ? data.legalBasisForData : <p className='gray800-14-opacity'>Not specified</p>}
 							</Col>
 						</Row>
 					)}
-					{!dataAPI.dutyOfConfidentiality > 0 && hide ? (
+					{!data.dutyOfConfidentiality > 0 && hide ? (
 						''
 					) : (
 						<Row className='soft-black-14 datause-view-grid'>
-							<Col>Common law of duty of confidentiality</Col>
+							<Col md={4}>Common law of duty of confidentiality</Col>
 							<OverlayTrigger
 								placement='top'
 								overlay={renderTooltip(
 									'In the application of the Common Law Duty of Confidentiality there are 2 options that enable a release: Consent (Reasonable Expectation) or Section 251 NHS Act 2006.'
 								)}>
-								<Button className='datause-info-icon-button'>
+								<button className='datause-info-icon-button'>
 									<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
-								</Button>
+								</button>
 							</OverlayTrigger>
-							<Col>
-								{dataAPI.dutyOfConfidentiality.length > 0 ? (
-									dataAPI.dutyOfConfidentiality
-								) : (
-									<p className='gray800-14-opacity'>Not specified</p>
-								)}
+							<Col md={6}>
+								{data.dutyOfConfidentiality.length > 0 ? data.dutyOfConfidentiality : <p className='gray800-14-opacity'>Not specified</p>}
 							</Col>
 						</Row>
 					)}
-					{!dataAPI.nationalDataOptOut > 0 && hide ? (
+					{!data.nationalDataOptOut > 0 && hide ? (
 						''
 					) : (
 						<Row className='soft-black-14 datause-view-grid'>
-							<Col>National data opt-out applied?</Col>
+							<Col md={4}>National data opt-out applied?</Col>
 							<OverlayTrigger
 								placement='top'
 								overlay={renderTooltip(
 									'Specifies whether the preference for people to opt-out of their confidential patient information being used for secondary use has been applied to the data prior to release.'
 								)}>
-								<Button className='datause-info-icon-button'>
+								<button className='datause-info-icon-button'>
 									<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
-								</Button>
+								</button>
 							</OverlayTrigger>
-							<Col>
-								{dataAPI.nationalDataOptOut.length > 0 ? dataAPI.nationalDataOptOut : <p className='gray800-14-opacity'>Not specified</p>}
+							<Col md={6}>
+								{data.nationalDataOptOut.length > 0 ? data.nationalDataOptOut : <p className='gray800-14-opacity'>Not specified</p>}
 							</Col>
 						</Row>
 					)}
-					{!dataAPI.requestFrequency > 0 && hide ? (
+					{!data.requestFrequency > 0 && hide ? (
 						''
 					) : (
 						<Row className='soft-black-14 datause-view-grid'>
-							<Col>Request frequency</Col>
+							<Col md={4}>Request frequency</Col>
 							<OverlayTrigger
 								placement='top'
 								overlay={renderTooltip(
 									'Determines whether this a "one-off" request or a recurring dataset to be provided over a specific time period.'
 								)}>
-								<Button className='datause-info-icon-button'>
+								<button className='datause-info-icon-button'>
 									<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
-								</Button>
+								</button>
 							</OverlayTrigger>
-							<Col>
-								{dataAPI.requestFrequency.length > 0 ? dataAPI.requestFrequency : <p className='gray800-14-opacity'>Not specified</p>}
+							<Col md={6}>
+								{data.requestFrequency.length > 0 ? data.requestFrequency : <p className='gray800-14-opacity'>Not specified</p>}
 							</Col>
 						</Row>
 					)}
-					{!dataAPI.dataProcessingDescription > 0 && hide ? (
+					{!data.dataProcessingDescription > 0 && hide ? (
 						''
 					) : (
 						<Row className='soft-black-14 datause-view-grid'>
-							<Col>
+							<Col md={4}>
 								Description of how the data will be used
 								<button className='datause-arrow' onClick={() => (!closedDataUse ? setClosedDataUse(true) : setClosedDataUse(false))}>
 									<SVGIcon width='20px' height='20px' name='chevronbottom' fill={'#475da7'} className={closedDataUse ? 'flip180' : ''} />
@@ -552,108 +528,107 @@ const About = ({ dataAPI, renderTooltip }) => {
 								overlay={renderTooltip(
 									'Details of how the data requested will be processed (including how the data will be analysed or linked to other datasets).'
 								)}>
-								<Button className='datause-info-icon-button'>
+								<button className='datause-info-icon-button'>
 									<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
-								</Button>
+								</button>
 							</OverlayTrigger>
-							<Col>{closedDataUse ? dataAPI.dataProcessingDescription.substr(0, 150) : dataAPI.dataProcessingDescription}</Col>
+							<Col md={6}>{closedDataUse ? data.dataProcessingDescription.substr(0, 150) : data.dataProcessingDescription}</Col>
 						</Row>
 					)}
-					{!dataAPI.confidentialDataDescription > 0 && hide ? (
+					{!data.confidentialDataDescription > 0 && hide ? (
 						''
 					) : (
 						<Row className='soft-black-14 datause-view-grid'>
-							<Col>Description of the confidential data being used</Col>
+							<Col md={4}>Description of the confidential data being used</Col>
 							<OverlayTrigger
 								placement='top'
 								overlay={renderTooltip(
 									'A description of the specific patient identifiable fields that have been included in the dataset(s) being accessed.'
 								)}>
-								<Button className='datause-info-icon-button'>
+								<button className='datause-info-icon-button'>
 									<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
-								</Button>
+								</button>
 							</OverlayTrigger>
-							<Col>
-								{dataAPI.confidentialDataDescription.length > 0 ? (
-									dataAPI.confidentialDataDescription
+							<Col md={6}>
+								{data.confidentialDataDescription.length > 0 ? (
+									data.confidentialDataDescription
 								) : (
 									<p className='gray800-14-opacity'>Not specified</p>
 								)}
 							</Col>
 						</Row>
 					)}
-					{!dataAPI.accessDate > 0 && hide ? (
+					{!data.accessDate > 0 && hide ? (
 						''
 					) : (
 						<Row className='soft-black-14 datause-view-grid'>
-							<Col>Release/Access date</Col>
+							<Col md={4}>Release/Access date</Col>
 							<OverlayTrigger placement='top' overlay={renderTooltip('The date the data access was granted and active research started.')}>
-								<Button className='datause-info-icon-button'>
+								<button className='datause-info-icon-button'>
 									<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
-								</Button>
+								</button>
 							</OverlayTrigger>
-							<Col>{dataAPI.accessDate.length > 0 ? dataAPI.accessDate : <p className='gray800-14-opacity'>Not specified</p>}</Col>
+							<Col md={6}>{data.accessDate.length > 0 ? data.accessDate : <p className='gray800-14-opacity'>Not specified</p>}</Col>
 						</Row>
 					)}
 				</Container>
 				<Container className='datause-card'>
 					<p className='black-14-bold'>Safe setting</p>
-					{!dataAPI.dataLocation > 0 && hide ? (
+					{!data.dataLocation > 0 && hide ? (
 						''
 					) : (
 						<Row className='soft-black-14 datause-view-grid'>
-							<Col>Trusted research environment or any other specified location</Col>
+							<Col md={4}>Trusted research environment or any other specified location</Col>
 							<OverlayTrigger
 								placement='top'
 								overlay={renderTooltip(
 									'These are highly secure spaces for researchers to access sensitive data (also known as Data Safe Havens). ‘Other’ represents any other location that has been used for data access.'
 								)}>
-								<Button className='datause-info-icon-button'>
+								<button className='datause-info-icon-button'>
 									<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
-								</Button>
+								</button>
 							</OverlayTrigger>
-							<Col>{dataAPI.dataLocation.length > 0 ? dataAPI.dataLocation : <p className='gray800-14-opacity'>Not specified</p>}</Col>
+							<Col md={6}>{data.dataLocation.length > 0 ? data.dataLocation : <p className='gray800-14-opacity'>Not specified</p>}</Col>
 						</Row>
 					)}
-
-					{!dataAPI.privacyEnhancements > 0 && hide ? (
+					{!data.privacyEnhancements > 0 && hide ? (
 						''
 					) : (
 						<Row className='soft-black-14 datause-view-grid'>
-							<Col>How has data been processed to enhance privacy?</Col>
+							<Col md={4}>How has data been processed to enhance privacy?</Col>
 							<OverlayTrigger
 								placement='top'
 								overlay={renderTooltip('Description of the tools or software used to reduce level of identifiable data being shared.')}>
-								<Button className='datause-info-icon-button'>
+								<button className='datause-info-icon-button'>
 									<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
-								</Button>
+								</button>
 							</OverlayTrigger>
-							<Col>
-								{dataAPI.privacyEnhancements.length > 0 ? dataAPI.privacyEnhancements : <p className='gray800-14-opacity'>Not specified</p>}
+							<Col md={6}>
+								{data.privacyEnhancements.length > 0 ? data.privacyEnhancements : <p className='gray800-14-opacity'>Not specified</p>}
 							</Col>
 						</Row>
 					)}
 				</Container>
 				<Container className='datause-card'>
 					<p className='black-14-bold'>Safe output</p>
-					{!dataAPI.researchOutputs > 0 && hide ? (
+					{!data.researchOutputs > 0 && hide ? (
 						''
 					) : (
 						<Row className='soft-black-14'>
-							<Col>Link to research outputs</Col>
+							<Col md={4}>Link to research outputs</Col>
 							<OverlayTrigger
 								placement='top'
 								overlay={renderTooltip(
 									'A URL link to any academic or non-academic research outputs, as they become available, including code used.'
 								)}>
-								<Button className='datause-info-icon-button'>
+								<button className='datause-info-icon-button'>
 									<SVGIcon name='info' width={8} height={8} fill={'#475da7'} className='datause-info-icon' />
-								</Button>
+								</button>
 							</OverlayTrigger>
-							<Col>
-								{dataAPI.researchOutputs.length > 0 ? (
-									<a href={dataAPI.researchOutputs} className='purple-blue-14'>
-										{dataAPI.researchOutputs}
+							<Col md={6}>
+								{data.researchOutputs.length > 0 ? (
+									<a href={data.researchOutputs} className='purple-blue-14'>
+										{data.researchOutputs}
 									</a>
 								) : (
 									<p className='gray800-14-opacity'>Not specified</p>
@@ -663,7 +638,6 @@ const About = ({ dataAPI, renderTooltip }) => {
 					)}
 				</Container>
 			</>
-
 			<Row>
 				<Col className='datause-about-info'>
 					<p className='soft-black-14'>

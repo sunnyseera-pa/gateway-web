@@ -13,7 +13,7 @@ const View = ({ ...props }) => {
 	const [searchBar] = useState(React.createRef());
 	const [searchString, setSearchString] = useState('');
 	const [showDrawer, setShowDrawer] = useState(false);
-	const [dataAPI, setDataAPI] = useState([]);
+	const [data, setData] = useState([]);
 	const [userState] = useState(
 		props.userState || [
 			{
@@ -29,7 +29,7 @@ const View = ({ ...props }) => {
 
 	useEffect(() => {
 		const getData = () => {
-			axios.get(baseURL + '/api/v2/data-use-registers/' + props.match.params.datauseID).then(res => setDataAPI(res.data));
+			axios.get(baseURL + '/api/v2/data-use-registers/' + props.match.params.datauseID).then(res => setData(res.data));
 		};
 		getData();
 	}, []);
@@ -71,23 +71,21 @@ const View = ({ ...props }) => {
 				doToggleDrawer={toggleDrawer}
 			/>
 			<Container className='datause-view'>
-				<Row className='datause-card'>
+				<Row className='datause-card datatuse-summary'>
 					<div>
-						<p className='black-20-semibold'>{dataAPI && dataAPI.projectTitle}</p>
-						<p className='black-16-semibold'>{dataAPI && dataAPI.organisationName}</p>
+						<p className='black-20-semibold'>{data && data.projectTitle}</p>
+						<p className='black-16-semibold'>{data && data.organisationName}</p>
 					</div>
 
 					<div>
 						<span className='badge-datause badge-tag badge-datause-bold'>
-							<SVGIcon name='datauseicon' width={12} height={12} fill={'#fff'} /> {dataAPI && dataAPI.type}
+							<SVGIcon name='datauseicon' width={12} height={12} fill={'#fff'} /> Data use
 						</span>
-					</div>
-					<div>
-						{dataAPI &&
-							dataAPI.keywords &&
-							dataAPI.keywords.map(a => (
-								<a href={`/search?search=&datasetfeatures=${a}&tab=Datasets`} className='badge-tag badge-datause-bold'>
-									{a}
+						{data &&
+							data.keywords &&
+							data.keywords.map(keyword => (
+								<a href={`/search?search=&datasetfeatures=${keyword}&tab=Datasets`} className='badge-tag badge-datause-bold'>
+									{keyword}
 								</a>
 							))}
 					</div>
@@ -96,7 +94,7 @@ const View = ({ ...props }) => {
 				<Tabs defaultActiveKey='About' className='gray700-13 data-use-tabs'>
 					{tabs.map(tabName => (
 						<Tab eventKey={tabName} title={tabName}>
-							{tabName === 'About' && <About dataAPI={dataAPI} renderTooltip={renderTooltip} />}
+							{tabName === 'About' && <About data={data} renderTooltip={renderTooltip} />}
 							{tabName === 'Related resources' && <RelatedResources data={mockDataRelatedResource} />}
 						</Tab>
 					))}
