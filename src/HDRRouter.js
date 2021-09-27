@@ -208,7 +208,6 @@ class HDRRouter extends Component {
 						<Route path='/loginerror' render={props => <LoginErrorPage {...props} userState={userState} />} />
 						<Route path='/person/:personID' render={props => <PersonPage {...props} userState={userState} />} />
 						<Route path='/dataset/:datasetID' render={props => <DatasetPage {...props} userState={userState} />} />
-						<Route path='/viewdatause' render={props => <ViewDataUsePage {...props} userState={userState} />} />
 						<Route path='/datause/:datauseID' render={props => <ViewDataUsePage {...props} userState={userState} />} />
 						<Route path='/completeRegistration/:personID' render={props => <CompleteRegistration {...props} userState={userState} />} />
 						<Route path='/sso' render={props => <SSOPage {...props} userState={userState} />} />
