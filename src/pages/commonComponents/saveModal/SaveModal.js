@@ -19,7 +19,6 @@ const SaveModal = ({ ...props }) => {
 				filters: props.filters || [],
 				tab: props.tab || '',
 				sort: props.sort || '',
-				loggedIn: props.loggedIn || '',
 			},
 		},
 

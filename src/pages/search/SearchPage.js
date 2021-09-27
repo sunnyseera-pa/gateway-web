@@ -648,6 +648,7 @@ class SearchPage extends React.Component {
 						[`${entityType}Data`]: data,
 						isLoading: false,
 						isResultsLoading: false,
+						saveSuccess: false,
 						summary,
 						search: textSearch ? textSearch : prevState.search,
 					};
@@ -1256,35 +1257,35 @@ class SearchPage extends React.Component {
 	saveFiltersUpdate = viewSaved => {
 		this.setState({ showSavedPreferencesModal: false });
 		// 1. v2 take copy of data
-		let filtersV2Data = [...this.state.filtersV2];
+		let filtersV2DatasetsData = !_.isNil(this.state.filtersV2Datasets) ? [...this.state.filtersV2Datasets] : [];
+		let filtersV2ToolsData = !_.isNil(this.state.filtersV2Tools) ? [...this.state.filtersV2Tools] : [];
+		let filtersV2ProjectsData = !_.isNil(this.state.filtersV2Projects) ? [...this.state.filtersV2Projects] : [];
+		let filtersV2CollectionsData = !_.isNil(this.state.filtersV2Collections) ? [...this.state.filtersV2Collections] : [];
+		let filtersV2CoursesData = !_.isNil(this.state.filtersV2Courses) ? [...this.state.filtersV2Courses] : [];
+		let filtersV2PapersData = !_.isNil(this.state.filtersV2Papers) ? [...this.state.filtersV2Papers] : [];
+
 		// 2. v2 resets the filters UI tree back to default
-		let filtersV2 = this.resetTreeChecked(filtersV2Data);
+		let filtersV2Datasets = this.resetTreeChecked(filtersV2DatasetsData);
+		let filtersV2Tools = this.resetTreeChecked(filtersV2ToolsData);
+		let filtersV2Projects = this.resetTreeChecked(filtersV2ProjectsData);
+		let filtersV2Collections = this.resetTreeChecked(filtersV2CollectionsData);
+		let filtersV2Courses = this.resetTreeChecked(filtersV2CoursesData);
+		let filtersV2Papers = this.resetTreeChecked(filtersV2PapersData);
 
 		this.setState(
 			prevState => ({
-				filtersV2,
-				selectedV2: [],
-				toolCategoriesSelected: [],
-				toolProgrammingLanguageSelected: [],
-				toolFeaturesSelected: [],
-				toolTopicsSelected: [],
-				projectCategoriesSelected: [],
-				projectFeaturesSelected: [],
-				projectTopicsSelected: [],
-				paperFeaturesSelected: [],
-				paperTopicsSelected: [],
-				courseStartDatesSelected: [],
-				courseProviderSelected: [],
-				courseLocationSelected: [],
-				courseStudyModeSelected: [],
-				courseAwardSelected: [],
-				courseEntryLevelSelected: [],
-				courseDomainsSelected: [],
-				courseKeywordsSelected: [],
-				courseFrameworkSelected: [],
-				coursePrioritySelected: [],
-				collectionKeywordsSelected: [],
-				collectionPublisherSelected: [],
+				filtersV2Datasets,
+				selectedV2Datasets: [],
+				filtersV2Tools,
+				selectedV2Tools: [],
+				filtersV2Projects,
+				selectedV2Projects: [],
+				filtersV2Papers,
+				selectedV2Papers: [],
+				filtersV2Collections,
+				selectedV2Collections: [],
+				filtersV2Courses,
+				selectedV2Courses: [],
 				datasetIndex: 0,
 				toolIndex: 0,
 				projectIndex: 0,
@@ -1301,20 +1302,21 @@ class SearchPage extends React.Component {
 				collectionSort: '',
 			}),
 			() => {
-				let sort = '';
 				if (viewSaved.tab === 'Datasets') {
 					this.setState({ datasetSort: viewSaved.sort });
 				} else if (viewSaved.tab === 'Tools') {
 					this.setState({ toolSort: viewSaved.sort });
 				} else if (viewSaved.tab === 'Projects') {
 					this.setState({ projectSort: viewSaved.sort });
+				} else if (viewSaved.tab === 'Papers') {
+					this.setState({ paperSort: viewSaved.sort });
 				} else if (viewSaved.tab === 'People') {
 					this.setState({ personSort: viewSaved.sort });
 				} else if (viewSaved.tab === 'Collections') {
 					this.setState({ collectionSort: viewSaved.sort });
 				}
 
-				this.setState({ search: viewSaved.search, key: viewSaved.tab, selectedV2: viewSaved.filters }, () => {
+				this.setState({ search: viewSaved.search, key: viewSaved.tab, [`selectedV2${viewSaved.tab}`]: viewSaved.filters }, () => {
 					this.doSearchCall();
 				});
 			}
@@ -1508,16 +1510,7 @@ class SearchPage extends React.Component {
 		}
 
 		const dropdownMenu = (
-			<Col
-				className={
-					this.state.savedSearchPanel
-						? key === 'Tools' || key === 'Projects' || key === 'Collections' || key === 'Courses' || key === 'Papers' || key === 'People'
-							? this.state.saveSuccess
-								? 'text-right save-dropdown saved-dropdown-small'
-								: 'text-right save-dropdown '
-							: 'text-right save-dropdown save-dropdown-search'
-						: 'text-right'
-				}>
+			<div className='text-right save-dropdown'>
 				{key === 'Tools' ? (
 					<SortDropdown
 						handleSort={this.handleSort}
@@ -1577,22 +1570,30 @@ class SearchPage extends React.Component {
 				) : (
 					''
 				)}
-			</Col>
+			</div>
 		);
 
+		let preferenceFilters = {};
 		let perferenceSort = '';
 		if (key === 'Datasets') {
+			preferenceFilters = selectedV2Datasets;
 			perferenceSort = datasetSort;
 		} else if (key === 'Tools') {
+			preferenceFilters = selectedV2Tools;
 			perferenceSort = toolSort;
 		} else if (key === 'Projects') {
+			preferenceFilters = selectedV2Projects;
 			perferenceSort = projectSort;
 		} else if (key === 'Paper') {
+			preferenceFilters = selectedV2Papers;
 			perferenceSort = paperSort;
+		} else if (key === 'Collection') {
+			preferenceFilters = selectedV2Collections;
+			perferenceSort = collectionSort;
+		} else if (key === 'Courses') {
+			preferenceFilters = selectedV2Courses;
 		} else if (key === 'People') {
 			perferenceSort = personSort;
-		} else if (key === 'Collection') {
-			perferenceSort = collectionSort;
 		}
 
 		return (
@@ -1653,12 +1654,12 @@ class SearchPage extends React.Component {
 
 						{this.state.saveSuccess && !this.state.showSavedModal && (
 							<Alert variant='primary' className='blue-banner saved-preference-banner'>
-								Saved preference: {this.state.showSavedName}
+								Saved preference: "{this.state.showSavedName}"
 							</Alert>
 						)}
-						<Container className={this.state.saveSuccess && 'container-saved-preference-banner'}>
+						<Container className={this.state.saveSuccess && !this.state.showSavedModal && 'container-saved-preference-banner'}>
 							<Row className='filters filter-save'>
-								<Col className='title'>
+								<Col className='title' lg={4}>
 									Showing {key === 'Datasets' ? <>{datasetCount} </> : ''}
 									{key === 'Tools' ? <>{toolCount} </> : ''}
 									{key === 'Projects' ? <>{projectCount} </> : ''}
@@ -1666,16 +1667,9 @@ class SearchPage extends React.Component {
 									{key === 'Courses' ? <>{courseCount} </> : ''}
 									{key === 'Papers' ? <>{paperCount} </> : ''}
 									{key === 'People' ? <>{personCount} </> : ''}
-									results {this.state.search != '' && 'for'} {this.state.search}
+									results {this.state.search != '' && `for '${this.state.search}'`}
 								</Col>
-								<Col
-									className={
-										key === 'Datasets'
-											? 'saved-buttons'
-											: key === 'Courses'
-											? 'saved-buttons saved-buttons-courses'
-											: 'saved-buttons saved-buttons-small'
-									}>
+								<Col lg={8} className='saved-buttons'>
 									{this.state.saveSuccess ? (
 										<Button variant='success' className='saved-disabled button-teal button-teal' disabled>
 											<SVGIcon width='15px' height='15px' name='tick' fill={'#fff'} /> Saved
@@ -1698,9 +1692,8 @@ class SearchPage extends React.Component {
 											saveSuccess={this.showSuccessMessage}
 											saveName={this.showSavedName}
 											search={this.state.search}
-											filters={this.state.selectedV2}
+											filters={preferenceFilters}
 											sort={perferenceSort}
-											loggedIn={this.state.userState}
 											tab={this.state.key}
 										/>
 									)}
@@ -1722,6 +1715,7 @@ class SearchPage extends React.Component {
 											onHide={this.hideSavedPreferencesModal}
 											viewMatchesLink={this.viewMatches}
 											viewSaved={this.saveFiltersUpdate}
+											activeTab={key}
 										/>
 									)}
 
@@ -1801,18 +1795,10 @@ class SearchPage extends React.Component {
 					<Container>
 						<Row>
 							{key !== 'People' ? (
-								<Col sm={12} md={12} lg={3} className='mt-4 mb-5'>
+								<Col sm={12} md={12} lg={3} className='mt-1 mb-5'>
 									{key === 'Datasets' ? (
 										<Fragment>
-											<div className={this.state.savedSearchPanel ? 'filterHolder saved-filterHolder' : 'filterHolder'}>
-												{selectedV2Datasets.length > 0 && !this.state.savedSearchPanel && (
-													<FilterSelection
-														selectedCount={selectedV2Datasets.length}
-														selectedItems={selectedV2Datasets}
-														onHandleClearSelection={this.handleClearSelection}
-														onHandleClearAll={this.handleClearAll}
-													/>
-												)}
+											<div className='saved-filterHolder'>
 												<Filter
 													data={filtersV2Datasets}
 													onHandleInputChange={this.handleInputChange}
@@ -1827,15 +1813,7 @@ class SearchPage extends React.Component {
 
 									{key === 'Tools' ? (
 										<Fragment>
-											<div className='filterHolder'>
-												{selectedV2Tools.length > 0 && (
-													<FilterSelection
-														selectedCount={selectedV2Tools.length}
-														selectedItems={selectedV2Tools}
-														onHandleClearSelection={this.handleClearSelection}
-														onHandleClearAll={this.handleClearAll}
-													/>
-												)}
+											<div className='saved-filterHolder'>
 												<Filter
 													data={filtersV2Tools}
 													onHandleInputChange={this.handleInputChange}
@@ -1850,15 +1828,7 @@ class SearchPage extends React.Component {
 
 									{key === 'Projects' ? (
 										<Fragment>
-											<div className='filterHolder'>
-												{selectedV2Projects.length > 0 && (
-													<FilterSelection
-														selectedCount={selectedV2Projects.length}
-														selectedItems={selectedV2Projects}
-														onHandleClearSelection={this.handleClearSelection}
-														onHandleClearAll={this.handleClearAll}
-													/>
-												)}
+											<div className='saved-filterHolder'>
 												<Filter
 													data={filtersV2Projects}
 													onHandleInputChange={this.handleInputChange}
@@ -1872,15 +1842,7 @@ class SearchPage extends React.Component {
 									)}
 									{key === 'Papers' ? (
 										<Fragment>
-											<div className='filterHolder'>
-												{selectedV2Papers.length > 0 && (
-													<FilterSelection
-														selectedCount={selectedV2Papers.length}
-														selectedItems={selectedV2Papers}
-														onHandleClearSelection={this.handleClearSelection}
-														onHandleClearAll={this.handleClearAll}
-													/>
-												)}
+											<div className='saved-filterHolder'>
 												<Filter
 													data={filtersV2Papers}
 													onHandleInputChange={this.handleInputChange}
@@ -1894,15 +1856,7 @@ class SearchPage extends React.Component {
 									)}
 									{key === 'Courses' ? (
 										<Fragment>
-											<div className='filterHolder'>
-												{selectedV2Courses.length > 0 && (
-													<FilterSelection
-														selectedCount={selectedV2Courses.length}
-														selectedItems={selectedV2Courses}
-														onHandleClearSelection={this.handleClearSelection}
-														onHandleClearAll={this.handleClearAll}
-													/>
-												)}
+											<div className='saved-filterHolder'>
 												<Filter
 													data={filtersV2Courses}
 													onHandleInputChange={this.handleInputChange}
@@ -1916,15 +1870,7 @@ class SearchPage extends React.Component {
 									)}
 									{key === 'Collections' ? (
 										<Fragment>
-											<div className='filterHolder'>
-												{selectedV2Collections.length > 0 && (
-													<FilterSelection
-														selectedCount={selectedV2Collections.length}
-														selectedItems={selectedV2Collections}
-														onHandleClearSelection={this.handleClearSelection}
-														onHandleClearAll={this.handleClearAll}
-													/>
-												)}
+											<div className='saved-filterHolder'>
 												<Filter
 													data={filtersV2Collections}
 													onHandleInputChange={this.handleInputChange}
@@ -1955,7 +1901,7 @@ class SearchPage extends React.Component {
 							)}
 
 							{!isResultsLoading ? (
-								<Col sm={12} md={12} lg={9} className='mt-4 mb-5'>
+								<Col sm={12} md={12} lg={9} className='mt-1 mb-5'>
 									{!showSort ? '' : <Fragment>{!this.state.savedSearchPanel && <Row>{dropdownMenu}</Row>}</Fragment>}
 									{key === 'Datasets' ? (
 										datasetCount <= 0 ? (
@@ -2145,7 +2091,7 @@ class SearchPage extends React.Component {
 									</div>
 								</Col>
 							) : (
-								<Col style={{ marginTop: '60px' }} sm={12} md={12} lg={9}>
+								<Col style={{ marginTop: '30px' }} sm={12} md={12} lg={9}>
 									<Loading />
 								</Col>
 							)}
