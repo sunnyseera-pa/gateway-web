@@ -70,7 +70,7 @@
 }
 
 .datause-view-grid {
-	padding-bottom: 8px;
+	padding-bottom: 12px;
 }
 
 .datause-relatedresource-input {
@@ -245,4 +245,8 @@
 
 .datatuse-summary {
 	flex-direction: column;
+}
+
+.datause-safeInfo {
+	padding-left: 28px !important;
 }
