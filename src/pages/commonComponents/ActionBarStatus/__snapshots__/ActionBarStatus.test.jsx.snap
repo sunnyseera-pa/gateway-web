@@ -1,0 +1,41 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Given the ActionBarStatus component When it is rendered Then matches the previous snapshot 1`] = `
+<ActionBarStatus
+  dataset={
+    Object {
+      "timestamps": Object {
+        "archived": "2021-09-29",
+        "published": "2021-09-28",
+        "rejected": "2021-09-23",
+        "submitted": "2021-09-22",
+      },
+    }
+  }
+  status="active"
+  totalQuestions={101}
+>
+  <EmotionCssPropInternal
+    __EMOTION_LABEL_PLEASE_DO_NOT_USE__="ActionBarStatus"
+    __EMOTION_TYPE_PLEASE_DO_NOT_USE__="div"
+    css={
+      Object {
+        "map": undefined,
+        "name": "1o6x6z2",
+        "next": undefined,
+        "styles": "
+    background: pink;
+    padding: 8px;
+",
+        "toString": [Function],
+      }
+    }
+  >
+    <div
+      className="css-13l6txc-ActionBarStatus"
+    >
+      This version was published on 28 September 2021
+    </div>
+  </EmotionCssPropInternal>
+</ActionBarStatus>
+`;
