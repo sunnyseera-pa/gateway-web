@@ -137,7 +137,14 @@ export const CohortPage = props => {
 											<Col sm={12} lg={12}>
 												<div className='rectangle'>
 													<Row className='gray800-14-bold'>
-														<Col sm={12}>Inclusion / exclusion criteria</Col>
+														<Col sm={12}>
+															Inclusion / exclusion criteria
+															<ToolTips
+																content='This is the search criteria used to define this cohort within the Cohort Discovery tool.'
+																class='margin-right-8 margin-left-6 titleToolTip'>
+																<InfoSVG />
+															</ToolTips>
+														</Col>
 													</Row>
 													<Row className='mt-3'>
 														<Col sm={12} className='gray800-14 hdruk-section-body'>
@@ -195,7 +202,9 @@ export const CohortPage = props => {
 																</Accordion.Toggle>
 															</Col>
 															<Col sm={10} className='gray800-14 contents'>
-																<ToolTips content='Dataset metadata version' class='margin-right-8'>
+																<ToolTips
+																	content='Any changes made to this cohort will create a new version. You can view previous versions, and a changelog message provided by the uploaders. Major versions indicate a change in the inclusion/exclusion criteria, and minor versions indicate a change in the description, title or uploaders.'
+																	class='margin-right-8'>
 																	<InfoSVG />
 																</ToolTips>
 																<div>
@@ -256,7 +265,9 @@ export const CohortPage = props => {
 														<Col sm={2} className='gray800-14'>
 															Uploaders
 														</Col>
-														<ToolTips content='Uploaders' class='margin-right-8'>
+														<ToolTips
+															content='Uploaders are the Innovation Gateway users who added this cohort to the Innovation Gateway.'
+															class='margin-right-8'>
 															<InfoSVG />
 														</ToolTips>
 														<Col sm={10} className='gray800-14 contents'>
