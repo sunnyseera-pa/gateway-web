@@ -82,6 +82,7 @@ class DatasetDetail extends Component {
 		showAllPhenotype: false,
 		showAllLinkedDatasets: false,
 		showEmpty: false,
+		showCitationSuccess: false,
 		emptyFlagDetails: false,
 		emptyFlagCoverage: false,
 		emptyFlagFormats: false,
@@ -655,6 +656,7 @@ class DatasetDetail extends Component {
 
 	exportCitation = () => {
 		console.log('export citation functionality');
+		this.setState({ showCitationSuccess: true });
 	};
 
 	render() {
@@ -798,6 +800,7 @@ class DatasetDetail extends Component {
 						<Row className='mt-4'>
 							<Col sm={1} />
 							<Col sm={10}>
+								{this.state.showCitationSuccess && 'citation success'}
 								{alert ? <Alert variant={alert.type}>{alert.message}</Alert> : null}
 								<div className='rectangle'>
 									<Row>
