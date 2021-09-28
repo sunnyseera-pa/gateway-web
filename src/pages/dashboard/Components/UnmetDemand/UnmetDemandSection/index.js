@@ -164,7 +164,7 @@ const UnmetDemandSection = ({handleSelect, key, data, renderNoResults}) => {
                     })
                 ()}
             </>
-        ) : <p>test</p>}
+        ) : null}
     </>
     )
 }
