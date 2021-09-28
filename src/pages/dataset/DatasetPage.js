@@ -653,6 +653,10 @@ class DatasetDetail extends Component {
 		this.setState({ showAllLinkedDatasets: true });
 	};
 
+	exportCitation = () => {
+		console.log('export citation functionality');
+	};
+
 	render() {
 		const {
 			searchString,
@@ -1421,7 +1425,7 @@ class DatasetDetail extends Component {
 					</SideDrawer>
 
 					<ActionBar userState={userState} showOverride={true}>
-						<ResourcePageButtons data={data} userState={userState} />
+						<ResourcePageButtons data={data} userState={userState} exportCitation={this.exportCitation} />
 					</ActionBar>
 
 					<DataSetModal

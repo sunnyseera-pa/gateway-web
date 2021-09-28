@@ -33,7 +33,7 @@ const ResourcePageButtons = props => {
 
 			{props.data.type === 'dataset' ? (
 				<>
-					<Button variant='white' onClick={''} className='techDetailButton mr-2'>
+					<Button variant='white' onClick={props.exportCitation} className='techDetailButton mr-2'>
 						Export citation
 					</Button>
 					<Button
