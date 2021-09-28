@@ -17,7 +17,7 @@ import './CohortPage.scss';
 import { ReactComponent as InfoSVG } from '../../images/info.svg';
 
 export const CohortPage = props => {
-	const [isLoading, setIsLoading] = useState(false);
+	const [isLoading] = useState(false);
 	const [searchString, setSearchString] = useState('');
 	const [showDrawer, setShowDrawer] = useState(false);
 	const [searchBar] = useState(React.createRef());
