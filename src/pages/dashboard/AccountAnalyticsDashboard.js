@@ -439,7 +439,7 @@ class AccountAnalyticsDashboard extends React.Component {
 							</Fragment>
 						)}
 						
-						<UnmetDemandSection data={data} key={key} handleSelect={this.handleSelect.bind(this)} renderNoResults={renderNoResults} />
+						<UnmetDemandSection data={data} key={key} handleSelect={this.handleSelect.bind(this)} renderNoResults={this.renderNoResults} />
 					</Col>
 					<Col sm={1} lg={10} />
 				</Row>
