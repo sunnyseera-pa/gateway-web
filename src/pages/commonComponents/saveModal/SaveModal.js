@@ -19,7 +19,6 @@ const SaveModal = ({ ...props }) => {
 				filters: props.filters || [],
 				tab: props.tab || '',
 				sort: props.sort || '',
-				loggedIn: props.loggedIn || '',
 			},
 		},
 
@@ -64,7 +63,7 @@ const SaveModal = ({ ...props }) => {
 				<Button variant='outline-primary saved-no' onClick={props.onSaveHide}>
 					No, nevermind
 				</Button>
-				<Button type='submit' onClick={formik.handleSubmit}>
+				<Button type='submit' className='save-search-button' onClick={formik.handleSubmit}>
 					Save
 				</Button>
 			</Modal.Footer>

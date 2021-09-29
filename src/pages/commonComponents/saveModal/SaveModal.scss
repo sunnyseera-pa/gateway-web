@@ -14,6 +14,7 @@
 .saved-no {
 	border-color: $teal !important;
 	color: $indigo;
+	font-size: 14px !important;
 }
 
 .saved-no:hover {
@@ -27,4 +28,8 @@
 .save-modal-input:focus {
 	outline: none !important;
 	border-color: $teal;
+}
+
+.save-search-button {
+	font-size: 14px !important;
 }
