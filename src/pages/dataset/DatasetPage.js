@@ -655,7 +655,11 @@ class DatasetDetail extends Component {
 	};
 
 	exportCitation = () => {
+		//publisher name, year, title, version, resource type, DOI/version link
 		console.log('export citation functionality');
+		console.log(this.state.data);
+		console.log('name' + this.state.data.name);
+		navigator.clipboard.writeText(this.state.data.name);
 		this.setState({ showCitationSuccess: true });
 	};
 
