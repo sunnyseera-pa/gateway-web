@@ -64,4 +64,8 @@ ActionBarStatus.propTypes = {
     className: PropTypes.string,
 };
 
+ActionBarStatus.defaultProps = {
+    className: 'padding-md',
+};
+
 export default ActionBarStatus;
