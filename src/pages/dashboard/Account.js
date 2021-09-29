@@ -32,6 +32,7 @@ import './Dashboard.scss';
 import DataUsePage from '../dataUse/DataUsePage';
 import AccountTeams from './AccountTeams';
 import DataUseUpload from '../dataUse/upload/DataUseUpload';
+import DataUseUploadActionButtons from '../dataUse/upload/DataUseUploadActionButtons';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -104,6 +105,7 @@ class Account extends Component {
 		super(props);
 		this.state.userState = props.userState;
 		this.searchBar = React.createRef();
+		this.dataUseUpload = React.createRef();
 		// 1. used for DAR custodian update status of application
 		if (_.has(props, 'location.state.alert')) {
 			this.state.alert = props.location.state.alert;
@@ -562,14 +564,14 @@ class Account extends Component {
 										</Nav.Link>
 									</div>
 
-									<div
+									{/* <div
 										className={`${tabId === 'dataaccessrequests' ? 'activeCard' : 'accountNav'}`}
 										onClick={e => this.toggleNav('dataaccessrequests')}>
 										<Nav.Link eventKey={'dataaccessrequests'} className='verticalNavBar gray700-13'>
 											<SVGIcon name='newprojecticon' fill={'#b3b8bd'} className='accountSvgs' />
 											<span className='navLinkItem'>Data access requests</span>
 										</Nav.Link>
-									</div>
+									</div> */}
 
 									<div className={`${tabId === 'datause' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('datause')}>
 										<Nav.Link eventKey={'datause'} className='verticalNavBar gray700-13'>
@@ -637,7 +639,7 @@ class Account extends Component {
 											<span style={{ marginLeft: '11px' }}>Team Management</span>
 										</Nav.Link>
 									</div>
-
+									{console.log(allowAccessRequestManagement && this.userHasRole(team, ['manager', 'reviewer']))}
 									{allowAccessRequestManagement && this.userHasRole(team, ['manager', 'reviewer']) && (
 										<div
 											className={`${
@@ -719,7 +721,7 @@ class Account extends Component {
 
 								{tabId === 'datause' ? (
 									showDataUseUploadPage ? (
-										<DataUseUpload userState={userState} team={team} />
+										<DataUseUpload userState={userState} team={team} ref={this.dataUseUpload} />
 									) : (
 										<DataUsePage userState={userState} team={team} onClickDataUseUpload={this.showDataUseUploadPage} />
 									)
@@ -754,7 +756,7 @@ class Account extends Component {
 
 								{tabId === 'datause' ? (
 									showDataUseUploadPage ? (
-										<DataUseUpload userState={userState} team={team} />
+										<DataUseUpload userState={userState} team={team} ref={this.dataUseUpload} />
 									) : (
 										<DataUsePage userState={userState} team={team} onClickDataUseUpload={this.showDataUseUploadPage} />
 									)
@@ -818,6 +820,17 @@ class Account extends Component {
 						</div>
 					</ActionBar>
 				)}
+
+				{showDataUseUploadPage && (
+					<ActionBar userState={userState}>
+						<div className='action-bar'>
+							<div className='action-bar-actions'>
+								<DataUseUploadActionButtons dataUseUpload={this.dataUseUpload} />
+							</div>
+						</div>
+					</ActionBar>
+				)}
+
 				<DataSetModal open={showModal} context={context} closed={this.toggleModal} userState={userState[0]} />
 			</Fragment>
 		);
