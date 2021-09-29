@@ -1902,6 +1902,7 @@ class SearchPage extends React.Component {
 							{!isResultsLoading ? (
 								<Col sm={12} md={12} lg={9} className='mt-1 mb-5'>
 									{!showSort ? '' : <Fragment>{!this.state.savedSearchPanel && <Row>{dropdownMenu}</Row>}</Fragment>}
+                  
 									{key === 'Datasets' ? (
 										datasetCount <= 0 ? (
 											<NoResults type='datasets' search={search} />
