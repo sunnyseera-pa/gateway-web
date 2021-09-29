@@ -660,10 +660,15 @@ class DatasetDetail extends Component {
 
 		navigator.clipboard.writeText(
 			this.state.data.datasetv2.summary.publisher.name +
+				' ' +
 				this.state.data.datasetv2.provenance.temporal.distributionReleaseDate +
+				' ' +
 				this.state.data.name +
+				' ' +
 				this.state.data.datasetVersion +
+				' ' +
 				this.state.data.type +
+				' ' +
 				this.state.data.document_links.doi
 		);
 		this.setState({ showCitationSuccess: true });
