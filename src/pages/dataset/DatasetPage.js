@@ -810,7 +810,13 @@ class DatasetDetail extends Component {
 						<Row className='mt-4'>
 							<Col sm={1} />
 							<Col sm={10}>
-								{this.state.showCitationSuccess && 'citation success'}
+								{this.state.showCitationSuccess && (
+									<Alert variant='success' className='citation-banner green-banner'>
+										<Row>
+											<Col>Citation has been copied to clipboard.</Col>
+										</Row>
+									</Alert>
+								)}
 								{alert ? <Alert variant={alert.type}>{alert.message}</Alert> : null}
 								<div className='rectangle'>
 									<Row>
