@@ -1587,7 +1587,7 @@ class SearchPage extends React.Component {
 		} else if (key === 'Paper') {
 			preferenceFilters = selectedV2Papers;
 			perferenceSort = paperSort;
-		} else if (key === 'Collection') {
+		} else if (key === 'Collections') {
 			preferenceFilters = selectedV2Collections;
 			perferenceSort = collectionSort;
 		} else if (key === 'Courses') {
