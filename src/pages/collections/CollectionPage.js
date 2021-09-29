@@ -393,7 +393,7 @@ export const CollectionPage = props => {
 				key={i}
 				active={i === projectIndex + 1}
 				onClick={e => {
-					this.handlePagination('project', i - 1);
+					handlePagination('project', i - 1);
 				}}>
 				{i}
 			</Pagination.Item>
