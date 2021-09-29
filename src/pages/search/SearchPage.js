@@ -1351,7 +1351,6 @@ class SearchPage extends React.Component {
 			paperSort,
 			personSort,
 			collectionSort,
-			courseSort,
 
 			filtersV2Datasets,
 			selectedV2Datasets,
