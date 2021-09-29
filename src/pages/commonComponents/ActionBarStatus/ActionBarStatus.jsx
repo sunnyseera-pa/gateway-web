@@ -9,7 +9,7 @@ const formatDate = (date) => {
     return moment(date).format(DISPLAY_DATE_STANDARD);
 };
 
-const ActionBarStatus = ({ status, dataset, totalQuestions }) => {
+const ActionBarStatus = ({ status, dataset, totalQuestions, ...outerProps }) => {
     const {
         timestamps: { published, submitted, rejected, archived },
     } = dataset;
@@ -43,7 +43,11 @@ const ActionBarStatus = ({ status, dataset, totalQuestions }) => {
             break;
     }
 
-    return <div css={styles.root}>{content}</div>;
+    return (
+        <div {...outerProps} css={styles.root}>
+            {content}
+        </div>
+    );
 };
 
 ActionBarStatus.propTypes = {
@@ -57,6 +61,7 @@ ActionBarStatus.propTypes = {
     }),
     totalQuestions: PropTypes.number,
     status: PropTypes.oneOf(['draft', 'active', 'inReview', 'rejected', 'archived']),
+    className: PropTypes.string,
 };
 
 export default ActionBarStatus;
