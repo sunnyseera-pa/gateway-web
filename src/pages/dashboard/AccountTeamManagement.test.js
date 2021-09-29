@@ -3,6 +3,7 @@ import { render, fireEvent, screen } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import AccountTeamManagement from './AccountTeamManagement';
 import { userState } from './__tests__/mockData';
+import { tabTypes } from './Team/teamUtil';
 
 const forwardRefMock = jest.fn();
 const onTeamManagementSaveMock = jest.fn();
@@ -21,10 +22,9 @@ test('should not render Member,Notifications and Teams Tab', async () => {
 			onClearInnerTab={onClearInnerTabMock}
 		/>
 	);
-
-	expect(screen.queryByTestId('members')).toBeNull();
-	expect(screen.queryByTestId('notifications')).toBeNull();
-	expect(screen.queryByTestId('teams')).toBeNull();
+	Object.keys(tabTypes).map(key => {
+		expect(screen.queryByTestId(tabTypes[key])).toBeNull();
+	});
 });
 
 test('should render Member,Notifications and Teams Tab', async () => {
@@ -39,11 +39,9 @@ test('should render Member,Notifications and Teams Tab', async () => {
 			onClearInnerTab={onClearInnerTabMock}
 		/>
 	);
-
-	expect(screen.getByTestId('members')).toBeInTheDocument();
-	expect(screen.getByTestId('notifications')).toBeInTheDocument();
-	expect(screen.getByTestId('teams')).toBeInTheDocument();
-
-	fireEvent.click(screen.getByTestId('notifications'));
-	expect(onTeamManagementTabChangeMock).toHaveBeenCalledTimes(1);
+	Object.keys(tabTypes).map(key => {
+		expect(screen.getByTestId(tabTypes[key])).toBeInTheDocument();
+		fireEvent.click(screen.getByTestId(tabTypes[key]));
+		expect(onTeamManagementTabChangeMock).toHaveBeenCalledTimes(1);
+	});
 });
