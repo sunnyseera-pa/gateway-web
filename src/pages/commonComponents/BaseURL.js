@@ -36,7 +36,7 @@ module.exports = {
 			return 'local';
 		}
 
-		const rx = /^([http|https]+:\/\/[a-z]+)\.([^\/.]*)/;
+		const rx = /^([http|https]+:\/\/[a-z]+)\.([^.]*)/;
 		const url = rx.exec(thisBaseURL);
 
 		if (url.length <= 0) {

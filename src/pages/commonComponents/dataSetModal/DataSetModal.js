@@ -57,7 +57,7 @@ const DataSetModal = ({ open, closed, context, userState, is5Safes, showLoginMod
 
 	return (
 		<Fragment>
-			<Modal show={open} onHide={closed} size={is5Safes ? 'lg' : 'md'} aria-labelledby='contained-modal-title-vcenter' centered>
+			<Modal show={open} onHide={closed} size='lg' aria-labelledby='contained-modal-title-vcenter' centered>
 				<div className={is5Safes ? 'appModal-header' : 'appModal-non-5safes-header'}>
 					<div className={is5Safes ? 'appModal-header--wrap' : 'appModal-non-5safes-header--wrap'}>
 						<div className='appModal-head'>
