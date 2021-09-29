@@ -8,8 +8,8 @@ import './SaveModal.scss';
 var baseURL = require('../../commonComponents/BaseURL').getURL();
 
 const SaveModal = ({ ...props }) => {
-	const [close, setClose] = useState(null);
-	const [saveSuccess, setSaveSuccess] = useState(props.saveSuccess);
+	const [, setClose] = useState(null);
+	const [, setSaveSuccess] = useState(props.saveSuccess);
 
 	const formik = useFormik({
 		initialValues: {
