@@ -25,9 +25,9 @@ const SortDropdown = ({ handleSort, sort, dropdownItems, isCollectionsSearch }) 
 				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			</Dropdown.Toggle>
 			<Dropdown.Menu>
-				{dropdownItems.map(item => {
+				{dropdownItems.map((item, index) => {
 					return (
-						<Row
+						<Row key={`ddl-item-${index}`}
 							className={
 								sorting === item ? 'sort-dropdown-item sort-dropdown-item-selected sortingDropdown' : 'sort-dropdown-item sortingDropdown'
 							}>

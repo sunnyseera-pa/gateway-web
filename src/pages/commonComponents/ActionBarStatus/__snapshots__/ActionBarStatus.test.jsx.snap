@@ -3,7 +3,7 @@
 exports[`Given the ActionBarStatus component When it is rendered Then matches the previous snapshot 1`] = `
 <div>
   <span
-    class="additonal-className css-13l6txc-ActionBarStatus"
+    class="additonal-className css-1aqv2tp-ActionBarStatus"
   >
     This version was published on 28 September 2021
   </span>
