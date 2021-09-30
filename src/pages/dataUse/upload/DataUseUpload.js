@@ -24,6 +24,7 @@ const DataUseUpload = React.forwardRef(({ userState, team }, ref) => {
 	const [alert, setAlert] = useState('');
 	const [uploadedDataUses, setUploadedDataUses] = useState({});
 	const [uploadErrors, setUploadErrors] = useState([]);
+	const [dataUseIndexes, setDataUseIndexes] = useState([]);
 
 	const onUploadDataUseRegister = event => {
 		setIsLoading(true);
@@ -78,15 +79,22 @@ const DataUseUpload = React.forwardRef(({ userState, team }, ref) => {
 		}
 	};
 
+	const toggleDataUseSection = dataUseIndex => {
+		dataUseIndexes.includes(dataUseIndex) ? dataUseIndexes.filter(index => index === dataUseIndex) : dataUseIndexes.push(dataUseIndex);
+		setDataUseIndexes(dataUseIndexes);
+	};
+
 	return (
-		<>
-			<Container>
-				{isEmpty(alert) && (
-					<Alert variant={'success'}>
+		<Row>
+			<Col xs={1}></Col>
+			<Col>
+				{!isEmpty(alert) && (
+					<Alert variant={'success'} className='main-alert'>
 						<SVGIcon name='check' width={24} height={24} fill={'#2C8267'} /> {alert}
 					</Alert>
 				)}
-				<Row className='datause-card'>
+
+				<div className='layoutCard p-4'>
 					<p className='black-20-semibold'>Upload Data uses</p>
 
 					<p className='soft-black-14'>
@@ -99,43 +107,36 @@ const DataUseUpload = React.forwardRef(({ userState, team }, ref) => {
 							Download the data use template
 						</Link>{' '}
 					</button>
-				</Row>
-				<Row className='datause-card'>
+				</div>
+				<div className='layoutCard p-4'>
 					{isLoading ? (
 						<Loading />
 					) : (
-						<Col>
-							<Row>
-								<p className='black-20-semibold'>Upload</p>
-							</Row>
-							<Row>
-								<label className='btn button-tertiary'>
-									<input name='dataUseSpreadSheet' type='file' style={{ display: 'None' }} onChange={onUploadDataUseRegister} />
-									<span>Select file...</span>
-								</label>
-							</Row>
+						<>
+							<p className='black-20-semibold'>Upload</p>
+
+							<label className='btn button-tertiary'>
+								<input name='dataUseSpreadSheet' type='file' style={{ display: 'None' }} onChange={onUploadDataUseRegister} />
+								<span>Select file...</span>
+							</label>
 
 							{!isEmpty(uploadedDataUses) && isEmpty(uploadErrors) && (
-								<Row>
-									<Alert variant='warning'>
-										Warning! Uploading a new file will delete any data uses that have not yet been submitted for admin checks by the gateway
-										team.
-									</Alert>
-								</Row>
+								<Alert variant='warning'>
+									Warning! Uploading a new file will delete any data uses that have not yet been submitted for admin checks by the gateway
+									team.
+								</Alert>
 							)}
 							{!isEmpty(uploadedDataUses) && !isEmpty(uploadErrors) && (
-								<Row>
-									<Alert variant='danger'>
-										There are errors in the data you uploaded. Please correct these and try again. Errors are listed below.
-									</Alert>
-								</Row>
+								<Alert variant='danger'>
+									There are errors in the data you uploaded. Please correct these and try again. Errors are listed below.
+								</Alert>
 							)}
-						</Col>
+						</>
 					)}
-				</Row>
+				</div>
 
 				{!isEmpty(uploadedDataUses) ? (
-					<Row className='datause-card'>
+					<div className='layoutCard p-4'>
 						{isEmpty(uploadErrors) ? (
 							<p className='black-20-semibold'>Upload Data</p>
 						) : (
@@ -189,19 +190,21 @@ const DataUseUpload = React.forwardRef(({ userState, team }, ref) => {
 								})}
 							</tbody>
 						</Table>
-					</Row>
+					</div>
 				) : (
 					''
 				)}
-			</Container>
-			<DataUseSubmitModal
-				open={isSubmitModalVisible}
-				close={toggleSubmitModal}
-				confirm={submitDataUse}
-				isValid={isEmpty(uploadErrors)}
-				isAdmin={team === 'admin'}
-			/>
-		</>
+
+				<DataUseSubmitModal
+					open={isSubmitModalVisible}
+					close={toggleSubmitModal}
+					confirm={submitDataUse}
+					isValid={isEmpty(uploadErrors)}
+					isAdmin={team === 'admin'}
+				/>
+			</Col>
+			<Col xs={1}></Col>
+		</Row>
 	);
 });
 
