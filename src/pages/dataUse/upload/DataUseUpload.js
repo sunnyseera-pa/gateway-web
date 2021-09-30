@@ -4,12 +4,15 @@ import convertToJson from 'read-excel-file/schema';
 import { Container, Row, Col, Alert, Table } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { isEmpty, some, find } from 'lodash';
-import Loading from './../../commonComponents/Loading';
+import axios from 'axios';
 
+import Loading from './../../commonComponents/Loading';
 import SVGIcon from '../../../images/SVGIcon';
 import './../DataUse.scss';
 import DataUseSubmitModal from './DataUseSubmitModal';
 import dataUseSchema from './DataUseSchema';
+
+var baseURL = require('../../commonComponents/BaseURL').getURL();
 
 const DataUseUpload = React.forwardRef(({ userState, team }, ref) => {
 	React.useImperativeHandle(ref, () => ({
@@ -23,13 +26,7 @@ const DataUseUpload = React.forwardRef(({ userState, team }, ref) => {
 	const [uploadErrors, setUploadErrors] = useState([]);
 
 	const onUploadDataUseRegister = event => {
-		// setIsLoading(true);
-
-		// setTimeout(() => {
-		// 	setIsLoading(false);
-		// 	showAlert('Your data uses have been successfully uploaded');
-		// 	setIsUploadedSuccessfully(true);
-		// }, 1000);
+		setIsLoading(true);
 
 		readXlsxFile(event.target.files[0], { sheet: 'Data Uses Template' }).then(spreadsheet => {
 			//nested header getting rid of the first row to allow mapping against the schema (see DataUseUploadTemplate.xlsx)
@@ -37,14 +34,24 @@ const DataUseUpload = React.forwardRef(({ userState, team }, ref) => {
 			const { rows, errors } = convertToJson(spreadsheet, dataUseSchema);
 
 			setUploadErrors(errors);
-
-			rows.teamId = team;
 			setUploadedDataUses(rows);
+			if (isEmpty(uploadErrors)) showAlert('Your data uses have been successfully uploaded.');
+			setIsLoading(false);
 		});
 	};
 
 	const submitDataUse = () => {
-		console.log('data use submitted');
+		const payload = {
+			teamId: team,
+			dataUses: uploadedDataUses,
+		};
+
+		axios.post(baseURL + '/api/v2/data-use-registers/upload', payload).then(res => {
+			showAlert('Submitted! The Gateway team will process your uploaded data uses and let you know when they go live.');
+			setIsSubmitModalVisible(false);
+			setUploadedDataUses({});
+			setUploadErrors([]);
+		});
 	};
 
 	const toggleSubmitModal = () => {
@@ -74,7 +81,7 @@ const DataUseUpload = React.forwardRef(({ userState, team }, ref) => {
 	return (
 		<>
 			<Container>
-				{!isEmpty(alert) && (
+				{isEmpty(alert) && (
 					<Alert variant={'success'}>
 						<SVGIcon name='check' width={24} height={24} fill={'#2C8267'} /> {alert}
 					</Alert>
