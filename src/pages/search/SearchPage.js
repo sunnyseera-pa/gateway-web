@@ -45,6 +45,7 @@ class SearchPage extends React.Component {
 		search: '',
 		datasetSort: '',
 		toolSort: '',
+		datauseSort: '',
 		projectSort: '',
 		paperSort: '',
 		personSort: '',
@@ -52,6 +53,7 @@ class SearchPage extends React.Component {
 		collectionSort: '',
 		datasetIndex: 0,
 		toolIndex: 0,
+		datauseIndex: 0,
 		projectIndex: 0,
 		paperIndex: 0,
 		personIndex: 0,
@@ -111,6 +113,8 @@ class SearchPage extends React.Component {
 		selectedV2Datasets: [],
 		filtersV2Tools: [],
 		selectedV2Tools: [],
+		filtersV2Datauses: [],
+		selectedV2Datauses: [],
 		filtersV2Projects: [],
 		selectedV2Projects: [],
 		filtersV2Papers: [],
@@ -388,6 +392,11 @@ class SearchPage extends React.Component {
 			const selectedV2Tools = [...this.state.selectedV2Tools];
 			this.setSelectedFiltersFromQueryParams(filtersV2Tools, selectedV2Tools, queryParams, 'tool');
 		}
+		if (!_.isEmpty(this.state.filtersV2Datauses)) {
+			const filtersV2Tools = [...this.state.filtersV2Tools];
+			const selectedV2Datauses = [...this.state.selectedV2Datauses];
+			this.setSelectedFiltersFromQueryParams(filtersV2Tools, selectedV2Datauses, queryParams, 'datause');
+		}
 		if (!_.isEmpty(this.state.filtersV2Projects)) {
 			const filtersV2Projects = [...this.state.filtersV2Projects];
 			const selectedV2Projects = [...this.state.selectedV2Projects];
@@ -416,6 +425,7 @@ class SearchPage extends React.Component {
 		// PageNumbers - should be datasetPageNo etc better convention
 		queryParams.datasetIndex ? this.setState({ datasetIndex: queryParams.datasetIndex }) : this.setState({ datasetIndex: 0 });
 		queryParams.toolIndex ? this.setState({ toolIndex: queryParams.toolIndex }) : this.setState({ toolIndex: 0 });
+		queryParams.datauseIndex ? this.setState({ datauseIndex: queryParams.datauseIndex }) : this.setState({ datauseIndex: 0 });
 		queryParams.projectIndex ? this.setState({ projectIndex: queryParams.projectIndex }) : this.setState({ projectIndex: 0 });
 		queryParams.paperIndex ? this.setState({ paperIndex: queryParams.paperIndex }) : this.setState({ paperIndex: 0 });
 		queryParams.personIndex ? this.setState({ personIndex: queryParams.personIndex }) : this.setState({ personIndex: 0 });
@@ -424,6 +434,7 @@ class SearchPage extends React.Component {
 		// Sort for each tab
 		queryParams.datasetSort ? this.setState({ datasetSort: queryParams.datasetSort }) : this.setState({ datasetSort: '' });
 		queryParams.toolSort ? this.setState({ toolSort: queryParams.toolSort }) : this.setState({ toolSort: '' });
+		queryParams.datauseSort ? this.setState({ datauseSort: queryParams.datauseSort }) : this.setState({ datauseSort: '' });
 		queryParams.projectSort ? this.setState({ projectSort: queryParams.projectSort }) : this.setState({ projectSort: '' });
 		queryParams.paperSort ? this.setState({ paperSort: queryParams.paperSort }) : this.setState({ paperSort: '' });
 		queryParams.personSort ? this.setState({ personSort: queryParams.personSort }) : this.setState({ personSort: '' });
@@ -435,6 +446,7 @@ class SearchPage extends React.Component {
 		// 1. v2 take copy of data
 		let filtersV2DatasetsData = !_.isNil(this.state.filtersV2Datasets) ? [...this.state.filtersV2Datasets] : [];
 		let filtersV2ToolsData = !_.isNil(this.state.filtersV2Tools) ? [...this.state.filtersV2Tools] : [];
+		let filtersV2DatausesData = !_.isNil(this.state.filtersV2Datauses) ? [...this.state.filtersV2Datauses] : [];
 		let filtersV2ProjectsData = !_.isNil(this.state.filtersV2Projects) ? [...this.state.filtersV2Projects] : [];
 		let filtersV2CollectionsData = !_.isNil(this.state.filtersV2Collections) ? [...this.state.filtersV2Collections] : [];
 		let filtersV2CoursesData = !_.isNil(this.state.filtersV2Courses) ? [...this.state.filtersV2Courses] : [];
@@ -443,6 +455,7 @@ class SearchPage extends React.Component {
 		// 2. v2 resets the filters UI tree back to default
 		let filtersV2Datasets = this.resetTreeChecked(filtersV2DatasetsData);
 		let filtersV2Tools = this.resetTreeChecked(filtersV2ToolsData);
+		let filtersV2Datauses = this.resetTreeChecked(filtersV2DatausesData);
 		let filtersV2Projects = this.resetTreeChecked(filtersV2ProjectsData);
 		let filtersV2Collections = this.resetTreeChecked(filtersV2CollectionsData);
 		let filtersV2Courses = this.resetTreeChecked(filtersV2CoursesData);
@@ -454,6 +467,8 @@ class SearchPage extends React.Component {
 				selectedV2Datasets: [],
 				filtersV2Tools,
 				selectedV2Tools: [],
+				filtersV2Datauses,
+				selectedV2Datauses: [],
 				filtersV2Projects,
 				selectedV2Projects: [],
 				filtersV2Papers,
@@ -464,6 +479,7 @@ class SearchPage extends React.Component {
 				selectedV2Courses: [],
 				datasetIndex: 0,
 				toolIndex: 0,
+				datatuseIndex: 0,
 				projectIndex: 0,
 				paperIndex: 0,
 				personIndex: 0,
@@ -471,6 +487,7 @@ class SearchPage extends React.Component {
 				collectionIndex: 0,
 				datasetSort: '',
 				toolSort: '',
+				datauseSort: '',
 				projectSort: '',
 				paperSort: '',
 				personSort: '',
@@ -501,7 +518,16 @@ class SearchPage extends React.Component {
 
 	updateOnFilter = () => {
 		this.setState(
-			{ datasetIndex: 0, toolIndex: 0, projectIndex: 0, paperIndex: 0, personIndex: 0, courseIndex: 0, isResultsLoading: true },
+			{
+				datasetIndex: 0,
+				toolIndex: 0,
+				datausesIndex: 0,
+				projectIndex: 0,
+				paperIndex: 0,
+				personIndex: 0,
+				courseIndex: 0,
+				isResultsLoading: true,
+			},
 			() => {
 				this.doSearchCall();
 			}
@@ -527,6 +553,7 @@ class SearchPage extends React.Component {
 		let searchURL = '';
 		let filtersDatasetsV2 = [];
 		let filtersV2Tools = [];
+		let filtersV2Datauses = [];
 		let filtersV2Projects = [];
 		let filtersV2Papers = [];
 		let filtersV2Courses = [];
@@ -535,6 +562,7 @@ class SearchPage extends React.Component {
 			userState,
 			datasetIndex = 0,
 			toolIndex = 0,
+			datauseIndex = 0,
 			projectIndex = 0,
 			paperIndex = 0,
 			personIndex = 0,
@@ -542,6 +570,7 @@ class SearchPage extends React.Component {
 			collectionIndex = 0,
 			datasetSort = '',
 			toolSort = '',
+			datauseSort = '',
 			projectSort = '',
 			paperSort = '',
 			personSort = '',
@@ -555,6 +584,7 @@ class SearchPage extends React.Component {
 		let searchObj = {
 			...this.buildSearchObj(this.state.selectedV2Datasets),
 			...this.buildSearchObj(this.state.selectedV2Tools),
+			...this.buildSearchObj(this.state.selectedV2Datauses),
 			...this.buildSearchObj(this.state.selectedV2Projects),
 			...this.buildSearchObj(this.state.selectedV2Papers),
 			...this.buildSearchObj(this.state.selectedV2Courses),
@@ -564,6 +594,7 @@ class SearchPage extends React.Component {
 		searchURL = this.buildSearchUrl(searchObj);
 		if (datasetIndex > 0) searchURL += '&datasetIndex=' + encodeURIComponent(datasetIndex);
 		if (toolIndex > 0) searchURL += '&toolIndex=' + encodeURIComponent(toolIndex);
+		if (datauseIndex > 0) searchURL += '&datauseIndex=' + encodeURIComponent(datauseIndex);
 		if (projectIndex > 0) searchURL += '&projectIndex=' + encodeURIComponent(projectIndex);
 		if (paperIndex > 0) searchURL += '&paperIndex=' + encodeURIComponent(paperIndex);
 		if (personIndex > 0) searchURL += '&personIndex=' + encodeURIComponent(personIndex);
@@ -572,6 +603,7 @@ class SearchPage extends React.Component {
 		// sorting across the filter range
 		if (datasetSort !== '') searchURL += '&datasetSort=' + encodeURIComponent(datasetSort);
 		if (toolSort !== '') searchURL += '&toolSort=' + encodeURIComponent(toolSort);
+		if (datauseSort !== '') searchURL += '&datauseSort=' + encodeURIComponent(datauseSort);
 		if (projectSort !== '') searchURL += '&projectSort=' + encodeURIComponent(projectSort);
 		if (paperSort !== '') searchURL += '&paperSort=' + encodeURIComponent(paperSort);
 		if (personSort !== '') searchURL += '&personSort=' + encodeURIComponent(personSort);
@@ -607,6 +639,10 @@ class SearchPage extends React.Component {
 					} else if (entityType === 'tool') {
 						let filtersV2ToolState = this.state.filtersV2Tools || [];
 						filtersV2Tools = this.setHighlightedFilters(filters, [...filtersV2ToolState]);
+						this.setState({ filtersV2Tools });
+					} else if (entityType === 'datause') {
+						let filtersV2DatausesState = this.state.filtersV2Datauses || [];
+						filtersV2Tools = this.setHighlightedFilters(filters, [...filtersV2DatausesState]);
 						this.setState({ filtersV2Tools });
 					} else if (entityType === 'project') {
 						let filtersV2ProjectState = this.state.filtersV2Projects || [];
@@ -772,6 +808,15 @@ class SearchPage extends React.Component {
 			if (!_.isEmpty(filterDataTools) && _.isEmpty(this.state.filtersV2Tools)) {
 				const filtersV2Tools = this.mapFiltersToDictionary(filterDataTools, this.state.dataUtilityFilters);
 				this.setState({ filtersV2Tools });
+			}
+
+			const responseDatauses = await axios.get(`${baseURL}/api/v2/filters/datauses`);
+			const {
+				data: { data: filterDataDatauses },
+			} = responseDatauses;
+			if (!_.isEmpty(filterDataDatauses) && _.isEmpty(this.state.filtersV2Datauses)) {
+				const filtersV2Datauses = this.mapFiltersToDictionary(filterDataDatauses, this.state.dataUtilityFilters);
+				this.setState({ filtersV2Datauses });
 			}
 
 			const responseProjects = await axios.get(`${baseURL}/api/v2/filters/project`);
@@ -1128,6 +1173,8 @@ class SearchPage extends React.Component {
 				return [...this.state.filtersV2Datasets];
 			case 'Tools':
 				return [...this.state.filtersV2Tools];
+			case 'Datauses':
+				return [...this.state.filtersV2Datauses];
 			case 'Projects':
 				return [...this.state.filtersV2Projects];
 			case 'Papers':
@@ -1150,6 +1197,8 @@ class SearchPage extends React.Component {
 				return [...this.state.selectedV2Datasets];
 			case 'Tools':
 				return [...this.state.selectedV2Tools];
+			case 'Datauses':
+				return [...this.state.selectedV2Datauses];
 			case 'Projects':
 				return [...this.state.selectedV2Projects];
 			case 'Papers':
@@ -1260,6 +1309,7 @@ class SearchPage extends React.Component {
 		// 1. v2 take copy of data
 		let filtersV2DatasetsData = !_.isNil(this.state.filtersV2Datasets) ? [...this.state.filtersV2Datasets] : [];
 		let filtersV2ToolsData = !_.isNil(this.state.filtersV2Tools) ? [...this.state.filtersV2Tools] : [];
+		let filtersV2DatausesData = !_.isNil(this.state.filtersV2Datauses) ? [...this.state.filtersV2Datauses] : [];
 		let filtersV2ProjectsData = !_.isNil(this.state.filtersV2Projects) ? [...this.state.filtersV2Projects] : [];
 		let filtersV2CollectionsData = !_.isNil(this.state.filtersV2Collections) ? [...this.state.filtersV2Collections] : [];
 		let filtersV2CoursesData = !_.isNil(this.state.filtersV2Courses) ? [...this.state.filtersV2Courses] : [];
@@ -1268,6 +1318,7 @@ class SearchPage extends React.Component {
 		// 2. v2 resets the filters UI tree back to default
 		let filtersV2Datasets = this.resetTreeChecked(filtersV2DatasetsData);
 		let filtersV2Tools = this.resetTreeChecked(filtersV2ToolsData);
+		let filtersV2Datauses = this.resetTreeChecked(filtersV2DatausesData);
 		let filtersV2Projects = this.resetTreeChecked(filtersV2ProjectsData);
 		let filtersV2Collections = this.resetTreeChecked(filtersV2CollectionsData);
 		let filtersV2Courses = this.resetTreeChecked(filtersV2CoursesData);
@@ -1279,6 +1330,8 @@ class SearchPage extends React.Component {
 				selectedV2Datasets: [],
 				filtersV2Tools,
 				selectedV2Tools: [],
+				filtersV2Datauses,
+				selectedV2Datauses: [],
 				filtersV2Projects,
 				selectedV2Projects: [],
 				filtersV2Papers,
@@ -1289,6 +1342,7 @@ class SearchPage extends React.Component {
 				selectedV2Courses: [],
 				datasetIndex: 0,
 				toolIndex: 0,
+				datauseIndex: 0,
 				projectIndex: 0,
 				paperIndex: 0,
 				personIndex: 0,
@@ -1296,6 +1350,7 @@ class SearchPage extends React.Component {
 				collectionIndex: 0,
 				datasetSort: '',
 				toolSort: '',
+				datauseSort: '',
 				projectSort: '',
 				paperSort: '',
 				personSort: '',
@@ -1307,6 +1362,8 @@ class SearchPage extends React.Component {
 					this.setState({ datasetSort: viewSaved.sort });
 				} else if (viewSaved.tab === 'Tools') {
 					this.setState({ toolSort: viewSaved.sort });
+				} else if (viewSaved.tab === 'Datauses') {
+					this.setState({ datauseSort: viewSaved.sort });
 				} else if (viewSaved.tab === 'Projects') {
 					this.setState({ projectSort: viewSaved.sort });
 				} else if (viewSaved.tab === 'Papers') {
@@ -1349,6 +1406,7 @@ class SearchPage extends React.Component {
 
 			datasetSort,
 			toolSort,
+			datauseSort,
 			projectSort,
 			paperSort,
 			personSort,
@@ -1358,6 +1416,8 @@ class SearchPage extends React.Component {
 			selectedV2Datasets,
 			filtersV2Tools,
 			selectedV2Tools,
+			filtersV2Datauses,
+			selectedV2Datauses,
 			filtersV2Projects,
 			selectedV2Projects,
 			filtersV2Papers,
@@ -1400,7 +1460,9 @@ class SearchPage extends React.Component {
 				key = 'Datasets';
 			} else if (toolCount > 0) {
 				key = 'Tools';
-			} else if (projectCount > 0) {
+			} else if (toolCount > 0) {
+				key = 'Datause';
+			} else if (datauseCount > 0) {
 				key = 'Projects';
 			} else if (paperCount > 0) {
 				key = 'Papers';
@@ -1419,6 +1481,7 @@ class SearchPage extends React.Component {
 		// clean needed here at later date
 		if ((key === '' || key === 'Datasets') && datasetCount === 0) showSort = false;
 		if (key === 'Tools' && toolCount === 0) showSort = false;
+		if (key === 'Datauses' && datauseCount === 0) showSort = false;
 		if (key === 'Projects' && projectCount === 0) showSort = false;
 		if (key === 'Papers' && paperCount === 0) showSort = false;
 		if (key === 'People' && personCount === 0) showSort = false;
@@ -1427,6 +1490,7 @@ class SearchPage extends React.Component {
 
 		let datasetPaginationItems = [];
 		let toolPaginationItems = [];
+		let datausePaginationItems = [];
 		let projectPaginationItems = [];
 		let paperPaginationItems = [];
 		let personPaginationItems = [];
@@ -1447,6 +1511,17 @@ class SearchPage extends React.Component {
 		// Tool Pagination
 		for (let i = 1; i <= Math.ceil(toolCount / maxResult); i++) {
 			toolPaginationItems.push(
+				<Pagination.Item
+					key={i}
+					active={i === toolIndex / maxResult + 1}
+					onClick={() => this.handlePagination(typeMapper.Tools, (i - 1) * maxResult)}>
+					{i}
+				</Pagination.Item>
+			);
+		}
+		// Datause Pagination
+		for (let i = 1; i <= Math.ceil(toolCount / maxResult); i++) {
+			datausePaginationItems.push(
 				<Pagination.Item
 					key={i}
 					active={i === toolIndex / maxResult + 1}
@@ -1523,6 +1598,16 @@ class SearchPage extends React.Component {
 					''
 				)}
 
+				{key === 'Datauses' ? (
+					<SortDropdown
+						handleSort={this.handleSort}
+						sort={toolSort === '' ? (search === '' ? 'latest' : 'relevance') : toolSort}
+						dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
+					/>
+				) : (
+					''
+				)}
+
 				{key === 'Datasets' ? (
 					<SortDropdown
 						handleSort={this.handleSort}
@@ -1583,6 +1668,9 @@ class SearchPage extends React.Component {
 		} else if (key === 'Tools') {
 			preferenceFilters = selectedV2Tools;
 			perferenceSort = toolSort;
+		} else if (key === 'Datauses') {
+			preferenceFilters = selectedV2Datauses;
+			perferenceSort = datauseSort;
 		} else if (key === 'Projects') {
 			preferenceFilters = selectedV2Projects;
 			perferenceSort = projectSort;
@@ -1665,6 +1753,7 @@ class SearchPage extends React.Component {
 								<Col className='title' lg={4}>
 									Showing {key === 'Datasets' ? <>{datasetCount} </> : ''}
 									{key === 'Tools' ? <>{toolCount} </> : ''}
+									{key === 'Datauses' ? <>{datauseCount} </> : ''}
 									{key === 'Projects' ? <>{projectCount} </> : ''}
 									{key === 'Collections' ? <>{collectionCount} </> : ''}
 									{key === 'Courses' ? <>{courseCount} </> : ''}
@@ -1748,6 +1837,17 @@ class SearchPage extends React.Component {
 								) : (
 									''
 								)}
+								{this.state.key === 'Datauses' ? (
+									<FilterSelection
+										selectedCount={selectedV2Datauses.length}
+										selectedItems={selectedV2Datauses}
+										onHandleClearSelection={this.handleClearSelection}
+										onHandleClearAll={this.handleClearAll}
+										savedSearches={true}
+									/>
+								) : (
+									''
+								)}
 								{this.state.key === 'Projects' ? (
 									<FilterSelection
 										selectedCount={selectedV2Projects.length}
@@ -1819,6 +1919,21 @@ class SearchPage extends React.Component {
 											<div className='saved-filterHolder'>
 												<Filter
 													data={filtersV2Tools}
+													onHandleInputChange={this.handleInputChange}
+													onHandleClearSection={this.handleClearSection}
+													onHandleToggle={this.handleToggle}
+												/>
+											</div>
+										</Fragment>
+									) : (
+										''
+									)}
+
+									{key === 'Datauses' ? (
+										<Fragment>
+											<div className='saved-filterHolder'>
+												<Filter
+													data={filtersV2Datauses}
 													onHandleInputChange={this.handleInputChange}
 													onHandleClearSection={this.handleClearSection}
 													onHandleToggle={this.handleToggle}
@@ -1959,23 +2074,9 @@ class SearchPage extends React.Component {
 										''
 									)}
 
-									{key === 'Data use'
-										? datauseData.map(datause => {
-												return (
-													<RelatedObject
-														key={datause.id}
-														data={datause}
-														activeLink={true}
-														onSearchPage={true}
-														updateOnFilterBadge={this.updateOnFilterBadge}
-													/>
-												);
-										  })
-										: ''}
-
-									{/*key === 'Data use' ? (
+									{key === 'datause' ? (
 										datauseCount <= 0 ? (
-											<NoResults type='datause' search={search} />
+											<NoResults type='datauses' search={search} />
 										) : (
 											datauseData.map(datause => {
 												return (
@@ -1991,7 +2092,7 @@ class SearchPage extends React.Component {
 										)
 									) : (
 										''
-									)*/}
+									)}
 
 									{key === 'Projects' ? (
 										projectCount <= 0 ? (
@@ -2115,6 +2216,8 @@ class SearchPage extends React.Component {
 										{key === 'Datasets' && datasetCount > maxResult ? <Pagination>{datasetPaginationItems}</Pagination> : ''}
 
 										{key === 'Tools' && toolCount > maxResult ? <Pagination>{toolPaginationItems}</Pagination> : ''}
+
+										{key === 'Datauses' && datauseCount > maxResult ? <Pagination>{datausePaginationItems}</Pagination> : ''}
 
 										{key === 'Projects' && projectCount > maxResult ? <Pagination>{projectPaginationItems}</Pagination> : ''}
 
