@@ -1,7 +1,6 @@
 import React from 'react';
-import toJson from 'enzyme-to-json';
 import ActionBarStatus from '.';
-import { render, screen } from '@testing-library/react';
+import { render } from '@testing-library/react';
 
 let wrapper;
 
@@ -15,7 +14,7 @@ const props = {
         },
     },
     status: 'active',
-    totalQuestions: 101,
+    totalQuestions: '1 / 45 questions answered',
     className: 'additonal-className',
 };
 
@@ -43,13 +42,13 @@ describe('Given the ActionBarStatus component', () => {
             });
         });
 
-        describe('And the status is published', () => {
+        describe('And the status is draft', () => {
             it('Then has the correct output', () => {
                 const { rerender, container } = wrapper;
 
                 rerender(<ActionBarStatus {...props} status="draft" />);
 
-                expect(container.textContent).toBe('101');
+                expect(container.textContent).toBe('1 / 45 questions answered');
             });
         });
 
@@ -63,7 +62,7 @@ describe('Given the ActionBarStatus component', () => {
             });
         });
 
-        describe('And the status is published', () => {
+        describe('And the status is rejected', () => {
             it('Then has the correct output', () => {
                 const { rerender, container } = wrapper;
 
@@ -75,7 +74,7 @@ describe('Given the ActionBarStatus component', () => {
             });
         });
 
-        describe('And the status is published', () => {
+        describe('And the status is archived', () => {
             it('Then has the correct output', () => {
                 const { rerender, container } = wrapper;
 

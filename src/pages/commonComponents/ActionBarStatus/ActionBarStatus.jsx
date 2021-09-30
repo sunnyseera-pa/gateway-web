@@ -34,9 +34,7 @@ const ActionBarStatus = ({ status, dataset, totalQuestions, ...outerProps }) => 
 
             break;
         case 'archived':
-            content = `This version was published on ${formatDate(
-                published
-            )} and archived on ${formatDate(archived)}`;
+            content = `This version was published on ${formatDate(published)} and archived on ${formatDate(archived)}`;
 
             break;
         default:
@@ -44,9 +42,9 @@ const ActionBarStatus = ({ status, dataset, totalQuestions, ...outerProps }) => 
     }
 
     return (
-        <div {...outerProps} css={styles.root}>
+        <span {...outerProps} css={styles.root}>
             {content}
-        </div>
+        </span>
     );
 };
 
@@ -59,7 +57,7 @@ ActionBarStatus.propTypes = {
             archived: PropTypes.string,
         }),
     }),
-    totalQuestions: PropTypes.number,
+    totalQuestions: PropTypes.string,
     status: PropTypes.oneOf(['draft', 'active', 'inReview', 'rejected', 'archived']),
     className: PropTypes.string,
 };
