@@ -360,6 +360,14 @@ class RelatedObject extends React.Component {
 										)}
 									</Row>
 								);
+							} else if (data.type === 'datause') {
+								return (
+									<Row className='noMargin'>
+										<Col sm={10} lg={10} className='pad-left-24'>
+											{activeLink === true && onSearchPage === true && 'Data'}
+										</Col>
+									</Row>
+								);
 							} else if (data.type === 'project') {
 								return (
 									<Row className='noMargin'>

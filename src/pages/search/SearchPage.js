@@ -59,6 +59,7 @@ class SearchPage extends React.Component {
 		collectionIndex: 0,
 		datasetData: [],
 		toolData: [],
+		datauseData: [],
 		projectData: [],
 		paperData: [],
 		personData: [],
@@ -1329,6 +1330,7 @@ class SearchPage extends React.Component {
 			search,
 			datasetData,
 			toolData,
+			datauseData,
 			projectData,
 			paperData,
 			personData,
@@ -1385,6 +1387,7 @@ class SearchPage extends React.Component {
 		let {
 			datasetCount = 0,
 			toolCount = 0,
+			datauseCount = 0,
 			projectCount = 0,
 			paperCount = 0,
 			personCount = 0,
@@ -1613,6 +1616,7 @@ class SearchPage extends React.Component {
 							<Tabs className='tabsBackground gray700-13' activeKey={key} onSelect={this.handleSelect}>
 								<Tab eventKey='Datasets' title={'Datasets (' + datasetCount + ')'} />
 								<Tab eventKey='Tools' title={'Tools (' + toolCount + ')'} />
+								<Tab eventKey='Data uses' title={'Data uses (' + datauseCount + ')'} />
 								<Tab eventKey='Projects' title={'Projects (' + projectCount + ')'} />
 								<Tab eventKey='Collections' title={'Collections (' + collectionCount + ')'} />
 								<Tab eventKey='Courses' title={'Courses (' + courseCount + ')'} />
@@ -1954,6 +1958,40 @@ class SearchPage extends React.Component {
 									) : (
 										''
 									)}
+
+									{key === 'Data use'
+										? datauseData.map(datause => {
+												return (
+													<RelatedObject
+														key={datause.id}
+														data={datause}
+														activeLink={true}
+														onSearchPage={true}
+														updateOnFilterBadge={this.updateOnFilterBadge}
+													/>
+												);
+										  })
+										: ''}
+
+									{/*key === 'Data use' ? (
+										datauseCount <= 0 ? (
+											<NoResults type='datause' search={search} />
+										) : (
+											datauseData.map(datause => {
+												return (
+													<RelatedObject
+														key={datause.id}
+														data={datause}
+														activeLink={true}
+														onSearchPage={true}
+														updateOnFilterBadge={this.updateOnFilterBadge}
+													/>
+												);
+											})
+										)
+									) : (
+										''
+									)*/}
 
 									{key === 'Projects' ? (
 										projectCount <= 0 ? (
