@@ -755,7 +755,6 @@ class SearchPage extends React.Component {
 
 	getFilters = async key => {
 		try {
-			console.log(key);
 			switch (key) {
 				case 'Datasets':
 					const response = await axios.get(`${baseURL}/api/v2/filters/dataset`);
