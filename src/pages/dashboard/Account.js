@@ -112,6 +112,7 @@ class Account extends Component {
 			this.alertTimeOut = setTimeout(() => this.setState({ alert: {} }), 10000);
 		}
 		let values = queryString.parse(window.location.search);
+
 		if (values.team === 'user') {
 			this.state.team = 'user';
 			localStorage.setItem('HDR_TEAM', 'user');
@@ -525,7 +526,6 @@ class Account extends Component {
 					doToggleDrawer={this.toggleDrawer}
 					userState={userState}
 				/>
-
 				<div className='container-wrap'>
 					<div className='col-sm-12 col-md-2 accountMenuHolder'>
 						<div className='account-menu'>
@@ -548,12 +548,12 @@ class Account extends Component {
 
 							{team === 'user' ? (
 								<Fragment>
-									{/* <div className={`${tabId === 'dashboard' ? 'activeCard' : ''}`} onClick={e => this.toggleNav('dashboard')}>
+									<div className={`${tabId === 'dashboard' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('dashboard')}>
 										<Nav.Link className='verticalNavBar gray700-13'>
 											<SVGIcon name='dashboard' fill={'#b3b8bd'} className='accountSvgs' />
 											<span className='navLinkItem'>Dashboard</span>
 										</Nav.Link>
-									</div> */}
+									</div>
 
 									<div className={`${tabId === 'youraccount' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('youraccount')}>
 										<Nav.Link className='verticalNavBar gray700-13'>
@@ -583,31 +583,7 @@ class Account extends Component {
 										</Nav.Link>
 									</div>
 
-									{/* <div className={`${tabId === 'datasets' || tabId === 'datasetsAdvancedSearch' ? 'activeCard' : ''}`}>
-                                            <Accordion activeKey={datasetAccordion} onSelect={this.datasetAccordionClick}>
-                                                <Fragment>
-                                                    <Accordion.Toggle variant='link' className='verticalNavBar gray700-13 navLinkButton' eventKey='0'>
-                                                        <SVGIcon name='dataseticon' fill={'#b3b8bd'} className='accountSvgs' /> 
-                                                        <span className="navLinkItem">Datasets</span>
-                                                    </Accordion.Toggle>
-                                                    <Accordion.Collapse eventKey='0'>
-                                                        <div>
-                                                            <Nav.Link onClick={(e) => this.toggleNav('datasets')} 
-                                                            bsPrefix="nav-block" className={`gray700-13 ${tabId === 'datasets' ? 'nav-item-active' : ''}`}>
-                                                                <span className="subLinkItem">Datasets</span>
-                                                            </Nav.Link>
-                                                            <Nav.Link 
-                                                            onClick={(e) => this.toggleNav('datasetsAdvancedSearch')}
-                                                            bsPrefix="nav-block" className={`gray700-13 ${tabId === 'datasetsAdvancedSearch' ? 'nav-item-active' : ''}`}>
-                                                                <span className="subLinkItem">Advanced search</span>
-                                                            </Nav.Link>
-                                                        </div>
-                                                    </Accordion.Collapse>
-                                                </Fragment>
-                                            </Accordion>
-                                        </div> */}
-
-									{/* <div className={`${tabId === 'papers' ? 'activeCard' : ''}`} onClick={e => this.toggleNav('papers')}>
+									<div className={`${tabId === 'papers' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('papers')}>
 										<Nav.Link eventKey={'papers'} className='verticalNavBar gray700-13'>
 											<SVGIcon name='newprojecticon' fill={'#b3b8bd'} className='accountSvgs' />
 											<span className='navLinkItem'>Papers</span>
@@ -619,7 +595,7 @@ class Account extends Component {
 											<SVGIcon name='educationicon' fill={'#b3b8bd'} className='svg-20' />
 											<span className='navLinkItem'>Courses</span>
 										</Nav.Link>
-									</div> */}
+									</div>
 
 									<div
 										className={`${tabId === 'dataaccessrequests' ? 'activeCard' : 'accountNav'}`}
@@ -847,7 +823,6 @@ class Account extends Component {
 						)}
 					</div>
 				</div>
-
 				{!_.isEmpty(dataaccessrequest) && (
 					<ActionBar userState={userState}>
 						<div className='action-bar'>
@@ -863,7 +838,6 @@ class Account extends Component {
 						</div>
 					</ActionBar>
 				)}
-
 				<SideDrawer open={showDrawer} closed={this.toggleDrawer}>
 					<UserMessages
 						userState={userState[0]}

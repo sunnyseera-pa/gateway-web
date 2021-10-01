@@ -19,13 +19,11 @@ const ActivityLogActionButtons = ({ team, latestVersion, onClickAddNewEvent, act
 					Download activity log
 				</button>
 			</CSVLink>
-
 			{team !== 'user' && (
 				<button className={`button-secondary`} onClick={() => onClickAddNewEvent()}>
 					+ Add new event
 				</button>
 			)}
-
 			{(Object.values(latestVersion.versionTree) || [])
 				.filter(version => version.applicationStatus === DarHelperUtil.darStatus.submitted)
 				.map(submittedVersion => {

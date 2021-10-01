@@ -40,6 +40,7 @@ import ActionBar from '../commonComponents/actionbar/ActionBar';
 import ResourcePageButtons from '../commonComponents/resourcePageButtons/ResourcePageButtons';
 import DatasetAboutCard from './components/DatasetAboutCard';
 import CohortDiscoveryBanner from './components/CohortDiscoveryBanner';
+import { Link } from 'react-router-dom';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 var cmsURL = require('../commonComponents/BaseURL').getCMSURL();
@@ -227,7 +228,6 @@ class DatasetDetail extends Component {
 			)
 			.then(res => {
 				const datasetHasCohortProfiling = res.data.cohortProfiling.length > 0;
-
 				if (datasetHasCohortProfiling) {
 					cohortProfilingTechnicalMetadata = res.data.cohortProfiling[0];
 					tablesWithProfilingData = cohortProfilingTechnicalMetadata.dataClasses.map(dataClass => {
@@ -237,6 +237,9 @@ class DatasetDetail extends Component {
 				this.setState({
 					datasetHasCohortProfiling,
 				});
+			})
+			.catch(err => {
+				console.error(err.message);
 			});
 
 		if (this.state.data) {
@@ -675,6 +678,7 @@ class DatasetDetail extends Component {
 			requiresModal,
 			showDrawer,
 			showModal,
+			allowsMessaging,
 			showCustodianModal,
 			showAllPhenotype,
 			showAllLinkedDatasets,

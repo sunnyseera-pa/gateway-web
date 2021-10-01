@@ -208,35 +208,33 @@ class SearchPage extends React.Component {
 			if (!_.isEmpty(Object.keys(queryParams))) {
 				// 3. loop over queryKeys
 				for (const key of Object.keys(queryParams)) {
-					if (!_.isNil(queryParams[key])) {
-						// 4. convert queryString into array of values
-						let queryValues = queryParams[key].split('::');
-						// 5. check if key exists in our tree, return {} or undefined
-						let parentNode = this.findParentNode(filtersV2, key);
-						if (!_.isNil(parentNode)) {
-							let { filters } = parentNode;
-							// 6. loop over query values
-							queryValues.forEach(node => {
-								// 7. get the selected values
-								let foundNode = this.findNode(filters, node);
-								if (!_.isEmpty(foundNode)) {
-									// 8. set check value
-									foundNode.checked = !foundNode.checked;
-									// 9. increment highest parent count
-									parentNode.selectedCount += 1;
-									// 10. prep new selected Item for selected showing
-									let selectedNode = {
-										parentKey: key,
-										id: foundNode.id,
-										label: foundNode.label,
-									};
-									// 11. fn for handling the *selected showing* returns new state
-									let selected = this.handleSelected(selectedNode, foundNode.checked);
-									// 12. update selectedV2 array with our new returned value
-									selectedV2 = [...selectedV2, ...selected];
-								}
-							});
-						}
+					// 4. convert queryString into array of values
+					let queryValues = queryParams[key].split('::');
+					// 5. check if key exists in our tree, return {} or undefined
+					let parentNode = this.findParentNode(filtersV2, key);
+					if (!_.isNil(parentNode)) {
+						let { filters } = parentNode;
+						// 6. loop over query values
+						queryValues.forEach(node => {
+							// 7. get the selected values
+							let foundNode = this.findNode(filters, node);
+							if (!_.isEmpty(foundNode)) {
+								// 8. set check value
+								foundNode.checked = !foundNode.checked;
+								// 9. increment highest parent count
+								parentNode.selectedCount += 1;
+								// 10. prep new selected Item for selected showing
+								let selectedNode = {
+									parentKey: key,
+									id: foundNode.id,
+									label: foundNode.label,
+								};
+								// 11. fn for handling the *selected showing* returns new state
+								let selected = this.handleSelected(selectedNode, foundNode.checked);
+								// 12. update selectedV2 array with our new returned value
+								selectedV2 = [...selectedV2, ...selected];
+							}
+						});
 					}
 				}
 				// 13. set the state of filters and selected options

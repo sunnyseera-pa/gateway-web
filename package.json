@@ -4,6 +4,7 @@
 	"private": true,
 	"type": "module",
 	"dependencies": {
+		"@analytics/google-analytics": "^0.5.3",
 		"@sentry/node": "^6.4.1",
 		"@sentry/react": "^6.4.1",
 		"@sentry/tracing": "^6.4.1",
@@ -19,7 +20,6 @@
 		"i18next-http-backend": "^1.0.21",
 		"lodash": "^4.17.21",
 		"moment": "^2.25.3",
-		"sass": "^1.39.0",
 		"randomstring": "^1.1.5",
 		"react": "^16.12.0",
 		"react-app-polyfill": "^1.0.6",
@@ -49,6 +49,7 @@
 		"react-web-tabs": "^1.0.1",
 		"read-excel-file": "^5.0.0",
 		"remove-markdown": "^0.3.0",
+		"sass": "^1.39.0",
 		"snyk": "^1.667.0",
 		"uniqid": "^5.2.0",
 		"uuid": "^8.3.1",
