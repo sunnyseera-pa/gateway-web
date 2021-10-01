@@ -1,0 +1,70 @@
+@import '../../css/mixins';
+@import '../../css/variables';
+
+.cohortDropdown:disabled {
+	opacity: 0.5;
+}
+
+.halfOpacity {
+	opacity: 0.5;
+}
+
+.groupAccordianHeader {
+	min-height: 56px;
+	background-color: $indigo;
+	padding: 16px;
+}
+
+.cohortGroupExpanded {
+	border: solid 1px $gray-300;
+	padding: 8px;
+}
+
+.cohortOmopIncludesCard {
+	background-color: $duck-egg-opacity-20percent;
+	padding: 16px 16px 24px 16px;
+}
+
+.cohortOmopExcludesCard {
+	background-color: $yellow-opacity-20percent;
+	padding: 16px 16px 24px 16px;
+}
+
+.andOrBox {
+	width: 30px;
+	height: 16px;
+	padding: 1px 2px;
+	border-radius: 4px;
+	background-color: $white;
+	position: absolute;
+	display: block;
+	z-index: 999;
+	left: 16px;
+	top: -10px;
+	text-align: center;
+}
+
+.omopCard {
+	position: relative;
+}
+
+.collapseWait {
+	transition: transform 0.5s linear 0s;
+}
+
+.subsumedConcepts {
+	border-left: 5px solid #d0d3d4;
+	padding-left: 12px;
+	margin-top: 16px;
+}
+
+.excludesTag {
+	border-radius: 4px;
+	background-color: $yellow;
+	padding: 0px 2px;
+	margin-right: 12px;
+}
+
+.verticalAlignSuper {
+	vertical-align: super;
+}

@@ -113,6 +113,10 @@ h6 {
 	@include font-source(16px, $white, $font-weight-semibold);
 }
 
+.white-16-bold {
+	@include font-source(16px, $white, $font-weight-bold);
+}
+
 .white-20-semibold {
 	@include font-source(20px, $white, $font-weight-semibold);
 }
@@ -165,6 +169,10 @@ h6 {
 	@include font-source(13px, $gray-700, $font-weight-bold);
 }
 
+.gray700-alt-12-bold {
+	@include font-source(12px, $gray-700-alt, $font-weight-bold);
+}
+
 .gray700-alt-13 {
 	@include font-source(13px, $gray-700-alt, $font-weight-semibold);
 }
@@ -215,4 +223,12 @@ h6 {
 
 .dark-red-semibold-20 {
 	@include font-source(20px, $dark-red, $font-weight-semibold);
+}
+
+.gray-med-13 {
+	@include font-source(13px, $gray-med, $font-weight-semibold);
+}
+
+.med-black-12 {
+	@include font-source(12px, $med-black, $font-weight-semibold);
 }
