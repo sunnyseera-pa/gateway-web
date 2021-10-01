@@ -233,7 +233,7 @@ class HDRRouter extends Component {
 						<GuardedRoute path='/course/add' component={AddEditCoursePage} userState={userState} />
 						<GuardedRoute path='/course/edit/:courseID' component={AddEditCoursePage} userState={userState} />
 						<Route path='/course/:courseID' render={props => <CoursePage {...props} userState={userState} />} />
-						<GuardedRoute path='/cohort/add' component={AddEditCohortPage} userState={userState} />
+						<GuardedRoute path='/cohort/add/:cohortID' component={AddEditCohortPage} userState={userState} />
 						<GuardedRoute path='/cohort/edit/:cohortID' component={AddEditCohortPage} userState={userState} />
 						<Route path='/advanced-search-terms/' render={props => <AdvancedSearchTAndCs {...props} userState={userState} />} />
 						<Redirect to='/search?search=' />

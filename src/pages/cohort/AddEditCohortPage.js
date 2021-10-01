@@ -5,10 +5,12 @@ import { Container } from 'react-bootstrap';
 import SearchBar from '../commonComponents/searchBar/SearchBar';
 import Loading from '../commonComponents/Loading';
 import AddEditCohortForm from './AddEditCohortForm';
+import AddEditCohortHeader from './AddEditCohortHeader';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
 import UserMessages from '../commonComponents/userMessages/UserMessages';
 import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
 import { isEditMode } from '../../utils/GeneralHelper.util';
+import { has } from 'lodash';
 import '../paper/Paper.scss';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 var baseURL = require('../commonComponents/BaseURL').getURL();
@@ -45,12 +47,32 @@ const AddEditCohortPage = props => {
 			},
 		]
 	);
+	const [radioButtonValue, setRadioButtonValue] = useState('');
+	const [usersCohorts, setUsersCohorts] = useState([]);
+	const [selectedCohort, setSelectedCohort] = useState('');
+	const [changeLogValue, setChangeLogValue] = useState('');
+	const [isFormLoading, setIsFormLoading] = useState(false);
+	const [cohortGroups, setCohortGroups] = useState([]);
 
 	useEffect(async () => {
 		await doGetUsersCall();
-		if (isEdit) getCohortFromDb();
+		await getCohortGroups();
+		if (!isEdit) getUsersCohorts();
+		if (isEdit) getCohortFromDb('initialLoad');
 		else setIsLoading(false);
 	}, []);
+
+	useEffect(() => {
+		// Get data for existing cohort selected from dropdown
+		if (radioButtonValue === 'newVersion' && selectedCohort !== '') getCohortVersionFromDb(selectedCohort);
+	}, [selectedCohort]);
+
+	useEffect(() => {
+		if (radioButtonValue === 'createNew') {
+			getCohortFromDb('createNew');
+			setChangeLogValue('');
+		}
+	}, [radioButtonValue]);
 
 	const doGetUsersCall = async () => {
 		await axios.get(baseURL + '/api/v1/users').then(async res => {
@@ -58,13 +80,67 @@ const AddEditCohortPage = props => {
 		});
 	};
 
-	const getCohortFromDb = async () => {
-		setIsLoading(true);
+	const getCohortGroups = async () => {
 		await axios.get(baseURL + '/api/v1/cohorts/' + props.match.params.cohortID).then(async res => {
+			if (has(res.data, 'cohort.input.cohorts[0].groups')) {
+				setCohortGroups(res.data.cohort.input.cohorts[0].groups);
+			}
+		});
+	};
+
+	const getCohortFromDb = async instance => {
+		await axios.get(baseURL + '/api/v1/cohorts/' + props.match.params.cohortID).then(async res => {
+			instance === 'initialLoad' ? setIsLoading(true) : setIsFormLoading(true);
+			if (instance === 'createNew') {
+				res.data.name = '';
+			}
 			setData(res.data);
 			setRelatedObjects(res.data.relatedObjects ? res.data.relatedObjects : []);
 			setPublicFlag(res.data.publicflag);
-			setIsLoading(false);
+			instance === 'initialLoad' ? setIsLoading(false) : setIsFormLoading(false);
+		});
+	};
+
+	const getCohortVersionFromDb = async selectedCohort => {
+		setIsFormLoading(true);
+		let data;
+		let relatedObjects;
+		//Get data from BCP draft cohort in redirect URL
+		await axios.get(baseURL + '/api/v1/cohorts/' + props.match.params.cohortID).then(async res => {
+			data = res.data;
+			relatedObjects = res.data.relatedObjects ? res.data.relatedObjects : [];
+
+			//Get data from the existing cohort selected in the dropdown to replace certain values
+			await axios.get(baseURL + '/api/v1/cohorts/' + selectedCohort).then(async res => {
+				data.name = res.data.name;
+				data.description = res.data.description;
+				data.uploaders = res.data.uploaders;
+				data.publicflag = res.data.publicflag;
+
+				let previousVersionRelatedResources = has(res.data, 'relatedObjects')
+					? res.data.relatedObjects.filter(relatedObject => relatedObject.objectType !== 'dataset')
+					: [];
+				let mergedRelatedResources = previousVersionRelatedResources.concat(relatedObjects);
+				relatedObjects = mergedRelatedResources;
+
+				setPublicFlag(res.data.publicflag);
+			});
+		});
+
+		setData(data);
+		setRelatedObjects(relatedObjects);
+		setIsFormLoading(false);
+	};
+
+	const getUsersCohorts = async () => {
+		await axios.get(`${baseURL}/api/v1/cohorts?activeflag=active&uploaders=${userState[0].id}`).then(async res => {
+			let usersCohorts = res.data.data.map(userCohort => ({
+				name: userCohort['name'],
+				id: userCohort['id'],
+				pid: userCohort['pid'],
+			}));
+
+			setUsersCohorts(usersCohorts);
 		});
 	};
 
@@ -186,6 +262,17 @@ const AddEditCohortPage = props => {
 				doToggleDrawer={toggleDrawer}
 				userState={userState}
 			/>
+			<AddEditCohortHeader
+				isEdit={isEdit}
+				radioButtonValue={radioButtonValue}
+				setRadioButtonValue={setRadioButtonValue}
+				usersCohorts={usersCohorts}
+				selectedCohort={selectedCohort}
+				setSelectedCohort={setSelectedCohort}
+				changeLogValue={changeLogValue}
+				setChangeLogValue={setChangeLogValue}
+				cohortGroups={cohortGroups}
+			/>
 			<AddEditCohortForm
 				data={data}
 				isEdit={isEdit}
@@ -213,6 +300,10 @@ const AddEditCohortPage = props => {
 				publicFlag={publicFlag}
 				updatePublicFlag={updatePublicFlag}
 				displayTabs={['Tools', 'Projects', 'Courses', 'Papers', 'People']}
+				radioButtonValue={radioButtonValue}
+				selectedCohort={selectedCohort}
+				changeLogValue={changeLogValue}
+				isFormLoading={isFormLoading}
 			/>
 			<SideDrawer open={showDrawer} closed={toggleDrawer}>
 				<UserMessages userState={userState[0]} closed={toggleDrawer} toggleModal={toggleModal} drawerIsOpen={showDrawer} />
