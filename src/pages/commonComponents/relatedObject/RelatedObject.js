@@ -364,7 +364,11 @@ class RelatedObject extends React.Component {
 								return (
 									<Row className='noMargin'>
 										<Col sm={10} lg={10} className='pad-left-24'>
-											{activeLink === true && onSearchPage === true && 'Data'}
+											<div>Title</div>
+											<div>Organisation</div>
+											<div>Keywords</div>
+											<div>Datasets</div>
+											<div>Data custodian</div>
 										</Col>
 									</Row>
 								);
