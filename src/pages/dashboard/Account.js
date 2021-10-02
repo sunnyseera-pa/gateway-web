@@ -106,6 +106,7 @@ class Account extends Component {
 		this.state.userState = props.userState;
 		this.searchBar = React.createRef();
 		this.dataUseUpload = React.createRef();
+		this.dataUsePage = React.createRef();
 		// 1. used for DAR custodian update status of application
 		if (_.has(props, 'location.state.alert')) {
 			this.state.alert = props.location.state.alert;
@@ -457,8 +458,10 @@ class Account extends Component {
 		this.setState({ innertab: '' });
 	};
 
-	showDataUseUploadPage = () => {
-		this.setState({ showDataUseUploadPage: true });
+	toggleDataUseUploadPage = () => {
+		this.setState(prevState => {
+			return { showDataUseUploadPage: !prevState.showDataUseUploadPage };
+		});
 	};
 
 	render() {
@@ -721,9 +724,20 @@ class Account extends Component {
 
 								{tabId === 'datause' ? (
 									showDataUseUploadPage ? (
-										<DataUseUpload userState={userState} team={team} ref={this.dataUseUpload} />
+										<DataUseUpload
+											userState={userState}
+											onSubmit={this.toggleDataUseUploadPage}
+											team={team}
+											ref={this.dataUseUpload}
+											dataUsePage={this.dataUsePage}
+										/>
 									) : (
-										<DataUsePage userState={userState} team={team} onClickDataUseUpload={this.showDataUseUploadPage} />
+										<DataUsePage
+											userState={userState}
+											team={team}
+											onClickDataUseUpload={this.toggleDataUseUploadPage}
+											ref={this.dataUsePage}
+										/>
 									)
 								) : (
 									''
@@ -756,9 +770,20 @@ class Account extends Component {
 
 								{tabId === 'datause' ? (
 									showDataUseUploadPage ? (
-										<DataUseUpload userState={userState} team={team} ref={this.dataUseUpload} />
+										<DataUseUpload
+											userState={userState}
+											team={team}
+											ref={this.dataUseUpload}
+											dataUsePage={this.dataUsePage}
+											onSubmit={this.toggleDataUseUploadPage}
+										/>
 									) : (
-										<DataUsePage userState={userState} team={team} onClickDataUseUpload={this.showDataUseUploadPage} />
+										<DataUsePage
+											userState={userState}
+											team={team}
+											onClickDataUseUpload={this.toggleDataUseUploadPage}
+											ref={this.dataUsePage}
+										/>
 									)
 								) : (
 									''

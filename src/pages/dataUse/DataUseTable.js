@@ -1,4 +1,5 @@
 import React from 'react';
+import moment from 'moment';
 import { Table, Dropdown } from 'react-bootstrap';
 
 const DataUseTable = ({ data, active, pending, archived, showModal, showUnarchiveModal }) => {
@@ -21,7 +22,7 @@ const DataUseTable = ({ data, active, pending, archived, showModal, showUnarchiv
 			<tbody>
 				{data.map(dataUse => (
 					<tr>
-						<td>{dataUse.lastActivity}</td>
+						<td>{moment(dataUse.lastActivity).format('DD/MM/YYYY')}</td>
 						<td>
 							<p>{dataUse.projectTitle}</p>
 							<p>{dataUse.institution}</p>

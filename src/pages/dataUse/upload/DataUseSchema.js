@@ -13,8 +13,13 @@ const dataUseSchema = {
 		type: String,
 		required: true,
 	},
-	'Organisation ID': {
+	'Organisation Name*': {
 		prop: 'organisationName',
+		type: String,
+		required: true,
+	},
+	'Organisation ID': {
+		prop: 'organisationId',
 		type: String,
 	},
 	'Organisation Sector': {

@@ -1,21 +1,32 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Button, Tab, Tabs } from 'react-bootstrap';
-import Data from './MockData.json';
+import { Container, Row, Col, Button, Tab, Tabs, Alert } from 'react-bootstrap';
+import axios from 'axios';
+import { isEmpty } from 'lodash';
 import Table from './DataUseTable';
 import Pagination from './DataUsePagination';
 import Modal from './ArchiveModal';
 import './DataUse.scss';
+import SVGIcon from '../../images/SVGIcon';
+var baseURL = require('../commonComponents/BaseURL').getURL();
 
-const DataUsePage = ({ userState, onClickDataUseUpload }) => {
+const DataUsePage = React.forwardRef(({ userState, onClickDataUseUpload, team }, ref) => {
+	React.useImperativeHandle(ref, () => ({
+		showSubmissionAlert,
+	}));
+
 	const [row, setRow] = useState([]);
 	const [currentPage, setCurrentPage] = useState(1);
-	const [rowsPerPage] = useState(2);
+	const [rowsPerPage] = useState(13);
 	const [showModal, setShowModal] = useState(false);
 	const [showUnarchiveModal, setShowUnarchiveModal] = useState(false);
+	const [alert, setAlert] = useState('');
 
 	useEffect(() => {
-		setRow(Data);
-	}, []);
+		axios.get(baseURL + '/api/v2/data-use-registers?team=' + team).then(res => {
+			setRow(res.data.data);
+			console.log(res.data.data);
+		});
+	}, [team, alert]);
 
 	const ShowArchiveModal = () => {
 		setShowModal(true);
@@ -33,15 +44,22 @@ const DataUsePage = ({ userState, onClickDataUseUpload }) => {
 		setShowUnarchiveModal(false);
 	};
 
+	const showSubmissionAlert = () => {
+		setAlert('Submitted! The Gateway team will process your uploaded data uses and let you know when they go live.');
+		setTimeout(() => {
+			setAlert('');
+		}, 5000);
+	};
+
 	const indexOfLastRow = currentPage * rowsPerPage;
 	const indexOfFirstRow = indexOfLastRow - rowsPerPage;
 
 	const tabs = ['Active', 'Pending approval', 'Rejected', 'Archived'];
 
-	const active = Data.filter(active => active.status === 'active');
-	const pending = Data.filter(pending => pending.status === 'pending approval');
-	const rejected = Data.filter(rejected => rejected.status === 'rejected');
-	const archived = Data.filter(archived => archived.status === 'archived');
+	const active = row.filter(active => active.activeflag === 'active');
+	const pending = row.filter(pending => pending.activeflag === 'inReview');
+	const rejected = row.filter(rejected => rejected.activeflag === 'rejected');
+	const archived = row.filter(archived => archived.activeflag === 'archived');
 
 	const currentActive = active.slice(indexOfFirstRow, indexOfLastRow);
 	const currentPending = pending.slice(indexOfFirstRow, indexOfLastRow);
@@ -54,6 +72,11 @@ const DataUsePage = ({ userState, onClickDataUseUpload }) => {
 
 	return (
 		<Container>
+			{isEmpty(alert) && (
+				<Alert variant={'success'} className='main-alert'>
+					<SVGIcon name='check' width={24} height={24} fill={'#2C8267'} /> {alert}
+				</Alert>
+			)}
 			<Row className='datause-card'>
 				<Col md={10}>
 					<Row>
@@ -110,5 +133,5 @@ const DataUsePage = ({ userState, onClickDataUseUpload }) => {
 			{showUnarchiveModal && <Modal archive={false} show={ShowUnArchiveModal} hide={HideUnArchiveModal} />}
 		</Container>
 	);
-};
+});
 export default DataUsePage;
