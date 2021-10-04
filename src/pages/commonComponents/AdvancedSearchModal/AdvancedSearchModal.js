@@ -8,28 +8,17 @@ import axios from 'axios';
 import AdvancedSearchModalBody from './AdvancedSearchModalBody';
 import cohortDiscoveryImage from '../../../images/cohort-discovery.jpg';
 import dataUtilityImage from '../../../images/data-utility.png';
-import DataUtilityWizardModal from '../DataUtilityWizard/DataUtilityWizardModal';
+import googleAnalytics from '../../../tracking';
+
 const baseURL = require('../BaseURL').getURL();
 const GENERAL_ACCESS = 'GENERAL_ACCESS';
 const BANNED = 'BANNED';
 const urlEnv = require('../BaseURL').getURLEnv();
 
-const AdvancedSearchModal = ({
-	open,
-	closed,
-	userProps,
-	dataUtilityWizardSteps,
-	updateFilterStates,
-	datasetCount,
-	doSearchCall,
-	selectedItems,
-	handleClearSelection,
-	wizardSearchValue,
-}) => {
+const AdvancedSearchModal = ({ open, closed, userProps, startDataUtilityWizardJourney }) => {
 	const [userState, setUserState] = useState(userProps);
 	const [showRequestAccessModal, setShowRequestAccessModal] = useState(false);
 	const [showTermsandConditionsModal, setShowTermsAndConditionsModal] = useState(false);
-	const [showDataUtilityWizardModal, setShowDataUtilityWizardModal] = useState(false);
 	const handleClose = action => closed(action);
 
 	const accessRQuest = async () => {
@@ -37,6 +26,8 @@ const AdvancedSearchModal = ({
 		if (approvedUser && userState.acceptedAdvancedSearchTerms) {
 			console.log('Redirecting to RQuest');
 			if (urlEnv === 'prod') {
+				googleAnalytics.recordVirtualPageView('Cohort discovery tool');
+				googleAnalytics.recordEvent('Datasets', 'Clicked search using cohort discovery', 'Opened cohort discovery tool');
 				window.location.assign('https://rquest.prod.healthdatagateway.org/bcrquest/');
 			} else {
 				window.location.assign('https://rquest.test.healthdatagateway.org/bcrquest/');
@@ -106,15 +97,6 @@ const AdvancedSearchModal = ({
 		setShowTermsAndConditionsModal(!showTermsandConditionsModal);
 	};
 
-	const startDataUtilityWizardJourney = () => {
-		handleClose();
-		setShowDataUtilityWizardModal(!showDataUtilityWizardModal);
-	};
-
-	const toggleDataUtilityWizardModal = () => {
-		setShowDataUtilityWizardModal(!showDataUtilityWizardModal);
-	};
-
 	const showLoginModal = () => {
 		// 1. add class to body to stop background scroll
 		document.body.classList.add('modal-open');
@@ -162,7 +144,7 @@ const AdvancedSearchModal = ({
 					learnMoreLink='https://www.healthdatagateway.org/about/cohort-discovery'
 					loggedIn={userState.loggedIn}
 					buttonText='Search using cohort discovery'
-					signedOutText=''
+					signedOutText='You must be signed in to use cohort discovery'
 					showLoginModal={showLoginModal}
 					buttonClick={accessRQuest}
 					imageSrc={cohortDiscoveryImage}
@@ -173,7 +155,12 @@ const AdvancedSearchModal = ({
 					bodyText='A tool to help refine your search to only datasets that meet your data utility requirements.'
 					learnMoreLink=''
 					doesNotRequireSignIn
-					buttonClick={() => startDataUtilityWizardJourney()}
+					buttonClick={() => {
+						googleAnalytics.recordVirtualPageView('Data utility wizard');
+						googleAnalytics.recordEvent('Datasets', 'Clicked search using data utility wizard', 'Opened data utility wizard modal');
+						handleClose();
+						startDataUtilityWizardJourney(1);
+					}}
 					buttonText='Search using data utility wizard'
 					imageSrc={dataUtilityImage}
 				/>
@@ -191,17 +178,6 @@ const AdvancedSearchModal = ({
 				open={showRequestAccessModal}
 				close={() => toggleShowRequestAccessModal()}
 				userId={userState.id}></AdvancedSearchRequestAccessModal>
-			<DataUtilityWizardModal
-				open={showDataUtilityWizardModal}
-				closed={() => toggleDataUtilityWizardModal()}
-				dataUtilityWizardSteps={dataUtilityWizardSteps}
-				updateFilterStates={updateFilterStates}
-				datasetCount={datasetCount}
-				doSearchCall={doSearchCall}
-				selectedItems={selectedItems}
-				handleClearSelection={handleClearSelection}
-				searchValue={wizardSearchValue}
-			/>
 		</>
 	);
 };

@@ -36,6 +36,7 @@ import DatasetOnboarding from './pages/DatasetOnboarding/DatasetOnboarding';
 import { GuardedRoute } from './pages/commonComponents/GuardedRoute';
 import AdvancedSearchTAndCs from './pages/dashboard/AdvancedSearchTAndCs';
 import CohortPage from './pages/cohort/CohortPage';
+import { ThemeProvider } from 'react-bootstrap';
 
 const baseURL = require('./pages/commonComponents/BaseURL').getURL();
 const urlEnv = require('./pages/commonComponents/BaseURL').getURLEnv();
@@ -194,54 +195,57 @@ class HDRRouter extends Component {
 		}
 
 		return (
-			<Router>
-				<LoginModal userState={userState} />
-				<div className='navBarGap'></div>
-				<div className='mainWrap' onScroll={this.handleScroll}>
-					<Switch>
-						{userState[0].loggedIn && !userState[0].profileComplete ? (
-							<Route render={props => <Account {...props} userState={userState} profileComplete={false} />} />
-						) : (
-							''
-						)}
-						<Route path='/search' render={props => <SearchPage {...props} userState={userState} />} />
-						<Route path='/loginerror' render={props => <LoginErrorPage {...props} userState={userState} />} />
-						<Route path='/person/:personID' render={props => <PersonPage {...props} userState={userState} />} />
-						<Route path='/dataset/:datasetID' render={props => <DatasetPage {...props} userState={userState} />} />
-						<Route path='/completeRegistration/:personID' render={props => <CompleteRegistration {...props} userState={userState} />} />
-						<Route path='/sso' render={props => <SSOPage {...props} userState={userState} />} />
-						<Route path='/account/unsubscribe/:userObjectID' render={props => <Unsubscribe {...props} userState={userState} />} />
-						<Route path='/dashboard' render={props => <PublicAnalyticsDashboard {...props} userState={userState} />} />
+			<ThemeProvider>
+				<Router>
+					<LoginModal userState={userState} />
+					<div className='navBarGap'></div>
+					<div className='mainWrap' onScroll={this.handleScroll}>
+						<Switch>
+							{userState[0].loggedIn && !userState[0].profileComplete ? (
+								<Route render={props => <Account {...props} userState={userState} profileComplete={false} />} />
+							) : (
+								''
+							)}
+							<Route path='/search' render={props => <SearchPage {...props} userState={userState} />} />
+							<Route path='/loginerror' render={props => <LoginErrorPage {...props} userState={userState} />} />
+							<Route path='/person/:personID' render={props => <PersonPage {...props} userState={userState} />} />
+							<Route path='/dataset/:datasetID' render={props => <DatasetPage {...props} userState={userState} />} />
+							<Route path='/completeRegistration/:personID' render={props => <CompleteRegistration {...props} userState={userState} />} />
+							<Route path='/sso' render={props => <SSOPage {...props} userState={userState} />} />
+							<Route path='/account/unsubscribe/:userObjectID' render={props => <Unsubscribe {...props} userState={userState} />} />
+							<Route path='/dashboard' render={props => <PublicAnalyticsDashboard {...props} userState={userState} />} />
 
-						<GuardedRoute path='/dataset-onboarding/:id' component={DatasetOnboarding} userState={userState} />
-						<GuardedRoute path='/data-access-request/dataset/:datasetId' component={DataAccessRequest} userState={userState} />
-						<GuardedRoute path='/data-access-request/publisher/:publisherId' component={DataAccessRequest} userState={userState} />
-						<GuardedRoute path='/data-access-request/:accessId' component={DataAccessRequest} userState={userState} />
-						<GuardedRoute path='/account' component={Account} userState={userState} />
-						<GuardedRoute path='/collection/add' component={AddEditCollectionPage} userState={userState} />
-						<GuardedRoute path='/collection/edit/:collectionID' component={AddEditCollectionPage} userState={userState} />
-						<Route path='/collection/:collectionID' render={props => <CollectionPage {...props} userState={userState} />} />
-						<GuardedRoute path='/tool/add' component={AddEditToolPage} userState={userState} />
-						<GuardedRoute path='/tool/edit/:toolID' component={AddEditToolPage} userState={userState} />
-						<Route path='/tool/:toolID' render={props => <ToolPage {...props} userState={userState} />} />
-						<GuardedRoute path='/project/add' component={AddEditProjectPage} userState={userState} />
-						<GuardedRoute path='/project/edit/:projectID' component={AddEditProjectPage} userState={userState} />
-						<Route path='/project/:projectID' render={props => <ProjectPage {...props} userState={userState} />} />
-						<GuardedRoute path='/paper/add' component={AddEditPaperPage} userState={userState} />
-						<GuardedRoute path='/paper/edit/:paperID' component={AddEditPaperPage} userState={userState} />
-						<Route path='/paper/:paperID' render={props => <PaperPage {...props} userState={userState} />} />
-						<GuardedRoute path='/course/add' component={AddEditCoursePage} userState={userState} />
-						<GuardedRoute path='/course/edit/:courseID' component={AddEditCoursePage} userState={userState} />
-						<Route path='/course/:courseID' render={props => <CoursePage {...props} userState={userState} />} />
-						<GuardedRoute path='/cohort/add/:cohortID' component={AddEditCohortPage} userState={userState} />
-						<GuardedRoute path='/cohort/edit/:cohortID' component={AddEditCohortPage} userState={userState} />
-						<Route path='/advanced-search-terms/' render={props => <AdvancedSearchTAndCs {...props} userState={userState} />} />
-						<Route path='/cohort/:cohortID' render={props => <CohortPage {...props} userState={userState} />} />
-						<Redirect to='/search?search=' />
-					</Switch>
-				</div>
-				<Footer />
-			</Router>
+							<GuardedRoute path='/dataset-onboarding/:id' component={DatasetOnboarding} userState={userState} />
+							<GuardedRoute path='/data-access-request/dataset/:datasetId' component={DataAccessRequest} userState={userState} />
+							<GuardedRoute path='/data-access-request/publisher/:publisherId' component={DataAccessRequest} userState={userState} />
+							<GuardedRoute path='/data-access-request/:accessId' component={DataAccessRequest} userState={userState} />
+							<GuardedRoute path='/account' component={Account} userState={userState} />
+							<GuardedRoute path='/collection/add' component={AddEditCollectionPage} userState={userState} />
+							<GuardedRoute path='/collection/edit/:collectionID' component={AddEditCollectionPage} userState={userState} />
+							<Route path='/collection/:collectionID' render={props => <CollectionPage {...props} userState={userState} />} />
+							<GuardedRoute path='/tool/add' component={AddEditToolPage} userState={userState} />
+							<GuardedRoute path='/tool/edit/:toolID' component={AddEditToolPage} userState={userState} />
+							<Route path='/tool/:toolID' render={props => <ToolPage {...props} userState={userState} />} />
+							<GuardedRoute path='/project/add' component={AddEditProjectPage} userState={userState} />
+							<GuardedRoute path='/project/edit/:projectID' component={AddEditProjectPage} userState={userState} />
+							<Route path='/project/:projectID' render={props => <ProjectPage {...props} userState={userState} />} />
+							<GuardedRoute path='/paper/add' component={AddEditPaperPage} userState={userState} />
+							<GuardedRoute path='/paper/edit/:paperID' component={AddEditPaperPage} userState={userState} />
+							<Route path='/paper/:paperID' render={props => <PaperPage {...props} userState={userState} />} />
+							<GuardedRoute path='/course/add' component={AddEditCoursePage} userState={userState} />
+							<GuardedRoute path='/course/edit/:courseID' component={AddEditCoursePage} userState={userState} />
+							<Route path='/course/:courseID' render={props => <CoursePage {...props} userState={userState} />} />
+							<Route path='/advanced-search-terms/' render={props => <AdvancedSearchTAndCs {...props} userState={userState} />} />
+
+							<GuardedRoute path='/cohort/add/:cohortID' component={AddEditCohortPage} userState={userState} />
+							<GuardedRoute path='/cohort/edit/:cohortID' component={AddEditCohortPage} userState={userState} />
+							<Route path='/cohort/:cohortID' render={props => <CohortPage {...props} userState={userState} />} />
+							<Redirect to='/search?search=' />
+						</Switch>
+					</div>
+					<Footer />
+				</Router>
+			</ThemeProvider>
 		);
 	}
 }

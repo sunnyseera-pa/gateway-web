@@ -3,17 +3,17 @@ import { Dropdown, Row, Col } from 'react-bootstrap';
 import SVGIcon from '../../../images/SVGIcon';
 import '../Search.scss';
 
-const SortDropdown = ({ handleSort, sort, dropdownItems, isCollectionsSearch, savedSearch }) => {
+const SortDropdown = ({ handleSort, sort, dropdownItems, isCollectionsSearch }) => {
 	//by default sorted by relevance
 	const sorting = sort === '' ? 'relevance' : sort;
 
 	return (
-		<Dropdown className={savedSearch ? 'sorting-dropdown save-dropdown' : 'sorting-dropdown'} alignRight onSelect={handleSort}>
+		<Dropdown className='sorting-dropdown' alignRight onSelect={handleSort}>
 			<Dropdown.Toggle
 				variant='info'
 				id='dropdown-menu-align-right'
 				className={isCollectionsSearch ? 'collectionsSorting gray800-14' : 'gray800-14'}>
-				{(() => {
+					{   (() => {
 					if (sorting === 'popularity') return 'Sort by number of views';
 					else if (sorting === 'metadata') return 'Sort by metadata quality';
 					else if (sorting === 'resources') return 'Sort by related resources';

@@ -61,14 +61,11 @@
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 
-	margin-bottom: 8px;
-	padding: 12px 16px 24px;
 	background: $white;
 	box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.09);
 	&-header {
 		display: flex;
 		justify-content: space-between;
-		margin-bottom: 10px;
 	}
 
 	&-title {
@@ -99,7 +96,7 @@
 		display: flex;
 		flex-flow: row wrap;
 		word-break: break-word;
-		overflow-y: scroll;
+		overflow-y: auto;
 		max-height: 170px;
 		&::-webkit-scrollbar {
 			width: 0.35em;
@@ -476,9 +473,13 @@
 	height: 40px;
 	padding: 12px 16px 11px;
 	border-radius: 4px;
+	margin-left: 20px;
+	font-family: museo-sans-rounded;
+	font-size: 14px !important;
 }
 
 .saved:hover {
+	color: $white !important;
 	background: #3db28c !important;
 }
 
@@ -489,6 +490,9 @@
 	height: 40px;
 	margin: 15px 8px;
 	padding: 12px 18.5px 11px;
+	cursor: pointer;
+	font-family: museo-sans-rounded;
+	font-size: 14px !important;
 }
 
 .saved-preference:hover {
@@ -497,29 +501,74 @@
 
 .title {
 	margin-top: 2.5vh;
-	margin-left: -1vw;
 }
 
 .saved-filters {
 	width: 100% !important;
-	margin-top: -8px;
+	padding: 16px 16px 10px;
 }
 
 .save-dropdown {
-	margin-top: -180px;
-	margin-right: 15px;
+	display: inline-block;
 }
 
 .saved-buttons {
-	margin-right: -15px !important;
-	margin-left: 160px;
+	text-align: right;
 }
 
 .filter-save {
-	padding: 0 16px 24px;
 	margin-top: 32px;
+	border-bottom: 1px solid #e7e9ed;
 }
 
 .saved-filterHolder {
 	margin-top: 10px;
+}
+
+.saved-search-arrow {
+	background: none;
+	border: none;
+}
+.saved-search-arrow:focus {
+	outline: none;
+}
+
+.saved-filters-title {
+	margin-right: 800px;
+}
+
+.saved-buttons-small {
+	margin-left: 300px;
+}
+
+.saved-buttons-courses {
+	margin-left: 580px;
+}
+
+.saved-preference-banner {
+	border-color: $purple !important;
+	background-color: #cdd7f7 !important;
+	color: $indigo !important;
+	font-weight: $font-weight-semibold !important;
+	margin-top: 16px;
+}
+
+.container-saved-preference-banner {
+	margin-top: -20px;
+}
+
+.saved-disabled {
+	background-color: $teal !important;
+	border-color: $teal !important;
+	text-align: center !important;
+	cursor: default !important;
+}
+
+.data-utility-banner {
+	text-align: right;
+	text-decoration: underline;
+}
+
+.data-utility-link {
+	cursor: pointer;
 }
