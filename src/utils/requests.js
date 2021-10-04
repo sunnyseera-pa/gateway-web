@@ -11,7 +11,7 @@ const putRequest = (url, data, options) => {
 };
 
 const patchRequest = (url, data, options) => {
-	return axios.oatch(url, data, options);
+	return axios.patch(url, data, options);
 };
 
 const deleteRequest = (url, options) => {
