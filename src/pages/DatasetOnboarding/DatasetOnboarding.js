@@ -43,6 +43,7 @@ import Dropdown from 'react-bootstrap/Dropdown';
 
 import { formSchema } from './formSchema';
 import DatasetOnboardingHelperUtil from '../../utils/DatasetOnboardingHelper.util';
+import ActionBarStatus from '../commonComponents/ActionBarStatus';
 
 /* export const DatasetOnboarding = props => {
     const [id] = useState('');
@@ -301,7 +302,9 @@ class DatasetOnboarding extends Component {
 	 * @returns {jsonSchmea} object
 	 */
 	injectObservations(jsonSchema = {}, questionAnswers = {}) {
-		let { questions } = DatasetOnboardingHelperUtil.findQuestionSet('observations', { ...jsonSchema });
+		let { questions } = DatasetOnboardingHelperUtil.findQuestionSet('observations', {
+			...jsonSchema,
+		});
 		let listOfObservationFields = questions.map(x => x.questionId).flat();
 
 		let listOfObservationUniqueIds = [];
@@ -620,7 +623,9 @@ class DatasetOnboarding extends Component {
 	onQuestionClick = async (questionSetId = '', questionId = '') => {
 		let questionSet, jsonSchema, questionAnswers, schema;
 
-		questionSet = DatasetOnboardingHelperUtil.findQuestionSet(questionSetId, { ...this.state.jsonSchema });
+		questionSet = DatasetOnboardingHelperUtil.findQuestionSet(questionSetId, {
+			...this.state.jsonSchema,
+		});
 
 		if (!_.isEmpty(questionSet) && !_.isEmpty(questionId)) {
 			// remove about and files from pages to stop duplicate, about / files added to DAR on init
@@ -774,7 +779,11 @@ class DatasetOnboarding extends Component {
 		let percentageCompleted = DatasetOnboardingHelperUtil.getCompletionPercentages(this);
 		if (!_.isEmpty(structuralMetadata) && _.isEmpty(structuralMetadataErrors)) percentageCompleted.updatedCompletion.structural = 100;
 		else percentageCompleted.updatedCompletion.structural = 0;
-		this.setState({ structuralMetadata, structuralMetadataErrors, completion: percentageCompleted.updatedCompletion });
+		this.setState({
+			structuralMetadata,
+			structuralMetadataErrors,
+			completion: percentageCompleted.updatedCompletion,
+		});
 	};
 
 	toggleCard = (e, eventKey) => {
@@ -825,7 +834,7 @@ class DatasetOnboarding extends Component {
 
 	toggleDuplicateModal = () => {
 		this.toggleActionModal('DUPLICATE');
-	}
+	};
 
 	toggleActionModal = (type = '') => {
 		let actionModalConfig = {};
@@ -1483,23 +1492,7 @@ class DatasetOnboarding extends Component {
 								classProperty={DatasetOnboardingHelper.datasetStatusColours[applicationStatus]}
 								text={DatasetOnboardingHelper.datasetSLAText[applicationStatus]}
 							/>
-							<div className='action-bar-status'>
-								{applicationStatus === 'draft' ? totalQuestions : ''}
-								{applicationStatus === 'active'
-									? `This version was published on ${moment(dataset.timestamps.published).format('D MMMM YYYY')}`
-									: ''}
-								{applicationStatus === 'inReview'
-									? `Submitted for review on ${moment(dataset.timestamps.submitted).format('D MMMM YYYY')}`
-									: ''}
-								{applicationStatus === 'rejected'
-									? `This version was rejected on ${moment(dataset.timestamps.rejected).format('D MMMM YYYY')}`
-									: ''}
-								{applicationStatus === 'archived'
-									? `This version was published on ${moment(dataset.timestamps.published).format('D MMMM YYYY')} and archived on ${moment(
-											dataset.timestamps.archived
-									  ).format('D MMMM YYYY')}`
-									: ''}
-							</div>
+							<ActionBarStatus status={applicationStatus} totalQuestions={totalQuestions} dataset={dataset} />
 						</div>
 						<div className='action-bar-actions'>
 							<AmendmentCount answeredAmendments={this.state.answeredAmendments} unansweredAmendments={this.state.unansweredAmendments} />
