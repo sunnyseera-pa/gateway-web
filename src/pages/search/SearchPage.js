@@ -705,7 +705,7 @@ class SearchPage extends React.Component {
 		this.props.history.push(window.location.pathname + '?' + queryString.stringify(values));
 
 		this.setState({ key, isResultsLoading: true }, () => {
-			this.getFilters();
+			this.getFilters(key);
 			this.doSearchCall();
 		});
 	};
@@ -746,67 +746,76 @@ class SearchPage extends React.Component {
 			if (!_.isEmpty(dataUtilityFilters)) {
 				const dataUtilityWizardSteps = dataUtilityFilters.filter(item => item.includeInWizard);
 				this.setState({ dataUtilityFilters, dataUtilityWizardSteps });
-				await this.getFilters();
+				await this.getFilters('Datasets');
 			}
 		} catch (error) {
 			console.error(error.message);
 		}
 	};
 
-	getFilters = async () => {
+	getFilters = async key => {
 		try {
-			const response = await axios.get(`${baseURL}/api/v2/filters/dataset`);
-			const {
-				data: { data: filterDataDatasets },
-			} = response;
-			if (!_.isEmpty(filterDataDatasets) && _.isEmpty(this.state.filtersV2Datasets)) {
-				const filtersV2Datasets = this.mapFiltersToDictionary(filterDataDatasets, this.state.dataUtilityFilters);
-				this.setState({ filtersV2Datasets });
-			}
-
-			const responseTools = await axios.get(`${baseURL}/api/v2/filters/tool`);
-			const {
-				data: { data: filterDataTools },
-			} = responseTools;
-			if (!_.isEmpty(filterDataTools) && _.isEmpty(this.state.filtersV2Tools)) {
-				const filtersV2Tools = this.mapFiltersToDictionary(filterDataTools, this.state.dataUtilityFilters);
-				this.setState({ filtersV2Tools });
-			}
-
-			const responseProjects = await axios.get(`${baseURL}/api/v2/filters/project`);
-			const {
-				data: { data: filterDataProjects },
-			} = responseProjects;
-			if (!_.isEmpty(filterDataProjects) && _.isEmpty(this.state.filtersV2Projects)) {
-				const filtersV2Projects = this.mapFiltersToDictionary(filterDataProjects, this.state.dataUtilityFilters);
-				this.setState({ filtersV2Projects });
-			}
-
-			const responsePapers = await axios.get(`${baseURL}/api/v2/filters/paper`);
-			const {
-				data: { data: filterDataPapers },
-			} = responsePapers;
-			if (!_.isEmpty(filterDataPapers) && _.isEmpty(this.state.filtersV2Papers)) {
-				const filtersV2Papers = this.mapFiltersToDictionary(filterDataPapers, this.state.dataUtilityFilters);
-				this.setState({ filtersV2Papers });
-			}
-
-			const responseCourses = await axios.get(`${baseURL}/api/v2/filters/course`);
-			const {
-				data: { data: filterDataCourses },
-			} = responseCourses;
-			if (!_.isEmpty(filterDataCourses) && _.isEmpty(this.state.filtersV2Courses)) {
-				const filtersV2Courses = this.mapFiltersToDictionary(filterDataCourses, this.state.dataUtilityFilters);
-				this.setState({ filtersV2Courses });
-			}
-
-			const responseCollections = await axios.get(`${baseURL}/api/v2/filters/collection`);
-			const {
-				data: { data: filterDataCollections },
-			} = responseCollections;
-			if (!_.isEmpty(filterDataCollections) && _.isEmpty(this.state.filtersV2Collections)) {
-				const filtersV2Collections = this.mapFiltersToDictionary(filterDataCollections, this.state.dataUtilityFilters);
-				this.setState({ filtersV2Collections });
+			switch (key) {
+				case 'Datasets':
+					const response = await axios.get(`${baseURL}/api/v2/filters/dataset`);
+					const {
+						data: { data: filterDataDatasets },
+					} = response;
+					if (!_.isEmpty(filterDataDatasets) && _.isEmpty(this.state.filtersV2Datasets)) {
+						const filtersV2Datasets = this.mapFiltersToDictionary(filterDataDatasets, this.state.dataUtilityFilters);
+						this.setState({ filtersV2Datasets });
+					}
+					break;
+				case 'Tools':
+					const responseTools = await axios.get(`${baseURL}/api/v2/filters/tool`);
+					const {
+						data: { data: filterDataTools },
+					} = responseTools;
+					if (!_.isEmpty(filterDataTools) && _.isEmpty(this.state.filtersV2Tools)) {
+						const filtersV2Tools = this.mapFiltersToDictionary(filterDataTools, this.state.dataUtilityFilters);
+						this.setState({ filtersV2Tools });
+					}
+					break;
+				case 'Projects':
+					const responseProjects = await axios.get(`${baseURL}/api/v2/filters/project`);
+					const {
+						data: { data: filterDataProjects },
+					} = responseProjects;
+					if (!_.isEmpty(filterDataProjects) && _.isEmpty(this.state.filtersV2Projects)) {
+						const filtersV2Projects = this.mapFiltersToDictionary(filterDataProjects, this.state.dataUtilityFilters);
+						this.setState({ filtersV2Projects });
+					}
+					break;
+				case 'Papers':
+					const responsePapers = await axios.get(`${baseURL}/api/v2/filters/paper`);
+					const {
+						data: { data: filterDataPapers },
+					} = responsePapers;
+					if (!_.isEmpty(filterDataPapers) && _.isEmpty(this.state.filtersV2Papers)) {
+						const filtersV2Papers = this.mapFiltersToDictionary(filterDataPapers, this.state.dataUtilityFilters);
+						this.setState({ filtersV2Papers });
+					}
+					break;
+				case 'Courses':
+					const responseCourses = await axios.get(`${baseURL}/api/v2/filters/course`);
+					const {
+						data: { data: filterDataCourses },
+					} = responseCourses;
+					if (!_.isEmpty(filterDataCourses) && _.isEmpty(this.state.filtersV2Courses)) {
+						const filtersV2Courses = this.mapFiltersToDictionary(filterDataCourses, this.state.dataUtilityFilters);
+						this.setState({ filtersV2Courses });
+					}
+					break;
+				case 'Collections':
+					const responseCollections = await axios.get(`${baseURL}/api/v2/filters/collection`);
+					const {
+						data: { data: filterDataCollections },
+					} = responseCollections;
+					if (!_.isEmpty(filterDataCollections) && _.isEmpty(this.state.filtersV2Collections)) {
+						const filtersV2Collections = this.mapFiltersToDictionary(filterDataCollections, this.state.dataUtilityFilters);
+						this.setState({ filtersV2Collections });
+					}
+				default:
 			}
 		} catch (error) {
 			console.error(error.message);
@@ -1902,7 +1911,7 @@ class SearchPage extends React.Component {
 							{!isResultsLoading ? (
 								<Col sm={12} md={12} lg={9} className='mt-1 mb-5'>
 									{!showSort ? '' : <Fragment>{!this.state.savedSearchPanel && <Row>{dropdownMenu}</Row>}</Fragment>}
-                  
+
 									{key === 'Datasets' ? (
 										datasetCount <= 0 ? (
 											<NoResults type='datasets' search={search} />
