@@ -548,6 +548,10 @@ svg:not(:root) {
 	height: 40px;
 }
 
+.publishButton:disabled {
+	opacity: 0.5 !important;
+}
+
 .linkButton {
 	text-decoration: underline;
 	white-space: nowrap;
@@ -765,6 +769,10 @@ textarea:focus {
 	color: $indigo;
 	font-family: museo-sans-rounded;
 	font-size: 14px !important;
+}
+
+.techDetailButton:disabled {
+	opacity: 0.5 !important;
 }
 
 .accountDropDownGap {
@@ -1263,6 +1271,10 @@ button a {
 
 .margin-top-6 {
 	margin-top: 6px !important;
+}
+
+.margin-top-4 {
+	margin-top: 4px !important;
 }
 
 .margin-top-2 {

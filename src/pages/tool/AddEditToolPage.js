@@ -39,6 +39,7 @@ class AddEditToolPage extends React.Component {
 		personData: [],
 		courseData: [],
 		summary: [],
+		myEntitiesSummary: [],
 		tempRelatedObjectIds: [],
 		relatedObjects: [],
 		didDelete: false,
@@ -347,6 +348,7 @@ class AddEditToolPage extends React.Component {
 						personData: res.data.personResults || [],
 						courseData: res.data.courseResults || [],
 						summary: res.data.summary || [],
+						myEntitiesSummary: res.data.myEntitiesSummary || [],
 						isLoading: false,
 					});
 				});
@@ -439,6 +441,7 @@ class AddEditToolPage extends React.Component {
 			personData,
 			courseData,
 			summary,
+			myEntitiesSummary,
 			relatedObjects,
 			didDelete,
 			showDrawer,
@@ -483,6 +486,7 @@ class AddEditToolPage extends React.Component {
 					personData={personData}
 					courseData={courseData}
 					summary={summary}
+					myEntitiesSummary={myEntitiesSummary}
 					doAddToTempRelatedObjects={this.addToTempRelatedObjects}
 					tempRelatedObjectIds={this.state.tempRelatedObjectIds}
 					doClearRelatedObjects={this.clearRelatedObjects}
@@ -491,6 +495,7 @@ class AddEditToolPage extends React.Component {
 					relatedObjects={relatedObjects}
 					didDelete={didDelete}
 					updateDeleteFlag={this.updateDeleteFlag}
+					displayTabs={['Datasets', 'Tools', 'Projects', 'Courses', 'Papers', 'People']}
 				/>
 				<SideDrawer open={showDrawer} closed={this.toggleDrawer}>
 					<UserMessages

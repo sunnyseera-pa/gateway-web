@@ -206,7 +206,7 @@ export const AccountTools = props => {
 								<Tab eventKey='rejected' data-testid='rejectedTab' title={'Rejected (' + rejectedCount + ')'}>
 									{' '}
 								</Tab>
-								<Tab eventKey='archive' data-testid='archiveTab' title={'Archive (' + archiveCount + ')'}>
+								<Tab eventKey='archive' data-testid='archiveTab' title={'Archived (' + archiveCount + ')'}>
 									{' '}
 								</Tab>
 							</Tabs>

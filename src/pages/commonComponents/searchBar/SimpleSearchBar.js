@@ -25,6 +25,7 @@ class SimpleSearchBar extends React.Component {
 								id='searchInputSpanGrey'
 								onChange={this.changeText}
 								onKeyDown={this.props.doSearchMethod}
+								onKeyUp={this.props.doClearIndexesOnSearch}
 								value={this.props.searchString}
 							/>
 						</span>

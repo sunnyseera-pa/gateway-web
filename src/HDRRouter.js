@@ -24,6 +24,7 @@ import AddEditProjectPage from './pages/project/AddEditProjectPage';
 import AddEditPaperPage from './pages/paper/AddEditPaperPage';
 import AddEditCoursePage from './pages/course/AddEditCoursePage';
 import AddEditCollectionPage from './pages/collections/AddEditCollectionPage';
+import AddEditCohortPage from './pages/cohort/AddEditCohortPage';
 import DataAccessRequest from './pages/DataAccessRequest/DataAccessRequest';
 import Loading from './pages/commonComponents/Loading';
 import CompleteRegistration from './pages/registration/CompleteRegistration';
@@ -232,6 +233,8 @@ class HDRRouter extends Component {
 						<GuardedRoute path='/course/add' component={AddEditCoursePage} userState={userState} />
 						<GuardedRoute path='/course/edit/:courseID' component={AddEditCoursePage} userState={userState} />
 						<Route path='/course/:courseID' render={props => <CoursePage {...props} userState={userState} />} />
+						<GuardedRoute path='/cohort/add/:cohortID' component={AddEditCohortPage} userState={userState} />
+						<GuardedRoute path='/cohort/edit/:cohortID' component={AddEditCohortPage} userState={userState} />
 						<Route path='/advanced-search-terms/' render={props => <AdvancedSearchTAndCs {...props} userState={userState} />} />
 						<Route path='/cohort/:cohortID' render={props => <CohortPage {...props} userState={userState} />} />
 						<Redirect to='/search?search=' />
