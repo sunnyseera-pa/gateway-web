@@ -31,6 +31,7 @@ import { ReactComponent as ChevronRightSvg } from '../../images/chevron-bottom.s
 import { ReactComponent as CheckSVG } from '../../images/check.svg';
 import './Dashboard.scss';
 import ActivityLog from '../DataAccessRequest/components/ActivityLog/ActivityLog';
+import DataUsePage from '../dataUse/DataUsePage';
 import AccountTeams from './AccountTeams';
 import googleAnalytics from '../../tracking';
 
@@ -518,7 +519,6 @@ class Account extends Component {
 			dataaccessrequest,
 		} = this.state;
 
-
 		return (
 			<Fragment>
 				<SearchBar
@@ -610,6 +610,13 @@ class Account extends Component {
 										</Nav.Link>
 									</div>
 
+									<div className={`${tabId === 'datause' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('datause')}>
+										<Nav.Link eventKey={'datause'} className='verticalNavBar gray700-13'>
+											<SVGIcon name='datauseicon' fill={'#b3b8bd'} className='accountSvgs' />
+											<span className='navLinkItem'>Data Use</span>
+										</Nav.Link>
+									</div>
+
 									<div className={`${tabId === 'collections' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('collections')}>
 										<Nav.Link eventKey={'collections'} className='verticalNavBar gray700-13'>
 											<SVGIcon name='collections' fill={'#b3b8bd'} className='accountSvgs' />
@@ -640,9 +647,17 @@ class Account extends Component {
 											<span style={{ 'margin-left': '11px' }}>Datasets</span>
 										</Nav.Link>
 									</div>
+									<div className={`${tabId === 'datause' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('datause')}>
+										<Nav.Link eventKey={'datause'} className='verticalNavBar gray700-13'>
+											<SVGIcon name='datauseicon' fill={'#b3b8bd'} className='accountSvgs' />
+											<span className='navLinkItem'>Data Use</span>
+										</Nav.Link>
+									</div>
 									<div className={`${tabId === 'teams' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('teams')}>
 										<Nav.Link className='verticalNavBar gray700-13'>
-											<span className='grey-circle-border'><SVGIcon name='plusChunky' fill={'#b3b8bd'} viewBox='-1 -1 26 26' className='accountSvgs' /></span>
+											<span className='grey-circle-border'>
+												<SVGIcon name='plusChunky' fill={'#b3b8bd'} viewBox='-1 -1 26 26' className='accountSvgs' />
+											</span>
 											<span style={{ 'margin-left': '5px' }}>Teams</span>
 										</Nav.Link>
 									</div>
@@ -703,6 +718,12 @@ class Account extends Component {
 											</Nav.Link>
 										</div>
 									)}
+									<div className={`${tabId === 'datause' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('datause')}>
+										<Nav.Link eventKey={'datause'} className='verticalNavBar gray700-13'>
+											<SVGIcon name='datauseicon' fill={'#b3b8bd'} className='accountSvgs' />
+											<span className='navLinkItem'>Data Use</span>
+										</Nav.Link>
+									</div>
 									<div className={`${tabId === 'help' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('help')}>
 										<Nav.Link className='verticalNavBar gray700-13'>
 											<SVGIcon name='info' fill={'#b3b8bd'} className='accountSvgs' />
@@ -749,6 +770,8 @@ class Account extends Component {
 								) : (
 									''
 								)}
+
+								{tabId === 'datause' ? <DataUsePage userState={userState} team={team} /> : ''}
 
 								{tabId === 'collections' ? <AccountCollections userState={userState} /> : ''}
 
@@ -797,6 +820,8 @@ class Account extends Component {
 										)}
 									</>
 								)}
+
+								{tabId === 'datause' ? <DataUsePage userState={userState} team={team} /> : ''}
 
 								{allowWorkflow && this.userHasRole(team, 'manager') && (
 									<>{tabId === 'workflows' ? <WorkflowDashboard userState={userState} team={team} /> : ''}</>
