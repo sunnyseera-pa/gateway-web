@@ -1,11 +1,11 @@
-import axios from 'axios';
+import requests from '../utils/requests';
 import { apiURL } from '../configs/url.config';
 import service from './dataset-onboarding';
 import { renderHook } from '@testing-library/react-hooks';
 import { QueryClientProvider, QueryClient } from 'react-query';
 import { act } from 'react-test-renderer';
 
-jest.mock('axios');
+jest.mock('../utils/requests');
 
 let wrapper;
 
@@ -22,7 +22,7 @@ describe('Given the dataset-onboarding service', () => {
 				option1: true,
 			});
 
-			expect(axios.get).toHaveBeenCalledWith(`${apiURL}/dataset-onboarding/1234`, {
+			expect(requests.getRequest).toHaveBeenCalledWith(`${apiURL}/dataset-onboarding/1234`, {
 				option1: true,
 			});
 		});
@@ -38,7 +38,7 @@ describe('Given the dataset-onboarding service', () => {
 				{ option1: true }
 			);
 
-			expect(axios.post).toHaveBeenCalledWith(
+			expect(requests.postRequest).toHaveBeenCalledWith(
 				`${apiURL}/dataset-onboarding/1234`,
 				{
 					status: 'archive',
@@ -58,7 +58,7 @@ describe('Given the dataset-onboarding service', () => {
 				{ option1: true }
 			);
 
-			expect(axios.put).toHaveBeenCalledWith(
+			expect(requests.putRequest).toHaveBeenCalledWith(
 				`${apiURL}/dataset-onboarding/1234`,
 				{
 					status: 'archive',
@@ -78,7 +78,7 @@ describe('Given the dataset-onboarding service', () => {
 				{ option1: true }
 			);
 
-			expect(axios.patch).toHaveBeenCalledWith(
+			expect(requests.patchRequest).toHaveBeenCalledWith(
 				`${apiURL}/dataset-onboarding/1234`,
 				{
 					status: 'archive',
@@ -94,7 +94,7 @@ describe('Given the dataset-onboarding service', () => {
 				option1: true,
 			});
 
-			expect(axios.delete).toHaveBeenCalledWith(`${apiURL}/dataset-onboarding/delete/1234`, {
+			expect(requests.deleteRequest).toHaveBeenCalledWith(`${apiURL}/dataset-onboarding/delete/1234`, {
 				option1: true,
 			});
 		});

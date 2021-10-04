@@ -3,23 +3,23 @@ import { useMutation, useQuery } from 'react-query';
 import { apiURL } from '../configs/url.config';
 
 const getDatasetOnboarding = (_id, options) => {
-	return axios.get(`${apiURL}/dataset-onboarding/${_id}`, options);
+	return getRequest(`${apiURL}/dataset-onboarding/${_id}`, options);
 };
 
 const postDatasetOnboarding = (_id, data, options) => {
-	return axios.post(`${apiURL}/dataset-onboarding/${_id}`, data, options);
+	return postRequest(`${apiURL}/dataset-onboarding/${_id}`, data, options);
 };
 
 const putDatasetOnboarding = (_id, data, options) => {
-	return axios.put(`${apiURL}/dataset-onboarding/${_id}`, data, options);
+	return putRequest(`${apiURL}/dataset-onboarding/${_id}`, data, options);
 };
 
 const patchDatasetOnboarding = (_id, data, options) => {
-	return axios.patch(`${apiURL}/dataset-onboarding/${_id}`, data, options);
+	return patchRequest(`${apiURL}/dataset-onboarding/${_id}`, data, options);
 };
 
 const deleteDatasetOnboarding = (_id, options) => {
-	return axios.delete(`${apiURL}/dataset-onboarding/delete/${_id}`, options);
+	return deleteRequest(`${apiURL}/dataset-onboarding/delete/${_id}`, options);
 };
 
 const useGetDatasetOnboarding = (requestOptions, queryOptions = { queryKey: 'getDatasetOnboarding' }) => {
