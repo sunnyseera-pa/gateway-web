@@ -1,6 +1,5 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import { Modal } from 'react-bootstrap';
-import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import _ from 'lodash';
 import ReactMarkdown from 'react-markdown';
@@ -34,7 +33,7 @@ const DataSetModal = ({ open, closed, context, userState, is5Safes, showLoginMod
 		}
 	};
 
-	const onCloseModal = (action) => {
+	const onCloseModal = action => {
 		// 1. if user is not loggedIn and wants to make enquiry make them sign in
 		if (!isLoggedIn && action !== 'CLOSE') {
 			// 2. close modal and do not show enquiry - false;
@@ -58,7 +57,7 @@ const DataSetModal = ({ open, closed, context, userState, is5Safes, showLoginMod
 
 	return (
 		<Fragment>
-			<Modal show={open} onHide={closed} size={is5Safes ? 'lg' : 'md'} aria-labelledby='contained-modal-title-vcenter' centered>
+			<Modal show={open} onHide={closed} size='lg' aria-labelledby='contained-modal-title-vcenter' centered>
 				<div className={is5Safes ? 'appModal-header' : 'appModal-non-5safes-header'}>
 					<div className={is5Safes ? 'appModal-header--wrap' : 'appModal-non-5safes-header--wrap'}>
 						<div className='appModal-head'>

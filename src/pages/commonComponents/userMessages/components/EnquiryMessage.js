@@ -294,6 +294,7 @@ export const EnquiryMessage = ({ topic, onDatasetsRequested, onFirstMessageSubmi
 									selectedDatasets={topic.tags}
 									readOnly={false}
 									allowAllCustodians={false}
+									only5Safes={false}
 									onHandleDataSetChange={selected => {
 										onHandleDataSetChange(selected, 'datasetsRequested', setFieldValue);
 									}}

@@ -9,7 +9,7 @@ const ActionModal = ({ open, close, context, datasetVersionAction }) => {
 	const [count, setCount] = useState(0);
 	const [formState, setFormState] = useState({ statusDesc: '', invalid: false, invalidMessage: '', submitted: false });
 
-	let { title = '', subTitle = '', buttons = {}, description = false } = context;
+	let { title = '', subTitle = '', buttons = {}, description = false, link = '' } = context;
 
 	let btnRef = useRef();
 
@@ -57,6 +57,12 @@ const ActionModal = ({ open, close, context, datasetVersionAction }) => {
 					setFormState({ statusDesc: '', invalid: false, invalidMessage: '', submitted: false });
 					setCount(0);
 					break;
+				case 'DELETEDRAFT':
+					datasetVersionAction({ type });
+					break;
+				case 'DUPLICATE':
+					datasetVersionAction({ statusDesc, type });
+					break;
 				default:
 					setFormState({ statusDesc: '', invalid: false, invalidMessage: '', submitted: false });
 					setCount(0);
@@ -102,7 +108,15 @@ const ActionModal = ({ open, close, context, datasetVersionAction }) => {
 							<h1 className='black-20-semibold'>{title}</h1>
 							<CloseButtonSvg className='actionModal-head--close' onClick={e => onClickAction(e, 'cancel')} />
 						</div>
-						<p>{subTitle}</p>
+						<p>
+							{subTitle}
+							{!_.isEmpty(link) && (
+								<a href={link} target='_blank' rel='noopener noreferrer' class='purple-blue-14'>
+									{' '}
+									{link}
+								</a>
+							)}
+						</p>
 					</div>
 				</div>
 

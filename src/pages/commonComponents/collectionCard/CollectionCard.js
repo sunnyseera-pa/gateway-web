@@ -18,9 +18,7 @@ class CollectionCard extends React.Component {
 		const { data, entityCount } = this.state;
 
 		let people = '';
-		data.persons.map((person, key) => {
-			people = people + (key !== 0 ? ', ' : '') + person.firstname + ' ' + person.lastname;
-		});
+		data.persons.map((person, key) => (people = people + (key !== 0 ? ', ' : '') + person.firstname + ' ' + person.lastname));
 
 		return (
 			<div className='collectionCardHolder'>

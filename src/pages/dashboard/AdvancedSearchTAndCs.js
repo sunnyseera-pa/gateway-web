@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import SearchBar from '../commonComponents/searchBar/SearchBar';
-import _ from 'lodash';
 import AdvancedSearchTAndCsContent from './AdvancedSearchTAndCsContent';
 import './AdvancedSearchTAndCsModal.scss';
 import { Fragment } from 'react';

@@ -359,6 +359,11 @@ a.nav-item.nav-link.active {
 		font-size: 14px !important;
 		margin: 0px !important;
 	}
+
+	&-cohort {
+		@extend .badge;
+		background-color: $duck-egg;
+	}
 }
 
 .iconHolder {
@@ -757,7 +762,7 @@ textarea:focus {
 
 .techDetailButton {
 	height: 40px;
-	width: 140px;
+	width: 100%;
 	border: 2px solid $teal !important;
 	border-radius: 4px !important;
 	background-color: $white;
@@ -1142,6 +1147,10 @@ iframe#discourse-embed-frame {
 	display: inline-block;
 }
 
+.contents {
+	display: contents;
+}
+
 .pointer,
 .btn {
 	cursor: pointer;
@@ -1306,6 +1315,10 @@ button a {
 
 .margin-right-8 {
 	margin-right: 8px !important;
+}
+
+.margin-right-12 {
+	margin-right: 12px !important;
 }
 
 .margin-right-15 {

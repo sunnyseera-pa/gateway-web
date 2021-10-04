@@ -11,6 +11,7 @@ import 'react-bootstrap-typeahead/css/Typeahead.css';
 import SVGIcon from '../../images/SVGIcon';
 import ToolTip from '../../images/imageURL-ToolTip.gif';
 import ActionBar from '../commonComponents/actionbar/ActionBar';
+import googleAnalytics from '../../tracking';
 import './Collections.scss';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
@@ -36,7 +37,7 @@ const AddEditCollectionForm = props => {
 			name: Yup.string().required('This cannot be empty'),
 			description: Yup.string().max(5000, 'Maximum of 5,000 characters').required('This cannot be empty'),
 			authors: Yup.lazy(val => (Array.isArray(val) ? Yup.array().of(Yup.number()) : Yup.number())),
-			imageLink: Yup.string().matches(/^(http|https){1}:\/\/[A-Za-z0-9-\/\._~:\?#\[\]@!\$&'\(\)\*\+,;%=]+$/, {
+			imageLink: Yup.string().matches(/^(http|https){1}:\/\/[A-Za-z0-9-_~:#@!&',;%=]+$/, {
 				message: 'Invalid URL: should start with http:// or https://',
 			}),
 		}),
@@ -111,9 +112,8 @@ const AddEditCollectionForm = props => {
 	}
 
 	const updatePublicFlag = () => {
-		{
-			formik.setFieldValue('publicflag', !props.publicFlag);
-		}
+		formik.setFieldValue('publicflag', !props.publicFlag);
+
 		props.updatePublicFlag(!props.publicFlag);
 	};
 
@@ -346,7 +346,10 @@ const AddEditCollectionForm = props => {
 
 					<Button
 						data-test-id='add-resource'
-						onClick={() => relatedResourcesRef.current.showModal()}
+						onClick={() => {
+							relatedResourcesRef.current.showModal();
+							googleAnalytics.recordVirtualPageView('Related resources modal');
+						}}
 						variant='white'
 						className='techDetailButton mr-2'>
 						+ Add resource

@@ -13,8 +13,10 @@ import 'react-bootstrap-typeahead/css/Typeahead.css';
 import SVGIcon from '../../images/SVGIcon';
 import RemoveUploaderModal from '../commonComponents/RemoveUploaderModal';
 import RemoveUploaderErrorModal from '../commonComponents/RemoveUploaderErrorModal';
+import googleAnalytics from '../../tracking';
 
 const baseURL = require('../commonComponents/BaseURL').getURL();
+let windowUrl = window.location.origin;
 
 const AddEditProjectForm = props => {
 	const [uploadersList, setUploadersList] = useState([]);
@@ -67,13 +69,14 @@ const AddEditProjectForm = props => {
 			values.relatedObjects = props.relatedObjects;
 			values.toolCreator = props.userState[0];
 			values.authors = uploadersList.map(uploader => uploader.id);
+
 			if (props.isEdit) {
 				axios.put(baseURL + '/api/v1/projects/' + props.data.id, values).then(res => {
-					window.location.href = window.location.search + '/project/' + props.data.id + '/?projectEdited=true';
+					window.location.href = windowUrl + '/project/' + props.data.id + '/?projectEdited=true';
 				});
 			} else {
 				axios.post(baseURL + '/api/v1/projects/', values).then(res => {
-					window.location.href = window.location.search + '/project/' + res.data.response.id + '/?projectAdded=true';
+					window.location.href = windowUrl + '/project/' + res.data.response.id + '/?projectAdded=true';
 				});
 			}
 		},
@@ -529,7 +532,13 @@ const AddEditProjectForm = props => {
 						</Button>
 					</a>
 
-					<Button onClick={() => relatedResourcesRef.current.showModal()} variant='white' className='techDetailButton mr-2'>
+					<Button
+						onClick={() => {
+							relatedResourcesRef.current.showModal();
+							googleAnalytics.recordVirtualPageView('Related resources modal');
+						}}
+						variant='white'
+						className='techDetailButton mr-2'>
 						+ Add resource
 					</Button>
 

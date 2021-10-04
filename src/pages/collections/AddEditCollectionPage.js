@@ -4,7 +4,6 @@ import { Container } from 'react-bootstrap';
 import SearchBar from '../commonComponents/searchBar/SearchBar';
 import Loading from '../commonComponents/Loading';
 import moment from 'moment';
-import { initGA } from '../../tracking';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
 import UserMessages from '../commonComponents/userMessages/UserMessages';
 import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
@@ -48,7 +47,6 @@ class AddEditCollectionPage extends React.Component {
 	};
 
 	async componentDidMount() {
-		initGA('UA-166025838-1');
 		await Promise.all([this.doGetUsersCall(), this.doGetKeywordsCall()]);
 
 		if (this.state.isEdit) this.getDataSearchFromDb();
@@ -142,12 +140,13 @@ class AddEditCollectionPage extends React.Component {
 	};
 
 	addToTempRelatedObjects = (id, type, pid) => {
+		let updatedTempRelatedObjectIds = [...this.state.tempRelatedObjectIds];
 		if (this.state.tempRelatedObjectIds && this.state.tempRelatedObjectIds.some(object => object.objectId === id)) {
-			this.state.tempRelatedObjectIds = this.state.tempRelatedObjectIds.filter(object => object.objectId !== id);
+			updatedTempRelatedObjectIds = updatedTempRelatedObjectIds.filter(object => object.objectId !== id);
 		} else {
-			this.state.tempRelatedObjectIds.push({ objectId: id, type: type, pid: pid });
+			updatedTempRelatedObjectIds.push({ objectId: id, type: type, pid: pid });
 		}
-		this.setState({ tempRelatedObjectIds: this.state.tempRelatedObjectIds });
+		this.setState({ tempRelatedObjectIds: updatedTempRelatedObjectIds });
 	};
 
 	addToRelatedObjects = () => {

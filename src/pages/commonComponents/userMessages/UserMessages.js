@@ -10,12 +10,10 @@ import MessageItem from './components/MessageItem';
 import MessageFooter from './components/MessageFooter';
 import { EnquiryMessage } from './components/EnquiryMessage';
 import './UserMessages.scss';
+import googleAnalytics from '../../../tracking';
 
 const UserMessages = ({ userState, topicContext, closed, toggleModal, drawerIsOpen = false, is5Safes, msgDescription }) => {
-	const defaultMessage =
-		'Use messages to clarify questions with the data custodian before starting your application to request access to the data. Provide a brief description of your project and what datasets you are interested in.';
-
-	let relatedObjectIds, title, subTitle, datasets, tags, allowNewMessage, requiresModal, dataRequestModalContent;
+	let relatedObjectIds, title, subTitle, datasets, allowNewMessage, requiresModal, dataRequestModalContent;
 
 	let history = useHistory();
 
@@ -25,7 +23,6 @@ const UserMessages = ({ userState, topicContext, closed, toggleModal, drawerIsOp
 			title = '',
 			subTitle = '',
 			datasets = [],
-			tags = [],
 			allowNewMessage = false,
 			requiresModal = false,
 			dataRequestModalContent = {},
@@ -125,6 +122,7 @@ const UserMessages = ({ userState, topicContext, closed, toggleModal, drawerIsOp
 	};
 
 	const onCloseDrawer = () => {
+		googleAnalytics.recordEvent('User message drawer', 'Closed drawer', 'Clicked close modal');
 		closed();
 	};
 
@@ -135,6 +133,7 @@ const UserMessages = ({ userState, topicContext, closed, toggleModal, drawerIsOp
 	 * @returns [{Object}] topics
 	 */
 	const onTopicClick = (id = '') => {
+		googleAnalytics.recordEvent('User message drawer', 'Viewed message thread', 'Clicked message thread');
 		// 1. loop over topics and set active state to the id
 		const generatedTopics = [...topics].reduce((arr, item) => {
 			let topic = {
@@ -292,6 +291,7 @@ const UserMessages = ({ userState, topicContext, closed, toggleModal, drawerIsOp
 		e.preventDefault();
 		if (_.isEmpty(messageDescription)) return false;
 
+		googleAnalytics.recordEvent('Data access request', 'Message sent', 'Message drawer submit clicked');
 		let params = {
 			messageType: 'message',
 			topic: activeTopic._id,
@@ -325,6 +325,7 @@ const UserMessages = ({ userState, topicContext, closed, toggleModal, drawerIsOp
 	 * onFirstMessageSubmit
 	 */
 	const onFirstMessageSubmit = data => {
+		googleAnalytics.recordEvent('Data access request', 'First message sent', 'Message drawer submit clicked');
 		let params = {
 			messageType: 'message',
 			topic: activeTopic._id,
@@ -345,7 +346,10 @@ const UserMessages = ({ userState, topicContext, closed, toggleModal, drawerIsOp
 
 	useEffect(() => {
 		// 1. GET Topics for current user
-		if (drawerIsOpen) getUserTopics();
+		if (drawerIsOpen) {
+			googleAnalytics.recordVirtualPageView('Message drawer open')
+			getUserTopics();
+		}
 	}, [drawerIsOpen, topicContext]);
 
 	useEffect(() => {

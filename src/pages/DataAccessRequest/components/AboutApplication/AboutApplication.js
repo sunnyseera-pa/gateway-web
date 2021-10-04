@@ -43,11 +43,10 @@ const AboutApplication = props => {
 		toggleContributorModal,
 		context,
 		areDatasetsAmended = false,
-		datasetsAmendedBy= '',
 		datasetsAmendedDate= ''
 	} = props;
 
-	const datasetsAmendedMessage = `${datasetsAmendedBy} submitted an amendment on ${moment(datasetsAmendedDate).format('Do MMM YYYY')}`;
+	const datasetsAmendedMessage = `Applicant has requested this as an amendment to the approved application on ${moment(datasetsAmendedDate).format('Do MMM YYYY')}`;
 	
 	return (
 		<div className='aboutAccordion'>
@@ -291,11 +290,12 @@ const AboutApplication = props => {
 										<Link
 											id='howToRequestAccessLink'
 											className={allowedNavigation && userType.toUpperCase() !== 'CUSTODIAN' ? '' : 'disabled'}
-											onClick={e =>
+											onClick={e => {
+												e.preventDefault();
 												toggleModal(false, {
 													...context,
 													showActionButtons: false,
-												})
+												})}
 											}>
 											how to request access
 										</Link>

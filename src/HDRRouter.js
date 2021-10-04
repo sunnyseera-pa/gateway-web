@@ -35,6 +35,7 @@ import ErrorModal from './pages/commonComponents/errorModal/ErrorModal';
 import DatasetOnboarding from './pages/DatasetOnboarding/DatasetOnboarding';
 import { GuardedRoute } from './pages/commonComponents/GuardedRoute';
 import AdvancedSearchTAndCs from './pages/dashboard/AdvancedSearchTAndCs';
+import CohortPage from './pages/cohort/CohortPage';
 
 const baseURL = require('./pages/commonComponents/BaseURL').getURL();
 const urlEnv = require('./pages/commonComponents/BaseURL').getURLEnv();
@@ -48,7 +49,6 @@ Sentry.init({
 	environment: urlEnv,
 	integrations: [
 		new Integrations.BrowserTracing({
-			// Can also use reactRouterV4Instrumentation
 			routingInstrumentation: Sentry.reactRouterV5Instrumentation(history),
 		}),
 	],
@@ -236,6 +236,7 @@ class HDRRouter extends Component {
 						<GuardedRoute path='/cohort/add/:cohortID' component={AddEditCohortPage} userState={userState} />
 						<GuardedRoute path='/cohort/edit/:cohortID' component={AddEditCohortPage} userState={userState} />
 						<Route path='/advanced-search-terms/' render={props => <AdvancedSearchTAndCs {...props} userState={userState} />} />
+						<Route path='/cohort/:cohortID' render={props => <CohortPage {...props} userState={userState} />} />
 						<Redirect to='/search?search=' />
 					</Switch>
 				</div>

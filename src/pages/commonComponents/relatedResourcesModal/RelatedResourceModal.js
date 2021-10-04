@@ -1,7 +1,6 @@
 import React, { Fragment } from 'react';
 import { Row, Col, Tab, Tabs, Container, Pagination } from 'react-bootstrap';
 import _ from 'lodash';
-
 import SimpleSearchBar from '../searchBar/SimpleSearchBar';
 import RelatedObject from '../relatedObject/RelatedObject';
 import NotFound from '../../commonComponents/NotFound';
@@ -9,14 +8,6 @@ import './RelatedResourcesModal.scss';
 
 class RelatedResourcesModal extends React.Component {
 	state = {
-		userState: [
-			{
-				loggedIn: false,
-				role: 'Reader',
-				id: null,
-				name: null,
-			},
-		],
 		key: '',
 		summary: [],
 		myEntitiesSummary: [],
@@ -27,7 +18,6 @@ class RelatedResourcesModal extends React.Component {
 		personIndex: 0,
 		courseIndex: 0,
 		relatedObjectIds: [],
-		relatedObjects: [],
 		selected: {
 			datasets: 0,
 			tools: 0,
@@ -47,8 +37,6 @@ class RelatedResourcesModal extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.state.userState = props.userState;
-		this.state.relatedObjects = props.relatedObjects;
 		this.state.relatedObjectIds = [];
 		this.state.displayTabs = props.displayTabs;
 	}
@@ -267,12 +255,12 @@ class RelatedResourcesModal extends React.Component {
 			editingObjectTool = 1;
 		}
 
-		this.state.selected.datasets = 0;
-		this.state.selected.tools = 0;
-		this.state.selected.projects = 0;
-		this.state.selected.papers = 0;
-		this.state.selected.persons = 0;
-		this.state.selected.courses = 0;
+		selected.datasets = 0;
+		selected.tools = 0;
+		selected.projects = 0;
+		selected.papers = 0;
+		selected.persons = 0;
+		selected.courses = 0;
 
 		mySelected.tools = 0;
 		mySelected.projects = 0;
@@ -331,23 +319,19 @@ class RelatedResourcesModal extends React.Component {
 						});
 						break;
 					case 'person':
-						this.props.personData.map(person => {
-							if (object.objectId === person.id || object.objectId === JSON.stringify(person.id)) {
-								this.state.selected.persons++;
-							}
-						});
+						this.props.personData.map(person =>
+							object.objectId === person.id || object.objectId === JSON.stringify(person.id) ? selected.persons++ : ''
+						);
 						break;
 					case 'dataset':
-						this.props.datasetData.map(dataset => {
-							if (
-								object.objectId === dataset.datasetid ||
-								object.objectId === JSON.stringify(dataset.datasetid) ||
-								object.pid === dataset.pid ||
-								object.pid === JSON.stringify(dataset.pid)
-							) {
-								this.state.selected.datasets++;
-							}
-						});
+						this.props.datasetData.map(dataset =>
+							object.objectId === dataset.datasetid ||
+							object.objectId === JSON.stringify(dataset.datasetid) ||
+							object.pid === dataset.pid ||
+							object.pid === JSON.stringify(dataset.pid)
+								? selected.datasets++
+								: ''
+						);
 						break;
 					case 'course':
 						this.props.courseData.map(course => {
@@ -359,6 +343,8 @@ class RelatedResourcesModal extends React.Component {
 							}
 						});
 						break;
+					default:
+						return object.objectId;
 				}
 			});
 		}
@@ -484,16 +470,14 @@ class RelatedResourcesModal extends React.Component {
 											} else {
 												let datasetPublisher;
 												let datasetLogo;
-												{
-													!_.isEmpty(dataset.datasetv2) && _.has(dataset, 'datasetv2.summary.publisher.name')
-														? (datasetPublisher = dataset.datasetv2.summary.publisher.name)
-														: (datasetPublisher = '');
-												}
-												{
-													!_.isEmpty(dataset.datasetv2) && _.has(dataset, 'datasetv2.summary.publisher.logo')
-														? (datasetLogo = dataset.datasetv2.summary.publisher.logo)
-														: (datasetLogo = '');
-												}
+
+												!_.isEmpty(dataset.datasetv2) && _.has(dataset, 'datasetv2.summary.publisher.name')
+													? (datasetPublisher = dataset.datasetv2.summary.publisher.name)
+													: (datasetPublisher = '');
+
+												!_.isEmpty(dataset.datasetv2) && _.has(dataset, 'datasetv2.summary.publisher.logo')
+													? (datasetLogo = dataset.datasetv2.summary.publisher.logo)
+													: (datasetLogo = '');
 
 												return (
 													<RelatedObject
