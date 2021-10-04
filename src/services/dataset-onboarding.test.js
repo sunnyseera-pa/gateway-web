@@ -1,6 +1,6 @@
-import requests from '../utils/requests';
+import { deleteRequest, getRequest, patchRequest, postRequest, putRequest } from '../utils/requests';
 import { apiURL } from '../configs/url.config';
-import service from './dataset-onboarding';
+import * as service from './dataset-onboarding';
 import { renderHook } from '@testing-library/react-hooks';
 import { QueryClientProvider, QueryClient } from 'react-query';
 import { act } from 'react-test-renderer';
@@ -17,20 +17,20 @@ describe('Given the dataset-onboarding service', () => {
 	});
 
 	describe('When getDatasetOnboarding is called', () => {
-		it('Then calls axios.get with the correct arguments', () => {
-			service.getDatasetOnboarding('1234', {
+		it('Then calls getRequest with the correct arguments', async () => {
+			await service.getDatasetOnboarding('1234', {
 				option1: true,
 			});
 
-			expect(requests.getRequest).toHaveBeenCalledWith(`${apiURL}/dataset-onboarding/1234`, {
+			expect(getRequest).toHaveBeenCalledWith(`${apiURL}/dataset-onboarding/1234`, {
 				option1: true,
 			});
 		});
 	});
 
 	describe('When postDatasetOnboarding is called', () => {
-		it('Then calls axios.post with the correct arguments', () => {
-			service.postDatasetOnboarding(
+		it('Then calls postRequest with the correct arguments', async () => {
+			await service.postDatasetOnboarding(
 				'1234',
 				{
 					status: 'archive',
@@ -38,7 +38,7 @@ describe('Given the dataset-onboarding service', () => {
 				{ option1: true }
 			);
 
-			expect(requests.postRequest).toHaveBeenCalledWith(
+			expect(postRequest).toHaveBeenCalledWith(
 				`${apiURL}/dataset-onboarding/1234`,
 				{
 					status: 'archive',
@@ -49,8 +49,8 @@ describe('Given the dataset-onboarding service', () => {
 	});
 
 	describe('When putDatasetOnboarding is called', () => {
-		it('Then calls axios.put with the correct arguments', () => {
-			service.putDatasetOnboarding(
+		it('Then calls putRequest with the correct arguments', async () => {
+			await service.putDatasetOnboarding(
 				'1234',
 				{
 					status: 'archive',
@@ -58,7 +58,7 @@ describe('Given the dataset-onboarding service', () => {
 				{ option1: true }
 			);
 
-			expect(requests.putRequest).toHaveBeenCalledWith(
+			expect(putRequest).toHaveBeenCalledWith(
 				`${apiURL}/dataset-onboarding/1234`,
 				{
 					status: 'archive',
@@ -69,8 +69,8 @@ describe('Given the dataset-onboarding service', () => {
 	});
 
 	describe('When patchDatasetOnboarding is called', () => {
-		it('Then calls axios.patch with the correct arguments', () => {
-			service.patchDatasetOnboarding(
+		it('Then calls patchRequest with the correct arguments', async () => {
+			await service.patchDatasetOnboarding(
 				'1234',
 				{
 					status: 'archive',
@@ -78,7 +78,7 @@ describe('Given the dataset-onboarding service', () => {
 				{ option1: true }
 			);
 
-			expect(requests.patchRequest).toHaveBeenCalledWith(
+			expect(patchRequest).toHaveBeenCalledWith(
 				`${apiURL}/dataset-onboarding/1234`,
 				{
 					status: 'archive',
@@ -89,12 +89,12 @@ describe('Given the dataset-onboarding service', () => {
 	});
 
 	describe('When deleteDatasetOnboarding is called', () => {
-		it('Then calls axios.delete with the correct arguments', () => {
-			service.deleteDatasetOnboarding('1234', {
+		it('Then calls deleteRequest with the correct arguments', async () => {
+			await service.deleteDatasetOnboarding('1234', {
 				option1: true,
 			});
 
-			expect(requests.deleteRequest).toHaveBeenCalledWith(`${apiURL}/dataset-onboarding/delete/1234`, {
+			expect(deleteRequest).toHaveBeenCalledWith(`${apiURL}/dataset-onboarding/delete/1234`, {
 				option1: true,
 			});
 		});

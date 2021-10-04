@@ -26,7 +26,7 @@ describe('Given the request helpers', () => {
 				}
 			);
 
-			expect(axios.get).toHaveBeenCalledWith(
+			expect(axios.post).toHaveBeenCalledWith(
 				'1234',
 				{ status: 'archived' },
 				{
