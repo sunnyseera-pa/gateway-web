@@ -3,6 +3,7 @@ import ReactMarkdown from 'react-markdown';
 import * as Sentry from '@sentry/react';
 import { Container, Row, Col, Tabs, Tab, Alert, Button, Accordion } from 'react-bootstrap';
 import NotFound from '../commonComponents/NotFound';
+import RelatedObject from '../commonComponents/relatedObject/RelatedObject';
 import SearchBar from '../commonComponents/searchBar/SearchBar';
 import Loading from '../commonComponents/Loading';
 import Uploader from '../commonComponents/Uploader';
@@ -286,12 +287,93 @@ export const CohortPage = props => {
 										</Row>
 									</Tab>
 
-									<Tab eventKey='Datasets' title='Datasets'>
+									<Tab eventKey='Datasets' title='Datasets (3)'>
 										<>
-											<NotFound text='' />
-
 											<Row>
-												<Col sm={12} md={12} lg={6} className='flexCenter'></Col>
+												<Col sm={12} lg={12}>
+													<div className='rectangle pad-bottom-8'>
+														<Row>
+															<Col sm={12}>
+																<span className='black-20-semibold'>NHS Digital</span>
+																<button className='button-tertiary float-right'>Request access</button>
+															</Col>
+														</Row>
+														<Row>
+															<Col sm={12} className='gray800-14 hdruk-section-body'>
+																<ReactMarkdown source='2 datasets from this custodian' />
+															</Col>
+														</Row>
+													</div>
+
+													<RelatedObject
+														data={{
+															tags: {
+																features: ['GENERAL RESEARCH USE', 'COMMERCIAL RESEARCH USE', 'PROJECT SPECIFIC RESTRICTIONS'],
+															},
+															datasetfields: {
+																abstract:
+																	'Cambridge Blood and Stem Cell Biobank collects and curates blood and blood-product derived samples from normal individuals and patients with blood and related malignancies, with particular emphasis on accessibility to purified tumour and stem cell…',
+																phenotypes: [],
+															},
+															name: 'Cambridge Blood and Stem Cell Biobank',
+														}}
+														activeLink={true}
+														onSearchPage={false}
+													/>
+													<RelatedObject
+														data={{
+															tags: {
+																features: [
+																	'GENERAL RESEARCH USE',
+																	'USER SPECIFIC RESTRICTION',
+																	'PROJECT SPECIFIC RESTRICTIONS',
+																	'NO LINKAGE',
+																	'INSTITUTION SPECIFIC RESTRICTIONS',
+																],
+															},
+															datasetfields: {
+																abstract: 'Collection of samples and data across the following diseases: Chronic fatigue syndrome',
+																phenotypes: [],
+															},
+															name: 'Cambridge Blood and Stem Cell Biobank',
+														}}
+														activeLink={true}
+														onSearchPage={false}
+													/>
+												</Col>
+											</Row>
+
+											<Row className='mt-2'>
+												<Col sm={12} lg={12}>
+													<div className='rectangle pad-bottom-8'>
+														<Row>
+															<Col sm={12}>
+																<span className='black-20-semibold'>CPRD</span>
+																<button className='button-tertiary float-right'>Request access</button>
+															</Col>
+														</Row>
+														<Row>
+															<Col sm={12} className='gray800-14 hdruk-section-body'>
+																<ReactMarkdown source='1 dataset from this custodian' />
+															</Col>
+														</Row>
+													</div>
+													<RelatedObject
+														data={{
+															tags: {
+																features: [],
+															},
+															datasetfields: {
+																abstract:
+																	'Cambridge Blood and Stem Cell Biobank collects and curates blood and blood-product derived samples from normal individuals and patients with blood and related malignancies, with particular emphasis on accessibility to purified tumour and stem cell…',
+																phenotypes: [],
+															},
+															name: 'CPRD Gold',
+														}}
+														activeLink={true}
+														onSearchPage={false}
+													/>
+												</Col>
 											</Row>
 										</>
 									</Tab>
