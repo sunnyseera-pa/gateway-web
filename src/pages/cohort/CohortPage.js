@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import * as Sentry from '@sentry/react';
 import { Container, Row, Col, Tabs, Tab, Alert, Button, Accordion } from 'react-bootstrap';
@@ -13,11 +13,17 @@ import CohortDiscoveryBanner from '../dataset/components/CohortDiscoveryBanner';
 import ActionBar from '../commonComponents/actionbar/ActionBar';
 import ApplicantActionButtons from './components/ApplicantActionButtons/ApplicantActionButtons';
 import ToolTips from '../commonComponents/ToolTips/ToolTips';
-import './CohortPage.scss';
+import './Cohorts.scss';
 import { ReactComponent as InfoSVG } from '../../images/info.svg';
+import OmopCard from './OmopCard';
+import axios from 'axios';
+import { has } from 'lodash';
+let baseURL = require('../commonComponents/BaseURL').getURL();
 
 export const CohortPage = props => {
-	const [isLoading] = useState(false);
+	const [isLoading, setIsLoading] = useState(true);
+	const [cohortData, setCohortData] = useState([]);
+	const [cohortGroups, setCohortGroups] = useState([]);
 	const [searchString, setSearchString] = useState('');
 	const [showDrawer, setShowDrawer] = useState(false);
 	const [searchBar] = useState(React.createRef());
@@ -32,6 +38,24 @@ export const CohortPage = props => {
 		]
 	);
 	let showError = false;
+
+	useEffect(() => {
+		getCohortFromDb();
+	}, []);
+
+	const getCohortFromDb = async () => {
+		setIsLoading(true);
+
+		await axios.get(baseURL + '/api/v1/cohorts/' + props.match.params.cohortID).then(res => {
+			setCohortData(res.data);
+
+			if (has(res.data, 'cohort.input.cohorts[0].groups')) {
+				setCohortGroups(res.data.cohort.input.cohorts[0].groups);
+			}
+		});
+
+		setIsLoading(false);
+	};
 
 	const showModalHandler = () => {
 		showError = true;
@@ -146,11 +170,18 @@ export const CohortPage = props => {
 															</ToolTips>
 														</Col>
 													</Row>
-													<Row className='mt-3'>
-														<Col sm={12} className='gray800-14 hdruk-section-body'>
-															<ReactMarkdown source='' />
-														</Col>
-													</Row>
+													{cohortGroups.map((cohortGroup, index) => {
+														return (
+															<Row className='mt-3'>
+																<Col sm={12}>
+																	<div className='black-16-semibold mb-3'>Group {index + 1}</div>
+																	{cohortGroup.rules.map((groupRule, index) => {
+																		return <OmopCard index={index} groupRulesOperator={cohortGroup.rules_oper} groupRule={groupRule} />;
+																	})}
+																</Col>
+															</Row>
+														);
+													})}
 												</div>
 											</Col>
 										</Row>

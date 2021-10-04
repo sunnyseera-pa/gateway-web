@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import ActionBarMenu from '../../../commonComponents/ActionBarMenu/ActionBarMenu';
-import '../../CohortPage.scss';
+import '../../Cohorts.scss';
 
 const ApplicantActionButtons = ({ allowedNavigation = false }) => {
 	const options = [
@@ -26,7 +26,12 @@ const ApplicantActionButtons = ({ allowedNavigation = false }) => {
 
 	return (
 		<Fragment>
-			<ActionBarMenu label='Create a new version' options={availableOptions} disabled={!allowedNavigation} buttonClass='techDetailButton' />
+			<ActionBarMenu
+				label='Create a new version'
+				options={availableOptions}
+				disabled={!allowedNavigation}
+				buttonClass='techDetailButton newCohortVersionButton'
+			/>
 		</Fragment>
 	);
 };

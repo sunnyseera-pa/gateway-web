@@ -26,7 +26,7 @@ const CohortGroup = props => {
 			<Collapse in={openGroup} className='collapseWait pad-bottom-8 cohortGroupExpanded'>
 				<div>
 					{groupRules.map((groupRule, index) => {
-						return <OmopCard omop={'testA'} index={index} groupRulesOperator={groupRulesOperator} groupRule={groupRule} />;
+						return <OmopCard index={index} groupRulesOperator={groupRulesOperator} groupRule={groupRule} />;
 					})}
 				</div>
 			</Collapse>
