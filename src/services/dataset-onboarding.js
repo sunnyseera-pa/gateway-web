@@ -2,42 +2,67 @@ import axios from 'axios';
 import { useMutation, useQuery } from 'react-query';
 import { apiURL } from '../configs/url.config';
 
-export const getDatasetOnboarding = (_id, options = {}) => {
+const getDatasetOnboarding = (_id, options) => {
 	return axios.get(`${apiURL}/dataset-onboarding/${_id}`, options);
 };
 
-export const postDatasetOnboarding = (_id, data) => {
-	return axios.post(`${apiURL}/dataset-onboarding/${_id}`, data);
+const postDatasetOnboarding = (_id, data, options) => {
+	return axios.post(`${apiURL}/dataset-onboarding/${_id}`, data, options);
 };
 
-export const putDatasetOnboarding = (_id, data) => {
-	return axios.put(`${apiURL}/dataset-onboarding/${_id}`, data);
+const putDatasetOnboarding = (_id, data, options) => {
+	return axios.put(`${apiURL}/dataset-onboarding/${_id}`, data, options);
 };
 
-export const patchDatasetOnboarding = (_id, data) => {
-	return axios.patch(`${apiURL}/dataset-onboarding/${_id}`, data);
+const patchDatasetOnboarding = (_id, data, options) => {
+	return axios.patch(`${apiURL}/dataset-onboarding/${_id}`, data, options);
 };
 
-export const deleteDatasetOnboarding = (_id, options = {}) => {
+const deleteDatasetOnboarding = (_id, options) => {
 	return axios.delete(`${apiURL}/dataset-onboarding/delete/${_id}`, options);
 };
 
-export const useGetDatasetOnboarding = (options = {}) => {
-	return useQuery(id => getDatasetOnboarding(id), options);
+const useGetDatasetOnboarding = (requestOptions, queryOptions = { queryKey: 'getDatasetOnboarding' }) => {
+	return useQuery({
+		...queryOptions,
+		queryFn: id => getDatasetOnboarding(id, requestOptions),
+	});
 };
 
-export const usePostDatasetOnboarding = (options = {}) => {
-	return useMutation((id, data) => postDatasetOnboarding(id, data), options);
+const usePostDatasetOnboarding = (requestOptions, mutateOptions = { queryKey: 'postDatasetOnboarding' }) => {
+	return useMutation((id, data) => postDatasetOnboarding(id, data, requestOptions), {
+		mutateOptions,
+	});
 };
 
-export const usePutDatasetOnboarding = (options = {}) => {
-	return useMutation((id, data) => putDatasetOnboarding(id, data), options);
+const usePutDatasetOnboarding = (requestOptions, mutateOptions = { queryKey: 'putDatasetOnboarding' }) => {
+	return useMutation((id, data) => putDatasetOnboarding(id, data, requestOptions), {
+		mutateOptions,
+	});
 };
 
-export const usePatchDatasetOnboarding = (options = {}) => {
-	return useMutation((id, data) => patchDatasetOnboarding(id, data), options);
+const usePatchDatasetOnboarding = (requestOptions, mutateOptions = { queryKey: 'patchDatasetOnboarding' }) => {
+	return useMutation((id, data) => patchDatasetOnboarding(id, data, requestOptions), {
+		mutateOptions,
+	});
 };
 
-export const useDeleteDatasetOnboarding = (options = {}) => {
-	return useQuery(id => deleteDatasetOnboarding(id), options);
+const useDeleteDatasetOnboarding = (requestOptions, queryOptions = { queryKey: 'deleteDatasetOnboarding' }) => {
+	return useQuery({
+		...queryOptions,
+		queryFn: id => deleteDatasetOnboarding(id, requestOptions),
+	});
+};
+
+export default {
+	getDatasetOnboarding,
+	postDatasetOnboarding,
+	putDatasetOnboarding,
+	patchDatasetOnboarding,
+	deleteDatasetOnboarding,
+	useGetDatasetOnboarding,
+	usePostDatasetOnboarding,
+	usePutDatasetOnboarding,
+	usePatchDatasetOnboarding,
+	useDeleteDatasetOnboarding,
 };
