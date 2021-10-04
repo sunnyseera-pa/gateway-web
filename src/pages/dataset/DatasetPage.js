@@ -655,18 +655,19 @@ class DatasetDetail extends Component {
 	};
 
 	exportCitation = () => {
+		const data = this.state.data;
 		navigator.clipboard.writeText(
-			this.state.data.datasetv2.summary.publisher.name +
+			data.datasetv2.summary.publisher.name +
 				'(' +
-				this.state.data.datasetv2.provenance.temporal.distributionReleaseDate +
+				data.datasetv2.provenance.temporal.distributionReleaseDate +
 				').' +
-				this.state.data.name +
+				data.name +
 				'.' +
-				this.state.data.datasetVersion +
+				data.datasetVersion +
 				'.' +
-				this.state.data.type +
+				data.type +
 				'.' +
-				this.state.data.document_links.doi
+				data.document_links.doi
 		);
 		this.setState({ showCitationSuccess: true });
 	};
