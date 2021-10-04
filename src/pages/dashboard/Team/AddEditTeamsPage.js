@@ -21,7 +21,7 @@ const AddEditTeamsPage = ({
 	const [isLoading, setLoading] = useState(false);
 	const [combinedTeamManagers, setCombinedTeamManagers] = useState({});
 
-	const memberOfSelect = ['ALLIANCE', 'HUBS', 'OTHER', 'NCS'];
+	const memberOfSelect = ['ALLIANCE', 'HUB', 'OTHER', 'NCS'];
 
 	const handleMemberOfSelect = key => {
 		formik.setFieldValue('memberOf', key);
