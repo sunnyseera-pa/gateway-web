@@ -13,7 +13,7 @@ const SortDropdown = ({ handleSort, sort, dropdownItems, isCollectionsSearch }) 
 				variant='info'
 				id='dropdown-menu-align-right'
 				className={isCollectionsSearch ? 'collectionsSorting gray800-14' : 'gray800-14'}>
-				{(() => {
+					{   (() => {
 					if (sorting === 'popularity') return 'Sort by number of views';
 					else if (sorting === 'metadata') return 'Sort by metadata quality';
 					else if (sorting === 'resources') return 'Sort by related resources';
