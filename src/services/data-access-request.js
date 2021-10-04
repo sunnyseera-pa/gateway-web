@@ -2,6 +2,10 @@ import axios from 'axios';
 import { useMutation, useQuery } from 'react-query';
 import { apiURL } from '../configs/url.config';
 
+const getDataAccessRequests = options => {
+	return axios.get(`${apiURL}/data-access-request`, options);
+};
+
 const getDataAccessRequest = (_id, options) => {
 	return axios.get(`${apiURL}/data-access-request/${_id}`, options);
 };
@@ -20,6 +24,13 @@ const patchDataAccessRequest = (_id, data, options) => {
 
 const deleteDataAccessRequest = (_id, options) => {
 	return axios.delete(`${apiURL}/data-access-request/${_id}`, options);
+};
+
+const useGetDataAccessRequests = (requestOptions, queryOptions = { queryKey: 'getDataAccessRequest' }) => {
+	return useQuery({
+		...queryOptions,
+		queryFn: () => getDataAccessRequests(requestOptions),
+	});
 };
 
 const useGetDataAccessRequest = (requestOptions, queryOptions = { queryKey: 'getDataAccessRequest' }) => {
@@ -55,11 +66,14 @@ const useDeleteDataAccessRequest = (requestOptions, queryOptions = { queryKey: '
 };
 
 export default {
+	getDataAccessRequests,
 	getDataAccessRequest,
 	postDataAccessRequest,
 	putDataAccessRequest,
 	patchDataAccessRequest,
 	deleteDataAccessRequest,
+	useGetDataAccessRequests,
+	useGetDataAccessRequests,
 	useGetDataAccessRequest,
 	usePostDataAccessRequest,
 	usePutDataAccessRequest,

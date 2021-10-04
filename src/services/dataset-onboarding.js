@@ -2,6 +2,10 @@ import axios from 'axios';
 import { useMutation, useQuery } from 'react-query';
 import { apiURL } from '../configs/url.config';
 
+const getDatasetOnboardings = options => {
+	return axios.get(`${apiURL}/dataset-onboarding`, options);
+};
+
 const getDatasetOnboarding = (_id, options) => {
 	return axios.get(`${apiURL}/dataset-onboarding/${_id}`, options);
 };
@@ -20,6 +24,13 @@ const patchDatasetOnboarding = (_id, data, options) => {
 
 const deleteDatasetOnboarding = (_id, options) => {
 	return axios.delete(`${apiURL}/dataset-onboarding/delete/${_id}`, options);
+};
+
+const useGetDatasetOnboardings = (requestOptions, queryOptions = { queryKey: 'getDatasetOnboardings' }) => {
+	return useQuery({
+		...queryOptions,
+		queryFn: id => getDatasetOnboardings(requestOptions),
+	});
 };
 
 const useGetDatasetOnboarding = (requestOptions, queryOptions = { queryKey: 'getDatasetOnboarding' }) => {
@@ -55,11 +66,13 @@ const useDeleteDatasetOnboarding = (requestOptions, queryOptions = { queryKey: '
 };
 
 export default {
+	getDatasetOnboardings,
 	getDatasetOnboarding,
 	postDatasetOnboarding,
 	putDatasetOnboarding,
 	patchDatasetOnboarding,
 	deleteDatasetOnboarding,
+	useGetDatasetOnboardings,
 	useGetDatasetOnboarding,
 	usePostDatasetOnboarding,
 	usePutDatasetOnboarding,

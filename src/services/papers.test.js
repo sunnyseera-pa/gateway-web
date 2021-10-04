@@ -2,7 +2,7 @@ import { renderHook } from '@testing-library/react-hooks';
 import axios from 'axios';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { apiURL } from '../configs/url.config';
-import service from './data-access-request';
+import service from './papers';
 
 jest.mock('axios');
 
@@ -15,9 +15,9 @@ describe('Given the data-access-request service', () => {
 		wrapper = ({ children }) => <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
 	});
 
-	describe('When getDataAccessRequests is called', () => {
+	describe('When getPapers is called', () => {
 		it('Then calls axios.get with the correct arguments', () => {
-			service.getDataAccessRequests({
+			service.getPapers({
 				option1: true,
 			});
 
@@ -27,9 +27,9 @@ describe('Given the data-access-request service', () => {
 		});
 	});
 
-	describe('When getDataAccessRequest is called', () => {
+	describe('When getPaper is called', () => {
 		it('Then calls axios.get with the correct arguments', () => {
-			service.getDataAccessRequest('1234', {
+			service.getPaper('1234', {
 				option1: true,
 			});
 
@@ -39,9 +39,9 @@ describe('Given the data-access-request service', () => {
 		});
 	});
 
-	describe('When postDataAccessRequest is called', () => {
+	describe('When postPaper is called', () => {
 		it('Then calls axios.post with the correct arguments', () => {
-			service.postDataAccessRequest(
+			service.postPaper(
 				'1234',
 				{
 					status: 'archive',
@@ -59,9 +59,9 @@ describe('Given the data-access-request service', () => {
 		});
 	});
 
-	describe('When putDataAccessRequest is called', () => {
+	describe('When putPaper is called', () => {
 		it('Then calls axios.put with the correct arguments', () => {
-			service.putDataAccessRequest(
+			service.putPaper(
 				'1234',
 				{
 					status: 'archive',
@@ -79,9 +79,9 @@ describe('Given the data-access-request service', () => {
 		});
 	});
 
-	describe('When patchDataAccessRequest is called', () => {
+	describe('When patchPaper is called', () => {
 		it('Then calls axios.patch with the correct arguments', () => {
-			service.patchDataAccessRequest(
+			service.patchPaper(
 				'1234',
 				{
 					status: 'archive',
@@ -99,9 +99,9 @@ describe('Given the data-access-request service', () => {
 		});
 	});
 
-	describe('When deleteDataAccessRequest is called', () => {
+	describe('When deletePaper is called', () => {
 		it('Then calls axios.delete with the correct arguments', () => {
-			service.deleteDataAccessRequest('1234', {
+			service.deletePaper('1234', {
 				option1: true,
 			});
 
@@ -111,11 +111,11 @@ describe('Given the data-access-request service', () => {
 		});
 	});
 
-	describe('When useGetDataAccessRequests is called', () => {
-		it('Then calls getDataAccessRequests with the correct arguments', async () => {
-			const getSpy = jest.spyOn(service, 'getDataAccessRequests');
+	describe('When useGetPapers is called', () => {
+		it('Then calls getPapers with the correct arguments', async () => {
+			const getSpy = jest.spyOn(service, 'getPapers');
 
-			const { waitFor, result } = renderHook(() => service.useGetDataAccessRequests({ option1: true }), { wrapper });
+			const { waitFor, result } = renderHook(() => service.useGetPapers({ option1: true }), { wrapper });
 
 			await waitFor(() => result.current.refetch);
 
@@ -125,10 +125,10 @@ describe('Given the data-access-request service', () => {
 		});
 	});
 
-	describe('When useGetDataAccessRequest is called', () => {
-		it('Then calls getDataAccessRequest with the correct arguments', async () => {
-			const getSpy = jest.spyOn(service, 'getDataAccessRequest');
-			const { waitFor, result } = renderHook(() => service.useGetDataAccessRequest({ option1: true }), { wrapper });
+	describe('When useGetPaper is called', () => {
+		it('Then calls getPaper with the correct arguments', async () => {
+			const getSpy = jest.spyOn(service, 'getPaper');
+			const { waitFor, result } = renderHook(() => service.useGetPaper({ option1: true }), { wrapper });
 
 			await waitFor(() => result.current.refetch);
 
@@ -138,10 +138,10 @@ describe('Given the data-access-request service', () => {
 		});
 	});
 
-	describe('When usePostDataAccessRequest is called', () => {
-		it('Then calls postDataAccessRequest with the correct arguments', async () => {
-			const postSpy = jest.spyOn(service, 'postDataAccessRequest');
-			const { waitFor, result } = renderHook(() => service.usePostDataAccessRequest({ option1: true }), { wrapper });
+	describe('When usePostPaper is called', () => {
+		it('Then calls postPaper with the correct arguments', async () => {
+			const postSpy = jest.spyOn(service, 'postPaper');
+			const { waitFor, result } = renderHook(() => service.usePostPaper({ option1: true }), { wrapper });
 
 			await waitFor(() => result.current.mutateAsync);
 
@@ -151,10 +151,10 @@ describe('Given the data-access-request service', () => {
 		});
 	});
 
-	describe('When usePutDataAccessRequest is called', () => {
-		it('Then calls putDataAccessRequest with the correct arguments', async () => {
-			const putSpy = jest.spyOn(service, 'putDataAccessRequest');
-			const { waitFor, result } = renderHook(() => service.usePutDataAccessRequest({ option1: true }), { wrapper });
+	describe('When usePutPaper is called', () => {
+		it('Then calls putPaper with the correct arguments', async () => {
+			const putSpy = jest.spyOn(service, 'putPaper');
+			const { waitFor, result } = renderHook(() => service.usePutPaper({ option1: true }), { wrapper });
 
 			await waitFor(() => result.current.mutateAsync);
 
@@ -164,10 +164,10 @@ describe('Given the data-access-request service', () => {
 		});
 	});
 
-	describe('When usePatchDataAccessRequest is called', () => {
-		it('Then calls patchDataAccessRequest with the correct arguments', async () => {
-			const putSpy = jest.spyOn(service, 'patchDataAccessRequest');
-			const { waitFor, result } = renderHook(() => service.usePatchDataAccessRequest({ option1: true }), { wrapper });
+	describe('When usePatchPaper is called', () => {
+		it('Then calls patchPaper with the correct arguments', async () => {
+			const putSpy = jest.spyOn(service, 'patchPaper');
+			const { waitFor, result } = renderHook(() => service.usePatchPaper({ option1: true }), { wrapper });
 
 			await waitFor(() => result.current.mutateAsync);
 
@@ -177,10 +177,10 @@ describe('Given the data-access-request service', () => {
 		});
 	});
 
-	describe('When useDeleteDataAccessRequest is called', () => {
-		it('Then calls deleteDataAccessRequest with the correct arguments', async () => {
-			const deleteSpy = jest.spyOn(service, 'deleteDataAccessRequest');
-			const { waitFor, result } = renderHook(() => service.useDeleteDataAccessRequest({ option1: true }), { wrapper });
+	describe('When useDeletePaper is called', () => {
+		it('Then calls deletePaper with the correct arguments', async () => {
+			const deleteSpy = jest.spyOn(service, 'deletePaper');
+			const { waitFor, result } = renderHook(() => service.useDeletePaper({ option1: true }), { wrapper });
 
 			await waitFor(() => result.current.refetch);
 
