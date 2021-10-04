@@ -121,8 +121,8 @@ const AddEditTeamsPage = ({
 						<Col sm={12} lg={12}>
 							<Row className='mt-3'>
 								<Col sm={12} lg={12}>
-									<p className='gray800-14 mb-0'>Organistaion name</p>
-									<p className='gray700-13 mb-0'>Please ensure the name matches the standard format for organsitation names</p>
+									<p className='gray800-14 mb-0'>Organisation name</p>
+									<p className='gray700-13 mb-0'>Please ensure the name matches the standard format for organisation names</p>
 								</Col>
 							</Row>
 							<Row>
