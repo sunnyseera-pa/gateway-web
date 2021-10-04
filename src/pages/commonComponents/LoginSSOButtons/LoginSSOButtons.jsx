@@ -1,8 +1,11 @@
+/** @jsx jsx */
+import { jsx } from '@emotion/react';
 import React, { useEffect, useReducer, Fragment } from 'react';
 import { Row, Col } from 'react-bootstrap';
 import PropTypes from 'prop-types';
-import _ from 'lodash';
+import { chunk } from 'lodash';
 import '../CommonComponents.scss';
+import * as styles from './LoginSSoButtons.styles';
 import lastChoiceSVG from '../../../images/lastChoice.svg';
 
 const reducer = (ssoBtnsState, lastChoice) => {
@@ -19,36 +22,30 @@ function LoginSSOButtons({ ssoBtnsConfig, communityLink, clickHandler, lastChoic
 	const [ssoBtnsState, dispatch] = useReducer(reducer, ssoBtnsConfig);
 
 	useEffect(() => {
-		if (!_.isEmpty(lastChoice)) {
+		if (lastChoice) {
 			dispatch(lastChoice);
 		}
 	}, [lastChoice]);
 
 	return (
 		<div>
-			{_.map(_.chunk(ssoBtnsState, 2), (arr, index) => (
+			{chunk(ssoBtnsState, 2).map((arr, index) => (
 				<Fragment key={index}>
 					<br />
 					<Row className='mt-2'>
 						<Col sm={0} lg={1} />
-						{_.map(arr, (value, i) => (
+						{arr.map((value, i) => (
 							<Col sm={6} lg={5} key={value.id + i} className='mt-1'>
 								<div className='gray800-14'>
 									<button
 										data-testid={value.id}
 										className='btn btn-outline-secondary btn-block'
-										style={{ textAlign: 'left' }}
+										css={styles.btn}
 										onClick={() => clickHandler(value.id, value.authURL)}>
-										<img src={value.img} width='20' style={{ float: 'left' }} alt={value.id} />
+										<img src={value.img} css={styles.btnImg} alt={value.id} />
 										&nbsp; {value.text}
-										{value.active === true ? (
-											<img
-												src={lastChoiceSVG}
-												width='20'
-												style={{ float: 'right', marginRight: '-10px' }}
-												data-testid={value.id + '-lastChoice'}
-												alt='lastChoice'
-											/>
+										{value.active ? (
+											<img src={lastChoiceSVG} css={styles.lastChoiceBtnImg} data-testid={value.id + '-lastChoice'} alt='lastChoice' />
 										) : null}
 									</button>
 								</div>
@@ -58,7 +55,7 @@ function LoginSSOButtons({ ssoBtnsConfig, communityLink, clickHandler, lastChoic
 					</Row>
 				</Fragment>
 			))}
-			<div style={{ fontSize: '12px' }}>
+			<div css={styles.supportLink}>
 				<Row className='mt-5 '>
 					<Col sm={0} lg={1} />
 					<Col sm={6} lg={5}>
@@ -76,7 +73,8 @@ function LoginSSOButtons({ ssoBtnsConfig, communityLink, clickHandler, lastChoic
 					<Col sm={6} lg={5}>
 						{lastChoice ? (
 							<span>
-								<img src={lastChoiceSVG} width='20' data-testid='lastChoiceNote' alt='lastChoice' /> Last Time you clicked this button
+								<img src={lastChoiceSVG} css={styles.btnImg} data-testid='lastChoiceNote' alt='lastChoice' /> Last Time you clicked this
+								button
 							</span>
 						) : null}
 					</Col>

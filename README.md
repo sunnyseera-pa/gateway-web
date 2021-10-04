@@ -54,4 +54,9 @@ npm start
 
 ## .env
 
-.env has been removed from .gitignore, skip preflight check needs to be true due to conflict with babel loader versions between storybook and react-scripts
+Skip preflight check needs to be true due to conflict with babel loader versions between storybook and react-scripts. Please create your own .env file with the following content:
+
+```
+SKIP_PREFLIGHT_CHECK=true
+REACT_APP_API_VERSION=v1
+```
