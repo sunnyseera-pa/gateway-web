@@ -27,7 +27,7 @@ const deleteDataAccessRequest = (_id, options) => {
 	return deleteRequest(`${apiURL}/data-access-request/${_id}`, options);
 };
 
-const useGetDataAccessRequests = (requestOptions, queryOptions = { queryKey: 'getDataAccessRequest' }) => {
+const useGetDataAccessRequests = (requestOptions, queryOptions = { queryKey: 'getDataAccessRequests' }) => {
 	return useQuery({
 		...queryOptions,
 		queryFn: () => getDataAccessRequests(requestOptions),

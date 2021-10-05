@@ -27,7 +27,7 @@ const deletePaper = (_id, options) => {
 	return deleteRequest(`${apiURL}/papers/${_id}`, options);
 };
 
-const useGetPapers = (requestOptions, queryOptions = { queryKey: 'getPaper' }) => {
+const useGetPapers = (requestOptions, queryOptions = { queryKey: 'getPapers' }) => {
 	return useQuery({
 		...queryOptions,
 		queryFn: () => getPapers(requestOptions),
