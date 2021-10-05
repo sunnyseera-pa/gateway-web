@@ -16,31 +16,31 @@ describe('Given the data-access-request service', () => {
 	});
 
 	describe('When getPapers is called', () => {
-		it('Then calls axios.get with the correct arguments', () => {
+		it('Then calls getRequest with the correct arguments', () => {
 			service.getPapers({
 				option1: true,
 			});
 
-			expect(axios.get).toHaveBeenCalledWith(`${apiURL}/data-access-request`, {
+			expect(getRequest).toHaveBeenCalledWith(`${apiURL}/data-access-request`, {
 				option1: true,
 			});
 		});
 	});
 
 	describe('When getPaper is called', () => {
-		it('Then calls axios.get with the correct arguments', () => {
+		it('Then calls getRequest with the correct arguments', () => {
 			service.getPaper('1234', {
 				option1: true,
 			});
 
-			expect(axios.get).toHaveBeenCalledWith(`${apiURL}/data-access-request/1234`, {
+			expect(getRequest).toHaveBeenCalledWith(`${apiURL}/data-access-request/1234`, {
 				option1: true,
 			});
 		});
 	});
 
 	describe('When postPaper is called', () => {
-		it('Then calls axios.post with the correct arguments', () => {
+		it('Then calls postRequest with the correct arguments', () => {
 			service.postPaper(
 				'1234',
 				{
@@ -49,7 +49,7 @@ describe('Given the data-access-request service', () => {
 				{ option1: true }
 			);
 
-			expect(axios.post).toHaveBeenCalledWith(
+			expect(postRequest).toHaveBeenCalledWith(
 				`${apiURL}/data-access-request/1234`,
 				{
 					status: 'archive',
@@ -60,7 +60,7 @@ describe('Given the data-access-request service', () => {
 	});
 
 	describe('When putPaper is called', () => {
-		it('Then calls axios.put with the correct arguments', () => {
+		it('Then calls putRequest with the correct arguments', () => {
 			service.putPaper(
 				'1234',
 				{
@@ -69,7 +69,7 @@ describe('Given the data-access-request service', () => {
 				{ option1: true }
 			);
 
-			expect(axios.put).toHaveBeenCalledWith(
+			expect(putRequest).toHaveBeenCalledWith(
 				`${apiURL}/data-access-request/1234`,
 				{
 					status: 'archive',
@@ -80,7 +80,7 @@ describe('Given the data-access-request service', () => {
 	});
 
 	describe('When patchPaper is called', () => {
-		it('Then calls axios.patch with the correct arguments', () => {
+		it('Then calls patchRequest with the correct arguments', () => {
 			service.patchPaper(
 				'1234',
 				{
@@ -89,7 +89,7 @@ describe('Given the data-access-request service', () => {
 				{ option1: true }
 			);
 
-			expect(axios.patch).toHaveBeenCalledWith(
+			expect(patchRequest).toHaveBeenCalledWith(
 				`${apiURL}/data-access-request/1234`,
 				{
 					status: 'archive',
@@ -100,12 +100,12 @@ describe('Given the data-access-request service', () => {
 	});
 
 	describe('When deletePaper is called', () => {
-		it('Then calls axios.delete with the correct arguments', () => {
+		it('Then calls deleteRequest with the correct arguments', () => {
 			service.deletePaper('1234', {
 				option1: true,
 			});
 
-			expect(axios.delete).toHaveBeenCalledWith(`${apiURL}/data-access-request/1234`, {
+			expect(deleteRequest).toHaveBeenCalledWith(`${apiURL}/data-access-request/1234`, {
 				option1: true,
 			});
 		});

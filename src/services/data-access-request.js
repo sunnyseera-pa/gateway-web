@@ -1,29 +1,30 @@
 import axios from 'axios';
 import { useMutation, useQuery } from 'react-query';
 import { apiURL } from '../configs/url.config';
+import { deleteRequest, getRequest, patchRequest, postRequest, putRequest } from '../utils/requests';
 
 const getDataAccessRequests = options => {
-	return axios.get(`${apiURL}/data-access-request`, options);
+	return getRequest(`${apiURL}/data-access-request`, options);
 };
 
 const getDataAccessRequest = (_id, options) => {
-	return axios.get(`${apiURL}/data-access-request/${_id}`, options);
+	return getRequest(`${apiURL}/data-access-request/${_id}`, options);
 };
 
 const postDataAccessRequest = (_id, data, options) => {
-	return axios.post(`${apiURL}/data-access-request/${_id}`, data, options);
+	return postRequest(`${apiURL}/data-access-request/${_id}`, data, options);
 };
 
 const putDataAccessRequest = (_id, data, options) => {
-	return axios.put(`${apiURL}/data-access-request/${_id}`, data, options);
+	return putRequest(`${apiURL}/data-access-request/${_id}`, data, options);
 };
 
 const patchDataAccessRequest = (_id, data, options) => {
-	return axios.patch(`${apiURL}/data-access-request/${_id}`, data, options);
+	return patchRequest(`${apiURL}/data-access-request/${_id}`, data, options);
 };
 
 const deleteDataAccessRequest = (_id, options) => {
-	return axios.delete(`${apiURL}/data-access-request/${_id}`, options);
+	return deleteRequest(`${apiURL}/data-access-request/${_id}`, options);
 };
 
 const useGetDataAccessRequests = (requestOptions, queryOptions = { queryKey: 'getDataAccessRequest' }) => {

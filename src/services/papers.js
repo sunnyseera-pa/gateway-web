@@ -1,29 +1,30 @@
 import axios from 'axios';
 import { useMutation, useQuery } from 'react-query';
 import { apiURL } from '../configs/url.config';
+import { deleteRequest, getRequest, patchRequest, postRequest, putRequest } from '../utils/requests';
 
 const getPapers = options => {
-	return axios.get(`${apiURL}/papers`, options);
+	return getRequest(`${apiURL}/papers`, options);
 };
 
 const getPaper = (_id, options) => {
-	return axios.get(`${apiURL}/papers/${_id}`, options);
+	return getRequest(`${apiURL}/papers/${_id}`, options);
 };
 
 const postPaper = (_id, data, options) => {
-	return axios.post(`${apiURL}/papers/${_id}`, data, options);
+	return postRequest(`${apiURL}/papers/${_id}`, data, options);
 };
 
 const putPaper = (_id, data, options) => {
-	return axios.put(`${apiURL}/papers/${_id}`, data, options);
+	return putRequest(`${apiURL}/papers/${_id}`, data, options);
 };
 
 const patchPaper = (_id, data, options) => {
-	return axios.patch(`${apiURL}/papers/${_id}`, data, options);
+	return patchRequest(`${apiURL}/papers/${_id}`, data, options);
 };
 
 const deletePaper = (_id, options) => {
-	return axios.delete(`${apiURL}/papers/${_id}`, options);
+	return deleteRequest(`${apiURL}/papers/${_id}`, options);
 };
 
 const useGetPapers = (requestOptions, queryOptions = { queryKey: 'getPaper' }) => {
