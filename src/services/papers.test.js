@@ -12,7 +12,7 @@ let wrapper;
 
 const queryClient = new QueryClient();
 
-describe('Given the data-access-request service', () => {
+describe('Given the papers service', () => {
 	beforeAll(() => {
 		wrapper = ({ children }) => <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
 	});
@@ -27,7 +27,7 @@ describe('Given the data-access-request service', () => {
 				option1: true,
 			});
 
-			expect(getRequest).toHaveBeenCalledWith(`${apiURL}/data-access-request`, {
+			expect(getRequest).toHaveBeenCalledWith(`${apiURL}/papers`, {
 				option1: true,
 			});
 		});
@@ -39,7 +39,7 @@ describe('Given the data-access-request service', () => {
 				option1: true,
 			});
 
-			expect(getRequest).toHaveBeenCalledWith(`${apiURL}/data-access-request/1234`, {
+			expect(getRequest).toHaveBeenCalledWith(`${apiURL}/papers/1234`, {
 				option1: true,
 			});
 		});
@@ -56,7 +56,7 @@ describe('Given the data-access-request service', () => {
 			);
 
 			expect(postRequest).toHaveBeenCalledWith(
-				`${apiURL}/data-access-request/1234`,
+				`${apiURL}/papers/1234`,
 				{
 					status: 'archive',
 				},
@@ -76,7 +76,7 @@ describe('Given the data-access-request service', () => {
 			);
 
 			expect(putRequest).toHaveBeenCalledWith(
-				`${apiURL}/data-access-request/1234`,
+				`${apiURL}/papers/1234`,
 				{
 					status: 'archive',
 				},
@@ -96,7 +96,7 @@ describe('Given the data-access-request service', () => {
 			);
 
 			expect(patchRequest).toHaveBeenCalledWith(
-				`${apiURL}/data-access-request/1234`,
+				`${apiURL}/papers/1234`,
 				{
 					status: 'archive',
 				},
@@ -111,7 +111,7 @@ describe('Given the data-access-request service', () => {
 				option1: true,
 			});
 
-			expect(deleteRequest).toHaveBeenCalledWith(`${apiURL}/data-access-request/1234`, {
+			expect(deleteRequest).toHaveBeenCalledWith(`${apiURL}/papers/1234`, {
 				option1: true,
 			});
 		});
