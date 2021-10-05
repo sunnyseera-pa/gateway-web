@@ -1524,7 +1524,7 @@ class DataAccessRequest extends Component {
 					applicationStatusDesc: statusDesc,
 				};
 				// 1. Update action status
-				const response = await axios.put(`${baseURL}/api/v1/data-access-request/${_id}`, body);
+				await axios.put(`${baseURL}/api/v1/data-access-request/${_id}`, body);
 				// 2. set alert object for screen
 				let alert = {
 					publisher: this.state.publisher || '',
