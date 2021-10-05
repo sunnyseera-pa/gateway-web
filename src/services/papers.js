@@ -4,11 +4,15 @@ import { apiURL } from '../configs/url.config';
 import { deleteRequest, getRequest, patchRequest, postRequest, putRequest } from '../utils/requests';
 
 const getPapers = options => {
-	return getRequest(`${apiURL}/papers`, options);
+	return getRequest(`${apiURL}/papers/getList`, options);
 };
 
 const getPaper = (_id, options) => {
 	return getRequest(`${apiURL}/papers/${_id}`, options);
+};
+
+const getEdit = (_id, options) => {
+	return getRequest(`${apiURL}/papers/edit/${_id}`, options);
 };
 
 const postPaper = (_id, data, options) => {
@@ -35,6 +39,13 @@ const useGetPapers = (requestOptions, queryOptions = { queryKey: 'getPapers' }) 
 };
 
 const useGetPaper = (requestOptions, queryOptions = { queryKey: 'getPaper' }) => {
+	return useQuery({
+		...queryOptions,
+		queryFn: _id => getPaper(_id, requestOptions),
+	});
+};
+
+const useGetEdit = (requestOptions, queryOptions = { queryKey: 'getEdit' }) => {
 	return useQuery({
 		...queryOptions,
 		queryFn: _id => getPaper(_id, requestOptions),
@@ -69,13 +80,14 @@ const useDeletePaper = (requestOptions, queryOptions = { queryKey: 'deletePaper'
 export default {
 	getPapers,
 	getPaper,
+	getEdit,
 	postPaper,
 	putPaper,
 	patchPaper,
 	deletePaper,
 	useGetPapers,
-	useGetPapers,
 	useGetPaper,
+	useGetEdit,
 	usePostPaper,
 	usePutPaper,
 	usePatchPaper,

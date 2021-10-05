@@ -12,7 +12,7 @@ let wrapper;
 
 const queryClient = new QueryClient();
 
-describe('Given the data-access-request service', () => {
+describe('Given the papers service', () => {
 	beforeAll(() => {
 		wrapper = ({ children }) => <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
 	});
@@ -27,7 +27,7 @@ describe('Given the data-access-request service', () => {
 				option1: true,
 			});
 
-			expect(getRequest).toHaveBeenCalledWith(`${apiURL}/data-access-request`, {
+			expect(getRequest).toHaveBeenCalledWith(`${apiURL}/papers/getList`, {
 				option1: true,
 			});
 		});
@@ -39,7 +39,19 @@ describe('Given the data-access-request service', () => {
 				option1: true,
 			});
 
-			expect(getRequest).toHaveBeenCalledWith(`${apiURL}/data-access-request/1234`, {
+			expect(getRequest).toHaveBeenCalledWith(`${apiURL}/papers/1234`, {
+				option1: true,
+			});
+		});
+	});
+
+	describe('When getEdit is called', () => {
+		it('Then calls getRequest with the correct arguments', async () => {
+			await service.getEdit('1234', {
+				option1: true,
+			});
+
+			expect(getRequest).toHaveBeenCalledWith(`${apiURL}/papers/1234`, {
 				option1: true,
 			});
 		});
@@ -56,7 +68,7 @@ describe('Given the data-access-request service', () => {
 			);
 
 			expect(postRequest).toHaveBeenCalledWith(
-				`${apiURL}/data-access-request/1234`,
+				`${apiURL}/papers/1234`,
 				{
 					status: 'archive',
 				},
@@ -76,7 +88,7 @@ describe('Given the data-access-request service', () => {
 			);
 
 			expect(putRequest).toHaveBeenCalledWith(
-				`${apiURL}/data-access-request/1234`,
+				`${apiURL}/papers/1234`,
 				{
 					status: 'archive',
 				},
@@ -96,7 +108,7 @@ describe('Given the data-access-request service', () => {
 			);
 
 			expect(patchRequest).toHaveBeenCalledWith(
-				`${apiURL}/data-access-request/1234`,
+				`${apiURL}/papers/1234`,
 				{
 					status: 'archive',
 				},
@@ -111,7 +123,7 @@ describe('Given the data-access-request service', () => {
 				option1: true,
 			});
 
-			expect(deleteRequest).toHaveBeenCalledWith(`${apiURL}/data-access-request/1234`, {
+			expect(deleteRequest).toHaveBeenCalledWith(`${apiURL}/papers/1234`, {
 				option1: true,
 			});
 		});
@@ -135,6 +147,19 @@ describe('Given the data-access-request service', () => {
 		it('Then calls getPaper with the correct arguments', async () => {
 			const getSpy = jest.spyOn(service, 'getPaper');
 			const { waitFor, result } = renderHook(() => service.useGetPaper({ option1: true }), { wrapper });
+
+			await waitFor(() => result.current.refetch);
+
+			result.current.refetch('1234').then(() => {
+				expect(getSpy).toHaveBeenCalledWith('1234');
+			});
+		});
+	});
+
+	describe('When useGetEdit is called', () => {
+		it('Then calls getPaper with the correct arguments', async () => {
+			const getSpy = jest.spyOn(service, 'getEdit');
+			const { waitFor, result } = renderHook(() => service.useGetEdit({ option1: true }), { wrapper });
 
 			await waitFor(() => result.current.refetch);
 
