@@ -1,10 +1,11 @@
 import { renderHook } from '@testing-library/react-hooks';
-import axios from 'axios';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { apiURL } from '../configs/url.config';
+import { deleteRequest, getRequest, patchRequest, postRequest, putRequest } from '../utils/requests';
 import service from './data-access-request';
 
 jest.mock('axios');
+jest.mock('../utils/requests');
 
 let wrapper;
 
@@ -15,8 +16,12 @@ describe('Given the data-access-request service', () => {
 		wrapper = ({ children }) => <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
 	});
 
+	afterAll(() => {
+		wrapper.unmount();
+	});
+
 	describe('When getDataAccessRequests is called', () => {
-		it('Then calls getRequest with the correct arguments', () => {
+		it('Then calls getRequest with the correct arguments', async () => {
 			service.getDataAccessRequests({
 				option1: true,
 			});
@@ -28,8 +33,8 @@ describe('Given the data-access-request service', () => {
 	});
 
 	describe('When getDataAccessRequest is called', () => {
-		it('Then calls getRequest with the correct arguments', () => {
-			service.getDataAccessRequest('1234', {
+		it('Then calls getRequest with the correct arguments', async () => {
+			await service.getDataAccessRequest('1234', {
 				option1: true,
 			});
 
@@ -40,8 +45,8 @@ describe('Given the data-access-request service', () => {
 	});
 
 	describe('When postDataAccessRequest is called', () => {
-		it('Then calls postRequest with the correct arguments', () => {
-			service.postDataAccessRequest(
+		it('Then calls postRequest with the correct arguments', async () => {
+			await service.postDataAccessRequest(
 				'1234',
 				{
 					status: 'archive',
@@ -60,8 +65,8 @@ describe('Given the data-access-request service', () => {
 	});
 
 	describe('When putDataAccessRequest is called', () => {
-		it('Then calls putRequest with the correct arguments', () => {
-			service.putDataAccessRequest(
+		it('Then calls putRequest with the correct arguments', async () => {
+			await service.putDataAccessRequest(
 				'1234',
 				{
 					status: 'archive',
@@ -80,8 +85,8 @@ describe('Given the data-access-request service', () => {
 	});
 
 	describe('When patchDataAccessRequest is called', () => {
-		it('Then calls patchRequest with the correct arguments', () => {
-			service.patchDataAccessRequest(
+		it('Then calls patchRequest with the correct arguments', async () => {
+			await service.patchDataAccessRequest(
 				'1234',
 				{
 					status: 'archive',
@@ -100,8 +105,8 @@ describe('Given the data-access-request service', () => {
 	});
 
 	describe('When deleteDataAccessRequest is called', () => {
-		it('Then calls deleteRequest with the correct arguments', () => {
-			service.deleteDataAccessRequest('1234', {
+		it('Then calls deleteRequest with the correct arguments', async () => {
+			await service.deleteDataAccessRequest('1234', {
 				option1: true,
 			});
 
