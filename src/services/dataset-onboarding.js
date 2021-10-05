@@ -30,31 +30,31 @@ const deleteDatasetOnboarding = (_id, options) => {
 const useGetDatasetOnboardings = (requestOptions, queryOptions = { queryKey: 'getDatasetOnboardings' }) => {
 	return useQuery({
 		...queryOptions,
-		queryFn: id => getDatasetOnboardings(requestOptions),
+		queryFn: _id => getDatasetOnboardings(requestOptions),
 	});
 };
 
 const useGetDatasetOnboarding = (requestOptions, queryOptions = { queryKey: 'getDatasetOnboarding' }) => {
 	return useQuery({
 		...queryOptions,
-		queryFn: id => getDatasetOnboarding(id, requestOptions),
+		queryFn: _id => getDatasetOnboarding(_id, requestOptions),
 	});
 };
 
 const usePostDatasetOnboarding = (requestOptions, mutateOptions = { queryKey: 'postDatasetOnboarding' }) => {
-	return useMutation((id, data) => postDatasetOnboarding(id, data, requestOptions), {
+	return useMutation((_id, data) => postDatasetOnboarding(_id, data, requestOptions), {
 		mutateOptions,
 	});
 };
 
 const usePutDatasetOnboarding = (requestOptions, mutateOptions = { queryKey: 'putDatasetOnboarding' }) => {
-	return useMutation((id, data) => putDatasetOnboarding(id, data, requestOptions), {
+	return useMutation((_id, data) => putDatasetOnboarding(_id, data, requestOptions), {
 		mutateOptions,
 	});
 };
 
 const usePatchDatasetOnboarding = (requestOptions, mutateOptions = { queryKey: 'patchDatasetOnboarding' }) => {
-	return useMutation((id, data) => patchDatasetOnboarding(id, data, requestOptions), {
+	return useMutation((_id, data) => patchDatasetOnboarding(_id, data, requestOptions), {
 		mutateOptions,
 	});
 };
@@ -62,7 +62,7 @@ const usePatchDatasetOnboarding = (requestOptions, mutateOptions = { queryKey: '
 const useDeleteDatasetOnboarding = (requestOptions, queryOptions = { queryKey: 'deleteDatasetOnboarding' }) => {
 	return useQuery({
 		...queryOptions,
-		queryFn: id => deleteDatasetOnboarding(id, requestOptions),
+		queryFn: _id => deleteDatasetOnboarding(_id, requestOptions),
 	});
 };
 

@@ -3,7 +3,7 @@ import axios from 'axios';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { apiURL } from '../configs/url.config';
 import { deleteRequest, getRequest, patchRequest, postRequest, putRequest } from '../utils/requests';
-import service from './papers';
+import service from './person';
 
 jest.mock('axios');
 jest.mock('../utils/requests');
@@ -85,9 +85,9 @@ describe('Given the person service', () => {
 		});
 	});
 
-	describe('When patchProfileComplete is called', () => {
-		it('Then calls patchRequest with the correct arguments', async () => {
-			await service.patchProfileComplete(
+	describe('When putUnsubscribe is called', () => {
+		it('Then calls putRequest with the correct arguments', async () => {
+			await service.putUnsubscribe(
 				'1234',
 				{
 					status: 'archive',
@@ -95,27 +95,7 @@ describe('Given the person service', () => {
 				{ option1: true }
 			);
 
-			expect(patchRequest).toHaveBeenCalledWith(
-				`${apiURL}/person/1234`,
-				{
-					status: 'archive',
-				},
-				{ option1: true }
-			);
-		});
-	});
-
-	describe('When patchUnsubscribe is called', () => {
-		it('Then calls patchRequest with the correct arguments', async () => {
-			await service.patchUnsubscribe(
-				'1234',
-				{
-					status: 'archive',
-				},
-				{ option1: true }
-			);
-
-			expect(patchRequest).toHaveBeenCalledWith(
+			expect(putRequest).toHaveBeenCalledWith(
 				`${apiURL}/person/1234`,
 				{
 					status: 'archive',
@@ -128,6 +108,26 @@ describe('Given the person service', () => {
 	describe('When patchPerson is called', () => {
 		it('Then calls patchRequest with the correct arguments', async () => {
 			await service.patchPerson(
+				'1234',
+				{
+					status: 'archive',
+				},
+				{ option1: true }
+			);
+
+			expect(patchRequest).toHaveBeenCalledWith(
+				`${apiURL}/person/1234`,
+				{
+					status: 'archive',
+				},
+				{ option1: true }
+			);
+		});
+	});
+
+	describe('When patchProfileComplete is called', () => {
+		it('Then calls patchRequest with the correct arguments', async () => {
+			await service.patchProfileComplete(
 				'1234',
 				{
 					status: 'archive',
@@ -210,10 +210,36 @@ describe('Given the person service', () => {
 		});
 	});
 
+	describe('When usePutUnsubscribe is called', () => {
+		it('Then calls putUnsubscribe with the correct arguments', async () => {
+			const putSpy = jest.spyOn(service, 'putUnsubscribe');
+			const { waitFor, result } = renderHook(() => service.usePutUnsubscribe({ option1: true }), { wrapper });
+
+			await waitFor(() => result.current.mutateAsync);
+
+			result.current.mutateAsync('1234', { status: 'archive' }).then(() => {
+				expect(putSpy).toHaveBeenCalledWith('1234', { status: 'archive' });
+			});
+		});
+	});
+
 	describe('When usePatchPerson is called', () => {
 		it('Then calls patchPerson with the correct arguments', async () => {
 			const putSpy = jest.spyOn(service, 'patchPerson');
 			const { waitFor, result } = renderHook(() => service.usePatchPerson({ option1: true }), { wrapper });
+
+			await waitFor(() => result.current.mutateAsync);
+
+			result.current.mutateAsync('1234', { status: 'archive' }).then(() => {
+				expect(putSpy).toHaveBeenCalledWith('1234', { status: 'archive' });
+			});
+		});
+	});
+
+	describe('When usePatchProfileComplete is called', () => {
+		it('Then calls patchPerson with the correct arguments', async () => {
+			const putSpy = jest.spyOn(service, 'patchProfileComplete');
+			const { waitFor, result } = renderHook(() => service.usePatchProfileComplete({ option1: true }), { wrapper });
 
 			await waitFor(() => result.current.mutateAsync);
 

@@ -37,24 +37,24 @@ const useGetPapers = (requestOptions, queryOptions = { queryKey: 'getPapers' }) 
 const useGetPaper = (requestOptions, queryOptions = { queryKey: 'getPaper' }) => {
 	return useQuery({
 		...queryOptions,
-		queryFn: id => getPaper(id, requestOptions),
+		queryFn: _id => getPaper(_id, requestOptions),
 	});
 };
 
 const usePostPaper = (requestOptions, mutateOptions = { queryKey: 'postPaper' }) => {
-	return useMutation((id, data) => postPaper(id, data, requestOptions), {
+	return useMutation((_id, data) => postPaper(_id, data, requestOptions), {
 		mutateOptions,
 	});
 };
 
 const usePutPaper = (requestOptions, mutateOptions = { queryKey: 'putPaper' }) => {
-	return useMutation((id, data) => putPaper(id, data, requestOptions), {
+	return useMutation((_id, data) => putPaper(_id, data, requestOptions), {
 		mutateOptions,
 	});
 };
 
 const usePatchPaper = (requestOptions, mutateOptions = { queryKey: 'patchPaper' }) => {
-	return useMutation((id, data) => patchPaper(id, data, requestOptions), {
+	return useMutation((_id, data) => patchPaper(_id, data, requestOptions), {
 		mutateOptions,
 	});
 };
@@ -62,7 +62,7 @@ const usePatchPaper = (requestOptions, mutateOptions = { queryKey: 'patchPaper' 
 const useDeletePaper = (requestOptions, queryOptions = { queryKey: 'deletePaper' }) => {
 	return useQuery({
 		...queryOptions,
-		queryFn: id => deletePaper(id, requestOptions),
+		queryFn: _id => deletePaper(_id, requestOptions),
 	});
 };
 
