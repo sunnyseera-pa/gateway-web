@@ -758,7 +758,7 @@ class DataAccessRequest extends Component {
 				[`${key}`]: data,
 			};
 			// 4. PATCH the data
-			const response = await axios.patch(`${baseURL}/api/v1/data-access-request/${id}`, params);
+			await axios.patch(`${baseURL}/api/v1/data-access-request/${id}`, params);
 			// 6. Get saved time
 			const lastSaved = DarHelper.saveTime();
 			// 5. Set state
@@ -1518,13 +1518,13 @@ class DataAccessRequest extends Component {
 			case 'CONFIRMAPPROVALCONDITIONS':
 			case 'CONFIRMREJECTION':
 			case 'CONFIRMAPPROVAL':
-				// let { _id } = this.state;
-				/* const body = {
+				let { _id } = this.state;
+				const body = {
 					applicationStatus: this.applicationState[type],
 					applicationStatusDesc: statusDesc,
-				};*/
+				};
 				// 1. Update action status
-				//const response = await axios.put(`${baseURL}/api/v1/data-access-request/${_id}`, body);
+				await axios.put(`${baseURL}/api/v1/data-access-request/${_id}`, body);
 				// 2. set alert object for screen
 				let alert = {
 					publisher: this.state.publisher || '',
