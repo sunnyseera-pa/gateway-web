@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { useMutation, useQuery } from 'react-query';
 import { apiURL } from '../configs/url.config';
 import { deleteRequest, getRequest, patchRequest, postRequest, putRequest } from '../utils/requests';
