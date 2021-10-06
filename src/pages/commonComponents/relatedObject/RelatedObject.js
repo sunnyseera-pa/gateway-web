@@ -949,6 +949,7 @@ class RelatedObject extends React.Component {
 													}}
 												/>
 											)}
+											{!_.isEmpty(data.entries) ? <span className='black-20-semibold floatRight'> {data.entries} </span> : ''}
 											{this.props.showRelationshipQuestion ? (
 												this.props.isLocked ? (
 													<LockSVG />

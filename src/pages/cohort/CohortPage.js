@@ -15,7 +15,7 @@ import ApplicantActionButtons from './components/ApplicantActionButtons/Applican
 import ToolTips from '../commonComponents/ToolTips/ToolTips';
 import './CohortPage.scss';
 import { ReactComponent as InfoSVG } from '../../images/info.svg';
-import { ReactComponent as ChevronRightSvg } from '../../images/chevron-right.svg';
+import { ReactComponent as InfoFillSVG } from '../../images/infofill.svg';
 import { ReactComponent as CycleSVG } from '../../images/cycle.svg';
 
 export const CohortPage = props => {
@@ -293,18 +293,21 @@ export const CohortPage = props => {
 											<Col sm={12} lg={12}>
 												<div className='rectangle'>
 													<Row className='gray800-14-bold'>
-														<Col sm={11} lg={11} className='gray800-14'>
+														<Col sm={10} className='gray800-14'>
 															<div className='black-20-semibold'>Total entries</div>
 															<div className='gray800-14 mt-1'>
 																14,567 entries found accross 3 datasets using the cohort discovery functionality
 															</div>
 															<div className='mt-3'>
 																<a href='/' className='gray800-14 textUnderline'>
-																	<SVGIcon name='cycle' width={12} height={12} fill={'#475da7'} className='margin-right-4' />
+																	<CycleSVG width={12} height={12} className='margin-right-4' />
 																	Refresh data
 																</a>
 																<span className='gray-med-14 margin-left-10'>Last update 14 Aug 2020</span>
 															</div>
+														</Col>
+														<Col sm={2}>
+															<div className='black-20-semibold floatRight'>14,567</div>
 														</Col>
 													</Row>
 												</div>
@@ -315,9 +318,11 @@ export const CohortPage = props => {
 											<Col sm={12} lg={12}>
 												<div className='rectangle pad-bottom-8'>
 													<Row>
-														<Col sm={12}>
+														<Col sm={10}>
 															<span className='black-20-semibold'>NHS Digital</span>
-															<button className='button-tertiary float-right'>Request access</button>
+														</Col>
+														<Col sm={2}>
+															<button className='button-tertiary floatRight'>Request access</button>
 														</Col>
 													</Row>
 													<Row>
@@ -338,6 +343,8 @@ export const CohortPage = props => {
 															phenotypes: [],
 														},
 														name: 'Cambridge Blood and Stem Cell Biobank',
+														entries: '7,689',
+														type: 'dataset',
 													}}
 													activeLink={true}
 													onSearchPage={false}
@@ -358,6 +365,7 @@ export const CohortPage = props => {
 															phenotypes: [],
 														},
 														name: 'Cambridge Blood and Stem Cell Biobank',
+														entries: '5,870',
 													}}
 													activeLink={true}
 													onSearchPage={false}
@@ -369,9 +377,11 @@ export const CohortPage = props => {
 											<Col sm={12} lg={12}>
 												<div className='rectangle pad-bottom-8'>
 													<Row>
-														<Col sm={12}>
+														<Col sm={10}>
 															<span className='black-20-semibold'>CPRD</span>
-															<button className='button-tertiary float-right'>Request access</button>
+														</Col>
+														<Col sm={2}>
+															<button className='button-tertiary floatRight'>Request access</button>
 														</Col>
 													</Row>
 													<Row>
@@ -391,6 +401,7 @@ export const CohortPage = props => {
 															phenotypes: [],
 														},
 														name: 'CPRD Gold',
+														entries: '1,008',
 													}}
 													activeLink={true}
 													onSearchPage={false}
@@ -403,7 +414,9 @@ export const CohortPage = props => {
 												<div className='rectangle'>
 													<Row className='gray800-14-bold'>
 														<Col sm={11} lg={11} className='gray800-14'>
-															<div className='black-16-semibold'>How to request access to datasets from multiple custodians</div>
+															<div className='black-16-semibold'>
+																<InfoFillSVG className='margin-right-4' /> How to request access to datasets from multiple custodians
+															</div>
 															<div className='gray800-14 mt-2'>
 																We understand researchers and innovators often need data from multiple sources for the same project. For
 																now, only one request per custodian is possible, but there are ways to streamline this process. Read more to
@@ -412,7 +425,12 @@ export const CohortPage = props => {
 														</Col>
 														<Col sm={1} lg={1} className='alignSelfCenter'>
 															<span onClick={() => {}}>
-																<ChevronRightSvg fill={'#475da7'} className='dataClassArrow pointer' />
+																<SVGIcon
+																	name='chevronright'
+																	fill={'#475da7'}
+																	style={{ width: '18px', height: '18px' }}
+																	className='floatRight pointer'
+																/>
 															</span>
 														</Col>
 													</Row>
