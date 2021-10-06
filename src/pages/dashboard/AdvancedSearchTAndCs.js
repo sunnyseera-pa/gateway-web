@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import SearchBar from '../commonComponents/searchBar/SearchBar';
-import _ from 'lodash';
 import AdvancedSearchTAndCsContent from './AdvancedSearchTAndCsContent';
 import './AdvancedSearchTAndCsModal.scss';
 import { Fragment } from 'react';
@@ -27,7 +26,7 @@ const AdvancedSearchTAndCs = props => {
 	);
 	const doSearch = e => {
 		//fires on enter on searchbar
-		if (e.key === 'Enter') window.location.href = '/search?search=' + searchString;
+		if (e.key === 'Enter') window.location.href = `/search?search=${encodeURIComponent(searchString)}`;
 	};
 
 	const updateSearchString = searchString => {
