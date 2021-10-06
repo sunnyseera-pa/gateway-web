@@ -1428,10 +1428,6 @@ class SearchPage extends React.Component {
 			key,
 		} = this.state;
 
-		// START: DELETE THIS TEST DATA
-		let cohortCount = 2;
-		// END: DELETE THIS TEST DATA
-
 		console.log(filtersV2Courses);
 		if (isLoading) {
 			return (
@@ -1449,7 +1445,7 @@ class SearchPage extends React.Component {
 			personCount = 0,
 			courseCount = 0,
 			collectionCount = 0,
-			// cohortCount = 0,
+			cohortCount = 0,
 		} = summary;
 		// clean needed here at later date
 		if (key === '' || typeof key === 'undefined') {
@@ -1968,14 +1964,6 @@ class SearchPage extends React.Component {
 									{key === 'Cohorts' ? (
 										<Fragment>
 											<div className='filterHolder'>
-												{selectedV2Cohorts.length > 0 && (
-													<FilterSelection
-														selectedCount={selectedV2Cohorts.length}
-														selectedItems={selectedV2Cohorts}
-														onHandleClearSelection={this.handleClearSelection}
-														onHandleClearAll={this.handleClearAll}
-													/>
-												)}
 												<Filter
 													data={filtersV2Cohorts}
 													onHandleInputChange={this.handleInputChange}
