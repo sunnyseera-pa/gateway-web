@@ -1513,7 +1513,7 @@ class DataAccessRequest extends Component {
 	};
 
 	updateApplicationStatus = async (action = {}) => {
-		let { type } = action;
+		let { type, statusDesc } = action;
 		switch (type) {
 			case 'CONFIRMAPPROVALCONDITIONS':
 			case 'CONFIRMREJECTION':

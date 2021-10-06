@@ -746,7 +746,7 @@ class SearchPage extends React.Component {
 			if (!_.isEmpty(dataUtilityFilters)) {
 				const dataUtilityWizardSteps = dataUtilityFilters.filter(item => item.includeInWizard);
 				this.setState({ dataUtilityFilters, dataUtilityWizardSteps });
-				await this.getFilters('Datasets');
+				await this.getFilters(this.state.key);
 			}
 		} catch (error) {
 			console.error(error.message);
