@@ -73,7 +73,6 @@ export default {
 	patchPaper,
 	deletePaper,
 	useGetPapers,
-	useGetPapers,
 	useGetPaper,
 	usePostPaper,
 	usePutPaper,

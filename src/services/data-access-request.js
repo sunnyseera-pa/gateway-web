@@ -73,7 +73,6 @@ export default {
 	patchDataAccessRequest,
 	deleteDataAccessRequest,
 	useGetDataAccessRequests,
-	useGetDataAccessRequests,
 	useGetDataAccessRequest,
 	usePostDataAccessRequest,
 	usePutDataAccessRequest,
