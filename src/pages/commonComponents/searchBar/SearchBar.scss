@@ -76,8 +76,6 @@ body.modal-open {
 
 	.desktopLoginMenu {
 		width: 200px;
-		top: 28px !important;
-		left: -28px !important;
 	}
 
 	.desktopNotificationMenu {
@@ -144,8 +142,6 @@ body.modal-open {
 
 	.desktopLoginMenu {
 		width: 200px;
-		top: 29px !important;
-		left: -31px !important;
 	}
 
 	.desktopNotificationMenu {
@@ -275,8 +271,12 @@ body.modal-open {
 	@include rounded(70px);
 }
 
+.desktopLoginMenu {
+	transform: translate(0px, 52px) !important;
+}
+
 .desktopNotificationMenu {
-	transform: translate(-380px, 23px) !important;
+	transform: translate(0px, 22px) !important;
 	padding: 0 !important;
 }
 
