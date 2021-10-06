@@ -16,7 +16,7 @@ const DataUsePage = React.forwardRef(({ userState, onClickDataUseUpload, team },
 
 	const [row, setRow] = useState([]);
 	const [currentPage, setCurrentPage] = useState(1);
-	const [rowsPerPage] = useState(25);
+	const [rowsPerPage] = useState(13);
 	const [showModal, setShowModal] = useState(false);
 	const [showUnarchiveModal, setShowUnarchiveModal] = useState(false);
 	const [alert, setAlert] = useState('');
@@ -24,7 +24,6 @@ const DataUsePage = React.forwardRef(({ userState, onClickDataUseUpload, team },
 	useEffect(() => {
 		axios.get(baseURL + '/api/v2/data-use-registers?team=' + team).then(res => {
 			setRow(res.data.data);
-			console.log(res.data.data);
 		});
 	}, [team, alert]);
 
