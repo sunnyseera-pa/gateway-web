@@ -834,7 +834,10 @@ class RelatedObject extends React.Component {
 														className={activeLink ? 'gray800-14 underlined' : 'gray800-14'}
 														style={{ cursor: 'pointer' }}
 														onClick={() =>
-															this.updateOnFilterBadge('publisher', { label: data.datasetfields.publisher, parentKey: 'publisher' })
+															this.updateOnFilterBadge('publisher', {
+																label: data.datasetv2.summary.publisher.name.toUpperCase(),
+																parentKey: 'publisher',
+															})
 														}>
 														{' '}
 														{data.datasetv2.summary.publisher.name}{' '}
@@ -844,9 +847,13 @@ class RelatedObject extends React.Component {
 												<span
 													className={activeLink ? 'gray800-14 underlined' : 'gray800-14'}
 													style={{ cursor: 'pointer' }}
-													onClick={() =>
-														this.updateOnFilterBadge('publisher', { label: data.datasetfields.publisher, parentKey: 'publisher' })
-													}>
+													onClick={() => {
+														let name = data.datasetfields.publisher;
+														this.updateOnFilterBadge('publisher', {
+															label: name.includes('>') ? name.split(' > ')[1].toUpperCase() : name.toUpperCase(),
+															parentKey: 'publisher',
+														});
+													}}>
 													{' '}
 													{data.datasetfields.publisher}{' '}
 												</span>

@@ -33,32 +33,47 @@ const useGetDatasetOnboardings = (requestOptions, queryOptions = { queryKey: 'ge
 	});
 };
 
-const useGetDatasetOnboarding = (requestOptions, queryOptions = { queryKey: 'getDatasetOnboarding' }) => {
+export const useGetDatasetOnboarding = (requestOptions, queryOptions = { queryKey: 'getDatasetOnboarding' }) => {
 	return useQuery({
 		...queryOptions,
 		queryFn: _id => getDatasetOnboarding(_id, requestOptions),
 	});
 };
 
+<<<<<<< HEAD
 const usePostDatasetOnboarding = (requestOptions, mutateOptions = { queryKey: 'postDatasetOnboarding' }) => {
 	return useMutation((_id, data) => postDatasetOnboarding(_id, data, requestOptions), {
+=======
+export const usePostDatasetOnboarding = (requestOptions, mutateOptions = { queryKey: 'postDatasetOnboarding' }) => {
+	return useMutation((id, data) => postDatasetOnboarding(id, data, requestOptions), {
+>>>>>>> dev
 		mutateOptions,
 	});
 };
 
+<<<<<<< HEAD
 const usePutDatasetOnboarding = (requestOptions, mutateOptions = { queryKey: 'putDatasetOnboarding' }) => {
 	return useMutation((_id, data) => putDatasetOnboarding(_id, data, requestOptions), {
+=======
+export const usePutDatasetOnboarding = (requestOptions, mutateOptions = { queryKey: 'putDatasetOnboarding' }) => {
+	return useMutation((id, data) => putDatasetOnboarding(id, data, requestOptions), {
+>>>>>>> dev
 		mutateOptions,
 	});
 };
 
+<<<<<<< HEAD
 const usePatchDatasetOnboarding = (requestOptions, mutateOptions = { queryKey: 'patchDatasetOnboarding' }) => {
 	return useMutation((_id, data) => patchDatasetOnboarding(_id, data, requestOptions), {
+=======
+export const usePatchDatasetOnboarding = (requestOptions, mutateOptions = { queryKey: 'patchDatasetOnboarding' }) => {
+	return useMutation((id, data) => patchDatasetOnboarding(id, data, requestOptions), {
+>>>>>>> dev
 		mutateOptions,
 	});
 };
 
-const useDeleteDatasetOnboarding = (requestOptions, queryOptions = { queryKey: 'deleteDatasetOnboarding' }) => {
+export const useDeleteDatasetOnboarding = (requestOptions, queryOptions = { queryKey: 'deleteDatasetOnboarding' }) => {
 	return useQuery({
 		...queryOptions,
 		queryFn: _id => deleteDatasetOnboarding(_id, requestOptions),
