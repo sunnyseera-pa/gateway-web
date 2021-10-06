@@ -57,7 +57,7 @@
 	"scripts": {
 		"start": "react-scripts start",
 		"build": "react-scripts build",
-		"test:watchAll": "jest --watchAll --env=jsdom --coverage --config=jest.config.json dataset-onboarding.test.js",
+		"test:watchAll": "jest --watchAll --env=jsdom --coverage --config=jest.config.json",
 		"test": "jest --env=jsdom --coverage --config=jest.config.json",
 		"test-rtl": "jest --env=jsdom --testPathIgnorePatterns=/test/",
 		"eject": "react-scripts eject",
