@@ -20,6 +20,10 @@ describe('Given the search service', () => {
 		wrapper.unmount();
 	});
 
+	afterEach(() => {
+		jest.resetAllMocks();
+	});
+
 	describe('When getSearch is called', () => {
 		it('Then calls getRequest with the correct arguments', async () => {
 			await service.getSearch('topic/paper', {
