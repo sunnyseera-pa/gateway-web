@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { Fragment, useState } from 'react';
 import readXlsxFile from 'read-excel-file';
 import convertToJson from 'read-excel-file/schema';
-import { Row, Col, Alert, Image } from 'react-bootstrap';
+import { Row, Col, Alert, Image, Tooltip, OverlayTrigger } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { isEmpty, some, find } from 'lodash';
 import axios from 'axios';
@@ -25,42 +25,48 @@ const DataUseUpload = React.forwardRef(({ userState, onSubmit, team, dataUsePage
 	const [isLoading, setIsLoading] = useState(false);
 	const [isSubmitModalVisible, setIsSubmitModalVisible] = useState(false);
 	const [alert, setAlert] = useState('');
-	const [uploadedDataUses, setUploadedDataUses] = useState({});
-	const [uploadErrors, setUploadErrors] = useState([]);
+	const [uploadedData, setUploadedData] = useState({ rows: [], uploadErrors: [], checks: [] });
 	const [dataUseIndexes, setDataUseIndexes] = useState([]);
 
-	const onUploadDataUseRegister = event => {
+	const onUploadDataUseRegister = async event => {
 		setIsLoading(true);
 
-		readXlsxFile(event.target.files[0], { sheet: 'Data Uses Template' }).then(spreadsheet => {
-			//nested header getting rid of the first row to allow mapping against the schema (see DataUseUploadTemplate.xlsx)
-			spreadsheet.shift();
-			const { rows, errors } = convertToJson(spreadsheet, dataUseSchema);
+		const spreadsheet = await readXlsxFile(event.target.files[0], { sheet: 'Data Uses Template' });
+		spreadsheet.shift();
+		const { rows, errors } = convertToJson(spreadsheet, dataUseSchema);
+		const checks = await checkDataUses(rows);
+		const duplicateErrors = createDuplicateErrors(checks);
+		const uploadErrors = [...duplicateErrors, ...errors];
 
-			setUploadErrors(errors);
-			setUploadedDataUses(rows);
+		setUploadedData({ rows, uploadErrors, checks });
 
-			setIsLoading(false);
-
-			if (isEmpty(errors)) {
-				showAlert('Your data uses have been successfully uploaded.');
-			}
-		});
+		if (isEmpty(uploadErrors)) {
+			showAlert('Your data uses have been successfully uploaded.');
+		}
+		setIsLoading(false);
 	};
 
 	const submitDataUse = () => {
 		const payload = {
 			teamId: team,
-			dataUses: uploadedDataUses,
+			dataUses: uploadedData.rows,
 		};
 
 		axios.post(baseURL + '/api/v2/data-use-registers/upload', payload).then(res => {
 			setIsSubmitModalVisible(false);
-			setUploadedDataUses({});
-			setUploadErrors([]);
 			onSubmit();
 			dataUsePage.current.showSubmissionAlert();
 		});
+	};
+
+	const checkDataUses = async rows => {
+		const payload = {
+			teamId: team,
+			dataUses: rows,
+		};
+
+		let response = await axios.post(baseURL + '/api/v2/data-use-registers/check', payload);
+		return response.data.result;
 	};
 
 	const toggleSubmitModal = () => {
@@ -70,6 +76,17 @@ const DataUseUpload = React.forwardRef(({ userState, onSubmit, team, dataUsePage
 	const showAlert = alert => {
 		setAlert(alert);
 		setTimeout(() => setAlert(''), 10000);
+	};
+
+	const createDuplicateErrors = checks => {
+		const duplicateErrors = [];
+
+		checks.forEach((check, index) => {
+			if (check.isDuplicated) {
+				duplicateErrors.push({ row: index + 1, error: 'duplicate' });
+			}
+		});
+		return duplicateErrors;
 	};
 
 	const hiddenFileInput = React.useRef(null);
@@ -87,6 +104,9 @@ const DataUseUpload = React.forwardRef(({ userState, onSubmit, team, dataUsePage
 					</div>
 				);
 			}
+			case 'duplicate': {
+				return <div>Error in row {error.row} : Suspected data use duplicate</div>;
+			}
 			default: {
 				return '';
 			}
@@ -99,6 +119,63 @@ const DataUseUpload = React.forwardRef(({ userState, onSubmit, team, dataUsePage
 			: [...dataUseIndexes, dataUseIndex];
 
 		setDataUseIndexes(newArray);
+	};
+
+	const renderApplicants = dataUse => {
+		const dataUseCheck = findDataUseCheck(dataUse);
+		const gatewayApplicantsLinks = dataUseCheck.gatewayApplicants.map(gatewayApplicant => {
+			return (
+				<Link className='data-use-link' to={'/person/' + gatewayApplicant.id} target='_blank'>
+					{`${gatewayApplicant.firstname}  ${gatewayApplicant.lastname}`}
+				</Link>
+			);
+		});
+
+		const namedApplicants = dataUseCheck.nonGatewayApplicants.map(nonGatewayApplicant => {
+			return <div>{nonGatewayApplicant}</div>;
+		});
+
+		return [...gatewayApplicantsLinks, ...namedApplicants];
+	};
+
+	const renderDatasets = dataUse => {
+		const dataUseCheck = findDataUseCheck(dataUse);
+		const linkedDatasets = dataUseCheck.linkedDatasets.map(linkedDataset => {
+			return (
+				<Link className='data-use-link' to={'/dataset/' + linkedDataset.datasetid} target='_blank'>
+					{linkedDataset.name}
+				</Link>
+			);
+		});
+
+		const namedDatasets = dataUseCheck.namedDatasets.map(namedDataset => {
+			return (
+				<div className='data-use-namedDataset'>
+					<OverlayTrigger placement='top' overlay={<Tooltip>This dataset is not linked on the Gateway</Tooltip>}>
+						<div>
+							<SVGIcon name='attention' width={22} height={22} fill={'#f0bb24'} viewBox='0 -3 22 22' />
+						</div>
+					</OverlayTrigger>{' '}
+					{namedDataset}
+				</div>
+			);
+		});
+
+		return [...linkedDatasets, ...namedDatasets];
+	};
+
+	const findDataUseCheck = dataUse => {
+		const dataUseCheck = uploadedData.checks.find(
+			el =>
+				el.projectIdText === dataUse.projectIdText ||
+				(el.projectTitle === dataUse.projectTitle &&
+					el.laySummary === dataUse.laySummary &&
+					el.organisationName === dataUse.organisationName &&
+					el.datasetTitles === dataUse.datasetTitles &&
+					el.latestApprovalDate === dataUse.latestApprovalDate)
+		);
+
+		return dataUseCheck;
 	};
 
 	return (
@@ -125,14 +202,16 @@ const DataUseUpload = React.forwardRef(({ userState, onSubmit, team, dataUsePage
 						</Link>{' '}
 					</button>
 				</div>
-				<div className='layoutCard p-4'>
+				<div className={isLoading ? 'layoutCard p-4 opacity' : 'layoutCard p-4'}>
 					<>
+						{isLoading && (
+							<div className='dataUseLoading'>
+								<Image src={require('../../../images/Loader.gif')} />
+								<div className='gray800-14'>Loading...</div>
+							</div>
+						)}
+
 						<div>
-							{!isLoading && (
-								<div className='dataUseLoading'>
-									<Image src={require('../../../images/Loader.gif')} />
-								</div>
-							)}
 							<input type='file' id='input' accept='.xls,.xlsx' hidden ref={hiddenFileInput} onChange={onUploadDataUseRegister} />
 							<p className='black-20-semibold margin-bottom-16'>Upload</p>
 							<div className='upload mb-3'>
@@ -143,13 +222,13 @@ const DataUseUpload = React.forwardRef(({ userState, onSubmit, team, dataUsePage
 							</div>
 						</div>
 
-						{!isEmpty(uploadedDataUses) && isEmpty(uploadErrors) && (
+						{!isEmpty(uploadedData.rows) && isEmpty(uploadedData.uploadErrors) && (
 							<Alert variant='warning'>
 								Warning! Uploading a new file will delete any data uses that have not yet been submitted for admin checks by the gateway
 								team.
 							</Alert>
 						)}
-						{!isEmpty(uploadedDataUses) && !isEmpty(uploadErrors) && (
+						{!isEmpty(uploadedData.rows) && !isEmpty(uploadedData.uploadErrors) && (
 							<Alert variant='danger'>
 								There are errors in the data you uploaded. Please correct these and try again. Errors are listed below.
 							</Alert>
@@ -157,14 +236,14 @@ const DataUseUpload = React.forwardRef(({ userState, onSubmit, team, dataUsePage
 					</>
 				</div>
 
-				{!isEmpty(uploadedDataUses) ? (
+				{!isEmpty(uploadedData.rows) ? (
 					<div className='layoutCard p-4'>
-						{isEmpty(uploadErrors) ? (
+						{isEmpty(uploadedData.uploadErrors) ? (
 							<div className='black-20-semibold uploadDataTitle'>Upload Data</div>
 						) : (
 							<>
 								<p className='dark-red-semibold-20'>Upload Data Errors</p>
-								<Alert variant='danger'>{uploadErrors.map(error => renderUploadError(error))}</Alert>
+								<Alert variant='danger'>{uploadedData.uploadErrors.map(error => renderUploadError(error))}</Alert>
 							</>
 						)}
 
@@ -174,14 +253,15 @@ const DataUseUpload = React.forwardRef(({ userState, onSubmit, team, dataUsePage
 							<div className='gray800-14-bold dataUseGridItem'>Organisation</div>
 							<div className='gray800-14-bold dataUseGridItem'>Approval date</div>
 
-							{uploadedDataUses.map((data, index) => {
-								const filtered = uploadErrors.filter(dat => dat.row === index + 1);
-
+							{uploadedData.rows.map((data, index) => {
+								const filtered = uploadedData.uploadErrors.filter(dat => dat.row === index + 1);
 								return (
 									<>
 										<div
 											className={
-												some(filtered, ['column', 'Project Title*'])
+												some(filtered, ['error', 'duplicate'])
+													? 'invalid-info dataUseGridItem duplicate-data-use'
+													: some(filtered, ['column', 'Project Title*'])
 													? 'invalid-info dataUseGridItem soft-black-14'
 													: 'dataUseGridItem soft-black-14'
 											}
@@ -199,19 +279,23 @@ const DataUseUpload = React.forwardRef(({ userState, onSubmit, team, dataUsePage
 										</div>
 										<div
 											className={
-												some(filtered, ['column', 'Dataset(s) Name*'])
+												some(filtered, ['error', 'duplicate'])
+													? 'invalid-info dataUseGridItem duplicate-data-use'
+													: some(filtered, ['column', 'Dataset(s) Name*'])
 													? 'invalid-info dataUseGridItem soft-black-14'
 													: 'dataUseGridItem soft-black-14'
 											}
 											onClick={() => toggleDataUseSection(index)}>
 											{some(filtered, ['column', 'Dataset(s) Name*'])
 												? find(filtered, ['column', 'Dataset(s) Name*']).value
-												: data.datasetNames}
+												: renderDatasets(data)}
 										</div>
 
 										<div
 											className={
-												some(filtered, ['column', 'Organisation Name*'])
+												some(filtered, ['error', 'duplicate'])
+													? 'invalid-info dataUseGridItem duplicate-data-use'
+													: some(filtered, ['column', 'Organisation Name*'])
 													? 'invalid-info dataUseGridItem soft-black-14'
 													: 'dataUseGridItem soft-black-14'
 											}
@@ -222,7 +306,9 @@ const DataUseUpload = React.forwardRef(({ userState, onSubmit, team, dataUsePage
 										</div>
 										<div
 											className={
-												some(filtered, ['column', 'Latest Approval Date*'])
+												some(filtered, ['error', 'duplicate'])
+													? 'invalid-info dataUseGridItem duplicate-data-use'
+													: some(filtered, ['column', 'Latest Approval Date*'])
 													? 'invalid-info dataUseGridItem soft-black-14'
 													: 'dataUseGridItem soft-black-14'
 											}
@@ -231,6 +317,7 @@ const DataUseUpload = React.forwardRef(({ userState, onSubmit, team, dataUsePage
 												? find(filtered, ['column', 'Latest Approval Date*']).value
 												: moment(data.latestApprovalDate).format('DD/MM/YY')}
 										</div>
+
 										<SlideDown className='dataUseDetails' closed={!dataUseIndexes.includes(index)}>
 											<div className='dataUseDetailsGrid'>
 												<div className='gray800-14-bold dataUseDetailsGridSection'>Safe People</div>
@@ -255,7 +342,7 @@ const DataUseUpload = React.forwardRef(({ userState, onSubmit, team, dataUsePage
 												<div className='dataUseDetailsGridItem'>{data.organisationSector}</div>
 
 												<div className='dataUseDetailsGridHeader'>Applicant Name(s)</div>
-												<div className='dataUseDetailsGridItem'>{data.applicantNames}</div>
+												<div className='dataUseDetailsGridItem'>{renderApplicants(data)}</div>
 
 												<div className='dataUseDetailsGridHeader'>Applicant ID</div>
 												<div className='dataUseDetailsGridItem'>{data.organisationName}</div>
@@ -319,7 +406,7 @@ const DataUseUpload = React.forwardRef(({ userState, onSubmit, team, dataUsePage
 													}>
 													{some(filtered, ['column', 'Dataset(s) Name*'])
 														? find(filtered, ['column', 'Dataset(s) Name*']).value
-														: data.datasetNames}
+														: renderDatasets(data)}
 												</div>
 												<div className='dataUseDetailsGridHeader'>Data Sensitivity Level</div>
 												<div className='dataUseDetailsGridItem'>{data.dataSensitivityLevel}</div>
@@ -349,15 +436,18 @@ const DataUseUpload = React.forwardRef(({ userState, onSubmit, team, dataUsePage
 													onClick={() => toggleDataUseSection(index)}>
 													{some(filtered, ['column', 'TRE or any other specified location*'])
 														? find(filtered, ['column', 'TRE or any other specified location*']).value
-														: moment(data.dataLocation).format('DD/MM/YY')}
+														: data.dataLocation}
 												</div>
-												<div className='dataUseDetailsGridItem'>{data.dataLocation}</div>
 												<div className='dataUseDetailsGridHeader'>How has data been processed to enhance privacy?</div>
 												<div className='dataUseDetailsGridItem'>{data.privacyEnhancements}</div>
 
 												<div className='gray800-14-bold dataUseDetailsGridSection'>Safe Outputs</div>
 												<div className='dataUseDetailsGridHeader'>Link to Research Outputs</div>
-												<div className='dataUseDetailsGridItem'>{data.researchOutputs}</div>
+												<div className='dataUseDetailsGridItem'>
+													<a className='data-use-link' href={data.researchOutputs} target='_blank'>
+														{data.researchOutputs}
+													</a>
+												</div>
 											</div>
 										</SlideDown>
 									</>
@@ -373,7 +463,7 @@ const DataUseUpload = React.forwardRef(({ userState, onSubmit, team, dataUsePage
 					open={isSubmitModalVisible}
 					close={toggleSubmitModal}
 					confirm={submitDataUse}
-					isValid={isEmpty(uploadErrors)}
+					isValid={isEmpty(uploadedData.uploadErrors)}
 					isAdmin={team === 'admin'}
 				/>
 			</Col>

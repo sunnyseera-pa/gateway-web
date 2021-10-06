@@ -16,7 +16,7 @@ const DataUsePage = React.forwardRef(({ userState, onClickDataUseUpload, team },
 
 	const [row, setRow] = useState([]);
 	const [currentPage, setCurrentPage] = useState(1);
-	const [rowsPerPage] = useState(13);
+	const [rowsPerPage] = useState(25);
 	const [showModal, setShowModal] = useState(false);
 	const [showUnarchiveModal, setShowUnarchiveModal] = useState(false);
 	const [alert, setAlert] = useState('');
@@ -72,7 +72,7 @@ const DataUsePage = React.forwardRef(({ userState, onClickDataUseUpload, team },
 
 	return (
 		<Container>
-			{isEmpty(alert) && (
+			{!isEmpty(alert) && (
 				<Alert variant={'success'} className='main-alert'>
 					<SVGIcon name='check' width={24} height={24} fill={'#2C8267'} /> {alert}
 				</Alert>
@@ -92,6 +92,7 @@ const DataUsePage = React.forwardRef(({ userState, onClickDataUseUpload, team },
 					</Button>
 				</Col>
 			</Row>
+
 			<Tabs defaultActiveKey={role === 'User' || custodianAcc ? 'Active' : 'Pending approval'} className='gray700-13 data-use-tabs'>
 				{tabs.map(tabName => (
 					<Tab

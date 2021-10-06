@@ -47,6 +47,25 @@
 }
 
 .dataUseLoading {
-	position: relative;
-	left: 100%;
+	position: absolute;
+	right: 50%;
+	opacity: 1 !important;
+}
+
+.opacity {
+	opacity: 0.7;
+}
+
+.duplicate-data-use {
+	font-size: 14px !important;
+}
+
+.data-use-link {
+	color: #475da7 !important;
+}
+
+.data-use-namedDataset {
+	display: flex;
+	flex-direction: row;
+	margin-top: 5px;
 }

@@ -1,6 +1,8 @@
 import React from 'react';
 import moment from 'moment';
+import { Link } from 'react-router-dom';
 import { Table, Dropdown } from 'react-bootstrap';
+import { isUndefined } from 'lodash';
 
 const DataUseTable = ({ data, active, pending, archived, showModal, showUnarchiveModal }) => {
 	const Modal = () => {
@@ -9,6 +11,25 @@ const DataUseTable = ({ data, active, pending, archived, showModal, showUnarchiv
 
 	const UnArchiveModal = () => {
 		showUnarchiveModal(true);
+	};
+
+	const renderDatasets = dataUse => {
+		const datasets = dataUse.datasetTitles.map((datasetTitle, index) => {
+			const datasetId = dataUse.datasetIds[index];
+			if (isUndefined(datasetId)) {
+				return <div className='data-use-namedDataset'>{datasetTitle}</div>;
+			} else {
+				return (
+					<div>
+						<Link className='data-use-link' to={'/dataset/' + datasetId} target='_blank'>
+							{datasetTitle}
+						</Link>
+					</div>
+				);
+			}
+		});
+
+		return datasets;
 	};
 
 	return (
@@ -24,10 +45,14 @@ const DataUseTable = ({ data, active, pending, archived, showModal, showUnarchiv
 					<tr>
 						<td>{moment(dataUse.lastActivity).format('DD/MM/YYYY')}</td>
 						<td>
-							<p>{dataUse.projectTitle}</p>
-							<p>{dataUse.institution}</p>
+							<Link className='data-use-link' to={'/datause/' + dataUse.id} target='_blank'>
+								{dataUse.projectTitle}
+							</Link>
+							<p>{dataUse.organisationName}</p>
 						</td>
-						<td>{dataUse.datasets}</td>
+						<td>
+							<p>{renderDatasets(dataUse)}</p>
+						</td>
 						{(active || pending || archived) && (
 							<td>
 								<Dropdown>
