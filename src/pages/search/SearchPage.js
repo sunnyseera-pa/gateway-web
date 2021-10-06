@@ -1673,6 +1673,9 @@ class SearchPage extends React.Component {
 			perferenceSort = collectionSort;
 		} else if (key === 'Courses') {
 			preferenceFilters = selectedV2Courses;
+		} else if (key === 'Cohorts') {
+			preferenceFilters = selectedV2Cohorts;
+			perferenceSort = cohortSort;
 		} else if (key === 'People') {
 			perferenceSort = personSort;
 		}
@@ -1963,7 +1966,7 @@ class SearchPage extends React.Component {
 									)}
 									{key === 'Cohorts' ? (
 										<Fragment>
-											<div className='filterHolder'>
+											<div className='saved-filterHolder'>
 												<Filter
 													data={filtersV2Cohorts}
 													onHandleInputChange={this.handleInputChange}
