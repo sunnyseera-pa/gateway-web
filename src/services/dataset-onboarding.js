@@ -2,24 +2,35 @@ import { useMutation, useQuery } from 'react-query';
 import { apiURL } from '../configs/url.config';
 import { deleteRequest, getRequest, patchRequest, postRequest, putRequest } from '../utils/requests';
 
-export const getDatasetOnboarding = (_id, options) => {
+const getDatasetOnboardings = options => {
+	return getRequest(`${apiURL}/dataset-onboarding`, options);
+};
+
+const getDatasetOnboarding = (_id, options) => {
 	return getRequest(`${apiURL}/dataset-onboarding/${_id}`, options);
 };
 
-export const postDatasetOnboarding = (_id, data, options) => {
+const postDatasetOnboarding = (_id, data, options) => {
 	return postRequest(`${apiURL}/dataset-onboarding/${_id}`, data, options);
 };
 
-export const putDatasetOnboarding = (_id, data, options) => {
+const putDatasetOnboarding = (_id, data, options) => {
 	return putRequest(`${apiURL}/dataset-onboarding/${_id}`, data, options);
 };
 
-export const patchDatasetOnboarding = (_id, data, options) => {
+const patchDatasetOnboarding = (_id, data, options) => {
 	return patchRequest(`${apiURL}/dataset-onboarding/${_id}`, data, options);
 };
 
-export const deleteDatasetOnboarding = (_id, options) => {
+const deleteDatasetOnboarding = (_id, options) => {
 	return deleteRequest(`${apiURL}/dataset-onboarding/delete/${_id}`, options);
+};
+
+const useGetDatasetOnboardings = (requestOptions, queryOptions = { queryKey: 'getDatasetOnboardings' }) => {
+	return useQuery({
+		...queryOptions,
+		queryFn: id => getDatasetOnboardings(requestOptions),
+	});
 };
 
 export const useGetDatasetOnboarding = (requestOptions, queryOptions = { queryKey: 'getDatasetOnboarding' }) => {
@@ -52,4 +63,19 @@ export const useDeleteDatasetOnboarding = (requestOptions, queryOptions = { quer
 		...queryOptions,
 		queryFn: id => deleteDatasetOnboarding(id, requestOptions),
 	});
+};
+
+export default {
+	getDatasetOnboardings,
+	getDatasetOnboarding,
+	postDatasetOnboarding,
+	putDatasetOnboarding,
+	patchDatasetOnboarding,
+	deleteDatasetOnboarding,
+	useGetDatasetOnboardings,
+	useGetDatasetOnboarding,
+	usePostDatasetOnboarding,
+	usePutDatasetOnboarding,
+	usePatchDatasetOnboarding,
+	useDeleteDatasetOnboarding,
 };
