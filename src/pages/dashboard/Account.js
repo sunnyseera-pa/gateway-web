@@ -6,7 +6,6 @@ import axios from 'axios';
 import SearchBar from '../commonComponents/searchBar/SearchBar';
 import ActionBar from '../commonComponents/actionbar/ActionBar';
 import AccountTools from './AccountTools';
-import AccountProjects from './AccountProjects';
 import AccountDatasets from './AccountDatasets';
 import AccountPapers from './AccountPapers';
 import AccountCourses from './AccountCourses';
@@ -83,8 +82,6 @@ class Account extends Component {
 		isDeleted: false,
 		isApproved: false,
 		isRejected: false,
-		isProjectDeleted: false,
-		isProjectApproved: false,
 		showDrawer: false,
 		showModal: false,
 		activeAccordion: -1,
@@ -147,8 +144,6 @@ class Account extends Component {
 					isDeleted: values.toolDeleted,
 					isApproved: values.toolApproved,
 					isRejected: values.toolRejected,
-					isProjectApproved: values.projectApproved,
-					isProjectRejected: values.projectRejected,
 					isReviewApproved: values.reviewApproved,
 					isReviewRejected: values.reviewRejected,
 					accountUpdated: !!values.accountUpdated,
@@ -184,8 +179,6 @@ class Account extends Component {
 					isDeleted: values.accountDeleted,
 					isApproved: values.toolApproved,
 					isRejected: values.toolRejected,
-					isProjectApproved: values.projectApproved,
-					isProjectRejected: values.projectRejected,
 					isReviewApproved: values.reviewApproved,
 					isReviewRejected: values.reviewRejected,
 					team,
@@ -533,13 +526,6 @@ class Account extends Component {
 										</Nav.Link>
 									</div>
 
-									<div className={`${tabId === 'projects' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('projects')}>
-										<Nav.Link className='verticalNavBar gray700-13'>
-											<SVGIcon name='newestprojecticon' fill={'#b3b8bd'} className='accountSvgs' />
-											<span className='navLinkItem'>Projects</span>
-										</Nav.Link>
-									</div>
-
 									<div className={`${tabId === 'datause' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('datause')}>
 										<Nav.Link eventKey={'datause'} className='verticalNavBar gray700-13'>
 											<SVGIcon name='datauseicon' fill={'#b3b8bd'} className='accountSvgs' />
@@ -700,8 +686,6 @@ class Account extends Component {
 								{tabId === 'tools' ? <AccountTools userState={userState} /> : ''}
 
 								{tabId === 'reviews' ? <ReviewTools userState={userState} /> : ''}
-
-								{tabId === 'projects' ? <AccountProjects userState={userState} /> : ''}
 
 								{tabId === 'papers' ? <AccountPapers userState={userState} /> : ''}
 

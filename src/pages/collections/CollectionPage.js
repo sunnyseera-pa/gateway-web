@@ -27,12 +27,10 @@ export const CollectionPage = props => {
 	const [toolCount, setToolCount] = useState(0);
 	const [datasetCount, setDatasetCount] = useState(0);
 	const [personCount, setPersonCount] = useState(0);
-	const [projectCount, setProjectCount] = useState(0);
 	const [paperCount, setPaperCount] = useState(0);
 	const [courseCount, setCourseCount] = useState(0);
 	const [datasetIndex, setDatasetIndex] = useState(0);
 	const [toolIndex, setToolIndex] = useState(0);
-	const [projectIndex, setProjectIndex] = useState(0);
 	const [paperIndex, setPaperIndex] = useState(0);
 	const [personIndex, setPersonIndex] = useState(0);
 	const [courseIndex, setCourseIndex] = useState(0);
@@ -60,7 +58,6 @@ export const CollectionPage = props => {
 		]
 	);
 
-	//componentDidMount - on loading of project detail page
 	useEffect(() => {
 		if (!!window.location.search) {
 			let values = queryString.parse(window.location.search);
@@ -123,8 +120,6 @@ export const CollectionPage = props => {
 			key = 'tool';
 		} else if (entityCounts.paper > 0) {
 			key = 'paper';
-		} else if (entityCounts.project > 0) {
-			key = 'project';
 		} else if (entityCounts.person > 0) {
 			key = 'person';
 		} else if (entityCounts.course > 0) {
@@ -134,7 +129,6 @@ export const CollectionPage = props => {
 
 		setToolCount(entityCounts.tool || 0);
 		setPersonCount(entityCounts.person || 0);
-		setProjectCount(entityCounts.project || 0);
 		setDatasetCount(entityCounts.dataset || 0);
 		setPaperCount(entityCounts.paper || 0);
 		setCourseCount(entityCounts.course || 0);
@@ -239,7 +233,7 @@ export const CollectionPage = props => {
 					getCountOfSearchTerm(data.tags.features);
 				data.searchTermInstances = containsSearchTermCount;
 			} else {
-				//Other entities ie. Tools, Papers, Projects
+				//Other entities ie. Tools, Papers
 				let containsSearchTermCount =
 					getCountOfSearchTerm(data.name) +
 					getCountOfSearchTerm(data.description) +
@@ -337,8 +331,6 @@ export const CollectionPage = props => {
 			setDatasetIndex(page);
 		} else if (type === 'tool') {
 			setToolIndex(page);
-		} else if (type === 'project') {
-			setProjectIndex(page);
 		} else if (type === 'paper') {
 			setPaperIndex(page);
 		} else if (type === 'person') {
@@ -354,7 +346,6 @@ export const CollectionPage = props => {
 
 	let datasetPaginationItems = [];
 	let toolPaginationItems = [];
-	let projectPaginationItems = [];
 	let paperPaginationItems = [];
 	let personPaginationItems = [];
 	let coursePaginationItems = [];
@@ -378,18 +369,6 @@ export const CollectionPage = props => {
 				active={i === toolIndex + 1}
 				onClick={e => {
 					handlePagination('tool', i - 1);
-				}}>
-				{i}
-			</Pagination.Item>
-		);
-	}
-	for (let i = 1; i <= Math.ceil(projectCount / maxResult); i++) {
-		projectPaginationItems.push(
-			<Pagination.Item
-				key={i}
-				active={i === projectIndex + 1}
-				onClick={e => {
-					this.handlePagination('project', i - 1);
 				}}>
 				{i}
 			</Pagination.Item>
@@ -610,7 +589,6 @@ export const CollectionPage = props => {
 					<Tab eventKey='dataset' title={'Datasets (' + datasetCount + ')'}></Tab>
 					<Tab eventKey='tool' title={'Tools (' + toolCount + ')'}></Tab>
 					<Tab eventKey='paper' title={'Papers (' + paperCount + ')'}></Tab>
-					<Tab eventKey='project' title={'Projects (' + projectCount + ')'}></Tab>
 					<Tab eventKey='person' title={'People (' + personCount + ')'}></Tab>
 					<Tab eventKey='course' title={'Course (' + courseCount + ')'}></Tab>
 					<Tab eventKey='Collaboration' title={`Discussion (${discoursePostCount})`}>
@@ -718,41 +696,6 @@ export const CollectionPage = props => {
 										var user = '';
 										let showAnswer = false;
 										if (object.type === 'tool') {
-											collectionData.relatedObjects.map(dat => {
-												if (parseInt(dat.objectId) === object.id) {
-													reason = dat.reason;
-													updated = dat.updated;
-													user = dat.user;
-													showAnswer = !_.isEmpty(reason);
-												}
-											});
-											return (
-												<RelatedObject
-													key={object.id}
-													data={object}
-													activeLink={true}
-													showRelationshipAnswer={showAnswer}
-													collectionReason={reason}
-													collectionUpdated={updated}
-													collectionUser={user}
-												/>
-											);
-										}
-									}
-							  })
-							: ''}
-
-						{key === 'project'
-							? handlePaginatedItems(projectIndex).map(object => {
-									if (
-										object.activeflag === 'active' ||
-										(object.type === 'project' && object.activeflag === 'review' && object.authors.includes(userState[0].id))
-									) {
-										var reason = '';
-										var updated = '';
-										var user = '';
-										let showAnswer = false;
-										if (object.type === 'project') {
 											collectionData.relatedObjects.map(dat => {
 												if (parseInt(dat.objectId) === object.id) {
 													reason = dat.reason;
@@ -886,7 +829,6 @@ export const CollectionPage = props => {
 						<div className='text-center'>
 							{key === 'dataset' && datasetCount > maxResult ? <Pagination>{datasetPaginationItems}</Pagination> : ''}
 							{key === 'tool' && toolCount > maxResult ? <Pagination>{toolPaginationItems}</Pagination> : ''}
-							{key === 'project' && projectCount > maxResult ? <Pagination>{projectPaginationItems}</Pagination> : ''}
 							{key === 'paper' && paperCount > maxResult ? <Pagination>{paperPaginationItems}</Pagination> : ''}
 							{key === 'person' && personCount > maxResult ? <Pagination>{personPaginationItems}</Pagination> : ''}
 							{key === 'course' && courseCount > maxResult ? <Pagination>{coursePaginationItems}</Pagination> : ''}
