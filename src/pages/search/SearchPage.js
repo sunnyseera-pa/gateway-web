@@ -220,8 +220,6 @@ class SearchPage extends React.Component {
 	async componentDidMount() {
 		// 1. fires on first time in or page is refreshed/url loaded / has search location
 		if (!!window.location.search) {
-			console.log(window.location);
-
 			const urlParams = new URLSearchParams(window.location.search);
 			const tab = urlParams.get('tab');
 			if (tab) {
@@ -1282,7 +1280,7 @@ class SearchPage extends React.Component {
 		let filtersV2Papers = this.resetTreeChecked(filtersV2PapersData);
 
 		this.setState(
-			prevState => ({
+			{
 				filtersV2Datasets,
 				selectedV2Datasets: [],
 				filtersV2Tools,
@@ -1309,8 +1307,8 @@ class SearchPage extends React.Component {
 				personSort: '',
 				courseSort: '',
 				collectionSort: '',
-			}),
-			() => {
+			},
+			async () => {
 				if (viewSaved.tab === 'Datasets') {
 					this.setState({ datasetSort: viewSaved.sort });
 				} else if (viewSaved.tab === 'Tools') {
@@ -1325,7 +1323,20 @@ class SearchPage extends React.Component {
 					this.setState({ collectionSort: viewSaved.sort });
 				}
 
-				this.setState({ search: viewSaved.search, key: viewSaved.tab, [`selectedV2${viewSaved.tab}`]: viewSaved.filters }, () => {
+				this.setState({ search: viewSaved.search, key: viewSaved.tab }, async () => {
+					await this.getFilters(viewSaved.tab);
+
+					for (let filter of viewSaved.filters) {
+						this.handleInputChange(
+							{
+								parentKey: filter.parentKey,
+								label: filter.label,
+							},
+							filter.parentKey,
+							true
+						);
+					}
+
 					this.doSearchCall();
 				});
 			}
