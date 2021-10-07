@@ -3,11 +3,15 @@ import { apiURL } from '../configs/url.config';
 import { deleteRequest, getRequest, patchRequest, postRequest, putRequest } from '../utils/requests';
 
 const getPapers = options => {
-	return getRequest(`${apiURL}/papers`, options);
+	return getRequest(`${apiURL}/papers/getList`, options);
 };
 
 const getPaper = (_id, options) => {
 	return getRequest(`${apiURL}/papers/${_id}`, options);
+};
+
+const getEdit = (_id, options) => {
+	return getRequest(`${apiURL}/papers/edit/${_id}`, options);
 };
 
 const postPaper = (_id, data, options) => {
@@ -26,7 +30,7 @@ const deletePaper = (_id, options) => {
 	return deleteRequest(`${apiURL}/papers/${_id}`, options);
 };
 
-const useGetPapers = (requestOptions, queryOptions = { queryKey: 'getPaper' }) => {
+const useGetPapers = (requestOptions, queryOptions = { queryKey: 'getPapers' }) => {
 	return useQuery({
 		...queryOptions,
 		queryFn: () => getPapers(requestOptions),
@@ -36,24 +40,31 @@ const useGetPapers = (requestOptions, queryOptions = { queryKey: 'getPaper' }) =
 const useGetPaper = (requestOptions, queryOptions = { queryKey: 'getPaper' }) => {
 	return useQuery({
 		...queryOptions,
-		queryFn: id => getPaper(id, requestOptions),
+		queryFn: _id => getPaper(_id, requestOptions),
+	});
+};
+
+const useGetEdit = (requestOptions, queryOptions = { queryKey: 'getEdit' }) => {
+	return useQuery({
+		...queryOptions,
+		queryFn: _id => getPaper(_id, requestOptions),
 	});
 };
 
 const usePostPaper = (requestOptions, mutateOptions = { queryKey: 'postPaper' }) => {
-	return useMutation((id, data) => postPaper(id, data, requestOptions), {
+	return useMutation((_id, data) => postPaper(_id, data, requestOptions), {
 		mutateOptions,
 	});
 };
 
 const usePutPaper = (requestOptions, mutateOptions = { queryKey: 'putPaper' }) => {
-	return useMutation((id, data) => putPaper(id, data, requestOptions), {
+	return useMutation((_id, data) => putPaper(_id, data, requestOptions), {
 		mutateOptions,
 	});
 };
 
 const usePatchPaper = (requestOptions, mutateOptions = { queryKey: 'patchPaper' }) => {
-	return useMutation((id, data) => patchPaper(id, data, requestOptions), {
+	return useMutation((_id, data) => patchPaper(_id, data, requestOptions), {
 		mutateOptions,
 	});
 };
@@ -61,19 +72,21 @@ const usePatchPaper = (requestOptions, mutateOptions = { queryKey: 'patchPaper' 
 const useDeletePaper = (requestOptions, queryOptions = { queryKey: 'deletePaper' }) => {
 	return useQuery({
 		...queryOptions,
-		queryFn: id => deletePaper(id, requestOptions),
+		queryFn: _id => deletePaper(_id, requestOptions),
 	});
 };
 
 export default {
 	getPapers,
 	getPaper,
+	getEdit,
 	postPaper,
 	putPaper,
 	patchPaper,
 	deletePaper,
 	useGetPapers,
 	useGetPaper,
+	useGetEdit,
 	usePostPaper,
 	usePutPaper,
 	usePatchPaper,
