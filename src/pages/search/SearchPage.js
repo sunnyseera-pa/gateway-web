@@ -219,8 +219,6 @@ class SearchPage extends React.Component {
 	async componentDidMount() {
 		// 1. fires on first time in or page is refreshed/url loaded / has search location
 		if (!!window.location.search) {
-			console.log(window.location);
-
 			const urlParams = new URLSearchParams(window.location.search);
 			const tab = urlParams.get('tab');
 			if (tab) {
@@ -1264,35 +1262,13 @@ class SearchPage extends React.Component {
 
 	saveFiltersUpdate = viewSaved => {
 		this.setState({ showSavedPreferencesModal: false });
-		// 1. v2 take copy of data
-		let filtersV2DatasetsData = !_.isNil(this.state.filtersV2Datasets) ? [...this.state.filtersV2Datasets] : [];
-		let filtersV2ToolsData = !_.isNil(this.state.filtersV2Tools) ? [...this.state.filtersV2Tools] : [];
-		let filtersV2ProjectsData = !_.isNil(this.state.filtersV2Projects) ? [...this.state.filtersV2Projects] : [];
-		let filtersV2CollectionsData = !_.isNil(this.state.filtersV2Collections) ? [...this.state.filtersV2Collections] : [];
-		let filtersV2CoursesData = !_.isNil(this.state.filtersV2Courses) ? [...this.state.filtersV2Courses] : [];
-		let filtersV2PapersData = !_.isNil(this.state.filtersV2Papers) ? [...this.state.filtersV2Papers] : [];
-
-		// 2. v2 resets the filters UI tree back to default
-		let filtersV2Datasets = this.resetTreeChecked(filtersV2DatasetsData);
-		let filtersV2Tools = this.resetTreeChecked(filtersV2ToolsData);
-		let filtersV2Projects = this.resetTreeChecked(filtersV2ProjectsData);
-		let filtersV2Collections = this.resetTreeChecked(filtersV2CollectionsData);
-		let filtersV2Courses = this.resetTreeChecked(filtersV2CoursesData);
-		let filtersV2Papers = this.resetTreeChecked(filtersV2PapersData);
-
 		this.setState(
-			prevState => ({
-				filtersV2Datasets,
+			{
 				selectedV2Datasets: [],
-				filtersV2Tools,
 				selectedV2Tools: [],
-				filtersV2Projects,
 				selectedV2Projects: [],
-				filtersV2Papers,
 				selectedV2Papers: [],
-				filtersV2Collections,
 				selectedV2Collections: [],
-				filtersV2Courses,
 				selectedV2Courses: [],
 				datasetIndex: 0,
 				toolIndex: 0,
@@ -1308,8 +1284,8 @@ class SearchPage extends React.Component {
 				personSort: '',
 				courseSort: '',
 				collectionSort: '',
-			}),
-			() => {
+			},
+			async () => {
 				if (viewSaved.tab === 'Datasets') {
 					this.setState({ datasetSort: viewSaved.sort });
 				} else if (viewSaved.tab === 'Tools') {
@@ -1324,7 +1300,20 @@ class SearchPage extends React.Component {
 					this.setState({ collectionSort: viewSaved.sort });
 				}
 
-				this.setState({ search: viewSaved.search, key: viewSaved.tab, [`selectedV2${viewSaved.tab}`]: viewSaved.filters }, () => {
+				this.setState({ search: viewSaved.search, key: viewSaved.tab }, async () => {
+					await this.getFilters(viewSaved.tab);
+
+					for (let filter of viewSaved.filters) {
+						this.handleInputChange(
+							{
+								parentKey: filter.parentKey,
+								label: filter.label,
+							},
+							filter.parentKey,
+							true
+						);
+					}
+
 					this.doSearchCall();
 				});
 			}
