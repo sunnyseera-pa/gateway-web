@@ -540,6 +540,13 @@ class Account extends Component {
 										</Nav.Link>
 									</div>
 
+									<div className={`${tabId === 'datause' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('datause')}>
+										<Nav.Link eventKey={'datause'} className='verticalNavBar gray700-13'>
+											<SVGIcon name='datauseicon' fill={'#b3b8bd'} className='accountSvgs' />
+											<span className='navLinkItem'>Data Uses</span>
+										</Nav.Link>
+									</div>
+
 									<div className={`${tabId === 'papers' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('papers')}>
 										<Nav.Link eventKey={'papers'} className='verticalNavBar gray700-13'>
 											<SVGIcon name='newprojecticon' fill={'#b3b8bd'} className='accountSvgs' />
@@ -560,13 +567,6 @@ class Account extends Component {
 										<Nav.Link eventKey={'dataaccessrequests'} className='verticalNavBar gray700-13'>
 											<SVGIcon name='newprojecticon' fill={'#b3b8bd'} className='accountSvgs' />
 											<span className='navLinkItem'>Data access requests</span>
-										</Nav.Link>
-									</div>
-
-									<div className={`${tabId === 'datause' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('datause')}>
-										<Nav.Link eventKey={'datause'} className='verticalNavBar gray700-13'>
-											<SVGIcon name='datauseicon' fill={'#b3b8bd'} className='accountSvgs' />
-											<span className='navLinkItem'>Data Use</span>
 										</Nav.Link>
 									</div>
 
@@ -603,7 +603,7 @@ class Account extends Component {
 									<div className={`${tabId === 'datause' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('datause')}>
 										<Nav.Link eventKey={'datause'} className='verticalNavBar gray700-13'>
 											<SVGIcon name='datauseicon' fill={'#b3b8bd'} className='accountSvgs' />
-											<span className='navLinkItem'>Data Use</span>
+											<span className='navLinkItem'>Data Uses</span>
 										</Nav.Link>
 									</div>
 									<div className={`${tabId === 'teams' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('teams')}>
@@ -674,7 +674,7 @@ class Account extends Component {
 									<div className={`${tabId === 'datause' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('datause')}>
 										<Nav.Link eventKey={'datause'} className='verticalNavBar gray700-13'>
 											<SVGIcon name='datauseicon' fill={'#b3b8bd'} className='accountSvgs' />
-											<span className='navLinkItem'>Data Use</span>
+											<span className='navLinkItem'>Data Uses</span>
 										</Nav.Link>
 									</div>
 									<div className={`${tabId === 'help' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('help')}>
