@@ -656,10 +656,11 @@ class DatasetDetail extends Component {
 
 	exportCitation = () => {
 		const data = this.state.data;
+		const year = new Date(data.datasetv2.provenance.temporal.distributionReleaseDate).getFullYear();
 		navigator.clipboard.writeText(
 			data.datasetv2.summary.publisher.name +
 				'(' +
-				data.datasetv2.provenance.temporal.distributionReleaseDate +
+				year +
 				').' +
 				data.name +
 				'.' +
