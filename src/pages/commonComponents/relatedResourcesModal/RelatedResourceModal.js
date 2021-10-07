@@ -255,12 +255,12 @@ class RelatedResourcesModal extends React.Component {
 			editingObjectTool = 1;
 		}
 
-		// selected.datasets = 0;
-		// selected.tools = 0;
-		// selected.projects = 0;
-		// selected.papers = 0;
-		// selected.persons = 0;
-		// selected.courses = 0;
+		selected.datasets = 0;
+		selected.tools = 0;
+		selected.projects = 0;
+		selected.papers = 0;
+		selected.persons = 0;
+		selected.courses = 0;
 
 		mySelected.tools = 0;
 		mySelected.projects = 0;
@@ -320,15 +320,19 @@ class RelatedResourcesModal extends React.Component {
 						break;
 					case 'person':
 						this.props.personData.map(person =>
-							''
+							object.objectId === person.id || object.objectId === JSON.stringify(person.id) ? selected.persons++ : ''
 						);
 						break;
 					case 'dataset':
-						this.props.datasetData.map(dataset =>
-							object.objectId === dataset.datasetid ||
-							object.objectId === JSON.stringify(dataset.datasetid) ||
-							object.pid === dataset.pid ||
-							object.pid === ''
+						this.props.datasetData.map(
+							dataset =>
+								object.objectId === dataset.datasetid ||
+								object.objectId === JSON.stringify(dataset.datasetid) ||
+								object.pid === dataset.pid ||
+								object.pid === JSON.stringify(dataset.pid)
+										? selected.datasets++
+										: ''
+								object.pid === ''
 						);
 						break;
 					case 'course':
