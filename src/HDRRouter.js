@@ -48,7 +48,6 @@ Sentry.init({
 	environment: urlEnv,
 	integrations: [
 		new Integrations.BrowserTracing({
-			// Can also use reactRouterV4Instrumentation
 			routingInstrumentation: Sentry.reactRouterV5Instrumentation(history),
 		}),
 	],

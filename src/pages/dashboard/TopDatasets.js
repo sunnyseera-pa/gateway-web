@@ -3,13 +3,10 @@ import { Col, Row } from 'react-bootstrap';
 import './Dashboard.scss';
 
 class TopDatasets extends React.Component {
-
-	constructor(props) {
-		super(props);
-	}
-
 	render() {
-		const { data: { name, requests, publisher, pid } } = this.props;
+		const {
+			data: { name, requests, publisher, pid },
+		} = this.props;
 
 		return (
 			<Fragment>
@@ -25,7 +22,9 @@ class TopDatasets extends React.Component {
 						</span>
 					</Col>
 					<Col sm={3} lg={2} className='gray800-14 noPadding'>
-						<span className='pad-right-0 pad-left-16' data-test-id='topDatasets-dataset-request-count'>{requests}</span>
+						<span className='pad-right-0 pad-left-16' data-test-id='topDatasets-dataset-request-count'>
+							{requests}
+						</span>
 					</Col>
 				</Row>
 			</Fragment>

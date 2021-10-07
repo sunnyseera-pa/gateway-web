@@ -25,18 +25,22 @@ import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
 import UserMessages from '../commonComponents/userMessages/UserMessages';
 import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
 import { tabTypes } from './Team/teamUtil';
+import ActivityLogActionButtons from '../DataAccessRequest/components/ActivityLog/ActivityLogActionButtons';
 
 import { ReactComponent as ChevronRightSvg } from '../../images/chevron-bottom.svg';
 import { ReactComponent as CheckSVG } from '../../images/check.svg';
 import './Dashboard.scss';
+import ActivityLog from '../DataAccessRequest/components/ActivityLog/ActivityLog';
 import DataUsePage from '../dataUse/DataUsePage';
 import AccountTeams from './AccountTeams';
+import googleAnalytics from '../../tracking';
+
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
 	<a
-		href=''
+		href='javascript:void(0)'
 		ref={ref}
 		onClick={e => {
 			e.preventDefault();
@@ -96,12 +100,15 @@ class Account extends Component {
 		isSubmitting: false,
 		teamManagementInternalTab: 'Notifications',
 		accountUpdated: false,
+		dataaccessrequest: {},
 	};
 
 	constructor(props) {
 		super(props);
 		this.state.userState = props.userState;
 		this.searchBar = React.createRef();
+		this.activityLog = React.createRef();
+
 		// 1. used for DAR custodian update status of application
 		if (_.has(props, 'location.state.alert')) {
 			this.state.alert = props.location.state.alert;
@@ -136,6 +143,7 @@ class Account extends Component {
 	}
 
 	async componentDidMount() {
+		window.currentComponent = this;
 		if (window.location.search) {
 			let tab = '';
 			let values = queryString.parse(window.location.search);
@@ -261,12 +269,12 @@ class Account extends Component {
 		return tab;
 	};
 
-	toggleDrawer = () => {
+	toggleDrawer = selectedTopicId => {
 		this.setState(prevState => {
 			if (prevState.showDrawer === true) {
 				this.searchBar.current.getNumberOfUnreadMessages();
 			}
-			return { showDrawer: !prevState.showDrawer };
+			return { showDrawer: !prevState.showDrawer, selectedTopicId };
 		});
 	};
 
@@ -299,7 +307,7 @@ class Account extends Component {
 				return filterPublishers.map((pub, index) => {
 					return (
 						<>
-							{index == 0 ? <hr /> : ''}
+							{index === 0 ? <hr /> : ''}
 							<Dropdown.Item
 								className='gray700-13'
 								onClick={e => {
@@ -374,6 +382,7 @@ class Account extends Component {
 	}
 
 	toggleNav = (tabId = '') => {
+		googleAnalytics.recordVirtualPageView(tabId);
 		let {
 			activeAccordion,
 			alert,
@@ -405,7 +414,7 @@ class Account extends Component {
 						else tab.tabId = 'teamManagement';
 					}
 				}
-			} else if (localStorage.getItem('HDR_TEAM') == '') localStorage.setItem('HDR_TEAM', 'user');
+			} else if (localStorage.getItem('HDR_TEAM') === '') localStorage.setItem('HDR_TEAM', 'user');
 			// 5. set state
 			this.setState({
 				tabId: tab.tabId,
@@ -413,6 +422,7 @@ class Account extends Component {
 				activeKey: tab.tabId,
 				alert: !_.isEmpty(alert) ? alert : {},
 				activeAccordion,
+				dataaccessrequest: {},
 			});
 			// 6. push state
 			this.props.history.push({ pathname: window.location.pathname, search: `?tab=${tab.tabId}`, state: { team: tab.team } });
@@ -452,6 +462,42 @@ class Account extends Component {
 		this.setState({ innertab: '' });
 	};
 
+	setDataAccessRequest = (dar = {}) => {
+		this.setState({ dataaccessrequest: dar });
+	};
+
+	navigateToLocation = (e, applicationId) => {
+		e.stopPropagation();
+
+		let [id] = e.currentTarget.id.split('_');
+
+		console.log(applicationId);
+
+		switch (id) {
+			case 'startReview':
+				this.startWorkflowReview(applicationId);
+				break;
+			default:
+				break;
+		}
+	};
+
+	startWorkflowReview = async applicationId => {
+		await axios
+			.put(`${baseURL}/api/v1/data-access-request/${applicationId}/startreview`)
+			.then(() => {
+				window.location.href = `/data-access-request/${applicationId}`;
+			})
+			.catch(err => {
+				console.error(err.message);
+			});
+	};
+
+	loadActivityLogNotifications = () => {
+		this.searchBar.current.getNumberOfUnreadNotifications();
+		this.searchBar.current.doMessagesCall();
+	};
+
 	render() {
 		const {
 			searchString,
@@ -470,6 +516,7 @@ class Account extends Component {
 			isSubmitting,
 			teamManagementTab,
 			accountUpdated,
+			dataaccessrequest,
 		} = this.state;
 
 		return (
@@ -707,7 +754,22 @@ class Account extends Component {
 
 								{tabId === 'courses' ? <AccountCourses userState={userState} /> : ''}
 
-								{tabId === 'dataaccessrequests' ? <DataAccessRequests userState={userState} team={team} alert={alert} /> : ''}
+								{tabId === 'dataaccessrequests' ? (
+									_.isEmpty(dataaccessrequest) ? (
+										<DataAccessRequests setDataAccessRequest={this.setDataAccessRequest} userState={userState} team={team} alert={alert} />
+									) : (
+										<ActivityLog
+											onClickStartReview={this.navigateToLocation}
+											dataaccessrequest={dataaccessrequest}
+											userState={userState}
+											team={team}
+											ref={this.activityLog}
+											onUpdateLogs={this.loadActivityLogNotifications}
+										/>
+									)
+								) : (
+									''
+								)}
 
 								{tabId === 'datause' ? <DataUsePage userState={userState} team={team} /> : ''}
 
@@ -720,7 +782,30 @@ class Account extends Component {
 						{team !== 'user' ? (
 							<>
 								{allowAccessRequestManagement && this.userHasRole(team, ['manager', 'reviewer']) && (
-									<>{tabId === 'dataaccessrequests' ? <DataAccessRequests userState={userState} team={team} alert={alert} /> : ''}</>
+									<>
+										{' '}
+										{tabId === 'dataaccessrequests' ? (
+											_.isEmpty(dataaccessrequest) ? (
+												<DataAccessRequests
+													setDataAccessRequest={this.setDataAccessRequest}
+													userState={userState}
+													team={team}
+													alert={alert}
+												/>
+											) : (
+												<ActivityLog
+													onClickStartReview={this.navigateToLocation}
+													dataaccessrequest={dataaccessrequest}
+													userState={userState}
+													team={team}
+													ref={this.activityLog}
+													onUpdateLogs={this.loadActivityLogNotifications}
+												/>
+											)
+										) : (
+											''
+										)}
+									</>
 								)}
 
 								{(this.userHasRole(team, ['manager', 'metadata_editor']) || team === 'admin') && (
@@ -766,12 +851,29 @@ class Account extends Component {
 					</div>
 				</div>
 
+				{!_.isEmpty(dataaccessrequest) && (
+					<ActionBar userState={userState}>
+						<div className='action-bar'>
+							<div className='action-bar-actions'>
+								<ActivityLogActionButtons
+									team={team}
+									latestVersion={this.state.dataaccessrequest}
+									onClickStartReview={this.navigateToLocation}
+									activityLog={this.activityLog}
+									onClickAddNewEvent={() => this.activityLog.current.showAddNewEventModal()}
+								/>
+							</div>
+						</div>
+					</ActionBar>
+				)}
+
 				<SideDrawer open={showDrawer} closed={this.toggleDrawer}>
 					<UserMessages
 						userState={userState[0]}
 						closed={this.toggleDrawer}
 						toggleModal={this.toggleModal}
 						drawerIsOpen={this.state.showDrawer}
+						selectedTopicId={this.state.selectedTopicId}
 					/>
 				</SideDrawer>
 				{tabId === 'teamManagement' && teamManagementTab === tabTypes.Notifications && (
