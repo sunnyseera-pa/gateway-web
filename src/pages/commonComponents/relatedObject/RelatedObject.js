@@ -850,14 +850,7 @@ class RelatedObject extends React.Component {
 													if (activeLink) {
 														if (onSearchPage) {
 															return (
-																<span
-																	className='pointer'
-																	onClick={event =>
-																		this.updateOnFilterBadge('cohortInclusionExclusionSelected', {
-																			label: criteria,
-																			parentKey: 'cohortinclusionexclusion',
-																		})
-																	}>
+																<span className='pointer' onClick={event => this.updateOnFilterBadge('courseCriteriasSelected', criteria)}>
 																	<div className='badge-tag'>{criteria}</div>
 																</span>
 															);
