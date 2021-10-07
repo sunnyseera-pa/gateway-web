@@ -17,7 +17,7 @@ import './DataUseUpload.scss';
 
 var baseURL = require('../../commonComponents/BaseURL').getURL();
 
-const DataUseUpload = React.forwardRef(({ userState, onSubmit, team, dataUsePage }, ref) => {
+const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage }, ref) => {
 	React.useImperativeHandle(ref, () => ({
 		toggleSubmitModal,
 	}));

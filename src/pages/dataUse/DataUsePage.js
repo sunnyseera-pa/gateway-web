@@ -23,7 +23,9 @@ const DataUsePage = React.forwardRef(({ userState, onClickDataUseUpload, team },
 
 	useEffect(() => {
 		axios.get(baseURL + '/api/v2/data-use-registers?team=' + team).then(res => {
-			setRow(res.data.data);
+			let dataUses = res.data.data;
+			dataUses.sort((dataUseOne, dataUseTwo) => Date.parse(dataUseTwo.lastActivity) - Date.parse(dataUseOne.lastActivity));
+			setRow(dataUses);
 		});
 	}, [team, alert]);
 
@@ -71,12 +73,16 @@ const DataUsePage = React.forwardRef(({ userState, onClickDataUseUpload, team },
 
 	return (
 		<Container>
-			{!isEmpty(alert) && (
-				<Alert variant={'success'} className='main-alert'>
-					<SVGIcon name='check' width={24} height={24} fill={'#2C8267'} /> {alert}
-				</Alert>
-			)}
-			<Row className='datause-card'>
+			<Row>
+				<Col className='pl-0 pr-0'>
+					{!isEmpty(alert) && (
+						<Alert variant={'success'} className='main-alert'>
+							<SVGIcon name='check' width={24} height={24} fill={'#2C8267'} /> {alert}
+						</Alert>
+					)}
+				</Col>
+			</Row>
+			<Row className='datause-card mt-1'>
 				<Col md={10}>
 					<Row>
 						<p className='black-20-semibold'>Data uses</p>
