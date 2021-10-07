@@ -34,7 +34,6 @@ import ActivityLog from '../DataAccessRequest/components/ActivityLog/ActivityLog
 import AccountTeams from './AccountTeams';
 import googleAnalytics from '../../tracking';
 
-
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
