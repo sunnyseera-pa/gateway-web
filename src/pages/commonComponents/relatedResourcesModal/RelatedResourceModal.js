@@ -325,12 +325,12 @@ class RelatedResourcesModal extends React.Component {
 						break;
 					case 'dataset':
 						this.props.datasetData.map(dataset =>
-								object.objectId === dataset.datasetid ||
-								object.objectId === JSON.stringify(dataset.datasetid) ||
-								object.pid === dataset.pid ||
-								object.pid === JSON.stringify(dataset.pid)
-										? selected.datasets++
-										: ''
+							object.objectId === dataset.datasetid ||
+							object.objectId === JSON.stringify(dataset.datasetid) ||
+							object.pid === dataset.pid ||
+							object.pid === JSON.stringify(dataset.pid)
+								? selected.datasets++
+								: ''
 						);
 						break;
 					case 'course':
