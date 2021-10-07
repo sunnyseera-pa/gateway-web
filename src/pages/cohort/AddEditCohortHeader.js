@@ -49,7 +49,7 @@ const AddEditCohortHeader = props => {
 															<Row className='margin-bottom-8'>
 																<InputGroup.Radio
 																	id='courseCreate'
-																	className='ml-3'
+																	className='ml-3 cursorPointer'
 																	aria-label='Create a new cohort'
 																	name='cohortRadioButtons'
 																	value='createNew'
@@ -59,7 +59,7 @@ const AddEditCohortHeader = props => {
 															<Row className='margin-bottom-12'>
 																<InputGroup.Radio
 																	id='courseNewVersion'
-																	className='ml-3 cohortDropdown'
+																	className='ml-3 cohortDropdown cursorPointer'
 																	aria-label='Create a new version of an existing cohort'
 																	name='cohortRadioButtons'
 																	value='newVersion'

@@ -36,7 +36,7 @@ const AddEditCohortForm = props => {
 
 	useEffect(() => {
 		buildListOfUploaders();
-	}, [props.data]);
+	}, [props.uploaders]);
 
 	const updateShowForm = () => {
 		if (
@@ -60,7 +60,6 @@ const AddEditCohortForm = props => {
 			description: props.data.description || '',
 			relatedObjects: props.relatedObjects,
 			publicflag: !isUndefined(props.publicFlag) ? props.publicFlag : true,
-			previousPublicFlag: props.publicFlag,
 		},
 
 		validationSchema: Yup.object({
@@ -80,16 +79,24 @@ const AddEditCohortForm = props => {
 			values.request_id = props.data.request_id;
 			values.cohort = props.data.cohort;
 
-			//TODO - update to correct paths when available
-			if (props.isEdit) {
-				axios.put(baseURL + '/api/v1/cohorts/' + props.data.id, values).then(res => {
-					window.location.href = window.location.search + '/cohort/' + props.data.id + '/?cohortEdited=true';
-				});
-			} else {
-				axios.post(baseURL + '/api/v1/cohorts/', values).then(res => {
-					window.location.href = window.location.search + '/cohort/' + res.data.response.id + '/?cohortAdded=true';
+			// TODO - add correct paths for edit metadata and create new version when available - update prev. version to archived
+			if (!props.isEdit && props.radioButtonValue === 'createNew') {
+				values.activeflag = 'active';
+
+				axios.put(`${baseURL}/api/v1/cohorts/${props.data.id}`, values).then(res => {
+					window.location.href = `${window.location.search}/account?tab=cohorts&team=user&cohortSaved=createNew&cohortName=${values.name}`;
 				});
 			}
+
+			// if (props.isEdit) {
+			// 	axios.put(baseURL + '/api/v1/cohorts/' + props.data.id, values).then(res => {
+			// 		window.location.href = window.location.search + '/cohort/' + props.data.id + '/?cohortEdited=true';
+			// 	});
+			// } else {
+			// 	axios.post(baseURL + '/api/v1/cohorts/', values).then(res => {
+			// 		window.location.href = window.location.search + '/cohort/' + res.data.response.id + '/?cohortAdded=true';
+			// 	});
+			// }
 		},
 	});
 
@@ -169,6 +176,10 @@ const AddEditCohortForm = props => {
 		props.updatePublicFlag(!props.publicFlag);
 	};
 
+	const updateCohortFormValues = (name, description) => {
+		props.updateCohortFormValues(name, description);
+	};
+
 	const relatedResourcesRef = React.useRef();
 	return (
 		<div>
@@ -228,6 +239,7 @@ const AddEditCohortForm = props => {
 																onChange={formik.handleChange}
 																value={formik.values.name}
 																onBlur={formik.handleBlur}
+																onKeyUp={e => updateCohortFormValues(e.target.value, formik.values.description)}
 															/>
 															{formik.touched.name && formik.errors.name ? <div className='errorMessages'>{formik.errors.name}</div> : null}
 														</Form.Group>
@@ -258,6 +270,7 @@ const AddEditCohortForm = props => {
 																onChange={formik.handleChange}
 																value={formik.values.description}
 																onBlur={formik.handleBlur}
+																onKeyUp={e => updateCohortFormValues(formik.values.name, e.target.value)}
 															/>
 															{formik.touched.description && formik.errors.description ? (
 																<div className='errorMessages'>{formik.errors.description}</div>
