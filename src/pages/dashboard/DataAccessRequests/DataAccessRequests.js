@@ -242,43 +242,45 @@ class DataAccessRequestsNew extends React.Component {
 		return '';
 	};
 
-	renderDuration = (accessRequest, team = {}) => {
-		let {
+	renderDuration = accessRequest => {
+		const {
 			applicationStatus = '',
 			createdAt,
 			dateSubmitted,
-			decisionDuration = 0,
+			decisionDuration = '',
 			applicationType = DarHelperUtil.darApplicationTypes.initial,
 		} = accessRequest;
 		let diff = 0;
-		if (this.durationLookups.includes(applicationStatus)) {
-			if (applicationStatus === DarHelperUtil.darStatus.inProgress) {
-				diff = this.calculateTimeDifference(createdAt);
-				return <TimeDuration text={`${diff} days since start`} />;
-			}
+		let sinceText = '';
 
-			if (applicationStatus === DarHelperUtil.darStatus.submitted) {
-				diff = this.calculateTimeDifference(dateSubmitted);
-				return <TimeDuration text={`${diff} days since submission`} />;
-			}
-
-			if (applicationStatus === DarHelperUtil.darStatus.inReview && applicationType === DarHelperUtil.darApplicationTypes.amendment) {
-				diff = this.calculateTimeDifference(dateSubmitted);
-				return <TimeDuration text={`${diff} days since resubmission`} />;
-			}
-		}
-		if (this.finalDurationLookups.includes(applicationStatus) && team) {
+		if (applicationStatus === DarHelperUtil.darStatus.inProgress) {
+			sinceText = 'since start';
+			diff = this.calculateTimeDifference(createdAt);
+		} else if (applicationStatus === DarHelperUtil.darStatus.submitted || applicationStatus === DarHelperUtil.darStatus.inReview) {
+			sinceText = applicationType === DarHelperUtil.darApplicationTypes.initial ? 'since submission' : 'since resubmission';
+			diff = this.calculateTimeDifference(dateSubmitted);
+		} else if (
+			applicationStatus === DarHelperUtil.darStatus.approved ||
+			applicationStatus === DarHelperUtil.darStatus['approved with conditions'] ||
+			applicationStatus === DarHelperUtil.darStatus.rejected
+		) {
 			if (!_.isEmpty(decisionDuration.toString())) {
-				return <TimeDuration text={`${decisionDuration} days total`} />;
+				sinceText = 'total';
+				diff = decisionDuration;
 			}
 		}
-		return '';
+
+		if (!_.isEmpty(sinceText)) {
+			return <TimeDuration text={`${diff} days ${sinceText}`} />;
+		} else {
+			return '';
+		}
 	};
 
-	navigateToLocation = (e, applicationId, applicationStatus) => {
+	navigateToLocation = (e, projectId) => {
 		e.stopPropagation();
 		// 1. split the id up into two parts
-		let [id, uniqueId] = e.currentTarget.id.split('_');
+		const [id, uniqueId] = e.currentTarget.id.split('_');
 		// 2. test the Id we have clicked on
 		switch (id) {
 			case 'versionSelector':
@@ -301,26 +303,16 @@ class DataAccessRequestsNew extends React.Component {
 					}
 				}
 				break;
-			case 'startReview':
-				this.startWorkflowReview(applicationId);
-				break;
 			default:
-				if (applicationStatus !== DarHelperUtil.darStatus.submitted || this.state.team === 'user') {
-					window.location.href = `/data-access-request/${applicationId}`;
-				}
+				// select the latest version of an application given the projectId
+				const latestApplicationVersion = this.state.screenData
+					.filter(application => application.projectId === projectId)
+					.reduce(function (prevApplication, currentApplication) {
+						return prevApplication.majorVersion > currentApplication.majorVersion ? prevApplication : currentApplication;
+					});
+				this.props.setDataAccessRequest(latestApplicationVersion);
 				break;
 		}
-	};
-
-	startWorkflowReview = async applicationId => {
-		await axios
-			.put(`${baseURL}/api/v1/data-access-request/${applicationId}/startreview`)
-			.then(() => {
-				window.location.href = `/data-access-request/${applicationId}`;
-			})
-			.catch(err => {
-				console.error(err.message);
-			});
 	};
 
 	renderAverageSubmission = () => {
@@ -417,17 +409,17 @@ class DataAccessRequestsNew extends React.Component {
 								isReviewer = false,
 								stepName = '',
 								remainingActioners = [],
-								_id,
 								decisionDate,
 								amendmentStatus = '',
 								versions = [],
 								applicationType = 'initial',
+								projectId,
 							} = request;
 
 							const selectedVersion = versions.find(v => v.isCurrent)?.displayTitle;
 
 							return (
-								<Row key={`request_${i}`} onClick={e => this.navigateToLocation(e, _id, applicationStatus)}>
+								<Row key={`request_${i}`} onClick={e => this.navigateToLocation(e, projectId)}>
 									<div className='col-md-12'>
 										<div className='layoutCard'>
 											<div className='header-version'>
@@ -445,7 +437,7 @@ class DataAccessRequestsNew extends React.Component {
 													)}
 												</div>
 												<div className='header-version-status'>
-													{this.renderDuration(request, team)}
+													{this.renderDuration(request)}
 													{applicationType === DarHelperUtil.darApplicationTypes.amendment &&
 													applicationStatus !== DarHelperUtil.darStatus.approved &&
 													applicationStatus !== DarHelperUtil.darStatus['approved with conditions'] &&
@@ -485,8 +477,8 @@ class DataAccessRequestsNew extends React.Component {
 													stepName={stepName}
 													remainingActioners={remainingActioners}
 													navigateToLocation={this.navigateToLocation}
-													applicationId={_id}
 													amendmentStatus={amendmentStatus}
+													isStartReviewEnabled={false}
 												/>
 											</div>
 											{this.renderComment(

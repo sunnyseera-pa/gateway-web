@@ -73,7 +73,7 @@ const AssignWorkflowModal = ({ open, close, workflows, publisher, applicationId 
 
 	useEffect(() => {
 		modifyWorkflows();
-	}, [workflows]);
+	}, [modifyWorkflows]);
 
 	return (
 		<div className='flexCenter assignNotifyModal'>

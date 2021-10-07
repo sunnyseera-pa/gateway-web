@@ -3,10 +3,6 @@ import SVGIcon from '../../../images/SVGIcon';
 import './SearchBar.scss';
 
 class SimpleSearchBar extends React.Component {
-	constructor(props) {
-		super(props);
-	}
-
 	changeText = e => {
 		if (this.props.doUpdateSearchString) {
 			this.props.doUpdateSearchString(e.target.value);

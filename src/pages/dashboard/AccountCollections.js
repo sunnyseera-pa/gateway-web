@@ -335,6 +335,8 @@ const AccountCollections = props => {
 											)}
 										</div>
 									);
+								default:
+									return key;
 							}
 						})()}
 

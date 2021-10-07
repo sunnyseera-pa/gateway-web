@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="30px" height="30px" viewBox="0 0 30 30" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Workflows</title>
+    <defs>
+        <path d="M6.1349258,5.32831254 L0,11.4332784 L6.1349258,17.5382443 L12.2698516,11.4332784 L6.1349258,5.32831254 Z M2.67250044,11.4332784 L6.13019571,7.99246882 L9.59262106,11.4332784 L6.1349258,14.874088 L2.67250044,11.4332784 Z M17.5060604,5.5354201 C15.841069,3.88326665 13.6652279,3.05483643 11.4846568,3.05483643 L11.4846568,0 L7.46881097,3.99623441 L11.4846568,7.98776183 L11.4846568,4.93763238 C13.1780287,4.93763238 14.8761308,5.58249 16.1674452,6.86749823 C18.754804,9.4422217 18.754804,13.6126147 16.1674452,16.1873382 C14.8761308,17.4723464 13.1780287,18.117204 11.4846568,18.117204 C10.5670195,18.117204 9.65411222,17.9242175 8.80269615,17.5476583 L7.39312955,18.9503413 C8.66079347,19.6469758 10.0703601,20 11.4846568,20 C13.6652279,20 15.841069,19.1715698 17.5060604,17.5194163 C20.8313132,14.2104024 20.8313132,8.84443398 17.5060604,5.5354201 L17.5060604,5.5354201 Z" id="workflows"></path>
+    </defs>
+    <g id="✅-Activity-Log" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Activity-log:-Spec" transform="translate(-402.000000, -3466.000000)">
+            <g id="Stacked-Group" transform="translate(370.000000, 360.000000)">
+                <g id="Version-1" transform="translate(0.000000, 800.000000)">
+                    <g id="Stacked-Group-2" transform="translate(24.000000, 1276.000001)">
+                        <g id="Date" transform="translate(0.000000, 995.000000)">
+                            <g id="Stacked-Group" transform="translate(0.000000, 27.000000)">
+                                <g id="Workflows" transform="translate(8.000000, 8.000000)">
+                                    <circle id="Oval" fill="#F98E2B" cx="15" cy="15" r="15"></circle>
+                                    <g id="Shape-2" transform="translate(4.000000, 4.000000)">
+                                        <mask id="workflows-mask" fill="white">
+                                            <use xlink:href="#workflows"></use>
+                                        </mask>
+                                        <use id="Shape" fill="#111111" fill-rule="nonzero" xlink:href="#workflows"></use>
+                                        <rect id="Rectangle" fill="#FFFFFF" mask="url(#workflows-mask)" x="-2.33333333" y="-3.33333333" width="26.6666667" height="26.6666667"></rect>
+                                    </g>
+                                </g>
+                            </g>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
