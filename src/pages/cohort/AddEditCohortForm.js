@@ -78,6 +78,7 @@ const AddEditCohortForm = props => {
 			values.changeLog = props.changeLogValue;
 			values.request_id = props.data.request_id;
 			values.cohort = props.data.cohort;
+			values.updatedon = new Date();
 
 			// TODO - add correct paths for edit metadata and create new version when available - update prev. version to archived
 			if (!props.isEdit && props.radioButtonValue === 'createNew') {
