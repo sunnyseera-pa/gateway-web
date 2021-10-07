@@ -845,28 +845,42 @@ class RelatedObject extends React.Component {
 												<SVGIcon name='cohort' fill={'#3c3c3b'} className='badgeSvg mr-2' />
 												<span>Cohort</span>
 											</span>
-											{data.inclusionExclusionCriteria.map(criteria => {
-												if (activeLink) {
-													if (onSearchPage) {
-														return (
-															<span className='pointer' onClick={event => this.updateOnFilterBadge('courseCriteriasSelected', criteria)}>
-																<div className='badge-tag'>{criteria}</div>
-															</span>
-														);
+											{!_.isEmpty(data.filterCriteria) &&
+												data.filterCriteria.map(criteria => {
+													if (activeLink) {
+														if (onSearchPage) {
+															return (
+																<span
+																	className='pointer'
+																	onClick={event =>
+																		this.updateOnFilterBadge('cohortInclusionExclusionSelected', {
+																			label: criteria,
+																			parentKey: 'cohortinclusionexclusion',
+																		})
+																	}>
+																	<div className='badge-tag'>{criteria}</div>
+																</span>
+															);
+														} else {
+															return (
+																<a href={'/search?search=&tab=Cohorts&cohortcriterias=' + criteria}>
+																	<div className='badge-tag'>{criteria}</div>
+																</a>
+															);
+														}
 													} else {
-														return (
-															<a href={'/search?search=&tab=Cohorts&cohortcriterias=' + criteria}>
-																<div className='badge-tag'>{criteria}</div>
-															</a>
-														);
+														return <div className='badge-tag'>{criteria}</div>;
 													}
-												} else {
-													return <div className='badge-tag'>{criteria}</div>;
-												}
-											})}
+												})}
 										</Col>
 										<div class='pad-left-24 pad-right-24 pad-top-24 pad-bottom-16 col-lg-12 col-sm-12'>
-											<span className='gray800-14'>X entries across Y datasets</span>
+											{data.counts ? (
+												<span className='gray800-14'>
+													{data.counts.reduce((a, curr) => a + parseInt(curr.count), 0)} entries across {data.counts.length} datasets
+												</span>
+											) : (
+												''
+											)}
 										</div>
 									</Row>
 								);
