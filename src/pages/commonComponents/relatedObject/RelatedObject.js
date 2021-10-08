@@ -874,9 +874,9 @@ class RelatedObject extends React.Component {
 												})}
 										</Col>
 										<div class='pad-left-24 pad-right-24 pad-top-24 pad-bottom-16 col-lg-12 col-sm-12'>
-											{data.counts ? (
+											{data.totalResultCount && data.numberOfDatasets ? (
 												<span className='gray800-14'>
-													{data.counts.reduce((a, curr) => a + parseInt(curr.count), 0)} entries across {data.counts.length} datasets
+													{data.totalResultCount} entries across {data.numberOfDatasets} datasets
 												</span>
 											) : (
 												''
