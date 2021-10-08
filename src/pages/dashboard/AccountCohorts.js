@@ -7,6 +7,7 @@ import Loading from '../commonComponents/Loading';
 import './Dashboard.scss';
 import { EntityActionButton } from './EntityActionButton.jsx';
 import { PaginationHelper } from '../commonComponents/PaginationHelper';
+import { isEmpty } from 'lodash';
 
 const baseURL = require('../commonComponents/BaseURL').getURL();
 const urlEnv = require('../commonComponents/BaseURL').getURLEnv();
@@ -22,13 +23,15 @@ const AccountCohorts = props => {
 	const [archiveIndex, setArchiveIndex] = useState(0);
 	const [draftIndex, setDraftIndex] = useState(0);
 	const [isResultsLoading, setIsResultsLoading] = useState(true);
-	const [cohortSaved, setCohortSaved] = useState(false);
+	const [cohortSaved, setCohortSaved] = useState('');
+	const [cohortName, setCohortName] = useState('');
 	const [bcpBaseUrl, setBcpBaseUrl] = useState('');
 	const [userState] = useState(props.userState[0]);
 	const maxResult = 40;
 
 	useEffect(() => {
 		setCohortSaved(props.cohortSaved);
+		setCohortName(props.cohortName);
 		doCohortsCall('active', true, 0, true);
 		urlEnv === 'prod'
 			? setBcpBaseUrl('https://rquest.prod.healthdatagateway.org/bcrquest/')
@@ -104,42 +107,42 @@ const AccountCohorts = props => {
 	};
 
 	const archiveCohort = id => {
-		// axios
-		// 	.put(baseURL + '/api/v1/cohort/status/' + id, {
-		// 		activeflag: 'archive',
-		// 	})
-		// 	.then(res => {
-		// 		setKey('active');
-		// 		if (activeCount - (activeIndex + maxResult) <= 0 && activeCount % maxResult === 1 && activeCount !== 1) {
-		// 			setActiveIndex(activeIndex - maxResult);
-		// 			doCohortsCall(key, true, activeIndex - maxResult);
-		// 		} else {
-		// 			doCohortsCall('active', true, activeIndex);
-		// 		}
-		// 	});
+		axios
+			.put(`${baseURL}/api/v1/cohorts/${id}`, {
+				activeflag: 'archive',
+			})
+			.then(res => {
+				setKey('active');
+				if (activeCount - (activeIndex + maxResult) <= 0 && activeCount % maxResult === 1 && activeCount !== 1) {
+					setActiveIndex(activeIndex - maxResult);
+					doCohortsCall(key, true, activeIndex - maxResult);
+				} else {
+					doCohortsCall('active', true, activeIndex);
+				}
+			});
 	};
 
 	const unarchiveCohort = id => {
-		// axios
-		// 	.put(baseURL + '/api/v1/cohort/status/' + iid, {
-		// 		activeflag: 'active',
-		// 	})
-		// 	.then(res => {
-		// 		if (shouldChangeTab()) {
-		// 			setKey('active');
-		// 			doCohortsCall('active', true, activeIndex);
-		// 		} else if (archiveCount - (archiveIndex + maxResult) <= 0 && archiveCount % maxResult === 1 && archiveCount !== 1) {
-		// 			setArchiveIndex(archiveIndex - maxResult);
-		// 			doCohortsCall(key, true, archiveIndex - maxResult);
-		// 		} else {
-		// 			doCohortsCall('archive', true, archiveIndex);
-		// 		}
-		// 	});
+		axios
+			.put(`${baseURL}/api/v1/cohorts/${id}`, {
+				activeflag: 'active',
+			})
+			.then(res => {
+				if (shouldChangeTab()) {
+					setKey('active');
+					doCohortsCall('active', true, activeIndex);
+				} else if (archiveCount - (archiveIndex + maxResult) <= 0 && archiveCount % maxResult === 1 && archiveCount !== 1) {
+					setArchiveIndex(archiveIndex - maxResult);
+					doCohortsCall(key, true, archiveIndex - maxResult);
+				} else {
+					doCohortsCall('archive', true, archiveIndex);
+				}
+			});
 	};
 
-	// const shouldChangeTab = () => {
-	// 	return key === 'archive' && archiveCount <= 1 ? true : false;
-	// };
+	const shouldChangeTab = () => {
+		return key === 'archive' && archiveCount <= 1 ? true : false;
+	};
 
 	const getHeadings = () => {
 		return (
@@ -244,12 +247,17 @@ const AccountCohorts = props => {
 
 	return (
 		<div>
-			{cohortSaved === 'true' ? (
+			{!isEmpty(cohortSaved) ? (
 				<Row>
 					<Col sm={1} lg={1} />
 					<Col sm={10} lg={10} className='pad-left-0'>
 						<Alert data-test-id='collection-added-banner' variant='success' className='mb-3'>
-							Your cohort /COHORT NAME/ has been saved
+							{cohortSaved === 'createNew'
+								? `Your cohort ${cohortName} has been saved`
+								: `Your edits have been saved, and a new 
+									${cohortSaved === 'newMinorVersion' ? `minor` : ``} 
+									${cohortSaved === 'newMajorVersion' ? `major` : ``} 
+									version has been created for ${cohortName}`}
 						</Alert>
 					</Col>
 					<Col sm={1} lg={10} />

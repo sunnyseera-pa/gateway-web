@@ -3,7 +3,7 @@ import axios from 'axios';
 import googleAnalytics from '../../tracking';
 import queryString from 'query-string';
 import * as Sentry from '@sentry/react';
-import { Container, Row, Col, Tabs, Tab, Pagination, Button } from 'react-bootstrap';
+import { Container, Row, Col, Tabs, Tab, Pagination, Button, Alert } from 'react-bootstrap';
 import moment from 'moment';
 import _ from 'lodash';
 import { toTitleCase } from '../../utils/GeneralHelper.util';
@@ -22,6 +22,10 @@ import ErrorModal from '../commonComponents/errorModal/ErrorModal';
 import SortDropdown from './components/SortDropdown';
 import { ReactComponent as CDStar } from '../../images/cd-star.svg';
 import AdvancedSearchModal from '../commonComponents/AdvancedSearchModal/AdvancedSearchModal';
+import SavedPreferencesModal from '../commonComponents/savedPreferencesModal/SavedPreferencesModal';
+import SaveModal from '../commonComponents/saveModal/SaveModal';
+import DataUtilityWizardModal from '../commonComponents/DataUtilityWizard/DataUtilityWizardModal';
+import SVGIcon from '../../images/SVGIcon';
 import './Search.scss';
 import { upperFirst } from 'lodash';
 
@@ -92,6 +96,8 @@ class SearchPage extends React.Component {
 		showDrawer: false,
 		showModal: false,
 		showAdvancedSearchModal: false,
+		showSavedPreferencesModal: false,
+		showSavedModal: false,
 		showError: false,
 		context: {},
 		userState: [
@@ -117,6 +123,14 @@ class SearchPage extends React.Component {
 		filtersV2Cohorts: [],
 		selectedV2Cohorts: [],
 		savedSearchPanel: true,
+		saveSuccess: false,
+		showLoggedInModal: true,
+		showSavedName: '',
+		perferencesSort: '',
+		savedFilters: [],
+		showDataUtilityWizardModal: false,
+		showDataUtilityBanner: false,
+		activeDataUtilityWizardStep: 1,
 	};
 
 	constructor(props) {
@@ -130,6 +144,9 @@ class SearchPage extends React.Component {
 		this.searchBar = React.createRef();
 		this.updateFilterStates = this.updateFilterStates.bind(this);
 		this.doSearchCall = this.doSearchCall.bind(this);
+		this.openDataUtilityWizard = this.openDataUtilityWizard.bind(this);
+		this.toggleDataUtilityBanner = this.toggleDataUtilityBanner.bind(this);
+		this.onWizardStepChange = this.onWizardStepChange.bind(this);
 	}
 
 	showModal = () => {
@@ -140,16 +157,72 @@ class SearchPage extends React.Component {
 		this.setState({ showError: false });
 	};
 
+	hideSavedPreferencesModal = () => {
+		this.setState({ showSavedPreferencesModal: false });
+	};
+
+	hideSavedModal = () => {
+		this.setState({ showSavedModal: false });
+	};
+
+	hideNoSaveSearchModal = () => {
+		this.setState({ showSavedModal: false });
+		this.setState({ saveSuccess: false });
+	};
+
+	showSuccessMessage = () => {
+		this.setState({ saveSuccess: true });
+	};
+
+	showSavedName = data => {
+		this.setState({ showSavedName: data });
+	};
+
 	toggleAdvancedSearchModal = () => {
+		if (!this.state.showAdvancedSearchModal) {
+			googleAnalytics.recordVirtualPageView('Advanced search modal');
+		}
 		this.setState(prevState => {
 			return { showAdvancedSearchModal: !prevState.showAdvancedSearchModal };
 		});
 	};
 
+	openDataUtilityWizard(activeStep) {
+		this.setState({ showDataUtilityWizardModal: true, activeDataUtilityWizardStep: activeStep });
+	}
+
+	onWizardStepChange(activeStep) {
+		this.setState({ activeDataUtilityWizardStep: activeStep });
+	}
+
+	toggleDataUtilityBanner(show) {
+		this.setState({ showDataUtilityBanner: show });
+	}
+
+	toggleDataUtilityWizardModal = () => {
+		this.setState({ showDataUtilityWizardModal: false });
+	};
+
+	showLoginModal = () => {
+		// 1. add class to body to stop background scroll
+		document.body.classList.add('modal-open');
+
+		document.getElementById('myModal').style.display = 'block';
+		document.getElementById('loginWayFinder').style.display = 'none';
+		document.getElementById('loginButtons').style.display = 'block';
+		document.getElementById('loginModalTitle').innerHTML = 'Sign in or create a new account';
+		document.getElementById('modalRequestSection').style.display = 'none';
+
+		window.onclick = function (event) {
+			if (event.target === document.getElementById('myModal')) {
+				// 2. remove class modal-open from body
+				document.body.classList.remove('modal-open');
+				document.getElementById('myModal').style.display = 'none';
+			}
+		};
+	};
 	async componentDidMount() {
-		// 1. call filters - this will need parameterised when tools, projects etc move to v2
-		await this.getFilters();
-		// 2. fires on first time in or page is refreshed/url loaded / has search location
+		// 1. fires on first time in or page is refreshed/url loaded / has search location
 		if (!!window.location.search) {
 			console.log(window.location);
 
@@ -492,6 +565,9 @@ class SearchPage extends React.Component {
 			collectionSort = '',
 			cohortSort = '',
 		} = this.state;
+
+		this.toggleDataUtilityBanner(false);
+
 		// 1. build search object from list of selected fitlers v2 only
 		let searchObj = {
 			...this.buildSearchObj(this.state.selectedV2Datasets),
@@ -597,6 +673,7 @@ class SearchPage extends React.Component {
 						[`${entityType}Data`]: data,
 						isLoading: false,
 						isResultsLoading: false,
+						saveSuccess: false,
 						summary,
 						search: textSearch ? textSearch : prevState.search,
 					};
@@ -653,7 +730,7 @@ class SearchPage extends React.Component {
 		this.props.history.push(window.location.pathname + '?' + queryString.stringify(values));
 
 		this.setState({ key, isResultsLoading: true }, () => {
-			this.getFilters();
+			this.getFilters(key);
 			this.doSearchCall();
 		});
 	};
@@ -694,76 +771,87 @@ class SearchPage extends React.Component {
 			if (!_.isEmpty(dataUtilityFilters)) {
 				const dataUtilityWizardSteps = dataUtilityFilters.filter(item => item.includeInWizard);
 				this.setState({ dataUtilityFilters, dataUtilityWizardSteps });
-				await this.getFilters();
+				await this.getFilters('Datasets');
 			}
 		} catch (error) {
 			console.error(error.message);
 		}
 	};
 
-	getFilters = async () => {
+	getFilters = async key => {
 		try {
-			const response = await axios.get(`${baseURL}/api/v2/filters/dataset`);
-			const {
-				data: { data: filterDataDatasets },
-			} = response;
-			if (!_.isEmpty(filterDataDatasets) && _.isEmpty(this.state.filtersV2Datasets)) {
-				const filtersV2Datasets = this.mapFiltersToDictionary(filterDataDatasets, this.state.dataUtilityFilters);
-				this.setState({ filtersV2Datasets });
-			}
+			switch (key) {
+				case 'Datasets':
+					const response = await axios.get(`${baseURL}/api/v2/filters/dataset`);
+					const {
+						data: { data: filterDataDatasets },
+					} = response;
+					if (!_.isEmpty(filterDataDatasets) && _.isEmpty(this.state.filtersV2Datasets)) {
+						const filtersV2Datasets = this.mapFiltersToDictionary(filterDataDatasets, this.state.dataUtilityFilters);
+						this.setState({ filtersV2Datasets });
+					}
+					break;
+				case 'Tools':
+					const responseTools = await axios.get(`${baseURL}/api/v2/filters/tool`);
+					const {
+						data: { data: filterDataTools },
+					} = responseTools;
+					if (!_.isEmpty(filterDataTools) && _.isEmpty(this.state.filtersV2Tools)) {
+						const filtersV2Tools = this.mapFiltersToDictionary(filterDataTools, this.state.dataUtilityFilters);
+						this.setState({ filtersV2Tools });
+					}
+					break;
+				case 'Projects':
+					const responseProjects = await axios.get(`${baseURL}/api/v2/filters/project`);
+					const {
+						data: { data: filterDataProjects },
+					} = responseProjects;
+					if (!_.isEmpty(filterDataProjects) && _.isEmpty(this.state.filtersV2Projects)) {
+						const filtersV2Projects = this.mapFiltersToDictionary(filterDataProjects, this.state.dataUtilityFilters);
+						this.setState({ filtersV2Projects });
+					}
+					break;
+				case 'Papers':
+					const responsePapers = await axios.get(`${baseURL}/api/v2/filters/paper`);
+					const {
+						data: { data: filterDataPapers },
+					} = responsePapers;
+					if (!_.isEmpty(filterDataPapers) && _.isEmpty(this.state.filtersV2Papers)) {
+						const filtersV2Papers = this.mapFiltersToDictionary(filterDataPapers, this.state.dataUtilityFilters);
+						this.setState({ filtersV2Papers });
+					}
+					break;
+				case 'Courses':
+					const responseCourses = await axios.get(`${baseURL}/api/v2/filters/course`);
+					const {
+						data: { data: filterDataCourses },
+					} = responseCourses;
+					if (!_.isEmpty(filterDataCourses) && _.isEmpty(this.state.filtersV2Courses)) {
+						const filtersV2Courses = this.mapFiltersToDictionary(filterDataCourses, this.state.dataUtilityFilters);
+						this.setState({ filtersV2Courses });
+					}
+					break;
+				case 'Collections':
+					const responseCollections = await axios.get(`${baseURL}/api/v2/filters/collection`);
+					const {
+						data: { data: filterDataCollections },
+					} = responseCollections;
+					if (!_.isEmpty(filterDataCollections) && _.isEmpty(this.state.filtersV2Collections)) {
+						const filtersV2Collections = this.mapFiltersToDictionary(filterDataCollections, this.state.dataUtilityFilters);
+						this.setState({ filtersV2Collections });
+					}
 
-			const responseTools = await axios.get(`${baseURL}/api/v2/filters/tool`);
-			const {
-				data: { data: filterDataTools },
-			} = responseTools;
-			if (!_.isEmpty(filterDataTools) && _.isEmpty(this.state.filtersV2Tools)) {
-				const filtersV2Tools = this.mapFiltersToDictionary(filterDataTools, this.state.dataUtilityFilters);
-				this.setState({ filtersV2Tools });
-			}
+				case 'Cohorts':
+					const responseCohorts = await axios.get(`${baseURL}/api/v2/filters/cohort`);
+					const {
+						data: { data: filterDataCohorts },
+					} = responseCohorts;
+					if (!_.isEmpty(filterDataCohorts) && _.isEmpty(this.state.filtersV2Cohorts)) {
+						const filtersV2Cohorts = this.mapFiltersToDictionary(filterDataCohorts, this.state.dataUtilityFilters);
+						this.setState({ filtersV2Cohorts });
+					}
 
-			const responseProjects = await axios.get(`${baseURL}/api/v2/filters/project`);
-			const {
-				data: { data: filterDataProjects },
-			} = responseProjects;
-			if (!_.isEmpty(filterDataProjects) && _.isEmpty(this.state.filtersV2Projects)) {
-				const filtersV2Projects = this.mapFiltersToDictionary(filterDataProjects, this.state.dataUtilityFilters);
-				this.setState({ filtersV2Projects });
-			}
-
-			const responsePapers = await axios.get(`${baseURL}/api/v2/filters/paper`);
-			const {
-				data: { data: filterDataPapers },
-			} = responsePapers;
-			if (!_.isEmpty(filterDataPapers) && _.isEmpty(this.state.filtersV2Papers)) {
-				const filtersV2Papers = this.mapFiltersToDictionary(filterDataPapers, this.state.dataUtilityFilters);
-				this.setState({ filtersV2Papers });
-			}
-
-			const responseCourses = await axios.get(`${baseURL}/api/v2/filters/course`);
-			const {
-				data: { data: filterDataCourses },
-			} = responseCourses;
-			if (!_.isEmpty(filterDataCourses) && _.isEmpty(this.state.filtersV2Courses)) {
-				const filtersV2Courses = this.mapFiltersToDictionary(filterDataCourses, this.state.dataUtilityFilters);
-				this.setState({ filtersV2Courses });
-			}
-
-			const responseCohorts = await axios.get(`${baseURL}/api/v2/filters/cohort`);
-			const {
-				data: { data: filterDataCohorts },
-			} = responseCohorts;
-			if (!_.isEmpty(filterDataCohorts) && _.isEmpty(this.state.filtersV2Cohorts)) {
-				const filtersV2Cohorts = this.mapFiltersToDictionary(filterDataCohorts, this.state.dataUtilityFilters);
-				this.setState({ filtersV2Cohorts });
-			}
-
-			const responseCollections = await axios.get(`${baseURL}/api/v2/filters/collection`);
-			const {
-				data: { data: filterDataCollections },
-			} = responseCollections;
-			if (!_.isEmpty(filterDataCollections) && _.isEmpty(this.state.filtersV2Collections)) {
-				const filtersV2Collections = this.mapFiltersToDictionary(filterDataCollections, this.state.dataUtilityFilters);
-				this.setState({ filtersV2Collections });
+				default:
 			}
 		} catch (error) {
 			console.error(error.message);
@@ -1164,6 +1252,13 @@ class SearchPage extends React.Component {
 					this.setState({ [filtersV2Entity]: filtersV2, [selectedV2Entity]: selectedV2, isResultsLoading: true }, () => {
 						this.doSearchCall();
 					});
+					googleAnalytics.recordEvent(
+						'Datasets',
+						`${checkValue ? 'Applied' : 'Removed'} ${parentNode.label} filter ${
+							this.state.showDataUtilityBanner ? 'after utility wizard search' : ''
+						}`,
+						`Filter value: ${selectedNode.label}`
+					);
 				}
 			}
 		}
@@ -1205,6 +1300,75 @@ class SearchPage extends React.Component {
 		this.setState(prevState => {
 			return { showModal: !prevState.showModal, context, showDrawer: showEnquiry };
 		});
+	};
+
+	saveFiltersUpdate = viewSaved => {
+		this.setState({ showSavedPreferencesModal: false });
+		// 1. v2 take copy of data
+		let filtersV2DatasetsData = !_.isNil(this.state.filtersV2Datasets) ? [...this.state.filtersV2Datasets] : [];
+		let filtersV2ToolsData = !_.isNil(this.state.filtersV2Tools) ? [...this.state.filtersV2Tools] : [];
+		let filtersV2ProjectsData = !_.isNil(this.state.filtersV2Projects) ? [...this.state.filtersV2Projects] : [];
+		let filtersV2CollectionsData = !_.isNil(this.state.filtersV2Collections) ? [...this.state.filtersV2Collections] : [];
+		let filtersV2CoursesData = !_.isNil(this.state.filtersV2Courses) ? [...this.state.filtersV2Courses] : [];
+		let filtersV2PapersData = !_.isNil(this.state.filtersV2Papers) ? [...this.state.filtersV2Papers] : [];
+
+		// 2. v2 resets the filters UI tree back to default
+		let filtersV2Datasets = this.resetTreeChecked(filtersV2DatasetsData);
+		let filtersV2Tools = this.resetTreeChecked(filtersV2ToolsData);
+		let filtersV2Projects = this.resetTreeChecked(filtersV2ProjectsData);
+		let filtersV2Collections = this.resetTreeChecked(filtersV2CollectionsData);
+		let filtersV2Courses = this.resetTreeChecked(filtersV2CoursesData);
+		let filtersV2Papers = this.resetTreeChecked(filtersV2PapersData);
+
+		this.setState(
+			prevState => ({
+				filtersV2Datasets,
+				selectedV2Datasets: [],
+				filtersV2Tools,
+				selectedV2Tools: [],
+				filtersV2Projects,
+				selectedV2Projects: [],
+				filtersV2Papers,
+				selectedV2Papers: [],
+				filtersV2Collections,
+				selectedV2Collections: [],
+				filtersV2Courses,
+				selectedV2Courses: [],
+				datasetIndex: 0,
+				toolIndex: 0,
+				projectIndex: 0,
+				paperIndex: 0,
+				personIndex: 0,
+				courseIndex: 0,
+				collectionIndex: 0,
+				datasetSort: '',
+				toolSort: '',
+				projectSort: '',
+				paperSort: '',
+				personSort: '',
+				courseSort: '',
+				collectionSort: '',
+			}),
+			() => {
+				if (viewSaved.tab === 'Datasets') {
+					this.setState({ datasetSort: viewSaved.sort });
+				} else if (viewSaved.tab === 'Tools') {
+					this.setState({ toolSort: viewSaved.sort });
+				} else if (viewSaved.tab === 'Projects') {
+					this.setState({ projectSort: viewSaved.sort });
+				} else if (viewSaved.tab === 'Papers') {
+					this.setState({ paperSort: viewSaved.sort });
+				} else if (viewSaved.tab === 'People') {
+					this.setState({ personSort: viewSaved.sort });
+				} else if (viewSaved.tab === 'Collections') {
+					this.setState({ collectionSort: viewSaved.sort });
+				}
+
+				this.setState({ search: viewSaved.search, key: viewSaved.tab, [`selectedV2${viewSaved.tab}`]: viewSaved.filters }, () => {
+					this.doSearchCall();
+				});
+			}
+		);
 	};
 
 	render() {
@@ -1259,13 +1423,10 @@ class SearchPage extends React.Component {
 			showModal,
 			showAdvancedSearchModal,
 			context,
+			activeDataUtilityWizardStep,
 
 			key,
 		} = this.state;
-
-		// START: DELETE THIS TEST DATA
-		let cohortCount = 2;
-		// END: DELETE THIS TEST DATA
 
 		console.log(filtersV2Courses);
 		if (isLoading) {
@@ -1284,7 +1445,7 @@ class SearchPage extends React.Component {
 			personCount = 0,
 			courseCount = 0,
 			collectionCount = 0,
-			// cohortCount = 0,
+			cohortCount = 0,
 		} = summary;
 		// clean needed here at later date
 		if (key === '' || typeof key === 'undefined') {
@@ -1418,6 +1579,107 @@ class SearchPage extends React.Component {
 			);
 		}
 
+		const dropdownMenu = (
+			<div className='text-right save-dropdown'>
+				{key === 'Tools' ? (
+					<SortDropdown
+						handleSort={this.handleSort}
+						sort={toolSort === '' ? (search === '' ? 'latest' : 'relevance') : toolSort}
+						dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
+					/>
+				) : (
+					''
+				)}
+
+				{key === 'Datasets' ? (
+					<SortDropdown
+						handleSort={this.handleSort}
+						sort={datasetSort === '' ? (search === '' ? 'metadata' : 'relevance') : datasetSort}
+						dropdownItems={['relevance', 'popularity', 'metadata', 'latest', 'resources']}
+					/>
+				) : (
+					''
+				)}
+
+				{key === 'Projects' ? (
+					<SortDropdown
+						handleSort={this.handleSort}
+						sort={projectSort === '' ? (search === '' ? 'latest' : 'relevance') : projectSort}
+						dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
+					/>
+				) : (
+					''
+				)}
+
+				{key === 'Collections' ? (
+					<SortDropdown
+						handleSort={this.handleSort}
+						sort={collectionSort === '' ? (search === '' ? 'latest' : 'relevance') : collectionSort}
+						dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
+					/>
+				) : (
+					''
+				)}
+
+				{key === 'Papers' ? (
+					<SortDropdown
+						handleSort={this.handleSort}
+						sort={paperSort === '' ? (search === '' ? 'sortbyyear' : 'relevance') : paperSort}
+						dropdownItems={['relevance', 'popularity', 'sortbyyear', 'resources']}
+					/>
+				) : (
+					''
+				)}
+
+				{key === 'Cohorts' ? (
+					<SortDropdown
+						handleSort={this.handleSort}
+						sort={cohortSort === '' ? (search === '' ? 'latest' : 'relevance') : cohortSort}
+						dropdownItems={['relevance', 'popularity', 'latest', 'resources', 'entries', 'datasets']}
+						savedSearch={true}
+					/>
+				) : (
+					''
+				)}
+
+				{key === 'People' ? (
+					<SortDropdown
+						handleSort={this.handleSort}
+						sort={personSort === '' ? (search === '' ? 'latest' : 'relevance') : personSort}
+						dropdownItems={['relevance', 'popularity', 'latest']}
+					/>
+				) : (
+					''
+				)}
+			</div>
+		);
+
+		let preferenceFilters = {};
+		let perferenceSort = '';
+		if (key === 'Datasets') {
+			preferenceFilters = selectedV2Datasets;
+			perferenceSort = datasetSort;
+		} else if (key === 'Tools') {
+			preferenceFilters = selectedV2Tools;
+			perferenceSort = toolSort;
+		} else if (key === 'Projects') {
+			preferenceFilters = selectedV2Projects;
+			perferenceSort = projectSort;
+		} else if (key === 'Paper') {
+			preferenceFilters = selectedV2Papers;
+			perferenceSort = paperSort;
+		} else if (key === 'Collections') {
+			preferenceFilters = selectedV2Collections;
+			perferenceSort = collectionSort;
+		} else if (key === 'Courses') {
+			preferenceFilters = selectedV2Courses;
+		} else if (key === 'Cohorts') {
+			preferenceFilters = selectedV2Cohorts;
+			perferenceSort = cohortSort;
+		} else if (key === 'People') {
+			perferenceSort = personSort;
+		}
+
 		return (
 			<Sentry.ErrorBoundary fallback={<ErrorModal show={this.showModal} handleClose={this.hideModal} />}>
 				<div>
@@ -1447,17 +1709,102 @@ class SearchPage extends React.Component {
 							</Tabs>
 						</div>
 					</div>
+
 					<div className='container'>
-						<Container>
+						{this.state.showDataUtilityBanner && (
+							<Alert variant='primary' className='blue-banner saved-preference-banner'>
+								<Row>
+									<Col>
+										<h5 className='indigo-bold-14'>Data utility wizard applied: Customer filters</h5>
+									</Col>
+								</Row>
+								<Row>
+									<Col md={9}>
+										You can continue to customise your filters below or edit alongside the search term in the data utility wizard.
+									</Col>
+									<Col md={3} className='data-utility-banner'>
+										<p
+											className='data-utility-link'
+											onClick={() => {
+												googleAnalytics.recordVirtualPageView('Data utility wizard');
+												googleAnalytics.recordEvent('Datasets', 'Clicked edit data utility wizard', 'Reopened data utility wizard modal');
+												this.openDataUtilityWizard(activeDataUtilityWizardStep);
+											}}>
+											Edit in data utility wizard
+										</p>
+									</Col>
+								</Row>
+							</Alert>
+						)}
+
+						{this.state.saveSuccess && !this.state.showSavedModal && (
+							<Alert variant='primary' className='blue-banner saved-preference-banner'>
+								Saved preference: "{this.state.showSavedName}"
+							</Alert>
+						)}
+						<Container className={this.state.saveSuccess && !this.state.showSavedModal && 'container-saved-preference-banner'}>
 							<Row className='filters filter-save'>
-								<Col className='title'>Showing # results of 'query'</Col>
-								<Col className='saved-buttons'>
-									<Button variant='outline-success' className='saved'>
-										Save
+								<Col className='title' lg={4}>
+									Showing {key === 'Datasets' ? <>{datasetCount} </> : ''}
+									{key === 'Tools' ? <>{toolCount} </> : ''}
+									{key === 'Projects' ? <>{projectCount} </> : ''}
+									{key === 'Collections' ? <>{collectionCount} </> : ''}
+									{key === 'Courses' ? <>{courseCount} </> : ''}
+									{key === 'Papers' ? <>{paperCount} </> : ''}
+									{key === 'People' ? <>{personCount} </> : ''}
+									results {this.state.search != '' && `for '${this.state.search}'`}
+								</Col>
+								<Col lg={8} className='saved-buttons'>
+									{this.state.saveSuccess ? (
+										<Button variant='success' className='saved-disabled button-teal button-teal' disabled>
+											<SVGIcon width='15px' height='15px' name='tick' fill={'#fff'} /> Saved
+										</Button>
+									) : this.state.userState[0].loggedIn === false ? (
+										<Button variant='outline-success' className='saved button-teal' onClick={() => this.showLoginModal()}>
+											Save
+										</Button>
+									) : (
+										<Button variant='outline-success' className='saved button-teal' onClick={() => this.setState({ showSavedModal: true })}>
+											Save
+										</Button>
+									)}
+
+									{this.state.showSavedModal && (
+										<SaveModal
+											show={this.state.showSavedModal}
+											onHide={this.hideSavedModal}
+											onSaveHide={this.hideNoSaveSearchModal}
+											saveSuccess={this.showSuccessMessage}
+											saveName={this.showSavedName}
+											search={this.state.search}
+											filters={preferenceFilters}
+											sort={perferenceSort}
+											tab={this.state.key}
+										/>
+									)}
+
+									<Button
+										variant='light'
+										className='saved-preference button-tertiary'
+										onClick={
+											this.state.userState[0].loggedIn === false
+												? () => this.showLoginModal()
+												: () => this.setState({ showSavedPreferencesModal: true })
+										}>
+										{' '}
+										Saved preferences
 									</Button>
-									<Button variant='light' className='saved-preference'>
-										Saved preference
-									</Button>
+									{this.state.showSavedPreferencesModal && (
+										<SavedPreferencesModal
+											show={this.state.showSavedPreferencesModal}
+											onHide={this.hideSavedPreferencesModal}
+											viewMatchesLink={this.viewMatches}
+											viewSaved={this.saveFiltersUpdate}
+											activeTab={key}
+										/>
+									)}
+
+									{dropdownMenu}
 								</Col>
 							</Row>
 							<Row>
@@ -1544,18 +1891,10 @@ class SearchPage extends React.Component {
 					<Container>
 						<Row>
 							{key !== 'People' ? (
-								<Col sm={12} md={12} lg={3} className='mt-4 mb-5'>
+								<Col sm={12} md={12} lg={3} className='mt-1 mb-5'>
 									{key === 'Datasets' ? (
 										<Fragment>
-											<div className={this.state.savedSearchPanel ? 'filterHolder saved-filterHolder' : 'filterHolder'}>
-												{selectedV2Datasets.length > 0 && (
-													<FilterSelection
-														selectedCount={selectedV2Datasets.length}
-														selectedItems={selectedV2Datasets}
-														onHandleClearSelection={this.handleClearSelection}
-														onHandleClearAll={this.handleClearAll}
-													/>
-												)}
+											<div className='saved-filterHolder'>
 												<Filter
 													data={filtersV2Datasets}
 													onHandleInputChange={this.handleInputChange}
@@ -1570,15 +1909,7 @@ class SearchPage extends React.Component {
 
 									{key === 'Tools' ? (
 										<Fragment>
-											<div className='filterHolder'>
-												{selectedV2Tools.length > 0 && (
-													<FilterSelection
-														selectedCount={selectedV2Tools.length}
-														selectedItems={selectedV2Tools}
-														onHandleClearSelection={this.handleClearSelection}
-														onHandleClearAll={this.handleClearAll}
-													/>
-												)}
+											<div className='saved-filterHolder'>
 												<Filter
 													data={filtersV2Tools}
 													onHandleInputChange={this.handleInputChange}
@@ -1593,15 +1924,7 @@ class SearchPage extends React.Component {
 
 									{key === 'Projects' ? (
 										<Fragment>
-											<div className='filterHolder'>
-												{selectedV2Projects.length > 0 && (
-													<FilterSelection
-														selectedCount={selectedV2Projects.length}
-														selectedItems={selectedV2Projects}
-														onHandleClearSelection={this.handleClearSelection}
-														onHandleClearAll={this.handleClearAll}
-													/>
-												)}
+											<div className='saved-filterHolder'>
 												<Filter
 													data={filtersV2Projects}
 													onHandleInputChange={this.handleInputChange}
@@ -1615,15 +1938,7 @@ class SearchPage extends React.Component {
 									)}
 									{key === 'Papers' ? (
 										<Fragment>
-											<div className='filterHolder'>
-												{selectedV2Papers.length > 0 && (
-													<FilterSelection
-														selectedCount={selectedV2Papers.length}
-														selectedItems={selectedV2Papers}
-														onHandleClearSelection={this.handleClearSelection}
-														onHandleClearAll={this.handleClearAll}
-													/>
-												)}
+											<div className='saved-filterHolder'>
 												<Filter
 													data={filtersV2Papers}
 													onHandleInputChange={this.handleInputChange}
@@ -1637,15 +1952,7 @@ class SearchPage extends React.Component {
 									)}
 									{key === 'Courses' ? (
 										<Fragment>
-											<div className='filterHolder'>
-												{selectedV2Courses.length > 0 && (
-													<FilterSelection
-														selectedCount={selectedV2Courses.length}
-														selectedItems={selectedV2Courses}
-														onHandleClearSelection={this.handleClearSelection}
-														onHandleClearAll={this.handleClearAll}
-													/>
-												)}
+											<div className='saved-filterHolder'>
 												<Filter
 													data={filtersV2Courses}
 													onHandleInputChange={this.handleInputChange}
@@ -1659,15 +1966,7 @@ class SearchPage extends React.Component {
 									)}
 									{key === 'Cohorts' ? (
 										<Fragment>
-											<div className='filterHolder'>
-												{selectedV2Cohorts.length > 0 && (
-													<FilterSelection
-														selectedCount={selectedV2Cohorts.length}
-														selectedItems={selectedV2Cohorts}
-														onHandleClearSelection={this.handleClearSelection}
-														onHandleClearAll={this.handleClearAll}
-													/>
-												)}
+											<div className='saved-filterHolder'>
 												<Filter
 													data={filtersV2Cohorts}
 													onHandleInputChange={this.handleInputChange}
@@ -1681,15 +1980,7 @@ class SearchPage extends React.Component {
 									)}
 									{key === 'Collections' ? (
 										<Fragment>
-											<div className='filterHolder'>
-												{selectedV2Collections.length > 0 && (
-													<FilterSelection
-														selectedCount={selectedV2Collections.length}
-														selectedItems={selectedV2Collections}
-														onHandleClearSelection={this.handleClearSelection}
-														onHandleClearAll={this.handleClearAll}
-													/>
-												)}
+											<div className='saved-filterHolder'>
 												<Filter
 													data={filtersV2Collections}
 													onHandleInputChange={this.handleInputChange}
@@ -1705,9 +1996,10 @@ class SearchPage extends React.Component {
 									<div className='advanced-search-link-container'>
 										<CDStar fill='#f98e2b' height='20' width='20' />
 										<a
-											href='!#'
+											href='javascript:void(0)'
 											className='textUnderline gray800-14 cursorPointer'
 											onClick={() => {
+												googleAnalytics.recordEvent('Datasets', 'User clicked advanced search link', 'Advanced search modal opened');
 												this.toggleAdvancedSearchModal();
 											}}>
 											Advanced Search
@@ -1719,103 +2011,8 @@ class SearchPage extends React.Component {
 							)}
 
 							{!isResultsLoading ? (
-								<Col sm={12} md={12} lg={9} className='mt-4 mb-5'>
-									{!showSort ? (
-										''
-									) : (
-										<Row>
-											<Col className='text-right'>
-												{key === 'Tools' ? (
-													<SortDropdown
-														handleSort={this.handleSort}
-														sort={toolSort === '' ? (search === '' ? 'latest' : 'relevance') : toolSort}
-														dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
-														savedSearch={true}
-													/>
-												) : (
-													''
-												)}
-
-												{key === 'Datasets' ? (
-													<SortDropdown
-														handleSort={this.handleSort}
-														sort={datasetSort === '' ? (search === '' ? 'metadata' : 'relevance') : datasetSort}
-														dropdownItems={['relevance', 'popularity', 'metadata', 'latest', 'resources']}
-														savedSearch={true}
-													/>
-												) : (
-													''
-												)}
-
-												{key === 'Projects' ? (
-													<SortDropdown
-														handleSort={this.handleSort}
-														sort={projectSort === '' ? (search === '' ? 'latest' : 'relevance') : projectSort}
-														dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
-														savedSearch={true}
-													/>
-												) : (
-													''
-												)}
-
-												{key === 'Collections' ? (
-													<SortDropdown
-														handleSort={this.handleSort}
-														sort={collectionSort === '' ? (search === '' ? 'latest' : 'relevance') : collectionSort}
-														dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
-														savedSearch={true}
-													/>
-												) : (
-													''
-												)}
-
-												{key === 'Courses' ? (
-													<SortDropdown
-														handleSort={this.handleSort}
-														sort={courseSort === '' ? (search === '' ? 'latest' : 'relevance') : courseSort}
-														dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
-														savedSearch={true}
-													/>
-												) : (
-													''
-												)}
-
-												{key === 'Papers' ? (
-													<SortDropdown
-														handleSort={this.handleSort}
-														sort={paperSort === '' ? (search === '' ? 'sortbyyear' : 'relevance') : paperSort}
-														dropdownItems={['relevance', 'popularity', 'sortbyyear', 'resources']}
-														savedSearch={true}
-													/>
-												) : (
-													''
-												)}
-
-												{key === 'Cohorts' ? (
-													<SortDropdown
-														handleSort={this.handleSort}
-														sort={cohortSort === '' ? (search === '' ? 'latest' : 'relevance') : cohortSort}
-														dropdownItems={['relevance', 'popularity', 'latest', 'resources', 'entries', 'datasets']}
-														savedSearch={true}
-													/>
-												) : (
-													''
-												)}
-
-												{key === 'People' ? (
-													<SortDropdown
-														handleSort={this.handleSort}
-														sort={personSort === '' ? (search === '' ? 'latest' : 'relevance') : personSort}
-														dropdownItems={['relevance', 'popularity', 'latest']}
-														savedSearch={true}
-													/>
-												) : (
-													''
-												)}
-											</Col>
-										</Row>
-									)}
-
+								<Col sm={12} md={12} lg={9} className='mt-1 mb-5'>
+									{!showSort ? '' : <Fragment>{!this.state.savedSearchPanel && <Row>{dropdownMenu}</Row>}</Fragment>}
 									{key === 'Datasets' ? (
 										datasetCount <= 0 ? (
 											<NoResults type='datasets' search={search} />
@@ -2026,7 +2223,7 @@ class SearchPage extends React.Component {
 									</div>
 								</Col>
 							) : (
-								<Col style={{ marginTop: '60px' }} sm={12} md={12} lg={9}>
+								<Col style={{ marginTop: '30px' }} sm={12} md={12} lg={9}>
 									<Loading />
 								</Col>
 							)}
@@ -2044,16 +2241,26 @@ class SearchPage extends React.Component {
 
 					<AdvancedSearchModal
 						open={showAdvancedSearchModal}
-						context={context}
 						closed={this.toggleAdvancedSearchModal}
 						userProps={userState[0]}
+						startDataUtilityWizardJourney={this.openDataUtilityWizard}
+					/>
+
+					<DataUtilityWizardModal
+						open={this.state.showDataUtilityWizardModal}
+						closed={() => {
+							this.toggleDataUtilityWizardModal();
+						}}
 						dataUtilityWizardSteps={this.state.dataUtilityWizardSteps}
 						updateFilterStates={this.updateFilterStates}
-						doSearchCall={this.doSearchCall}
-						handleClearSelection={this.handleClearSelection}
 						datasetCount={datasetCount}
+						doSearchCall={this.doSearchCall}
 						selectedItems={selectedV2Datasets}
-						wizardSearchValue={search}
+						handleClearSelection={this.handleClearSelection}
+						searchValue={this.state.search}
+						activeStep={activeDataUtilityWizardStep}
+						onWizardComplete={this.toggleDataUtilityBanner}
+						onStepChange={this.onWizardStepChange}
 					/>
 
 					<DataSetModal open={showModal} context={context} closed={this.toggleModal} userState={userState[0]} />

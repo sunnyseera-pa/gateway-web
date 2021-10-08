@@ -10,6 +10,7 @@ import moment from 'moment';
 import { ReactComponent as CalendarSvg } from '../../../images/calendaricon.svg';
 import _ from 'lodash';
 import removeMd from 'remove-markdown';
+import googleAnalytics from '../../../tracking';
 
 var baseURL = require('../BaseURL').getURL();
 var cmsURL = require('../BaseURL').getCMSURL();
@@ -844,28 +845,42 @@ class RelatedObject extends React.Component {
 												<SVGIcon name='cohort' fill={'#3c3c3b'} className='badgeSvg mr-2' />
 												<span>Cohort</span>
 											</span>
-											{data.inclusionExclusionCriteria.map(criteria => {
-												if (activeLink) {
-													if (onSearchPage) {
-														return (
-															<span className='pointer' onClick={event => this.updateOnFilterBadge('courseCriteriasSelected', criteria)}>
-																<div className='badge-tag'>{criteria}</div>
-															</span>
-														);
+											{!_.isEmpty(data.filterCriteria) &&
+												data.filterCriteria.map(criteria => {
+													if (activeLink) {
+														if (onSearchPage) {
+															return (
+																<span
+																	className='pointer'
+																	onClick={event =>
+																		this.updateOnFilterBadge('cohortInclusionExclusionSelected', {
+																			label: criteria,
+																			parentKey: 'cohortinclusionexclusion',
+																		})
+																	}>
+																	<div className='badge-tag'>{criteria}</div>
+																</span>
+															);
+														} else {
+															return (
+																<a href={'/search?search=&tab=Cohorts&cohortcriterias=' + criteria}>
+																	<div className='badge-tag'>{criteria}</div>
+																</a>
+															);
+														}
 													} else {
-														return (
-															<a href={'/search?search=&tab=Cohorts&cohortcriterias=' + criteria}>
-																<div className='badge-tag'>{criteria}</div>
-															</a>
-														);
+														return <div className='badge-tag'>{criteria}</div>;
 													}
-												} else {
-													return <div className='badge-tag'>{criteria}</div>;
-												}
-											})}
+												})}
 										</Col>
 										<div class='pad-left-24 pad-right-24 pad-top-24 pad-bottom-16 col-lg-12 col-sm-12'>
-											<span className='gray800-14'>X entries across Y datasets</span>
+											{data.totalResultCount && data.numberOfDatasets ? (
+												<span className='gray800-14'>
+													{data.totalResultCount} entries across {data.numberOfDatasets} datasets
+												</span>
+											) : (
+												''
+											)}
 										</div>
 									</Row>
 								);
@@ -898,7 +913,13 @@ class RelatedObject extends React.Component {
 									<Row className='noMargin'>
 										<Col sm={10} lg={10} className='pad-left-24'>
 											{activeLink === true ? (
-												<a className='purple-bold-16' style={{ cursor: 'pointer' }} href={'/dataset/' + data.pid}>
+												<a
+													onClick={() => {
+														googleAnalytics.recordEvent('Datasets', 'Clicked on dataset to open', `Dataset name: ${data.name}`);
+													}}
+													className='purple-bold-16'
+													style={{ cursor: 'pointer' }}
+													href={'/dataset/' + data.pid}>
 													{data.name}
 												</a>
 											) : (

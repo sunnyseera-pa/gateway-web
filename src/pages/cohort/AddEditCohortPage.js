@@ -53,6 +53,7 @@ const AddEditCohortPage = props => {
 	const [changeLogValue, setChangeLogValue] = useState('');
 	const [isFormLoading, setIsFormLoading] = useState(false);
 	const [cohortGroups, setCohortGroups] = useState([]);
+	const [uploaders, setUploaders] = useState([]);
 
 	useEffect(async () => {
 		await doGetUsersCall();
@@ -93,8 +94,10 @@ const AddEditCohortPage = props => {
 			instance === 'initialLoad' ? setIsLoading(true) : setIsFormLoading(true);
 			if (instance === 'createNew') {
 				res.data.name = '';
+				res.data.description = '';
 			}
 			setData(res.data);
+			setUploaders(res.data.uploaders);
 			setRelatedObjects(res.data.relatedObjects ? res.data.relatedObjects : []);
 			setPublicFlag(res.data.publicflag);
 			instance === 'initialLoad' ? setIsLoading(false) : setIsFormLoading(false);
@@ -124,11 +127,13 @@ const AddEditCohortPage = props => {
 				relatedObjects = mergedRelatedResources;
 
 				setPublicFlag(res.data.publicflag);
+				setData(data);
+				setUploaders(res.data.uploaders);
 			});
+
+			setRelatedObjects(relatedObjects);
 		});
 
-		setData(data);
-		setRelatedObjects(relatedObjects);
 		setIsFormLoading(false);
 	};
 
@@ -233,6 +238,10 @@ const AddEditCohortPage = props => {
 		setPublicFlag(!publicFlag);
 	};
 
+	const updateCohortFormValues = (name, description) => {
+		setData({ ...data, name: name, description: description });
+	};
+
 	const toggleDrawer = () => {
 		if (showDrawer === true) {
 			searchBar.current.getNumberOfUnreadMessages();
@@ -304,6 +313,8 @@ const AddEditCohortPage = props => {
 				selectedCohort={selectedCohort}
 				changeLogValue={changeLogValue}
 				isFormLoading={isFormLoading}
+				updateCohortFormValues={updateCohortFormValues}
+				uploaders={uploaders}
 			/>
 			<SideDrawer open={showDrawer} closed={toggleDrawer}>
 				<UserMessages userState={userState[0]} closed={toggleDrawer} toggleModal={toggleModal} drawerIsOpen={showDrawer} />

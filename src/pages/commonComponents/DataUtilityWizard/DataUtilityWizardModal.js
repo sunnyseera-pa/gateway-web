@@ -5,6 +5,7 @@ import SVGIcon from '../../../images/SVGIcon';
 import './DataUtilityWizard.scss';
 import _ from 'lodash';
 import { Typeahead } from 'react-bootstrap-typeahead';
+import googleAnalytics from '../../../tracking';
 
 const DataUtilityWizardModal = ({
 	open,
@@ -16,15 +17,30 @@ const DataUtilityWizardModal = ({
 	selectedItems,
 	handleClearSelection,
 	searchValue,
+	activeStep,
+	onWizardComplete,
+	onStepChange,
 }) => {
 	const [stepCounter, setStepCounter] = useState(1);
 	let [typeaheadOption, setTypeaheadOption] = useState([]);
 
 	useEffect(() => {
-		setStepCounter(1);
+		setStepCounter(activeStep);
 	}, [open]);
 
-	const changeFilter = async (stepKey, impliedValues) => {
+	const recordWizardCloseEvent = () => {
+		const finalFilters = selectedItems.reduce((str, item) => {
+			return `${str} ${item.parentKey}: ${item.label}`;
+		}, '');
+
+		googleAnalytics.recordEvent(
+			'Datasets',
+			`Viewing ${datasetCount} dataset(s) from data utility wizard search`,
+			`Filter value(s): ${finalFilters} ${searchValue ? `| Search value: ${searchValue}` : ``}`
+		);
+	};
+
+	const changeFilter = async (stepKey, impliedValues, entryLabel, wizardStepTitle) => {
 		// Formats the implied values to be accepted by the updateFilterStates function
 		// e.g: [x, y, z] ---> X::Y::Z
 		for (var i = 0; i < impliedValues.length; i++) {
@@ -39,6 +55,12 @@ const DataUtilityWizardModal = ({
 		// // Checks if the current step has any selected buttons and clears them on change
 		const currentStepSelection = selectedItems.find(item => item.parentKey === stepKey);
 		currentStepSelection ? handleClearSelection(currentStepSelection) : doSearchCall();
+
+		googleAnalytics.recordEvent(
+			'Datasets',
+			`Applied data utility wizard filter in step ${activeStep} - ${wizardStepTitle}`,
+			`Filter value: ${entryLabel}`
+		);
 	};
 
 	const dataUtilityWizardJourney = () => {
@@ -71,7 +93,7 @@ const DataUtilityWizardModal = ({
 															aria-label='Radio button for following text input'
 															name={'radioButtonSet' + stepCounter}
 															value={entry.impliedValues}
-															onChange={() => changeFilter(step.key, entry.impliedValues, entry.label)}
+															onChange={() => changeFilter(step.key, entry.impliedValues, entry.label, step.wizardStepTitle)}
 															checked={entry.label === selectedItems.find(item => item.parentKey === step.key)?.label}
 														/>
 													</InputGroup.Prepend>
@@ -139,15 +161,30 @@ const DataUtilityWizardModal = ({
 						<button
 							className='button-tertiary'
 							style={{ marginRight: 'auto' }}
-							onClick={() => setStepCounter(stepCounter => stepCounter - 1)}>
+							onClick={() => {
+								setStepCounter(stepCounter => stepCounter - 1);
+								onStepChange(stepCounter - 1);
+							}}>
 							Back
 						</button>
 					)}
-					<button className='button-secondary' style={{ marginLeft: 'auto' }} onClick={closed}>
+					<button
+						className='button-secondary'
+						style={{ marginLeft: 'auto' }}
+						onClick={() => {
+							closed();
+							onWizardComplete(true);
+							recordWizardCloseEvent();
+						}}>
 						View {datasetCount} dataset matches
 					</button>
 					{stepCounter < dataUtilityWizardSteps.length && (
-						<button className='button-primary ml-3' onClick={() => setStepCounter(stepCounter => stepCounter + 1)}>
+						<button
+							className='button-primary ml-3'
+							onClick={() => {
+								setStepCounter(stepCounter => stepCounter + 1);
+								onStepChange(stepCounter + 1);
+							}}>
 							Next
 						</button>
 					)}

@@ -35,7 +35,6 @@ import ActivityLog from '../DataAccessRequest/components/ActivityLog/ActivityLog
 import AccountTeams from './AccountTeams';
 import googleAnalytics from '../../tracking';
 
-
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
@@ -101,7 +100,8 @@ class Account extends Component {
 		teamManagementInternalTab: 'Notifications',
 		accountUpdated: false,
 		dataaccessrequest: {},
-		cohortSaved: false,
+		cohortSaved: '',
+		cohortName: '',
 	};
 
 	constructor(props) {
@@ -140,6 +140,7 @@ class Account extends Component {
 
 		if (_.has(values, 'cohortSaved')) {
 			this.state.cohortSaved = values.cohortSaved;
+			this.state.cohortName = values.cohortName;
 		}
 
 		if (_.has(props, 'profileComplete')) {
@@ -166,6 +167,7 @@ class Account extends Component {
 					isReviewRejected: values.reviewRejected,
 					accountUpdated: !!values.accountUpdated,
 					cohortSaved: values.cohortSaved,
+					cohortName: values.cohortName,
 				});
 				this.toggleNav(tab);
 			}
@@ -182,7 +184,8 @@ class Account extends Component {
 		if (window.location.search) {
 			let values = queryString.parse(window.location.search);
 			let team = 'user';
-      let cohortSaved = this.state.cohortSaved;
+			let cohortSaved = this.state.cohortSaved;
+			let cohortName = this.state.cohortName;
 			if (values.tab !== this.state.tabId || !_.isUndefined(values.tab) || !_.isNull(values.tab)) {
 				if (values.tab !== 'youraccount' && this.state.accountUpdated) {
 					this.setState({ accountUpdated: false });
@@ -206,6 +209,7 @@ class Account extends Component {
 					team,
 					activeAccordion: values.tab === 'dataaccessrequests' || values.tab === 'workflows' ? '0' : -1,
 					cohortSaved: cohortSaved,
+					cohortName: cohortName,
 				});
 
 				if (team !== 'user' && team !== 'admin') {
@@ -395,6 +399,7 @@ class Account extends Component {
 			activeAccordion,
 			alert,
 			cohortSaved,
+			cohortName,
 			userState: [user],
 		} = { ...this.state };
 		// 1. if alert set tabId as page has been redirected
@@ -432,7 +437,8 @@ class Account extends Component {
 				alert: !_.isEmpty(alert) ? alert : {},
 				activeAccordion,
 				dataaccessrequest: {},
-				cohortSaved: !_.isEmpty(cohortSaved) ? cohortSaved : false,
+				cohortSaved: !_.isEmpty(cohortSaved) ? cohortSaved : '',
+				cohortName: !_.isEmpty(cohortName) ? cohortName : '',
 			});
 			// 6. push state
 			this.props.history.push({ pathname: window.location.pathname, search: `?tab=${tab.tabId}`, state: { team: tab.team } });
@@ -528,8 +534,8 @@ class Account extends Component {
 			accountUpdated,
 			dataaccessrequest,
 			cohortSaved,
+			cohortName,
 		} = this.state;
-
 
 		return (
 			<Fragment>
@@ -661,7 +667,9 @@ class Account extends Component {
 									</div>
 									<div className={`${tabId === 'teams' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('teams')}>
 										<Nav.Link className='verticalNavBar gray700-13'>
-											<span className='grey-circle-border'><SVGIcon name='plusChunky' fill={'#b3b8bd'} viewBox='-1 -1 26 26' className='accountSvgs' /></span>
+											<span className='grey-circle-border'>
+												<SVGIcon name='plusChunky' fill={'#b3b8bd'} viewBox='-1 -1 26 26' className='accountSvgs' />
+											</span>
 											<span style={{ 'margin-left': '5px' }}>Teams</span>
 										</Nav.Link>
 									</div>
@@ -771,7 +779,7 @@ class Account extends Component {
 
 								{tabId === 'collections' ? <AccountCollections userState={userState} /> : ''}
 
-								{tabId === 'cohorts' ? <AccountCohorts userState={userState} cohortSaved={cohortSaved} /> : ''}
+								{tabId === 'cohorts' ? <AccountCohorts userState={userState} cohortSaved={cohortSaved} cohortName={cohortName} /> : ''}
 
 								{tabId === 'usersroles' ? <AccountUsers userState={userState} /> : ''}
 							</>

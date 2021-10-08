@@ -242,6 +242,7 @@ button {
 }
 
 .nav-tabs {
+	margin-bottom: -2px !important;
 	.nav-item {
 		margin-bottom: 0px !important;
 	}
@@ -762,7 +763,7 @@ textarea:focus {
 
 .techDetailButton {
 	height: 40px;
-	width: 100%;
+	width: 140px;
 	border: 2px solid $teal !important;
 	border-radius: 4px !important;
 	background-color: $white;
