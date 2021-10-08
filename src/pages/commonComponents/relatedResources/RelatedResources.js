@@ -36,7 +36,7 @@ const RelatedResources = React.forwardRef((props, ref) => {
 						<span className='black-20'>Add related resources</span>
 						<br />
 						<span className='gray800-14'>
-							Link this to other papers, projects, datasets and tools. Resources must be added to the Gateway first.
+							Link this to other papers, data uses, datasets and tools. Resources must be added to the Gateway first.
 						</span>
 					</Modal.Title>
 					<CloseButtonSvg className='modal-close pointer' onClick={closeModal} width='24px' height='24px' fill='#475DA7' />
@@ -44,7 +44,6 @@ const RelatedResources = React.forwardRef((props, ref) => {
 				<Modal.Body>
 					<RelatedResourcesModal
 						toolid={props.toolid}
-						projectid={props.projectid}
 						paperid={props.paperid}
 						searchString={props.searchString}
 						doSearchMethod={props.doSearchMethod}
@@ -52,7 +51,6 @@ const RelatedResources = React.forwardRef((props, ref) => {
 						userState={props.userState}
 						datasetData={props.datasetData}
 						toolData={props.toolData}
-						projectData={props.projectData}
 						personData={props.personData}
 						paperData={props.paperData}
 						courseData={props.courseData}

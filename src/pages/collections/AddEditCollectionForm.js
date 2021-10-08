@@ -308,7 +308,6 @@ const AddEditCollectionForm = props => {
 												userState={props.userState}
 												datasetData={props.datasetData}
 												toolData={props.toolData}
-												projectData={props.projectData}
 												personData={props.personData}
 												paperData={props.paperData}
 												courseData={props.courseData}

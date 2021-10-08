@@ -513,7 +513,6 @@ class PublicAnalyticsDashboard extends React.Component {
 										onSelect={this.handleSelect.bind(this)}>
 										<Tab eventKey='Datasets' title={'Datasets'}></Tab>
 										<Tab eventKey='Tools' title={'Tools'}></Tab>
-										<Tab eventKey='Projects' title={'Projects'}></Tab>
 										<Tab eventKey='Courses' title={'Courses'}></Tab>
 										<Tab eventKey='Papers' title={'Papers'}></Tab>
 										<Tab eventKey='People' title={'People'}></Tab>
@@ -571,29 +570,6 @@ class PublicAnalyticsDashboard extends React.Component {
 														</Row>
 													</div>
 												);
-											case 'Projects':
-												return (
-													<div>
-														<Row>
-															<Col sm={12} lg={12}>
-																<Row className='subHeader mt-3 gray800-14-bold'>
-																	<Col sm={8} lg={8}>
-																		Search term{' '}
-																	</Col>
-																	<Col sm={2} lg={2}>
-																		Searches
-																	</Col>
-																	<Col sm={2} lg={2}>
-																		Project results
-																	</Col>
-																</Row>
-																{data.map(dat => {
-																	return <UnmetDemand data={dat} />;
-																})}
-															</Col>
-														</Row>
-													</div>
-												);
 											case 'Courses':
 												return (
 													<div>
@@ -607,7 +583,7 @@ class PublicAnalyticsDashboard extends React.Component {
 																		Searches
 																	</Col>
 																	<Col sm={2} lg={2}>
-																		Project results
+																		Course results
 																	</Col>
 																</Row>
 																{data.map(dat => {
