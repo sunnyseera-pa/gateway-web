@@ -1,6 +1,5 @@
 import React from 'react';
 import axios from 'axios';
-import { initGA } from '../../tracking';
 import moment from 'moment';
 import { Container } from 'react-bootstrap';
 import SearchBar from '../commonComponents/searchBar/SearchBar';
@@ -45,7 +44,6 @@ class AddEditPaperPage extends React.Component {
 	};
 
 	async componentDidMount() {
-		initGA('UA-166025838-1');
 		await Promise.all([this.doGetTopicsCall(), this.doGetFeaturesCall(), this.doGetUsersCall()]);
 		if (this.state.isEdit) this.getPaperFromDb();
 		else this.setState({ isLoading: false });

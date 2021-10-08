@@ -86,7 +86,7 @@ const Uploads = ({ id, files, onFilesUpdate, readOnly }) => {
 	const onDescriptionChange = event => {
 		event.preventDefault();
 		let { name, value } = event.currentTarget;
-		let [uniqueId = ''] = name.split('_');
+		let [, uniqueId = ''] = name.split('_');
 		if (!_.isEmpty(uniqueId)) {
 			const allFiles = [...uploadFiles].map(file => {
 				if (file.fileId === uniqueId) return Object.assign(file, { ...file, description: value });

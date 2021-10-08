@@ -1,9 +1,9 @@
 import React, { Fragment } from 'react';
 import axios from 'axios';
-import { PageView, initGA } from '../../tracking';
+import googleAnalytics from '../../tracking';
 import queryString from 'query-string';
 import * as Sentry from '@sentry/react';
-import { Container, Row, Col, Tabs, Tab, Pagination } from 'react-bootstrap';
+import { Container, Row, Col, Tabs, Tab, Pagination, Button, Alert } from 'react-bootstrap';
 import moment from 'moment';
 import _ from 'lodash';
 import { toTitleCase } from '../../utils/GeneralHelper.util';
@@ -13,7 +13,6 @@ import SearchBar from '../commonComponents/searchBar/SearchBar';
 import RelatedObject from '../commonComponents/relatedObject/RelatedObject';
 import CollectionCard from '../commonComponents/collectionCard/CollectionCard';
 import Loading from '../commonComponents/Loading';
-import Filters from './Filters';
 import NoResults from '../commonComponents/NoResults';
 import { NotificationContainer } from 'react-notifications';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
@@ -23,7 +22,12 @@ import ErrorModal from '../commonComponents/errorModal/ErrorModal';
 import SortDropdown from './components/SortDropdown';
 import { ReactComponent as CDStar } from '../../images/cd-star.svg';
 import AdvancedSearchModal from '../commonComponents/AdvancedSearchModal/AdvancedSearchModal';
+import SavedPreferencesModal from '../commonComponents/savedPreferencesModal/SavedPreferencesModal';
+import SaveModal from '../commonComponents/saveModal/SaveModal';
+import DataUtilityWizardModal from '../commonComponents/DataUtilityWizard/DataUtilityWizardModal';
+import SVGIcon from '../../images/SVGIcon';
 import './Search.scss';
+import { upperFirst } from 'lodash';
 
 let baseURL = require('../commonComponents/BaseURL').getURL();
 const typeMapper = {
@@ -33,6 +37,7 @@ const typeMapper = {
 	People: 'person',
 	Courses: 'course',
 	Collections: 'collection',
+	Datauses: 'dataUseRegister',
 };
 
 class SearchPage extends React.Component {
@@ -40,18 +45,21 @@ class SearchPage extends React.Component {
 		search: '',
 		datasetSort: '',
 		toolSort: '',
+		dataUseRegisterSort: '',
 		paperSort: '',
 		personSort: '',
 		courseSort: '',
 		collectionSort: '',
 		datasetIndex: 0,
 		toolIndex: 0,
+		dataUseRegisterIndex: 0,
 		paperIndex: 0,
 		personIndex: 0,
 		courseIndex: 0,
 		collectionIndex: 0,
 		datasetData: [],
 		toolData: [],
+		dataUseRegisterData: [],
 		paperData: [],
 		personData: [],
 		courseData: [],
@@ -83,6 +91,8 @@ class SearchPage extends React.Component {
 		showDrawer: false,
 		showModal: false,
 		showAdvancedSearchModal: false,
+		showSavedPreferencesModal: false,
+		showSavedModal: false,
 		showError: false,
 		context: {},
 		userState: [
@@ -93,8 +103,27 @@ class SearchPage extends React.Component {
 				name: null,
 			},
 		],
-		filtersV2: [],
-		selectedV2: [],
+		filtersV2Datasets: [],
+		selectedV2Datasets: [],
+		filtersV2Tools: [],
+		selectedV2Tools: [],
+		filtersV2Datauses: [],
+		selectedV2Datauses: [],
+		filtersV2Papers: [],
+		selectedV2Papers: [],
+		filtersV2Collections: [],
+		selectedV2Collections: [],
+		filtersV2Courses: [],
+		selectedV2Courses: [],
+		savedSearchPanel: true,
+		saveSuccess: false,
+		showLoggedInModal: true,
+		showSavedName: '',
+		perferencesSort: '',
+		savedFilters: [],
+		showDataUtilityWizardModal: false,
+		showDataUtilityBanner: false,
+		activeDataUtilityWizardStep: 1,
 	};
 
 	constructor(props) {
@@ -106,6 +135,11 @@ class SearchPage extends React.Component {
 		this.state.userState = props.userState;
 		this.state.search = !_.isEmpty(search) ? search : props.location.search;
 		this.searchBar = React.createRef();
+		this.updateFilterStates = this.updateFilterStates.bind(this);
+		this.doSearchCall = this.doSearchCall.bind(this);
+		this.openDataUtilityWizard = this.openDataUtilityWizard.bind(this);
+		this.toggleDataUtilityBanner = this.toggleDataUtilityBanner.bind(this);
+		this.onWizardStepChange = this.onWizardStepChange.bind(this);
 	}
 
 	showModal = () => {
@@ -116,19 +150,83 @@ class SearchPage extends React.Component {
 		this.setState({ showError: false });
 	};
 
+	hideSavedPreferencesModal = () => {
+		this.setState({ showSavedPreferencesModal: false });
+	};
+
+	hideSavedModal = () => {
+		this.setState({ showSavedModal: false });
+	};
+
+	hideNoSaveSearchModal = () => {
+		this.setState({ showSavedModal: false });
+		this.setState({ saveSuccess: false });
+	};
+
+	showSuccessMessage = () => {
+		this.setState({ saveSuccess: true });
+	};
+
+	showSavedName = data => {
+		this.setState({ showSavedName: data });
+	};
+
 	toggleAdvancedSearchModal = () => {
+		if (!this.state.showAdvancedSearchModal) {
+			googleAnalytics.recordVirtualPageView('Advanced search modal');
+		}
 		this.setState(prevState => {
 			return { showAdvancedSearchModal: !prevState.showAdvancedSearchModal };
 		});
 	};
 
+	openDataUtilityWizard(activeStep) {
+		this.setState({ showDataUtilityWizardModal: true, activeDataUtilityWizardStep: activeStep });
+	}
+
+	onWizardStepChange(activeStep) {
+		this.setState({ activeDataUtilityWizardStep: activeStep });
+	}
+
+	toggleDataUtilityBanner(show) {
+		this.setState({ showDataUtilityBanner: show });
+	}
+
+	toggleDataUtilityWizardModal = () => {
+		this.setState({ showDataUtilityWizardModal: false });
+	};
+
+	showLoginModal = () => {
+		// 1. add class to body to stop background scroll
+		document.body.classList.add('modal-open');
+
+		document.getElementById('myModal').style.display = 'block';
+		document.getElementById('loginWayFinder').style.display = 'none';
+		document.getElementById('loginButtons').style.display = 'block';
+		document.getElementById('loginModalTitle').innerHTML = 'Sign in or create a new account';
+		document.getElementById('modalRequestSection').style.display = 'none';
+
+		window.onclick = function (event) {
+			if (event.target === document.getElementById('myModal')) {
+				// 2. remove class modal-open from body
+				document.body.classList.remove('modal-open');
+				document.getElementById('myModal').style.display = 'none';
+			}
+		};
+	};
 	async componentDidMount() {
-		initGA('UA-166025838-1');
-		PageView();
-		// 1. call filters - this will need parameterised when tools, projects etc move to v2
-		await this.getFilters();
-		// 2. fires on first time in or page is refreshed/url loaded / has search location
+		// 1. fires on first time in or page is refreshed/url loaded / has search location
 		if (!!window.location.search) {
+			console.log(window.location);
+
+			const urlParams = new URLSearchParams(window.location.search);
+			const tab = urlParams.get('tab');
+			if (tab) {
+				this.setState({ key: tab });
+			}
+			// 2. call Filters
+			await this.getGlobals();
+
 			// 3. splits location search into object { search: search, tab: Datasets}
 			let queryParams = queryString.parse(window.location.search);
 			// 4. if values has loginReferrer set location href to it.
@@ -163,7 +261,7 @@ class SearchPage extends React.Component {
 		let queryParams = queryString.parse(window.location.search);
 		// 1. if tabs are different update
 		if (this.state.key !== queryParams.tab) {
-			this.setState({ key: queryParams.tab || 'Datasets' });
+			this.setState({ key: queryParams.tab.replace(/ /g, '') || 'Datasets' });
 		}
 	}
 
@@ -184,121 +282,139 @@ class SearchPage extends React.Component {
 	};
 
 	/**
+	 * FindImpliedFilterNode
+	 *
+	 * @desc 		Finds a relevant node item by cross referencing all filters with a selection of implied values
+	 * @param		{array} filters
+	 * @param		{string} label
+	 * @return	{object} object of {label, value...}
+	 */
+	findImpliedFilterNode = (filters = [], impliedValues) => {
+		if (!_.isEmpty(filters)) {
+			const formattedValues = impliedValues
+				.split('::')
+				.map(value => value.toLowerCase())
+				.join(',');
+			// TODO - align input from data utility wizard and url so that if function is not needed
+			let returnValue = [...filters].find(node => node.value.toLowerCase() === formattedValues) || {};
+			if (!_.isEmpty(returnValue)) {
+				return returnValue;
+			} else {
+				return [...filters].find(node => node.impliedValues.toString().toLowerCase() === formattedValues) || {};
+			}
+		}
+		return {};
+	};
+
+	/**
+	 * @desc      Turns keys into array for looping ['publisher', 'phenotype']
+	 * @param {*} filtersV2
+	 * @param {*} selectedV2
+	 * @param {*} queryParams
+	 */
+	setSelectedFiltersFromQueryParams = async (filtersV2, selectedV2, queryParams, tab) => {
+		if (!_.isEmpty(Object.keys(queryParams))) {
+			// 3. loop over queryKeys
+			for (const key of Object.keys(queryParams)) {
+				if (!_.isNil(queryParams[key])) {
+					// 4. convert queryString into array of values
+					let queryValues = queryParams[key].split('::');
+					// 5. check if key exists in our tree, return {} or undefined
+					let parentNode = this.findParentNode(filtersV2, key);
+					if (!_.isNil(parentNode)) {
+						let { filters } = parentNode;
+						// 6. Determine whether to perform regular filter selection or implied filter selection
+						const isImpliedFilter = filters.some(filter => _.has(filter, 'impliedValues'));
+						let nodes = [];
+						if (isImpliedFilter) {
+							// find node by implied values
+							let foundNode = this.findImpliedFilterNode(filters, queryParams[key]);
+							if (!_.isEmpty(foundNode)) {
+								nodes.push(foundNode);
+							}
+						} else {
+							// loop over query values
+							queryValues.forEach(node => {
+								// get the selected values
+								let foundNode = this.findNode(filters, node);
+								if (!_.isEmpty(foundNode)) {
+									nodes.push(foundNode);
+								}
+							});
+						}
+						nodes.forEach(node => {
+							// 7. set check value
+							node.checked = !node.checked;
+							// 8. increment highest parent count
+							parentNode.selectedCount += 1;
+							// 9. prep new selected Item for selected showing
+							let selectedNode = {
+								parentKey: key,
+								id: node.id,
+								label: node.label,
+								value: node.value,
+							};
+							// 10. fn for handling the *selected showing* returns new state
+							let selected = this.handleSelected(selectedNode, node.checked, tab);
+							// 11. update selectedV2 array with our new returned value
+							selectedV2 = [...new Set([...selectedV2, ...selected])];
+						});
+					}
+				}
+			}
+			// 12. set the state of filters and selected options
+			const entity = upperFirst(tab);
+			this.setState({ [`filtersV2${entity}s`]: filtersV2, [`selectedV2${entity}s`]: selectedV2 });
+		}
+	};
+
+	/**
 	 * UpdateFilterStates
 	 *
 	 * @desc Sets selectedStates for filters including search string
 	 */
 	async updateFilterStates(queryParams) {
-		let filtersV2, selectedV2;
-		if (!_.isEmpty(this.state.filtersV2)) {
-			// 1. take copy of filters data
-			filtersV2 = [...this.state.filtersV2];
-			selectedV2 = [...this.state.selectedV2];
-			// 2. turns keys into array for looping ['publisher', 'phenotype']
-			if (!_.isEmpty(Object.keys(queryParams))) {
-				// 3. loop over queryKeys
-				for (const key of Object.keys(queryParams)) {
-					if (!_.isNil(queryParams[key])) {
-						// 4. convert queryString into array of values
-						let queryValues = queryParams[key].split('::');
-						// 5. check if key exists in our tree, return {} or undefined
-						let parentNode = this.findParentNode(filtersV2, key);
-						if (!_.isNil(parentNode)) {
-							let { filters } = parentNode;
-							// 6. loop over query values
-							queryValues.forEach(node => {
-								// 7. get the selected values
-								let foundNode = this.findNode(filters, node);
-								if (!_.isEmpty(foundNode)) {
-									// 8. set check value
-									foundNode.checked = !foundNode.checked;
-									// 9. increment highest parent count
-									parentNode.selectedCount += 1;
-									// 10. prep new selected Item for selected showing
-									let selectedNode = {
-										parentKey: key,
-										id: foundNode.id,
-										label: foundNode.label,
-									};
-									// 11. fn for handling the *selected showing* returns new state
-									let selected = this.handleSelected(selectedNode, foundNode.checked);
-									// 12. update selectedV2 array with our new returned value
-									selectedV2 = [...selectedV2, ...selected];
-								}
-							});
-						}
-					}
-				}
-				// 13. set the state of filters and selected options
-				this.setState({ filtersV2, selectedV2 });
-			}
+		if (!_.isEmpty(this.state.filtersV2Datasets)) {
+			const filtersV2 = [...this.state.filtersV2Datasets];
+			const selectedV2 = [...this.state.selectedV2Datasets];
+			this.setSelectedFiltersFromQueryParams(filtersV2, selectedV2, queryParams, 'dataset');
+		}
+		if (!_.isEmpty(this.state.filtersV2Tools)) {
+			const filtersV2Tools = [...this.state.filtersV2Tools];
+			const selectedV2Tools = [...this.state.selectedV2Tools];
+			this.setSelectedFiltersFromQueryParams(filtersV2Tools, selectedV2Tools, queryParams, 'tool');
+		}
+		if (!_.isEmpty(this.state.filtersV2Datauses)) {
+			const filtersV2Datauses = [...this.state.filtersV2Datauses];
+			const selectedV2Datauses = [...this.state.selectedV2Datauses];
+			this.setSelectedFiltersFromQueryParams(filtersV2Datauses, selectedV2Datauses, queryParams, 'dataUseRegister');
+		}
+		if (!_.isEmpty(this.state.filtersV2Papers)) {
+			const filtersV2Papers = [...this.state.filtersV2Papers];
+			const selectedV2Papers = [...this.state.selectedV2Papers];
+			this.setSelectedFiltersFromQueryParams(filtersV2Papers, selectedV2Papers, queryParams, 'paper');
+		}
+		if (!_.isEmpty(this.state.filtersV2Courses)) {
+			const filtersV2Courses = [...this.state.filtersV2Courses];
+			const selectedV2Courses = [...this.state.selectedV2Courses];
+			this.setSelectedFiltersFromQueryParams(filtersV2Courses, selectedV2Courses, queryParams, 'course');
+		}
+		if (!_.isEmpty(this.state.filtersV2Collections)) {
+			const filtersV2Collections = [...this.state.filtersV2Collections];
+			const selectedV2Collections = [...this.state.selectedV2Collections];
+			this.setSelectedFiltersFromQueryParams(filtersV2Collections, selectedV2Collections, queryParams, 'collection');
 		}
 		// 14. original filters setting of data remove if entity moves to V2 for correct filter
 		queryParams.search ? this.setState({ search: queryParams.search }) : this.setState({ search: '' });
-		// V1 Tools
-		queryParams.toolcategories
-			? this.setState({ toolCategoriesSelected: queryParams.toolcategories.split('::') })
-			: this.setState({ toolCategoriesSelected: [] });
-		queryParams.toolprogrammingLanguage
-			? this.setState({ toolProgrammingLanguageSelected: queryParams.toolprogrammingLanguage.split('::') })
-			: this.setState({ toolProgrammingLanguageSelected: [] });
-		queryParams.toolfeatures
-			? this.setState({ toolFeaturesSelected: queryParams.toolfeatures.split('::') })
-			: this.setState({ toolFeaturesSelected: [] });
-		queryParams.tooltopics
-			? this.setState({ toolTopicsSelected: queryParams.tooltopics.split('::') })
-			: this.setState({ toolTopicsSelected: [] });
-		// V1 Papers
-		queryParams.paperfeatures
-			? this.setState({ paperFeaturesSelected: queryParams.paperfeatures.split('::') })
-			: this.setState({ paperFeaturesSelected: [] });
-		queryParams.papertopics
-			? this.setState({ paperTopicsSelected: queryParams.papertopics.split('::') })
-			: this.setState({ paperTopicsSelected: [] });
-		// V1 Courses
-		queryParams.coursestartdates
-			? this.setState({ courseStartDatesSelected: queryParams.coursestartdates.split('::') })
-			: this.setState({ courseStartDatesSelected: [] });
-		queryParams.courseprovider
-			? this.setState({ courseProviderSelected: queryParams.courseprovider.split('::') })
-			: this.setState({ courseProviderSelected: [] });
-		queryParams.courselocation
-			? this.setState({ courseLocationSelected: queryParams.courselocation.split('::') })
-			: this.setState({ courseLocationSelected: [] });
-		queryParams.coursestudymode
-			? this.setState({ courseStudyModeSelected: queryParams.coursestudymode.split('::') })
-			: this.setState({ courseStudyModeSelected: [] });
-		queryParams.courseaward
-			? this.setState({ courseAwardSelected: queryParams.courseaward.split('::') })
-			: this.setState({ courseAwardSelected: [] });
-		queryParams.courseentrylevel
-			? this.setState({ courseEntryLevelSelected: queryParams.courseentrylevel.split('::') })
-			: this.setState({ courseEntryLevelSelected: [] });
-		queryParams.coursedomains
-			? this.setState({ courseDomainsSelected: queryParams.coursedomains.split('::') })
-			: this.setState({ courseDomainsSelected: [] });
-		queryParams.coursekeywords
-			? this.setState({ courseKeywordsSelected: queryParams.coursekeywords.split('::') })
-			: this.setState({ courseKeywordsSelected: [] });
-		queryParams.courseframework
-			? this.setState({ courseFrameworkSelected: queryParams.courseframework.split('::') })
-			: this.setState({ courseFrameworkSelected: [] });
-		queryParams.coursepriority
-			? this.setState({ coursePrioritySelected: queryParams.coursepriority.split('::') })
-			: this.setState({ coursePrioritySelected: [] });
-		// V1 Collections
-		queryParams.collectionkeywords
-			? this.setState({ collectionKeywordsSelected: queryParams.collectionkeywords.split('::') })
-			: this.setState({ collectionKeywordsSelected: [] });
-		queryParams.collectionpublisher
-			? this.setState({ collectionPublisherSelected: queryParams.collectionpublisher.split('::') })
-			: this.setState({ collectionPublisherSelected: [] });
 
 		// Tab
-		queryParams.tab ? this.setState({ key: queryParams.tab }) : this.setState({ key: 'Datasets' });
+		queryParams.tab ? this.setState({ key: queryParams.tab.replace(/ /g, '') }) : this.setState({ key: 'Datasets' });
 		// PageNumbers - should be datasetPageNo etc better convention
 		queryParams.datasetIndex ? this.setState({ datasetIndex: queryParams.datasetIndex }) : this.setState({ datasetIndex: 0 });
 		queryParams.toolIndex ? this.setState({ toolIndex: queryParams.toolIndex }) : this.setState({ toolIndex: 0 });
+		queryParams.dataUseRegisterIndex
+			? this.setState({ dataUseRegisterIndex: queryParams.dataUseRegisterIndex })
+			: this.setState({ dataUseRegisterIndex: 0 });
 		queryParams.paperIndex ? this.setState({ paperIndex: queryParams.paperIndex }) : this.setState({ paperIndex: 0 });
 		queryParams.personIndex ? this.setState({ personIndex: queryParams.personIndex }) : this.setState({ personIndex: 0 });
 		queryParams.courseIndex ? this.setState({ courseIndex: queryParams.courseIndex }) : this.setState({ courseIndex: 0 });
@@ -306,6 +422,9 @@ class SearchPage extends React.Component {
 		// Sort for each tab
 		queryParams.datasetSort ? this.setState({ datasetSort: queryParams.datasetSort }) : this.setState({ datasetSort: '' });
 		queryParams.toolSort ? this.setState({ toolSort: queryParams.toolSort }) : this.setState({ toolSort: '' });
+		queryParams.dataUseRegisterSort
+			? this.setState({ dataUseRegisterSort: queryParams.dataUseRegisterSort })
+			: this.setState({ dataUseRegisterSort: '' });
 		queryParams.paperSort ? this.setState({ paperSort: queryParams.paperSort }) : this.setState({ paperSort: '' });
 		queryParams.personSort ? this.setState({ personSort: queryParams.personSort }) : this.setState({ personSort: '' });
 		queryParams.courseSort ? this.setState({ courseSort: queryParams.courseSort }) : this.setState({ courseSort: '' });
@@ -314,40 +433,45 @@ class SearchPage extends React.Component {
 
 	clearFilterStates() {
 		// 1. v2 take copy of data
-		let filtersV2Data = [...this.state.filtersV2];
+		let filtersV2DatasetsData = !_.isNil(this.state.filtersV2Datasets) ? [...this.state.filtersV2Datasets] : [];
+		let filtersV2ToolsData = !_.isNil(this.state.filtersV2Tools) ? [...this.state.filtersV2Tools] : [];
+		let filtersV2DatausesData = !_.isNil(this.state.filtersV2Datauses) ? [...this.state.filtersV2Datauses] : [];
+		let filtersV2CollectionsData = !_.isNil(this.state.filtersV2Collections) ? [...this.state.filtersV2Collections] : [];
+		let filtersV2CoursesData = !_.isNil(this.state.filtersV2Courses) ? [...this.state.filtersV2Courses] : [];
+		let filtersV2PapersData = !_.isNil(this.state.filtersV2Papers) ? [...this.state.filtersV2Papers] : [];
+
 		// 2. v2 resets the filters UI tree back to default
-		let filtersV2 = this.resetTreeChecked(filtersV2Data);
+		let filtersV2Datasets = this.resetTreeChecked(filtersV2DatasetsData);
+		let filtersV2Tools = this.resetTreeChecked(filtersV2ToolsData);
+		let filtersV2Datauses = this.resetTreeChecked(filtersV2DatausesData);
+		let filtersV2Collections = this.resetTreeChecked(filtersV2CollectionsData);
+		let filtersV2Courses = this.resetTreeChecked(filtersV2CoursesData);
+		let filtersV2Papers = this.resetTreeChecked(filtersV2PapersData);
 
 		this.setState(
 			prevState => ({
-				filtersV2,
-				selectedV2: [],
-				toolCategoriesSelected: [],
-				toolProgrammingLanguageSelected: [],
-				toolFeaturesSelected: [],
-				toolTopicsSelected: [],
-				paperFeaturesSelected: [],
-				paperTopicsSelected: [],
-				courseStartDatesSelected: [],
-				courseProviderSelected: [],
-				courseLocationSelected: [],
-				courseStudyModeSelected: [],
-				courseAwardSelected: [],
-				courseEntryLevelSelected: [],
-				courseDomainsSelected: [],
-				courseKeywordsSelected: [],
-				courseFrameworkSelected: [],
-				coursePrioritySelected: [],
-				collectionKeywordsSelected: [],
-				collectionPublisherSelected: [],
+				filtersV2Datasets,
+				selectedV2Datasets: [],
+				filtersV2Tools,
+				selectedV2Tools: [],
+				filtersV2Datauses,
+				selectedV2Datauses: [],
+				filtersV2Papers,
+				selectedV2Papers: [],
+				filtersV2Collections,
+				selectedV2Collections: [],
+				filtersV2Courses,
+				selectedV2Courses: [],
 				datasetIndex: 0,
 				toolIndex: 0,
+				datatuseIndex: 0,
 				paperIndex: 0,
 				personIndex: 0,
 				courseIndex: 0,
 				collectionIndex: 0,
 				datasetSort: '',
 				toolSort: '',
+				dataUseRegisterSort: '',
 				paperSort: '',
 				personSort: '',
 				courseSort: '',
@@ -370,10 +494,6 @@ class SearchPage extends React.Component {
 			};
 			// 3. the filter will contain {label, parentKey (parentKey is defined the filters.mapper API)}
 			this.handleInputChange(node, parentKey, true);
-		} else if (!this.state[filterGroup].find(x => x === filter)) {
-			// 4. V1 for Tools, Projects, Papers, Collections, Courses
-			this.state[filterGroup].push(filter);
-			this.updateOnFilter();
 		} else {
 			return;
 		}
@@ -384,6 +504,7 @@ class SearchPage extends React.Component {
 			{
 				datasetIndex: 0,
 				toolIndex: 0,
+				dataUseRegisterIndex: 0,
 				paperIndex: 0,
 				personIndex: 0,
 				courseIndex: 0,
@@ -410,89 +531,48 @@ class SearchPage extends React.Component {
 		});
 	};
 
-	doSearchCall(skipHistory) {
+	doSearchCall(skipHistory, textSearch = '') {
 		let searchURL = '';
-		let filtersV2 = [];
+		let filtersDatasetsV2 = [];
+		let filtersV2Tools = [];
+		let filtersV2Datauses = [];
+		let filtersV2Papers = [];
+		let filtersV2Courses = [];
+		let filtersV2Collections = [];
 		let {
 			userState,
-			toolCategoriesSelected = [],
-			toolProgrammingLanguageSelected = [],
-			toolFeaturesSelected = [],
-			toolTopicsSelected = [],
-			paperFeaturesSelected = [],
-			paperTopicsSelected = [],
-			courseStartDatesSelected = [],
-			courseProviderSelected = [],
-			courseLocationSelected = [],
-			courseStudyModeSelected = [],
-			courseAwardSelected = [],
-			courseEntryLevelSelected = [],
-			courseDomainsSelected = [],
-			courseKeywordsSelected = [],
-			courseFrameworkSelected = [],
-			coursePrioritySelected = [],
-			collectionKeywordsSelected = [],
-			collectionPublisherSelected = [],
 			datasetIndex = 0,
 			toolIndex = 0,
+			dataUseRegisterIndex = 0,
 			paperIndex = 0,
 			personIndex = 0,
 			courseIndex = 0,
 			collectionIndex = 0,
 			datasetSort = '',
 			toolSort = '',
+			dataUseRegisterSort = '',
 			paperSort = '',
 			personSort = '',
 			courseSort = '',
 			collectionSort = '',
 		} = this.state;
+
+		this.toggleDataUtilityBanner(false);
+
 		// 1. build search object from list of selected fitlers v2 only
-		const searchObj = this.buildSearchObj(this.state.selectedV2);
+		let searchObj = {
+			...this.buildSearchObj(this.state.selectedV2Datasets),
+			...this.buildSearchObj(this.state.selectedV2Tools),
+			...this.buildSearchObj(this.state.selectedV2Datauses),
+			...this.buildSearchObj(this.state.selectedV2Papers),
+			...this.buildSearchObj(this.state.selectedV2Courses),
+			...this.buildSearchObj(this.state.selectedV2Collections),
+		};
 		// 2. dynamically build the searchUrl v2 only
 		searchURL = this.buildSearchUrl(searchObj);
-		// 3. build up V1 Tools / early filters, no change from original implementation
-		if (toolCategoriesSelected.length > 0)
-			searchURL += '&toolcategories=' + encodeURIComponent(toolCategoriesSelected.toString().split(',').join('::'));
-		if (toolProgrammingLanguageSelected.length > 0)
-			searchURL += '&toolprogrammingLanguage=' + encodeURIComponent(toolProgrammingLanguageSelected.toString().split(',').join('::'));
-		if (toolFeaturesSelected.length > 0)
-			searchURL += '&toolfeatures=' + encodeURIComponent(toolFeaturesSelected.toString().split(',').join('::'));
-		if (toolTopicsSelected.length > 0)
-			searchURL += '&tooltopics=' + encodeURIComponent(toolTopicsSelected.toString().split(',').join('::'));
-		// V1 Papers
-		if (paperFeaturesSelected.length > 0)
-			searchURL += '&paperfeatures=' + encodeURIComponent(paperFeaturesSelected.toString().split(',').join('::'));
-		if (paperTopicsSelected.length > 0)
-			searchURL += '&papertopics=' + encodeURIComponent(paperTopicsSelected.toString().split(',').join('::'));
-		// V1 Courses
-		if (courseStartDatesSelected.length > 0)
-			searchURL += '&coursestartdates=' + encodeURIComponent(courseStartDatesSelected.toString().split(',').join('::'));
-		if (courseProviderSelected.length > 0)
-			searchURL += '&courseprovider=' + encodeURIComponent(courseProviderSelected.toString().split(',').join('::'));
-		if (courseLocationSelected.length > 0)
-			searchURL += '&courselocation=' + encodeURIComponent(courseLocationSelected.toString().split(',').join('::'));
-		if (courseStudyModeSelected.length > 0)
-			searchURL += '&coursestudymode=' + encodeURIComponent(courseStudyModeSelected.toString().split(',').join('::'));
-		if (courseAwardSelected.length > 0)
-			searchURL += '&courseaward=' + encodeURIComponent(courseAwardSelected.toString().split(',').join('::'));
-		if (courseEntryLevelSelected.length > 0)
-			searchURL += '&courseentrylevel=' + encodeURIComponent(courseEntryLevelSelected.toString().split(',').join('::'));
-		if (courseDomainsSelected.length > 0)
-			searchURL += '&coursedomains=' + encodeURIComponent(courseDomainsSelected.toString().split(',').join('::'));
-		if (courseKeywordsSelected.length > 0)
-			searchURL += '&coursekeywords=' + encodeURIComponent(courseKeywordsSelected.toString().split(',').join('::'));
-		if (courseFrameworkSelected.length > 0)
-			searchURL += '&courseframework=' + encodeURIComponent(courseFrameworkSelected.toString().split(',').join('::'));
-		if (coursePrioritySelected.length > 0)
-			searchURL += '&coursepriority=' + encodeURIComponent(coursePrioritySelected.toString().split(',').join('::'));
-		// V1 Collections
-		if (collectionKeywordsSelected.length > 0)
-			searchURL += '&collectionkeywords=' + encodeURIComponent(collectionKeywordsSelected.toString().split(',').join('::'));
-		if (collectionPublisherSelected.length > 0)
-			searchURL += '&collectionpublisher=' + encodeURIComponent(collectionPublisherSelected.toString().split(',').join('::'));
-		// PageNumbers = (entityNameIndex) N.B. should be datasetPageNo, toolPageNo, projectPageNo, paperPageNo, coursePageNo
 		if (datasetIndex > 0) searchURL += '&datasetIndex=' + encodeURIComponent(datasetIndex);
 		if (toolIndex > 0) searchURL += '&toolIndex=' + encodeURIComponent(toolIndex);
+		if (dataUseRegisterIndex > 0) searchURL += '&dataUseRegisterIndex=' + encodeURIComponent(dataUseRegisterIndex);
 		if (paperIndex > 0) searchURL += '&paperIndex=' + encodeURIComponent(paperIndex);
 		if (personIndex > 0) searchURL += '&personIndex=' + encodeURIComponent(personIndex);
 		if (courseIndex > 0) searchURL += '&courseIndex=' + encodeURIComponent(courseIndex);
@@ -500,6 +580,7 @@ class SearchPage extends React.Component {
 		// sorting across the filter range
 		if (datasetSort !== '') searchURL += '&datasetSort=' + encodeURIComponent(datasetSort);
 		if (toolSort !== '') searchURL += '&toolSort=' + encodeURIComponent(toolSort);
+		if (dataUseRegisterSort !== '') searchURL += '&dataUseRegisterSort=' + encodeURIComponent(dataUseRegisterSort);
 		if (paperSort !== '') searchURL += '&paperSort=' + encodeURIComponent(paperSort);
 		if (personSort !== '') searchURL += '&personSort=' + encodeURIComponent(personSort);
 		if (courseSort !== '') searchURL += '&courseSort=' + encodeURIComponent(courseSort);
@@ -507,30 +588,51 @@ class SearchPage extends React.Component {
 		// login status handler
 		if (userState[0].loggedIn === false) {
 			let values = queryString.parse(window.location.search);
-			if (values.showLogin === 'true' && values.loginReferrer !== '')
+			if (values.showLogin === 'true' && values.loginReferrer && values.loginReferrer !== '')
 				searchURL += '&loginReferrer=' + encodeURIComponent(values.loginReferrer);
 			else if (values.showLogin === 'true' && document.referrer !== '')
 				searchURL += '&loginReferrer=' + encodeURIComponent(document.referrer);
 		}
-
 		if (!skipHistory) {
 			if (this.state.key) searchURL += '&tab=' + this.state.key;
 
-			this.props.history.push(`${window.location.pathname}?search=${encodeURIComponent(this.state.search)}` + searchURL);
+			this.props.history.push(
+				`${window.location.pathname}?search=${encodeURIComponent(textSearch ? textSearch : this.state.search)}` + searchURL
+			);
 		}
-
 		if (this.state.key !== 'People') {
 			// remove once full migration to v2 filters for all other entities 'Tools, Projects, Courses and Papers'
 			const entityType = typeMapper[`${this.state.key}`];
 			axios
-				.get(`${baseURL}/api/v1/search/filter?search=${encodeURIComponent(this.state.search)}${searchURL}`)
+				.get(`${baseURL}/api/v1/search/filter?search=${encodeURIComponent(textSearch ? textSearch : this.state.search)}${searchURL}`)
 				.then(res => {
-					let filters = this.getFilterState(entityType, res);
+					let filters = this.getFilterState(res);
 					// test the type and set relevant state
 					if (entityType === 'dataset') {
-						let filtersV2State = this.state.filtersV2 || [];
-						filtersV2 = this.setHighlightedFilters(filters, [...filtersV2State]);
-						this.setState({ filtersV2 });
+						let filtersV2DatasetsState = this.state.filtersV2Datasets || [];
+						filtersDatasetsV2 = this.setHighlightedFilters(filters, [...filtersV2DatasetsState]);
+						this.setState({ filtersDatasetsV2 });
+					} else if (entityType === 'tool') {
+						let filtersV2ToolState = this.state.filtersV2Tools || [];
+						filtersV2Tools = this.setHighlightedFilters(filters, [...filtersV2ToolState]);
+						this.setState({ filtersV2Tools });
+					} else if (entityType === 'dataUseRegister') {
+						console.log(this.state.filtersV2Datauses);
+						let filtersV2DatausesState = this.state.filtersV2Datauses || [];
+						filtersV2Datauses = this.setHighlightedFilters(filters, [...filtersV2DatausesState]);
+						this.setState({ filtersV2Datauses });
+					} else if (entityType === 'paper') {
+						let filtersV2PaperState = this.state.filtersV2Papers || [];
+						filtersV2Papers = this.setHighlightedFilters(filters, [...filtersV2PaperState]);
+						this.setState({ filtersV2Papers });
+					} else if (entityType === 'collection') {
+						let filtersV2CollectionState = this.state.filtersV2Collections || [];
+						filtersV2Collections = this.setHighlightedFilters(filters, [...filtersV2CollectionState]);
+						this.setState({ filtersV2Collections });
+					} else if (entityType === 'course') {
+						let filtersV2CourseState = this.state.filtersV2Courses || [];
+						filtersV2Courses = this.setHighlightedFilters(filters, [...filtersV2CourseState]);
+						this.setState({ filtersV2Courses });
 					} else {
 						this.setState({ ...filters });
 					}
@@ -541,7 +643,7 @@ class SearchPage extends React.Component {
 		}
 		// search call brings back search results and now filters highlighting for v2
 		axios
-			.get(`${baseURL}/api/v1/search?search=${encodeURIComponent(this.state.search)}${searchURL}`)
+			.get(`${baseURL}/api/v1/search?search=${encodeURIComponent(textSearch ? textSearch : this.state.search)}${searchURL}`)
 			.then(res => {
 				// get the correct entity type from our mapper via the selected tab ie..'Dataset, Tools'
 				const entityType = typeMapper[`${this.state.key}`];
@@ -551,12 +653,17 @@ class SearchPage extends React.Component {
 					summary = [],
 				} = res.data;
 
-				this.setState({
-					[`${entityType}Data`]: data,
-					isLoading: false,
-					isResultsLoading: false,
-					summary,
+				this.setState(prevState => {
+					return {
+						[`${entityType}Data`]: data,
+						isLoading: false,
+						isResultsLoading: false,
+						saveSuccess: false,
+						summary,
+						search: textSearch ? textSearch : prevState.search,
+					};
 				});
+
 				window.scrollTo(0, 0);
 			})
 			.catch(err => {
@@ -569,28 +676,28 @@ class SearchPage extends React.Component {
 	 * @desc return correct filter state for either a V1 or V2 option
 	 * @return {object}
 	 */
-	getFilterState = (tab = '', response = {}) => {
+	getFilterState = (response = {}) => {
 		const {
-			data: { filters = {}, allFilters = [], filterOptions = [] },
+			data: { filters = {} },
 		} = response;
-		if (tab === 'dataset') {
-			return filters;
-		} else {
-			return {
-				allFilters,
-				filterOptions,
-			};
-		}
+		return filters;
 	};
 
 	setHighlightedFilters = (filters = {}, tree) => {
 		for (let key in filters) {
-			// 2. find parent obj - recursive
-			let parentNode = this.findParentNode(tree, key);
-			// 3. if parentNode exists
+			// Find parent obj - recursive
+			const parentNode = this.findParentNode(tree, key);
+			// If parentNode exists
 			if (!_.isEmpty(parentNode) && typeof parentNode.highlighted !== 'undefined') {
-				let lowerCasedFilters = filters[key].map(value => value.toLowerCase());
-				parentNode.highlighted = _.uniq(lowerCasedFilters);
+				parentNode.highlighted = [];
+				const lowerCasedFilters = filters[key].map(value => value.toLowerCase());
+				// Highlight any filter items which include any of the returned filter values
+				parentNode.filters.forEach(filter => {
+					const filterValues = filter.value.split(',');
+					if (filterValues.some(item => lowerCasedFilters.includes(item.toLowerCase())) && !parentNode.highlighted.includes(filter.label)) {
+						parentNode.highlighted.push(filter.label.toLowerCase());
+					}
+				});
 			}
 		}
 		return tree;
@@ -601,16 +708,21 @@ class SearchPage extends React.Component {
 	};
 
 	handleSelect = key => {
+		const entityType = typeMapper[`${this.state.key}`];
+		googleAnalytics.recordVirtualPageView(`${key} results page ${this.state[`${entityType}Index`] + 1}`);
 		let values = queryString.parse(window.location.search);
 		values.tab = key;
 		this.props.history.push(window.location.pathname + '?' + queryString.stringify(values));
-		this.setState({ key: key, isResultsLoading: true }, () => {
+
+		this.setState({ key, isResultsLoading: true }, () => {
+			this.getFilters();
 			this.doSearchCall();
 		});
 	};
 
 	handleSort = sort => {
 		const entityType = typeMapper[`${this.state.key}`];
+		googleAnalytics.recordEvent(`${entityType}s`, `Sorted search results by ${sort}`, 'Sort dropdown option changed');
 		this.setState({ [`${entityType}Sort`]: sort, isResultsLoading: true }, () => {
 			this.doSearchCall();
 		});
@@ -618,6 +730,7 @@ class SearchPage extends React.Component {
 
 	handlePagination = (type = '', page = 0) => {
 		if (!_.isEmpty(type)) {
+			googleAnalytics.recordVirtualPageView(`${_.startCase(_.toLower(type))}s results page ${page / 40 + 1}`);
 			this.setState({ [`${type}Index`]: page, isResultsLoading: true }, () => {
 				window.scrollTo(0, 0);
 				this.doSearchCall();
@@ -628,21 +741,156 @@ class SearchPage extends React.Component {
 	/**
 	 * GetFilters
 	 *
-	 * @desc Get all the filters for dataset
+	 * @desc Get all required global data for page
 	 */
-	getFilters = async () => {
+	getGlobals = async () => {
 		try {
-			let response = await axios.get(`${baseURL}/api/v2/filters/dataset`);
-			let {
-				data: { data },
+			const response = await axios.get(`${baseURL}/api/v1/global?localeId=en-gb&entry.name=dataUtility`);
+			const {
+				data: {
+					data: {
+						entry: { items: dataUtilityFilters = [] },
+					},
+				},
 			} = response;
-			if (!_.isEmpty(data)) {
-				this.setState({ filtersV2: data });
+			if (!_.isEmpty(dataUtilityFilters)) {
+				const dataUtilityWizardSteps = dataUtilityFilters.filter(item => item.includeInWizard);
+				this.setState({ dataUtilityFilters, dataUtilityWizardSteps });
+				await this.getFilters();
 			}
 		} catch (error) {
 			console.error(error.message);
 		}
 	};
+
+	getFilters = async () => {
+		try {
+			const response = await axios.get(`${baseURL}/api/v2/filters/dataset`);
+			const {
+				data: { data: filterDataDatasets },
+			} = response;
+			if (!_.isEmpty(filterDataDatasets) && _.isEmpty(this.state.filtersV2Datasets)) {
+				const filtersV2Datasets = this.mapFiltersToDictionary(filterDataDatasets, this.state.dataUtilityFilters);
+				this.setState({ filtersV2Datasets });
+			}
+
+			const responseTools = await axios.get(`${baseURL}/api/v2/filters/tool`);
+			const {
+				data: { data: filterDataTools },
+			} = responseTools;
+			if (!_.isEmpty(filterDataTools) && _.isEmpty(this.state.filtersV2Tools)) {
+				const filtersV2Tools = this.mapFiltersToDictionary(filterDataTools, this.state.dataUtilityFilters);
+				this.setState({ filtersV2Tools });
+			}
+
+			const responseDatauses = await axios.get(`${baseURL}/api/v2/filters/dataUseRegister`);
+			const {
+				data: { data: filterDataDatauses },
+			} = responseDatauses;
+			if (!_.isEmpty(filterDataDatauses) && _.isEmpty(this.state.filtersV2Datauses)) {
+				const filtersV2Datauses = this.mapFiltersToDictionary(filterDataDatauses, this.state.dataUtilityFilters);
+				this.setState({ filtersV2Datauses });
+			}
+
+			const responsePapers = await axios.get(`${baseURL}/api/v2/filters/paper`);
+			const {
+				data: { data: filterDataPapers },
+			} = responsePapers;
+			if (!_.isEmpty(filterDataPapers) && _.isEmpty(this.state.filtersV2Papers)) {
+				const filtersV2Papers = this.mapFiltersToDictionary(filterDataPapers, this.state.dataUtilityFilters);
+				this.setState({ filtersV2Papers });
+			}
+
+			const responseCourses = await axios.get(`${baseURL}/api/v2/filters/course`);
+			const {
+				data: { data: filterDataCourses },
+			} = responseCourses;
+			if (!_.isEmpty(filterDataCourses) && _.isEmpty(this.state.filtersV2Courses)) {
+				const filtersV2Courses = this.mapFiltersToDictionary(filterDataCourses, this.state.dataUtilityFilters);
+				this.setState({ filtersV2Courses });
+			}
+
+			const responseCollections = await axios.get(`${baseURL}/api/v2/filters/collection`);
+			const {
+				data: { data: filterDataCollections },
+			} = responseCollections;
+			if (!_.isEmpty(filterDataCollections) && _.isEmpty(this.state.filtersV2Collections)) {
+				const filtersV2Collections = this.mapFiltersToDictionary(filterDataCollections, this.state.dataUtilityFilters);
+				this.setState({ filtersV2Collections });
+			}
+		} catch (error) {
+			console.error(error.message);
+		}
+	};
+
+	/**
+	 * MapFiltersToDictionary
+	 *
+	 * @desc Accepts v2 format filter data and cross references with a data dictionary to rename, reformat, and order values
+	 */
+	mapFiltersToDictionary = (filterData, filterDictionary) => {
+		filterDictionary.forEach(dictionaryEntry => {
+			this.mutateFilter(filterData, dictionaryEntry);
+		});
+		return filterData;
+	};
+
+	/**
+	 * MutateFilter
+	 *
+	 * @desc Performs the mutation of filter data for a provided dictionary entry containing allowed values, order etc.
+	 */
+	mutateFilter(filterData, dictionaryEntry) {
+		// Iterate through each filter node to look for the filter by key
+		filterData.forEach((dimension, index, arr) => {
+			if (_.isEqual(dimension.key, dictionaryEntry.key)) {
+				// Update filter to match dictionary definition
+				arr[index] = {
+					...dimension,
+					filters: this.mapFilterValues(dimension.filters, dictionaryEntry.entries),
+				};
+			} else {
+				// If the current node has children, recursively call this function again passing in the node's children
+				if (_.has(dimension, 'filters')) {
+					this.mutateFilter(dimension.filters, dictionaryEntry);
+				}
+			}
+		});
+	}
+
+	/**
+	 * MapFilterValues
+	 *
+	 * @desc Combines and ranks filter values for a given filter dimension using provided dictionary entries
+	 */
+	mapFilterValues(filterValues, dictionaryEntries) {
+		const mappedFilterValues = dictionaryEntries.map(entry => {
+			const { label, definition } = entry;
+			return {
+				...entry,
+				value: this.getImpliedFilterValues(filterValues, entry),
+				checked: false,
+				label: label ? label : definition,
+			};
+		});
+
+		return _.sortBy(mappedFilterValues, 'displayOrder');
+	}
+
+	/**
+	 * GetImpliedFilterValues
+	 *
+	 * @desc Merges multiple implied filter values into a single filter
+	 */
+	getImpliedFilterValues(filterValues, dictionaryEntry) {
+		return filterValues
+			.filter(filterValue => {
+				const lowercaseValues = dictionaryEntry.impliedValues.map(value => value.toLowerCase());
+				return lowercaseValues.includes(filterValue.value.toLowerCase());
+			})
+			.map(filterValue => filterValue.value)
+			.join(',');
+	}
 
 	/**
 	 * PerformSearch
@@ -654,8 +902,9 @@ class SearchPage extends React.Component {
 		let searchUrl = '';
 		if (searchObj) {
 			for (let key of Object.keys(searchObj)) {
-				let values = searchObj[key];
-				searchUrl += `&${key}=${encodeURIComponent(values.toString().split(',').join('::'))}`;
+				const values = searchObj[key].toString().split(',');
+				const uniqueValues = [...new Set(values)];
+				searchUrl += `&${key}=${encodeURIComponent(uniqueValues.join('::'))}`;
 			}
 		}
 		return searchUrl;
@@ -669,16 +918,17 @@ class SearchPage extends React.Component {
 	 * @return {object} New Filters Object
 	 */
 	buildSearchObj = arr => {
-		// 1. reduce over array of selected values [{id, label, parentkey}, {}...]
-		return [...arr].reduce((obj, { parentKey, label, alias }) => {
+		// 1. reduce over array of selected values [{id, value, parentkey}, {}...]
+		return [...arr].reduce((obj, { parentKey, value, alias }) => {
 			// we need to use alias here if it is defiend to use as override so names do not conflict with other tabs
 			let queryParam = alias ? alias : parentKey;
 
 			// 2. group by key { 'publisher': [] }
 			if (!obj[queryParam]) obj[queryParam] = [];
 
-			// 3. if key exists push in label value
-			obj[queryParam].push(label);
+			// 3. if key exists and entry is not already included, push in filter value
+			obj[queryParam].push(value);
+
 			// 4. return obj iteration
 			return obj;
 		}, {});
@@ -696,7 +946,7 @@ class SearchPage extends React.Component {
 			// 1. take label and parentId values from the node
 			let { parentKey, label } = selectedNode;
 			// 2. copy state data *avoid mutation*
-			filtersV2 = [...this.state.filtersV2];
+			filtersV2 = this.getFilterStateByKey(this.state.key);
 			// 3. find parentNode in the tree
 			parentNode = this.findParentNode(filtersV2, parentKey);
 			if (!_.isEmpty(parentNode)) {
@@ -712,8 +962,9 @@ class SearchPage extends React.Component {
 					// 8. remove from selectedV2 array
 					selectedV2 = this.handleSelected(selectedNode, false);
 					// 9. set state
-					this.setState({ filtersV2, selectedV2, isResultsLoading: true }, () => {
-						// 10. callback wait for state to update
+					const filtersV2Entity = `filtersV2${this.state.key}`;
+					const selectedV2Entity = `selectedV2${this.state.key}`;
+					this.setState({ [filtersV2Entity]: filtersV2, [selectedV2Entity]: selectedV2, isResultsLoading: true }, () => {
 						this.doSearchCall();
 					});
 				}
@@ -751,11 +1002,13 @@ class SearchPage extends React.Component {
 	 */
 	handleClearAll = () => {
 		// 1. take copy of data
-		let filtersV2Data = [...this.state.filtersV2];
+		let filtersV2Data = this.getFilterStateByKey(this.state.key);
 		// 2. resets the filters UI tree back to default
 		let filtersV2 = this.resetTreeChecked(filtersV2Data);
 		// 3. set state and call search
-		this.setState({ filtersV2, selectedV2: [], isResultsLoading: true }, () => {
+		const filtersV2Entity = `filtersV2${this.state.key}`;
+		const selectedV2Entity = `selectedV2${this.state.key}`;
+		this.setState({ [filtersV2Entity]: filtersV2, [selectedV2Entity]: [], isResultsLoading: true }, () => {
 			this.doSearchCall();
 		});
 	};
@@ -769,15 +1022,15 @@ class SearchPage extends React.Component {
 	 * @param 	{boolena} checked
 	 * @return	{array} array of selected items
 	 */
-	handleSelected = (selected = {}, checked = false) => {
-		let selectedV2 = [...this.state.selectedV2];
+	handleSelected = (selected = {}, checked = false, tab = this.state.key) => {
+		let selectedV2 = this.getSelectedFiltersStateByKey(tab);
 		let results = [];
 		if (!_.isEmpty(selected)) {
 			if (checked) {
 				results = [...selectedV2, selected];
 			} else {
 				// id important to filter by as labels are not unique
-				results = [...selectedV2].filter(node => node.id != selected.id);
+				results = [...selectedV2].filter(node => node.id !== selected.id);
 			}
 		}
 		return results;
@@ -794,11 +1047,8 @@ class SearchPage extends React.Component {
 	findParentNode = (tree, key) => {
 		// 1. find if matches key || alias if provided for an override for the queryParam if it conflicts with another key from
 		// another entity
-		let found = tree.find(node => {
-			if (typeof node.alias !== 'undefined' && node.alias === key) return node;
+		let found = tree.find(node => ((typeof node.alias !== 'undefined' && node.alias === key) || node.key === key ? node : ''));
 
-			if (node.key === key) return node;
-		});
 		// 2. if not found start recursive loop
 		if (!found) {
 			let i = 0;
@@ -841,7 +1091,7 @@ class SearchPage extends React.Component {
 	handleClearSection = node => {
 		let selectedV2, filtersV2, parentNode, selectedNodeFilters;
 		let { key, filters } = node;
-		selectedV2 = [...this.state.selectedV2];
+		selectedV2 = this.getSelectedFiltersStateByKey(this.state.key);
 		// 1. find the filters
 		if (!_.isEmpty(filters)) {
 			selectedNodeFilters = filters
@@ -850,7 +1100,7 @@ class SearchPage extends React.Component {
 					return { ...node, checked: false };
 				});
 			// 1. copy state - stop mutation
-			filtersV2 = [...this.state.filtersV2];
+			filtersV2 = this.getFilterStateByKey(this.state.key);
 			// 2. find parent obj - recursive
 			parentNode = this.findParentNode(filtersV2, key);
 			if (!_.isEmpty(parentNode)) {
@@ -864,15 +1114,61 @@ class SearchPage extends React.Component {
 						// 5. increment highest parent count
 						--parentNode.selectedCount;
 						// 7. fn for handling the *selected showing* returns new state
-						selectedV2 = [...selectedV2].filter(node => node.id != foundNode.id);
+						selectedV2 = [...selectedV2].filter(node => node.id !== foundNode.id);
 						// searchObj = this.buildSearchObj(selectedV2);
 					}
 				});
 				// 9. set state
-				this.setState({ filtersV2, selectedV2, isResultsLoading: true }, () => {
+				const filtersV2Entity = `filtersV2${this.state.key}`;
+				const selectedV2Entity = `selectedV2${this.state.key}`;
+				this.setState({ [filtersV2Entity]: filtersV2, [selectedV2Entity]: [], isResultsLoading: true }, () => {
 					this.doSearchCall();
 				});
 			}
+		}
+	};
+
+	/**
+	 * Get the filters in state for the particular tab
+	 */
+	getFilterStateByKey = key => {
+		switch (key) {
+			case 'Datasets':
+				return [...this.state.filtersV2Datasets];
+			case 'Tools':
+				return [...this.state.filtersV2Tools];
+			case 'Datauses':
+				return [...this.state.filtersV2Datauses];
+			case 'Papers':
+				return [...this.state.filtersV2Papers];
+			case 'Courses':
+				return [...this.state.filtersV2Courses];
+			case 'Collections':
+				return [...this.state.filtersV2Collections];
+			default:
+				return [];
+		}
+	};
+
+	/**
+	 * Get the selected filters in state for the particular tab
+	 */
+	getSelectedFiltersStateByKey = key => {
+		switch (key) {
+			case 'Datasets':
+				return [...this.state.selectedV2Datasets];
+			case 'Tools':
+				return [...this.state.selectedV2Tools];
+			case 'Datauses':
+				return [...this.state.selectedV2Datauses];
+			case 'Papers':
+				return [...this.state.selectedV2Papers];
+			case 'Courses':
+				return [...this.state.selectedV2Courses];
+			case 'Collections':
+				return [...this.state.selectedV2Collections];
+			default:
+				return [];
 		}
 	};
 
@@ -886,7 +1182,8 @@ class SearchPage extends React.Component {
 	 */
 	handleInputChange = (node, parentKey, checkValue) => {
 		// 1. copy state - stop mutation
-		let filtersV2 = [...this.state.filtersV2];
+		let filtersV2 = this.getFilterStateByKey(this.state.key);
+
 		// 2. find parent obj - recursive
 		let parentNode = this.findParentNode(filtersV2, parentKey);
 		if (!_.isEmpty(parentNode)) {
@@ -896,7 +1193,7 @@ class SearchPage extends React.Component {
 			let foundNode = this.findNode(filters, node.label);
 			if (!_.isEmpty(foundNode)) {
 				// find if the node already exists in the selectedV2 - if so we are unchecking / removing
-				const exists = [...this.state.selectedV2].some(selected => selected.id === foundNode.id);
+				const exists = this.getSelectedFiltersStateByKey(this.state.key).some(selected => selected.id === foundNode.id);
 				if (!exists || (exists && foundNode.checked != checkValue)) {
 					// 4. set check value
 					foundNode.checked = checkValue;
@@ -907,14 +1204,23 @@ class SearchPage extends React.Component {
 						parentKey: alias || key,
 						id: foundNode.id,
 						label: foundNode.label,
+						value: foundNode.value,
 					};
 					// 7. fn for handling the *selected showing* returns new state
 					const selectedV2 = this.handleSelected(selectedNode, checkValue);
 					// 8. set state
-					this.setState({ filtersV2, selectedV2, isResultsLoading: true }, () => {
-						// callback once state has updated
+					const filtersV2Entity = `filtersV2${this.state.key}`;
+					const selectedV2Entity = `selectedV2${this.state.key}`;
+					this.setState({ [filtersV2Entity]: filtersV2, [selectedV2Entity]: selectedV2, isResultsLoading: true }, () => {
 						this.doSearchCall();
 					});
+					googleAnalytics.recordEvent(
+						'Datasets',
+						`${checkValue ? 'Applied' : 'Removed'} ${parentNode.label} filter ${
+							this.state.showDataUtilityBanner ? 'after utility wizard search' : ''
+						}`,
+						`Filter value: ${selectedNode.label}`
+					);
 				}
 			}
 		}
@@ -930,14 +1236,15 @@ class SearchPage extends React.Component {
 		let parentNode;
 		if (!_.isEmpty(node)) {
 			// 1. copy state - stop mutation
-			let filtersV2 = [...this.state.filtersV2];
+			let filtersV2 = this.getFilterStateByKey(this.state.key);
 			// 2. find parent obj - recursive
 			let { key } = node;
 			// 3. return parent node of toggled
 			parentNode = this.findParentNode(filtersV2, key);
 			if (!_.isEmpty(parentNode)) {
 				parentNode.closed = !parentNode.closed;
-				this.setState({ filtersV2 });
+				const filtersV2Entity = `filtersV2${this.state.key}`;
+				this.setState({ [filtersV2Entity]: filtersV2 });
 			}
 		}
 	};
@@ -957,44 +1264,89 @@ class SearchPage extends React.Component {
 		});
 	};
 
+	saveFiltersUpdate = viewSaved => {
+		this.setState({ showSavedPreferencesModal: false });
+		// 1. v2 take copy of data
+		let filtersV2DatasetsData = !_.isNil(this.state.filtersV2Datasets) ? [...this.state.filtersV2Datasets] : [];
+		let filtersV2ToolsData = !_.isNil(this.state.filtersV2Tools) ? [...this.state.filtersV2Tools] : [];
+		let filtersV2DatausesData = !_.isNil(this.state.filtersV2Datauses) ? [...this.state.filtersV2Datauses] : [];
+		let filtersV2CollectionsData = !_.isNil(this.state.filtersV2Collections) ? [...this.state.filtersV2Collections] : [];
+		let filtersV2CoursesData = !_.isNil(this.state.filtersV2Courses) ? [...this.state.filtersV2Courses] : [];
+		let filtersV2PapersData = !_.isNil(this.state.filtersV2Papers) ? [...this.state.filtersV2Papers] : [];
+
+		// 2. v2 resets the filters UI tree back to default
+		let filtersV2Datasets = this.resetTreeChecked(filtersV2DatasetsData);
+		let filtersV2Tools = this.resetTreeChecked(filtersV2ToolsData);
+		let filtersV2Datauses = this.resetTreeChecked(filtersV2DatausesData);
+		let filtersV2Collections = this.resetTreeChecked(filtersV2CollectionsData);
+		let filtersV2Courses = this.resetTreeChecked(filtersV2CoursesData);
+		let filtersV2Papers = this.resetTreeChecked(filtersV2PapersData);
+
+		this.setState(
+			prevState => ({
+				filtersV2Datasets,
+				selectedV2Datasets: [],
+				filtersV2Tools,
+				selectedV2Tools: [],
+				filtersV2Datauses,
+				selectedV2Datauses: [],
+				filtersV2Papers,
+				selectedV2Papers: [],
+				filtersV2Collections,
+				selectedV2Collections: [],
+				filtersV2Courses,
+				selectedV2Courses: [],
+				datasetIndex: 0,
+				toolIndex: 0,
+				dataUseRegisterIndex: 0,
+				paperIndex: 0,
+				personIndex: 0,
+				courseIndex: 0,
+				collectionIndex: 0,
+				datasetSort: '',
+				toolSort: '',
+				dataUseRegisterSort: '',
+				paperSort: '',
+				personSort: '',
+				courseSort: '',
+				collectionSort: '',
+			}),
+			() => {
+				if (viewSaved.tab === 'Datasets') {
+					this.setState({ datasetSort: viewSaved.sort });
+				} else if (viewSaved.tab === 'Tools') {
+					this.setState({ toolSort: viewSaved.sort });
+				} else if (viewSaved.tab === 'Datauses') {
+					this.setState({ dataUseRegisterSort: viewSaved.sort });
+				} else if (viewSaved.tab === 'Papers') {
+					this.setState({ paperSort: viewSaved.sort });
+				} else if (viewSaved.tab === 'People') {
+					this.setState({ personSort: viewSaved.sort });
+				} else if (viewSaved.tab === 'Collections') {
+					this.setState({ collectionSort: viewSaved.sort });
+				}
+
+				this.setState({ search: viewSaved.search, key: viewSaved.tab, [`selectedV2${viewSaved.tab}`]: viewSaved.filters }, () => {
+					this.doSearchCall();
+				});
+			}
+		);
+	};
+
 	render() {
 		let {
 			summary,
 			search,
 			datasetData,
 			toolData,
+			dataUseRegisterData,
 			paperData,
 			personData,
 			courseData,
 			collectionData,
-			filterOptions,
-			allFilters,
 			userState,
 			isLoading,
 			isResultsLoading,
-
-			toolProgrammingLanguageSelected,
-			toolTopicsSelected,
-			toolCategoriesSelected,
-			toolFeaturesSelected,
-
-			paperFeaturesSelected,
-			paperTopicsSelected,
-
-			courseStartDatesSelected,
-			courseProviderSelected,
-			courseLocationSelected,
-			courseStudyModeSelected,
-			courseAwardSelected,
-			courseEntryLevelSelected,
-			courseDomainsSelected,
-			courseKeywordsSelected,
-			courseFrameworkSelected,
-			coursePrioritySelected,
-
-			collectionKeywordsSelected,
-			collectionPublisherSelected,
-
 			datasetIndex,
 			toolIndex,
 			paperIndex,
@@ -1004,17 +1356,29 @@ class SearchPage extends React.Component {
 
 			datasetSort,
 			toolSort,
+			dataUseRegisterSort,
 			paperSort,
 			personSort,
 			collectionSort,
 
-			filtersV2,
-			selectedV2,
+			filtersV2Datasets,
+			selectedV2Datasets,
+			filtersV2Tools,
+			selectedV2Tools,
+			filtersV2Datauses,
+			selectedV2Datauses,
+			filtersV2Papers,
+			selectedV2Papers,
+			filtersV2Courses,
+			selectedV2Courses,
+			filtersV2Collections,
+			selectedV2Collections,
 
 			showDrawer,
 			showModal,
 			showAdvancedSearchModal,
 			context,
+			activeDataUtilityWizardStep,
 
 			key,
 		} = this.state;
@@ -1027,13 +1391,23 @@ class SearchPage extends React.Component {
 			);
 		}
 		// destructure counts from summary
-		let { datasetCount = 0, toolCount = 0, paperCount = 0, personCount = 0, courseCount = 0, collectionCount = 0 } = summary;
+		let {
+			datasetCount = 0,
+			toolCount = 0,
+			dataUseRegisterCount = 0,
+			paperCount = 0,
+			personCount = 0,
+			courseCount = 0,
+			collectionCount = 0,
+		} = summary;
 		// clean needed here at later date
 		if (key === '' || typeof key === 'undefined') {
 			if (datasetCount > 0) {
 				key = 'Datasets';
 			} else if (toolCount > 0) {
 				key = 'Tools';
+			} else if (dataUseRegisterCount > 0) {
+				key = 'Datause';
 			} else if (paperCount > 0) {
 				key = 'Papers';
 			} else if (personCount > 0) {
@@ -1051,6 +1425,7 @@ class SearchPage extends React.Component {
 		// clean needed here at later date
 		if ((key === '' || key === 'Datasets') && datasetCount === 0) showSort = false;
 		if (key === 'Tools' && toolCount === 0) showSort = false;
+		if (key === 'Datauses' && dataUseRegisterCount === 0) showSort = false;
 		if (key === 'Papers' && paperCount === 0) showSort = false;
 		if (key === 'People' && personCount === 0) showSort = false;
 		if (key === 'Courses' && courseCount === 0) showSort = false;
@@ -1058,6 +1433,7 @@ class SearchPage extends React.Component {
 
 		let datasetPaginationItems = [];
 		let toolPaginationItems = [];
+		let dataUseRegisterPaginationItems = [];
 		let paperPaginationItems = [];
 		let personPaginationItems = [];
 		let coursePaginationItems = [];
@@ -1077,6 +1453,17 @@ class SearchPage extends React.Component {
 		// Tool Pagination
 		for (let i = 1; i <= Math.ceil(toolCount / maxResult); i++) {
 			toolPaginationItems.push(
+				<Pagination.Item
+					key={i}
+					active={i === toolIndex / maxResult + 1}
+					onClick={() => this.handlePagination(typeMapper.Tools, (i - 1) * maxResult)}>
+					{i}
+				</Pagination.Item>
+			);
+		}
+		// Datause Pagination
+		for (let i = 1; i <= Math.ceil(toolCount / maxResult); i++) {
+			dataUseRegisterPaginationItems.push(
 				<Pagination.Item
 					key={i}
 					active={i === toolIndex / maxResult + 1}
@@ -1130,6 +1517,93 @@ class SearchPage extends React.Component {
 			);
 		}
 
+		const dropdownMenu = (
+			<div className='text-right save-dropdown'>
+				{key === 'Tools' ? (
+					<SortDropdown
+						handleSort={this.handleSort}
+						sort={toolSort === '' ? (search === '' ? 'latest' : 'relevance') : toolSort}
+						dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
+					/>
+				) : (
+					''
+				)}
+
+				{key === 'Datauses' ? (
+					<SortDropdown
+						handleSort={this.handleSort}
+						sort={toolSort === '' ? (search === '' ? 'latest' : 'relevance') : toolSort}
+						dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
+					/>
+				) : (
+					''
+				)}
+
+				{key === 'Datasets' ? (
+					<SortDropdown
+						handleSort={this.handleSort}
+						sort={datasetSort === '' ? (search === '' ? 'metadata' : 'relevance') : datasetSort}
+						dropdownItems={['relevance', 'popularity', 'metadata', 'latest', 'resources']}
+					/>
+				) : (
+					''
+				)}
+
+				{key === 'Collections' ? (
+					<SortDropdown
+						handleSort={this.handleSort}
+						sort={collectionSort === '' ? (search === '' ? 'latest' : 'relevance') : collectionSort}
+						dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
+					/>
+				) : (
+					''
+				)}
+
+				{key === 'Papers' ? (
+					<SortDropdown
+						handleSort={this.handleSort}
+						sort={paperSort === '' ? (search === '' ? 'sortbyyear' : 'relevance') : paperSort}
+						dropdownItems={['relevance', 'popularity', 'sortbyyear', 'resources']}
+					/>
+				) : (
+					''
+				)}
+
+				{key === 'People' ? (
+					<SortDropdown
+						handleSort={this.handleSort}
+						sort={personSort === '' ? (search === '' ? 'latest' : 'relevance') : personSort}
+						dropdownItems={['relevance', 'popularity', 'latest']}
+					/>
+				) : (
+					''
+				)}
+			</div>
+		);
+
+		let preferenceFilters = {};
+		let perferenceSort = '';
+		if (key === 'Datasets') {
+			preferenceFilters = selectedV2Datasets;
+			perferenceSort = datasetSort;
+		} else if (key === 'Tools') {
+			preferenceFilters = selectedV2Tools;
+			perferenceSort = toolSort;
+		} else if (key === 'Datauses') {
+			preferenceFilters = selectedV2Datauses;
+			perferenceSort = dataUseRegisterSort;
+		} else if (key === 'Paper') {
+			preferenceFilters = selectedV2Papers;
+			perferenceSort = paperSort;
+		} else if (key === 'Collections') {
+			preferenceFilters = selectedV2Collections;
+			perferenceSort = collectionSort;
+		} else if (key === 'Courses') {
+			preferenceFilters = selectedV2Courses;
+		} else if (key === 'People') {
+			perferenceSort = personSort;
+		}
+
 		return (
 			<Sentry.ErrorBoundary fallback={<ErrorModal show={this.showModal} handleClose={this.hideModal} />}>
 				<div>
@@ -1148,6 +1622,7 @@ class SearchPage extends React.Component {
 							<Tabs className='tabsBackground gray700-13' activeKey={key} onSelect={this.handleSelect}>
 								<Tab eventKey='Datasets' title={'Datasets (' + datasetCount + ')'} />
 								<Tab eventKey='Tools' title={'Tools (' + toolCount + ')'} />
+								<Tab eventKey='Datauses' title={'Data uses (' + dataUseRegisterCount + ')'} />
 								<Tab eventKey='Collections' title={'Collections (' + collectionCount + ')'} />
 								<Tab eventKey='Courses' title={'Courses (' + courseCount + ')'} />
 								<Tab eventKey='Papers' title={'Papers (' + paperCount + ')'} />
@@ -1158,23 +1633,182 @@ class SearchPage extends React.Component {
 						</div>
 					</div>
 
+					<div className='container'>
+						{this.state.showDataUtilityBanner && (
+							<Alert variant='primary' className='blue-banner saved-preference-banner'>
+								<Row>
+									<Col>
+										<h5 className='indigo-bold-14'>Data utility wizard applied: Customer filters</h5>
+									</Col>
+								</Row>
+								<Row>
+									<Col md={9}>
+										You can continue to customise your filters below or edit alongside the search term in the data utility wizard.
+									</Col>
+									<Col md={3} className='data-utility-banner'>
+										<p
+											className='data-utility-link'
+											onClick={() => {
+												googleAnalytics.recordVirtualPageView('Data utility wizard');
+												googleAnalytics.recordEvent('Datasets', 'Clicked edit data utility wizard', 'Reopened data utility wizard modal');
+												this.openDataUtilityWizard(activeDataUtilityWizardStep);
+											}}>
+											Edit in data utility wizard
+										</p>
+									</Col>
+								</Row>
+							</Alert>
+						)}
+
+						{this.state.saveSuccess && !this.state.showSavedModal && (
+							<Alert variant='primary' className='blue-banner saved-preference-banner'>
+								Saved preference: "{this.state.showSavedName}"
+							</Alert>
+						)}
+						<Container className={this.state.saveSuccess && !this.state.showSavedModal && 'container-saved-preference-banner'}>
+							<Row className='filters filter-save'>
+								<Col className='title' lg={4}>
+									Showing {key === 'Datasets' ? <>{datasetCount} </> : ''}
+									{key === 'Tools' ? <>{toolCount} </> : ''}
+									{key === 'Datauses' ? <>{dataUseRegisterCount} </> : ''}
+									{key === 'Collections' ? <>{collectionCount} </> : ''}
+									{key === 'Courses' ? <>{courseCount} </> : ''}
+									{key === 'Papers' ? <>{paperCount} </> : ''}
+									{key === 'People' ? <>{personCount} </> : ''}
+									results {this.state.search != '' && `for '${this.state.search}'`}
+								</Col>
+								<Col lg={8} className='saved-buttons'>
+									{this.state.saveSuccess ? (
+										<Button variant='success' className='saved-disabled button-teal button-teal' disabled>
+											<SVGIcon width='15px' height='15px' name='tick' fill={'#fff'} /> Saved
+										</Button>
+									) : this.state.userState[0].loggedIn === false ? (
+										<Button variant='outline-success' className='saved button-teal' onClick={() => this.showLoginModal()}>
+											Save
+										</Button>
+									) : (
+										<Button variant='outline-success' className='saved button-teal' onClick={() => this.setState({ showSavedModal: true })}>
+											Save
+										</Button>
+									)}
+
+									{this.state.showSavedModal && (
+										<SaveModal
+											show={this.state.showSavedModal}
+											onHide={this.hideSavedModal}
+											onSaveHide={this.hideNoSaveSearchModal}
+											saveSuccess={this.showSuccessMessage}
+											saveName={this.showSavedName}
+											search={this.state.search}
+											filters={preferenceFilters}
+											sort={perferenceSort}
+											tab={this.state.key}
+										/>
+									)}
+
+									<Button
+										variant='light'
+										className='saved-preference button-tertiary'
+										onClick={
+											this.state.userState[0].loggedIn === false
+												? () => this.showLoginModal()
+												: () => this.setState({ showSavedPreferencesModal: true })
+										}>
+										{' '}
+										Saved preferences
+									</Button>
+									{this.state.showSavedPreferencesModal && (
+										<SavedPreferencesModal
+											show={this.state.showSavedPreferencesModal}
+											onHide={this.hideSavedPreferencesModal}
+											viewMatchesLink={this.viewMatches}
+											viewSaved={this.saveFiltersUpdate}
+											activeTab={key}
+										/>
+									)}
+
+									{dropdownMenu}
+								</Col>
+							</Row>
+							<Row>
+								{this.state.key === 'Datasets' ? (
+									<FilterSelection
+										selectedCount={selectedV2Datasets.length}
+										selectedItems={selectedV2Datasets}
+										onHandleClearSelection={this.handleClearSelection}
+										onHandleClearAll={this.handleClearAll}
+										savedSearches={true}
+									/>
+								) : (
+									''
+								)}
+								{this.state.key === 'Tools' ? (
+									<FilterSelection
+										selectedCount={selectedV2Tools.length}
+										selectedItems={selectedV2Tools}
+										onHandleClearSelection={this.handleClearSelection}
+										onHandleClearAll={this.handleClearAll}
+										savedSearches={true}
+									/>
+								) : (
+									''
+								)}
+								{this.state.key === 'Datauses' ? (
+									<FilterSelection
+										selectedCount={selectedV2Datauses.length}
+										selectedItems={selectedV2Datauses}
+										onHandleClearSelection={this.handleClearSelection}
+										onHandleClearAll={this.handleClearAll}
+										savedSearches={true}
+									/>
+								) : (
+									''
+								)}
+								{this.state.key === 'Papers' ? (
+									<FilterSelection
+										selectedCount={selectedV2Papers.length}
+										selectedItems={selectedV2Papers}
+										onHandleClearSelection={this.handleClearSelection}
+										onHandleClearAll={this.handleClearAll}
+										savedSearches={true}
+									/>
+								) : (
+									''
+								)}
+								{this.state.key === 'Courses' ? (
+									<FilterSelection
+										selectedCount={selectedV2Courses.length}
+										selectedItems={selectedV2Courses}
+										onHandleClearSelection={this.handleClearSelection}
+										onHandleClearAll={this.handleClearAll}
+										savedSearches={true}
+									/>
+								) : (
+									''
+								)}
+								{this.state.key === 'Collections' ? (
+									<FilterSelection
+										selectedCount={selectedV2Collections.length}
+										selectedItems={selectedV2Collections}
+										onHandleClearSelection={this.handleClearSelection}
+										onHandleClearAll={this.handleClearAll}
+										savedSearches={true}
+									/>
+								) : (
+									''
+								)}
+							</Row>
+						</Container>
+					</div>
 					<Container>
 						<Row>
 							{key !== 'People' ? (
-								<Col sm={12} md={12} lg={3} className='mt-4 mb-5'>
+								<Col sm={12} md={12} lg={3} className='mt-1 mb-5'>
 									{key === 'Datasets' ? (
 										<Fragment>
-											<div className='filterHolder'>
-												{selectedV2.length > 0 && (
-													<FilterSelection
-														selectedCount={selectedV2.length}
-														selectedItems={selectedV2}
-														onHandleClearSelection={this.handleClearSelection}
-														onHandelClearAll={this.handleClearAll}
-													/>
-												)}
+											<div className='saved-filterHolder'>
 												<Filter
-													data={filtersV2}
+													data={filtersV2Datasets}
 													onHandleInputChange={this.handleInputChange}
 													onHandleClearSection={this.handleClearSection}
 													onHandleToggle={this.handleToggle}
@@ -1186,534 +1820,83 @@ class SearchPage extends React.Component {
 									)}
 
 									{key === 'Tools' ? (
-										<>
-											<div className='filterHolder'>
-												{toolCategoriesSelected.length !== 0 ||
-												toolProgrammingLanguageSelected.length !== 0 ||
-												toolFeaturesSelected.length !== 0 ||
-												toolTopicsSelected.length !== 0 ? (
-													<div className='filterCard mb-2'>
-														<Row>
-															<Col className='mb-2'>
-																<div className='inlineBlock'>
-																	<div className='gray500-13'>Showing:</div>
-																</div>
-																<div className='floatRight'>
-																	<div className='purple-13 pointer' onClick={() => this.clearFilter('All')}>
-																		Clear all
-																	</div>
-																</div>
-															</Col>
-														</Row>
-
-														{!toolCategoriesSelected || toolCategoriesSelected.length <= 0
-															? ''
-															: toolCategoriesSelected.map(selected => {
-																	return (
-																		<div className='badge-tag'>
-																			{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
-																			<span
-																				className='gray800-14-opacity pointer'
-																				onClick={() => this.clearFilter(selected, 'toolCategoriesSelected')}>
-																				X
-																			</span>
-																		</div>
-																	);
-															  })}
-
-														{!toolProgrammingLanguageSelected || toolProgrammingLanguageSelected.length <= 0
-															? ''
-															: toolProgrammingLanguageSelected.map(selected => {
-																	return (
-																		<div className='badge-tag'>
-																			{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
-																			<span
-																				className='gray800-14-opacity pointer'
-																				onClick={() => this.clearFilter(selected, 'toolProgrammingLanguageSelected')}>
-																				X
-																			</span>
-																		</div>
-																	);
-															  })}
-
-														{!toolFeaturesSelected || toolFeaturesSelected.length <= 0
-															? ''
-															: toolFeaturesSelected.map(selected => {
-																	return (
-																		<div className='badge-tag'>
-																			{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
-																			<span
-																				className='gray800-14-opacity pointer'
-																				onClick={() => this.clearFilter(selected, 'toolFeaturesSelected')}>
-																				X
-																			</span>
-																		</div>
-																	);
-															  })}
-
-														{!toolTopicsSelected || toolTopicsSelected.length <= 0
-															? ''
-															: toolTopicsSelected.map(selected => {
-																	return (
-																		<div className='badge-tag'>
-																			{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
-																			<span
-																				className='gray800-14-opacity pointer'
-																				onClick={() => this.clearFilter(selected, 'toolTopicsSelected')}>
-																				X
-																			</span>
-																		</div>
-																	);
-															  })}
-													</div>
-												) : (
-													''
-												)}
-												<Filters
-													data={filterOptions.toolCategoriesFilterOptions}
-													allFilters={allFilters.toolCategoryFilter}
-													updateOnFilter={this.updateOnFilter}
-													selected={toolCategoriesSelected}
-													title='Type'
-												/>
-												<Filters
-													data={filterOptions.programmingLanguageFilterOptions}
-													allFilters={allFilters.toolLanguageFilter}
-													updateOnFilter={this.updateOnFilter}
-													selected={toolProgrammingLanguageSelected}
-													title='Programming language'
-												/>
-												<Filters
-													data={filterOptions.featuresFilterOptions}
-													allFilters={allFilters.toolFeatureFilter}
-													updateOnFilter={this.updateOnFilter}
-													selected={toolFeaturesSelected}
-													title='Keywords'
-												/>
-												<Filters
-													data={filterOptions.toolTopicsFilterOptions}
-													allFilters={allFilters.toolTopicFilter}
-													updateOnFilter={this.updateOnFilter}
-													selected={toolTopicsSelected}
-													title='Domain'
+										<Fragment>
+											<div className='saved-filterHolder'>
+												<Filter
+													data={filtersV2Tools}
+													onHandleInputChange={this.handleInputChange}
+													onHandleClearSection={this.handleClearSection}
+													onHandleToggle={this.handleToggle}
 												/>
 											</div>
-										</>
+										</Fragment>
 									) : (
 										''
 									)}
-
-									{key === 'Collections' ? (
-										<>
-											<div className='filterHolder'>
-												{collectionKeywordsSelected.length !== 0 || collectionPublisherSelected.length !== 0 ? (
-													<div className='filterCard mb-2'>
-														<Row>
-															<Col className='mb-2'>
-																<div className='inlineBlock'>
-																	<div className='gray500-13'>Showing:</div>
-																</div>
-																<div className='floatRight'>
-																	<div className='purple-13 pointer' onClick={() => this.clearFilter('All')}>
-																		Clear all
-																	</div>
-																</div>
-															</Col>
-														</Row>
-
-														{!collectionKeywordsSelected || collectionKeywordsSelected.length <= 0
-															? ''
-															: collectionKeywordsSelected.map(selected => {
-																	return (
-																		<div className='badge-tag'>
-																			{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
-																			<span
-																				className='gray800-14-opacity pointer'
-																				onClick={() => this.clearFilter(selected, 'collectionKeywordsSelected')}>
-																				X
-																			</span>
-																		</div>
-																	);
-															  })}
-
-														{!collectionPublisherSelected || collectionPublisherSelected.length <= 0
-															? ''
-															: collectionPublisherSelected.map(selected => {
-																	if (!_.isNil(allFilters.collectionPublisherFilter)) {
-																		const collectionPublisherFilters = Object.values(allFilters.collectionPublisherFilter);
-
-																		return collectionPublisherFilters.map(filter => {
-																			if (selected === filter.result.toString()) {
-																				return (
-																					<div className='badge-tag'>
-																						{filter.value.substr(0, 80)} {filter.value.length > 80 ? '...' : ''}{' '}
-																						<span
-																							className='gray800-14-opacity pointer'
-																							onClick={() => this.clearFilter(selected, 'collectionPublisherSelected')}>
-																							X
-																						</span>
-																					</div>
-																				);
-																			}
-																		});
-																	}
-															  })}
-													</div>
-												) : (
-													''
-												)}
-												<Filters
-													data={filterOptions.collectionKeywordsFilterOptions}
-													allFilters={allFilters.collectionKeywordFilter}
-													updateOnFilter={this.updateOnFilter}
-													selected={collectionKeywordsSelected}
-													title='Keywords'
-												/>
-												<Filters
-													data={filterOptions.collectionPublisherFilterOptions}
-													allFilters={allFilters.collectionPublisherFilter}
-													updateOnFilter={this.updateOnFilter}
-													selected={collectionPublisherSelected}
-													title='Publisher'
-													isKeyValue={true}
+									{key === 'Datauses' ? (
+										<Fragment>
+											<div className='saved-filterHolder'>
+												<Filter
+													data={filtersV2Datauses}
+													onHandleInputChange={this.handleInputChange}
+													onHandleClearSection={this.handleClearSection}
+													onHandleToggle={this.handleToggle}
 												/>
 											</div>
-										</>
+										</Fragment>
 									) : (
 										''
 									)}
-
 									{key === 'Papers' ? (
-										<>
-											<div className='filterHolder'>
-												{paperFeaturesSelected.length !== 0 || paperTopicsSelected.length !== 0 ? (
-													<div className='filterCard mb-2'>
-														<Row>
-															<Col className='mb-2'>
-																<div className='inlineBlock'>
-																	<div className='gray500-13'>Showing:</div>
-																</div>
-																<div className='floatRight'>
-																	<div className='purple-13 pointer' onClick={() => this.clearFilter('All')}>
-																		Clear all
-																	</div>
-																</div>
-															</Col>
-														</Row>
-
-														{!paperFeaturesSelected || paperFeaturesSelected.length <= 0
-															? ''
-															: paperFeaturesSelected.map(selected => {
-																	return (
-																		<div className='badge-tag'>
-																			{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
-																			<span
-																				className='gray800-14-opacity pointer'
-																				onClick={() => this.clearFilter(selected, 'paperFeaturesSelected')}>
-																				X
-																			</span>
-																		</div>
-																	);
-															  })}
-
-														{!paperTopicsSelected || paperTopicsSelected.length <= 0
-															? ''
-															: paperTopicsSelected.map(selected => {
-																	return (
-																		<div className='badge-tag'>
-																			{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
-																			<span
-																				className='gray800-14-opacity pointer'
-																				onClick={() => this.clearFilter(selected, 'paperTopicsSelected')}>
-																				X
-																			</span>
-																		</div>
-																	);
-															  })}
-													</div>
-												) : (
-													''
-												)}
-												<Filters
-													data={filterOptions.paperFeaturesFilterOptions}
-													allFilters={allFilters.paperFeatureFilter}
-													updateOnFilter={this.updateOnFilter}
-													selected={paperFeaturesSelected}
-													title='Keywords'
-												/>
-												<Filters
-													data={filterOptions.paperTopicsFilterOptions}
-													allFilters={allFilters.paperTopicFilter}
-													updateOnFilter={this.updateOnFilter}
-													selected={paperTopicsSelected}
-													title='Domain'
+										<Fragment>
+											<div className='saved-filterHolder'>
+												<Filter
+													data={filtersV2Papers}
+													onHandleInputChange={this.handleInputChange}
+													onHandleClearSection={this.handleClearSection}
+													onHandleToggle={this.handleToggle}
 												/>
 											</div>
-										</>
+										</Fragment>
 									) : (
 										''
 									)}
-
 									{key === 'Courses' ? (
-										<>
-											<div className='filterHolder'>
-												{courseStartDatesSelected.length !== 0 ||
-												courseProviderSelected.length !== 0 ||
-												courseLocationSelected.length !== 0 ||
-												courseStudyModeSelected.length !== 0 ||
-												courseAwardSelected.length !== 0 ||
-												courseEntryLevelSelected.length !== 0 ||
-												courseDomainsSelected.length !== 0 ||
-												courseKeywordsSelected.length !== 0 ||
-												courseFrameworkSelected.length !== 0 ||
-												coursePrioritySelected.length !== 0 ? (
-													<div className='filterCard mb-2'>
-														<Row>
-															<Col className='mb-2'>
-																<div className='inlineBlock'>
-																	<div className='gray500-13'>Showing:</div>
-																</div>
-																<div className='floatRight'>
-																	<div className='purple-13 pointer' onClick={() => this.clearFilter('All')}>
-																		Clear all
-																	</div>
-																</div>
-															</Col>
-														</Row>
-
-														{!courseStartDatesSelected || courseStartDatesSelected.length <= 0
-															? ''
-															: courseStartDatesSelected.map(selected => {
-																	return (
-																		<div className='badge-tag'>
-																			{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
-																			<span
-																				className='gray800-14-opacity pointer'
-																				onClick={() => this.clearFilter(selected, 'courseStartDatesSelected')}>
-																				X
-																			</span>
-																		</div>
-																	);
-															  })}
-
-														{!courseProviderSelected || courseProviderSelected.length <= 0
-															? ''
-															: courseProviderSelected.map(selected => {
-																	return (
-																		<div className='badge-tag'>
-																			{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
-																			<span
-																				className='gray800-14-opacity pointer'
-																				onClick={() => this.clearFilter(selected, 'courseProviderSelected')}>
-																				X
-																			</span>
-																		</div>
-																	);
-															  })}
-
-														{!courseLocationSelected || courseLocationSelected.length <= 0
-															? ''
-															: courseLocationSelected.map(selected => {
-																	return (
-																		<div className='badge-tag'>
-																			{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
-																			<span
-																				className='gray800-14-opacity pointer'
-																				onClick={() => this.clearFilter(selected, 'courseLocationSelected')}>
-																				X
-																			</span>
-																		</div>
-																	);
-															  })}
-
-														{!courseStudyModeSelected || courseStudyModeSelected.length <= 0
-															? ''
-															: courseStudyModeSelected.map(selected => {
-																	return (
-																		<div className='badge-tag'>
-																			{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
-																			<span
-																				className='gray800-14-opacity pointer'
-																				onClick={() => this.clearFilter(selected, 'courseStudyModeSelected')}>
-																				X
-																			</span>
-																		</div>
-																	);
-															  })}
-
-														{!courseAwardSelected || courseAwardSelected.length <= 0
-															? ''
-															: courseAwardSelected.map(selected => {
-																	return (
-																		<div className='badge-tag'>
-																			{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
-																			<span
-																				className='gray800-14-opacity pointer'
-																				onClick={() => this.clearFilter(selected, 'courseAwardSelected')}>
-																				X
-																			</span>
-																		</div>
-																	);
-															  })}
-
-														{!courseEntryLevelSelected || courseEntryLevelSelected.length <= 0
-															? ''
-															: courseEntryLevelSelected.map(selected => {
-																	return (
-																		<div className='badge-tag'>
-																			{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
-																			<span
-																				className='gray800-14-opacity pointer'
-																				onClick={() => this.clearFilter(selected, 'courseEntryLevelSelected')}>
-																				X
-																			</span>
-																		</div>
-																	);
-															  })}
-
-														{!courseDomainsSelected || courseDomainsSelected.length <= 0
-															? ''
-															: courseDomainsSelected.map(selected => {
-																	return (
-																		<div className='badge-tag'>
-																			{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
-																			<span
-																				className='gray800-14-opacity pointer'
-																				onClick={() => this.clearFilter(selected, 'courseDomainsSelected')}>
-																				X
-																			</span>
-																		</div>
-																	);
-															  })}
-
-														{!courseKeywordsSelected || courseKeywordsSelected.length <= 0
-															? ''
-															: courseKeywordsSelected.map(selected => {
-																	return (
-																		<div className='badge-tag'>
-																			{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
-																			<span
-																				className='gray800-14-opacity pointer'
-																				onClick={() => this.clearFilter(selected, 'courseKeywordsSelected')}>
-																				X
-																			</span>
-																		</div>
-																	);
-															  })}
-
-														{!courseFrameworkSelected || courseFrameworkSelected.length <= 0
-															? ''
-															: courseFrameworkSelected.map(selected => {
-																	return (
-																		<div className='badge-tag'>
-																			{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
-																			<span
-																				className='gray800-14-opacity pointer'
-																				onClick={() => this.clearFilter(selected, 'courseFrameworkSelected')}>
-																				X
-																			</span>
-																		</div>
-																	);
-															  })}
-
-														{!coursePrioritySelected || coursePrioritySelected.length <= 0
-															? ''
-															: coursePrioritySelected.map(selected => {
-																	return (
-																		<div className='badge-tag'>
-																			{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
-																			<span
-																				className='gray800-14-opacity pointer'
-																				onClick={() => this.clearFilter(selected, 'coursePrioritySelected')}>
-																				X
-																			</span>
-																		</div>
-																	);
-															  })}
-													</div>
-												) : (
-													''
-												)}
-												<Filters
-													data={filterOptions.courseStartDatesFilterOptions}
-													allFilters={allFilters.courseStartDatesFilter}
-													updateOnFilter={this.updateOnFilter}
-													selected={courseStartDatesSelected}
-													title='Start date'
-												/>
-												<Filters
-													data={filterOptions.courseProviderFilterOptions}
-													allFilters={allFilters.courseProviderFilter}
-													updateOnFilter={this.updateOnFilter}
-													selected={courseProviderSelected}
-													title='Provider'
-												/>
-												<Filters
-													data={filterOptions.courseLocationFilterOptions}
-													allFilters={allFilters.courseLocationFilter}
-													updateOnFilter={this.updateOnFilter}
-													selected={courseLocationSelected}
-													title='Location'
-												/>
-												<Filters
-													data={filterOptions.courseStudyModeFilterOptions}
-													allFilters={allFilters.courseStudyModeFilter}
-													updateOnFilter={this.updateOnFilter}
-													selected={courseStudyModeSelected}
-													title='Study mode'
-												/>
-												<Filters
-													data={filterOptions.courseAwardFilterOptions}
-													allFilters={allFilters.courseAwardFilter}
-													updateOnFilter={this.updateOnFilter}
-													selected={courseAwardSelected}
-													title='Award'
-												/>
-												<Filters
-													data={filterOptions.courseEntryLevelFilterOptions}
-													allFilters={allFilters.courseEntryLevelFilter}
-													updateOnFilter={this.updateOnFilter}
-													selected={courseEntryLevelSelected}
-													title='Entry requirements'
-												/>
-												<Filters
-													data={filterOptions.courseDomainsFilterOptions}
-													allFilters={allFilters.courseDomainsFilter}
-													updateOnFilter={this.updateOnFilter}
-													selected={courseDomainsSelected}
-													title='Domain'
-												/>
-												<Filters
-													data={filterOptions.courseKeywordsFilterOptions}
-													allFilters={allFilters.courseKeywordsFilter}
-													updateOnFilter={this.updateOnFilter}
-													selected={courseKeywordsSelected}
-													title='Keywords'
-												/>
-												<Filters
-													data={filterOptions.courseFrameworkFilterOptions}
-													allFilters={allFilters.courseFrameworkFilter}
-													updateOnFilter={this.updateOnFilter}
-													selected={courseFrameworkSelected}
-													title='Competency framework'
-												/>
-												<Filters
-													data={filterOptions.coursePriorityFilterOptions}
-													allFilters={allFilters.coursePriorityFilter}
-													updateOnFilter={this.updateOnFilter}
-													selected={coursePrioritySelected}
-													title='National priority areas'
+										<Fragment>
+											<div className='saved-filterHolder'>
+												<Filter
+													data={filtersV2Courses}
+													onHandleInputChange={this.handleInputChange}
+													onHandleClearSection={this.handleClearSection}
+													onHandleToggle={this.handleToggle}
 												/>
 											</div>
-										</>
+										</Fragment>
 									) : (
 										''
 									)}
+									{key === 'Collections' ? (
+										<Fragment>
+											<div className='saved-filterHolder'>
+												<Filter
+													data={filtersV2Collections}
+													onHandleInputChange={this.handleInputChange}
+													onHandleClearSection={this.handleClearSection}
+													onHandleToggle={this.handleToggle}
+												/>
+											</div>
+										</Fragment>
+									) : (
+										''
+									)}
+
 									<div className='advanced-search-link-container'>
 										<CDStar fill='#f98e2b' height='20' width='20' />
 										<a
+											href='javascript:void(0)'
 											className='textUnderline gray800-14 cursorPointer'
 											onClick={() => {
+												googleAnalytics.recordEvent('Datasets', 'User clicked advanced search link', 'Advanced search modal opened');
 												this.toggleAdvancedSearchModal();
 											}}>
 											Advanced Search
@@ -1725,65 +1908,8 @@ class SearchPage extends React.Component {
 							)}
 
 							{!isResultsLoading ? (
-								<Col sm={12} md={12} lg={9} className='mt-4 mb-5'>
-									{!showSort ? (
-										''
-									) : (
-										<Row>
-											<Col className='text-right'>
-												{key === 'Tools' ? (
-													<SortDropdown
-														handleSort={this.handleSort}
-														sort={toolSort === '' ? (search === '' ? 'latest' : 'relevance') : toolSort}
-														dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
-													/>
-												) : (
-													''
-												)}
-
-												{key === 'Datasets' ? (
-													<SortDropdown
-														handleSort={this.handleSort}
-														sort={datasetSort === '' ? (search === '' ? 'metadata' : 'relevance') : datasetSort}
-														dropdownItems={['relevance', 'popularity', 'metadata', 'latest', 'resources']}
-													/>
-												) : (
-													''
-												)}
-
-												{key === 'Collections' ? (
-													<SortDropdown
-														handleSort={this.handleSort}
-														sort={collectionSort === '' ? (search === '' ? 'latest' : 'relevance') : collectionSort}
-														dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
-													/>
-												) : (
-													''
-												)}
-
-												{key === 'Papers' ? (
-													<SortDropdown
-														handleSort={this.handleSort}
-														sort={paperSort === '' ? (search === '' ? 'sortbyyear' : 'relevance') : paperSort}
-														dropdownItems={['relevance', 'popularity', 'sortbyyear', 'resources']}
-													/>
-												) : (
-													''
-												)}
-
-												{key === 'People' ? (
-													<SortDropdown
-														handleSort={this.handleSort}
-														sort={personSort === '' ? (search === '' ? 'latest' : 'relevance') : personSort}
-														dropdownItems={['relevance', 'popularity', 'latest']}
-													/>
-												) : (
-													''
-												)}
-											</Col>
-										</Row>
-									)}
-
+								<Col sm={12} md={12} lg={9} className='mt-1 mb-5'>
+									{!showSort ? '' : <Fragment>{!this.state.savedSearchPanel && <Row>{dropdownMenu}</Row>}</Fragment>}
 									{key === 'Datasets' ? (
 										datasetCount <= 0 ? (
 											<NoResults type='datasets' search={search} />
@@ -1791,16 +1917,14 @@ class SearchPage extends React.Component {
 											datasetData.map(dataset => {
 												let datasetPublisher;
 												let datasetLogo;
-												{
-													!_.isEmpty(dataset.datasetv2) && _.has(dataset, 'datasetv2.summary.publisher.name')
-														? (datasetPublisher = dataset.datasetv2.summary.publisher.name)
-														: (datasetPublisher = '');
-												}
-												{
-													!_.isEmpty(dataset.datasetv2) && _.has(dataset, 'datasetv2.summary.publisher.logo')
-														? (datasetLogo = dataset.datasetv2.summary.publisher.logo)
-														: (datasetLogo = '');
-												}
+
+												!_.isEmpty(dataset.datasetv2) && _.has(dataset, 'datasetv2.summary.publisher.name')
+													? (datasetPublisher = dataset.datasetv2.summary.publisher.name)
+													: (datasetPublisher = '');
+
+												!_.isEmpty(dataset.datasetv2) && _.has(dataset, 'datasetv2.summary.publisher.logo')
+													? (datasetLogo = dataset.datasetv2.summary.publisher.logo)
+													: (datasetLogo = '');
 
 												return (
 													<RelatedObject
@@ -1828,6 +1952,26 @@ class SearchPage extends React.Component {
 													<RelatedObject
 														key={tool.id}
 														data={tool}
+														activeLink={true}
+														onSearchPage={true}
+														updateOnFilterBadge={this.updateOnFilterBadge}
+													/>
+												);
+											})
+										)
+									) : (
+										''
+									)}
+
+									{key === 'Datauses' ? (
+										dataUseRegisterCount <= 0 ? (
+											<NoResults type='datauses' search={search} />
+										) : (
+											dataUseRegisterData.map(dataUseRegister => {
+												return (
+													<RelatedObject
+														key={dataUseRegister.id}
+														data={dataUseRegister}
 														activeLink={true}
 														onSearchPage={true}
 														updateOnFilterBadge={this.updateOnFilterBadge}
@@ -1942,6 +2086,12 @@ class SearchPage extends React.Component {
 
 										{key === 'Tools' && toolCount > maxResult ? <Pagination>{toolPaginationItems}</Pagination> : ''}
 
+										{key === 'Datauses' && dataUseRegisterCount > maxResult ? (
+											<Pagination>{dataUseRegisterPaginationItems}</Pagination>
+										) : (
+											''
+										)}
+
 										{key === 'Papers' && paperCount > maxResult ? <Pagination>{paperPaginationItems}</Pagination> : ''}
 
 										{key === 'People' && personCount > maxResult ? <Pagination>{personPaginationItems}</Pagination> : ''}
@@ -1952,7 +2102,7 @@ class SearchPage extends React.Component {
 									</div>
 								</Col>
 							) : (
-								<Col style={{ marginTop: '60px' }} sm={12} md={12} lg={9}>
+								<Col style={{ marginTop: '30px' }} sm={12} md={12} lg={9}>
 									<Loading />
 								</Col>
 							)}
@@ -1970,9 +2120,26 @@ class SearchPage extends React.Component {
 
 					<AdvancedSearchModal
 						open={showAdvancedSearchModal}
-						context={context}
 						closed={this.toggleAdvancedSearchModal}
 						userProps={userState[0]}
+						startDataUtilityWizardJourney={this.openDataUtilityWizard}
+					/>
+
+					<DataUtilityWizardModal
+						open={this.state.showDataUtilityWizardModal}
+						closed={() => {
+							this.toggleDataUtilityWizardModal();
+						}}
+						dataUtilityWizardSteps={this.state.dataUtilityWizardSteps}
+						updateFilterStates={this.updateFilterStates}
+						datasetCount={datasetCount}
+						doSearchCall={this.doSearchCall}
+						selectedItems={selectedV2Datasets}
+						handleClearSelection={this.handleClearSelection}
+						searchValue={this.state.search}
+						activeStep={activeDataUtilityWizardStep}
+						onWizardComplete={this.toggleDataUtilityBanner}
+						onStepChange={this.onWizardStepChange}
 					/>
 
 					<DataSetModal open={showModal} context={context} closed={this.toggleModal} userState={userState[0]} />

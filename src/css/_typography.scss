@@ -220,3 +220,7 @@ h6 {
 .rejected-red-semibold-14 {
 	@include font-source(14px, $red-rejected, $font-weight-semibold);
 }
+
+.indigo-bold-14 {
+	@include font-source(14px, $indigo, $font-weight-bold);
+}

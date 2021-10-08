@@ -18,8 +18,7 @@ import { ReactComponent as MetadataGold } from '../../images/goldNew.svg';
 import { ReactComponent as MetadataPlatinum } from '../../images/platinumNew.svg';
 import { ReactComponent as MetadataNotRated } from '../../images/notRatedNew.svg';
 import { ReactComponent as GoldStar } from '../../images/cd-star.svg';
-import { PageView, initGA } from '../../tracking';
-import { Event } from '../../tracking';
+import googleAnalytics from '../../tracking';
 import Linkify from 'react-linkify';
 import DatasetSchema from './DatasetSchema';
 import TechnicalMetadata from './components/TechnicalMetadata';
@@ -123,8 +122,6 @@ class DatasetDetail extends Component {
 	async componentDidMount() {
 		await this.getDataset();
 		this.checkAlerts();
-		initGA('UA-166025838-1');
-		PageView();
 	}
 
 	// on loading of tool detail page were id is different
@@ -643,7 +640,7 @@ class DatasetDetail extends Component {
 		} else if (action === 'SUBMIT_APPLICATION') {
 			console.log('Take user to application');
 			const { publisher } = this.topicContext.datasets[0];
-			Event('Buttons', 'Click', 'Request Access');
+			googleAnalytics.recordEvent('Data access request', 'Start application', 'Modal button clicked');
 			this.props.history.push({ pathname: `/data-access-request/publisher/${publisher}` }, { datasets: this.topicContext.datasets });
 		}
 	};
@@ -785,6 +782,7 @@ class DatasetDetail extends Component {
 			<Sentry.ErrorBoundary fallback={<ErrorModal show={this.showModal} handleClose={this.hideModal} />}>
 				<Fragment>
 					<DatasetSchema data={data} />
+
 					<SearchBar
 						ref={this.searchBar}
 						searchString={searchString}
@@ -893,7 +891,11 @@ class DatasetDetail extends Component {
 													className='btn btn-primary addButton pointer float-right'
 													onClick={() => {
 														this.toggleModal();
-														Event('Buttons', 'Click', 'Request Access');
+														googleAnalytics.recordEvent(
+															'Data access request',
+															'How to request access',
+															'Dataset page primary button clicked'
+														);
 													}}>
 													How to request access
 												</button>
@@ -909,7 +911,12 @@ class DatasetDetail extends Component {
 							<Col sm={1} />
 							<Col sm={10}>
 								<div>
-									<Tabs className='tabsBackground gray700-13 margin-bottom-16'>
+									<Tabs
+										className='tabsBackground gray700-13 margin-bottom-16'
+										onSelect={key => {
+											googleAnalytics.recordVirtualPageView(`${key} tab`);
+											googleAnalytics.recordEvent('Datasets', `Clicked ${key} tab`, `Viewing ${key}`);
+										}}>
 										<Tab eventKey='About' title={'About'}>
 											{!isEmpty(v2data.summary.abstract) ? (
 												<Row className='mt-1'>
@@ -1256,7 +1263,7 @@ class DatasetDetail extends Component {
 										</Tab>
 
 										<Tab
-											eventKey='TechDetails'
+											eventKey='Technical details'
 											title={
 												this.state.datasetHasCohortProfiling ? (
 													<span style={{ display: 'flex' }}>
@@ -1319,7 +1326,7 @@ class DatasetDetail extends Component {
 											)}
 										</Tab>
 
-										<Tab eventKey='DataUtility' title={`Data utility`}>
+										<Tab eventKey='Data utility' title={`Data utility`}>
 											<Row className='mt-2'>
 												<Col sm={12}>
 													<div className='rectangle pad-bottom-16'>
@@ -1358,7 +1365,7 @@ class DatasetDetail extends Component {
 											</Row>
 										</Tab>
 
-										<Tab eventKey='Collaboration' title={`Discussion (${discoursePostCount})`}>
+										<Tab eventKey='Discussion' title={`Discussion (${discoursePostCount})`}>
 											<DiscourseTopic
 												toolId={data.id}
 												topicId={data.discourseTopicId || 0}
@@ -1366,7 +1373,8 @@ class DatasetDetail extends Component {
 												onUpdateDiscoursePostCount={this.updateDiscoursePostCount}
 											/>
 										</Tab>
-										<Tab eventKey='Projects' title={'Related resources (' + relatedObjects.length + ')'}>
+
+										<Tab eventKey='Related resources' title={'Related resources (' + relatedObjects.length + ')'}>
 											{data.relatedObjects && data.relatedObjects.length <= 0 ? (
 												<NotFound word='related resources' />
 											) : (
@@ -1377,6 +1385,7 @@ class DatasetDetail extends Component {
 												))
 											)}
 										</Tab>
+
 										<Tab eventKey='Collections' title={'Collections (' + collections.length + ')'}>
 											{!collections || collections.length <= 0 ? (
 												<NotFound text='This dataset has not been featured on any collections yet.' />

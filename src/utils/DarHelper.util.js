@@ -65,6 +65,7 @@ let darApplicationTypes = {
 	amendment: 'amendment',
 	extension: 'extension',
 	renewal: 'renewal',
+	update: 'update',
 };
 
 let darSLAText = {
@@ -135,6 +136,30 @@ const flagPanelIcons = {
 	WARNING: 'fas fa-circle warning',
 	SUCCESS: 'fas fa-check success',
 	DANGER: 'fas fa-circle danger',
+};
+
+const activityLogEvents = {
+	APPLICATION_SUBMITTED: 'applicationSubmitted',
+	REVIEW_PROCESS_STARTED: 'reviewProcessStarted',
+	UPDATES_SUBMITTED: 'updatesSubmitted',
+	AMENDMENT_SUBMITTED: 'amendmentSubmitted',
+	APPLICATION_APPROVED: 'applicationApproved',
+	APPLICATION_APPROVED_WITH_CONDITIONS: 'applicationApprovedWithConditions',
+	APPLICATION_REJECTED: 'applicationRejected',
+	COLLABORATOR_ADDEDD: 'collaboratorAdded',
+	COLLABORATOR_REMOVED: 'collaboratorRemoved',
+	UPDATE_REQUESTED: 'updateRequested',
+	UPDATE_SUBMITTED: 'updateSubmitted',
+	WORKFLOW_ASSIGNED: 'workflowAssigned',
+	REVIEW_PHASE_STARTED: 'reviewPhaseStarted',
+	RECOMMENDATION_WITH_ISSUE: 'reccomendationWithIssue',
+	RECOMMENDATION_WITH_NO_ISSUE: 'reccomendationWithNoIssue',
+	FINAL_DECISION_REQUIRED: 'finalDecisionRequired',
+	DEADLINE_PASSED: 'deadlinePassed',
+	PRESUBMISSION_MESSAGE: 'presubmissionMessage',
+	MANUAL_EVENT: 'manualEvent',
+	CONTEXTUAL_MESSAGE: 'contextualMessage',
+	NOTE: 'note',
 };
 
 /**
@@ -239,6 +264,9 @@ let configActionModal = (type = '') => {
 						},
 					},
 				};
+				break;
+			default:
+				return type;
 		}
 	}
 
@@ -331,7 +359,7 @@ let totalQuestionsAnswered = (component, panelId = '', questionAnswers = {}, jso
 		}
 		let { questionPanels = [], questionSets = [] } = jsonSchema;
 		// 2. omits out blank null, undefined, and [] values from this.state.answers
-		questionAnswers = _.pickBy({ ...questionAnswers }, v => v !== null && v !== undefined && v.length != 0);
+		questionAnswers = _.pickBy({ ...questionAnswers }, v => v !== null && v !== undefined && v.length !== 0);
 		// 3. find the relevant questionSetIds within the panel
 		const qPanel = questionPanels.find(qp => qp.panelId === panelId);
 		if (!_.isNil(qPanel)) {
@@ -595,4 +623,5 @@ export default {
 	userTypes: userTypes,
 	amendmentStatuses: amendmentStatuses,
 	removeStaticPages: removeStaticPages,
+	activityLogEvents: activityLogEvents,
 };

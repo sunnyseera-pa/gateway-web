@@ -58,7 +58,7 @@ class Login extends React.Component {
 						<Col sm={1} lg={1} />
 						<Col sm={10} lg={10}>
 							<div className='gray800-14' style={{ textAlign: 'center' }}>
-								<a href='#' onClick={this.showWayFinder} className='loginButtonHolder'>
+								<a href='javascript:void(0)' onClick={this.showWayFinder} className='loginButtonHolder'>
 									<Image className='loginImageOn' src={require('../../images/open-athens-default.png')} />
 									<Image className='loginImageOff' src={require('../../images/open-athens-hover.png')} />
 								</a>
@@ -72,7 +72,7 @@ class Login extends React.Component {
 					<Row className='mt-3 text-center'>
 						<Col sm={1} lg={1} />
 						<Col sm={10} lg={10}>
-							<a href='#' onClick={this.hideWayFinder} className='purple-14'>
+							<a href='javascript:void(0)' onClick={this.hideWayFinder} className='purple-14'>
 								Show all login options
 							</a>
 						</Col>
