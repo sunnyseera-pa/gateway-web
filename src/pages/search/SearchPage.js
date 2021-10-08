@@ -681,7 +681,6 @@ class SearchPage extends React.Component {
 				// get the correct entity type from our mapper via the selected tab ie..'Dataset, Tools'
 				const entityType = typeMapper[`${this.state.key}`];
 				// pull out the dynamic key : set data and filters
-				let t = this.state.key;
 				let {
 					[`${entityType}Results`]: { data = [] },
 					summary = [],
