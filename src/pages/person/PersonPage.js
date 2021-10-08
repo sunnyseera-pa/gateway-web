@@ -8,7 +8,6 @@ import Tool from '../commonComponents/Tool';
 import NotFound from '../commonComponents/NotFound';
 import ReviewsTitle from '../commonComponents/ReviewTitle';
 import Loading from '../commonComponents/Loading';
-import Project from '../commonComponents/Project';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
 import UserMessages from '../commonComponents/userMessages/UserMessages';
 import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
@@ -88,7 +87,6 @@ const PersonDetail = props => {
 	}
 
 	let tools = [];
-	let projects = [];
 	let reviews = [];
 
 	if (data.tools.length > 0) {
@@ -98,11 +96,6 @@ const PersonDetail = props => {
 				(object.type === 'tool' && object.activeflag === 'review' && object.authors.includes(userState[0].id))
 			) {
 				tools.push(object);
-			} else if (
-				(object.type === 'project' && object.activeflag === 'active') ||
-				(object.type === 'project' && object.activeflag === 'review' && object.authors.includes(userState[0].id))
-			) {
-				projects.push(object);
 			}
 		});
 	}
@@ -155,15 +148,6 @@ const PersonDetail = props => {
 										<NotFound word='data sets' />
 									) : (
 										data.datasetids.map(id => <DataSet id={id} activeLink={true} />)
-									)}
-								</Tab>
-								<Tab eventKey='Projects' title={'Projects (' + projects.length + ')'}>
-									{projects.length <= 0 ? (
-										<NotFound word='projects' />
-									) : (
-										projects.map(project => {
-											return <Project id={project.id} activeLink={true} />;
-										})
 									)}
 								</Tab>
 							</Tabs>
