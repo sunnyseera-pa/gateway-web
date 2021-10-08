@@ -153,7 +153,7 @@ class RelatedObject extends React.Component {
 		} else if (this.props.showRelationshipQuestion) {
 			rectangleClassName = 'collection-rectangleWithBorder';
 		}
-
+		console.log(data);
 		return (
 			<Row className='resource-card-row'>
 				<Col>
@@ -364,10 +364,10 @@ class RelatedObject extends React.Component {
 								return (
 									<Row className='noMargin'>
 										<Col sm={10} lg={10} className='pad-left-24'>
-											<div>Title</div>
-											<div>Organisation</div>
-											<div>Keywords</div>
-											<div>Datasets</div>
+											<div>{data.projectTitle}</div>
+											<div>{data.organisationName}</div>
+											<div>{data.keywords}</div>
+											<div>{data.datasetTitles}</div>
 											<div>Data custodian</div>
 										</Col>
 									</Row>
