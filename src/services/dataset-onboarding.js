@@ -10,6 +10,10 @@ const getDatasetOnboarding = (_id, options) => {
 	return getRequest(`${apiURL}/dataset-onboarding/${_id}`, options);
 };
 
+const getPublisher = (_id, options) => {
+	return getRequest(`${apiURL}/dataset-onboarding/publisher${_id}`, options);
+};
+
 const postDatasetOnboarding = (_id, data, options) => {
 	return postRequest(`${apiURL}/dataset-onboarding/${_id}`, data, options);
 };
@@ -46,6 +50,13 @@ const usePostDatasetOnboarding = (requestOptions, mutateOptions = { queryKey: 'p
 	});
 };
 
+export const useGetPublisher = (requestOptions, queryOptions = { queryKey: 'getPublisher' }) => {
+	return useQuery({
+		...queryOptions,
+		queryFn: _id => getPublisher(_id, requestOptions),
+	});
+};
+
 const usePutDatasetOnboarding = (requestOptions, mutateOptions = { queryKey: 'putDatasetOnboarding' }) => {
 	return useMutation((_id, data) => putDatasetOnboarding(_id, data, requestOptions), {
 		mutateOptions,
@@ -68,12 +79,14 @@ export const useDeleteDatasetOnboarding = (requestOptions, queryOptions = { quer
 export default {
 	getDatasetOnboardings,
 	getDatasetOnboarding,
+	getPublisher,
 	postDatasetOnboarding,
 	putDatasetOnboarding,
 	patchDatasetOnboarding,
 	deleteDatasetOnboarding,
 	useGetDatasetOnboardings,
 	useGetDatasetOnboarding,
+	useGetPublisher,
 	usePostDatasetOnboarding,
 	usePutDatasetOnboarding,
 	usePatchDatasetOnboarding,
