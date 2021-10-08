@@ -63,3 +63,195 @@
 .data-use-action:hover {
 	background-color: $gray-400 !important;
 }
+
+.datause-view {
+	padding-left: 32px;
+	padding-right: 32px;
+}
+
+.datause-view-grid {
+	padding-bottom: 12px;
+}
+
+.datause-relatedresource-input {
+	height: 48px;
+	padding: 14px 12px;
+	border-radius: 4px;
+	border: solid 2px $gray-400 !important;
+	padding: 5px;
+	color: $gray-800;
+	width: 100%;
+}
+
+.datause-comments-divider {
+	position: relative;
+	margin-bottom: 20px;
+	width: 100%;
+	text-align: center !important;
+}
+
+.datause-comments-divider span {
+	position: absolute;
+	top: -11px;
+	background: #fff;
+	padding: 0 10px;
+	margin-left: -140px;
+}
+
+.datause-relatedresource-search {
+	padding-top: 16px;
+}
+
+.datause-comments-section {
+	padding-top: 16px;
+	padding-bottom: 16px;
+}
+
+.datause-comments-date {
+	text-align: right;
+}
+
+.datause-relatedresource-cointainer {
+	margin-top: 16px;
+}
+
+.datause-dropdown {
+	width: 100% !important;
+	height: 42px;
+	text-align: left;
+}
+
+.datause-hidefields-button {
+	justify-content: center;
+}
+
+.datause-about-info {
+	padding-top: 10px;
+	text-align: center;
+}
+
+.datause-info-icon {
+	margin-top: 4px;
+}
+
+.datause-info-icon-button {
+	background-color: transparent !important;
+	border: none !important;
+	padding: 0;
+	height: 17px;
+	width: 17px;
+	margin-top: -3px;
+	margin-left: -9px;
+}
+.datause-info-icon-button:focus {
+	outline: none;
+}
+
+.datause-info-icon-button:hover {
+	background-color: transparent !important;
+	border-color: transparent !important;
+}
+
+.datause-arrow {
+	background: none;
+	border: none;
+}
+
+.datause-arrow:focus {
+	outline: none;
+}
+
+.datause-button {
+	background-color: $gray-200 !important;
+	color: $indigo !important;
+	border: $gray-200 !important;
+	font-size: 14px !important;
+	width: 186px;
+	height: 40px;
+	padding: 12px 18.5px 11px;
+}
+
+.datause-button:active,
+.datause-button:focus {
+	border: $gray-200 !important;
+	outline: none !important;
+}
+
+.datause-relatedresources-search {
+	display: inline-block;
+	border: solid 2px $gray-300 !important;
+	padding: 5px;
+	width: 100%;
+}
+
+.datause-relatedresources-search-input {
+	display: inline-block;
+	width: 90%;
+	color: $gray-800;
+	outline: none;
+	border: 0;
+}
+
+.datause-relatedresources-searchicon {
+	float: left;
+	width: 40px;
+	padding: 2px 0px 0px 4px;
+}
+
+.badge-datause {
+	background-color: #e07410 !important;
+	color: white !important;
+}
+
+.datause-bottombanner {
+	margin-bottom: -99px;
+	margin-top: 99px;
+	border-top: 1px solid $gray-200;
+	width: 101vw;
+}
+
+.datause-addcollection {
+	margin-left: auto;
+	background-color: $gray-200 !important;
+	color: $indigo !important;
+	border: $gray-200 !important;
+	font-size: 14px !important;
+	width: 148px;
+	height: 40px;
+}
+
+.hdruser {
+	background-color: #e5f7f1;
+}
+
+.nonhdruser {
+	border: 2px solid #e5f7f1;
+	background-color: white;
+}
+
+.datatuse-personicon-bg {
+	width: 17px;
+	height: 17px;
+	border-radius: 50%;
+	background-color: #a1e6cf;
+	display: inline-block;
+	margin-top: 3px;
+}
+
+.badge-datause-bold {
+	font-weight: 500 !important;
+	margin-top: -3px;
+}
+
+.datatuse-summary {
+	flex-direction: column;
+}
+
+.datause-safeInfo {
+	padding-left: 28px !important;
+}
+
+.datause-comments-section {
+	background-color: $gray-light;
+	border-radius: 4px;
+}
