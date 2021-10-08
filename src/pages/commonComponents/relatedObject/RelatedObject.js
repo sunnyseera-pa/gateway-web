@@ -153,7 +153,7 @@ class RelatedObject extends React.Component {
 		} else if (this.props.showRelationshipQuestion) {
 			rectangleClassName = 'collection-rectangleWithBorder';
 		}
-		console.log(data);
+
 		return (
 			<Row className='resource-card-row'>
 				<Col>
@@ -364,11 +364,31 @@ class RelatedObject extends React.Component {
 								return (
 									<Row className='noMargin'>
 										<Col sm={10} lg={10} className='pad-left-24'>
-											<div>{data.projectTitle}</div>
-											<div>{data.organisationName}</div>
-											<div>{data.keywords}</div>
-											<div>{data.datasetTitles}</div>
-											<div>Data custodian</div>
+											{activeLink === true ? (
+												<a className='purple-bold-16' style={{ cursor: 'pointer' }} href={'/datause/' + data.id}>
+													{data.projectTitle}
+												</a>
+											) : (
+												<span className='black-bold-16'> {data.projectTitle}</span>
+											)}
+											<br />
+											<span className='gray800-14'>{data.organisationName}</span>
+											<br />
+											<span className='badge-datause'>
+												<SVGIcon name='datauseicon' fill={'#ffffff'} className='badgeSvg mr-2' viewBox='-2 -2 22 22' />
+												<span>Data use</span>
+											</span>
+											{data.keywords.map(word => (
+												<span className='badge-tag'>{word}</span>
+											))}
+											<Row>
+												<Col className='gray800-14-opacity'>Datasets</Col>
+												<Col className='gray800-14'>{data.datasetTitles.join(',')}</Col>
+											</Row>
+											<Row>
+												<Col className='gray800-14-opacity'>Data custodian</Col>
+												<Col className='gray800-14'>custodian info</Col>
+											</Row>
 										</Col>
 									</Row>
 								);
