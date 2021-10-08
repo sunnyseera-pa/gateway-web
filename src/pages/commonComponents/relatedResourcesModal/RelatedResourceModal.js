@@ -48,7 +48,7 @@ class RelatedResourcesModal extends React.Component {
 	};
 
 	render() {
-		const { userState, datasetIndex, toolIndex, paperIndex, personIndex, courseIndex, selected } = this.state;
+		const { datasetIndex, toolIndex, paperIndex, personIndex, courseIndex, selected } = this.state;
 		let { key } = this.state;
 
 		let datasetCount = this.props.summary.datasetCount || 0;
@@ -202,7 +202,6 @@ class RelatedResourcesModal extends React.Component {
 							searchString={this.props.searchString}
 							doSearchMethod={this.props.doSearchMethod}
 							doUpdateSearchString={this.props.doUpdateSearchString}
-							userState={this.props.userState}
 						/>
 						{typeof this.props.summary.datasetCount !== 'undefined' ? (
 							<div className='searchTabsHolder'>
