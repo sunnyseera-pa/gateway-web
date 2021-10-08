@@ -360,7 +360,7 @@ class RelatedObject extends React.Component {
 										)}
 									</Row>
 								);
-							} else if (data.type === 'datause') {
+							} else if (data.type === 'dataUseRegister') {
 								return (
 									<Row className='noMargin'>
 										<Col sm={10} lg={10} className='pad-left-24'>
