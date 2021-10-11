@@ -94,8 +94,13 @@ const dataUseSchema = {
 		type: String,
 	},
 
-	'Legal Basis for Provision of Data': {
-		prop: 'legalBasisForData',
+	'Legal basis for provision of data under Article 6': {
+		prop: 'legalBasisForDataArticle6',
+		type: String,
+	},
+
+	'Lawful conditions for provision of data under Article 9': {
+		prop: 'legalBasisForDataArticle9',
 		type: String,
 	},
 
@@ -114,8 +119,8 @@ const dataUseSchema = {
 		type: String,
 	},
 
-	'Description of how the data will be processed': {
-		prop: 'dataProcessingDescription',
+	'For linked datasets, specify how the linkage will take place': {
+		prop: 'datasetLinkageDescription',
 		type: String,
 	},
 

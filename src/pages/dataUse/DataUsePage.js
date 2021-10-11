@@ -4,14 +4,14 @@ import axios from 'axios';
 import { isEmpty } from 'lodash';
 import Table from './DataUseTable';
 import Pagination from './DataUsePagination';
-import Modal from './ArchiveModal';
+import ArchiveModal from './ArchiveModal';
 import './DataUse.scss';
 import SVGIcon from '../../images/SVGIcon';
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
-const DataUsePage = React.forwardRef(({ userState, onClickDataUseUpload, team }, ref) => {
+const DataUsePage = React.forwardRef(({ onClickDataUseUpload, team }, ref) => {
 	React.useImperativeHandle(ref, () => ({
-		showSubmissionAlert,
+		showAlert,
 	}));
 
 	const [row, setRow] = useState([]);
@@ -20,6 +20,7 @@ const DataUsePage = React.forwardRef(({ userState, onClickDataUseUpload, team },
 	const [showModal, setShowModal] = useState(false);
 	const [showUnarchiveModal, setShowUnarchiveModal] = useState(false);
 	const [alert, setAlert] = useState('');
+	const [dataUseId, setDataUseId] = useState(-1);
 
 	useEffect(() => {
 		axios.get(baseURL + '/api/v2/data-use-registers?team=' + team).then(res => {
@@ -29,27 +30,43 @@ const DataUsePage = React.forwardRef(({ userState, onClickDataUseUpload, team },
 		});
 	}, [team, alert]);
 
-	const ShowArchiveModal = () => {
+	const ShowArchiveModal = dataUseId => {
 		setShowModal(true);
+		setDataUseId(dataUseId);
 	};
 
 	const HideArchiveModal = () => {
 		setShowModal(false);
+		setDataUseId(-1);
 	};
 
-	const ShowUnArchiveModal = () => {
+	const ShowUnArchiveModal = dataUseId => {
 		setShowUnarchiveModal(true);
+		setDataUseId(dataUseId);
 	};
 
 	const HideUnArchiveModal = () => {
 		setShowUnarchiveModal(false);
+		setDataUseId(-1);
 	};
 
-	const showSubmissionAlert = () => {
-		setAlert('Submitted! The Gateway team will process your uploaded data uses and let you know when they go live.');
+	const showAlert = message => {
+		setAlert(message);
 		setTimeout(() => {
 			setAlert('');
 		}, 5000);
+	};
+
+	const updataDataUseStatus = newStatus => {
+		axios.patch(baseURL + '/api/v2/data-use-registers/' + dataUseId, { activeflag: newStatus }).then(res => {
+			if (newStatus === 'archived') {
+				showAlert('Your data use have been successfully archived.');
+				setShowModal(false);
+			} else {
+				showAlert('Your data use have been successfully unarchived.');
+				setShowUnarchiveModal(false);
+			}
+		});
 	};
 
 	const indexOfLastRow = currentPage * rowsPerPage;
@@ -68,8 +85,6 @@ const DataUsePage = React.forwardRef(({ userState, onClickDataUseUpload, team },
 	const currentArchived = archived.slice(indexOfFirstRow, indexOfLastRow);
 
 	const paginate = pageNumber => setCurrentPage(pageNumber);
-	const role = userState.map(roleType => roleType.role).toString();
-	const custodianAcc = userState.map(groups => groups.teams.length > 0);
 
 	return (
 		<Container>
@@ -91,30 +106,40 @@ const DataUsePage = React.forwardRef(({ userState, onClickDataUseUpload, team },
 						<p className='soft-black-14 datause-para'>Manage your data use register by uploading or editing data uses.</p>
 					</Row>
 				</Col>
-				<Col md={2} className='datause-button-grid'>
-					<Button className='datause-button' onClick={onClickDataUseUpload}>
-						+ Upload data uses
-					</Button>
-				</Col>
+				{team !== 'user' && (
+					<Col md={2} className='datause-button-grid'>
+						<Button className='datause-button' onClick={onClickDataUseUpload}>
+							+ Upload data uses
+						</Button>
+					</Col>
+				)}
 			</Row>
 
-			<Tabs defaultActiveKey={role === 'User' || custodianAcc ? 'Active' : 'Pending approval'} className='gray700-13 data-use-tabs'>
+			<Tabs
+				defaultActiveKey={team === 'user' || (team !== 'user' && team !== 'admin') ? 'Active' : 'Pending approval'}
+				className='gray700-13 data-use-tabs'>
 				{tabs.map(tabName => (
 					<Tab
 						eventKey={tabName}
 						title={
-							((role === 'User' || custodianAcc) && tabName === 'Active' && tabName + ' (' + active.length + ')') ||
-							((role === 'Admin' || custodianAcc) && tabName === 'Pending approval' && tabName + ' (' + pending.length + ')') ||
-							(custodianAcc && tabName === 'Rejected' && tabName + ' (' + rejected.length + ')') ||
-							(custodianAcc && tabName === 'Archived' && tabName + ' (' + archived.length + ')')
+							((team === 'user' || (team !== 'user' && team !== 'admin')) &&
+								tabName === 'Active' &&
+								tabName + ' (' + active.length + ')') ||
+							((team === 'admin' || (team !== 'user' && team !== 'admin')) &&
+								tabName === 'Pending approval' &&
+								tabName + ' (' + pending.length + ')') ||
+							(team !== 'user' && team !== 'admin' && tabName === 'Rejected' && tabName + ' (' + rejected.length + ')') ||
+							(team !== 'user' && team !== 'admin' && tabName === 'Archived' && tabName + ' (' + archived.length + ')')
 						}>
-						{(role === 'User' || custodianAcc) && tabName === 'Active' && (
-							<Table data={currentActive} active={true} userState={role} showModal={ShowArchiveModal} />
+						{(team === 'user' || (team !== 'user' && team !== 'admin')) && tabName === 'Active' && (
+							<Table data={currentActive} active={true} team={team} showArchiveModal={ShowArchiveModal} />
 						)}
-						{(role === 'Admin' || custodianAcc) && tabName === 'Pending approval' && <Table data={currentPending} pending={true} />}
-						{custodianAcc && tabName === 'Rejected' && <Table data={currentRejected} />}
-						{custodianAcc && tabName === 'Archived' && (
-							<Table data={currentArchived} archived={true} showUnarchiveModal={ShowUnArchiveModal} />
+						{(team === 'admin' || (team !== 'user' && team !== 'admin')) && tabName === 'Pending approval' && (
+							<Table team={team} data={currentPending} pending={true} />
+						)}
+						{team !== 'user' && team !== 'admin' && tabName === 'Rejected' && <Table team={team} data={currentRejected} />}
+						{team !== 'user' && team !== 'admin' && tabName === 'Archived' && (
+							<Table team={team} data={currentArchived} archived={true} showUnarchiveModal={ShowUnArchiveModal} />
 						)}
 
 						<Pagination
@@ -135,8 +160,10 @@ const DataUsePage = React.forwardRef(({ userState, onClickDataUseUpload, team },
 					</Tab>
 				))}
 			</Tabs>
-			{showModal && <Modal archive={true} show={ShowArchiveModal} hide={HideArchiveModal} />}
-			{showUnarchiveModal && <Modal archive={false} show={ShowUnArchiveModal} hide={HideUnArchiveModal} />}
+			{showModal && <ArchiveModal archive={true} onConfirm={updataDataUseStatus} show={ShowArchiveModal} hide={HideArchiveModal} />}
+			{showUnarchiveModal && (
+				<ArchiveModal archive={false} onConfirm={updataDataUseStatus} show={ShowUnArchiveModal} hide={HideUnArchiveModal} />
+			)}
 		</Container>
 	);
 });

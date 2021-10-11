@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { useState } from 'react';
 import readXlsxFile from 'read-excel-file';
 import convertToJson from 'read-excel-file/schema';
 import { Row, Col, Alert, Image, Tooltip, OverlayTrigger } from 'react-bootstrap';
@@ -22,28 +22,42 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage }, ref) =>
 		toggleSubmitModal,
 	}));
 
+	const hiddenFileInput = React.useRef(null);
+	const maxSize = 10485760;
 	const [isLoading, setIsLoading] = useState(false);
 	const [isSubmitModalVisible, setIsSubmitModalVisible] = useState(false);
 	const [alert, setAlert] = useState('');
 	const [uploadedData, setUploadedData] = useState({ rows: [], uploadErrors: [], checks: [] });
 	const [dataUseIndexes, setDataUseIndexes] = useState([]);
 
-	const onUploadDataUseRegister = async event => {
-		setIsLoading(true);
-
-		const spreadsheet = await readXlsxFile(event.target.files[0], { sheet: 'Data Uses Template' });
-		spreadsheet.shift();
-		const { rows, errors } = convertToJson(spreadsheet, dataUseSchema);
-		const checks = await checkDataUses(rows);
-		const duplicateErrors = createDuplicateErrors(checks);
-		const uploadErrors = [...duplicateErrors, ...errors];
-
-		setUploadedData({ rows, uploadErrors, checks });
-
-		if (isEmpty(uploadErrors)) {
-			showAlert('Your data uses have been successfully uploaded.');
+	const onUploadDataUseRegister = event => {
+		if (maxSize < event.target.files[0].size) {
+			setUploadedData({ uploadErrors: [{ error: 'fileSizeError' }] });
+		} else {
+			setIsLoading(true);
+			readXlsxFile(event.target.files[0], { sheet: 'Data Uses Template' })
+				.then(spreadsheet => {
+					spreadsheet.shift();
+					const { rows, errors } = convertToJson(spreadsheet, dataUseSchema);
+					if (rows.length === 0) {
+						setUploadedData({ uploadErrors: [{ error: 'noEntries' }] });
+					} else {
+						checkDataUses(rows).then(checks => {
+							const duplicateErrors = searchForDuplicates(checks);
+							const uploadErrors = [...duplicateErrors, ...errors];
+							setUploadedData({ rows, uploadErrors, checks });
+							if (isEmpty(uploadErrors)) {
+								showAlert('Your data uses have been successfully uploaded.');
+							}
+						});
+					}
+				})
+				.catch(err => {
+					setUploadedData({ uploadErrors: [{ error: 'errorLoading' }] });
+				});
+			setIsLoading(false);
 		}
-		setIsLoading(false);
+		event.target.value = null;
 	};
 
 	const submitDataUse = () => {
@@ -55,7 +69,7 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage }, ref) =>
 		axios.post(baseURL + '/api/v2/data-use-registers/upload', payload).then(res => {
 			setIsSubmitModalVisible(false);
 			onSubmit();
-			dataUsePage.current.showSubmissionAlert();
+			dataUsePage.current.showAlert('Submitted! The Gateway team will process your uploaded data uses and let you know when they go live.');
 		});
 	};
 
@@ -78,9 +92,8 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage }, ref) =>
 		setTimeout(() => setAlert(''), 10000);
 	};
 
-	const createDuplicateErrors = checks => {
+	const searchForDuplicates = checks => {
 		const duplicateErrors = [];
-
 		checks.forEach((check, index) => {
 			if (check.isDuplicated) {
 				duplicateErrors.push({ row: index + 1, error: 'duplicate' });
@@ -89,9 +102,7 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage }, ref) =>
 		return duplicateErrors;
 	};
 
-	const hiddenFileInput = React.useRef(null);
-
-	const handleClick = () => {
+	const handleUploadFileClick = () => {
 		hiddenFileInput.current.click();
 	};
 
@@ -215,22 +226,34 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage }, ref) =>
 							<input type='file' id='input' accept='.xls,.xlsx' hidden ref={hiddenFileInput} onChange={onUploadDataUseRegister} />
 							<p className='black-20-semibold margin-bottom-16'>Upload</p>
 							<div className='upload mb-3'>
-								<button className='button-tertiary ' onClick={handleClick}>
+								<button className='button-tertiary ' onClick={handleUploadFileClick}>
 									Select file...
 								</button>
 								<span className='gray700-alt-13'>Excel or xls. Max 10MB per file.</span>
 							</div>
 						</div>
 
+						{!isEmpty(uploadedData.uploadErrors) && uploadedData.uploadErrors[0].error === 'fileSizeError' && (
+							<Alert variant='danger'>File exceeds 10MB limit</Alert>
+						)}
+						{!isEmpty(uploadedData.uploadErrors) && uploadedData.uploadErrors[0].error === 'noEntries' && (
+							<Alert variant='danger'>File contained no entries</Alert>
+						)}
+						{!isEmpty(uploadedData.uploadErrors) && uploadedData.uploadErrors[0].error === 'errorLoading' && (
+							<Alert variant='danger'>There was an error loading the file</Alert>
+						)}
+						{!isEmpty(uploadedData.uploadErrors) &&
+							uploadedData.uploadErrors[0].error !== 'fileSizeError' &&
+							uploadedData.uploadErrors[0].error !== 'noEntries' &&
+							uploadedData.uploadErrors[0].error !== 'errorLoading' && (
+								<Alert variant='danger'>
+									There are errors in the data you uploaded. Please correct these and try again. Errors are listed below.
+								</Alert>
+							)}
 						{!isEmpty(uploadedData.rows) && isEmpty(uploadedData.uploadErrors) && (
 							<Alert variant='warning'>
 								Warning! Uploading a new file will delete any data uses that have not yet been submitted for admin checks by the gateway
 								team.
-							</Alert>
-						)}
-						{!isEmpty(uploadedData.rows) && !isEmpty(uploadedData.uploadErrors) && (
-							<Alert variant='danger'>
-								There are errors in the data you uploaded. Please correct these and try again. Errors are listed below.
 							</Alert>
 						)}
 					</>
@@ -410,16 +433,18 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage }, ref) =>
 												</div>
 												<div className='dataUseDetailsGridHeader'>Data Sensitivity Level</div>
 												<div className='dataUseDetailsGridItem'>{data.dataSensitivityLevel}</div>
-												<div className='dataUseDetailsGridHeader'>Legal Basis for Provision of Data</div>
-												<div className='dataUseDetailsGridItem'>{data.legalBasisForData}</div>
+												<div className='dataUseDetailsGridHeader'>Legal basis for provision of data under Article 6</div>
+												<div className='dataUseDetailsGridItem'>{data.legalBasisForDataArticle6}</div>
+												<div className='dataUseDetailsGridHeader'>Lawful conditions for provision of data under Article 9</div>
+												<div className='dataUseDetailsGridItem'>{data.legalBasisForDataArticle9}</div>
 												<div className='dataUseDetailsGridHeader'>Common Law Duty of Confidentiality</div>
 												<div className='dataUseDetailsGridItem'>{data.dutyOfConfidentiality}</div>
 												<div className='dataUseDetailsGridHeader'>National Data Opt-out applied?</div>
 												<div className='dataUseDetailsGridItem'>{data.nationalDataOptOut}</div>
 												<div className='dataUseDetailsGridHeader'>Request Frequency</div>
 												<div className='dataUseDetailsGridItem'>{data.requestFrequency}</div>
-												<div className='dataUseDetailsGridHeader'>Description of how the data will be processed</div>
-												<div className='dataUseDetailsGridItem'>{data.dataProcessingDescription}</div>
+												<div className='dataUseDetailsGridHeader'>For linked datasets, specify how the linkage will take place</div>
+												<div className='dataUseDetailsGridItem'>{data.datasetLinkageDescription}</div>
 												<div className='dataUseDetailsGridHeader'>Description of the confidential data being used</div>
 												<div className='dataUseDetailsGridItem'>{data.confidentialDataDescription}</div>
 												<div className='dataUseDetailsGridHeader'>Release/Access Date</div>
