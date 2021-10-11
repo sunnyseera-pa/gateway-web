@@ -364,11 +364,37 @@ class RelatedObject extends React.Component {
 								return (
 									<Row className='noMargin'>
 										<Col sm={10} lg={10} className='pad-left-24'>
-											<div>Title</div>
-											<div>Organisation</div>
-											<div>Keywords</div>
-											<div>Datasets</div>
-											<div>Data custodian</div>
+											{activeLink === true ? (
+												<a className='purple-bold-16' style={{ cursor: 'pointer' }} href={'/data-use-register/' + data.id}>
+													{data.projectTitle}
+												</a>
+											) : (
+												<p className='black-bold-16 padding-bottom-4'>{data.projectTitle}</p>
+											)}
+											<p className='gray800-14'>{data.organisationName}</p>
+											<span className='badge-datause'>
+												<SVGIcon name='datauseicon' fill={'#fff'} className='badgeSvg mr-2' viewBox='-2 -2 22 22' />
+												<span>Data use</span>
+											</span>
+											{data.keywords.map(word => (
+												<span className='badge-tag'>{word}</span>
+											))}
+											<Row className='pad-top-16'>
+												<Col md={3} className='gray800-14-opacity'>
+													Datasets
+												</Col>
+												<Col md={9} className='gray800-14'>
+													{data.datasetTitles.join(',')}
+												</Col>
+											</Row>
+											<Row className='pad-bottom-24 pad-top-8'>
+												<Col md={3} className='gray800-14-opacity'>
+													Data custodian
+												</Col>
+												<Col md={9} className='gray800-14'>
+													custodian info
+												</Col>
+											</Row>
 										</Col>
 									</Row>
 								);
