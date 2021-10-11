@@ -12,7 +12,7 @@ let wrapper;
 
 const queryClient = new QueryClient();
 
-describe('Given the reviews service', () => {
+describe('Given the relatedobjects service', () => {
 	beforeAll(() => {
 		wrapper = ({ children }) => <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
 	});
