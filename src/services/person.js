@@ -95,7 +95,6 @@ export default {
 	patchProfileComplete,
 	deletePerson,
 	useGetPersons,
-	useGetPersons,
 	useGetPerson,
 	usePostPerson,
 	usePutPerson,

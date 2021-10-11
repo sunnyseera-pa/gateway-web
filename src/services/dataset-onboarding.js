@@ -33,7 +33,7 @@ const useGetDatasetOnboardings = (requestOptions, queryOptions = { queryKey: 'ge
 	});
 };
 
-const useGetDatasetOnboarding = (requestOptions, queryOptions = { queryKey: 'getDatasetOnboarding' }) => {
+export const useGetDatasetOnboarding = (requestOptions, queryOptions = { queryKey: 'getDatasetOnboarding' }) => {
 	return useQuery({
 		...queryOptions,
 		queryFn: _id => getDatasetOnboarding(_id, requestOptions),
@@ -58,7 +58,7 @@ const usePatchDatasetOnboarding = (requestOptions, mutateOptions = { queryKey: '
 	});
 };
 
-const useDeleteDatasetOnboarding = (requestOptions, queryOptions = { queryKey: 'deleteDatasetOnboarding' }) => {
+export const useDeleteDatasetOnboarding = (requestOptions, queryOptions = { queryKey: 'deleteDatasetOnboarding' }) => {
 	return useQuery({
 		...queryOptions,
 		queryFn: _id => deleteDatasetOnboarding(_id, requestOptions),
