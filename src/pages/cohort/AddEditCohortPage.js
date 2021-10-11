@@ -92,10 +92,6 @@ const AddEditCohortPage = props => {
 	const getCohortFromDb = async instance => {
 		await axios.get(baseURL + '/api/v1/cohorts/' + props.match.params.cohortID).then(async res => {
 			instance === 'initialLoad' ? setIsLoading(true) : setIsFormLoading(true);
-			if (instance === 'createNew') {
-				res.data.name = '';
-				res.data.description = '';
-			}
 			setData(res.data);
 			setUploaders(res.data.uploaders);
 			setRelatedObjects(res.data.relatedObjects ? res.data.relatedObjects : []);
