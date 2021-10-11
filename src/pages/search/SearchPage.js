@@ -1466,10 +1466,8 @@ class SearchPage extends React.Component {
 				key = 'Datasets';
 			} else if (toolCount > 0) {
 				key = 'Tools';
-			} else if (toolCount > 0) {
-				key = 'Datause';
 			} else if (dataUseRegisterCount > 0) {
-				key = 'Projects';
+				key = 'Datauses';
 			} else if (paperCount > 0) {
 				key = 'Papers';
 			} else if (personCount > 0) {

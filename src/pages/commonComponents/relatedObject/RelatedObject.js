@@ -369,25 +369,31 @@ class RelatedObject extends React.Component {
 													{data.projectTitle}
 												</a>
 											) : (
-												<span className='black-bold-16'> {data.projectTitle}</span>
+												<p className='black-bold-16 padding-bottom-4'>{data.projectTitle}</p>
 											)}
-											<br />
-											<span className='gray800-14'>{data.organisationName}</span>
-											<br />
+											<p className='gray800-14'>{data.organisationName}</p>
 											<span className='badge-datause'>
-												<SVGIcon name='datauseicon' fill={'#ffffff'} className='badgeSvg mr-2' viewBox='-2 -2 22 22' />
+												<SVGIcon name='datauseicon' fill={'#fff'} className='badgeSvg mr-2' viewBox='-2 -2 22 22' />
 												<span>Data use</span>
 											</span>
 											{data.keywords.map(word => (
 												<span className='badge-tag'>{word}</span>
 											))}
-											<Row>
-												<Col className='gray800-14-opacity'>Datasets</Col>
-												<Col className='gray800-14'>{data.datasetTitles.join(',')}</Col>
+											<Row className='pad-top-16'>
+												<Col md={3} className='gray800-14-opacity'>
+													Datasets
+												</Col>
+												<Col md={9} className='gray800-14'>
+													{data.datasetTitles.join(',')}
+												</Col>
 											</Row>
-											<Row>
-												<Col className='gray800-14-opacity'>Data custodian</Col>
-												<Col className='gray800-14'>custodian info</Col>
+											<Row className='pad-bottom-24 pad-top-8'>
+												<Col md={3} className='gray800-14-opacity'>
+													Data custodian
+												</Col>
+												<Col md={9} className='gray800-14'>
+													custodian info
+												</Col>
 											</Row>
 										</Col>
 									</Row>
