@@ -769,16 +769,13 @@ class RelatedObject extends React.Component {
 									</Row>
 								);
 							} else {
-								//default to dataset
-								console.log(data);
-
 								return (
 									<Dataset
 										data={data}
 										activeLink={activeLink}
 										publisherLogo={publisherLogo}
-										onSearchPage={onSearchPage}
-										showRelationshipQuestion={this.props.showRelationshipQuestion}
+										onSearchPage={onSearchPage ? onSearchPage : false}
+										showRelationshipQuestion={this.props.showRelationshipQuestion ? this.props.showRelationshipQuestion : false}
 										isCohortDiscovery={this.state.isCohortDiscovery}
 										updateOnFilterBadge={this.updateOnFilterBadge}
 										removeButton={this.removeButton}

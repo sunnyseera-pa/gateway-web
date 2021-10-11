@@ -1,7 +1,7 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
-import { Dataset } from '../../Resources/index';
+import Dataset from './Dataset';
 import mockData from './mockData';
 const props = {
 	data: { ...mockData },
@@ -36,19 +36,18 @@ describe('Given the Dataset component', () => {
 		});
 
 		it('Then Publisher Name should be rendered in UpperCase', () => {
-			expect(screen.getByTestId(`publisher-${props.data.datasetv2.summary.publisher.name}`)).toBeTruthy();
-			expect(screen.getByTestId(`publisher-${props.data.datasetv2.summary.publisher.name}`)).toHaveTextContent(
-				props.data.datasetv2.summary.publisher.name.toUpperCase()
-			);
+			const publisher = screen.getByTestId(`publisher-${props.data.datasetv2.summary.publisher.name.toUpperCase()}`);
+			expect(publisher).toBeTruthy();
+			expect(publisher).toHaveTextContent(props.data.datasetv2.summary.publisher.name.toUpperCase());
 		});
 		it('Then Publisher Link should be rendered with shield SVG Icon', () => {
-			expect(screen.getByTestId(`publisher-${props.data.datasetv2.summary.publisher.name}`)).toBeTruthy();
+			expect(screen.getByTestId(`publisher-${props.data.datasetv2.summary.publisher.name.toUpperCase()}`)).toBeTruthy();
 			expect(screen.getByTestId(`shield`)).toBeTruthy();
 		});
 
 		it('Then Publisher Name onclick updateOnFilterBadge should be called', () => {
 			let updateOnFilterBadge = props.updateOnFilterBadge;
-			fireEvent.click(screen.getByTestId(`publisher-${props.data.datasetv2.summary.publisher.name}`));
+			fireEvent.click(screen.getByTestId(`publisher-${props.data.datasetv2.summary.publisher.name.toUpperCase()}`));
 			expect(updateOnFilterBadge.mock.calls.length).toBe(1);
 			expect(updateOnFilterBadge.mock.calls[0][0]).toEqual('publisher');
 			expect(updateOnFilterBadge.mock.calls[0][1]).toEqual({
@@ -137,6 +136,22 @@ describe('Given the Dataset component', () => {
 			data.datasetfields.abstract = '';
 			rerender(<Dataset {...props} data={data} />);
 			expect(screen.getByTestId('dataset-description')).toHaveTextContent(props.data.description);
+		});
+	});
+
+	describe('And when datasetV2 is empty', () => {
+		it('Then Publisher Name should be rendered from datasetfields object in UpperCase', () => {
+			const { rerender } = wrapper;
+			let data = { ...props.data };
+			data.datasetfields.publisher = 'Alliane > TestPublisher';
+			delete data.datasetv2;
+			data.datasetfields.abstract = '';
+			rerender(<Dataset {...props} data={data} />);
+			const publisher = screen.getByTestId('publisher-TESTPUBLISHER');
+			expect(publisher).toHaveTextContent('TESTPUBLISHER');
+		});
+		it('Then it should not render sheild Icon', () => {
+			expect(screen.queryByTestId(`shield`)).toBeNull();
 		});
 	});
 });

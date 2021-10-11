@@ -7,7 +7,7 @@ export default {
 		topics: [],
 	},
 	datasetfields: {
-		publisher: 'ALLIANCE > SAIL',
+		publisher: 'ALLIANCE > TestSAIL',
 		geographicCoverage: ['Great Britain'],
 		physicalSampleAvailability: ['NOT AVAILABLE'],
 		abstract: 'This is a test dataset abstract',
