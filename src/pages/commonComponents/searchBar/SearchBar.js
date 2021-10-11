@@ -27,6 +27,7 @@ import CmsDropdown from './CmsDropdown';
 
 var baseURL = require('../BaseURL').getURL();
 const urlEnv = require('../BaseURL').getURLEnv();
+const communityLink = require('../BaseURL').getDiscourseURL();
 
 const CustomToggle = React.forwardRef(({ children, onClick, subToggle }, ref) => (
 	<a
@@ -116,6 +117,12 @@ class SearchBar extends React.Component {
 		this._isMounted = false;
 		window.removeEventListener('scroll', this.handleScroll);
 		document.removeEventListener('mousedown', this.handleClick);
+	}
+
+	componentDidUpdate(prevProps) {
+		if (prevProps.search !== this.props.search) {
+			this.setState(() => ({ textValue: this.props.search }));
+		}
 	}
 
 	handleScroll = () => {
@@ -297,9 +304,6 @@ class SearchBar extends React.Component {
 		if (isLoading) {
 			return <></>;
 		}
-
-		let communityLink = 'https://discourse-dev.healthresearch.tools/';
-		if (window.location.href.includes('.www.')) communityLink = 'https://discourse.healthdatagateway.org/';
 		let showUatBanner = false;
 		let currentEnv = '';
 		if (urlEnv === 'uat' || urlEnv === 'uatbeta' || urlEnv === 'latest') {

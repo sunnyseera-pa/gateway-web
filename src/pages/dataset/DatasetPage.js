@@ -802,6 +802,7 @@ class DatasetDetail extends Component {
 			<Sentry.ErrorBoundary fallback={<ErrorModal show={this.showModal} handleClose={this.hideModal} />}>
 				<Fragment>
 					<DatasetSchema data={data} />
+
 					<SearchBar
 						ref={this.searchBar}
 						searchString={searchString}

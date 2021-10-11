@@ -9,6 +9,7 @@ import moment from 'moment';
 import { ReactComponent as CalendarSvg } from '../../../images/calendaricon.svg';
 import _ from 'lodash';
 import removeMd from 'remove-markdown';
+import googleAnalytics from '../../../tracking';
 
 var baseURL = require('../BaseURL').getURL();
 var cmsURL = require('../BaseURL').getCMSURL();
@@ -154,7 +155,7 @@ class RelatedObject extends React.Component {
 		}
 
 		return (
-			<Row className='resource-card-row' key={this.props.key}>
+			<Row className='resource-card-row'>
 				<Col>
 					<div
 						className={rectangleClassName}
@@ -195,14 +196,14 @@ class RelatedObject extends React.Component {
 												data.persons.map((person, index) => {
 													if (activeLink === true) {
 														return (
-															<a className='gray800-14' href={'/person/' + person.id} key={`perosn-${index}`}>
+															<a className='gray800-14' href={'/person/' + person.id} key={`person-${index}`}>
 																{person.firstname} {person.lastname}
 																{data.persons.length === index + 1 ? '' : ', '}
 															</a>
 														);
 													} else {
 														return (
-															<span className='gray800-14' key={`perosn-${index}`}>
+															<span className='gray800-14' key={`person-${index}`}>
 																{person.firstname} {person.lastname}
 																{data.persons.length === index + 1 ? '' : ', '}
 															</span>
@@ -233,7 +234,12 @@ class RelatedObject extends React.Component {
 												onSearchPage === true ? (
 													<span
 														className='pointer'
-														onClick={event => this.updateOnFilterBadge('toolCategoriesSelected', data.categories.category)}>
+														onClick={event =>
+															this.updateOnFilterBadge('toolCategoriesSelected', {
+																label: data.categories.category,
+																parentKey: 'toolcategories',
+															})
+														}>
 														<div className='badge-tag'>{data.categories.category}</div>
 													</span>
 												) : (
@@ -253,7 +259,12 @@ class RelatedObject extends React.Component {
 																return (
 																	<span
 																		className='pointer'
-																		onClick={event => this.updateOnFilterBadge('toolProgrammingLanguageSelected', p.programmingLanguage)}>
+																		onClick={event =>
+																			this.updateOnFilterBadge('toolProgrammingLanguageSelected', {
+																				label: p.programmingLanguage,
+																				parentKey: 'toolprogrammingLanguage',
+																			})
+																		}>
 																		<div className='badge-version' key={i}>
 																			<span>{p.programmingLanguage}</span>
 																			<span>{p.version}</span>
@@ -288,7 +299,9 @@ class RelatedObject extends React.Component {
 																return (
 																	<span
 																		className='pointer'
-																		onClick={event => this.updateOnFilterBadge('toolFeaturesSelected', feature)}
+																		onClick={event =>
+																			this.updateOnFilterBadge('toolFeaturesSelected', { label: feature, parentKey: 'toolfeatures' })
+																		}
 																		key={`feature-${index}`}>
 																		<div className='badge-tag'>{feature}</div>
 																	</span>
@@ -317,7 +330,9 @@ class RelatedObject extends React.Component {
 																return (
 																	<span
 																		className='pointer'
-																		onClick={event => this.updateOnFilterBadge('toolTopicsSelected', topic)}
+																		onClick={event =>
+																			this.updateOnFilterBadge('toolTopicsSelected', { label: topic, parentKey: 'tooltopics' })
+																		}
 																		key={`topic-${index}`}>
 																		<div className='badge-tag'>{topic}</div>
 																	</span>
@@ -363,14 +378,14 @@ class RelatedObject extends React.Component {
 												data.persons.map((person, index) => {
 													if (activeLink === true) {
 														return (
-															<a className='gray800-14' href={'/person/' + person.id} key={`perosn-${index}`}>
+															<a className='gray800-14' href={'/person/' + person.id} key={`person-${index}`}>
 																{person.firstname} {person.lastname}
 																{data.persons.length === index + 1 ? '' : ', '}
 															</a>
 														);
 													} else {
 														return (
-															<span className='gray800-14' key={`perosn-${index}`}>
+															<span className='gray800-14' key={`person-${index}`}>
 																{person.firstname} {person.lastname}
 																{data.persons.length === index + 1 ? '' : ', '}
 															</span>
@@ -401,7 +416,12 @@ class RelatedObject extends React.Component {
 												onSearchPage === true ? (
 													<span
 														className='pointer'
-														onClick={event => this.updateOnFilterBadge('projectCategoriesSelected', data.categories.category)}>
+														onClick={event =>
+															this.updateOnFilterBadge('projectCategoriesSelected', {
+																label: data.categories.category,
+																parentKey: 'projectcategories',
+															})
+														}>
 														<div className='badge-tag'>{data.categories.category}</div>
 													</span>
 												) : (
@@ -421,7 +441,9 @@ class RelatedObject extends React.Component {
 																return (
 																	<span
 																		className='pointer'
-																		onClick={event => this.updateOnFilterBadge('projectFeaturesSelected', feature)}
+																		onClick={event =>
+																			this.updateOnFilterBadge('projectFeaturesSelected', { label: feature, parentKey: 'projectfeatures' })
+																		}
 																		key={`tagFeature-${index}`}>
 																		<div className='badge-tag'>{feature}</div>
 																	</span>
@@ -450,7 +472,9 @@ class RelatedObject extends React.Component {
 																return (
 																	<span
 																		className='pointer'
-																		onClick={event => this.updateOnFilterBadge('projectTopicsSelected', topic)}
+																		onClick={event =>
+																			this.updateOnFilterBadge('projectTopicsSelected', { label: topic, parentKey: 'projecttopics' })
+																		}
 																		key={`tagTopic-${index}`}>
 																		<div className='badge-tag'>{topic}</div>
 																	</span>
@@ -529,7 +553,11 @@ class RelatedObject extends React.Component {
 														if (activeLink === true) {
 															if (onSearchPage === true) {
 																return (
-																	<span className='pointer' onClick={event => this.updateOnFilterBadge('paperFeaturesSelected', feature)}>
+																	<span
+																		className='pointer'
+																		onClick={event =>
+																			this.updateOnFilterBadge('paperFeaturesSelected', { label: feature, parentKey: 'paperfeatures' })
+																		}>
 																		<div className='badge-tag'>{feature}</div>
 																	</span>
 																);
@@ -551,7 +579,11 @@ class RelatedObject extends React.Component {
 														if (activeLink === true) {
 															if (onSearchPage === true) {
 																return (
-																	<span className='pointer' onClick={event => this.updateOnFilterBadge('paperTopicsSelected', topic)}>
+																	<span
+																		className='pointer'
+																		onClick={event =>
+																			this.updateOnFilterBadge('paperTopicsSelected', { label: topic, parentKey: 'papertopics' })
+																		}>
 																		<div className='badge-tag'>{topic}</div>
 																	</span>
 																);
@@ -694,7 +726,11 @@ class RelatedObject extends React.Component {
 														if (activeLink === true) {
 															if (onSearchPage === true) {
 																return (
-																	<span className='pointer' onClick={event => this.updateOnFilterBadge('courseAwardSelected', award)}>
+																	<span
+																		className='pointer'
+																		onClick={event =>
+																			this.updateOnFilterBadge('courseAwardSelected', { label: award, parentKey: 'courseaward' })
+																		}>
 																		<div className='badge-tag'>{award}</div>
 																	</span>
 																);
@@ -716,7 +752,11 @@ class RelatedObject extends React.Component {
 														if (activeLink === true) {
 															if (onSearchPage === true) {
 																return (
-																	<span className='pointer' onClick={event => this.updateOnFilterBadge('courseDomainsSelected', domain)}>
+																	<span
+																		className='pointer'
+																		onClick={event =>
+																			this.updateOnFilterBadge('courseDomainsSelected', { label: domain, parentKey: 'coursedomains' })
+																		}>
 																		<div className='badge-tag'>{domain}</div>
 																	</span>
 																);
@@ -768,7 +808,13 @@ class RelatedObject extends React.Component {
 									<Row className='noMargin'>
 										<Col sm={10} lg={10} className='pad-left-24'>
 											{activeLink === true ? (
-												<a className='purple-bold-16' style={{ cursor: 'pointer' }} href={'/dataset/' + data.pid}>
+												<a
+													onClick={() => {
+														googleAnalytics.recordEvent('Datasets', 'Clicked on dataset to open', `Dataset name: ${data.name}`);
+													}}
+													className='purple-bold-16'
+													style={{ cursor: 'pointer' }}
+													href={'/dataset/' + data.pid}>
 													{data.name}
 												</a>
 											) : (
@@ -788,7 +834,10 @@ class RelatedObject extends React.Component {
 														className={activeLink ? 'gray800-14 underlined' : 'gray800-14'}
 														style={{ cursor: 'pointer' }}
 														onClick={() =>
-															this.updateOnFilterBadge('publisher', { label: data.datasetfields.publisher, parentKey: 'publisher' })
+															this.updateOnFilterBadge('publisher', {
+																label: data.datasetv2.summary.publisher.name.toUpperCase(),
+																parentKey: 'publisher',
+															})
 														}>
 														{' '}
 														{data.datasetv2.summary.publisher.name}{' '}
@@ -798,9 +847,13 @@ class RelatedObject extends React.Component {
 												<span
 													className={activeLink ? 'gray800-14 underlined' : 'gray800-14'}
 													style={{ cursor: 'pointer' }}
-													onClick={() =>
-														this.updateOnFilterBadge('publisher', { label: data.datasetfields.publisher, parentKey: 'publisher' })
-													}>
+													onClick={() => {
+														let name = data.datasetfields.publisher;
+														this.updateOnFilterBadge('publisher', {
+															label: name.includes('>') ? name.split(' > ')[1].toUpperCase() : name.toUpperCase(),
+															parentKey: 'publisher',
+														});
+													}}>
 													{' '}
 													{data.datasetfields.publisher}{' '}
 												</span>
@@ -908,11 +961,12 @@ class RelatedObject extends React.Component {
 
 											{!data.tags.features || data.tags.features.length <= 0
 												? ''
-												: data.tags.features.map(feature => {
+												: data.tags.features.map((feature, index) => {
 														if (activeLink === true) {
 															if (onSearchPage === true) {
 																return (
 																	<span
+																		key={`feature-${index}`}
 																		className='pointer'
 																		onClick={event =>
 																			this.updateOnFilterBadge('datasetfeatures', { label: feature, parentKey: 'datasetfeatures' })
