@@ -252,7 +252,7 @@ describe('Given the tools service', () => {
 			const postSpy = jest.spyOn(service, 'postReviewAdd');
 			const rendered = renderHook(() => service.usePostReviewAdd({ option1: true }), { wrapper });
 
-			assertServiceMutateAsyncCalled(rendered, postSpy, '1234', { status: 'archive' });
+			assertServiceMutateAsyncCalled(rendered, postSpy, { status: 'archive' });
 		});
 	});
 
@@ -261,7 +261,7 @@ describe('Given the tools service', () => {
 			const postSpy = jest.spyOn(service, 'postToolsReply');
 			const rendered = renderHook(() => service.usePostToolsReply({ option1: true }), { wrapper });
 
-			assertServiceMutateAsyncCalled(rendered, postSpy, '1234', { status: 'archive' });
+			assertServiceMutateAsyncCalled(rendered, postSpy, { status: 'archive' });
 		});
 	});
 
@@ -279,7 +279,7 @@ describe('Given the tools service', () => {
 			const putSpy = jest.spyOn(service, 'putReviewApprove');
 			const rendered = renderHook(() => service.usePutReviewApprove({ option1: true }), { wrapper });
 
-			assertServiceMutateAsyncCalled(rendered, putSpy, '1234', { status: 'archive' });
+			assertServiceMutateAsyncCalled(rendered, putSpy, { status: 'archive' });
 		});
 	});
 
