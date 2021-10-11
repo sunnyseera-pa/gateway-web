@@ -668,7 +668,7 @@ class DatasetDetail extends Component {
 				'.' +
 				data.type +
 				'.' +
-				data.document_links.doi
+				data.datasetv2.summary.doiName
 		);
 		this.setState({ showCitationSuccess: true });
 	};
