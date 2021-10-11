@@ -21,6 +21,10 @@ describe('Given the tools service', () => {
 		wrapper.unmount();
 	});
 
+	afterEach(() => {
+		jest.resetAllMocks();
+	});
+
 	describe('When getTools is called', () => {
 		it('Then calls getRequest with the correct arguments', async () => {
 			await service.getTools({
@@ -92,7 +96,6 @@ describe('Given the tools service', () => {
 	describe('When postReviewAdd is called', () => {
 		it('Then calls postRequest with the correct arguments', async () => {
 			await service.postReviewAdd(
-				'1234',
 				{
 					status: 'archive',
 				},
@@ -112,7 +115,6 @@ describe('Given the tools service', () => {
 	describe('When postToolsReply is called', () => {
 		it('Then calls postRequest with the correct arguments', async () => {
 			await service.postToolsReply(
-				'1234',
 				{
 					status: 'archive',
 				},
@@ -152,7 +154,6 @@ describe('Given the tools service', () => {
 	describe('When putReviewApprove is called', () => {
 		it('Then calls putRequest with the correct arguments', async () => {
 			await service.putReviewApprove(
-				'1234',
 				{
 					status: 'archive',
 				},
@@ -204,146 +205,99 @@ describe('Given the tools service', () => {
 	describe('When useGetTools is called', () => {
 		it('Then calls getTools with the correct arguments', async () => {
 			const getSpy = jest.spyOn(service, 'getTools');
+			const rendered = renderHook(() => service.useGetTools({ option1: true }), { wrapper });
 
-			const { waitFor, result } = renderHook(() => service.useGetTools({ option1: true }), { wrapper });
-
-			await waitFor(() => result.current.refetch);
-
-			result.current.refetch().then(() => {
-				expect(getSpy).toHaveBeenCalled();
-			});
+			assertServiceRefetchCalled(rendered, getSpy);
 		});
 	});
 
 	describe('When useGetToolEdit is called', () => {
 		it('Then calls getTools with the correct arguments', async () => {
 			const getSpy = jest.spyOn(service, 'getToolEdit');
+			const rendered = renderHook(() => service.useGetToolEdit({ option1: true }), { wrapper });
 
-			const { waitFor, result } = renderHook(() => service.useGetToolEdit({ option1: true }), { wrapper });
-
-			await waitFor(() => result.current.refetch);
-
-			result.current.refetch().then(() => {
-				expect(getSpy).toHaveBeenCalled();
-			});
+			assertServiceRefetchCalled(rendered, getSpy, '1234');
 		});
 	});
 
 	describe('When useGetProjectTag is called', () => {
 		it('Then calls getProjectTag with the correct arguments', async () => {
 			const getSpy = jest.spyOn(service, 'getProjectTag');
+			const rendered = renderHook(() => service.useGetProjectTag({ option1: true }), { wrapper });
 
-			const { waitFor, result } = renderHook(() => service.useGetProjectTag({ option1: true }), { wrapper });
-
-			await waitFor(() => result.current.refetch);
-
-			result.current.refetch().then(() => {
-				expect(getSpy).toHaveBeenCalled();
-			});
+			assertServiceRefetchCalled(rendered, getSpy, '1234');
 		});
 	});
 
 	describe('When useGetTool is called', () => {
 		it('Then calls getTool with the correct arguments', async () => {
 			const getSpy = jest.spyOn(service, 'getTool');
-			const { waitFor, result } = renderHook(() => service.useGetTool({ option1: true }), { wrapper });
+			const rendered = renderHook(() => service.useGetTool({ option1: true }), { wrapper });
 
-			await waitFor(() => result.current.refetch);
-
-			result.current.refetch('1234').then(() => {
-				expect(getSpy).toHaveBeenCalledWith('1234');
-			});
+			assertServiceRefetchCalled(rendered, getSpy, '1234');
 		});
 	});
 
 	describe('When usePostTool is called', () => {
 		it('Then calls postTool with the correct arguments', async () => {
 			const postSpy = jest.spyOn(service, 'postTool');
-			const { waitFor, result } = renderHook(() => service.usePostTool({ option1: true }), { wrapper });
+			const rendered = renderHook(() => service.usePostTool({ option1: true }), { wrapper });
 
-			await waitFor(() => result.current.mutateAsync);
-
-			result.current.mutateAsync('1234', { status: 'archive' }).then(() => {
-				expect(postSpy).toHaveBeenCalledWith('1234', { status: 'archive' });
-			});
+			assertServiceMutateAsyncCalled(rendered, postSpy, '1234', { status: 'archive' });
 		});
 	});
 
 	describe('When usePostReviewAdd is called', () => {
 		it('Then calls postReviewAdd with the correct arguments', async () => {
 			const postSpy = jest.spyOn(service, 'postReviewAdd');
-			const { waitFor, result } = renderHook(() => service.usePostReviewAdd({ option1: true }), { wrapper });
+			const rendered = renderHook(() => service.usePostReviewAdd({ option1: true }), { wrapper });
 
-			await waitFor(() => result.current.mutateAsync);
-
-			result.current.mutateAsync('1234', { status: 'archive' }).then(() => {
-				expect(postSpy).toHaveBeenCalledWith('1234', { status: 'archive' });
-			});
+			assertServiceMutateAsyncCalled(rendered, postSpy, { status: 'archive' });
 		});
 	});
 
 	describe('When usePostToolsReply is called', () => {
 		it('Then calls postToolsReply with the correct arguments', async () => {
 			const postSpy = jest.spyOn(service, 'postToolsReply');
-			const { waitFor, result } = renderHook(() => service.usePostToolsReply({ option1: true }), { wrapper });
+			const rendered = renderHook(() => service.usePostToolsReply({ option1: true }), { wrapper });
 
-			await waitFor(() => result.current.mutateAsync);
-
-			result.current.mutateAsync('1234', { status: 'archive' }).then(() => {
-				expect(postSpy).toHaveBeenCalledWith('1234', { status: 'archive' });
-			});
+			assertServiceMutateAsyncCalled(rendered, postSpy, { status: 'archive' });
 		});
 	});
 
 	describe('When usePutTool is called', () => {
 		it('Then calls putTool with the correct arguments', async () => {
 			const putSpy = jest.spyOn(service, 'putTool');
-			const { waitFor, result } = renderHook(() => service.usePutTool({ option1: true }), { wrapper });
+			const rendered = renderHook(() => service.usePutTool({ option1: true }), { wrapper });
 
-			await waitFor(() => result.current.mutateAsync);
-
-			result.current.mutateAsync('1234', { status: 'archive' }).then(() => {
-				expect(putSpy).toHaveBeenCalledWith('1234', { status: 'archive' });
-			});
+			assertServiceMutateAsyncCalled(rendered, putSpy, '1234', { status: 'archive' });
 		});
 	});
 
 	describe('When usePutReviewApprove is called', () => {
 		it('Then calls putReviewApprove with the correct arguments', async () => {
 			const putSpy = jest.spyOn(service, 'putReviewApprove');
-			const { waitFor, result } = renderHook(() => service.usePutReviewApprove({ option1: true }), { wrapper });
+			const rendered = renderHook(() => service.usePutReviewApprove({ option1: true }), { wrapper });
 
-			await waitFor(() => result.current.mutateAsync);
-
-			result.current.mutateAsync('1234', { status: 'archive' }).then(() => {
-				expect(putSpy).toHaveBeenCalledWith('1234', { status: 'archive' });
-			});
+			assertServiceMutateAsyncCalled(rendered, putSpy, { status: 'archive' });
 		});
 	});
 
 	describe('When usePatchTool is called', () => {
 		it('Then calls patchTool with the correct arguments', async () => {
 			const putSpy = jest.spyOn(service, 'patchTool');
-			const { waitFor, result } = renderHook(() => service.usePatchTool({ option1: true }), { wrapper });
+			const rendered = renderHook(() => service.usePatchTool({ option1: true }), { wrapper });
 
-			await waitFor(() => result.current.mutateAsync);
-
-			result.current.mutateAsync('1234', { status: 'archive' }).then(() => {
-				expect(putSpy).toHaveBeenCalledWith('1234', { status: 'archive' });
-			});
+			assertServiceMutateAsyncCalled(rendered, putSpy, '1234', { status: 'archive' });
 		});
 	});
 
 	describe('When useDeleteTool is called', () => {
 		it('Then calls deleteTool with the correct arguments', async () => {
 			const deleteSpy = jest.spyOn(service, 'deleteTool');
-			const { waitFor, result } = renderHook(() => service.useDeleteTool({ option1: true }), { wrapper });
+			const rendered = renderHook(() => service.useDeleteTool({ option1: true }), { wrapper });
 
-			await waitFor(() => result.current.refetch);
-
-			result.current.refetch('1234').then(() => {
-				expect(deleteSpy).toHaveBeenCalledWith('1234');
-			});
+			assertServiceRefetchCalled(rendered, deleteSpy, '1234');
 		});
 	});
 });
