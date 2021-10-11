@@ -37,7 +37,7 @@ const deleteDatasetOnboarding = (_id, options) => {
 const useGetDatasetOnboardings = (requestOptions, queryOptions = { queryKey: 'getDatasetOnboardings' }) => {
 	return useQuery({
 		...queryOptions,
-		queryFn: _id => getDatasetOnboardings(requestOptions),
+		queryFn: () => getDatasetOnboardings(requestOptions),
 	});
 };
 

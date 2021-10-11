@@ -37,7 +37,7 @@ describe('Given the search service', () => {
 	});
 
 	describe('When useGetSearch is called', () => {
-		it('Then calls getRequest with the correct arguments', async () => {
+		it('Then calls getSearch with the correct arguments', async () => {
 			const getSpy = jest.spyOn(service, 'getSearch');
 			const { waitFor, result } = renderHook(() => service.useGetSearch({ option1: true }), { wrapper });
 
