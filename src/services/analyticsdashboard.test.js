@@ -49,6 +49,15 @@ describe('Given the analyticsdashboard service', () => {
 		});
 	});
 
+	describe('When useGetTotalUsers is called', () => {
+		it('Then calls getUsersPerMonth with the correct arguments', async () => {
+			const getSpy = jest.spyOn(service, 'getTotalUsers');
+			const rendered = renderHook(() => service.useGetTotalUsers({ option1: true }), { wrapper });
+
+			assertServiceRefetchCalled(rendered, getSpy);
+		});
+	});
+
 	describe('When useGetUsersPerMonth is called', () => {
 		it('Then calls getUsersPerMonth with the correct arguments', async () => {
 			const getSpy = jest.spyOn(service, 'getUsersPerMonth');
