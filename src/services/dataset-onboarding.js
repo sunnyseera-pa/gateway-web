@@ -11,11 +11,15 @@ const getDatasetOnboarding = (_id, options) => {
 };
 
 const getPublisher = (_id, options) => {
-	return getRequest(`${apiURL}/dataset-onboarding/publisher${_id}`, options);
+	return getRequest(`${apiURL}/dataset-onboarding/publisher/${_id}`, options);
 };
 
 const postDatasetOnboarding = (_id, data, options) => {
 	return postRequest(`${apiURL}/dataset-onboarding/${_id}`, data, options);
+};
+
+const postDuplicate = (_id, data, options) => {
+	return postRequest(`${apiURL}/dataset-onboarding/duplicate/${_id}`, data, options);
 };
 
 const putDatasetOnboarding = (_id, data, options) => {
@@ -46,6 +50,12 @@ export const useGetDatasetOnboarding = (requestOptions, queryOptions = { queryKe
 
 const usePostDatasetOnboarding = (requestOptions, mutateOptions = { queryKey: 'postDatasetOnboarding' }) => {
 	return useMutation((_id, data) => postDatasetOnboarding(_id, data, requestOptions), {
+		mutateOptions,
+	});
+};
+
+const usePostDuplicate = (requestOptions, mutateOptions = { queryKey: 'postDuplicate' }) => {
+	return useMutation((_id, data) => postDuplicate(_id, data, requestOptions), {
 		mutateOptions,
 	});
 };
@@ -81,6 +91,7 @@ export default {
 	getDatasetOnboarding,
 	getPublisher,
 	postDatasetOnboarding,
+	postDuplicate,
 	putDatasetOnboarding,
 	patchDatasetOnboarding,
 	deleteDatasetOnboarding,
@@ -88,6 +99,7 @@ export default {
 	useGetDatasetOnboarding,
 	useGetPublisher,
 	usePostDatasetOnboarding,
+	usePostDuplicate,
 	usePutDatasetOnboarding,
 	usePatchDatasetOnboarding,
 	useDeleteDatasetOnboarding,

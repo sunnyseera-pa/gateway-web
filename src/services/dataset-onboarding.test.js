@@ -80,6 +80,26 @@ describe('Given the dataset-onboarding service', () => {
 		});
 	});
 
+	describe('When postDuplicate is called', () => {
+		it('Then calls postRequest with the correct arguments', async () => {
+			await service.postDuplicate(
+				'1234',
+				{
+					status: 'archive',
+				},
+				{ option1: true }
+			);
+
+			expect(postRequest).toHaveBeenCalledWith(
+				`${apiURL}/dataset-onboarding/duplicate/1234`,
+				{
+					status: 'archive',
+				},
+				{ option1: true }
+			);
+		});
+	});
+
 	describe('When putDatasetOnboarding is called', () => {
 		it('Then calls putRequest with the correct arguments', async () => {
 			await service.putDatasetOnboarding(
@@ -163,6 +183,15 @@ describe('Given the dataset-onboarding service', () => {
 		it('Then calls postDatasetOnboarding with the correct arguments', async () => {
 			const postSpy = jest.spyOn(service, 'postDatasetOnboarding');
 			const rendered = renderHook(() => service.usePostDatasetOnboarding({ option1: true }), { wrapper });
+
+			assertServiceMutateAsyncCalled(rendered, postSpy, '1234', { status: 'archive' });
+		});
+	});
+
+	describe('When usePostDuplicate is called', () => {
+		it('Then calls postDuplicate with the correct arguments', async () => {
+			const postSpy = jest.spyOn(service, 'postDuplicate');
+			const rendered = renderHook(() => service.usePostDuplicate({ option1: true }), { wrapper });
 
 			assertServiceMutateAsyncCalled(rendered, postSpy, '1234', { status: 'archive' });
 		});
