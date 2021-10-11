@@ -50,4 +50,9 @@ module.exports = {
 			return env;
 		}
 	},
+	getDiscourseURL: function () {
+		return window.location.href.includes('.www.')
+			? 'https://discourse.healthdatagateway.org'
+			: 'https://discourse-dev.healthresearch.tools';
+	},
 };
