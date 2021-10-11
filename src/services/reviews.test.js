@@ -1,8 +1,7 @@
 import { renderHook } from '@testing-library/react-hooks';
-import axios from 'axios';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { apiURL } from '../configs/url.config';
-import { deleteRequest, getRequest, patchRequest, postRequest, putRequest } from '../utils/requests';
+import { getRequest } from '../utils/requests';
 import service from './reviews';
 
 jest.mock('axios');
@@ -81,8 +80,8 @@ describe('Given the reviews service', () => {
 
 	describe('When useGetAdminPending is called', () => {
 		it('Then calls getAdminPending with the correct arguments', async () => {
-			const getSpy = jest.spyOn(service, 'getPending');
-			const rendered = renderHook(() => service.getAdminPending({ option1: true }), { wrapper });
+			const getSpy = jest.spyOn(service, 'getAdminPending');
+			const rendered = renderHook(() => service.useGetAdminPending({ option1: true }), { wrapper });
 
 			assertServiceRefetchCalled(rendered, getSpy);
 		});

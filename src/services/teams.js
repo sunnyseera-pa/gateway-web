@@ -1,6 +1,6 @@
-import { useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import { apiURL } from '../configs/url.config';
-import { getRequest } from '../utils/requests';
+import { getRequest, postRequest, putRequest } from '../utils/requests';
 
 const getMembers = (_id, options) => {
 	return getRequest(`${apiURL}/teams/${_id}/members`, options);
@@ -14,7 +14,7 @@ const postAdd = (data, options) => {
 	return postRequest(`${apiURL}/teams/add`, data, options);
 };
 
-const putTeams = (_id, data, options) => {
+const putTeam = (_id, data, options) => {
 	return putRequest(`${apiURL}/teams/${_id}`, data, options);
 };
 
@@ -46,8 +46,8 @@ const usePostAdd = (requestOptions, mutateOptions = { queryKey: 'postAdd' }) => 
 	});
 };
 
-const usePutTeams = (requestOptions, mutateOptions = { queryKey: 'putDatasetOnboarding' }) => {
-	return useMutation((_id, data) => putDatasetOnboarding(_id, data, requestOptions), {
+const usePutTeam = (requestOptions, mutateOptions = { queryKey: 'putDatasetOnboarding' }) => {
+	return useMutation((_id, data) => putTeam(_id, data, requestOptions), {
 		mutateOptions,
 	});
 };
@@ -68,13 +68,13 @@ export default {
 	getMembers,
 	getNotifications,
 	postAdd,
-	putTeams,
+	putTeam,
 	putNotificationMessage,
 	putNotifications,
 	useGetMembers,
 	useGetNotifications,
 	usePostAdd,
-	usePutTeams,
+	usePutTeam,
 	usePutNotificationMessage,
 	usePutNotifications,
 };

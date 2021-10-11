@@ -48,6 +48,18 @@ describe('Given the dataset-onboarding service', () => {
 		});
 	});
 
+	describe('When getPublisher is called', () => {
+		it('Then calls getRequest with the correct arguments', async () => {
+			await service.getPublisher('1234', {
+				option1: true,
+			});
+
+			expect(getRequest).toHaveBeenCalledWith(`${apiURL}/dataset-onboarding/publisher/1234`, {
+				option1: true,
+			});
+		});
+	});
+
 	describe('When postDatasetOnboarding is called', () => {
 		it('Then calls postRequest with the correct arguments', async () => {
 			await service.postDatasetOnboarding(
@@ -133,6 +145,15 @@ describe('Given the dataset-onboarding service', () => {
 		it('Then calls getDatasetOnboarding with the correct arguments', async () => {
 			const getSpy = jest.spyOn(service, 'getDatasetOnboarding');
 			const rendered = renderHook(() => service.useGetDatasetOnboarding({ option1: true }), { wrapper });
+
+			assertServiceRefetchCalled(rendered, getSpy, '1234');
+		});
+	});
+
+	describe('When useGetPublisher is called', () => {
+		it('Then calls getPublisher with the correct arguments', async () => {
+			const getSpy = jest.spyOn(service, 'getPublisher');
+			const rendered = renderHook(() => service.useGetPublisher({ option1: true }), { wrapper });
 
 			assertServiceRefetchCalled(rendered, getSpy, '1234');
 		});

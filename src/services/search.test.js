@@ -30,7 +30,7 @@ describe('Given the search service', () => {
 				option1: true,
 			});
 
-			expect(getRequest).toHaveBeenCalledWith(`${apiURL}/search/topic/paper`, {
+			expect(getRequest).toHaveBeenCalledWith(`${apiURL}/search/filter/topic/paper`, {
 				option1: true,
 			});
 		});
@@ -44,7 +44,7 @@ describe('Given the search service', () => {
 			await waitFor(() => result.current.mutateAsync);
 
 			result.current.mutateAsync('topic/paper', { status: 'archive' }).then(() => {
-				expect(getSpy).toHaveBeenCalledWith(`${apiURL}/search/topic/paper`, {
+				expect(getSpy).toHaveBeenCalledWith(`${apiURL}/search/filter/topic/paper`, {
 					option1: true,
 					params: { status: 'archive' },
 				});

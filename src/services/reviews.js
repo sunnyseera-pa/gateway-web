@@ -37,6 +37,8 @@ const useGetAdminPending = (requestOptions, queryOptions = { queryKey: 'getAdmin
 
 export default {
 	getReviews,
+	getAdminPending,
+	getPending,
 	useGetReviews,
 	useGetPending,
 	useGetAdminPending,
