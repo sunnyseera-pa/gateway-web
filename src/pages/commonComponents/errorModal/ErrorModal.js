@@ -1,16 +1,15 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Button } from 'react-bootstrap';
-import { useHistory } from 'react-router-dom';
 import AlertModal from '../AlertModal';
 
 const cmsURL = require('../../commonComponents/BaseURL').getCMSURL();
 
-const ErrorModal = ({ onClose }) => {
+const ErrorModal = ({ onClose, ...outerProps }) => {
 	const [show, setShow] = React.useState(true);
 
 	const handleClose = React.useCallback(() => {
-		if (onClose) onClose(false);
+		if (onClose) onClose();
 		setShow(false);
 
 		//For analytics dashboard (at least), history push doesn't work
@@ -29,10 +28,15 @@ const ErrorModal = ({ onClose }) => {
 					If this issue continues, please contact support by clicking <a href={`${cmsURL}/HDRUKGatewaySupportPortal`}>here.</a>
 				</>
 			}
-			footer={<Button onClick={handleClose}>Close</Button>}
+			footer={
+				<Button onClick={handleClose} data-testid='close-button'>
+					Close
+				</Button>
+			}
 			variant='error'
 			onHide={handleClose}
 			show={show}
+			{...outerProps}
 		/>
 	);
 };

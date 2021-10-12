@@ -16,14 +16,13 @@ let containerDiv;
 describe('Given the AlertModal component', () => {
 	describe('When it is rendered', () => {
 		beforeAll(() => {
-			containerDiv = document.createElement('div');
-			document.body.appendChild(containerDiv);
+			containerDiv = createPortalContainer();
 
 			wrapper = render(<AlertModal {...props} container={containerDiv} />);
 		});
 
 		afterAll(() => {
-			document.body.removeChild(containerDiv);
+			removePortalContainer(containerDiv);
 		});
 
 		it('Then matches the previous snapshot', () => {
