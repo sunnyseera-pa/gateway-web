@@ -365,7 +365,7 @@ class RelatedObject extends React.Component {
 									<Row className='noMargin'>
 										<Col sm={10} lg={10} className='pad-left-24'>
 											{activeLink === true ? (
-												<a className='purple-bold-16' style={{ cursor: 'pointer' }} href={'/data-use-register/' + data.id}>
+												<a className='purple-bold-16' style={{ cursor: 'pointer' }} href={'/datause/' + data.id}>
 													{data.projectTitle}
 												</a>
 											) : (
@@ -384,7 +384,7 @@ class RelatedObject extends React.Component {
 													Datasets
 												</Col>
 												<Col md={9} className='gray800-14'>
-													{data.datasetTitles.join(',')}
+													{data.datasetTitles.join(', ')}
 												</Col>
 											</Row>
 											<Row className='pad-bottom-24 pad-top-8'>

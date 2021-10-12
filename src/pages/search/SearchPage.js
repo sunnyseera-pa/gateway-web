@@ -1532,7 +1532,7 @@ class SearchPage extends React.Component {
 				{key === 'Datauses' ? (
 					<SortDropdown
 						handleSort={this.handleSort}
-						sort={toolSort === '' ? (search === '' ? 'latest' : 'relevance') : toolSort}
+						sort={dataUseRegisterSort === '' ? (search === '' ? 'latest' : 'relevance') : dataUseRegisterSort}
 						dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
 					/>
 				) : (

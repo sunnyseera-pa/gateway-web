@@ -54,7 +54,9 @@ const About = ({ data, renderTooltip }) => {
 									<SVGIcon name='info' width={10} height={10} fill={'#475da7'} className='datause-info-icon' />
 								</button>
 							</OverlayTrigger>
-							<Col>{data.applicantID.length > 0 ? data.applicantID : <p className='gray800-14-opacity'>Not specified</p>}</Col>
+							<Col>
+								{data.applicantID && data.applicantID.length > 0 ? data.applicantID : <p className='gray800-14-opacity'>Not specified</p>}
+							</Col>
 						</Row>
 					)}
 					{!data.organisationSector > 0 && hide ? (
@@ -239,7 +241,7 @@ const About = ({ data, renderTooltip }) => {
 								<button
 									className='datause-arrow'
 									onClick={() => (!closedLaySummary ? setClosedLaySummary(true) : setClosedLaySummary(false))}>
-									<SVGIcon width='20px' height='20px' name='chevronbottom' fill={'#475da7'} className={closedLaySummary ? 'flip180' : ''} />
+									<SVGIcon width='20px' height='20px' name='chevronbottom' fill={'#475da7'} className={closedLaySummary ? '' : 'flip180'} />
 								</button>
 							</Col>
 							<OverlayTrigger
