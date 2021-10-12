@@ -1,6 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import moment from 'moment';
+import * as Sentry from '@sentry/react';
 import { Container } from 'react-bootstrap';
 import SearchBar from '../commonComponents/searchBar/SearchBar';
 import Loading from '../commonComponents/Loading';

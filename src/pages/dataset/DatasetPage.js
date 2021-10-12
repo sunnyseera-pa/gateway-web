@@ -78,7 +78,6 @@ class DatasetDetail extends Component {
 		showDrawer: false,
 		showModal: false,
 		showCustodianModal: false,
-		showError: false,
 		showAllPhenotype: false,
 		showAllLinkedDatasets: false,
 		showEmpty: false,
@@ -109,14 +108,6 @@ class DatasetDetail extends Component {
 		this.handleMouseHoverShield = this.handleMouseHoverShield.bind(this);
 		this.searchBar = React.createRef();
 	}
-
-	showModal = () => {
-		this.setState({ showError: true });
-	};
-
-	hideModal = () => {
-		this.setState({ showError: false });
-	};
 
 	// on loading of tool detail page
 	async componentDidMount() {
@@ -779,7 +770,7 @@ class DatasetDetail extends Component {
 		}
 
 		return (
-			<Sentry.ErrorBoundary fallback={<ErrorModal show={this.showModal} handleClose={this.hideModal} />}>
+			<Sentry.ErrorBoundary fallback={<ErrorModal />}>
 				<Fragment>
 					<DatasetSchema data={data} />
 

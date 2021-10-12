@@ -9,15 +9,14 @@ const cmsURL = require('../../commonComponents/BaseURL').getCMSURL();
 const ErrorModal = ({ onClose }) => {
 	const [show, setShow] = React.useState(true);
 
-	const history = useHistory();
-
-	const handleHide = React.useCallback(() => {
-		history.push({ pathname: '/' });
-	}, []);
-
 	const handleClose = React.useCallback(() => {
 		if (onClose) onClose(false);
 		setShow(false);
+
+		//For analytics dashboard (at least), history push doesn't work
+
+		// history.push({ pathname: '/' });
+		window.location.pathname = '/';
 	}, []);
 
 	return (
@@ -32,7 +31,7 @@ const ErrorModal = ({ onClose }) => {
 			}
 			footer={<Button onClick={handleClose}>Close</Button>}
 			variant='error'
-			onHide={handleHide}
+			onHide={handleClose}
 			show={show}
 		/>
 	);

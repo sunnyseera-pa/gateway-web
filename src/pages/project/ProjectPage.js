@@ -48,7 +48,6 @@ export const ProjectDetail = props => {
 			},
 		]
 	);
-	let showError = false;
 
 	//componentDidMount - on loading of project detail page
 	useEffect(() => {
@@ -66,14 +65,6 @@ export const ProjectDetail = props => {
 			getProjectDataFromDb();
 		}
 	});
-
-	const showModalHandler = () => {
-		showError = true;
-	};
-
-	const hideModalHandler = () => {
-		showError = false;
-	};
 
 	const getProjectDataFromDb = () => {
 		setIsLoading(true);
@@ -213,7 +204,7 @@ export const ProjectDetail = props => {
 	}
 
 	return (
-		<Sentry.ErrorBoundary fallback={<ErrorModal show={showModalHandler} handleClose={hideModalHandler} />}>
+		<Sentry.ErrorBoundary fallback={<ErrorModal />}>
 			<div>
 				<SearchBar
 					ref={searchBar}

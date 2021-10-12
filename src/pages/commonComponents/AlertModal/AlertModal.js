@@ -8,12 +8,16 @@ const AlertModal = ({ header, body, footer, ...outerProps }) => {
 	return (
 		<Modal {...outerProps} aria-labelledby='contained-modal-title-vcenter' centered>
 			<Modal.Header>
-				<Modal.Title id='contained-modal-title-vcenter'>{header}</Modal.Title>
+				<Modal.Title id='contained-modal-title-vcenter' data-testid='modal-header'>
+					{header}
+				</Modal.Title>
 			</Modal.Header>
-			<Modal.Body css={styles.modalBody} className='gray800-14'>
+			<Modal.Body css={styles.modalBody} className='gray800-14' data-testid='modal-body'>
 				{body}
 			</Modal.Body>
-			<Modal.Footer css={styles.modalFooter}>{footer}</Modal.Footer>
+			<Modal.Footer css={styles.modalFooter} data-testid='modal-footer'>
+				{footer}
+			</Modal.Footer>
 		</Modal>
 	);
 };
