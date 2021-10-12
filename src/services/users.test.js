@@ -11,7 +11,7 @@ let wrapper;
 
 const queryClient = new QueryClient();
 
-describe('Given the auth service', () => {
+describe('Given the users service', () => {
 	beforeAll(() => {
 		wrapper = ({ children }) => <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
 	});
