@@ -48,6 +48,13 @@ export const useGetDatasetOnboarding = (requestOptions, queryOptions = { queryKe
 	});
 };
 
+export const useGetPublisher = (requestOptions, queryOptions = { queryKey: 'getPublisher' }) => {
+	return useQuery({
+		...queryOptions,
+		queryFn: _id => getPublisher(_id, requestOptions),
+	});
+};
+
 const usePostDatasetOnboarding = (requestOptions, mutateOptions = { queryKey: 'postDatasetOnboarding' }) => {
 	return useMutation((_id, data) => postDatasetOnboarding(_id, data, requestOptions), {
 		mutateOptions,
@@ -57,13 +64,6 @@ const usePostDatasetOnboarding = (requestOptions, mutateOptions = { queryKey: 'p
 const usePostDuplicate = (requestOptions, mutateOptions = { queryKey: 'postDuplicate' }) => {
 	return useMutation((_id, data) => postDuplicate(_id, data, requestOptions), {
 		mutateOptions,
-	});
-};
-
-export const useGetPublisher = (requestOptions, queryOptions = { queryKey: 'getPublisher' }) => {
-	return useQuery({
-		...queryOptions,
-		queryFn: _id => getPublisher(_id, requestOptions),
 	});
 };
 
