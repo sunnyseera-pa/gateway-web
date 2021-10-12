@@ -73,7 +73,7 @@ function LoginSSOButtons({ ssoBtnsConfig, communityLink, clickHandler, lastChoic
 					<Col sm={6} lg={5}>
 						{lastChoice ? (
 							<span>
-								<img src={lastChoiceSVG} css={styles.btnImg} data-testid='lastChoiceNote' alt='lastChoice' /> Last Time you clicked this
+								<img src={lastChoiceSVG} css={styles.btnImg} data-testid='lastChoiceNote' alt='lastChoice' /> Last time you clicked this
 								button
 							</span>
 						) : null}
