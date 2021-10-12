@@ -63,7 +63,7 @@ function LoginSSOButtons({ ssoBtnsConfig, communityLink, clickHandler, lastChoic
 							{' '}
 							<a
 								target='_blank'
-								href={`${communityLink}/t/about-the-site-feedback-category/1`}
+								href={`${communityLink}/t/how-to-submit-a-feature-request-or-feedback/1`}
 								data-testid='communityLink'
 								rel='noopener noreferrer'>
 								Suggest another Indentity Provider
