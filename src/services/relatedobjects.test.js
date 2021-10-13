@@ -11,7 +11,7 @@ let wrapper;
 
 const queryClient = new QueryClient();
 
-describe('Given the relatedobjects service', () => {
+describe('Given the users service', () => {
 	beforeAll(() => {
 		wrapper = ({ children }) => <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
 	});
@@ -50,7 +50,7 @@ describe('Given the relatedobjects service', () => {
 
 	describe('When getLinkedDatasets is called', () => {
 		it('Then calls getRequest with the correct arguments', async () => {
-			await service.getLinkedDatasets('5678', {
+			await service.getLinkedDatasets('1234', {
 				option1: true,
 			});
 
@@ -63,7 +63,7 @@ describe('Given the relatedobjects service', () => {
 	describe('When useGetRelatedObject is called', () => {
 		it('Then calls getRelatedObject with the correct arguments', async () => {
 			const getSpy = jest.spyOn(service, 'getRelatedObject');
-			const rendered = renderHook(() => service.useGetRelatedObject('1234', { option1: true }), { wrapper });
+			const rendered = renderHook(() => service.useGetRelatedObject({ option1: true }), { wrapper });
 
 			assertServiceRefetchCalled(rendered, getSpy, '1234');
 		});
@@ -72,7 +72,7 @@ describe('Given the relatedobjects service', () => {
 	describe('When useGetCourse is called', () => {
 		it('Then calls getCourse with the correct arguments', async () => {
 			const getSpy = jest.spyOn(service, 'getCourse');
-			const rendered = renderHook(() => service.useGetCourse('1234', { option1: true }), { wrapper });
+			const rendered = renderHook(() => service.useGetCourse({ option1: true }), { wrapper });
 
 			assertServiceRefetchCalled(rendered, getSpy, '1234');
 		});
@@ -81,7 +81,7 @@ describe('Given the relatedobjects service', () => {
 	describe('When useGetLinkedDatasets is called', () => {
 		it('Then calls getLinkedDatasets with the correct arguments', async () => {
 			const getSpy = jest.spyOn(service, 'getLinkedDatasets');
-			const rendered = renderHook(() => service.useGetLinkedDatasets('5678', { option1: true }), { wrapper });
+			const rendered = renderHook(() => service.useGetLinkedDatasets({ option1: true }), { wrapper });
 
 			assertServiceRefetchCalled(rendered, getSpy, '5678');
 		});
