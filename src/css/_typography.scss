@@ -233,6 +233,10 @@ h6 {
 	@include font-source(13px, $gray-med, $font-weight-semibold);
 }
 
+.gray-med-14 {
+	@include font-source(14px, $gray-med, $font-weight-semibold);
+}
+
 .med-black-12 {
 	@include font-source(12px, $med-black, $font-weight-semibold);
 }
