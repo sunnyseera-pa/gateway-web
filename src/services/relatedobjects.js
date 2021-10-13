@@ -14,24 +14,24 @@ const getLinkedDatasets = (relation, options) => {
 	return getRequest(`${apiURL}/relatedobject/linkeddatasets/${relation}`, options);
 };
 
-const useGetReviews = (requestOptions, queryOptions = { queryKey: 'getRelatedObject' }) => {
+const useGetRelatedObject = (requestOptions, queryOptions = { queryKey: 'getRelatedObject' }) => {
 	return useQuery({
 		...queryOptions,
-		queryFn: () => getReviews(requestOptions),
+		queryFn: _id => getRelatedObject(_id, requestOptions),
 	});
 };
 
-const useGetPending = (requestOptions, queryOptions = { queryKey: 'getCourse' }) => {
+const useGetCourse = (requestOptions, queryOptions = { queryKey: 'getCourse' }) => {
 	return useQuery({
 		...queryOptions,
-		queryFn: () => getPending(requestOptions),
+		queryFn: _id => getCourse(_id, requestOptions),
 	});
 };
 
-const useGetAdminPending = (requestOptions, queryOptions = { queryKey: 'getLinkedDatasets' }) => {
+const useGetLinkedDatasets = (requestOptions, queryOptions = { queryKey: 'getLinkedDatasets' }) => {
 	return useQuery({
 		...queryOptions,
-		queryFn: () => getAdminPending(requestOptions),
+		queryFn: relation => getLinkedDatasets(relation, requestOptions),
 	});
 };
 
@@ -39,7 +39,7 @@ export default {
 	getRelatedObject,
 	getCourse,
 	getLinkedDatasets,
-	useGetReviews,
-	useGetPending,
-	useGetAdminPending,
+	useGetRelatedObject,
+	useGetCourse,
+	useGetLinkedDatasets,
 };

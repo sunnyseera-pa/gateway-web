@@ -1,9 +1,8 @@
 import { renderHook } from '@testing-library/react-hooks';
-import axios from 'axios';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { apiURL } from '../configs/url.config';
-import { deleteRequest, getRequest, patchRequest, postRequest, putRequest } from '../utils/requests';
-import service from './reviews';
+import { getRequest } from '../utils/requests';
+import service from './relatedobjects';
 
 jest.mock('axios');
 jest.mock('../utils/requests');
@@ -73,7 +72,7 @@ describe('Given the relatedobjects service', () => {
 	describe('When useGetCourse is called', () => {
 		it('Then calls getCourse with the correct arguments', async () => {
 			const getSpy = jest.spyOn(service, 'getCourse');
-			const rendered = renderHook(() => service.useGetReviews('1234', { option1: true }), { wrapper });
+			const rendered = renderHook(() => service.useGetCourse('1234', { option1: true }), { wrapper });
 
 			assertServiceRefetchCalled(rendered, getSpy, '1234');
 		});
