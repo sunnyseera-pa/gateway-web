@@ -55,7 +55,6 @@ export const ToolDetail = props => {
 	const [context, setContext] = useState({});
 	const [collections, setCollections] = useState([]);
 	const [searchBar] = useState(React.createRef());
-	let showError = false;
 
 	//componentDidMount - on loading of tool detail page
 	useEffect(() => {
