@@ -6,7 +6,8 @@ import { toTitleCase } from '../../../../utils/GeneralHelper.util';
 import * as styles from '../Dataset/Dataset.styles';
 import '../../CommonComponents.scss';
 
-const Tag = ({ tagName, tagType, activeLink, onSearchPage, updateOnFilterBadgeHandler, parentKey, url, showTagType }) => {
+const Tag = props => {
+	const { tagName, tagType, activeLink, onSearchPage, updateOnFilterBadgeHandler, parentKey, url, showTagType } = props;
 	const dispayTagName = showTagType ? `${toTitleCase(tagType)}: ${tagName}` : tagName;
 	if (activeLink) {
 		if (onSearchPage) {
@@ -32,6 +33,7 @@ const Tag = ({ tagName, tagType, activeLink, onSearchPage, updateOnFilterBadgeHa
 	} else {
 		return (
 			<div className={`badge-${tagType}`} data-testid={`badge-${tagName}`}>
+				{props.children}
 				{dispayTagName}
 			</div>
 		);
