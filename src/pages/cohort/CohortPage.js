@@ -1,8 +1,8 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
+import { useHistory } from 'react-router-dom';
 import * as Sentry from '@sentry/react';
 import { Container, Row, Col, Tabs, Tab, Alert, Button, Accordion } from 'react-bootstrap';
-import RelatedObject from '../commonComponents/relatedObject/RelatedObject';
 import SearchBar from '../commonComponents/searchBar/SearchBar';
 import Loading from '../commonComponents/Loading';
 import Uploader from '../commonComponents/Uploader';
@@ -19,16 +19,21 @@ import { ReactComponent as InfoFillSVG } from '../../images/infofill.svg';
 import { ReactComponent as CycleSVG } from '../../images/cycle.svg';
 import OmopCard from './OmopCard';
 import axios from 'axios';
-import { has } from 'lodash';
+import { has, isEmpty } from 'lodash';
+import { CohortDatasetPublisherCard } from './CohortDatasetPublisherCard';
 let baseURL = require('../commonComponents/BaseURL').getURL();
 
 export const CohortPage = props => {
+	let history = useHistory();
 	const [isLoading, setIsLoading] = useState(true);
 	const [cohortData, setCohortData] = useState([]);
 	const [cohortGroups, setCohortGroups] = useState([]);
 	const [searchString, setSearchString] = useState('');
 	const [showDrawer, setShowDrawer] = useState(false);
+	const [versionHistory, setVersionHistory] = useState([]);
 	const [searchBar] = useState(React.createRef());
+	const [showOldVersionBanner, setShowOldVersionBanner] = useState(false);
+	const [datasetsGroupedByPublisher, setDatasetsGroupedByPublisher] = useState([]);
 	const [userState] = useState(
 		props.userState || [
 			{
@@ -47,16 +52,58 @@ export const CohortPage = props => {
 
 	const getCohortFromDb = async () => {
 		setIsLoading(true);
-
+		let newCohortData, newVersionHistory;
 		await axios.get(baseURL + '/api/v1/cohorts/' + props.match.params.cohortID).then(res => {
-			setCohortData(res.data);
+			newCohortData = res.data;
+			setCohortData(newCohortData);
 
-			if (has(res.data, 'cohort.input.cohorts[0].groups')) {
-				setCohortGroups(res.data.cohort.input.cohorts[0].groups);
+			if (has(newCohortData, 'cohort.input.cohorts[0].groups')) {
+				setCohortGroups(newCohortData.cohort.input.cohorts[0].groups);
 			}
 		});
 
+		await axios.get(baseURL + `/api/v1/cohorts?pid=${newCohortData.pid}&fields=id,version,changeLog&sort=-version`).then(res => {
+			newVersionHistory = res.data.data;
+			setVersionHistory(newVersionHistory);
+		});
+
+		setShowOldVersionBanner(
+			newCohortData.activeflag === 'archive' && newVersionHistory.length > 1 && newVersionHistory[0].version > newCohortData.version
+		);
+
+		// Get datasets information for datasets tab
+		getDatasets(newCohortData);
+
 		setIsLoading(false);
+	};
+
+	const getDatasets = async newCohortData => {
+		// 1. Get dataset information
+		const datasets = await Promise.all(
+			newCohortData.countsPerDataset.map(async cpDataset => {
+				const dataset = await axios.get(baseURL + '/api/v1/datasets/' + cpDataset.pid);
+				const { name, pid, datasetid, tags: { features } = {}, datasetfields: { publisher, abstract } = {} } = dataset.data.data;
+
+				const datasetInfo = {
+					name,
+					pid,
+					datasetid,
+					abstract,
+					features,
+					publisher,
+					count: cpDataset.count,
+				};
+				return datasetInfo;
+			})
+		);
+
+		// 2. Group datasets by Publisher
+		const datasetsGrouped = datasets.reduce((result, curr) => {
+			result[curr.publisher] = result[curr.publisher] || [];
+			result[curr.publisher].push(curr);
+			return result;
+		}, Object.create(null));
+		setDatasetsGroupedByPublisher(datasetsGrouped);
 	};
 
 	const showModalHandler = () => {
@@ -83,8 +130,23 @@ export const CohortPage = props => {
 		setShowDrawer(!showDrawer);
 	};
 
-	const [flagClosed, setFlagClosed] = useState(true);
+	const getVersionLink = (id, versionNumber, changeLog) => {
+		return (
+			<a
+				href={'/cohort/' + id}
+				className='version-list'
+				onClick={e => {
+					e.stopPropagation();
+					window.location.href = `/`;
+				}}>
+				<span className='versionNumber'>{versionNumber.toFixed(1)}</span>
+				{changeLog}
+			</a>
+		);
+	};
 
+	const [flagClosed, setFlagClosed] = useState(true);
+	const { name, description, counter, filterCriteria, persons, totalResultCount, numberOfDatasets } = cohortData;
 	if (isLoading) {
 		return (
 			<Container>
@@ -105,19 +167,23 @@ export const CohortPage = props => {
 					userState={userState}
 				/>
 				<Container className='margin-bottom-48'>
-					<Row className='mt-2'>
-						<Col sm={1} lg={1} />
-						<Col sm={10} lg={10}>
-							<Alert variant='warning' className='mt-3'>
-								This is an old version of this cohort.
-								<span className='float-right'>
-									<a href='/' className='alertLink'>
-										Go to the latest version
-									</a>
-								</span>
-							</Alert>
-						</Col>
-					</Row>
+					{showOldVersionBanner ? (
+						<Row className='mt-2'>
+							<Col sm={1} lg={1} />
+							<Col sm={10} lg={10}>
+								<Alert variant='warning' className='mt-3'>
+									This is an old version of this cohort.
+									<span className='float-right'>
+										<a href={`/cohort/${versionHistory[0].id}`} className='alertLink'>
+											Go to the latest version
+										</a>
+									</span>
+								</Alert>
+							</Col>
+						</Row>
+					) : (
+						''
+					)}
 
 					<Row className='mt-2'>
 						<Col sm={1} lg={1} />
@@ -125,7 +191,7 @@ export const CohortPage = props => {
 							<div className='rectangle'>
 								<Row>
 									<Col className='line-height-normal'>
-										<span className='black-16'>Females with Asthma</span>
+										<span className='black-16'>{name}</span>
 									</Col>
 								</Row>
 								<Row className='margin-top-16'>
@@ -134,18 +200,19 @@ export const CohortPage = props => {
 											<SVGIcon name='dashboard' fill={'#472505'} className='badgeSvg mr-2' viewBox='-2 -2 22 22' />
 											<span>Cohort</span>
 										</span>
-										<a href='/'>
-											<div className='badge-tag'>Female</div>
-										</a>
-										<a href='/'>
-											<div className='badge-tag'>Asthma</div>
-										</a>
+										{filterCriteria.map(criteria => {
+											return (
+												<a href={'/search?search=&tab=Cohorts&cohortinclusionexclusion=' + criteria}>
+													<div className='badge-tag'>{criteria}</div>
+												</a>
+											);
+										})}
 									</Col>
 								</Row>
 
 								<Row className='margin-top-20'>
 									<Col xs={12} className='line-height-normal'>
-										<span className='gray700-14'>1 view</span>
+										<span className='gray700-14'>{counter} views</span>
 									</Col>
 								</Row>
 							</div>
@@ -196,7 +263,7 @@ export const CohortPage = props => {
 													</Row>
 													<Row className='mt-3'>
 														<Col sm={12} className='gray800-14 hdruk-section-body'>
-															<ReactMarkdown source='Word Sense Disambiguation (WSD), the automatic identification of the meanings of ambiguous terms in a document, is an important stage in text processing. We describe a WSD system that has been developed specifically for the types of ambiguities found in biomedical documents. This system uses a range of knowledge sources. It employs both linguistic features, such as local collocations, and features derived from domain-specific knowledge sources, the Unified Medical Language System (UMLS) and Medical Subject Headings (MeSH). This system is applied to three types of ambiguities found in Medline abstracts: ambiguous terms, abbreviations with multiple expansions and names that are ambiguous between genes.' />
+															<ReactMarkdown source={description} />
 														</Col>
 													</Row>
 												</div>
@@ -241,55 +308,17 @@ export const CohortPage = props => {
 																	<InfoSVG />
 																</ToolTips>
 																<div>
-																	<a
-																		href='!#'
-																		className='version-list'
-																		onClick={e => {
-																			e.stopPropagation();
-																			window.location.href = `/`;
-																		}}>
-																		<span className='versionNumber'>2.0</span> Additional phenotypes included
-																	</a>
-																	<Accordion.Collapse eventKey='0' style={{ paddingRight: '20px' }}>
-																		<Fragment>
-																			<a
-																				href='!#'
-																				className='version-list'
-																				onClick={e => {
-																					e.stopPropagation();
-																					window.location.href = `/`;
-																				}}>
-																				<span className='versionNumber'>1.3</span> Fixed typo on header
-																			</a>
-																			<a
-																				href='!#'
-																				className='version-list'
-																				onClick={e => {
-																					e.stopPropagation();
-																					window.location.href = `/`;
-																				}}>
-																				<span className='versionNumber'>1.2</span>
-																			</a>
-																			<a
-																				href='!#'
-																				className='version-list'
-																				onClick={e => {
-																					e.stopPropagation();
-																					window.location.href = `/`;
-																				}}>
-																				<span className='versionNumber'>1.1</span> Added uploaders
-																			</a>
-																			<a
-																				href='!#'
-																				className='version-list'
-																				onClick={e => {
-																					e.stopPropagation();
-																					window.location.href = `/`;
-																				}}>
-																				<span className='versionNumber'>1.0</span>
-																			</a>
-																		</Fragment>
-																	</Accordion.Collapse>
+																	{flagClosed || versionHistory.length <= 1 ? (
+																		getVersionLink(cohortData.id, cohortData.version, cohortData.changeLog)
+																	) : (
+																		<Accordion.Collapse eventKey='0' style={{ paddingRight: '20px' }}>
+																			<Fragment>
+																				{versionHistory.map(version => {
+																					return getVersionLink(version.id, version.version, version.changeLog);
+																				})}
+																			</Fragment>
+																		</Accordion.Collapse>
+																	)}
 																</div>
 															</Col>
 														</Row>
@@ -304,8 +333,9 @@ export const CohortPage = props => {
 															<InfoSVG />
 														</ToolTips>
 														<Col sm={10} className='gray800-14 contents'>
-															<Uploader uploader={{ firstname: 'Joan Admin' }} />
-															<Uploader uploader={{ firstname: 'Tanika patel' }} />
+															{persons.map(person => {
+																return <Uploader uploader={person} />;
+															})}
 														</Col>
 													</Row>
 												</div>
@@ -314,7 +344,7 @@ export const CohortPage = props => {
 
 										<Row className='mt-1'>
 											<Col sm={12} lg={12}>
-												<CohortDiscoveryBanner userProps={' '} />
+												<CohortDiscoveryBanner userProps={userState[0]} />
 											</Col>
 										</Row>
 									</Tab>
@@ -327,7 +357,8 @@ export const CohortPage = props => {
 														<Col sm={10} className='gray800-14'>
 															<div className='black-20-semibold'>Total entries</div>
 															<div className='gray800-14 mt-1'>
-																14,567 entries found accross 3 datasets using the cohort discovery functionality
+																{totalResultCount.toLocaleString()} entries found accross {numberOfDatasets}{' '}
+																{numberOfDatasets > 1 ? 'datasets' : 'dataset'} using the cohort discovery functionality
 															</div>
 															<div className='mt-3'>
 																<a href='/' className='gray800-14 textUnderline'>
@@ -338,107 +369,17 @@ export const CohortPage = props => {
 															</div>
 														</Col>
 														<Col sm={2}>
-															<div className='black-20-semibold floatRight'>14,567</div>
+															<div className='black-20-semibold floatRight'>{totalResultCount.toLocaleString()}</div>
 														</Col>
 													</Row>
 												</div>
 											</Col>
 										</Row>
 
-										<Row className='mt-2'>
-											<Col sm={12} lg={12}>
-												<div className='rectangle pad-bottom-8'>
-													<Row>
-														<Col sm={10}>
-															<span className='black-20-semibold'>NHS Digital</span>
-														</Col>
-														<Col sm={2}>
-															<button className='button-tertiary floatRight'>Request access</button>
-														</Col>
-													</Row>
-													<Row>
-														<Col sm={12} className='gray800-14 hdruk-section-body'>
-															<ReactMarkdown source='2 datasets from this custodian' />
-														</Col>
-													</Row>
-												</div>
-
-												<RelatedObject
-													data={{
-														tags: {
-															features: ['GENERAL RESEARCH USE', 'COMMERCIAL RESEARCH USE', 'PROJECT SPECIFIC RESTRICTIONS'],
-														},
-														datasetfields: {
-															abstract:
-																'Cambridge Blood and Stem Cell Biobank collects and curates blood and blood-product derived samples from normal individuals and patients with blood and related malignancies, with particular emphasis on accessibility to purified tumour and stem cell…',
-															phenotypes: [],
-														},
-														name: 'Cambridge Blood and Stem Cell Biobank',
-														entries: '7,689',
-														type: 'dataset',
-													}}
-													activeLink={true}
-													onSearchPage={false}
-												/>
-												<RelatedObject
-													data={{
-														tags: {
-															features: [
-																'GENERAL RESEARCH USE',
-																'USER SPECIFIC RESTRICTION',
-																'PROJECT SPECIFIC RESTRICTIONS',
-																'NO LINKAGE',
-																'INSTITUTION SPECIFIC RESTRICTIONS',
-															],
-														},
-														datasetfields: {
-															abstract: 'Collection of samples and data across the following diseases: Chronic fatigue syndrome',
-															phenotypes: [],
-														},
-														name: 'Cambridge Blood and Stem Cell Biobank',
-														entries: '5,870',
-													}}
-													activeLink={true}
-													onSearchPage={false}
-												/>
-											</Col>
-										</Row>
-
-										<Row className='mt-2'>
-											<Col sm={12} lg={12}>
-												<div className='rectangle pad-bottom-8'>
-													<Row>
-														<Col sm={10}>
-															<span className='black-20-semibold'>CPRD</span>
-														</Col>
-														<Col sm={2}>
-															<button className='button-tertiary floatRight'>Request access</button>
-														</Col>
-													</Row>
-													<Row>
-														<Col sm={12} className='gray800-14 hdruk-section-body'>
-															<ReactMarkdown source='1 dataset from this custodian' />
-														</Col>
-													</Row>
-												</div>
-												<RelatedObject
-													data={{
-														tags: {
-															features: [],
-														},
-														datasetfields: {
-															abstract:
-																'Cambridge Blood and Stem Cell Biobank collects and curates blood and blood-product derived samples from normal individuals and patients with blood and related malignancies, with particular emphasis on accessibility to purified tumour and stem cell…',
-															phenotypes: [],
-														},
-														name: 'CPRD Gold',
-														entries: '1,008',
-													}}
-													activeLink={true}
-													onSearchPage={false}
-												/>
-											</Col>
-										</Row>
+										{!isEmpty(datasetsGroupedByPublisher) &&
+											Object.keys(datasetsGroupedByPublisher).map(publisher => {
+												return <CohortDatasetPublisherCard publisher={publisher} publisherGroup={datasetsGroupedByPublisher[publisher]} />;
+											})}
 
 										<Row className='mt-2'>
 											<Col sm={12} lg={12}>
