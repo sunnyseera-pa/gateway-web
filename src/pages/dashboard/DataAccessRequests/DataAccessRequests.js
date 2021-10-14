@@ -16,6 +16,8 @@ import { baseURL } from '../../../configs/url.config';
 import DarHelperUtil from '../../../utils/DarHelper.util';
 import './DataAccessRequests.scss';
 
+import { CSVLink } from 'react-csv';
+
 class DataAccessRequestsNew extends React.Component {
   durationLookups = ["inProgress", "submitted"];
   finalDurationLookups = ["rejected", "approved", "approved with conditions"];
@@ -339,6 +341,12 @@ class DataAccessRequestsNew extends React.Component {
 												
 										</Col>
 								</div>
+
+            <CSVLink data={screenData} filename={"test"}>
+                <button className={`button-secondary`}>
+                    Download activity log
+                </button>
+            </CSVLink>
 
             <div className="tabsBackground">
               <Col sm={12} lg={12}>
