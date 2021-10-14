@@ -1,6 +1,6 @@
 import React from 'react';
 import { Alert, Col, Row } from 'react-bootstrap';
-import googleAnalytics from '../../tracking';
+import googleAnalytics from '../../../../tracking';
 
 const SearchUtilityBanner = ({ onClick, step }) => {
 	const handleOnClick = React.useCallback(() => {
@@ -19,7 +19,7 @@ const SearchUtilityBanner = ({ onClick, step }) => {
 			<Row>
 				<Col md={9}>You can continue to customise your filters below or edit alongside the search term in the data utility wizard.</Col>
 				<Col md={3} className='data-utility-banner'>
-					<p className='data-utility-link' onClick={handleOnClick} role='button'>
+					<p className='data-utility-link' onClick={handleOnClick} role='button' data-testid='data-utility-link'>
 						Edit in data utility wizard
 					</p>
 				</Col>

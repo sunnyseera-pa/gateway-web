@@ -1,6 +1,6 @@
 import React from 'react';
-import { ReactComponent as CDStar } from '../../images/cd-star.svg';
-import googleAnalytics from '../../tracking';
+import { ReactComponent as CDStar } from '../../../../images/cd-star.svg';
+import googleAnalytics from '../../../../tracking';
 
 const SearchFilters = ({ filters, onAdvancedSearchClick }) => (
 	<>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Col, Row } from 'react-bootstrap';
-import RelatedObject from '../commonComponents/relatedObject/RelatedObject';
-import SearchResults from '../commonComponents/SearchResults';
+import RelatedObject from '../../../commonComponents/relatedObject/RelatedObject';
+import SearchResults from '../../../commonComponents/SearchResults';
 import moment from 'moment';
 
 const CoursesSearchResults = ({ updateOnFilterBadge, ...outerProps }) => {

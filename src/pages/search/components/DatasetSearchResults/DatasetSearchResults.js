@@ -1,7 +1,7 @@
 import React from 'react';
 import _ from 'lodash';
-import RelatedObject from '../commonComponents/relatedObject/RelatedObject';
-import SearchResults from '../commonComponents/SearchResults';
+import RelatedObject from '../../../commonComponents/relatedObject/RelatedObject';
+import SearchResults from '../../../commonComponents/SearchResults';
 
 const DatasetSearchResults = ({ updateOnFilterBadge, ...outerProps }) => {
 	const mapResults = React.useCallback(

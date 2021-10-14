@@ -1,7 +1,7 @@
 import React from 'react';
 import { Col, Row } from 'react-bootstrap';
-import CollectionCard from '../commonComponents/collectionCard/CollectionCard';
-import SearchResults from '../commonComponents/SearchResults';
+import CollectionCard from '../../../commonComponents/collectionCard/CollectionCard';
+import SearchResults from '../../../commonComponents/SearchResults';
 
 const CollectionsSearchResults = props => {
 	const mapResults = React.useCallback(data => {
