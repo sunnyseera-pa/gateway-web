@@ -1659,17 +1659,23 @@ class SearchPage extends React.Component {
 										type='datasets'
 										data={datasetData}
 										count={datasetCount}
-										pageNumber={datasetIndex}
+										pageNumber={datasetIndex / maxResult}
 										{...searchProps}
 									/>
 								)}
 
 								{key === 'Tools' && (
-									<SearchResults type='tools' data={toolData} count={toolCount} pageNumber={toolIndex} {...searchProps} />
+									<SearchResults type='tools' data={toolData} count={toolCount} pageNumber={toolIndex / maxResult} {...searchProps} />
 								)}
 
 								{key === 'Projects' && (
-									<SearchResults type='projects' data={projectData} count={projectCount} pageNumber={projectIndex} {...searchProps} />
+									<SearchResults
+										type='projects'
+										data={projectData}
+										count={projectCount}
+										pageNumber={projectIndex / maxResult}
+										{...searchProps}
+									/>
 								)}
 
 								{key === 'Collections' && (
@@ -1683,15 +1689,27 @@ class SearchPage extends React.Component {
 								)}
 
 								{key === 'Papers' && (
-									<SearchResults type='papers' data={paperData} count={paperCount} pageNumber={paperIndex} {...searchProps} />
+									<SearchResults type='papers' data={paperData} count={paperCount} pageNumber={paperIndex / maxResult} {...searchProps} />
 								)}
 
 								{key === 'People' && (
-									<SearchResults type='profiles' data={personData} count={personCount} pageNumber={personIndex} {...searchProps} />
+									<SearchResults
+										type='profiles'
+										data={personData}
+										count={personCount}
+										pageNumber={personIndex / maxResult}
+										{...searchProps}
+									/>
 								)}
 
 								{key === 'Courses' && (
-									<SearchResults type='courses' data={courseData} count={courseCount} pageNumber={courseIndex} {...searchProps} />
+									<SearchResults
+										type='courses'
+										data={courseData}
+										count={courseCount}
+										pageNumber={courseIndex / maxResult}
+										{...searchProps}
+									/>
 								)}
 							</Col>
 						</Row>

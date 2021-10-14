@@ -47,7 +47,7 @@ const SearchResults = ({
 				{count > maxResult && (
 					<Pagination>
 						{new Array(Math.ceil(count / maxResult)).fill().map((value, i) => (
-							<Pagination.Item key={i} active={i === pageNumber} onClick={() => onPagination(typeMapper[type], i * maxResult)}>
+							<Pagination.Item key={i} active={i + 1 === pageNumber} onClick={() => onPagination(typeMapper[type], i * maxResult)}>
 								{i + 1}
 							</Pagination.Item>
 						))}
