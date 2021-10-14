@@ -1513,6 +1513,7 @@ class SearchPage extends React.Component {
 		}
 
 		const filterProps = {
+			data: this.getFilterStateByKey(key),
 			onHandleInputChange: this.handleInputChange,
 			onHandleClearSection: this.handleClearSection,
 			onHandleToggle: this.handleToggle,
@@ -1524,7 +1525,6 @@ class SearchPage extends React.Component {
 			isLoading: isResultsLoading,
 			sort: showSort && !this.state.savedSearchPanel && dropdownMenu,
 			updateOnFilterBadge: this.updateOnFilterBadge,
-			onAdvancedSearchClick: this.toggleAdvancedSearchModal,
 			onPagination: this.handlePagination,
 		};
 
@@ -1651,13 +1651,12 @@ class SearchPage extends React.Component {
 					<Container>
 						<Row>
 							<Col sm={12} md={12} lg={3} className='mt-1 mb-5'>
-								<SearchFilters onAdvancedSearchClick={this.toggleAdvancedSearchModal} filters={filters} />
+								<SearchFilters filters={<Filter {...filterProps} />} onAdvancedSearchClick={this.toggleAdvancedSearchModal} />
 							</Col>
 							<Col sm={12} md={12} lg={9} className='mt-1 mb-5'>
 								{key === 'Datasets' && (
 									<DatasetSearchResults
 										type='datasets'
-										filters={<Filter data={filtersV2Datasets} {...filterProps} />}
 										data={datasetData}
 										count={datasetCount}
 										pageNumber={datasetIndex}
@@ -1666,31 +1665,16 @@ class SearchPage extends React.Component {
 								)}
 
 								{key === 'Tools' && (
-									<SearchResults
-										type='tools'
-										filters={<Filter data={filtersV2Tools} {...filterProps} />}
-										data={toolData}
-										count={toolCount}
-										pageNumber={toolIndex}
-										{...searchProps}
-									/>
+									<SearchResults type='tools' data={toolData} count={toolCount} pageNumber={toolIndex} {...searchProps} />
 								)}
 
 								{key === 'Projects' && (
-									<SearchResults
-										type='projects'
-										filters={<Filter data={filtersV2Projects} {...filterProps} />}
-										data={projectData}
-										count={projectCount}
-										pageNumber={projectIndex}
-										{...searchProps}
-									/>
+									<SearchResults type='projects' data={projectData} count={projectCount} pageNumber={projectIndex} {...searchProps} />
 								)}
 
 								{key === 'Collections' && (
 									<CollectionsSearchResults
 										type='collections'
-										filters={<Filter data={filtersV2Collections} {...filterProps} />}
 										data={collectionData}
 										count={collectionCount}
 										pageNumber={collectionIndex}
@@ -1699,14 +1683,7 @@ class SearchPage extends React.Component {
 								)}
 
 								{key === 'Papers' && (
-									<SearchResults
-										type='papers'
-										filters={<Filter data={filtersV2Papers} {...filterProps} />}
-										data={paperData}
-										count={paperCount}
-										pageNumber={paperIndex}
-										{...searchProps}
-									/>
+									<SearchResults type='papers' data={paperData} count={paperCount} pageNumber={paperIndex} {...searchProps} />
 								)}
 
 								{key === 'People' && (
@@ -1714,14 +1691,7 @@ class SearchPage extends React.Component {
 								)}
 
 								{key === 'Courses' && (
-									<SearchResults
-										type='courses'
-										filters={<Filter data={filtersV2Courses} {...filterProps} />}
-										data={courseData}
-										count={courseCount}
-										pageNumber={courseIndex}
-										{...searchProps}
-									/>
+									<SearchResults type='courses' data={courseData} count={courseCount} pageNumber={courseIndex} {...searchProps} />
 								)}
 							</Col>
 						</Row>
