@@ -27,6 +27,7 @@ import DataUtilityWizardModal from '../commonComponents/DataUtilityWizard/DataUt
 import SVGIcon from '../../images/SVGIcon';
 import './Search.scss';
 import { upperFirst } from 'lodash';
+import SearchResults from './SearchResults';
 
 let baseURL = require('../commonComponents/BaseURL').getURL();
 const typeMapper = {
@@ -1421,91 +1422,7 @@ class SearchPage extends React.Component {
 		if (key === 'Courses' && courseCount === 0) showSort = false;
 		if (key === 'Collections' && collectionCount === 0) showSort = false;
 
-		let datasetPaginationItems = [];
-		let toolPaginationItems = [];
-		let projectPaginationItems = [];
-		let paperPaginationItems = [];
-		let personPaginationItems = [];
-		let coursePaginationItems = [];
-		let collectionPaginationItems = [];
 		let maxResult = 40;
-		// Dataset pagination
-		for (let i = 1; i <= Math.max(Math.ceil(datasetCount / maxResult), 1); i++) {
-			datasetPaginationItems.push(
-				<Pagination.Item
-					key={i}
-					active={i === datasetIndex / maxResult + 1}
-					onClick={() => this.handlePagination(typeMapper.Datasets, (i - 1) * maxResult)}>
-					{i}
-				</Pagination.Item>
-			);
-		}
-		// Tool Pagination
-		for (let i = 1; i <= Math.ceil(toolCount / maxResult); i++) {
-			toolPaginationItems.push(
-				<Pagination.Item
-					key={i}
-					active={i === toolIndex / maxResult + 1}
-					onClick={() => this.handlePagination(typeMapper.Tools, (i - 1) * maxResult)}>
-					{i}
-				</Pagination.Item>
-			);
-		}
-		// Project Pagination
-		for (let i = 1; i <= Math.ceil(projectCount / maxResult); i++) {
-			projectPaginationItems.push(
-				<Pagination.Item
-					key={i}
-					active={i === projectIndex / maxResult + 1}
-					onClick={() => this.handlePagination(typeMapper.Projects, (i - 1) * maxResult)}>
-					{i}
-				</Pagination.Item>
-			);
-		}
-		// Paper Pagination
-		for (let i = 1; i <= Math.ceil(paperCount / maxResult); i++) {
-			paperPaginationItems.push(
-				<Pagination.Item
-					key={i}
-					active={i === paperIndex / maxResult + 1}
-					onClick={() => this.handlePagination(typeMapper.Papers, (i - 1) * maxResult)}>
-					{i}
-				</Pagination.Item>
-			);
-		}
-		// Person Pagination
-		for (let i = 1; i <= Math.ceil(personCount / maxResult); i++) {
-			personPaginationItems.push(
-				<Pagination.Item
-					key={i}
-					active={i === personIndex / maxResult + 1}
-					onClick={() => this.handlePagination(typeMapper.People, (i - 1) * maxResult)}>
-					{i}
-				</Pagination.Item>
-			);
-		}
-		// Course Pagination
-		for (let i = 1; i <= Math.ceil(courseCount / maxResult); i++) {
-			coursePaginationItems.push(
-				<Pagination.Item
-					key={i}
-					active={i === courseIndex / maxResult + 1}
-					onClick={() => this.handlePagination(typeMapper.Courses, (i - 1) * maxResult)}>
-					{i}
-				</Pagination.Item>
-			);
-		}
-		// Collection Pagination
-		for (let i = 1; i <= Math.ceil(collectionCount / maxResult); i++) {
-			collectionPaginationItems.push(
-				<Pagination.Item
-					key={i}
-					active={i === collectionIndex / maxResult + 1}
-					onClick={() => this.handlePagination(typeMapper.Collections, (i - 1) * maxResult)}>
-					{i}
-				</Pagination.Item>
-			);
-		}
 
 		const dropdownMenu = (
 			<div className='text-right save-dropdown'>
@@ -1594,6 +1511,26 @@ class SearchPage extends React.Component {
 			perferenceSort = personSort;
 		}
 
+		const filterProps = {
+			onHandleInputChange: this.handleInputChange,
+			onHandleClearSection: this.handleClearSection,
+			onHandleToggle: this.handleToggle,
+		};
+
+		const searchProps = {
+			maxResult,
+			search,
+			isLoading: isResultsLoading,
+			updateOnFilterBadge: this.updateOnFilterBadge,
+			onAdvancedSearchClick: this.toggleAdvancedSearchModal,
+			onPagination: this.handlePagination,
+		};
+
+		const filtersSelectionProps = {
+			selectedCount: preferenceFilters.length,
+			selectedItems: preferenceFilters,
+		};
+
 		return (
 			<Sentry.ErrorBoundary fallback={<ErrorModal />}>
 				<div>
@@ -1655,6 +1592,7 @@ class SearchPage extends React.Component {
 								Saved preference: "{this.state.showSavedName}"
 							</Alert>
 						)}
+
 						<Container className={this.state.saveSuccess && !this.state.showSavedModal && 'container-saved-preference-banner'}>
 							<Row className='filters filter-save'>
 								<Col className='title' lg={4}>
@@ -1721,380 +1659,90 @@ class SearchPage extends React.Component {
 								</Col>
 							</Row>
 							<Row>
-								{this.state.key === 'Datasets' ? (
+								{key !== 'People' && (
 									<FilterSelection
-										selectedCount={selectedV2Datasets.length}
-										selectedItems={selectedV2Datasets}
+										{...filtersSelectionProps}
 										onHandleClearSelection={this.handleClearSelection}
 										onHandleClearAll={this.handleClearAll}
 										savedSearches={true}
 									/>
-								) : (
-									''
-								)}
-								{this.state.key === 'Tools' ? (
-									<FilterSelection
-										selectedCount={selectedV2Tools.length}
-										selectedItems={selectedV2Tools}
-										onHandleClearSelection={this.handleClearSelection}
-										onHandleClearAll={this.handleClearAll}
-										savedSearches={true}
-									/>
-								) : (
-									''
-								)}
-								{this.state.key === 'Projects' ? (
-									<FilterSelection
-										selectedCount={selectedV2Projects.length}
-										selectedItems={selectedV2Projects}
-										onHandleClearSelection={this.handleClearSelection}
-										onHandleClearAll={this.handleClearAll}
-										savedSearches={true}
-									/>
-								) : (
-									''
-								)}
-								{this.state.key === 'Papers' ? (
-									<FilterSelection
-										selectedCount={selectedV2Papers.length}
-										selectedItems={selectedV2Papers}
-										onHandleClearSelection={this.handleClearSelection}
-										onHandleClearAll={this.handleClearAll}
-										savedSearches={true}
-									/>
-								) : (
-									''
-								)}
-								{this.state.key === 'Courses' ? (
-									<FilterSelection
-										selectedCount={selectedV2Courses.length}
-										selectedItems={selectedV2Courses}
-										onHandleClearSelection={this.handleClearSelection}
-										onHandleClearAll={this.handleClearAll}
-										savedSearches={true}
-									/>
-								) : (
-									''
-								)}
-								{this.state.key === 'Collections' ? (
-									<FilterSelection
-										selectedCount={selectedV2Collections.length}
-										selectedItems={selectedV2Collections}
-										onHandleClearSelection={this.handleClearSelection}
-										onHandleClearAll={this.handleClearAll}
-										savedSearches={true}
-									/>
-								) : (
-									''
 								)}
 							</Row>
 						</Container>
 					</div>
-					<Container>
-						<Row>
-							{key !== 'People' ? (
-								<Col sm={12} md={12} lg={3} className='mt-1 mb-5'>
-									{key === 'Datasets' ? (
-										<Fragment>
-											<div className='saved-filterHolder'>
-												<Filter
-													data={filtersV2Datasets}
-													onHandleInputChange={this.handleInputChange}
-													onHandleClearSection={this.handleClearSection}
-													onHandleToggle={this.handleToggle}
-												/>
-											</div>
-										</Fragment>
-									) : (
-										''
-									)}
 
-									{key === 'Tools' ? (
-										<Fragment>
-											<div className='saved-filterHolder'>
-												<Filter
-													data={filtersV2Tools}
-													onHandleInputChange={this.handleInputChange}
-													onHandleClearSection={this.handleClearSection}
-													onHandleToggle={this.handleToggle}
-												/>
-											</div>
-										</Fragment>
-									) : (
-										''
-									)}
+					{showSort && !this.state.savedSearchPanel && <Row>{dropdownMenu}</Row>}
 
-									{key === 'Projects' ? (
-										<Fragment>
-											<div className='saved-filterHolder'>
-												<Filter
-													data={filtersV2Projects}
-													onHandleInputChange={this.handleInputChange}
-													onHandleClearSection={this.handleClearSection}
-													onHandleToggle={this.handleToggle}
-												/>
-											</div>
-										</Fragment>
-									) : (
-										''
-									)}
-									{key === 'Papers' ? (
-										<Fragment>
-											<div className='saved-filterHolder'>
-												<Filter
-													data={filtersV2Papers}
-													onHandleInputChange={this.handleInputChange}
-													onHandleClearSection={this.handleClearSection}
-													onHandleToggle={this.handleToggle}
-												/>
-											</div>
-										</Fragment>
-									) : (
-										''
-									)}
-									{key === 'Courses' ? (
-										<Fragment>
-											<div className='saved-filterHolder'>
-												<Filter
-													data={filtersV2Courses}
-													onHandleInputChange={this.handleInputChange}
-													onHandleClearSection={this.handleClearSection}
-													onHandleToggle={this.handleToggle}
-												/>
-											</div>
-										</Fragment>
-									) : (
-										''
-									)}
-									{key === 'Collections' ? (
-										<Fragment>
-											<div className='saved-filterHolder'>
-												<Filter
-													data={filtersV2Collections}
-													onHandleInputChange={this.handleInputChange}
-													onHandleClearSection={this.handleClearSection}
-													onHandleToggle={this.handleToggle}
-												/>
-											</div>
-										</Fragment>
-									) : (
-										''
-									)}
+					{key === 'Datasets' && (
+						<DatasetSearchResults
+							type='datasets'
+							filters={<Filter data={filtersV2Datasets} {...filterProps} />}
+							data={datasetData}
+							count={datasetCount}
+							pageNumber={datasetIndex}
+							{...searchProps}
+						/>
+					)}
 
-									<div className='advanced-search-link-container'>
-										<CDStar fill='#f98e2b' height='20' width='20' />
-										<a
-											href='javascript:void(0)'
-											className='textUnderline gray800-14 cursorPointer'
-											onClick={() => {
-												googleAnalytics.recordEvent('Datasets', 'User clicked advanced search link', 'Advanced search modal opened');
-												this.toggleAdvancedSearchModal();
-											}}>
-											Advanced Search
-										</a>
-									</div>
-								</Col>
-							) : (
-								<Col sm={12} md={12} lg={3} />
-							)}
+					{key === 'Tools' && (
+						<SearchResults
+							type='tools'
+							filters={<Filter data={filtersV2Tools} {...filterProps} />}
+							data={toolData}
+							count={toolCount}
+							pageNumber={toolIndex}
+							{...searchProps}
+						/>
+					)}
 
-							{!isResultsLoading ? (
-								<Col sm={12} md={12} lg={9} className='mt-1 mb-5'>
-									{!showSort ? '' : <Fragment>{!this.state.savedSearchPanel && <Row>{dropdownMenu}</Row>}</Fragment>}
-									{key === 'Datasets' ? (
-										datasetCount <= 0 ? (
-											<NoResults type='datasets' search={search} />
-										) : (
-											datasetData.map(dataset => {
-												let datasetPublisher;
-												let datasetLogo;
+					{key === 'Projects' && (
+						<SearchResults
+							type='projects'
+							filters={<Filter data={filtersV2Projects} {...filterProps} />}
+							data={projectData}
+							count={projectCount}
+							pageNumber={projectIndex}
+							{...searchProps}
+						/>
+					)}
 
-												!_.isEmpty(dataset.datasetv2) && _.has(dataset, 'datasetv2.summary.publisher.name')
-													? (datasetPublisher = dataset.datasetv2.summary.publisher.name)
-													: (datasetPublisher = '');
+					{key === 'Collections' && (
+						<CollectionsSearchResults
+							type='collections'
+							filters={<Filter data={filtersV2Collections} {...filterProps} />}
+							data={collectionData}
+							count={collectionCount}
+							pageNumber={collectionIndex}
+							{...searchProps}
+						/>
+					)}
 
-												!_.isEmpty(dataset.datasetv2) && _.has(dataset, 'datasetv2.summary.publisher.logo')
-													? (datasetLogo = dataset.datasetv2.summary.publisher.logo)
-													: (datasetLogo = '');
+					{key === 'Papers' && (
+						<SearchResults
+							type='papers'
+							filters={<Filter data={filtersV2Papers} {...filterProps} />}
+							data={paperData}
+							count={paperCount}
+							pageNumber={paperIndex}
+							{...searchProps}
+						/>
+					)}
 
-												return (
-													<RelatedObject
-														key={dataset.id}
-														data={dataset}
-														activeLink={true}
-														onSearchPage={true}
-														updateOnFilterBadge={this.updateOnFilterBadge}
-														datasetPublisher={datasetPublisher}
-														datasetLogo={datasetLogo}
-													/>
-												);
-											})
-										)
-									) : (
-										''
-									)}
+					{key === 'People' && (
+						<SearchResults type='profiles' data={personData} count={personCount} pageNumber={personIndex} {...searchProps} />
+					)}
 
-									{key === 'Tools' ? (
-										toolCount <= 0 ? (
-											<NoResults type='tools' search={search} />
-										) : (
-											toolData.map(tool => {
-												return (
-													<RelatedObject
-														key={tool.id}
-														data={tool}
-														activeLink={true}
-														onSearchPage={true}
-														updateOnFilterBadge={this.updateOnFilterBadge}
-													/>
-												);
-											})
-										)
-									) : (
-										''
-									)}
+					{key === 'Courses' && (
+						<SearchResults
+							type='courses'
+							filters={<Filter data={filtersV2Courses} {...filterProps} />}
+							data={courseData}
+							count={courseCount}
+							pageNumber={courseIndex}
+							{...searchProps}
+						/>
+					)}
 
-									{key === 'Projects' ? (
-										projectCount <= 0 ? (
-											<NoResults type='projects' search={search} />
-										) : (
-											projectData.map(project => {
-												return (
-													<RelatedObject
-														key={project.id}
-														data={project}
-														activeLink={true}
-														onSearchPage={true}
-														updateOnFilterBadge={this.updateOnFilterBadge}
-													/>
-												);
-											})
-										)
-									) : (
-										''
-									)}
-
-									{key === 'Collections' ? (
-										collectionCount <= 0 ? (
-											<NoResults type='collections' search={search} />
-										) : (
-											<Row className='mt-2'>
-												{collectionData.map(collection => {
-													return (
-														<Col sm={12} md={12} lg={6} style={{ 'text-align': '-webkit-center' }}>
-															<CollectionCard key={collection.id} data={collection} />
-														</Col>
-													);
-												})}
-											</Row>
-										)
-									) : (
-										''
-									)}
-
-									{key === 'Papers' ? (
-										paperCount <= 0 ? (
-											<NoResults type='papers' search={search} />
-										) : (
-											paperData.map(paper => {
-												return (
-													<RelatedObject
-														key={paper.id}
-														data={paper}
-														activeLink={true}
-														onSearchPage={true}
-														updateOnFilterBadge={this.updateOnFilterBadge}
-													/>
-												);
-											})
-										)
-									) : (
-										''
-									)}
-
-									{key === 'People'
-										? personData.map(person => {
-												return (
-													<RelatedObject
-														key={person.id}
-														data={person}
-														activeLink={true}
-														onSearchPage={true}
-														updateOnFilterBadge={this.updateOnFilterBadge}
-													/>
-												);
-										  })
-										: ''}
-
-									{(() => {
-										if (key === 'Courses') {
-											let courseRender = [];
-											if (courseCount <= 0) return <NoResults type='courses' search={search} />;
-											else {
-												let currentHeader = '';
-												courseData.map(course => {
-													let showHeader = false;
-
-													if (!showHeader && course.courseOptions.flexibleDates && currentHeader !== 'Flexible') {
-														currentHeader = 'Flexible';
-														showHeader = true;
-													} else if (
-														!showHeader &&
-														course.courseOptions.startDate &&
-														currentHeader !== moment(course.courseOptions.startDate).format('MMMM')
-													) {
-														currentHeader = moment(course.courseOptions.startDate).format('MMMM');
-														showHeader = true;
-													}
-
-													if (showHeader) {
-														courseRender.push(
-															<Row className='courseDateHeader'>
-																<Col>
-																	<span className='black-20-semibold '>{currentHeader}</span>
-																</Col>
-															</Row>
-														);
-													}
-
-													courseRender.push(
-														<RelatedObject
-															key={course.id}
-															data={course}
-															activeLink={true}
-															onSearchPage={true}
-															updateOnFilterBadge={this.updateOnFilterBadge}
-														/>
-													);
-												});
-											}
-											return <>{courseRender}</>;
-										}
-									})()}
-									{/* PAGINATION */}
-									<div className='text-center'>
-										{key === 'Datasets' && datasetCount > maxResult ? <Pagination>{datasetPaginationItems}</Pagination> : ''}
-
-										{key === 'Tools' && toolCount > maxResult ? <Pagination>{toolPaginationItems}</Pagination> : ''}
-
-										{key === 'Projects' && projectCount > maxResult ? <Pagination>{projectPaginationItems}</Pagination> : ''}
-
-										{key === 'Papers' && paperCount > maxResult ? <Pagination>{paperPaginationItems}</Pagination> : ''}
-
-										{key === 'People' && personCount > maxResult ? <Pagination>{personPaginationItems}</Pagination> : ''}
-
-										{key === 'Courses' && courseCount > maxResult ? <Pagination>{coursePaginationItems}</Pagination> : ''}
-
-										{key === 'Collections' && collectionCount > maxResult ? <Pagination>{collectionPaginationItems}</Pagination> : ''}
-									</div>
-								</Col>
-							) : (
-								<Col style={{ marginTop: '30px' }} sm={12} md={12} lg={9}>
-									<Loading />
-								</Col>
-							)}
-						</Row>
-					</Container>
 					<NotificationContainer />
 					<SideDrawer open={showDrawer} closed={this.toggleDrawer}>
 						<UserMessages
