@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import axios from 'axios';
+import * as Sentry from '@sentry/react';
 import queryString from 'query-string';
 import { Row, Col, Tabs, Tab, Container, Alert, Pagination } from 'react-bootstrap';
 import Loading from '../commonComponents/Loading';
@@ -15,6 +16,7 @@ import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
 import UserMessages from '../commonComponents/userMessages/UserMessages';
 import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
 import ActionBar from '../commonComponents/actionbar/ActionBar';
+import ErrorModal from '../commonComponents/errorModal';
 import ResourcePageButtons from '../commonComponents/resourcePageButtons/ResourcePageButtons';
 import SVGIcon from '../../images/SVGIcon';
 import './Collections.scss';
@@ -454,470 +456,472 @@ export const CollectionPage = props => {
 	}
 
 	return (
-		<div>
-			<SearchBar
-				ref={searchBar}
-				searchString={searchString}
-				doSearchMethod={doSearch}
-				doUpdateSearchString={updateSearchString}
-				doToggleDrawer={toggleDrawer}
-				userState={userState}
-			/>
-			<div className='collectionHeader pixelGapTop pixelGapBottom'>
-				<Container>
-					{collectionAdded ? (
-						<Row>
-							<Col sm={1} lg={1} />
-							<Col sm={10} lg={10} className='pad-left-0'>
-								<Alert data-test-id='collection-added-banner' variant='success' className='mb-3'>
-									{collectionData.publicflag === true
-										? 'This public collection is now live. This collection is searchable on the Gateway and can be viewed by all users.'
-										: 'This private collection is now live. Only those who you share the collection link with will be able to view this page.'}
-								</Alert>
-							</Col>
-							<Col sm={1} lg={10} />
-						</Row>
-					) : (
-						''
-					)}
-
-					{collectionEdited ? (
-						<Row>
-							<Col sm={1} lg={1} />
-							<Col sm={10} lg={10}>
-								<Alert data-test-id='collection-added-banner' variant='success' className='mb-3'>
-									{collectionData.publicflag === true
-										? 'Done! Your public collection has been updated. This collection is searchable on the Gateway and can be viewed by all users.'
-										: 'Done! Your private collection has been updated. Only those who you share the collection link with will be able to view this page.'}
-								</Alert>
-							</Col>
-							<Col sm={1} lg={10} />
-						</Row>
-					) : (
-						''
-					)}
-
-					{collectionData.activeflag === 'archive' ? (
-						<Row>
-							<Col sm={1} lg={1} />
-							<Col sm={10} lg={10}>
-								<Alert variant='danger' className='mb-3'>
-									This collection has been archived
-								</Alert>
-							</Col>
-							<Col sm={1} lg={10} />
-						</Row>
-					) : (
-						''
-					)}
-
-					<Row>
-						<Col md={3} lg={2} />
-						<Col md={6} lg={8} className='flexCenter'>
-							{!collectionData.imageLink || collectionData.imageLink === 'https://' ? (
-								<div id='defaultCollectionImage' className='margin-right-1' />
-							) : (
-								<div id='collectionImage' style={{ backgroundImage: `url(${collectionData.imageLink})` }}></div>
-							)}
-						</Col>
-						<Col md={2} lg={1} className='privatePublicDisplayCol'>
-							{collectionData.publicflag === true ? (
-								<div className='privatePublicDisplay'>
-									<SVGIcon name='eye' width={24} height={24} fill={'#000000'} className={'margin-right-8'} />
-									<span className='deepBlack-14 alignSuper' data-testid='publicBadge'>
-										Public
-									</span>
-								</div>
-							) : (
-								<div className='privatePublicDisplay'>
-									<SVGIcon name='eyeCrossed' width={24} height={24} fill={'#000000'} className={'margin-right-8'} />
-									<span className='deepBlack-14 alignSuper' data-testid='privateBadge'>
-										Private
-									</span>
-								</div>
-							)}
-						</Col>
-						<Col md={1} lg={1} />
-					</Row>
-
-					<Row>
-						<Col sm={12} lg={12} className='collectionCreatedDate'>
-							<span className='gray700-13' data-testid='collectionCreated'>
-								Created {moment(collectionData.createdAt).format('MMM YYYY')}{' '}
-							</span>
-						</Col>
-					</Row>
-					<Row>
-						<Col sm={12} lg={12} className='centerText'>
-							<span className='black-28' data-test-id='collectionName'>
-								{collectionData.name}{' '}
-							</span>
-						</Col>
-					</Row>
-
-					<Row>
-						<Col sm={1} lg={1} />
-						<Col sm={10} lg={10} className='centerText'>
-							{collectionData.persons.map((person, index) => {
-								if (index > 0) {
-									return (
-										<a className='gray800-14' href={'/person/' + person.id} key={index}>
-											, {person.firstname} {person.lastname}
-										</a>
-									);
-								} else {
-									return (
-										<a className='gray800-14' href={'/person/' + person.id} key={index}>
-											{person.firstname} {person.lastname}
-										</a>
-									);
-								}
-							})}
-						</Col>
-						<Col sm={1} lg={1} />
-					</Row>
-
-					<Row>
-						<div className='col-sm-12 mt-3 gray800-14 text-center'>{collectionData.counter ? collectionData.counter : 0} views</div>
-					</Row>
-
-					<Row>
-						<Col sm={1} lg={1} />
-						<Col sm={10} lg={10} className='collectionKeywords'>
-							{collectionData.keywords &&
-								collectionData.keywords.length > 0 &&
-								collectionData.keywords.map((keyword, index) => {
-									return (
-										<a href={'/search?search=&tab=Collections&collectionkeywords=' + keyword}>
-											<div className='badge-tag' data-testid={`collectionKeyword${index}`}>
-												{keyword}
-											</div>
-										</a>
-									);
-								})}
-						</Col>
-						<Col sm={1} lg={1} />
-					</Row>
-
-					<Row className='pad-top-24'>
-						<Col sm={1} lg={1} />
-						<Col sm={10} lg={10} data-test-id='collection-description' className='gray800-14 hdruk-section-body'>
-							<ReactMarkdown source={collectionData.description} data-testid='collectionDescription' />
-						</Col>
-						<Col sm={1} lg={1} />
-					</Row>
-				</Container>
-			</div>
-
+		<Sentry.ErrorBoundary fallback={<ErrorModal />}>
 			<div>
-				<Tabs
-					className='tabsBackground gray700-13'
-					activeKey={key}
-					onSelect={key => {
-						handleSelect(key);
-						googleAnalytics.recordVirtualPageView(`${key} tab`);
-						googleAnalytics.recordEvent('Collections', `Clicked ${key} tab`, `Viewing ${key}`);
-					}}
-					data-testid='collectionPageTabs'>
-					<Tab eventKey='dataset' title={'Datasets (' + datasetCount + ')'}></Tab>
-					<Tab eventKey='tool' title={'Tools (' + toolCount + ')'}></Tab>
-					<Tab eventKey='paper' title={'Papers (' + paperCount + ')'}></Tab>
-					<Tab eventKey='project' title={'Projects (' + projectCount + ')'}></Tab>
-					<Tab eventKey='person' title={'People (' + personCount + ')'}></Tab>
-					<Tab eventKey='course' title={'Course (' + courseCount + ')'}></Tab>
-					<Tab eventKey='discussion' title={`Discussion (${discoursePostCount})`}>
-						<Container className='resource-card'>
+				<SearchBar
+					ref={searchBar}
+					searchString={searchString}
+					doSearchMethod={doSearch}
+					doUpdateSearchString={updateSearchString}
+					doToggleDrawer={toggleDrawer}
+					userState={userState}
+				/>
+				<div className='collectionHeader pixelGapTop pixelGapBottom'>
+					<Container>
+						{collectionAdded ? (
+							<Row>
+								<Col sm={1} lg={1} />
+								<Col sm={10} lg={10} className='pad-left-0'>
+									<Alert data-test-id='collection-added-banner' variant='success' className='mb-3'>
+										{collectionData.publicflag === true
+											? 'This public collection is now live. This collection is searchable on the Gateway and can be viewed by all users.'
+											: 'This private collection is now live. Only those who you share the collection link with will be able to view this page.'}
+									</Alert>
+								</Col>
+								<Col sm={1} lg={10} />
+							</Row>
+						) : (
+							''
+						)}
+
+						{collectionEdited ? (
 							<Row>
 								<Col sm={1} lg={1} />
 								<Col sm={10} lg={10}>
-									<DiscourseTopic
-										collectionId={collectionData.id}
-										topicId={collectionData.discourseTopicId || 0}
-										userState={userState}
-										onUpdateDiscoursePostCount={updateDiscoursePostCount}></DiscourseTopic>
+									<Alert data-test-id='collection-added-banner' variant='success' className='mb-3'>
+										{collectionData.publicflag === true
+											? 'Done! Your public collection has been updated. This collection is searchable on the Gateway and can be viewed by all users.'
+											: 'Done! Your private collection has been updated. Only those who you share the collection link with will be able to view this page.'}
+									</Alert>
 								</Col>
+								<Col sm={1} lg={10} />
 							</Row>
-						</Container>
-					</Tab>
-				</Tabs>
-			</div>
+						) : (
+							''
+						)}
 
-			<Container className='resource-card'>
-				{isResultsLoading && (
-					<Row className='width-100'>
-						<Col xs={12} className='noPadding'>
-							<Loading />
-						</Col>
-					</Row>
-				)}
-				{key !== 'discussion' && (
-					<CollectionsSearch
-						doCollectionsSearchMethod={doCollectionsSearch}
-						doUpdateCollectionsSearchString={updateCollectionsSearchString}
-						isLoading={isResultsLoading}
-						handleSort={handleSort}
-						isCollectionsSearch={true}
-						dropdownItems={dropdownItems}
-						sort={collectionsPageSort === '' ? (searchCollectionsString === '' ? 'recentlyadded' : 'relevance') : collectionsPageSort}
-					/>
-				)}
-				<Row>
-					<Col sm={1} lg={1} />
-					<Col sm={10} lg={10}>
-						{key === 'dataset'
-							? handlePaginatedItems(datasetIndex).map(object => {
-									if (
-										object.activeflag === 'active' ||
-										(object.activeflag === 'archive' && object.type === 'dataset') ||
-										(object.type === 'dataset' && object.activeflag === 'review' && object.authors.includes(userState[0].id))
-									) {
-										var reason = '';
-										var updated = '';
-										var user = '';
-										let showAnswer = false;
-										if (object.type === 'dataset') {
-											if (object.activeflag === 'archive') {
+						{collectionData.activeflag === 'archive' ? (
+							<Row>
+								<Col sm={1} lg={1} />
+								<Col sm={10} lg={10}>
+									<Alert variant='danger' className='mb-3'>
+										This collection has been archived
+									</Alert>
+								</Col>
+								<Col sm={1} lg={10} />
+							</Row>
+						) : (
+							''
+						)}
+
+						<Row>
+							<Col md={3} lg={2} />
+							<Col md={6} lg={8} className='flexCenter'>
+								{!collectionData.imageLink || collectionData.imageLink === 'https://' ? (
+									<div id='defaultCollectionImage' className='margin-right-1' />
+								) : (
+									<div id='collectionImage' style={{ backgroundImage: `url(${collectionData.imageLink})` }}></div>
+								)}
+							</Col>
+							<Col md={2} lg={1} className='privatePublicDisplayCol'>
+								{collectionData.publicflag === true ? (
+									<div className='privatePublicDisplay'>
+										<SVGIcon name='eye' width={24} height={24} fill={'#000000'} className={'margin-right-8'} />
+										<span className='deepBlack-14 alignSuper' data-testid='publicBadge'>
+											Public
+										</span>
+									</div>
+								) : (
+									<div className='privatePublicDisplay'>
+										<SVGIcon name='eyeCrossed' width={24} height={24} fill={'#000000'} className={'margin-right-8'} />
+										<span className='deepBlack-14 alignSuper' data-testid='privateBadge'>
+											Private
+										</span>
+									</div>
+								)}
+							</Col>
+							<Col md={1} lg={1} />
+						</Row>
+
+						<Row>
+							<Col sm={12} lg={12} className='collectionCreatedDate'>
+								<span className='gray700-13' data-testid='collectionCreated'>
+									Created {moment(collectionData.createdAt).format('MMM YYYY')}{' '}
+								</span>
+							</Col>
+						</Row>
+						<Row>
+							<Col sm={12} lg={12} className='centerText'>
+								<span className='black-28' data-test-id='collectionName'>
+									{collectionData.name}{' '}
+								</span>
+							</Col>
+						</Row>
+
+						<Row>
+							<Col sm={1} lg={1} />
+							<Col sm={10} lg={10} className='centerText'>
+								{collectionData.persons.map((person, index) => {
+									if (index > 0) {
+										return (
+											<a className='gray800-14' href={'/person/' + person.id} key={index}>
+												, {person.firstname} {person.lastname}
+											</a>
+										);
+									} else {
+										return (
+											<a className='gray800-14' href={'/person/' + person.id} key={index}>
+												{person.firstname} {person.lastname}
+											</a>
+										);
+									}
+								})}
+							</Col>
+							<Col sm={1} lg={1} />
+						</Row>
+
+						<Row>
+							<div className='col-sm-12 mt-3 gray800-14 text-center'>{collectionData.counter ? collectionData.counter : 0} views</div>
+						</Row>
+
+						<Row>
+							<Col sm={1} lg={1} />
+							<Col sm={10} lg={10} className='collectionKeywords'>
+								{collectionData.keywords &&
+									collectionData.keywords.length > 0 &&
+									collectionData.keywords.map((keyword, index) => {
+										return (
+											<a href={'/search?search=&tab=Collections&collectionkeywords=' + keyword}>
+												<div className='badge-tag' data-testid={`collectionKeyword${index}`}>
+													{keyword}
+												</div>
+											</a>
+										);
+									})}
+							</Col>
+							<Col sm={1} lg={1} />
+						</Row>
+
+						<Row className='pad-top-24'>
+							<Col sm={1} lg={1} />
+							<Col sm={10} lg={10} data-test-id='collection-description' className='gray800-14 hdruk-section-body'>
+								<ReactMarkdown source={collectionData.description} data-testid='collectionDescription' />
+							</Col>
+							<Col sm={1} lg={1} />
+						</Row>
+					</Container>
+				</div>
+
+				<div>
+					<Tabs
+						className='tabsBackground gray700-13'
+						activeKey={key}
+						onSelect={key => {
+							handleSelect(key);
+							googleAnalytics.recordVirtualPageView(`${key} tab`);
+							googleAnalytics.recordEvent('Collections', `Clicked ${key} tab`, `Viewing ${key}`);
+						}}
+						data-testid='collectionPageTabs'>
+						<Tab eventKey='dataset' title={'Datasets (' + datasetCount + ')'}></Tab>
+						<Tab eventKey='tool' title={'Tools (' + toolCount + ')'}></Tab>
+						<Tab eventKey='paper' title={'Papers (' + paperCount + ')'}></Tab>
+						<Tab eventKey='project' title={'Projects (' + projectCount + ')'}></Tab>
+						<Tab eventKey='person' title={'People (' + personCount + ')'}></Tab>
+						<Tab eventKey='course' title={'Course (' + courseCount + ')'}></Tab>
+						<Tab eventKey='discussion' title={`Discussion (${discoursePostCount})`}>
+							<Container className='resource-card'>
+								<Row>
+									<Col sm={1} lg={1} />
+									<Col sm={10} lg={10}>
+										<DiscourseTopic
+											collectionId={collectionData.id}
+											topicId={collectionData.discourseTopicId || 0}
+											userState={userState}
+											onUpdateDiscoursePostCount={updateDiscoursePostCount}></DiscourseTopic>
+									</Col>
+								</Row>
+							</Container>
+						</Tab>
+					</Tabs>
+				</div>
+
+				<Container className='resource-card'>
+					{isResultsLoading && (
+						<Row className='width-100'>
+							<Col xs={12} className='noPadding'>
+								<Loading />
+							</Col>
+						</Row>
+					)}
+					{key !== 'discussion' && (
+						<CollectionsSearch
+							doCollectionsSearchMethod={doCollectionsSearch}
+							doUpdateCollectionsSearchString={updateCollectionsSearchString}
+							isLoading={isResultsLoading}
+							handleSort={handleSort}
+							isCollectionsSearch={true}
+							dropdownItems={dropdownItems}
+							sort={collectionsPageSort === '' ? (searchCollectionsString === '' ? 'recentlyadded' : 'relevance') : collectionsPageSort}
+						/>
+					)}
+					<Row>
+						<Col sm={1} lg={1} />
+						<Col sm={10} lg={10}>
+							{key === 'dataset'
+								? handlePaginatedItems(datasetIndex).map(object => {
+										if (
+											object.activeflag === 'active' ||
+											(object.activeflag === 'archive' && object.type === 'dataset') ||
+											(object.type === 'dataset' && object.activeflag === 'review' && object.authors.includes(userState[0].id))
+										) {
+											var reason = '';
+											var updated = '';
+											var user = '';
+											let showAnswer = false;
+											if (object.type === 'dataset') {
+												if (object.activeflag === 'archive') {
+													return (
+														<div className='entity-deleted gray800-14'>The dataset '{object.name}' has been deleted by the publisher</div>
+													);
+												}
+
+												!_.isEmpty(object.datasetv2) && _.has(object, 'datasetv2.summary.publisher.name')
+													? (datasetPublisher = object.datasetv2.summary.publisher.name)
+													: (datasetPublisher = '');
+
+												!_.isEmpty(object.datasetv2) && _.has(object, 'datasetv2.summary.publisher.logo')
+													? (datasetLogo = object.datasetv2.summary.publisher.logo)
+													: (datasetLogo = '');
+
+												collectionData.relatedObjects.map(dat => {
+													if (dat.objectId === object.datasetid) {
+														reason = dat.reason;
+														updated = dat.updated;
+														user = dat.user;
+														showAnswer = !_.isEmpty(reason);
+													}
+												});
 												return (
-													<div className='entity-deleted gray800-14'>The dataset '{object.name}' has been deleted by the publisher</div>
+													<RelatedObject
+														key={object.id}
+														data={object}
+														activeLink={true}
+														showRelationshipAnswer={showAnswer}
+														collectionReason={reason}
+														collectionUpdated={updated}
+														collectionUser={user}
+														datasetPublisher={datasetPublisher}
+														datasetLogo={datasetLogo}
+													/>
 												);
 											}
-
-											!_.isEmpty(object.datasetv2) && _.has(object, 'datasetv2.summary.publisher.name')
-												? (datasetPublisher = object.datasetv2.summary.publisher.name)
-												: (datasetPublisher = '');
-
-											!_.isEmpty(object.datasetv2) && _.has(object, 'datasetv2.summary.publisher.logo')
-												? (datasetLogo = object.datasetv2.summary.publisher.logo)
-												: (datasetLogo = '');
-
-											collectionData.relatedObjects.map(dat => {
-												if (dat.objectId === object.datasetid) {
-													reason = dat.reason;
-													updated = dat.updated;
-													user = dat.user;
-													showAnswer = !_.isEmpty(reason);
-												}
-											});
-											return (
-												<RelatedObject
-													key={object.id}
-													data={object}
-													activeLink={true}
-													showRelationshipAnswer={showAnswer}
-													collectionReason={reason}
-													collectionUpdated={updated}
-													collectionUser={user}
-													datasetPublisher={datasetPublisher}
-													datasetLogo={datasetLogo}
-												/>
-											);
 										}
-									}
-							  })
-							: ''}
+								  })
+								: ''}
 
-						{key === 'tool'
-							? handlePaginatedItems(toolIndex).map(object => {
-									if (
-										object.activeflag === 'active' ||
-										(object.type === 'tool' && object.activeflag === 'review' && object.authors.includes(userState[0].id))
-									) {
-										var reason = '';
-										var updated = '';
-										var user = '';
-										let showAnswer = false;
-										if (object.type === 'tool') {
-											collectionData.relatedObjects.map(dat => {
-												if (parseInt(dat.objectId) === object.id) {
-													reason = dat.reason;
-													updated = dat.updated;
-													user = dat.user;
-													showAnswer = !_.isEmpty(reason);
-												}
-											});
-											return (
-												<RelatedObject
-													key={object.id}
-													data={object}
-													activeLink={true}
-													showRelationshipAnswer={showAnswer}
-													collectionReason={reason}
-													collectionUpdated={updated}
-													collectionUser={user}
-												/>
-											);
+							{key === 'tool'
+								? handlePaginatedItems(toolIndex).map(object => {
+										if (
+											object.activeflag === 'active' ||
+											(object.type === 'tool' && object.activeflag === 'review' && object.authors.includes(userState[0].id))
+										) {
+											var reason = '';
+											var updated = '';
+											var user = '';
+											let showAnswer = false;
+											if (object.type === 'tool') {
+												collectionData.relatedObjects.map(dat => {
+													if (parseInt(dat.objectId) === object.id) {
+														reason = dat.reason;
+														updated = dat.updated;
+														user = dat.user;
+														showAnswer = !_.isEmpty(reason);
+													}
+												});
+												return (
+													<RelatedObject
+														key={object.id}
+														data={object}
+														activeLink={true}
+														showRelationshipAnswer={showAnswer}
+														collectionReason={reason}
+														collectionUpdated={updated}
+														collectionUser={user}
+													/>
+												);
+											}
 										}
-									}
-							  })
-							: ''}
+								  })
+								: ''}
 
-						{key === 'project'
-							? handlePaginatedItems(projectIndex).map(object => {
-									if (
-										object.activeflag === 'active' ||
-										(object.type === 'project' && object.activeflag === 'review' && object.authors.includes(userState[0].id))
-									) {
-										var reason = '';
-										var updated = '';
-										var user = '';
-										let showAnswer = false;
-										if (object.type === 'project') {
-											collectionData.relatedObjects.map(dat => {
-												if (parseInt(dat.objectId) === object.id) {
-													reason = dat.reason;
-													updated = dat.updated;
-													user = dat.user;
-													showAnswer = !_.isEmpty(reason);
-												}
-											});
-											return (
-												<RelatedObject
-													key={object.id}
-													data={object}
-													activeLink={true}
-													showRelationshipAnswer={showAnswer}
-													collectionReason={reason}
-													collectionUpdated={updated}
-													collectionUser={user}
-												/>
-											);
+							{key === 'project'
+								? handlePaginatedItems(projectIndex).map(object => {
+										if (
+											object.activeflag === 'active' ||
+											(object.type === 'project' && object.activeflag === 'review' && object.authors.includes(userState[0].id))
+										) {
+											var reason = '';
+											var updated = '';
+											var user = '';
+											let showAnswer = false;
+											if (object.type === 'project') {
+												collectionData.relatedObjects.map(dat => {
+													if (parseInt(dat.objectId) === object.id) {
+														reason = dat.reason;
+														updated = dat.updated;
+														user = dat.user;
+														showAnswer = !_.isEmpty(reason);
+													}
+												});
+												return (
+													<RelatedObject
+														key={object.id}
+														data={object}
+														activeLink={true}
+														showRelationshipAnswer={showAnswer}
+														collectionReason={reason}
+														collectionUpdated={updated}
+														collectionUser={user}
+													/>
+												);
+											}
 										}
-									}
-							  })
-							: ''}
+								  })
+								: ''}
 
-						{key === 'paper'
-							? handlePaginatedItems(paperIndex).map(object => {
-									if (
-										object.activeflag === 'active' ||
-										(object.type === 'paper' && object.activeflag === 'review' && object.authors.includes(userState[0].id))
-									) {
-										var reason = '';
-										var updated = '';
-										var user = '';
-										let showAnswer = false;
-										if (object.type === 'paper') {
-											collectionData.relatedObjects.map(dat => {
-												if (parseInt(dat.objectId) === object.id) {
-													reason = dat.reason;
-													updated = dat.updated;
-													user = dat.user;
-													showAnswer = !_.isEmpty(reason);
-												}
-											});
+							{key === 'paper'
+								? handlePaginatedItems(paperIndex).map(object => {
+										if (
+											object.activeflag === 'active' ||
+											(object.type === 'paper' && object.activeflag === 'review' && object.authors.includes(userState[0].id))
+										) {
+											var reason = '';
+											var updated = '';
+											var user = '';
+											let showAnswer = false;
+											if (object.type === 'paper') {
+												collectionData.relatedObjects.map(dat => {
+													if (parseInt(dat.objectId) === object.id) {
+														reason = dat.reason;
+														updated = dat.updated;
+														user = dat.user;
+														showAnswer = !_.isEmpty(reason);
+													}
+												});
 
-											return (
-												<RelatedObject
-													key={object.id}
-													data={object}
-													activeLink={true}
-													showRelationshipAnswer={showAnswer}
-													collectionReason={reason}
-													collectionUpdated={updated}
-													collectionUser={user}
-												/>
-											);
+												return (
+													<RelatedObject
+														key={object.id}
+														data={object}
+														activeLink={true}
+														showRelationshipAnswer={showAnswer}
+														collectionReason={reason}
+														collectionUpdated={updated}
+														collectionUser={user}
+													/>
+												);
+											}
 										}
-									}
-							  })
-							: ''}
+								  })
+								: ''}
 
-						{key === 'person'
-							? handlePaginatedItems(personIndex).map(object => {
-									if (
-										object.activeflag === 'active' ||
-										(object.type === 'person' && object.activeflag === 'review' && object.authors.includes(userState[0].id))
-									) {
-										var reason = '';
-										var updated = '';
-										var user = '';
-										let showAnswer = false;
-										if (object.type === 'person') {
-											collectionData.relatedObjects.map(dat => {
-												if (parseInt(dat.objectId) === object.id) {
-													reason = dat.reason;
-													updated = dat.updated;
-													user = dat.user;
-													showAnswer = !_.isEmpty(reason);
-												}
-											});
-											return (
-												<RelatedObject
-													key={object.id}
-													data={object}
-													activeLink={true}
-													showRelationshipAnswer={showAnswer}
-													collectionReason={reason}
-													collectionUpdated={updated}
-													collectionUser={user}
-												/>
-											);
+							{key === 'person'
+								? handlePaginatedItems(personIndex).map(object => {
+										if (
+											object.activeflag === 'active' ||
+											(object.type === 'person' && object.activeflag === 'review' && object.authors.includes(userState[0].id))
+										) {
+											var reason = '';
+											var updated = '';
+											var user = '';
+											let showAnswer = false;
+											if (object.type === 'person') {
+												collectionData.relatedObjects.map(dat => {
+													if (parseInt(dat.objectId) === object.id) {
+														reason = dat.reason;
+														updated = dat.updated;
+														user = dat.user;
+														showAnswer = !_.isEmpty(reason);
+													}
+												});
+												return (
+													<RelatedObject
+														key={object.id}
+														data={object}
+														activeLink={true}
+														showRelationshipAnswer={showAnswer}
+														collectionReason={reason}
+														collectionUpdated={updated}
+														collectionUser={user}
+													/>
+												);
+											}
 										}
-									}
-							  })
-							: ''}
+								  })
+								: ''}
 
-						{key === 'course'
-							? handlePaginatedItems(courseIndex).map(object => {
-									if (
-										object.activeflag === 'active' ||
-										(object.type === 'course' && object.activeflag === 'review' && object.creator[0].id === userState[0].id)
-									) {
-										var reason = '';
-										var updated = '';
-										var user = '';
-										let showAnswer = false;
-										if (object.type === 'course') {
-											collectionData.relatedObjects.map(dat => {
-												if (parseInt(dat.objectId) === object.id) {
-													reason = dat.reason;
-													updated = dat.updated;
-													user = dat.user;
-													showAnswer = !_.isEmpty(reason);
-												}
-											});
-											return (
-												<RelatedObject
-													key={object.id}
-													data={object}
-													activeLink={true}
-													showRelationshipAnswer={showAnswer}
-													collectionReason={reason}
-													collectionUpdated={updated}
-													collectionUser={user}
-												/>
-											);
+							{key === 'course'
+								? handlePaginatedItems(courseIndex).map(object => {
+										if (
+											object.activeflag === 'active' ||
+											(object.type === 'course' && object.activeflag === 'review' && object.creator[0].id === userState[0].id)
+										) {
+											var reason = '';
+											var updated = '';
+											var user = '';
+											let showAnswer = false;
+											if (object.type === 'course') {
+												collectionData.relatedObjects.map(dat => {
+													if (parseInt(dat.objectId) === object.id) {
+														reason = dat.reason;
+														updated = dat.updated;
+														user = dat.user;
+														showAnswer = !_.isEmpty(reason);
+													}
+												});
+												return (
+													<RelatedObject
+														key={object.id}
+														data={object}
+														activeLink={true}
+														showRelationshipAnswer={showAnswer}
+														collectionReason={reason}
+														collectionUpdated={updated}
+														collectionUser={user}
+													/>
+												);
+											}
 										}
-									}
-							  })
-							: ''}
+								  })
+								: ''}
 
-						<div className='text-center'>
-							{key === 'dataset' && datasetCount > maxResult ? <Pagination>{datasetPaginationItems}</Pagination> : ''}
-							{key === 'tool' && toolCount > maxResult ? <Pagination>{toolPaginationItems}</Pagination> : ''}
-							{key === 'project' && projectCount > maxResult ? <Pagination>{projectPaginationItems}</Pagination> : ''}
-							{key === 'paper' && paperCount > maxResult ? <Pagination>{paperPaginationItems}</Pagination> : ''}
-							{key === 'person' && personCount > maxResult ? <Pagination>{personPaginationItems}</Pagination> : ''}
-							{key === 'course' && courseCount > maxResult ? <Pagination>{coursePaginationItems}</Pagination> : ''}
-						</div>
-					</Col>
-					<Col sm={1} lg={10} />
-				</Row>
-			</Container>
+							<div className='text-center'>
+								{key === 'dataset' && datasetCount > maxResult ? <Pagination>{datasetPaginationItems}</Pagination> : ''}
+								{key === 'tool' && toolCount > maxResult ? <Pagination>{toolPaginationItems}</Pagination> : ''}
+								{key === 'project' && projectCount > maxResult ? <Pagination>{projectPaginationItems}</Pagination> : ''}
+								{key === 'paper' && paperCount > maxResult ? <Pagination>{paperPaginationItems}</Pagination> : ''}
+								{key === 'person' && personCount > maxResult ? <Pagination>{personPaginationItems}</Pagination> : ''}
+								{key === 'course' && courseCount > maxResult ? <Pagination>{coursePaginationItems}</Pagination> : ''}
+							</div>
+						</Col>
+						<Col sm={1} lg={10} />
+					</Row>
+				</Container>
 
-			{userState[0].loggedIn &&
-				(userState[0].role === 'Admin' || (collectionData.authors && collectionData.authors.includes(userState[0].id))) && (
-					<ActionBar userState={userState}>
-						<ResourcePageButtons data={collectionData} userState={userState} isCollection={true} />
-					</ActionBar>
-				)}
+				{userState[0].loggedIn &&
+					(userState[0].role === 'Admin' || (collectionData.authors && collectionData.authors.includes(userState[0].id))) && (
+						<ActionBar userState={userState}>
+							<ResourcePageButtons data={collectionData} userState={userState} isCollection={true} />
+						</ActionBar>
+					)}
 
-			<SideDrawer open={showDrawer} closed={toggleDrawer}>
-				<UserMessages userState={userState[0]} closed={toggleDrawer} toggleModal={toggleModal} drawerIsOpen={showDrawer} />
-			</SideDrawer>
+				<SideDrawer open={showDrawer} closed={toggleDrawer}>
+					<UserMessages userState={userState[0]} closed={toggleDrawer} toggleModal={toggleModal} drawerIsOpen={showDrawer} />
+				</SideDrawer>
 
-			<DataSetModal open={showModal} context={context} closed={toggleModal} userState={userState[0]} />
-		</div>
+				<DataSetModal open={showModal} context={context} closed={toggleModal} userState={userState[0]} />
+			</div>
+		</Sentry.ErrorBoundary>
 	);
 };
 
