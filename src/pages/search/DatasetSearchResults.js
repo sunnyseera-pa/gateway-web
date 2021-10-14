@@ -1,30 +1,40 @@
-const DatasetSearchResults = props => {
-	const mapResults = React.useCallback(data => {
-		data.map(dataset => {
-			let datasetPublisher;
-			let datasetLogo;
+import React from 'react';
+import _ from 'lodash';
+import RelatedObject from '../commonComponents/relatedObject/RelatedObject';
+import SearchResults from '../commonComponents/SearchResults';
 
-			!_.isEmpty(dataset.datasetv2) && _.has(dataset, 'datasetv2.summary.publisher.name')
-				? (datasetPublisher = dataset.datasetv2.summary.publisher.name)
-				: (datasetPublisher = '');
+const DatasetSearchResults = ({ updateOnFilterBadge, ...outerProps }) => {
+	const mapResults = React.useCallback(
+		data => {
+			return data.map(dataset => {
+				let datasetPublisher;
+				let datasetLogo;
 
-			!_.isEmpty(dataset.datasetv2) && _.has(dataset, 'datasetv2.summary.publisher.logo')
-				? (datasetLogo = dataset.datasetv2.summary.publisher.logo)
-				: (datasetLogo = '');
+				!_.isEmpty(dataset.datasetv2) && _.has(dataset, 'datasetv2.summary.publisher.name')
+					? (datasetPublisher = dataset.datasetv2.summary.publisher.name)
+					: (datasetPublisher = '');
 
-			return (
-				<RelatedObject
-					key={dataset.id}
-					data={dataset}
-					activeLink={true}
-					onSearchPage={true}
-					updateOnFilterBadge={updateOnFilterBadge}
-					datasetPublisher={datasetPublisher}
-					datasetLogo={datasetLogo}
-				/>
-			);
-		});
-	}, []);
+				!_.isEmpty(dataset.datasetv2) && _.has(dataset, 'datasetv2.summary.publisher.logo')
+					? (datasetLogo = dataset.datasetv2.summary.publisher.logo)
+					: (datasetLogo = '');
 
-	return <SearchResults {...props} results={mapResults} />;
+				return (
+					<RelatedObject
+						key={dataset.id}
+						data={dataset}
+						activeLink={true}
+						onSearchPage={true}
+						updateOnFilterBadge={updateOnFilterBadge}
+						datasetPublisher={datasetPublisher}
+						datasetLogo={datasetLogo}
+					/>
+				);
+			});
+		},
+		[updateOnFilterBadge]
+	);
+
+	return <SearchResults {...outerProps} results={mapResults} />;
 };
+
+export default DatasetSearchResults;

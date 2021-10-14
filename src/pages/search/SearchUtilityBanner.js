@@ -1,3 +1,7 @@
+import React from 'react';
+import { Alert, Col, Row } from 'react-bootstrap';
+import googleAnalytics from '../../tracking';
+
 const SearchUtilityBanner = ({ onClick, step }) => {
 	const handleOnClick = React.useCallback(() => {
 		googleAnalytics.recordVirtualPageView('Data utility wizard');

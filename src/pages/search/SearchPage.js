@@ -1,34 +1,33 @@
-import React, { Fragment } from 'react';
-import axios from 'axios';
-import googleAnalytics from '../../tracking';
-import queryString from 'query-string';
 import * as Sentry from '@sentry/react';
-import { Container, Row, Col, Tabs, Tab, Pagination, Button, Alert } from 'react-bootstrap';
-import moment from 'moment';
-import _ from 'lodash';
-import Filter from './components/Filter';
-import FilterSelection from './components/FilterSelection';
-import SearchBar from '../commonComponents/searchBar/SearchBar';
-import RelatedObject from '../commonComponents/relatedObject/RelatedObject';
-import CollectionCard from '../commonComponents/collectionCard/CollectionCard';
+import axios from 'axios';
+import _, { upperFirst } from 'lodash';
+import queryString from 'query-string';
+import React from 'react';
+import { Alert, Button, Col, Container, Row, Tab, Tabs } from 'react-bootstrap';
+import { NotificationContainer } from 'react-notifications';
+import SVGIcon from '../../images/SVGIcon';
+import googleAnalytics from '../../tracking';
+import AdvancedSearchModal from '../commonComponents/AdvancedSearchModal/AdvancedSearchModal';
+import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
+import DataUtilityWizardModal from '../commonComponents/DataUtilityWizard/DataUtilityWizardModal';
+import ErrorModal from '../commonComponents/errorModal';
 import Loading from '../commonComponents/Loading';
 import NoResults from '../commonComponents/NoResults';
-import { NotificationContainer } from 'react-notifications';
-import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
-import UserMessages from '../commonComponents/userMessages/UserMessages';
-import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
-import ErrorModal from '../commonComponents/errorModal';
-import SortDropdown from './components/SortDropdown';
-import { ReactComponent as CDStar } from '../../images/cd-star.svg';
-import AdvancedSearchModal from '../commonComponents/AdvancedSearchModal/AdvancedSearchModal';
 import SavedPreferencesModal from '../commonComponents/savedPreferencesModal/SavedPreferencesModal';
 import SaveModal from '../commonComponents/saveModal/SaveModal';
-import DataUtilityWizardModal from '../commonComponents/DataUtilityWizard/DataUtilityWizardModal';
-import SVGIcon from '../../images/SVGIcon';
+import SearchBar from '../commonComponents/searchBar/SearchBar';
+import SearchResults from '../commonComponents/SearchResults';
+import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
+import UserMessages from '../commonComponents/userMessages/UserMessages';
+import CollectionsSearchResults from './CollectionsSearchResults';
+import Filter from './components/Filter';
+import FilterSelection from './components/FilterSelection';
+import SortDropdown from './components/SortDropdown';
+import CoursesSearchResults from './CoursesSearchResults';
+import DatasetSearchResults from './DatasetSearchResults';
 import './Search.scss';
-import { upperFirst } from 'lodash';
-import SearchResults from './SearchResults';
 import SearchFilters from './SearchFilters';
+import SearchUtilityBanner from './SearchUtilityBanner';
 
 let baseURL = require('../commonComponents/BaseURL').getURL();
 const typeMapper = {
@@ -711,6 +710,7 @@ class SearchPage extends React.Component {
 	};
 
 	handlePagination = (type = '', page = 0) => {
+		console.log('TYPE', type, page);
 		if (!_.isEmpty(type)) {
 			googleAnalytics.recordVirtualPageView(`${_.startCase(_.toLower(type))}s results page ${page / 40 + 1}`);
 			this.setState({ [`${type}Index`]: page, isResultsLoading: true }, () => {
@@ -1563,7 +1563,9 @@ class SearchPage extends React.Component {
 					</div>
 
 					<div className='container'>
-						{this.state.showDataUtilityBanner && <SearchUtilityBanner onClick={openDataUtilityWizard} step={activeDataUtilityWizardStep} />}
+						{this.state.showDataUtilityBanner && (
+							<SearchUtilityBanner onClick={this.openDataUtilityWizard} step={activeDataUtilityWizardStep} />
+						)}
 
 						{this.state.saveSuccess && !this.state.showSavedModal && (
 							<Alert variant='primary' className='blue-banner saved-preference-banner'>
@@ -1660,12 +1662,20 @@ class SearchPage extends React.Component {
 										data={datasetData}
 										count={datasetCount}
 										pageNumber={datasetIndex / maxResult}
+										totalPages={datasetCount / maxResult}
 										{...searchProps}
 									/>
 								)}
 
 								{key === 'Tools' && (
-									<SearchResults type='tools' data={toolData} count={toolCount} pageNumber={toolIndex / maxResult} {...searchProps} />
+									<SearchResults
+										type='tools'
+										data={toolData}
+										count={toolCount}
+										pageNumber={toolIndex / maxResult}
+										totalPages={toolCount / maxResult}
+										{...searchProps}
+									/>
 								)}
 
 								{key === 'Projects' && (
@@ -1674,6 +1684,7 @@ class SearchPage extends React.Component {
 										data={projectData}
 										count={projectCount}
 										pageNumber={projectIndex / maxResult}
+										totalPages={projectCount / maxResult}
 										{...searchProps}
 									/>
 								)}
@@ -1684,12 +1695,20 @@ class SearchPage extends React.Component {
 										data={collectionData}
 										count={collectionCount}
 										pageNumber={collectionIndex}
+										totalPages={collectionCount / maxResult}
 										{...searchProps}
 									/>
 								)}
 
 								{key === 'Papers' && (
-									<SearchResults type='papers' data={paperData} count={paperCount} pageNumber={paperIndex / maxResult} {...searchProps} />
+									<SearchResults
+										type='papers'
+										data={paperData}
+										count={paperCount}
+										pageNumber={paperIndex / maxResult}
+										totalPages={paperCount / maxResult}
+										{...searchProps}
+									/>
 								)}
 
 								{key === 'People' && (
@@ -1698,16 +1717,18 @@ class SearchPage extends React.Component {
 										data={personData}
 										count={personCount}
 										pageNumber={personIndex / maxResult}
+										totalPages={personCount / maxResult}
 										{...searchProps}
 									/>
 								)}
 
 								{key === 'Courses' && (
-									<SearchResults
+									<CoursesSearchResults
 										type='courses'
 										data={courseData}
 										count={courseCount}
 										pageNumber={courseIndex / maxResult}
+										totalPages={courseCount / maxResult}
 										{...searchProps}
 									/>
 								)}
