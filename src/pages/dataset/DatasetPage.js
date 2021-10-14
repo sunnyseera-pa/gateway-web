@@ -78,10 +78,10 @@ class DatasetDetail extends Component {
 		showDrawer: false,
 		showModal: false,
 		showCustodianModal: false,
-		showError: false,
 		showAllPhenotype: false,
 		showAllLinkedDatasets: false,
 		showEmpty: false,
+		showCitationSuccess: false,
 		emptyFlagDetails: false,
 		emptyFlagCoverage: false,
 		emptyFlagFormats: false,
@@ -109,14 +109,6 @@ class DatasetDetail extends Component {
 		this.handleMouseHoverShield = this.handleMouseHoverShield.bind(this);
 		this.searchBar = React.createRef();
 	}
-
-	showModal = () => {
-		this.setState({ showError: true });
-	};
-
-	hideModal = () => {
-		this.setState({ showError: false });
-	};
 
 	// on loading of tool detail page
 	async componentDidMount() {
@@ -653,6 +645,25 @@ class DatasetDetail extends Component {
 		this.setState({ showAllLinkedDatasets: true });
 	};
 
+	exportCitation = () => {
+		const data = this.state.data;
+		const year = new Date(data.datasetv2.provenance.temporal.distributionReleaseDate).getFullYear();
+		navigator.clipboard.writeText(
+			data.datasetv2.summary.publisher.name +
+				'(' +
+				year +
+				').' +
+				data.name +
+				'.' +
+				data.datasetVersion +
+				'.' +
+				data.type +
+				'.' +
+				data.datasetv2.summary.doiName
+		);
+		this.setState({ showCitationSuccess: true });
+	};
+
 	render() {
 		const {
 			searchString,
@@ -779,7 +790,7 @@ class DatasetDetail extends Component {
 		}
 
 		return (
-			<Sentry.ErrorBoundary fallback={<ErrorModal show={this.showModal} handleClose={this.hideModal} />}>
+			<Sentry.ErrorBoundary fallback={<ErrorModal />}>
 				<Fragment>
 					<DatasetSchema data={data} />
 
@@ -795,6 +806,13 @@ class DatasetDetail extends Component {
 						<Row className='mt-4'>
 							<Col sm={1} />
 							<Col sm={10}>
+								{this.state.showCitationSuccess && (
+									<Alert variant='success' className='citation-banner green-banner'>
+										<Row>
+											<Col>Citation has been copied to clipboard.</Col>
+										</Row>
+									</Alert>
+								)}
 								{alert ? <Alert variant={alert.type}>{alert.message}</Alert> : null}
 								<div className='rectangle'>
 									<Row>
@@ -1422,7 +1440,7 @@ class DatasetDetail extends Component {
 					</SideDrawer>
 
 					<ActionBar userState={userState} showOverride={true}>
-						<ResourcePageButtons data={data} userState={userState} />
+						<ResourcePageButtons data={data} userState={userState} exportCitation={this.exportCitation} />
 					</ActionBar>
 
 					<DataSetModal

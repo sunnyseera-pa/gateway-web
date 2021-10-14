@@ -10,8 +10,16 @@ const getDatasetOnboarding = (_id, options) => {
 	return getRequest(`${apiURL}/dataset-onboarding/${_id}`, options);
 };
 
+const getPublisher = (_id, options) => {
+	return getRequest(`${apiURL}/dataset-onboarding/publisher/${_id}`, options);
+};
+
 const postDatasetOnboarding = (_id, data, options) => {
 	return postRequest(`${apiURL}/dataset-onboarding/${_id}`, data, options);
+};
+
+const postDuplicate = (_id, data, options) => {
+	return postRequest(`${apiURL}/dataset-onboarding/duplicate/${_id}`, data, options);
 };
 
 const putDatasetOnboarding = (_id, data, options) => {
@@ -29,31 +37,44 @@ const deleteDatasetOnboarding = (_id, options) => {
 const useGetDatasetOnboardings = (requestOptions, queryOptions = { queryKey: 'getDatasetOnboardings' }) => {
 	return useQuery({
 		...queryOptions,
-		queryFn: id => getDatasetOnboardings(requestOptions),
+		queryFn: () => getDatasetOnboardings(requestOptions),
 	});
 };
 
 export const useGetDatasetOnboarding = (requestOptions, queryOptions = { queryKey: 'getDatasetOnboarding' }) => {
 	return useQuery({
 		...queryOptions,
-		queryFn: id => getDatasetOnboarding(id, requestOptions),
+		queryFn: _id => getDatasetOnboarding(_id, requestOptions),
 	});
 };
 
-export const usePostDatasetOnboarding = (requestOptions, mutateOptions = { queryKey: 'postDatasetOnboarding' }) => {
-	return useMutation((id, data) => postDatasetOnboarding(id, data, requestOptions), {
+export const useGetPublisher = (requestOptions, queryOptions = { queryKey: 'getPublisher' }) => {
+	return useQuery({
+		...queryOptions,
+		queryFn: _id => getPublisher(_id, requestOptions),
+	});
+};
+
+const usePostDatasetOnboarding = (requestOptions, mutateOptions = { queryKey: 'postDatasetOnboarding' }) => {
+	return useMutation((_id, data) => postDatasetOnboarding(_id, data, requestOptions), {
 		mutateOptions,
 	});
 };
 
-export const usePutDatasetOnboarding = (requestOptions, mutateOptions = { queryKey: 'putDatasetOnboarding' }) => {
-	return useMutation((id, data) => putDatasetOnboarding(id, data, requestOptions), {
+const usePostDuplicate = (requestOptions, mutateOptions = { queryKey: 'postDuplicate' }) => {
+	return useMutation((_id, data) => postDuplicate(_id, data, requestOptions), {
 		mutateOptions,
 	});
 };
 
-export const usePatchDatasetOnboarding = (requestOptions, mutateOptions = { queryKey: 'patchDatasetOnboarding' }) => {
-	return useMutation((id, data) => patchDatasetOnboarding(id, data, requestOptions), {
+const usePutDatasetOnboarding = (requestOptions, mutateOptions = { queryKey: 'putDatasetOnboarding' }) => {
+	return useMutation((_id, data) => putDatasetOnboarding(_id, data, requestOptions), {
+		mutateOptions,
+	});
+};
+
+const usePatchDatasetOnboarding = (requestOptions, mutateOptions = { queryKey: 'patchDatasetOnboarding' }) => {
+	return useMutation((_id, data) => patchDatasetOnboarding(_id, data, requestOptions), {
 		mutateOptions,
 	});
 };
@@ -61,20 +82,24 @@ export const usePatchDatasetOnboarding = (requestOptions, mutateOptions = { quer
 export const useDeleteDatasetOnboarding = (requestOptions, queryOptions = { queryKey: 'deleteDatasetOnboarding' }) => {
 	return useQuery({
 		...queryOptions,
-		queryFn: id => deleteDatasetOnboarding(id, requestOptions),
+		queryFn: _id => deleteDatasetOnboarding(_id, requestOptions),
 	});
 };
 
 export default {
 	getDatasetOnboardings,
 	getDatasetOnboarding,
+	getPublisher,
 	postDatasetOnboarding,
+	postDuplicate,
 	putDatasetOnboarding,
 	patchDatasetOnboarding,
 	deleteDatasetOnboarding,
 	useGetDatasetOnboardings,
 	useGetDatasetOnboarding,
+	useGetPublisher,
 	usePostDatasetOnboarding,
+	usePostDuplicate,
 	usePutDatasetOnboarding,
 	usePatchDatasetOnboarding,
 	useDeleteDatasetOnboarding,
