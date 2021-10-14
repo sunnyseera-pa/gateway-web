@@ -30,9 +30,11 @@ const SearchResults = ({
 	<>
 		{!isLoading && (
 			<>
-				<Row>
-					<div className='text-right save-dropdown'>{sort}</div>
-				</Row>
+				{sort && (
+					<Row>
+						<div className='text-right save-dropdown'>{sort}</div>
+					</Row>
+				)}
 				{count <= 0 && <NoResults type={type} search={search} />}
 				{!results &&
 					count > 0 &&
@@ -42,19 +44,15 @@ const SearchResults = ({
 						);
 					})}
 				{results && results(data)}
-				{count >
-					maxResult(
-						<Pagination>
-							{new Array(Math.ceil(count / maxResult)).fill().map((value, i) => (
-								<Pagination.Item
-									key={i}
-									active={i === pageNumber / maxResult}
-									onClick={() => onPagination(typeMapper[type], i * maxResult)}>
-									{i}
-								</Pagination.Item>
-							))}
-						</Pagination>
-					)}
+				{count > maxResult && (
+					<Pagination>
+						{new Array(Math.ceil(count / maxResult)).fill().map((value, i) => (
+							<Pagination.Item key={i} active={i === pageNumber} onClick={() => onPagination(typeMapper[type], i * maxResult)}>
+								{i + 1}
+							</Pagination.Item>
+						))}
+					</Pagination>
+				)}
 			</>
 		)}
 		{!!isLoading && (
