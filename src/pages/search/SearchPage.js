@@ -1521,6 +1521,7 @@ class SearchPage extends React.Component {
 			maxResult,
 			search,
 			isLoading: isResultsLoading,
+			sort: showSort && !this.state.savedSearchPanel && dropdownMenu,
 			updateOnFilterBadge: this.updateOnFilterBadge,
 			onAdvancedSearchClick: this.toggleAdvancedSearchModal,
 			onPagination: this.handlePagination,
@@ -1561,31 +1562,7 @@ class SearchPage extends React.Component {
 					</div>
 
 					<div className='container'>
-						{this.state.showDataUtilityBanner && (
-							<Alert variant='primary' className='blue-banner saved-preference-banner'>
-								<Row>
-									<Col>
-										<h5 className='indigo-bold-14'>Data utility wizard applied: Customer filters</h5>
-									</Col>
-								</Row>
-								<Row>
-									<Col md={9}>
-										You can continue to customise your filters below or edit alongside the search term in the data utility wizard.
-									</Col>
-									<Col md={3} className='data-utility-banner'>
-										<p
-											className='data-utility-link'
-											onClick={() => {
-												googleAnalytics.recordVirtualPageView('Data utility wizard');
-												googleAnalytics.recordEvent('Datasets', 'Clicked edit data utility wizard', 'Reopened data utility wizard modal');
-												this.openDataUtilityWizard(activeDataUtilityWizardStep);
-											}}>
-											Edit in data utility wizard
-										</p>
-									</Col>
-								</Row>
-							</Alert>
-						)}
+						{this.state.showDataUtilityBanner && <SearchUtilityBanner onClick={openDataUtilityWizard} step={activeDataUtilityWizardStep} />}
 
 						{this.state.saveSuccess && !this.state.showSavedModal && (
 							<Alert variant='primary' className='blue-banner saved-preference-banner'>
@@ -1670,8 +1647,6 @@ class SearchPage extends React.Component {
 							</Row>
 						</Container>
 					</div>
-
-					{showSort && !this.state.savedSearchPanel && <Row>{dropdownMenu}</Row>}
 
 					{key === 'Datasets' && (
 						<DatasetSearchResults
