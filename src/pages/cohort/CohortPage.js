@@ -1,6 +1,5 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
-import { useHistory } from 'react-router-dom';
 import * as Sentry from '@sentry/react';
 import { Container, Row, Col, Tabs, Tab, Alert, Button, Accordion } from 'react-bootstrap';
 import SearchBar from '../commonComponents/searchBar/SearchBar';
@@ -24,7 +23,6 @@ import { CohortDatasetPublisherCard } from './CohortDatasetPublisherCard';
 let baseURL = require('../commonComponents/BaseURL').getURL();
 
 export const CohortPage = props => {
-	let history = useHistory();
 	const [isLoading, setIsLoading] = useState(true);
 	const [cohortData, setCohortData] = useState([]);
 	const [cohortGroups, setCohortGroups] = useState([]);
