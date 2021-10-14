@@ -19,15 +19,15 @@ import SearchBar from '../commonComponents/searchBar/SearchBar';
 import SearchResults from '../commonComponents/SearchResults';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
 import UserMessages from '../commonComponents/userMessages/UserMessages';
-import CollectionsSearchResults from './CollectionsSearchResults';
+import CollectionsSearchResults from './components/CollectionsSearchResults/CollectionsSearchResults';
 import Filter from './components/Filter';
 import FilterSelection from './components/FilterSelection';
 import SortDropdown from './components/SortDropdown';
-import CoursesSearchResults from './CoursesSearchResults';
-import DatasetSearchResults from './DatasetSearchResults';
+import CoursesSearchResults from './components/CoursesSearchResults';
+import DatasetSearchResults from './components/DatasetSearchResults';
 import './Search.scss';
-import SearchFilters from './SearchFilters';
-import SearchUtilityBanner from './SearchUtilityBanner';
+import SearchFilters from './components/SearchFilters';
+import SearchUtilityBanner from './components/SearchUtilityBanner';
 
 let baseURL = require('../commonComponents/BaseURL').getURL();
 const typeMapper = {
@@ -1653,7 +1653,9 @@ class SearchPage extends React.Component {
 					<Container>
 						<Row>
 							<Col sm={12} md={12} lg={3} className='mt-1 mb-5'>
-								<SearchFilters filters={<Filter {...filterProps} />} onAdvancedSearchClick={this.toggleAdvancedSearchModal} />
+								{key !== 'People' && (
+									<SearchFilters filters={<Filter {...filterProps} />} onAdvancedSearchClick={this.toggleAdvancedSearchModal} />
+								)}
 							</Col>
 							<Col sm={12} md={12} lg={9} className='mt-1 mb-5'>
 								{key === 'Datasets' && (

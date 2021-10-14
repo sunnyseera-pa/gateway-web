@@ -7,34 +7,40 @@ import moment from 'moment';
 const CoursesSearchResults = ({ updateOnFilterBadge, ...outerProps }) => {
 	const mapResults = React.useCallback(
 		data => {
+			let courseRender = [];
 			let currentHeader = '';
 
-			return data.map(course => {
-				let output;
+			data.forEach(course => {
+				let showHeader = false;
 
-				if (!currentHeader) {
+				if (!showHeader) {
+					const courseStartDate = courseStartDate && moment(course.courseOptions.startDate).format('MMMM');
+
 					if (course.courseOptions.flexibleDates && currentHeader !== 'Flexible') {
 						currentHeader = 'Flexible';
-					} else if (course.courseOptions.startDate && currentHeader !== moment(course.courseOptions.startDate).format('MMMM')) {
-						currentHeader = moment(course.courseOptions.startDate).format('MMMM');
+						showHeader = true;
+					} else if (courseStartDate) {
+						currentHeader = courseStartDate;
+						showHeader = true;
 					}
+				}
 
-					output = (
+				if (showHeader) {
+					courseRender.push(
 						<Row className='courseDateHeader'>
 							<Col>
-								<span className='black-20-semibold'>{currentHeader}</span>
+								<span className='black-20-semibold '>{currentHeader}</span>
 							</Col>
 						</Row>
 					);
 				}
 
-				return (
-					<>
-						{output}
-						<RelatedObject key={course.id} data={course} activeLink={true} onSearchPage={true} updateOnFilterBadge={updateOnFilterBadge} />
-					</>
+				courseRender.push(
+					<RelatedObject key={course.id} data={course} activeLink={true} onSearchPage={true} updateOnFilterBadge={updateOnFilterBadge} />
 				);
 			});
+
+			return <>{courseRender}</>;
 		},
 		[updateOnFilterBadge]
 	);

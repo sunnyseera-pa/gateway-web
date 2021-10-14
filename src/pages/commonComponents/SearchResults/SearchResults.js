@@ -9,7 +9,7 @@ const typeMapper = {
 	tools: 'tool',
 	projects: 'project',
 	papers: 'paper',
-	people: 'person',
+	profiles: 'person',
 	courses: 'course',
 	collection: 'collection',
 };
