@@ -255,3 +255,12 @@
 	background-color: $gray-light;
 	border-radius: 4px;
 }
+
+hr.datause-border {
+	border-top: 1px solid $gray-200;
+	width: 100%;
+}
+
+.datause-badge-right {
+	float: right;
+}
