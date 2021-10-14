@@ -12,7 +12,7 @@ const props = {
 
 jest.mock('../../../../tracking');
 
-describe('Given the ActionBarStatus component', () => {
+describe('Given the SearchUtilityBanner component', () => {
 	describe('When it is rendered', () => {
 		beforeAll(() => {
 			wrapper = render(<SearchUtilityBanner {...props} />);
@@ -24,7 +24,7 @@ describe('Given the ActionBarStatus component', () => {
 
 		describe('And the data wizard link is clicked', () => {
 			beforeAll(() => {
-				fireEvent.click(wrapper.getByTestId('data-utility-link'));
+				fireEvent.click(wrapper.getByText('Edit in data utility wizard'));
 			});
 
 			it('Then calls onClick with step', () => {

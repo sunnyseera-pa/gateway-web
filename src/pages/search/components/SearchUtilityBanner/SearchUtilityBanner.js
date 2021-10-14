@@ -19,7 +19,7 @@ const SearchUtilityBanner = ({ onClick, step }) => {
 			<Row>
 				<Col md={9}>You can continue to customise your filters below or edit alongside the search term in the data utility wizard.</Col>
 				<Col md={3} className='data-utility-banner'>
-					<p className='data-utility-link' onClick={handleOnClick} role='button' data-testid='data-utility-link'>
+					<p className='data-utility-link' onClick={handleOnClick} role='button'>
 						Edit in data utility wizard
 					</p>
 				</Col>
