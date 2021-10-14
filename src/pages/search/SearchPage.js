@@ -28,6 +28,7 @@ import SVGIcon from '../../images/SVGIcon';
 import './Search.scss';
 import { upperFirst } from 'lodash';
 import SearchResults from './SearchResults';
+import SearchFilters from './SearchFilters';
 
 let baseURL = require('../commonComponents/BaseURL').getURL();
 const typeMapper = {
@@ -1647,76 +1648,84 @@ class SearchPage extends React.Component {
 							</Row>
 						</Container>
 					</div>
+					<Container>
+						<Row>
+							<Col sm={12} md={12} lg={3} className='mt-1 mb-5'>
+								<SearchFilters onAdvancedSearchClick={this.toggleAdvancedSearchModal} filters={filters} />
+							</Col>
+							<Col sm={12} md={12} lg={9} className='mt-1 mb-5'>
+								{key === 'Datasets' && (
+									<DatasetSearchResults
+										type='datasets'
+										filters={<Filter data={filtersV2Datasets} {...filterProps} />}
+										data={datasetData}
+										count={datasetCount}
+										pageNumber={datasetIndex}
+										{...searchProps}
+									/>
+								)}
 
-					{key === 'Datasets' && (
-						<DatasetSearchResults
-							type='datasets'
-							filters={<Filter data={filtersV2Datasets} {...filterProps} />}
-							data={datasetData}
-							count={datasetCount}
-							pageNumber={datasetIndex}
-							{...searchProps}
-						/>
-					)}
+								{key === 'Tools' && (
+									<SearchResults
+										type='tools'
+										filters={<Filter data={filtersV2Tools} {...filterProps} />}
+										data={toolData}
+										count={toolCount}
+										pageNumber={toolIndex}
+										{...searchProps}
+									/>
+								)}
 
-					{key === 'Tools' && (
-						<SearchResults
-							type='tools'
-							filters={<Filter data={filtersV2Tools} {...filterProps} />}
-							data={toolData}
-							count={toolCount}
-							pageNumber={toolIndex}
-							{...searchProps}
-						/>
-					)}
+								{key === 'Projects' && (
+									<SearchResults
+										type='projects'
+										filters={<Filter data={filtersV2Projects} {...filterProps} />}
+										data={projectData}
+										count={projectCount}
+										pageNumber={projectIndex}
+										{...searchProps}
+									/>
+								)}
 
-					{key === 'Projects' && (
-						<SearchResults
-							type='projects'
-							filters={<Filter data={filtersV2Projects} {...filterProps} />}
-							data={projectData}
-							count={projectCount}
-							pageNumber={projectIndex}
-							{...searchProps}
-						/>
-					)}
+								{key === 'Collections' && (
+									<CollectionsSearchResults
+										type='collections'
+										filters={<Filter data={filtersV2Collections} {...filterProps} />}
+										data={collectionData}
+										count={collectionCount}
+										pageNumber={collectionIndex}
+										{...searchProps}
+									/>
+								)}
 
-					{key === 'Collections' && (
-						<CollectionsSearchResults
-							type='collections'
-							filters={<Filter data={filtersV2Collections} {...filterProps} />}
-							data={collectionData}
-							count={collectionCount}
-							pageNumber={collectionIndex}
-							{...searchProps}
-						/>
-					)}
+								{key === 'Papers' && (
+									<SearchResults
+										type='papers'
+										filters={<Filter data={filtersV2Papers} {...filterProps} />}
+										data={paperData}
+										count={paperCount}
+										pageNumber={paperIndex}
+										{...searchProps}
+									/>
+								)}
 
-					{key === 'Papers' && (
-						<SearchResults
-							type='papers'
-							filters={<Filter data={filtersV2Papers} {...filterProps} />}
-							data={paperData}
-							count={paperCount}
-							pageNumber={paperIndex}
-							{...searchProps}
-						/>
-					)}
+								{key === 'People' && (
+									<SearchResults type='profiles' data={personData} count={personCount} pageNumber={personIndex} {...searchProps} />
+								)}
 
-					{key === 'People' && (
-						<SearchResults type='profiles' data={personData} count={personCount} pageNumber={personIndex} {...searchProps} />
-					)}
-
-					{key === 'Courses' && (
-						<SearchResults
-							type='courses'
-							filters={<Filter data={filtersV2Courses} {...filterProps} />}
-							data={courseData}
-							count={courseCount}
-							pageNumber={courseIndex}
-							{...searchProps}
-						/>
-					)}
+								{key === 'Courses' && (
+									<SearchResults
+										type='courses'
+										filters={<Filter data={filtersV2Courses} {...filterProps} />}
+										data={courseData}
+										count={courseCount}
+										pageNumber={courseIndex}
+										{...searchProps}
+									/>
+								)}
+							</Col>
+						</Row>
+					</Container>
 
 					<NotificationContainer />
 					<SideDrawer open={showDrawer} closed={this.toggleDrawer}>
