@@ -423,6 +423,11 @@ class DataAccessRequestsNew extends React.Component {
 										this.navigateToLocation(e, _id, applicationStatus)
 									}
 								>
+                  <CSVLink data={screenData} filename={"test"}>
+                    <button className={`button-secondary`}>
+                        Download This Form
+                    </button>
+                </CSVLink>
 									<div className='col-md-12'>
 										<div className='layoutCard'>
 											<div className='header'>

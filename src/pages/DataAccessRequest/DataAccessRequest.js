@@ -48,6 +48,8 @@ import DeleteDraftModal from './components/DeleteDraftModal/DeleteDraftModal';
 import DuplicateApplicationModal from './components/DuplicateApplicationModal/DuplicateApplicationModal';
 import SelectDatasetModal from './components/SelectDatasetModal/SelectDatasetModal';
 
+import { CSVLink } from 'react-csv';
+
 class DataAccessRequest extends Component {
 	constructor(props) {
 		super(props);
@@ -1582,6 +1584,14 @@ class DataAccessRequest extends Component {
 		}
 	};
 
+	createCSV = (questionAnswers) => {
+		// set headers
+		const headers = ["ID", "Status", "Status notes",	"Date submitted", "Last activity", "Datasets", "Project name", "Project submitted by", "Applicant full name", "Job title", "Telephone", "Institutional afflilation", "ORCID", "Email", "Role", "Access to data", "Organisation name", "Line address 1",	"Line address 2", "Postcode", "City", "Country"];
+		// const row = JSON.stringify(questionAnswers);
+
+		return [headers];
+	}
+
 	render() {
 		const {
 			lastSaved,
@@ -1944,7 +1954,14 @@ class DataAccessRequest extends Component {
 					closeModal={this.toggleSelectDatasetModal}
 					duplicateApplication={this.onDuplicateApplication}
 					appToCloneId={this.state._id}
-				/>
+			/>
+
+				<CSVLink data={this.createCSV(this.state.questionAnswers)} filename={"test"}>
+					<button className={`button-secondary`}>
+						Download Request as a CSV
+					</button>
+				</CSVLink>
+
 			</div>
 		);
 	}
