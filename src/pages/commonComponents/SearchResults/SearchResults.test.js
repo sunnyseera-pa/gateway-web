@@ -6,6 +6,12 @@ import { data } from './mockProps';
 let wrapper;
 
 const resultsProp = jest.fn();
+const mockRelatedObject = jest.fn();
+
+jest.mock('../relatedObject/RelatedObject', () => props => {
+	mockRelatedObject(props);
+	return <div />;
+});
 
 const props = {
 	data,
@@ -53,7 +59,7 @@ describe('Given the SearchResults component', () => {
 			});
 
 			it('Then has the correct number of results', () => {
-				expect(wrapper.container.querySelectorAll('.resource-card-row')).toHaveLength(40);
+				expect(mockRelatedObject).toHaveBeenCalledTimes(40);
 			});
 
 			describe('And page 2 is clicked', () => {

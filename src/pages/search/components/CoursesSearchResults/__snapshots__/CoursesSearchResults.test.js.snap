@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Given the SearchResults component When it is rendered And it is no longer loading And the count is zero Then matches the previous snapshot 1`] = `
+exports[`Given the CoursesSearchResults component When it is rendered Then matches the previous snapshot 1`] = `
 <div>
   <div
     class="row"
@@ -11,57 +11,17 @@ exports[`Given the SearchResults component When it is rendered And it is no long
       Sort goes here...
     </div>
   </div>
-  <div>
-    <div
-      class="mt-4 row"
-    >
-      <div
-        class="gray800-14 text-center col"
-      >
-        <span>
-           
-          We couldn’t find any 
-          datasets
-           matching the search term ‘
-          search term
-          ’
-           
-        </span>
-      </div>
-    </div>
-    <div
-      class="mt-3 row"
-    >
-      <div
-        class="gray800-14 text-center col"
-      >
-        <span>
-           
-          Try searching for ‘
-          <a
-            class="purple-14"
-            href="/search?search=COVID-19"
-          >
-            COVID-19
-          </a>
-          ’ if you want to see examples of datasets
-           
-        </span>
-      </div>
-    </div>
-  </div>
-</div>
-`;
-
-exports[`Given the SearchResults component When it is rendered And it is no longer loading Then matches the previous snapshot 1`] = `
-<div>
   <div
-    class="row"
+    class="courseDateHeader row"
   >
     <div
-      class="text-right save-dropdown"
+      class="col"
     >
-      Sort goes here...
+      <span
+        class="black-20-semibold "
+      >
+        Flexible
+      </span>
     </div>
   </div>
   <div />
@@ -221,41 +181,5 @@ exports[`Given the SearchResults component When it is rendered And it is no long
       </a>
     </li>
   </ul>
-</div>
-`;
-
-exports[`Given the SearchResults component When it is rendered Then matches the previous snapshot 1`] = `
-<div>
-  <div
-    style="margin-top: 30px;"
-  >
-    <div
-      class="mt-2 row"
-    >
-      <div
-        class="col"
-      >
-        <div
-          class="rectangle"
-        >
-          <div
-            class="gray800-14"
-            style="text-align: center;"
-          >
-            <img
-              class=""
-              src=""
-            />
-          </div>
-          <div
-            class="gray800-14"
-            style="text-align: center;"
-          >
-            Loading...
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
 </div>
 `;

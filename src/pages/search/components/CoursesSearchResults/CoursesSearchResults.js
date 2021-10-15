@@ -40,7 +40,7 @@ const CoursesSearchResults = ({ updateOnFilterBadge, ...outerProps }) => {
 				);
 			});
 
-			return <>{courseRender}</>;
+			return courseRender;
 		},
 		[updateOnFilterBadge]
 	);
