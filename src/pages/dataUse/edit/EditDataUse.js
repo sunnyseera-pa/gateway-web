@@ -1,10 +1,11 @@
 import React, { useState, createRef } from 'react';
 import * as Sentry from '@sentry/react';
-import { Row, Col } from 'react-bootstrap';
+import { Row, Col, Button } from 'react-bootstrap';
 import SVGIcon from '../../../images/SVGIcon';
 import EditFormDataUse from './EditDataUseForm';
 import SearchBar from '../../commonComponents/searchBar/SearchBar';
 import ErrorModal from '../../commonComponents/errorModal/ErrorModal';
+import ActionBar from '../../commonComponents/actionbar/ActionBar';
 
 const EditDataUse = props => {
 	const [searchBar] = useState(createRef());
@@ -82,6 +83,12 @@ const EditDataUse = props => {
 				<Row>
 					<EditFormDataUse />
 				</Row>
+				{userState[0].loggedIn && (
+					<ActionBar userState={userState}>
+						<Button>Cancel</Button>
+						<Button>Save</Button>
+					</ActionBar>
+				)}
 			</div>
 		</Sentry.ErrorBoundary>
 	);
