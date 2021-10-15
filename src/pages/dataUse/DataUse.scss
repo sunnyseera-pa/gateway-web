@@ -264,3 +264,17 @@ hr.datause-border {
 .datause-badge-right {
 	float: right;
 }
+
+.datause-accordion.card-header {
+	background-color: $teal !important;
+	color: white;
+}
+
+.datause-accordion-header {
+	width: 100%;
+}
+
+.datause-accordion-collapse {
+	border-left: 1px solid $gray-200;
+	border-right: 1px solid $gray-200;
+}

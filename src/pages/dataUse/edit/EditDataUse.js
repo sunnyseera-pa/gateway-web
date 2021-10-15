@@ -2,7 +2,7 @@ import React, { useState, createRef } from 'react';
 import * as Sentry from '@sentry/react';
 import { Row, Col } from 'react-bootstrap';
 import SVGIcon from '../../../images/SVGIcon';
-import EditForm from './EditDataUseForm';
+import EditFormDataUse from './EditDataUseForm';
 import SearchBar from '../../commonComponents/searchBar/SearchBar';
 import ErrorModal from '../../commonComponents/errorModal/ErrorModal';
 
@@ -80,7 +80,7 @@ const EditDataUse = props => {
 				</Row>
 				<hr className='datause-border' />
 				<Row>
-					<EditForm />
+					<EditFormDataUse />
 				</Row>
 			</div>
 		</Sentry.ErrorBoundary>
