@@ -36,7 +36,7 @@ const SearchResults = ({
 						<div className='text-right save-dropdown'>{sort}</div>
 					</Row>
 				)}
-				{count <= 0 && <NoResults type={type} search={search} />}
+				{count <= 0 && <NoResults type={type} searchString={search} />}
 				{!results &&
 					count > 0 &&
 					data.map(item => {
@@ -44,7 +44,7 @@ const SearchResults = ({
 							<RelatedObject key={item.id} data={item} activeLink={true} onSearchPage={true} updateOnFilterBadge={updateOnFilterBadge} />
 						);
 					})}
-				{results && results(data)}
+				{results && count > 0 && results(data)}
 				{count > maxResult && (
 					<Pagination>
 						{new Array(Math.ceil(totalPages)).fill().map((value, i) => (
@@ -58,7 +58,7 @@ const SearchResults = ({
 		)}
 		{!!isLoading && (
 			<div style={{ marginTop: '30px' }}>
-				<Loading />
+				<Loading data-testid='loader' />
 			</div>
 		)}
 	</>
