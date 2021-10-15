@@ -3,7 +3,7 @@ import { Modal, InputGroup, FormText } from 'react-bootstrap';
 import { ReactComponent as CloseButtonSvg } from '../../../images/close-alt.svg';
 import SVGIcon from '../../../images/SVGIcon';
 import './DataUtilityWizard.scss';
-import _ from 'lodash';
+import { times, last } from 'lodash';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import googleAnalytics from '../../../tracking';
 
@@ -41,6 +41,7 @@ const DataUtilityWizardModal = ({
 	};
 
 	const changeFilter = async (stepKey, impliedValues, entryLabel, wizardStepTitle) => {
+		debugger;
 		// Formats the implied values to be accepted by the updateFilterStates function
 		// e.g: [x, y, z] ---> X::Y::Z
 		for (var i = 0; i < impliedValues.length; i++) {
@@ -76,7 +77,7 @@ const DataUtilityWizardModal = ({
 								<div className='data-utility-wizard-title'>
 									<h5 className='black-20 mb-0 mr-1'> {step.wizardStepTitle}</h5>
 
-									{_.times(dataUtilityWizardSteps.length, index => {
+									{times(dataUtilityWizardSteps.length, index => {
 										if (stepCounter - 1 === index) return <div className='current-question'></div>;
 										if (stepCounter - 1 > index) return <div className='previous-question'></div>;
 										if (stepCounter - 1 < index) return <div className='next-question'></div>;
@@ -86,6 +87,7 @@ const DataUtilityWizardModal = ({
 								{step.wizardStepType === 'radio' && (
 									<div className='radio-buttons-container'>
 										{step.entries.map(entry => {
+											console.log(`Selected items : ${selectedItems}`);
 											return (
 												<InputGroup className='mb-2'>
 													<InputGroup.Prepend>
@@ -94,7 +96,7 @@ const DataUtilityWizardModal = ({
 															name={'radioButtonSet' + stepCounter}
 															value={entry.impliedValues}
 															onChange={() => changeFilter(step.key, entry.impliedValues, entry.label, step.wizardStepTitle)}
-															checked={entry.label === selectedItems.find(item => item.parentKey === step.key)?.label}
+															checked={entry.label === last(selectedItems.filter(item => item.parentKey === step.key))?.label}
 														/>
 													</InputGroup.Prepend>
 													<FormText className='ml-3'>{entry.label}</FormText>
