@@ -171,7 +171,7 @@ class DataAccessRequest extends Component {
 	}
 
 	async initPage() {
-		try {
+		try {			
 			// 1. Determine the entry point to the Data Access Request
 			//  a) Dataset - route will contain only the 'datasetId' from the dataset page from which they came
 			//	b) Message Panel - route will contain only the 'publisherId' with historic state passed from the message panel component which includes datasetId(s)
@@ -319,7 +319,9 @@ class DataAccessRequest extends Component {
 	};
 
 	loadDataAccessRequest = async accessId => {
+				
 		try {
+			
 			// 1. Make API call to find and return the application form schema and answers matching this Id
 			let response = await axios.get(`${baseURL}/api/v1/data-access-request/${accessId}`);
 			// 2. Destructure backend response for this context containing details of DAR including question set and current progress
@@ -359,6 +361,8 @@ class DataAccessRequest extends Component {
 			workflow,
 			files,
 			isCloneable,
+			createdAt,
+			updatedAt
 		} = context;
 		let {
 			datasetfields: { publisher },
@@ -460,6 +464,8 @@ class DataAccessRequest extends Component {
 			workflowAssigned: !_.isEmpty(workflow) ? true : false,
 			files,
 			isCloneable,
+			createdAt,
+			updatedAt
 		});
 	};
 
@@ -1949,7 +1955,7 @@ class DataAccessRequest extends Component {
 					appToCloneId={this.state._id}
 			/>
 
-				<CSVLink data={createCSV(this.state.questionAnswers)} filename={"test"}>
+				<CSVLink data={createCSV(this.state.questionAnswers, this.state._id, this.state.applicationStatus, this.state.createdAt, this.updatedAt, this.datasets)} filename={"test"}>
 					<button className={`button-secondary`}>
 						Download Request as a CSV
 					</button>
