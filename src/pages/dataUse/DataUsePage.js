@@ -16,7 +16,7 @@ const DataUsePage = React.forwardRef(({ onClickDataUseUpload, team }, ref) => {
 
 	const [row, setRow] = useState([]);
 	const [currentPage, setCurrentPage] = useState(1);
-	const [rowsPerPage] = useState(13);
+	const [rowsPerPage] = useState(40);
 	const [alert, setAlert] = useState('');
 	const [dataUseId, setDataUseId] = useState(-1);
 	const [showArchiveModal, setShowArchiveModal] = useState(false);
