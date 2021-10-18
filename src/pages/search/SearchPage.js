@@ -1169,6 +1169,31 @@ class SearchPage extends React.Component {
 		}
 	};
 
+	getCountByKey = key => {
+		let {
+			summary: { datasetCount = 0, toolCount = 0, projectCount = 0, paperCount = 0, personCount = 0, courseCount = 0, collectionCount = 0 },
+		} = this.state;
+
+		switch (key) {
+			case 'Datasets':
+				return datasetCount;
+			case 'Tools':
+				return toolCount;
+			case 'Projects':
+				return projectCount;
+			case 'Papers':
+				return paperCount;
+			case 'Courses':
+				return courseCount;
+			case 'Collections':
+				return collectionCount;
+			case 'People':
+				return personCount;
+			default:
+				return 0;
+		}
+	};
+
 	/**
 	 * Handle Filter event bubble for option click
 	 * within the filter panel
@@ -1562,13 +1587,7 @@ class SearchPage extends React.Component {
 						<Container className={this.state.saveSuccess && !this.state.showSavedModal && 'container-saved-preference-banner'}>
 							<Row className='filters filter-save'>
 								<Col className='title' lg={4}>
-									Showing {key === 'Datasets' ? <>{datasetCount} </> : ''}
-									{key === 'Tools' ? <>{toolCount} </> : ''}
-									{key === 'Projects' ? <>{projectCount} </> : ''}
-									{key === 'Collections' ? <>{collectionCount} </> : ''}
-									{key === 'Courses' ? <>{courseCount} </> : ''}
-									{key === 'Papers' ? <>{paperCount} </> : ''}
-									{key === 'People' ? <>{personCount} </> : ''}
+									Showing {this.getCountByKey(key)}
 									results {this.state.search != '' && `for '${this.state.search}'`}
 								</Col>
 								<Col lg={8} className='saved-buttons'>

@@ -18,9 +18,13 @@ const props = {
 	onSort: mockOnSort,
 };
 
-const dropdownItems = ['relevance', 'popularity', 'latest', 'resources'];
+const dropdownItems = ['relevance', 'popularity', 'sortbyyear', 'resources'];
 
 describe('Given the PapersSearchSort component', () => {
+	afterEach(() => {
+		mockSortDropdown.mockReset();
+	});
+
 	describe('When it is rendered', () => {
 		beforeAll(() => {
 			wrapper = render(<PapersSearchSort {...props} />);
@@ -33,32 +37,32 @@ describe('Given the PapersSearchSort component', () => {
 				handleSort: mockOnSort,
 			});
 		});
+	});
 
-		describe('And there is no search or sort term', () => {
-			beforeAll(() => {
-				wrapper = render(<PapersSearchSort {...props} search='' sort='' />);
-			});
-
-			it('Then has the correct properties', () => {
-				expect(mockSortDropdown).toHaveBeenCalledWith({
-					dropdownItems,
-					sort: 'latest',
-					handleSort: mockOnSort,
-				});
-			});
+	describe('When it is rendered with no search or sort term', () => {
+		beforeAll(() => {
+			wrapper = render(<PapersSearchSort {...props} search='' sort='' />);
 		});
 
-		describe('And there is no sort', () => {
-			beforeAll(() => {
-				wrapper = render(<PapersSearchSort {...props} sort='' />);
+		it('Then has the correct properties', () => {
+			expect(mockSortDropdown).toHaveBeenCalledWith({
+				dropdownItems,
+				sort: 'sortbyyear',
+				handleSort: mockOnSort,
 			});
+		});
+	});
 
-			it('Then has the correct properties', () => {
-				expect(mockSortDropdown).toHaveBeenCalledWith({
-					dropdownItems,
-					sort: 'relevance',
-					handleSort: mockOnSort,
-				});
+	describe('When it is rendered with no sort', () => {
+		beforeAll(() => {
+			wrapper = render(<PapersSearchSort {...props} sort='' />);
+		});
+
+		it('Then has the correct properties', () => {
+			expect(mockSortDropdown).toHaveBeenCalledWith({
+				dropdownItems,
+				sort: 'relevance',
+				handleSort: mockOnSort,
 			});
 		});
 	});

@@ -38,7 +38,7 @@ describe('Given the analyticsdashboard service', () => {
 
 	describe('When getUsersPerMonth is called', () => {
 		it('Then calls getRequest with the correct arguments', async () => {
-			await service.getUsersPerMonth('1234', {
+			await service.getUsersPerMonth({
 				option1: true,
 			});
 
