@@ -98,19 +98,17 @@ class Account extends Component {
 		isSubmitting: false,
 		teamManagementInternalTab: 'Notifications',
 		accountUpdated: false,
-    showDataUseUploadPage: false,
-    dataaccessrequest: {},
-
+		showDataUseUploadPage: false,
+		dataaccessrequest: {},
 	};
 
 	constructor(props) {
 		super(props);
 		this.state.userState = props.userState;
 		this.searchBar = React.createRef();
-    this.dataUseUpload = React.createRef();
+		this.dataUseUpload = React.createRef();
 		this.dataUsePage = React.createRef();
-    this.activityLog = React.createRef();
-
+		this.activityLog = React.createRef();
 
 		// 1. used for DAR custodian update status of application
 		if (_.has(props, 'location.state.alert')) {
@@ -422,7 +420,7 @@ class Account extends Component {
 				alert: !_.isEmpty(alert) ? alert : {},
 				activeAccordion,
 				showDataUseUploadPage: false,
-        dataaccessrequest: {},
+				dataaccessrequest: {},
 			});
 			// 6. push state
 			this.props.history.push({ pathname: window.location.pathname, search: `?tab=${tab.tabId}`, state: { team: tab.team } });
@@ -467,6 +465,7 @@ class Account extends Component {
 		this.setState(prevState => {
 			return { showDataUseUploadPage: !prevState.showDataUseUploadPage };
 		});
+	};
 
 	setDataAccessRequest = (dar = {}) => {
 		this.setState({ dataaccessrequest: dar });
@@ -502,7 +501,6 @@ class Account extends Component {
 	loadActivityLogNotifications = () => {
 		this.searchBar.current.getNumberOfUnreadNotifications();
 		this.searchBar.current.doMessagesCall();
-
 	};
 
 	render() {
@@ -525,7 +523,6 @@ class Account extends Component {
 			accountUpdated,
 			showDataUseUploadPage,
 			dataaccessrequest,
-
 		} = this.state;
 
 		return (

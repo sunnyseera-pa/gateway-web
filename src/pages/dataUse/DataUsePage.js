@@ -106,7 +106,7 @@ const DataUsePage = React.forwardRef(({ onClickDataUseUpload, team }, ref) => {
 				</Col>
 				{team !== 'user' && (
 					<Col md={2} className='datause-button-grid'>
-						<Button className='datause-button' onClick={onClickDataUseUpload}>
+						<Button className='button-tertiary' onClick={onClickDataUseUpload}>
 							+ Upload data uses
 						</Button>
 					</Col>
