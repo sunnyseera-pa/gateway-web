@@ -1,5 +1,8 @@
 import React, { useState, createRef } from 'react';
 import * as Sentry from '@sentry/react';
+import axios from 'axios';
+import { baseURL } from '../../../configs/url.config';
+
 import { Row, Col, Button } from 'react-bootstrap';
 import SVGIcon from '../../../images/SVGIcon';
 import EditFormDataUse from './EditDataUseForm';
@@ -8,6 +11,8 @@ import ErrorModal from '../../commonComponents/errorModal/ErrorModal';
 import ActionBar from '../../commonComponents/actionbar/ActionBar';
 
 const EditDataUse = props => {
+	axios.get(baseURL + '/api/v2/data-use-registers/' + props.match.params.datauseID).then(res => console.log(res.data));
+
 	const [searchBar] = useState(createRef());
 	const [searchString, setSearchString] = useState('');
 	const [showDrawer, setShowDrawer] = useState(false);
@@ -85,8 +90,8 @@ const EditDataUse = props => {
 				</Row>
 				{userState[0].loggedIn && (
 					<ActionBar userState={userState}>
-						<Button>Cancel</Button>
-						<Button>Save</Button>
+						<Button className='datause-cancel dark-14'>Cancel</Button>
+						<Button className='datause-save white-14'>Save</Button>
 					</ActionBar>
 				)}
 			</div>

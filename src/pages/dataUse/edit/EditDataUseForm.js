@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { Accordion, Card, Button, Form, Row } from 'react-bootstrap';
+import { Accordion, Card, Button, Form } from 'react-bootstrap';
 import SVGIcon from '../../../images/SVGIcon';
 
-const EditFormDataUse = () => {
+const EditFormDataUse = props => {
 	const [safePeople, setSafePeople] = useState(true);
 	const [safeProject, setSafeProject] = useState(true);
 	const [safeData, setSafeData] = useState(true);

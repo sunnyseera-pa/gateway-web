@@ -105,6 +105,10 @@ h6 {
 	@include font-source(13px, $white, $font-weight-bold);
 }
 
+.white-14 {
+	@include font-source(14px, $white);
+}
+
 .white-14-semibold {
 	@include font-source(14px, $white, $font-weight-semibold);
 }

@@ -276,6 +276,7 @@ hr.datause-border {
 
 .datause-accordion-header {
 	width: 100%;
+	margin-top: 18px;
 }
 
 .datause-accordion-collapse {
@@ -322,4 +323,19 @@ hr.datause-border {
 
 .datatuse-add-resources:hover {
 	background: $teal !important;
+}
+
+.datause-cancel {
+	background: $gray-200 !important;
+	border: $gray-200 !important;
+	width: 82px;
+	height: 40px;
+	margin-right: 8px;
+}
+
+.datause-save {
+	background: $purple !important;
+	border: $purple !important;
+	width: 62px;
+	height: 40px;
 }
