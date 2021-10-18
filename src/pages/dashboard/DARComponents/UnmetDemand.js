@@ -111,6 +111,8 @@ class UnmetDemand extends React.Component {
 										{data.entity === 'paper' ? null : <span className='gray700-13'>{data.maxPapers || 0} papers</span>}
 										{data.entity === 'paper' ? null : <br />}
 										{data.entity === 'person' ? null : <span className='gray700-13'>{data.maxPeople || 0} people</span>}
+										{data.entity === 'person' ? null : <br />}
+										{data.entity === 'datause' ? null : <span className='gray700-13'>{data.maxDataUses || 0} data uses</span>}
 									</Col>
 								</Row>
 							</Accordion.Collapse>
