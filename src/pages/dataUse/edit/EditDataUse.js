@@ -58,7 +58,7 @@ const EditDataUse = props => {
 				userState={userState}
 				doToggleDrawer={toggleDrawer}
 			/>
-			<div className='datause-card'>
+			<div className='datause-card datause-edit-card'>
 				<Row>
 					<Col md={10}>
 						<h5 className='black-20-semibold'>Edit a data use</h5>
