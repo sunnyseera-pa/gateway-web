@@ -1410,14 +1410,14 @@ class SearchPage extends React.Component {
 		};
 	}
 
-	getSearchProps(showSort, dropdownMenu, maxResult) {
+	getSearchProps(showSort, sortMenu, maxResult) {
 		const { savedSearchPanel, isResultsLoading: isLoading, search } = this.state;
 
 		return {
 			maxResult,
 			search,
 			isLoading,
-			sort: showSort && !savedSearchPanel && dropdownMenu,
+			sort: showSort && !savedSearchPanel && sortMenu,
 			updateOnFilterBadge: this.updateOnFilterBadge,
 			onPagination: this.handlePagination,
 		};
@@ -1527,7 +1527,7 @@ class SearchPage extends React.Component {
 
 		let maxResult = 40;
 
-		const dropdownMenu = (
+		const sortMenu = (
 			<div className='text-right save-dropdown'>
 				{key === 'Tools' && <ToolsSearchSort onSort={this.handleSort} sort={toolSort} search={search} />}
 				{key === 'Datasets' && <DatasetSearchSort onSort={this.handleSort} sort={datasetSort} search={search} />}
@@ -1542,7 +1542,7 @@ class SearchPage extends React.Component {
 		const showSort = this.getShowSort(key);
 		const filterProps = this.getFilterProps(key);
 		const filtersSelectionProps = this.getFiltersSelectionProps(preferenceFilters);
-		const searchProps = this.getSearchProps(showSort, dropdownMenu, maxResult);
+		const searchProps = this.getSearchProps(showSort, sortMenu, maxResult);
 
 		return (
 			<Sentry.ErrorBoundary fallback={<ErrorModal />}>
@@ -1566,9 +1566,7 @@ class SearchPage extends React.Component {
 								<Tab eventKey='Collections' title={'Collections (' + collectionCount + ')'} />
 								<Tab eventKey='Courses' title={'Courses (' + courseCount + ')'} />
 								<Tab eventKey='Papers' title={'Papers (' + paperCount + ')'} />
-								<Tab eventKey='People' title={'People (' + personCount + ')'}>
-									{personCount <= 0 && !isResultsLoading ? <NoResults type='profiles' search={search} /> : ''}
-								</Tab>
+								<Tab eventKey='People' title={'People (' + personCount + ')'} />
 							</Tabs>
 						</div>
 					</div>
@@ -1640,7 +1638,7 @@ class SearchPage extends React.Component {
 										/>
 									)}
 
-									{dropdownMenu}
+									{sortMenu}
 								</Col>
 							</Row>
 							<Row>
