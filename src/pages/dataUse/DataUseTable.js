@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { Table, Dropdown } from 'react-bootstrap';
 import { isUndefined } from 'lodash';
 
-const DataUseTable = ({ team, data, active, pending, archived, showArchiveModal, showUnarchiveModal }) => {
+const DataUseTable = ({ team, data, active, pending, archived, onClickArchive, onClickUnarchive }) => {
 	const renderDatasets = dataUse => {
 		const datasets = dataUse.datasetTitles.map((datasetTitle, index) => {
 			const datasetId = dataUse.datasetIds[index];
@@ -54,7 +54,7 @@ const DataUseTable = ({ team, data, active, pending, archived, showArchiveModal,
 										</Dropdown.Toggle>
 										<Dropdown.Menu>
 											<Dropdown.Item href='#/action-1'>Edit</Dropdown.Item>
-											{team !== 'user' && <Dropdown.Item onClick={() => showArchiveModal(dataUse._id)}>Archive</Dropdown.Item>}
+											{team !== 'user' && <Dropdown.Item onClick={() => onClickArchive(dataUse._id)}>Archive</Dropdown.Item>}
 										</Dropdown.Menu>
 									</Dropdown>
 								)}
@@ -75,7 +75,7 @@ const DataUseTable = ({ team, data, active, pending, archived, showArchiveModal,
 											Actions
 										</Dropdown.Toggle>
 										<Dropdown.Menu>
-											<Dropdown.Item onClick={() => showUnarchiveModal(dataUse._id)}>Unarchive</Dropdown.Item>
+											<Dropdown.Item onClick={() => onClickUnarchive(dataUse._id)}>Unarchive</Dropdown.Item>
 										</Dropdown.Menu>
 									</Dropdown>
 								)}

@@ -567,14 +567,14 @@ class Account extends Component {
 										</Nav.Link>
 									</div>
 
-									{/* <div
+									<div
 										className={`${tabId === 'dataaccessrequests' ? 'activeCard' : 'accountNav'}`}
 										onClick={e => this.toggleNav('dataaccessrequests')}>
 										<Nav.Link eventKey={'dataaccessrequests'} className='verticalNavBar gray700-13'>
 											<SVGIcon name='newprojecticon' fill={'#b3b8bd'} className='accountSvgs' />
 											<span className='navLinkItem'>Data access requests</span>
 										</Nav.Link>
-									</div> */}
+									</div>
 
 									<div className={`${tabId === 'datause' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('datause')}>
 										<Nav.Link eventKey={'datause'} className='verticalNavBar gray700-13'>
@@ -642,7 +642,6 @@ class Account extends Component {
 											<span style={{ marginLeft: '11px' }}>Team Management</span>
 										</Nav.Link>
 									</div>
-									{console.log(allowAccessRequestManagement && this.userHasRole(team, ['manager', 'reviewer']))}
 									{allowAccessRequestManagement && this.userHasRole(team, ['manager', 'reviewer']) && (
 										<div
 											className={`${

@@ -4,7 +4,6 @@ import { Pagination } from 'react-bootstrap';
 const DataUsePagination = ({ rowsPerPage, totalRows, paginate }) => {
 	const pageNumbers = [];
 	for (let i = 1; i <= Math.ceil(totalRows / rowsPerPage); i++) {
-		console.log(Math.ceil(totalRows / rowsPerPage));
 		pageNumbers.push(i);
 	}
 	return (

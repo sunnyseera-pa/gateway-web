@@ -1,8 +1,8 @@
 import React from 'react';
 import { Modal, Button } from 'react-bootstrap';
 
-const ArchiveModal = ({ show, hide, archive, onConfirm }) => (
-	<Modal show={show} onHide={hide}>
+const ArchiveModal = ({ isVisible, toggleModal, archive, onConfirm }) => (
+	<Modal show={isVisible} onHide={toggleModal}>
 		<Modal.Header>
 			{archive ? (
 				<h3 className='black-20-semibold'>Archive this data use?</h3>
@@ -23,7 +23,7 @@ const ArchiveModal = ({ show, hide, archive, onConfirm }) => (
 			)}
 		</Modal.Body>
 		<Modal.Footer>
-			<Button className='data-use-no' variant='outline-primary' onClick={hide}>
+			<Button className='data-use-no' variant='outline-primary' onClick={toggleModal}>
 				No, nevermind
 			</Button>
 			<Button className='data-use-arch' onClick={archive ? () => onConfirm('archived') : () => onConfirm('active')}>

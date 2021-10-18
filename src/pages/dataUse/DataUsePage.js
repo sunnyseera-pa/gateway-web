@@ -17,10 +17,10 @@ const DataUsePage = React.forwardRef(({ onClickDataUseUpload, team }, ref) => {
 	const [row, setRow] = useState([]);
 	const [currentPage, setCurrentPage] = useState(1);
 	const [rowsPerPage] = useState(13);
-	const [showModal, setShowModal] = useState(false);
-	const [showUnarchiveModal, setShowUnarchiveModal] = useState(false);
 	const [alert, setAlert] = useState('');
 	const [dataUseId, setDataUseId] = useState(-1);
+	const [showArchiveModal, setShowArchiveModal] = useState(false);
+	const [showUnarchiveModal, setShowUnarchiveModal] = useState(false);
 
 	useEffect(() => {
 		axios.get(baseURL + '/api/v2/data-use-registers?team=' + team).then(res => {
@@ -30,24 +30,22 @@ const DataUsePage = React.forwardRef(({ onClickDataUseUpload, team }, ref) => {
 		});
 	}, [team, alert]);
 
-	const ShowArchiveModal = dataUseId => {
-		setShowModal(true);
+	const onClickArchive = dataUseId => {
+		toggleArchiveModal();
 		setDataUseId(dataUseId);
 	};
 
-	const HideArchiveModal = () => {
-		setShowModal(false);
-		setDataUseId(-1);
-	};
-
-	const ShowUnArchiveModal = dataUseId => {
-		setShowUnarchiveModal(true);
+	const onClickUnarchive = dataUseId => {
+		toggleUnarchiveModal();
 		setDataUseId(dataUseId);
 	};
 
-	const HideUnArchiveModal = () => {
-		setShowUnarchiveModal(false);
-		setDataUseId(-1);
+	const toggleArchiveModal = () => {
+		setShowArchiveModal(!showArchiveModal);
+	};
+
+	const toggleUnarchiveModal = () => {
+		setShowUnarchiveModal(!showUnarchiveModal);
 	};
 
 	const showAlert = message => {
@@ -61,10 +59,10 @@ const DataUsePage = React.forwardRef(({ onClickDataUseUpload, team }, ref) => {
 		axios.patch(baseURL + '/api/v2/data-use-registers/' + dataUseId, { activeflag: newStatus }).then(res => {
 			if (newStatus === 'archived') {
 				showAlert('Your data use have been successfully archived.');
-				setShowModal(false);
+				toggleArchiveModal();
 			} else {
 				showAlert('Your data use have been successfully unarchived.');
-				setShowUnarchiveModal(false);
+				toggleUnarchiveModal();
 			}
 		});
 	};
@@ -132,14 +130,14 @@ const DataUsePage = React.forwardRef(({ onClickDataUseUpload, team }, ref) => {
 							(team !== 'user' && team !== 'admin' && tabName === 'Archived' && tabName + ' (' + archived.length + ')')
 						}>
 						{(team === 'user' || (team !== 'user' && team !== 'admin')) && tabName === 'Active' && (
-							<Table data={currentActive} active={true} team={team} showArchiveModal={ShowArchiveModal} />
+							<Table data={currentActive} active={true} team={team} onClickArchive={onClickArchive} />
 						)}
 						{(team === 'admin' || (team !== 'user' && team !== 'admin')) && tabName === 'Pending approval' && (
 							<Table team={team} data={currentPending} pending={true} />
 						)}
 						{team !== 'user' && team !== 'admin' && tabName === 'Rejected' && <Table team={team} data={currentRejected} />}
 						{team !== 'user' && team !== 'admin' && tabName === 'Archived' && (
-							<Table team={team} data={currentArchived} archived={true} showUnarchiveModal={ShowUnArchiveModal} />
+							<Table team={team} data={currentArchived} archived={true} onClickUnarchive={onClickUnarchive} />
 						)}
 
 						<Pagination
@@ -160,9 +158,11 @@ const DataUsePage = React.forwardRef(({ onClickDataUseUpload, team }, ref) => {
 					</Tab>
 				))}
 			</Tabs>
-			{showModal && <ArchiveModal archive={true} onConfirm={updataDataUseStatus} show={ShowArchiveModal} hide={HideArchiveModal} />}
+			{showArchiveModal && (
+				<ArchiveModal archive={true} onConfirm={updataDataUseStatus} isVisible={showArchiveModal} toggleModal={toggleArchiveModal} />
+			)}
 			{showUnarchiveModal && (
-				<ArchiveModal archive={false} onConfirm={updataDataUseStatus} show={ShowUnArchiveModal} hide={HideUnArchiveModal} />
+				<ArchiveModal archive={false} onConfirm={updataDataUseStatus} isVisible={showUnarchiveModal} toggleModal={toggleUnarchiveModal} />
 			)}
 		</Container>
 	);
