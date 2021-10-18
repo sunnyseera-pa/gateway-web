@@ -1,4 +1,4 @@
-import React, { useState, createRef } from 'react';
+import React, { useState, useEffect, createRef } from 'react';
 import * as Sentry from '@sentry/react';
 import axios from 'axios';
 import { baseURL } from '../../../configs/url.config';
@@ -11,8 +11,7 @@ import ErrorModal from '../../commonComponents/errorModal/ErrorModal';
 import ActionBar from '../../commonComponents/actionbar/ActionBar';
 
 const EditDataUse = props => {
-	axios.get(baseURL + '/api/v2/data-use-registers/' + props.match.params.datauseID).then(res => console.log(res.data));
-
+	const [data, setData] = useState([]);
 	const [searchBar] = useState(createRef());
 	const [searchString, setSearchString] = useState('');
 	const [showDrawer, setShowDrawer] = useState(false);
@@ -26,6 +25,12 @@ const EditDataUse = props => {
 			},
 		]
 	);
+
+	useEffect(() => {
+		axios.get(baseURL + '/api/v2/data-use-registers/' + props.match.params.datauseID).then(res => setData(res.data));
+	}, []);
+
+	console.log(data);
 
 	let showError = false;
 
@@ -86,7 +91,7 @@ const EditDataUse = props => {
 				</Row>
 				<hr className='datause-border' />
 				<Row>
-					<EditFormDataUse />
+					<EditFormDataUse data={data} />
 				</Row>
 				{userState[0].loggedIn && (
 					<ActionBar userState={userState}>

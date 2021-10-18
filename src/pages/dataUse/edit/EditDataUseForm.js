@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Accordion, Card, Button, Form } from 'react-bootstrap';
 import SVGIcon from '../../../images/SVGIcon';
 
-const EditFormDataUse = props => {
+const EditFormDataUse = data => {
 	const [safePeople, setSafePeople] = useState(true);
 	const [safeProject, setSafeProject] = useState(true);
 	const [safeData, setSafeData] = useState(true);
@@ -11,6 +11,7 @@ const EditFormDataUse = props => {
 	const [keywords, setKeywords] = useState(true);
 	const [relatedResources, setRelatedResources] = useState(true);
 
+	console.log(data);
 	return (
 		<Accordion defaultActiveKey='0' className='datause-accordion-header'>
 			<Card className='edit-datause-card'>
@@ -34,7 +35,7 @@ const EditFormDataUse = props => {
 							<Form.Group>
 								<Form.Label className='black-14'>Organisation name</Form.Label>
 								<p className='gray800-13-opacity datause-edit-p'>The name of the legal entity that signs the contract to access the data</p>
-								<Form.Control type='text' placeholder='' />
+								<Form.Control type='text' placeholder='' defaultValue={data.data.organisationName} />
 							</Form.Group>
 
 							<Form.Group>
@@ -42,14 +43,14 @@ const EditFormDataUse = props => {
 								<p className='gray800-13-opacity datause-edit-p'>
 									A unique identifier for an organisation that is preferably an industry used standard such as <a href='grid.ac'>Grid.ac</a>
 								</p>
-								<Form.Control type='text' placeholder='' />
+								<Form.Control type='text' placeholder='' defaultValue={data.data.organisationID} />
 							</Form.Group>
 
 							<Form.Group>
 								<Form.Label className='black-14'>Organisation sector (optional)</Form.Label>
 								<p className='gray800-13-opacity datause-edit-p'>The type of organisation that has signed a contract to access the data</p>
 								<Form.Control className='form-input-dropdown' as='select'>
-									<option>1</option>
+									<option>{data.data.organisationSector}</option>
 									<option>2</option>
 									<option>3</option>
 								</Form.Control>
@@ -61,7 +62,17 @@ const EditFormDataUse = props => {
 									The name of the Principal Investigator, as well as any other individuals that have been authorised to use the data. If
 									they are on the Gateway, please provide their profile URL
 								</p>
-								<Form.Control type='text' placeholder='' />
+								<Form.Control
+									type='text'
+									placeholder=''
+									defaultValue={
+										data &&
+										data.data &&
+										data.data.gatewayApplicants &&
+										data.data.nonGatewayApplicants &&
+										data.data.gatewayApplicants.map(a => a) + data.data.nonGatewayApplicants.map(a => a)
+									}
+								/>
 							</Form.Group>
 
 							<Form.Group>
@@ -70,13 +81,17 @@ const EditFormDataUse = props => {
 									ORCID identifier. This provides a persistent digital identifier that you own and control, and that distinguishes you from
 									every other researcher. An ORCID profile can be created at https://orcid.org/
 								</p>
-								<Form.Control type='text' placeholder='' />
+								<Form.Control type='text' placeholder='' defaultValue={data.data.applicantId} />
 							</Form.Group>
 
 							<Form.Group>
 								<Form.Label className='black-14'>Funders/Sponsor (optional)</Form.Label>
 								<p className='gray800-13-opacity datause-edit-p'>The name of any funders or sponsors involved in the project</p>
-								<Form.Control type='text' placeholder='' />
+								<Form.Control
+									type='text'
+									placeholder=''
+									defaultValue={data && data.data && data.data.fundersAndSponsors && data.data.fundersAndSponsors.map(a => a)}
+								/>
 							</Form.Group>
 
 							<Form.Group>
@@ -88,7 +103,7 @@ const EditFormDataUse = props => {
 									and Accreditation criteria
 								</p>
 								<Form.Control as='select'>
-									<option>1</option>
+									<option>{data.data.accreditedResearcherStatus}</option>
 									<option>2</option>
 									<option>3</option>
 								</Form.Control>
@@ -102,9 +117,8 @@ const EditFormDataUse = props => {
 									approved projects in their own trusted research environment.
 								</p>
 								<Form.Control as='select'>
-									<option>1</option>
-									<option>2</option>
-									<option>3</option>
+									<option>{data.data.sublicenceArrangements}</option>
+									<option>{data.data.sublicenceArrangements === 'Yes' ? 'No' : 'Yes'}</option>
 								</Form.Control>
 							</Form.Group>
 						</Form>
@@ -136,7 +150,7 @@ const EditFormDataUse = props => {
 									A unique identifier for the project that is preferably an industry used standard, such as IRAS ID. However for
 									non-research projects, a unique reference number created by the data custodian on receipt of the application is sufficient
 								</p>
-								<Form.Control type='text' placeholder='' />
+								<Form.Control type='text' placeholder='' defaultValue={data.data.projectIdText} />
 							</Form.Group>
 
 							<Form.Group>
@@ -144,16 +158,16 @@ const EditFormDataUse = props => {
 								<p className='gray800-13-opacity datause-edit-p'>
 									The title of the project/research study/request that the applicant is investigating through the use of health data
 								</p>
-								<Form.Control type='text' placeholder='' />
+								<Form.Control type='text' placeholder='' defaultValue={data.data.projectTitle} />
 							</Form.Group>
 
 							<Form.Group>
-								<Form.Label className='black-14'>Lay summar (optional)</Form.Label>
+								<Form.Label className='black-14'>Lay summary (optional)</Form.Label>
 								<p className='gray800-13-opacity datause-edit-p'>
 									A concise and clear description of the project, (e.g. as required by URKI in funding applications). It should outline the
 									problem, objectives and expected outcomes in language that is understandable to the general public
 								</p>
-								<Form.Control type='text' placeholder='' />
+								<Form.Control type='text' placeholder='' defaultValue={data.data.laySummary} />
 							</Form.Group>
 
 							<Form.Group>
@@ -161,7 +175,7 @@ const EditFormDataUse = props => {
 								<p className='gray800-13-opacity datause-edit-p'>
 									A description in plain English of the anticipated outcomes, or impact of project on the general public
 								</p>
-								<Form.Control type='text' placeholder='' />
+								<Form.Control type='text' placeholder='' defaultValue={data.data.publicBenefitStatement} />
 							</Form.Group>
 
 							<Form.Group>
@@ -170,7 +184,7 @@ const EditFormDataUse = props => {
 									This categorises the 'purpose of the share' (i.e., research, policy development, etc)
 								</p>
 								<Form.Control as='select'>
-									<option>1</option>
+									<option>{data.data.requestCategoryType}</option>
 									<option>2</option>
 									<option>3</option>
 								</Form.Control>
@@ -181,7 +195,7 @@ const EditFormDataUse = props => {
 								<p className='gray800-13-opacity datause-edit-p'>
 									A summary of the proposed research, in a manner that is suitable for a specialist reader
 								</p>
-								<Form.Control type='text' placeholder='' />
+								<Form.Control type='text' placeholder='' defaultValue={data.data.technicalSummary} />
 							</Form.Group>
 
 							<Form.Group>
@@ -189,19 +203,23 @@ const EditFormDataUse = props => {
 								<p className='gray800-13-opacity datause-edit-p'>
 									Reference to other decision-making bodies that the project has already been authorised by
 								</p>
-								<Form.Control type='text' placeholder='' />
+								<Form.Control
+									type='text'
+									placeholder=''
+									defaultValue={data && data.data && data.otherApprovalCommittees && data.data.otherApprovalCommittees.map(a => a)}
+								/>
 							</Form.Group>
 
 							<Form.Group>
 								<Form.Label className='black-14'>Project start date (optional)</Form.Label>
 								<p className='gray800-13-opacity datause-edit-p'>The date the project is scheduled to start or actual start date</p>
-								<Form.Control type='text' placeholder='' />
+								<Form.Control type='text' placeholder='' defaultValue={data.data.projectStartDate} />
 							</Form.Group>
 
 							<Form.Group>
 								<Form.Label className='black-14'>Project end date (optional)</Form.Label>
 								<p className='gray800-13-opacity datause-edit-p'>The date the project is scheduled to end or actual end date</p>
-								<Form.Control type='text' placeholder='' />
+								<Form.Control type='text' placeholder='' defaultValue={data.data.projectEndDate} />
 							</Form.Group>
 
 							<Form.Group>
@@ -209,7 +227,7 @@ const EditFormDataUse = props => {
 								<p className='gray800-13-opacity datause-edit-p'>
 									The last date the data access request for this project was approved by a data custodian
 								</p>
-								<Form.Control type='text' placeholder='' />
+								<Form.Control type='text' placeholder='' defaultValue={data.data.latestApprovalDate} />
 							</Form.Group>
 						</Form>
 					</Card.Body>
@@ -237,7 +255,11 @@ const EditFormDataUse = props => {
 							<Form.Group>
 								<Form.Label className='black-14'>Dataset(s) name</Form.Label>
 								<p className='gray800-13-opacity datause-edit-p'>The name of the dataset(s) being accessed</p>
-								<Form.Control type='text' placeholder='' />
+								<Form.Control
+									type='text'
+									placeholder=''
+									defaultValue={data && data.data && data.data.datasetTitles && data.data.datasetTitles.map(a => a)}
+								/>
 							</Form.Group>
 
 							<Form.Group>
@@ -245,7 +267,7 @@ const EditFormDataUse = props => {
 								<p className='gray800-13-opacity datause-edit-p'>
 									The level of identifiability of the data being accessed, as defined by Understanding Patient Data{' '}
 								</p>
-								<Form.Control type='text' placeholder='' />
+								<Form.Control type='text' placeholder='' defaultValue={data.data.dataSensitivityLevel} />
 							</Form.Group>
 
 							<Form.Group>
@@ -256,7 +278,7 @@ const EditFormDataUse = props => {
 									extent that at least one of the following applies
 								</p>
 								<Form.Control as='select'>
-									<option>1</option>
+									<option>{data.data.legalBasisForData}</option>
 									<option>2</option>
 									<option>3</option>
 								</Form.Control>
@@ -271,7 +293,7 @@ const EditFormDataUse = props => {
 									prohibited. This does not apply if one of the following applies
 								</p>
 								<Form.Control as='select'>
-									<option>1</option>
+									<option>{data.data.legalBasisForDataArticle9}</option>
 									<option>2</option>
 									<option>3</option>
 								</Form.Control>
@@ -290,7 +312,7 @@ const EditFormDataUse = props => {
 									provide all relevant consent forms and information leaflets.
 								</p>
 								<Form.Control as='select'>
-									<option>1</option>
+									<option>{data.data.dutyOfConfidentiality}</option>
 									<option>2</option>
 									<option>3</option>
 								</Form.Control>
@@ -303,7 +325,7 @@ const EditFormDataUse = props => {
 									use has been applied to the data prior to release
 								</p>
 								<Form.Control as='select'>
-									<option>1</option>
+									<option>{data.data.nationalDataOptOut}</option>
 									<option>2</option>
 									<option>3</option>
 								</Form.Control>
@@ -315,7 +337,7 @@ const EditFormDataUse = props => {
 									Determines whether this a 'one-off' request or a recurring dataset to be provided over a specific time period
 								</p>
 								<Form.Control as='select'>
-									<option>1</option>
+									<option>{data.data.requestFrequency}</option>
 									<option>2</option>
 									<option>3</option>
 								</Form.Control>
@@ -328,7 +350,7 @@ const EditFormDataUse = props => {
 									the organisations undertaking linkages and how the linkage will take place must also be disclosed. As well as, a summary
 									of the risks/mitigations to be considered
 								</p>
-								<Form.Control type='text' placeholder='' />
+								<Form.Control type='text' placeholder='' defaultValue='TO DO' />
 							</Form.Group>
 
 							<Form.Group>
@@ -336,13 +358,13 @@ const EditFormDataUse = props => {
 								<p className='gray800-13-opacity datause-edit-p'>
 									A description of the specific patient identifiable fields that have been included in the dataset(s) being accessed
 								</p>
-								<Form.Control type='text' placeholder='' />
+								<Form.Control type='text' placeholder='' defaultValue={data.data.confidentialDataDescription} />
 							</Form.Group>
 
 							<Form.Group>
 								<Form.Label className='black-14'>Release/Access date (optional)</Form.Label>
 								<p className='gray800-13-opacity datause-edit-p'>The date the data access was granted and active research started</p>
-								<Form.Control type='text' placeholder='' />
+								<Form.Control type='text' placeholder='' defaultValue={data.data.accessDate} />
 							</Form.Group>
 						</Form>
 					</Card.Body>
@@ -375,7 +397,7 @@ const EditFormDataUse = props => {
 									traditional data release model
 								</p>
 								<Form.Control as='select'>
-									<option>1</option>
+									<option>TO DO</option>
 									<option>2</option>
 									<option>3</option>
 								</Form.Control>
@@ -386,7 +408,7 @@ const EditFormDataUse = props => {
 								<p className='gray800-13-opacity datause-edit-p'>
 									Description of the tools or software used to reduce level of identifiable data being shared
 								</p>
-								<Form.Control type='text' placeholder='' />
+								<Form.Control type='text' placeholder='' defaultValue={data.data.privacyEnhancements} />
 							</Form.Group>
 						</Form>
 					</Card.Body>
@@ -417,7 +439,7 @@ const EditFormDataUse = props => {
 									A URL link to any academic or non-academic research outputs, as they become available, including code used. If the link is
 									to a Gateway resource, this will automatically populate in related resources.
 								</p>
-								<Form.Control type='text' placeholder='' />
+								<Form.Control type='text' placeholder='' defaultValue={data.data.researchOutputs} />
 							</Form.Group>
 						</Form>
 					</Card.Body>
@@ -447,7 +469,7 @@ const EditFormDataUse = props => {
 								<p className='gray800-13-opacity datause-edit-p'>
 									Select maximum 5 keywords that will help make your data use easily searchable
 								</p>
-								<Form.Control type='text' placeholder='' />
+								<Form.Control type='text' placeholder='' defaultValue='TO DO:Search' />
 							</Form.Group>
 						</Form>
 					</Card.Body>
