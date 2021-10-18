@@ -8,6 +8,7 @@ import SVGIcon from '../../../images/SVGIcon';
 import { ReactComponent as CalendarSvg } from '../../../images/calendaricon.svg';
 import Dataset from './Dataset/Dataset';
 import Tool from './Tool/Tool';
+import Paper from './Paper/Paper';
 import { stripMarkdown } from '../../../utils/GeneralHelper.util';
 import './RelatedObject.scss';
 
@@ -322,108 +323,16 @@ class RelatedObject extends React.Component {
 									</Row>
 								);
 							} else if (data.type === 'paper') {
+								console.log(data);
 								return (
-									<Row data-test-id='related-paper-object' className='noMargin'>
-										<Col sm={10} lg={10} className='pad-left-24'>
-											{activeLink === true ? (
-												<a className='purple-bold-16' style={{ cursor: 'pointer' }} href={'/paper/' + data.id}>
-													{data.name}
-												</a>
-											) : (
-												<span className='black-bold-16'> {data.name}</span>
-											)}
-
-											<div className='gray800-14' style={{ marginTop: '2px' }}>
-												{data.authorsNew}
-											</div>
-
-											<div className='gray800-14' style={{ marginTop: '10px' }}>
-												{data.journal} {data.journalYear}
-											</div>
-										</Col>
-										<Col sm={2} lg={2} className='pad-right-24'>
-											{this.props.showRelationshipQuestion ? (
-												<Button variant='medium' className='soft-black-14' onClick={this.removeButton}>
-													<SVGIcon name='closeicon' fill={'#979797'} className='buttonSvg mr-2' />
-													Remove
-												</Button>
-											) : (
-												''
-											)}
-										</Col>
-										<Col sm={2} lg={2} className='pad-right-24'>
-											{this.props.showRelationshipQuestion ? (
-												<Button variant='medium' className='soft-black-14' onClick={this.removeButton}>
-													<SVGIcon name='closeicon' fill={'#979797'} className='buttonSvg mr-2' />
-													Remove
-												</Button>
-											) : (
-												''
-											)}
-										</Col>
-										<Col sm={12} lg={12} className='pad-left-24 pad-right-24 pad-top-16'>
-											<span className='badge-paper'>
-												<SVGIcon name='newprojecticon' fill={'#3c3c3b'} className='badgeSvg mr-2' viewBox='-2 -2 22 22' />
-												<span>Paper</span>
-											</span>
-											{!data.tags.features || data.tags.features.length <= 0
-												? ''
-												: data.tags.features.map(feature => {
-														if (activeLink === true) {
-															if (onSearchPage === true) {
-																return (
-																	<span
-																		className='pointer'
-																		onClick={event =>
-																			this.updateOnFilterBadge('paperFeaturesSelected', { label: feature, parentKey: 'paperfeatures' })
-																		}>
-																		<div className='badge-tag'>{feature}</div>
-																	</span>
-																);
-															} else {
-																return (
-																	<a href={'/search?search=&tab=Papers&paperfeatures=' + feature}>
-																		<div className='badge-tag'>{feature}</div>
-																	</a>
-																);
-															}
-														} else {
-															return <div className='badge-tag'>{feature}</div>;
-														}
-												  })}
-
-											{!data.tags.topics || data.tags.topics.length <= 0
-												? ''
-												: data.tags.topics.map(topic => {
-														if (activeLink === true) {
-															if (onSearchPage === true) {
-																return (
-																	<span
-																		className='pointer'
-																		onClick={event =>
-																			this.updateOnFilterBadge('paperTopicsSelected', { label: topic, parentKey: 'papertopics' })
-																		}>
-																		<div className='badge-tag'>{topic}</div>
-																	</span>
-																);
-															} else {
-																return (
-																	<a href={'/search?search=&tab=Projects&papertopics=' + topic}>
-																		<div className='badge-tag'>{topic}</div>
-																	</a>
-																);
-															}
-														} else {
-															return <div className='badge-tag'>{topic}</div>;
-														}
-												  })}
-										</Col>
-										{!this.props.showRelationshipQuestion && (
-											<Col sm={12} lg={12} className='pad-left-24 pad-right-24 pad-top-24 pad-bottom-16'>
-												<span className='gray800-14'>{stripMarkdown(data.description, 255)}</span>
-											</Col>
-										)}
-									</Row>
+									<Paper
+										data={data}
+										activeLink={activeLink ? activeLink : false}
+										onSearchPage={onSearchPage ? onSearchPage : false}
+										showRelationshipQuestion={this.props.showRelationshipQuestion ? this.props.showRelationshipQuestion : false}
+										updateOnFilterBadge={this.updateOnFilterBadge}
+										removeButton={this.removeButton}
+									/>
 								);
 							} else if (data.type === 'person') {
 								return (

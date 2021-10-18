@@ -1,0 +1,95 @@
+/** @jsx jsx */
+import { jsx } from '@emotion/react';
+import React from 'react';
+import { Row, Col } from 'react-bootstrap';
+import PropTypes from 'prop-types';
+import { stripMarkdown } from '../../../../utils/GeneralHelper.util';
+import SVGIcon from '../../../../images/SVGIcon';
+import RemoveButton from '../RemoveButton/RemoveButton';
+import Title from '../Title/Title';
+import Description from '../Description/Description';
+import Tag from '../Tag/Tag';
+import '../../CommonComponents.scss';
+
+const Paper = ({ data, activeLink, onSearchPage, showRelationshipQuestion, updateOnFilterBadge, removeButton }) => {
+	return (
+		<Row data-test-id='related-paper-object' className='noMargin'>
+			<Col sm={10} lg={10} className='pad-left-24'>
+				<Title activeLink={activeLink} name={data.name} id={data.id} type='paper' />
+				<div className='gray800-14' style={{ marginTop: '2px' }}>
+					{data.authorsNew}
+				</div>
+
+				<div className='gray800-14' style={{ marginTop: '10px' }}>
+					{data.journal} {data.journalYear}
+				</div>
+			</Col>
+			<Col sm={2} lg={2} className='pad-right-24'>
+				{showRelationshipQuestion && <RemoveButton removeButtonHandler={removeButton} />}
+			</Col>
+			<Col sm={12} lg={12} className='pad-left-24 pad-right-24 pad-top-16'>
+				<Tag
+					tagName='Paper'
+					tagType='paper'
+					activeLink={false}
+					onSearchPage={false}
+					parentKey=''
+					filter=''
+					url='/search?search=&tab=Paper'
+					updateOnFilterBadgeHandler={updateOnFilterBadge}
+					showTagType={false}>
+					<SVGIcon name='newprojecticon' fill={'#3c3c3b'} className='badgeSvg mr-2' viewBox='-2 -2 22 22' />
+				</Tag>
+				{data.tags.features &&
+					data.tags.features.length > 0 &&
+					data.tags.features.map((feature, index) => {
+						return (
+							<Tag
+								key={`${feature}-${index}`}
+								tagName={feature}
+								tagType='tag'
+								activeLink={activeLink}
+								onSearchPage={onSearchPage}
+								parentKey='paperfeatures'
+								filter='paperFeaturesSelected'
+								url='/search?search=&tab=Papers&paperfeatures='
+								updateOnFilterBadgeHandler={updateOnFilterBadge}
+								showTagType={false}
+							/>
+						);
+					})}
+
+				{data.tags.topics &&
+					data.tags.topics.length > 0 &&
+					data.tags.topics.map((topic, index) => {
+						return (
+							<Tag
+								key={`${topic}-${index}`}
+								tagName={topic}
+								tagType='tag'
+								activeLink={activeLink}
+								onSearchPage={onSearchPage}
+								parentKey='papertopics'
+								filter='paperTopicsSelected'
+								url='/search?search=&tab=Papers&papertopics='
+								updateOnFilterBadgeHandler={updateOnFilterBadge}
+								showTagType={false}
+							/>
+						);
+					})}
+			</Col>
+			{!showRelationshipQuestion && <Description type={data.type} description={stripMarkdown(data.description, 255)} />}
+		</Row>
+	);
+};
+
+Paper.propTypes = {
+	data: PropTypes.object.isRequired,
+	activeLink: PropTypes.bool.isRequired,
+	showRelationshipQuestion: PropTypes.bool.isRequired,
+	onSearchPage: PropTypes.bool.isRequired,
+	updateOnFilterBadge: PropTypes.func.isRequired,
+	removeButton: PropTypes.func.isRequired,
+};
+
+export default Paper;

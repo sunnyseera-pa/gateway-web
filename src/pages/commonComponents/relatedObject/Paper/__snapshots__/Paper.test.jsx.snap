@@ -1,0 +1,90 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Given the Paper component When it is rendered Then matches the previous snapshot 1`] = `
+<div>
+  <div
+    class="noMargin row"
+    data-test-id="related-paper-object"
+  >
+    <div
+      class="pad-left-24 col-lg-10 col-sm-10"
+    >
+      <span
+        class="black-bold-16"
+        data-testid="paper-title"
+      >
+         
+        This is a test paper
+      </span>
+      <div
+        class="gray800-14"
+        style="margin-top: 2px;"
+      />
+      <div
+        class="gray800-14"
+        style="margin-top: 10px;"
+      >
+         
+      </div>
+    </div>
+    <div
+      class="pad-right-24 col-lg-2 col-sm-2"
+    />
+    <div
+      class="pad-left-24 pad-right-24 pad-top-16 col-lg-12 col-sm-12"
+    >
+      <div
+        class="badge-paper"
+        data-testid="badge-Paper"
+      >
+        <svg
+          class="badgeSvg mr-2"
+          data-testid="newprojecticon"
+          height="100%"
+          viewBox="-2 -2 22 22"
+          width="100%"
+          xmlns="http://www.w3.org/2000/svg"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+        >
+          <path
+            d="M22,0 L22,17.4142136 L15.4142136,24 L2,24 L2,0 L22,0 Z M20,2 L4,2 L4,22 L14,22 L14,16 L20,16 L20,2 Z M12,16 L12,18 L6,18 L6,16 L12,16 Z M18,11 L18,13 L6,13 L6,11 L18,11 Z M18,6 L18,8 L6,8 L6,6 L18,6 Z"
+            fill="#3c3c3b"
+          />
+        </svg>
+        <span>
+          Paper
+        </span>
+        <span />
+      </div>
+      <div
+        class="badge-tag"
+        data-testid="badge-Arbitrage"
+      >
+        <span>
+          Arbitrage
+        </span>
+        <span />
+      </div>
+      <div
+        class="badge-tag"
+        data-testid="badge-Blood"
+      >
+        <span>
+          Blood
+        </span>
+        <span />
+      </div>
+    </div>
+    <div
+      class="pad-left-24 pad-right-24 pad-top-24 pad-bottom-16 col-lg-12 col-sm-12"
+    >
+      <span
+        class="gray800-14"
+        data-testid="paper-description"
+      >
+        test paper description
+      </span>
+    </div>
+  </div>
+</div>
+`;
