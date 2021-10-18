@@ -28,6 +28,12 @@ import DatasetSearchResults from './components/DatasetSearchResults';
 import './Search.scss';
 import SearchFilters from './components/SearchFilters';
 import SearchUtilityBanner from './components/SearchUtilityBanner';
+import CollectionsSearchSort from './components/CollectionsSearchResults/CollectionsSearchSort';
+import PeopleSearchSort from './components/PeopleSearchResult/PeopleSearchSort';
+import PapersSearchSort from './components/PapersSearchResults/PapersSearchSort';
+import ProjectsSearchSort from './components/ProjectsSearchResults/ProjectsSearchSort';
+import DatasetSearchSort from './components/DatasetSearchResults/DatasetSearchSort';
+import ToolsSearchSort from './components/ToolsSearchResults/ToolsSearchSort';
 
 let baseURL = require('../commonComponents/BaseURL').getURL();
 const typeMapper = {
@@ -1324,173 +1330,25 @@ class SearchPage extends React.Component {
 		);
 	};
 
-	render() {
+	getPreference(key) {
 		let {
-			summary,
-			search,
-			datasetData,
-			toolData,
-			projectData,
-			paperData,
-			personData,
-			courseData,
-			collectionData,
-			userState,
-			isLoading,
-			isResultsLoading,
-			datasetIndex,
-			toolIndex,
-			projectIndex,
-			paperIndex,
-			personIndex,
-			courseIndex,
-			collectionIndex,
-
 			datasetSort,
 			toolSort,
 			projectSort,
 			paperSort,
 			personSort,
 			collectionSort,
-
-			filtersV2Datasets,
 			selectedV2Datasets,
-			filtersV2Tools,
 			selectedV2Tools,
-			filtersV2Projects,
 			selectedV2Projects,
-			filtersV2Papers,
 			selectedV2Papers,
-			filtersV2Courses,
 			selectedV2Courses,
-			filtersV2Collections,
 			selectedV2Collections,
-
-			showDrawer,
-			showModal,
-			showAdvancedSearchModal,
-			context,
-			activeDataUtilityWizardStep,
-
-			key,
 		} = this.state;
-
-		if (isLoading) {
-			return (
-				<Container>
-					<Loading />
-				</Container>
-			);
-		}
-		// destructure counts from summary
-		let {
-			datasetCount = 0,
-			toolCount = 0,
-			projectCount = 0,
-			paperCount = 0,
-			personCount = 0,
-			courseCount = 0,
-			collectionCount = 0,
-		} = summary;
-		// clean needed here at later date
-		if (key === '' || typeof key === 'undefined') {
-			if (datasetCount > 0) {
-				key = 'Datasets';
-			} else if (toolCount > 0) {
-				key = 'Tools';
-			} else if (projectCount > 0) {
-				key = 'Projects';
-			} else if (paperCount > 0) {
-				key = 'Papers';
-			} else if (personCount > 0) {
-				key = 'People';
-			} else if (courseCount > 0) {
-				key = 'Course';
-			} else if (collectionCount > 0) {
-				key = 'Collections';
-			} else {
-				key = 'Datasets';
-			}
-		}
-		// default show sort
-		let showSort = true;
-		// clean needed here at later date
-		if ((key === '' || key === 'Datasets') && datasetCount === 0) showSort = false;
-		if (key === 'Tools' && toolCount === 0) showSort = false;
-		if (key === 'Projects' && projectCount === 0) showSort = false;
-		if (key === 'Papers' && paperCount === 0) showSort = false;
-		if (key === 'People' && personCount === 0) showSort = false;
-		if (key === 'Courses' && courseCount === 0) showSort = false;
-		if (key === 'Collections' && collectionCount === 0) showSort = false;
-
-		let maxResult = 40;
-
-		const dropdownMenu = (
-			<div className='text-right save-dropdown'>
-				{key === 'Tools' ? (
-					<SortDropdown
-						handleSort={this.handleSort}
-						sort={toolSort === '' ? (search === '' ? 'latest' : 'relevance') : toolSort}
-						dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
-					/>
-				) : (
-					''
-				)}
-
-				{key === 'Datasets' ? (
-					<SortDropdown
-						handleSort={this.handleSort}
-						sort={datasetSort === '' ? (search === '' ? 'metadata' : 'relevance') : datasetSort}
-						dropdownItems={['relevance', 'popularity', 'metadata', 'latest', 'resources']}
-					/>
-				) : (
-					''
-				)}
-
-				{key === 'Projects' ? (
-					<SortDropdown
-						handleSort={this.handleSort}
-						sort={projectSort === '' ? (search === '' ? 'latest' : 'relevance') : projectSort}
-						dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
-					/>
-				) : (
-					''
-				)}
-
-				{key === 'Collections' ? (
-					<SortDropdown
-						handleSort={this.handleSort}
-						sort={collectionSort === '' ? (search === '' ? 'latest' : 'relevance') : collectionSort}
-						dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
-					/>
-				) : (
-					''
-				)}
-
-				{key === 'Papers' ? (
-					<SortDropdown
-						handleSort={this.handleSort}
-						sort={paperSort === '' ? (search === '' ? 'sortbyyear' : 'relevance') : paperSort}
-						dropdownItems={['relevance', 'popularity', 'sortbyyear', 'resources']}
-					/>
-				) : (
-					''
-				)}
-
-				{key === 'People' ? (
-					<SortDropdown
-						handleSort={this.handleSort}
-						sort={personSort === '' ? (search === '' ? 'latest' : 'relevance') : personSort}
-						dropdownItems={['relevance', 'popularity', 'latest']}
-					/>
-				) : (
-					''
-				)}
-			</div>
-		);
 
 		let preferenceFilters = {};
 		let perferenceSort = '';
+
 		if (key === 'Datasets') {
 			preferenceFilters = selectedV2Datasets;
 			perferenceSort = datasetSort;
@@ -1512,26 +1370,154 @@ class SearchPage extends React.Component {
 			perferenceSort = personSort;
 		}
 
-		const filterProps = {
+		return {
+			preferenceFilters,
+			perferenceSort,
+		};
+	}
+
+	getFilterProps(key) {
+		return {
 			data: this.getFilterStateByKey(key),
 			onHandleInputChange: this.handleInputChange,
 			onHandleClearSection: this.handleClearSection,
 			onHandleToggle: this.handleToggle,
 		};
+	}
 
-		const searchProps = {
+	getSearchProps(showSort, dropdownMenu, maxResult) {
+		const { savedSearchPanel, isResultsLoading: isLoading, search } = this.state;
+
+		return {
 			maxResult,
 			search,
-			isLoading: isResultsLoading,
-			sort: showSort && !this.state.savedSearchPanel && dropdownMenu,
+			isLoading,
+			sort: showSort && !savedSearchPanel && dropdownMenu,
 			updateOnFilterBadge: this.updateOnFilterBadge,
 			onPagination: this.handlePagination,
 		};
+	}
 
-		const filtersSelectionProps = {
+	getKey() {
+		let {
+			summary: { datasetCount = 0, toolCount = 0, projectCount = 0, paperCount = 0, personCount = 0, courseCount = 0, collectionCount = 0 },
+			key,
+		} = this.state;
+
+		if (key === '' || typeof key === 'undefined') {
+			if (datasetCount > 0) {
+				key = 'Datasets';
+			} else if (toolCount > 0) {
+				key = 'Tools';
+			} else if (projectCount > 0) {
+				key = 'Projects';
+			} else if (paperCount > 0) {
+				key = 'Papers';
+			} else if (personCount > 0) {
+				key = 'People';
+			} else if (courseCount > 0) {
+				key = 'Course';
+			} else if (collectionCount > 0) {
+				key = 'Collections';
+			} else {
+				key = 'Datasets';
+			}
+		}
+
+		return key;
+	}
+
+	getShowSort(key) {
+		const {
+			summary: { datasetCount = 0, toolCount = 0, projectCount = 0, paperCount = 0, personCount = 0, courseCount = 0, collectionCount = 0 },
+		} = this.state;
+
+		let showSort = true;
+
+		if ((key === '' || key === 'Datasets') && datasetCount === 0) showSort = false;
+		if (key === 'Tools' && toolCount === 0) showSort = false;
+		if (key === 'Projects' && projectCount === 0) showSort = false;
+		if (key === 'Papers' && paperCount === 0) showSort = false;
+		if (key === 'People' && personCount === 0) showSort = false;
+		if (key === 'Courses' && courseCount === 0) showSort = false;
+		if (key === 'Collections' && collectionCount === 0) showSort = false;
+
+		return showSort;
+	}
+
+	getFiltersSelectionProps(preferenceFilters) {
+		return {
 			selectedCount: preferenceFilters.length,
 			selectedItems: preferenceFilters,
 		};
+	}
+
+	render() {
+		let {
+			summary: { datasetCount = 0, toolCount = 0, projectCount = 0, paperCount = 0, personCount = 0, courseCount = 0, collectionCount = 0 },
+			search,
+			datasetData,
+			toolData,
+			projectData,
+			paperData,
+			personData,
+			courseData,
+			collectionData,
+			userState,
+			isLoading,
+			isResultsLoading,
+			datasetIndex,
+			toolIndex,
+			projectIndex,
+			paperIndex,
+			personIndex,
+			courseIndex,
+			collectionIndex,
+			selectedV2Datasets,
+			datasetSort,
+			toolSort,
+			projectSort,
+			paperSort,
+			personSort,
+			collectionSort,
+
+			showDrawer,
+			showModal,
+			showAdvancedSearchModal,
+			context,
+			activeDataUtilityWizardStep,
+
+			key: baseKey,
+		} = this.state;
+
+		if (isLoading) {
+			return (
+				<Container>
+					<Loading />
+				</Container>
+			);
+		}
+
+		const key = this.getKey(baseKey);
+
+		let maxResult = 40;
+
+		const dropdownMenu = (
+			<div className='text-right save-dropdown'>
+				{key === 'Tools' && <ToolsSearchSort onSort={this.handleSort} sort={toolSort} search={search} />}
+				{key === 'Datasets' && <DatasetSearchSort onSort={this.handleSort} sort={datasetSort} search={search} />}
+				{key === 'Projects' && <ProjectsSearchSort onSort={this.handleSort} sort={projectSort} search={search} />}
+				{key === 'Collections' && <CollectionsSearchSort onSort={this.handleSort} sort={collectionSort} search={search} />}
+				{key === 'Papers' && <PapersSearchSort onSort={this.handleSort} sort={paperSort} search={search} />}
+				{key === 'People' && <PeopleSearchSort onSort={this.handleSort} sort={personSort} search={search} />}
+			</div>
+		);
+
+		const { preferenceFilters, perferenceSort } = this.getPreference(key);
+		const showSort = this.getShowSort(key);
+		const filterProps = this.getFilterProps(key);
+		const filtersSelectionProps = this.getFiltersSelectionProps(preferenceFilters);
+		const searchProps = this.getSearchProps(showSort, dropdownMenu, maxResult);
 
 		return (
 			<Sentry.ErrorBoundary fallback={<ErrorModal />}>
@@ -1660,7 +1646,6 @@ class SearchPage extends React.Component {
 							<Col sm={12} md={12} lg={9} className='mt-1 mb-5'>
 								{key === 'Datasets' && (
 									<DatasetSearchResults
-										type='datasets'
 										data={datasetData}
 										count={datasetCount}
 										pageNumber={datasetIndex / maxResult}
@@ -1693,7 +1678,6 @@ class SearchPage extends React.Component {
 
 								{key === 'Collections' && (
 									<CollectionsSearchResults
-										type='collections'
 										data={collectionData}
 										count={collectionCount}
 										pageNumber={collectionIndex}
@@ -1726,7 +1710,6 @@ class SearchPage extends React.Component {
 
 								{key === 'Courses' && (
 									<CoursesSearchResults
-										type='courses'
 										data={courseData}
 										count={courseCount}
 										pageNumber={courseIndex / maxResult}

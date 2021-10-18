@@ -34,7 +34,7 @@ const DatasetSearchResults = ({ updateOnFilterBadge, ...outerProps }) => {
 		[updateOnFilterBadge]
 	);
 
-	return <SearchResults {...outerProps} results={mapResults} />;
+	return <SearchResults type='datasets' results={mapResults} {...outerProps} />;
 };
 
 export default DatasetSearchResults;

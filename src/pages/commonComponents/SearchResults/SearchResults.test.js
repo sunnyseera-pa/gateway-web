@@ -74,6 +74,8 @@ describe('Given the SearchResults component', () => {
 
 			describe('And there is a cutom results function', () => {
 				beforeAll(() => {
+					mockRelatedObject.mockReset();
+
 					wrapper.rerender(<SearchResults {...props} results={resultsProp} />);
 				});
 
@@ -92,7 +94,7 @@ describe('Given the SearchResults component', () => {
 				});
 
 				it('Then does not show results', () => {
-					expect(wrapper.container.querySelectorAll('.resource-card-row')).toHaveLength(0);
+					expect(mockRelatedObject).toHaveBeenCalledTimes(0);
 				});
 
 				it('Then shows a no results message', () => {

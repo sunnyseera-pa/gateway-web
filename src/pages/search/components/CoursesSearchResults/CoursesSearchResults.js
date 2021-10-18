@@ -14,7 +14,7 @@ const CoursesSearchResults = ({ updateOnFilterBadge, ...outerProps }) => {
 				let showHeader = false;
 
 				if (!showHeader) {
-					const courseStartDate = courseStartDate && moment(course.courseOptions.startDate).format('MMMM');
+					const courseStartDate = course.courseOptions.startDate && moment(course.courseOptions.startDate).format('MMMM');
 
 					if (course.courseOptions.flexibleDates && currentHeader !== 'Flexible') {
 						currentHeader = 'Flexible';
@@ -45,7 +45,7 @@ const CoursesSearchResults = ({ updateOnFilterBadge, ...outerProps }) => {
 		[updateOnFilterBadge]
 	);
 
-	return <SearchResults {...outerProps} results={mapResults} />;
+	return <SearchResults type='courses' {...outerProps} results={mapResults} />;
 };
 
 export default CoursesSearchResults;

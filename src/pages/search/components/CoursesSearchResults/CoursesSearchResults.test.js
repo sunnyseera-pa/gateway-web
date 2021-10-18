@@ -52,5 +52,18 @@ describe('Given the CoursesSearchResults component', () => {
 				updateOnFilterBadge: props.updateOnFilterBadge,
 			});
 		});
+
+		describe('And does not have flexible dates', () => {
+			beforeAll(() => {
+				props.data[0].courseOptions.flexibleDates = null;
+				props.data[0].courseOptions.startDate = '2021-10-18';
+
+				wrapper.rerender(<CoursesSearchResults {...props} />);
+			});
+
+			it('Then calls onClick with step', () => {
+				expect(wrapper.getAllByText('October')).toHaveLength(1);
+			});
+		});
 	});
 });
