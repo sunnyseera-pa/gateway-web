@@ -10,6 +10,18 @@ const EditFormDataUse = data => {
 	const [safeOutput, setSafeOutput] = useState(true);
 	const [keywords, setKeywords] = useState(true);
 	const [relatedResources, setRelatedResources] = useState(true);
+	const [valueChange, setValueChange] = useState('');
+
+	const inputChange = e => {
+		setValueChange({
+			organisationName: e.target.value,
+		});
+		console.log(valueChange);
+	};
+
+	const onSubmitForm = () => {
+		console.log(valueChange);
+	};
 
 	console.log(data);
 	return (
@@ -35,7 +47,7 @@ const EditFormDataUse = data => {
 							<Form.Group>
 								<Form.Label className='black-14'>Organisation name</Form.Label>
 								<p className='gray800-13-opacity datause-edit-p'>The name of the legal entity that signs the contract to access the data</p>
-								<Form.Control type='text' placeholder='' defaultValue={data.data.organisationName} />
+								<Form.Control type='text' placeholder='' defaultValue={data.data.organisationName} onChange={inputChange} />
 							</Form.Group>
 
 							<Form.Group>
