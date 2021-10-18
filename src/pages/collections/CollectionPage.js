@@ -19,6 +19,7 @@ import ResourcePageButtons from '../commonComponents/resourcePageButtons/Resourc
 import SVGIcon from '../../images/SVGIcon';
 import './Collections.scss';
 import CollectionsSearch from './CollectionsSearch';
+import googleAnalytics from '../../tracking';
 
 export const CollectionPage = props => {
 	const [collectionData, setCollectionData] = useState([]);
@@ -27,13 +28,13 @@ export const CollectionPage = props => {
 	const [toolCount, setToolCount] = useState(0);
 	const [datasetCount, setDatasetCount] = useState(0);
 	const [personCount, setPersonCount] = useState(0);
-	const [projectCount, setProjectCount] = useState(0);
+	const [dataUseCount, setDataUseCount] = useState(0);
 	const [paperCount, setPaperCount] = useState(0);
 	const [courseCount, setCourseCount] = useState(0);
 	const [datasetIndex, setDatasetIndex] = useState(0);
 	const [toolIndex, setToolIndex] = useState(0);
-	const [projectIndex, setProjectIndex] = useState(0);
 	const [paperIndex, setPaperIndex] = useState(0);
+	const [dataUseIndex, setDatauseIndex] = useState(0);
 	const [personIndex, setPersonIndex] = useState(0);
 	const [courseIndex, setCourseIndex] = useState(0);
 	const [collectionAdded, setCollectionAdded] = useState(false);
@@ -60,7 +61,6 @@ export const CollectionPage = props => {
 		]
 	);
 
-	//componentDidMount - on loading of project detail page
 	useEffect(() => {
 		if (!!window.location.search) {
 			let values = queryString.parse(window.location.search);
@@ -123,8 +123,8 @@ export const CollectionPage = props => {
 			key = 'tool';
 		} else if (entityCounts.paper > 0) {
 			key = 'paper';
-		} else if (entityCounts.project > 0) {
-			key = 'project';
+		} else if (entityCounts.dataUseRegister > 0) {
+			key = 'dataUseRegister';
 		} else if (entityCounts.person > 0) {
 			key = 'person';
 		} else if (entityCounts.course > 0) {
@@ -134,9 +134,9 @@ export const CollectionPage = props => {
 
 		setToolCount(entityCounts.tool || 0);
 		setPersonCount(entityCounts.person || 0);
-		setProjectCount(entityCounts.project || 0);
 		setDatasetCount(entityCounts.dataset || 0);
 		setPaperCount(entityCounts.paper || 0);
+		setDataUseCount(entityCounts.dataUseRegister || 0);
 		setCourseCount(entityCounts.course || 0);
 	};
 
@@ -171,6 +171,7 @@ export const CollectionPage = props => {
 	};
 
 	const handleSort = sort => {
+		googleAnalytics.recordEvent('Collections', `Sorted collection entities by ${sort}`, 'Sort dropdown option changed');
 		setCollectionsPageSort(sort);
 		switch (sort) {
 			case 'metadata': {
@@ -193,15 +194,17 @@ export const CollectionPage = props => {
 				sortByPopularity();
 				break;
 			}
+			default:
+				return sort;
 		}
 	};
 
-	const sortByMetadataQuality = () => {
-		filteredData.sort((a, b) => {
-			if (_.has(a, 'datasetfields.metadataquality.quality_score') && _.has(b, 'datasetfields.metadataquality.quality_score'))
-				return b.datasetfields.metadataquality.quality_score - a.datasetfields.metadataquality.quality_score;
-		});
-	};
+	const sortByMetadataQuality = () =>
+		filteredData.sort((a, b) =>
+			_.has(a, 'datasetfields.metadataquality.quality_score') && _.has(b, 'datasetfields.metadataquality.quality_score')
+				? b.datasetfields.metadataquality.quality_score - a.datasetfields.metadataquality.quality_score
+				: ''
+		);
 
 	const sortByRecentlyAdded = () => {
 		return filteredData.sort((a, b) => b.updated - a.updated);
@@ -238,8 +241,12 @@ export const CollectionPage = props => {
 					getCountOfSearchTerm(data.tags.topics) +
 					getCountOfSearchTerm(data.tags.features);
 				data.searchTermInstances = containsSearchTermCount;
+			} else if (data.type === 'dataUseRegister') {
+				let containsSearchTermCount =
+					getCountOfSearchTerm(data.projectTitle) + getCountOfSearchTerm(data.keywords) + getCountOfSearchTerm(data.datasetTitles);
+				data.searchTermInstances = containsSearchTermCount;
 			} else {
-				//Other entities ie. Tools, Papers, Projects
+				//Other entities ie. Tools, Papers
 				let containsSearchTermCount =
 					getCountOfSearchTerm(data.name) +
 					getCountOfSearchTerm(data.description) +
@@ -310,6 +317,13 @@ export const CollectionPage = props => {
 						: false) ||
 					(_.has(object, 'domains') && object.domains && object.domains.length > 0
 						? new RegExp(object.domains.join('|'), 'i').test(searchCollectionsString)
+						: false) ||
+					(_.has(object, 'projectTitle') ? object.projectTitle.toLowerCase().includes(searchCollectionsString.toLowerCase()) : false) ||
+					(_.has(object, 'keywords') && object.keywords && object.keywords.length > 0
+						? new RegExp(object.keywords.join('|'), 'i').test(searchCollectionsString)
+						: false) ||
+					(_.has(object, 'datasetTitles') && object.datasetTitles && object.datasetTitles.length > 0
+						? object.datasetTitles.join('|').toLowerCase().includes(searchCollectionsString.toLowerCase())
 						: false)
 				) {
 					return object;
@@ -337,10 +351,10 @@ export const CollectionPage = props => {
 			setDatasetIndex(page);
 		} else if (type === 'tool') {
 			setToolIndex(page);
-		} else if (type === 'project') {
-			setProjectIndex(page);
 		} else if (type === 'paper') {
 			setPaperIndex(page);
+		} else if (type === 'dataUseRegister') {
+			setDatauseIndex(page);
 		} else if (type === 'person') {
 			setPersonIndex(page);
 		} else if (type === 'course') {
@@ -354,8 +368,8 @@ export const CollectionPage = props => {
 
 	let datasetPaginationItems = [];
 	let toolPaginationItems = [];
-	let projectPaginationItems = [];
 	let paperPaginationItems = [];
+	let dataUsePaginationItems = [];
 	let personPaginationItems = [];
 	let coursePaginationItems = [];
 	let maxResult = 24;
@@ -383,18 +397,6 @@ export const CollectionPage = props => {
 			</Pagination.Item>
 		);
 	}
-	for (let i = 1; i <= Math.ceil(projectCount / maxResult); i++) {
-		projectPaginationItems.push(
-			<Pagination.Item
-				key={i}
-				active={i === projectIndex + 1}
-				onClick={e => {
-					this.handlePagination('project', i - 1);
-				}}>
-				{i}
-			</Pagination.Item>
-		);
-	}
 	for (let i = 1; i <= Math.ceil(paperCount / maxResult); i++) {
 		paperPaginationItems.push(
 			<Pagination.Item
@@ -402,6 +404,18 @@ export const CollectionPage = props => {
 				active={i === paperIndex + 1}
 				onClick={e => {
 					handlePagination('paper', i - 1);
+				}}>
+				{i}
+			</Pagination.Item>
+		);
+	}
+	for (let i = 1; i <= Math.ceil(dataUseCount / maxResult); i++) {
+		dataUsePaginationItems.push(
+			<Pagination.Item
+				key={i}
+				active={i === dataUseIndex + 1}
+				onClick={e => {
+					handlePagination('dataUseRegister', i - 1);
 				}}>
 				{i}
 			</Pagination.Item>
@@ -606,14 +620,22 @@ export const CollectionPage = props => {
 			</div>
 
 			<div>
-				<Tabs className='tabsBackground gray700-13' activeKey={key} onSelect={handleSelect} data-testid='collectionPageTabs'>
+				<Tabs
+					className='tabsBackground gray700-13'
+					activeKey={key}
+					onSelect={key => {
+						handleSelect(key);
+						googleAnalytics.recordVirtualPageView(`${key} tab`);
+						googleAnalytics.recordEvent('Collections', `Clicked ${key} tab`, `Viewing ${key}`);
+					}}
+					data-testid='collectionPageTabs'>
 					<Tab eventKey='dataset' title={'Datasets (' + datasetCount + ')'}></Tab>
 					<Tab eventKey='tool' title={'Tools (' + toolCount + ')'}></Tab>
 					<Tab eventKey='paper' title={'Papers (' + paperCount + ')'}></Tab>
-					<Tab eventKey='project' title={'Projects (' + projectCount + ')'}></Tab>
+					<Tab eventKey='dataUseRegister' title={'Data Uses (' + dataUseCount + ')'}></Tab>
 					<Tab eventKey='person' title={'People (' + personCount + ')'}></Tab>
 					<Tab eventKey='course' title={'Course (' + courseCount + ')'}></Tab>
-					<Tab eventKey='Collaboration' title={`Discussion (${discoursePostCount})`}>
+					<Tab eventKey='discussion' title={`Discussion (${discoursePostCount})`}>
 						<Container className='resource-card'>
 							<Row>
 								<Col sm={1} lg={1} />
@@ -638,7 +660,7 @@ export const CollectionPage = props => {
 						</Col>
 					</Row>
 				)}
-				{key !== 'Collaboration' && (
+				{key !== 'discussion' && (
 					<CollectionsSearch
 						doCollectionsSearchMethod={doCollectionsSearch}
 						doUpdateCollectionsSearchString={updateCollectionsSearchString}
@@ -670,16 +692,13 @@ export const CollectionPage = props => {
 												);
 											}
 
-											{
-												!_.isEmpty(object.datasetv2) && _.has(object, 'datasetv2.summary.publisher.name')
-													? (datasetPublisher = object.datasetv2.summary.publisher.name)
-													: (datasetPublisher = '');
-											}
-											{
-												!_.isEmpty(object.datasetv2) && _.has(object, 'datasetv2.summary.publisher.logo')
-													? (datasetLogo = object.datasetv2.summary.publisher.logo)
-													: (datasetLogo = '');
-											}
+											!_.isEmpty(object.datasetv2) && _.has(object, 'datasetv2.summary.publisher.name')
+												? (datasetPublisher = object.datasetv2.summary.publisher.name)
+												: (datasetPublisher = '');
+
+											!_.isEmpty(object.datasetv2) && _.has(object, 'datasetv2.summary.publisher.logo')
+												? (datasetLogo = object.datasetv2.summary.publisher.logo)
+												: (datasetLogo = '');
 
 											collectionData.relatedObjects.map(dat => {
 												if (dat.objectId === object.datasetid) {
@@ -742,17 +761,17 @@ export const CollectionPage = props => {
 							  })
 							: ''}
 
-						{key === 'project'
-							? handlePaginatedItems(projectIndex).map(object => {
+						{key === 'paper'
+							? handlePaginatedItems(paperIndex).map(object => {
 									if (
 										object.activeflag === 'active' ||
-										(object.type === 'project' && object.activeflag === 'review' && object.authors.includes(userState[0].id))
+										(object.type === 'paper' && object.activeflag === 'review' && object.authors.includes(userState[0].id))
 									) {
 										var reason = '';
 										var updated = '';
 										var user = '';
 										let showAnswer = false;
-										if (object.type === 'project') {
+										if (object.type === 'paper') {
 											collectionData.relatedObjects.map(dat => {
 												if (parseInt(dat.objectId) === object.id) {
 													reason = dat.reason;
@@ -761,6 +780,7 @@ export const CollectionPage = props => {
 													showAnswer = !_.isEmpty(reason);
 												}
 											});
+
 											return (
 												<RelatedObject
 													key={object.id}
@@ -777,17 +797,20 @@ export const CollectionPage = props => {
 							  })
 							: ''}
 
-						{key === 'paper'
-							? handlePaginatedItems(paperIndex).map(object => {
+						{key === 'dataUseRegister'
+							? handlePaginatedItems(dataUseIndex).map(object => {
 									if (
 										object.activeflag === 'active' ||
-										(object.type === 'paper' && object.activeflag === 'review' && object.authors.includes(userState[0].id))
+										(object.type === 'dataUseRegister' &&
+											object.activeflag === 'review' &&
+											// TODO - update this to work after populate code is merged in
+											object.gatewayApplicants.includes(userState[0].id))
 									) {
 										var reason = '';
 										var updated = '';
 										var user = '';
 										let showAnswer = false;
-										if (object.type === 'paper') {
+										if (object.type === 'dataUseRegister') {
 											collectionData.relatedObjects.map(dat => {
 												if (parseInt(dat.objectId) === object.id) {
 													reason = dat.reason;
@@ -886,8 +909,8 @@ export const CollectionPage = props => {
 						<div className='text-center'>
 							{key === 'dataset' && datasetCount > maxResult ? <Pagination>{datasetPaginationItems}</Pagination> : ''}
 							{key === 'tool' && toolCount > maxResult ? <Pagination>{toolPaginationItems}</Pagination> : ''}
-							{key === 'project' && projectCount > maxResult ? <Pagination>{projectPaginationItems}</Pagination> : ''}
 							{key === 'paper' && paperCount > maxResult ? <Pagination>{paperPaginationItems}</Pagination> : ''}
+							{key === 'dataUseRegister' && dataUseCount > maxResult ? <Pagination>{dataUsePaginationItems}</Pagination> : ''}
 							{key === 'person' && personCount > maxResult ? <Pagination>{personPaginationItems}</Pagination> : ''}
 							{key === 'course' && courseCount > maxResult ? <Pagination>{coursePaginationItems}</Pagination> : ''}
 						</div>

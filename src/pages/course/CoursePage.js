@@ -20,7 +20,8 @@ import ErrorModal from '../commonComponents/errorModal/ErrorModal';
 import CollectionCard from '../commonComponents/collectionCard/CollectionCard';
 import './Course.scss';
 import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
-import { PageView, initGA } from '../../tracking';
+import googleAnalytics from '../../tracking';
+
 
 let baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -56,8 +57,6 @@ export const CourseDetail = props => {
 			setCourseAdded(values.courseAdded);
 			setCourseEdited(values.courseEdited);
 		}
-		initGA('UA-166025838-1');
-		PageView();
 		async function invokeCourseDataCall() {
 			await getCourseDataFromDb();
 		}
@@ -141,16 +140,13 @@ export const CourseDetail = props => {
 						let datasetPublisher;
 						let datasetLogo;
 
-						{
-							!_.isEmpty(res.data.data[0].datasetv2) && _.has(res.data.data[0], 'datasetv2.summary.publisher.name')
-								? (datasetPublisher = res.data.data[0].datasetv2.summary.publisher.name)
-								: (datasetPublisher = '');
-						}
-						{
-							!_.isEmpty(res.data.data[0].datasetv2) && _.has(res.data.data[0], 'datasetv2.summary.publisher.logo')
-								? (datasetLogo = res.data.data[0].datasetv2.summary.publisher.logo)
-								: (datasetLogo = '');
-						}
+						!_.isEmpty(res.data.data[0].datasetv2) && _.has(res.data.data[0], 'datasetv2.summary.publisher.name')
+							? (datasetPublisher = res.data.data[0].datasetv2.summary.publisher.name)
+							: (datasetPublisher = '');
+
+						!_.isEmpty(res.data.data[0].datasetv2) && _.has(res.data.data[0], 'datasetv2.summary.publisher.logo')
+							? (datasetLogo = res.data.data[0].datasetv2.summary.publisher.logo)
+							: (datasetLogo = '');
 
 						tempObjects.push({
 							id: object.objectId,
@@ -331,7 +327,12 @@ export const CourseDetail = props => {
 						<Col sm={1} lg={1} />
 						<Col sm={10} lg={10}>
 							<div>
-								<Tabs className='tabsBackground gray700-13 margin-bottom-16'>
+								<Tabs
+									className='tabsBackground gray700-13 margin-bottom-16'
+									onSelect={key => {
+										googleAnalytics.recordVirtualPageView(`${key} tab`);
+										googleAnalytics.recordEvent('Courses', `Clicked ${key} tab`, `Viewing ${key}`);
+									}}>
 									<Tab eventKey='About' title={'About'}>
 										<Row>
 											<Col sm={12} lg={12}>
@@ -507,19 +508,18 @@ export const CourseDetail = props => {
 																		Course fees
 																	</Col>
 																	{courseOption.fees && courseOption.fees[0].feeDescription && courseOption.fees[0].feeAmount ? (
-																		courseOption.fees.map((fee, index) => {
-																			if (fee.feeDescription && fee.feeAmount) {
-																				return (
-																					<>
-																						{index > 0 ? <Col sm={2} /> : ''}
-																						<Col sm={10} className='gray-deep-14 overflowWrap' data-test-id='course-fees'>
-																							{fee.feeDescription} | £{fee.feeAmount}{' '}
-																							{fee.feePer ? <>per {fee.feePer.toLowerCase()}</> : ''}
-																						</Col>
-																					</>
-																				);
-																			}
-																		})
+																		courseOption.fees.map((fee, index) =>
+																			fee.feeDescription && fee.feeAmount ? (
+																				<>
+																					{index > 0 ? <Col sm={2} /> : ''}
+																					<Col sm={10} className='gray-deep-14 overflowWrap' data-test-id='course-fees'>
+																						{fee.feeDescription} | £{fee.feeAmount} {fee.feePer ? <>per {fee.feePer.toLowerCase()}</> : ''}
+																					</Col>
+																				</>
+																			) : (
+																				''
+																			)
+																		)
 																	) : (
 																		<Col sm={10} className='gray-deep-14 overflowWrap'>
 																			<span className='gray800-14-opacity'>Not specified</span>
@@ -545,26 +545,24 @@ export const CourseDetail = props => {
 														</Col>
 														<Col sm={9} className='gray800-14'>
 															{courseData.entries && courseData.entries[0].level ? (
-																courseData.entries.map((entry, index) => {
-																	if (entry.level && entry.subject) {
-																		return (
-																			<a href={'/search?search=&tab=Courses&courseentrylevel=' + entry.level}>
-																				<div className='badge-version'>
-																					<span data-test-id='entry-level'>{entry.level}</span>
-																					<span data-test-id='entry-subject'>{entry.subject}</span>
-																				</div>
-																			</a>
-																		);
-																	} else if (entry.level && !entry.subject) {
-																		return (
-																			<a href={'/search?search=&tab=Courses&courseentrylevel=' + entry.level}>
-																				<div className='badge-tag'>
-																					<span>{entry.level}</span>
-																				</div>
-																			</a>
-																		);
-																	}
-																})
+																courseData.entries.map((entry, index) =>
+																	entry.level && entry.subject ? (
+																		<a href={'/search?search=&tab=Courses&courseentrylevel=' + entry.level}>
+																			<div className='badge-version'>
+																				<span data-test-id='entry-level'>{entry.level}</span>
+																				<span data-test-id='entry-subject'>{entry.subject}</span>
+																			</div>
+																		</a>
+																	) : entry.level && !entry.subject ? (
+																		<a href={'/search?search=&tab=Courses&courseentrylevel=' + entry.level}>
+																			<div className='badge-tag'>
+																				<span>{entry.level}</span>
+																			</div>
+																		</a>
+																	) : (
+																		''
+																	)
+																)
 															) : (
 																<span className='gray800-14-opacity'>Not specified</span>
 															)}
@@ -633,7 +631,7 @@ export const CourseDetail = props => {
 										</Row>
 									</Tab>
 
-									<Tab eventKey='Collaboration' title={`Discussion (${discoursePostCount})`}>
+									<Tab eventKey='Discussion' title={`Discussion (${discoursePostCount})`}>
 										<DiscourseTopic
 											toolId={courseData.id}
 											topicId={courseData.discourseTopicId || 0}
@@ -641,7 +639,7 @@ export const CourseDetail = props => {
 											onUpdateDiscoursePostCount={updateDiscoursePostCount}
 										/>
 									</Tab>
-									<Tab eventKey='Projects' title={'Related resources (' + relatedObjects.length + ')'}>
+									<Tab eventKey='Related resources' title={'Related resources (' + relatedObjects.length + ')'}>
 										{relatedObjects.length <= 0 ? (
 											<NotFound word='related resources' />
 										) : (

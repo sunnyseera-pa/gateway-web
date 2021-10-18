@@ -16,6 +16,8 @@ import 'react-bootstrap-typeahead/css/Typeahead.css';
 import SVGIcon from '../../images/SVGIcon';
 import { ReactComponent as InfoSVG } from '../../images/info.svg';
 import './Paper.scss';
+import googleAnalytics from '../../tracking';
+
 const baseURL = require('../commonComponents/BaseURL').getURL();
 let windowUrl = window.location.origin;
 
@@ -235,7 +237,7 @@ const AddEditPaperForm = props => {
 												</Col>
 											</Row>
 											<p className='gray800-14 margin-bottom-0'>
-												Papers should be articles published in a journal. Add a project if you want
+												Papers should be articles published in a journal. Add a data use if you want
 											</p>
 										</div>
 									</Col>
@@ -612,7 +614,7 @@ const AddEditPaperForm = props => {
 												<span className='gray800-14'> (optional)</span>
 												<br />
 												<span className='gray800-14'>
-													Show relationships to papers, projects, datasets and tools. Resources must be added to the Gateway first.
+													Show relationships to papers, data uses, datasets and tools. Resources must be added to the Gateway first.
 												</span>
 											</div>
 
@@ -620,23 +622,23 @@ const AddEditPaperForm = props => {
 												''
 											) : (
 												<div className='rectangle'>
-													{props.relatedObjects.map(object => {
-														if (!isNil(object.objectId)) {
-															return (
-																<RelatedObject
-																	showRelationshipQuestion={true}
-																	objectId={object.objectId}
-																	pid={object.pid}
-																	objectType={object.objectType}
-																	doRemoveObject={props.doRemoveObject}
-																	doUpdateReason={updateReason}
-																	reason={object.reason}
-																	didDelete={props.didDelete}
-																	updateDeleteFlag={props.updateDeleteFlag}
-																/>
-															);
-														}
-													})}
+													{props.relatedObjects.map(object =>
+														!isNil(object.objectId) ? (
+															<RelatedObject
+																showRelationshipQuestion={true}
+																objectId={object.objectId}
+																pid={object.pid}
+																objectType={object.objectType}
+																doRemoveObject={props.doRemoveObject}
+																doUpdateReason={updateReason}
+																reason={object.reason}
+																didDelete={props.didDelete}
+																updateDeleteFlag={props.updateDeleteFlag}
+															/>
+														) : (
+															''
+														)
+													)}
 												</div>
 											)}
 
@@ -652,7 +654,6 @@ const AddEditPaperForm = props => {
 															userState={props.userState}
 															datasetData={props.datasetData}
 															toolData={props.toolData}
-															projectData={props.projectData}
 															paperData={props.paperData}
 															personData={props.personData}
 															courseData={props.courseData}
@@ -688,7 +689,13 @@ const AddEditPaperForm = props => {
 						</Button>
 					</a>
 
-					<Button onClick={() => relatedResourcesRef.current.showModal()} variant='white' className='techDetailButton mr-2'>
+					<Button
+						onClick={() => {
+							relatedResourcesRef.current.showModal();
+							googleAnalytics.recordVirtualPageView('Related resources modal');
+						}}
+						variant='white'
+						className='techDetailButton mr-2'>
 						+ Add resource
 					</Button>
 

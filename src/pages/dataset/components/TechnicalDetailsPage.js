@@ -10,7 +10,6 @@ import '../Dataset.scss';
 class TechnicalDetailsPage extends React.Component {
 	state = {
 		technicalMetadata: null,
-		flagClosed: true,
 		allOpen: false,
 	};
 
@@ -28,8 +27,7 @@ class TechnicalDetailsPage extends React.Component {
 	};
 
 	render() {
-		const { flagClosed, technicalMetadata, allOpen } = this.state;
-		const svgClassName = flagClosed ? '' : 'flipSVG';
+		const { technicalMetadata, allOpen } = this.state;
 
 		return (
 			<div className='ml-3'>

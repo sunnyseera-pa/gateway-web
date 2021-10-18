@@ -13,6 +13,7 @@ import RelatedResources from '../commonComponents/relatedResources/RelatedResour
 import RelatedObject from '../commonComponents/relatedObject/RelatedObject';
 import ActionBar from '../commonComponents/actionbar/ActionBar';
 import SVGIcon from '../../images/SVGIcon';
+import googleAnalytics from '../../tracking';
 import './Tool.scss';
 
 const baseURL = require('../commonComponents/BaseURL').getURL();
@@ -624,7 +625,7 @@ const AddEditToolForm = props => {
 												<span className='gray800-14'> (optional)</span>
 												<br />
 												<span className='gray800-14'>
-													Show relationships to papers, projects, datasets and tools. Resources must be added to the Gateway first.
+													Show relationships to papers, data uses, datasets and tools. Resources must be added to the Gateway first.
 												</span>
 											</div>
 
@@ -632,23 +633,23 @@ const AddEditToolForm = props => {
 												''
 											) : (
 												<div className='rectangle'>
-													{props.relatedObjects.map(object => {
-														if (!isNil(object.objectId)) {
-															return (
-																<RelatedObject
-																	showRelationshipQuestion={true}
-																	objectId={object.objectId}
-																	pid={object.pid}
-																	objectType={object.objectType}
-																	doRemoveObject={props.doRemoveObject}
-																	doUpdateReason={updateReason}
-																	reason={object.reason}
-																	didDelete={props.didDelete}
-																	updateDeleteFlag={props.updateDeleteFlag}
-																/>
-															);
-														}
-													})}
+													{props.relatedObjects.map(object =>
+														!isNil(object.objectId) ? (
+															<RelatedObject
+																showRelationshipQuestion={true}
+																objectId={object.objectId}
+																pid={object.pid}
+																objectType={object.objectType}
+																doRemoveObject={props.doRemoveObject}
+																doUpdateReason={updateReason}
+																reason={object.reason}
+																didDelete={props.didDelete}
+																updateDeleteFlag={props.updateDeleteFlag}
+															/>
+														) : (
+															''
+														)
+													)}
 												</div>
 											)}
 
@@ -664,7 +665,6 @@ const AddEditToolForm = props => {
 															userState={props.userState}
 															datasetData={props.datasetData}
 															toolData={props.toolData}
-															projectData={props.projectData}
 															paperData={props.paperData}
 															personData={props.personData}
 															courseData={props.courseData}
@@ -698,7 +698,13 @@ const AddEditToolForm = props => {
 							Cancel
 						</Button>
 					</a>
-					<Button onClick={() => relatedResourcesRef.current.showModal()} variant='white' className='techDetailButton mr-2'>
+					<Button
+						onClick={() => {
+							relatedResourcesRef.current.showModal();
+							googleAnalytics.recordVirtualPageView('Related resources modal');
+						}}
+						variant='white'
+						className='techDetailButton mr-2'>
 						+ Add resource
 					</Button>
 					<Button

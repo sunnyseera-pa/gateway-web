@@ -66,7 +66,7 @@ const DuplicateApplicationModal = ({ isOpen, closeModal, duplicateApplication, s
 						<button
 							className='duplicateApplicationModal-body-newappbutton'
 							onClick={() => {
-								setIsNewApplication(true); 
+								setIsNewApplication(true);
 								setApplicationId(null);
 							}}>
 							<SVGIcon className='newAppButtonIcon' name='plusChunky' width={20} height={20} fill={'#475da7'} />

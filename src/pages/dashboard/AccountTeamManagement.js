@@ -97,7 +97,7 @@ const AccountTeamManagement = ({
 	};
 
 	const getMemberNotification = notificationType => {
-		return memberNotifications.findIndex(notification => notification.notificationType == notificationType);
+		return memberNotifications.findIndex(notification => notification.notificationType === notificationType);
 	};
 
 	const userHasRole = (teamId, role) => {
@@ -111,7 +111,7 @@ const AccountTeamManagement = ({
 		const team = userState[0].teams.filter(t => {
 			return t._id === teamId;
 		})[0];
-		return team && team.isAdmin;
+		return team && team.isAdmin && !team.roles.includes(userTypes.MANAGER);
 	};
 
 	const getTotalGatewayTeamEmails = (data = []) => {
@@ -119,7 +119,7 @@ const AccountTeamManagement = ({
 		if (!isEmpty(data)) {
 			let teamEmails = [...data];
 			// 3. if the emails are not empty and are clear of errors return the count else 0;
-			return [...teamEmails].filter(item => item.value != '' && isEmpty(item.error)).length;
+			return [...teamEmails].filter(item => item.value !== '' && isEmpty(item.error)).length;
 		}
 		return 0;
 	};
@@ -449,7 +449,11 @@ const AccountTeamManagement = ({
 							<Tabs className='dataAccessTabs gray700-14' activeKey={activeTabKey} onSelect={onTabChange}>
 								{!userRoleIsAdmin(teamId)
 									? Object.keys(tabTypes).map((keyName, i) => (
-											<Tab key={i} eventKey={`${tabTypes[keyName]}`} title={`${upperFirst(tabTypes[keyName])}`}></Tab>
+											<Tab
+												key={i}
+												eventKey={`${tabTypes[keyName]}`}
+												title={`${upperFirst(tabTypes[keyName])}`}
+												data-testid={tabTypes[keyName]}></Tab>
 									  ))
 									: ''}
 							</Tabs>
@@ -460,7 +464,7 @@ const AccountTeamManagement = ({
 				<Col xs={1}></Col>
 			</Row>
 
-			{activeTabKey == tabTypes.Members && <AccountMembers userState={userState} team={team} teamId={teamId} />}
+			{activeTabKey === tabTypes.Members && <AccountMembers userState={userState} team={team} teamId={teamId} />}
 
 			{activeTabKey === tabTypes.Notifications && (
 				<Row>

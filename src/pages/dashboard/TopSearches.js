@@ -41,8 +41,6 @@ class TopSearches extends React.Component {
 								' datasets, ' +
 								(data.tools || 0) +
 								' tools, ' +
-								(data.projects || 0) +
-								' projects, ' +
 								(data.courses || 0) +
 								' courses, ' +
 								(data.papers || 0) +

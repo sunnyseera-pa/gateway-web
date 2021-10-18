@@ -124,16 +124,14 @@ export const modalConfigWorkflow = (type = '') => {
 			case 'CANNOTDELETEWORKFLOW':
 				config = {
 					title: 'You cannot delete this workflow',
-					body:
-						'This workflow is being used to review dataset request applications. When it is in use, you cannot make any amendments to this workflow, including deleting it.',
+					body: 'This workflow is being used to review dataset request applications. When it is in use, you cannot make any amendments to this workflow, including deleting it.',
 					buttons: {},
 				};
 				break;
 			case 'CANNOTEDITWORKFLOW':
 				config = {
 					title: 'You cannot edit this workflow',
-					body:
-						'This workflow is being used to review dataset request applications. When it is in use, you cannot make any amendments to this workflow, including deleting it.',
+					body: 'This workflow is being used to review dataset request applications. When it is in use, you cannot make any amendments to this workflow, including deleting it.',
 					buttons: {},
 				};
 				break;
@@ -160,8 +158,7 @@ export const modalConfigWorkflow = (type = '') => {
 			case 'SAVEWORKFLOW':
 				config = {
 					title: 'Do you want to save your changes to your workflows?',
-					body:
-						'You won’t be able to recover your workflow if you leave without saving, so make sure you save it if you want to keep your changes.',
+					body: 'You won’t be able to recover your workflow if you leave without saving, so make sure you save it if you want to keep your changes.',
 					buttons: {
 						cancel: {
 							label: 'Leave, without saving',
@@ -199,6 +196,8 @@ export const modalConfigWorkflow = (type = '') => {
 					},
 				};
 				break;
+			default:
+				return type;
 		}
 	}
 
