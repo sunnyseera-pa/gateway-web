@@ -1671,7 +1671,7 @@ class SearchPage extends React.Component {
 
 								{key === 'Tools' && (
 									<SearchResults
-										type='tools'
+										type='tool'
 										data={toolData}
 										count={toolCount}
 										pageNumber={toolIndex / maxResult}
@@ -1682,7 +1682,7 @@ class SearchPage extends React.Component {
 
 								{key === 'Projects' && (
 									<SearchResults
-										type='projects'
+										type='project'
 										data={projectData}
 										count={projectCount}
 										pageNumber={projectIndex / maxResult}
@@ -1703,7 +1703,7 @@ class SearchPage extends React.Component {
 
 								{key === 'Papers' && (
 									<SearchResults
-										type='papers'
+										type='paper'
 										data={paperData}
 										count={paperCount}
 										pageNumber={paperIndex / maxResult}
@@ -1714,7 +1714,7 @@ class SearchPage extends React.Component {
 
 								{key === 'People' && (
 									<SearchResults
-										type='profiles'
+										type='person'
 										data={personData}
 										count={personCount}
 										pageNumber={personIndex / maxResult}

@@ -45,7 +45,7 @@ const CoursesSearchResults = ({ updateOnFilterBadge, ...outerProps }) => {
 		[updateOnFilterBadge]
 	);
 
-	return <SearchResults type='courses' {...outerProps} results={mapResults} />;
+	return <SearchResults type='course' {...outerProps} results={mapResults} />;
 };
 
 export default CoursesSearchResults;

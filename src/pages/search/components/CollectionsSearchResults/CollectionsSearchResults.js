@@ -18,7 +18,7 @@ const CollectionsSearchResults = props => {
 		);
 	}, []);
 
-	return <SearchResults type='collections' results={mapResults} {...props} />;
+	return <SearchResults type='collection' results={mapResults} {...props} />;
 };
 
 export default CollectionsSearchResults;

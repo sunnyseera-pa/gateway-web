@@ -4,16 +4,6 @@ import Loading from '../Loading';
 import NoResults from '../NoResults';
 import RelatedObject from '../relatedObject/RelatedObject';
 
-const typeMapper = {
-	datasets: 'dataset',
-	tools: 'tool',
-	projects: 'project',
-	papers: 'paper',
-	profiles: 'person',
-	courses: 'course',
-	collection: 'collection',
-};
-
 const SearchResults = ({
 	results,
 	type,
@@ -48,7 +38,7 @@ const SearchResults = ({
 				{count > maxResult && (
 					<Pagination>
 						{new Array(Math.ceil(totalPages)).fill().map((value, i) => (
-							<Pagination.Item key={i} active={i === pageNumber} onClick={() => onPagination(typeMapper[type], i * maxResult)}>
+							<Pagination.Item key={i} active={i === pageNumber} onClick={() => onPagination(type, i * maxResult)}>
 								{i + 1}
 							</Pagination.Item>
 						))}
