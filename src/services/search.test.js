@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { apiURL } from '../configs/url.config';
+import { apiURL, apiV2URL } from '../configs/url.config';
 import { getRequest } from '../utils/requests';
 import service from './search';
 
@@ -58,7 +58,7 @@ describe('Given the search service', () => {
 				option1: true,
 			});
 
-			expect(getRequest).toHaveBeenCalledWith(`${apiURL}/search/filters/paper`, {
+			expect(getRequest).toHaveBeenCalledWith(`${apiV2URL}/filters/paper`, {
 				option1: true,
 			});
 		});
