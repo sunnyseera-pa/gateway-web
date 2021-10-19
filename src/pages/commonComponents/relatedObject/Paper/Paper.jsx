@@ -9,6 +9,7 @@ import RemoveButton from '../RemoveButton/RemoveButton';
 import Title from '../Title/Title';
 import Description from '../Description/Description';
 import Tag from '../Tag/Tag';
+import * as styles from './Paper.styles';
 import '../../CommonComponents.scss';
 
 const Paper = ({ data, activeLink, onSearchPage, showRelationshipQuestion, updateOnFilterBadge, removeButton }) => {
@@ -16,11 +17,11 @@ const Paper = ({ data, activeLink, onSearchPage, showRelationshipQuestion, updat
 		<Row data-test-id='related-paper-object' className='noMargin'>
 			<Col sm={10} lg={10} className='pad-left-24'>
 				<Title activeLink={activeLink} name={data.name} id={data.id} type='paper' />
-				<div className='gray800-14' style={{ marginTop: '2px' }}>
+				<div className='gray800-14' css={styles.author}>
 					{data.authorsNew}
 				</div>
 
-				<div className='gray800-14' style={{ marginTop: '10px' }}>
+				<div className='gray800-14' css={styles.journal}>
 					{data.journal} {data.journalYear}
 				</div>
 			</Col>
