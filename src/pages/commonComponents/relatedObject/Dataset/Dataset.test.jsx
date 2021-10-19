@@ -28,7 +28,7 @@ describe('Given the Dataset component', () => {
 		});
 
 		it('Then Dataset Title should be rendered with description', () => {
-			expect(screen.getByTestId('dataset-title')).toHaveTextContent(props.data.name);
+			expect(screen.getByTestId(`title-${props.data.type}-${props.data.pid}`)).toHaveTextContent(props.data.name);
 			expect(screen.getByTestId('dataset-description')).toHaveTextContent(props.data.datasetfields.abstract);
 		});
 
@@ -89,7 +89,7 @@ describe('Given the Dataset component', () => {
 		it('Then the Tilte should be clickable with a link', () => {
 			const { rerender } = wrapper;
 			rerender(<Dataset {...props} activeLink={true} />);
-			expect(screen.getByTestId('dataset-title')).toHaveAttribute('href', `/dataset/${props.data.pid}`);
+			expect(screen.getByTestId(`title-${props.data.type}-${props.data.pid}`)).toHaveAttribute('href', `/dataset/${props.data.pid}`);
 		});
 		it('Then the Badge Tags/Features should be rendered with links', () => {
 			props.data.tags.features.map(value => {
@@ -127,6 +127,17 @@ describe('Given the Dataset component', () => {
 		});
 		it('Then the description should not be rendered', () => {
 			expect(screen.queryByTestId('dataset-description')).toBeNull();
+		});
+	});
+
+	describe('And when features is empty', () => {
+		it('Then Dataset should be rendered without error', () => {
+			const { rerender } = wrapper;
+			let data = { ...props.data };
+			data.tags.features = [];
+			rerender(<Dataset {...props} data={data} />);
+			expect(screen.getByTestId(`title-${data.type}-${data.pid}`)).toHaveTextContent(data.name);
+			expect(screen.getByTestId('dataset-description')).toHaveTextContent(data.datasetfields.abstract);
 		});
 	});
 

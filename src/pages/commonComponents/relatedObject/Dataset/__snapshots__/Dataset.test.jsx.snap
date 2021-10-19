@@ -10,7 +10,7 @@ exports[`Given the Dataset component When it is rendered Then matches the previo
     >
       <span
         class="black-bold-16"
-        data-testid="dataset-title"
+        data-testid="title-dataset-c1f4b16c-9dfa-48e5-94ee-f0aa58c270e4"
       >
          
         COVID-19 Symptom Tracker Dataset

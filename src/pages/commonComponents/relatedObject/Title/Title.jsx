@@ -5,18 +5,19 @@ import PropTypes from 'prop-types';
 import '../../CommonComponents.scss';
 import * as styles from '../Dataset/Dataset.styles';
 
-const Title = ({ type, name, id, className, onClickHandler, activeLink }) => {
+const Title = props => {
+	const { type, name, id, className, onClickHandler, activeLink } = props;
 	return activeLink ? (
 		<a
 			onClick={onClickHandler}
 			className={className ? className : 'purple-bold-16'}
 			css={styles.pointer}
 			href={`/${type}/${id}`}
-			data-testid={`${type}-title`}>
+			data-testid={`title-${type}-${id}`}>
 			{name}
 		</a>
 	) : (
-		<span className={className ? className : 'black-bold-16'} data-testid={`${type}-title`}>
+		<span className={className ? className : 'black-bold-16'} data-testid={`title-${type}-${id}`}>
 			{' '}
 			{name}
 		</span>
@@ -34,6 +35,7 @@ Title.propTypes = {
 
 Title.defaultProps = {
 	activeLink: false,
+	type: 'title',
 };
 
 export default Title;

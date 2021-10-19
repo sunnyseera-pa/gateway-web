@@ -10,7 +10,7 @@ exports[`Given the Tool component When it is rendered Then matches the previous 
     >
       <span
         class="black-bold-16"
-        data-testid="tool-title"
+        data-testid="title-tool-6695678796896365"
       >
          
         test
@@ -18,12 +18,10 @@ exports[`Given the Tool component When it is rendered Then matches the previous 
       <br />
       <span
         class="gray800-14"
-        data-testid="tool-person-6936200071297669"
+        data-testid="title-person-6936200071297669"
       >
-        Test
          
-        Person
-        
+        Test Person
       </span>
     </div>
     <div

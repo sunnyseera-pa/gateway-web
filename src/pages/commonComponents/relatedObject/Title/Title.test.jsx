@@ -21,14 +21,14 @@ describe('Given the Title component', () => {
 		});
 
 		it('Then description should be rendered', () => {
-			expect(screen.getByTestId(`${props.type}-title`)).toHaveTextContent(props.name);
+			expect(screen.getByTestId(`title-${props.type}-${props.id}`)).toHaveTextContent(props.name);
 		});
 	});
 	describe('When activeLink is true', () => {
 		it('Then Title should be clickable', () => {
 			const { rerender } = wrapper;
 			rerender(<Title {...props} activeLink={true} />);
-			expect(screen.getByTestId(`${props.type}-title`)).toHaveAttribute('href', `/${props.type}/${props.id}`);
+			expect(screen.getByTestId(`title-${props.type}-${props.id}`)).toHaveAttribute('href', `/${props.type}/${props.id}`);
 		});
 	});
 });

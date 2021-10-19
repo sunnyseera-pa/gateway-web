@@ -141,7 +141,6 @@ const Dataset = ({
 					)}
 
 					{phenotypesSelected &&
-						phenotypesSelected.length > 0 &&
 						phenotypesSelected.map((phenotype, index) => {
 							if (data.datasetfields.phenotypes.find(phenotypeCheck => phenotypeCheck.name.toLowerCase() === phenotype.toLowerCase())) {
 								return (
@@ -161,7 +160,6 @@ const Dataset = ({
 						})}
 
 					{data.tags.features &&
-						data.tags.features.length > 0 &&
 						data.tags.features.map((feature, index) => {
 							return (
 								<Tag

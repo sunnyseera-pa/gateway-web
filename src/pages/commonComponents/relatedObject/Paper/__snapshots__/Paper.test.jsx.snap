@@ -11,7 +11,7 @@ exports[`Given the Paper component When it is rendered Then matches the previous
     >
       <span
         class="black-bold-16"
-        data-testid="paper-title"
+        data-testid="title-paper-18656838486747996"
       >
          
         This is a test paper

@@ -4,7 +4,7 @@ exports[`Given the Title component When it is rendered Then matches the previous
 <div>
   <span
     class="black-bold-16"
-    data-testid="test-title"
+    data-testid="title-test-123"
   >
      
     This is a test description

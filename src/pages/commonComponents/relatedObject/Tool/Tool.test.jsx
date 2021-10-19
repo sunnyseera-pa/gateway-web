@@ -25,7 +25,7 @@ describe('Given the Tool component', () => {
 		});
 
 		it('Then Tool Title should be rendered with description', () => {
-			expect(screen.getByTestId('tool-title')).toHaveTextContent(props.data.name);
+			expect(screen.getByTestId(`title-${props.data.type}-${props.data.id}`)).toHaveTextContent(props.data.name);
 			expect(screen.getByTestId('tool-description')).toHaveTextContent(props.data.description);
 		});
 
@@ -35,8 +35,8 @@ describe('Given the Tool component', () => {
 
 		it('Then Person should be rendered without link', () => {
 			let persons = props.data.persons;
-			expect(screen.getByTestId(`tool-person-${persons[0].id}`)).toBeTruthy();
-			expect(screen.getByTestId(`tool-person-${persons[0].id}`)).toHaveTextContent(`${persons[0].firstname} ${persons[0].lastname}`);
+			expect(screen.getByTestId(`title-person-${persons[0].id}`)).toBeTruthy();
+			expect(screen.getByTestId(`title-person-${persons[0].id}`)).toHaveTextContent(`${persons[0].firstname} ${persons[0].lastname}`);
 		});
 
 		it('Then the Features Badge  should be rendered without links', () => {
@@ -71,7 +71,7 @@ describe('Given the Tool component', () => {
 		it('Then the Tilte should be clickable with a link', () => {
 			const { rerender } = wrapper;
 			rerender(<Tool {...props} activeLink={true} />);
-			expect(screen.getByTestId('tool-title')).toHaveAttribute('href', `/tool/${props.data.id}`);
+			expect(screen.getByTestId(`title-${props.data.type}-${props.data.id}`)).toHaveAttribute('href', `/tool/${props.data.id}`);
 		});
 		it('Then the Features Badge/Tag should be rendered with links', () => {
 			props.data.tags.features.map(value => {
@@ -182,11 +182,11 @@ describe('Given the Tool component', () => {
 			props.data.persons = [...props.data.persons, persons];
 			rerender(<Tool {...props} showRelationshipQuestion={true} />);
 			props.data.persons.map((value, index) => {
-				expect(screen.getByTestId(`tool-person-${value.id}`)).toBeTruthy();
+				expect(screen.getByTestId(`title-person-${value.id}`)).toBeTruthy();
 				if (props.data.persons.length === index + 1) {
-					expect(screen.getByTestId(`tool-person-${value.id}`)).toHaveTextContent(`${value.firstname} ${value.lastname}`);
+					expect(screen.getByTestId(`title-person-${value.id}`)).toHaveTextContent(`${value.firstname} ${value.lastname}`);
 				} else {
-					expect(screen.getByTestId(`tool-person-${value.id}`)).toHaveTextContent(`${value.firstname} ${value.lastname},`);
+					expect(screen.getByTestId(`title-person-${value.id}`)).toHaveTextContent(`${value.firstname} ${value.lastname},`);
 				}
 			});
 		});

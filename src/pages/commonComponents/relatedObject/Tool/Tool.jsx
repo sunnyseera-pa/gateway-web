@@ -22,21 +22,10 @@ const Tool = ({ data, activeLink, onSearchPage, showRelationshipQuestion, update
 					<span className='gray800-14'>Author not listed</span>
 				) : (
 					data.persons.map((person, index) => {
-						if (activeLink === true) {
-							return (
-								<a className='gray800-14' href={'/person/' + person.id} key={`person-${index}`} data-testid={`tool-person-${person.id}`}>
-									{person.firstname} {person.lastname}
-									{data.persons.length === index + 1 ? '' : ', '}
-								</a>
-							);
-						} else {
-							return (
-								<span className='gray800-14' key={`person-${index}`} data-testid={`tool-person-${person.id}`}>
-									{person.firstname} {person.lastname}
-									{data.persons.length === index + 1 ? '' : ', '}
-								</span>
-							);
-						}
+						let name = `${person.firstname} ${person.lastname}${data.persons.length === index + 1 ? '' : ', '}`;
+						return (
+							<Title className='gray800-14' activeLink={activeLink} name={name} id={person.id} type='person' key={`person-${index}`} />
+						);
 					})
 				)}
 			</Col>
@@ -58,7 +47,6 @@ const Tool = ({ data, activeLink, onSearchPage, showRelationshipQuestion, update
 				)}
 
 				{data.programmingLanguage &&
-					data.programmingLanguage.length > 0 &&
 					data.programmingLanguage.map((p, i) => {
 						return (
 							<Tag
@@ -74,7 +62,6 @@ const Tool = ({ data, activeLink, onSearchPage, showRelationshipQuestion, update
 					})}
 
 				{data.tags.features &&
-					data.tags.features.length > 0 &&
 					data.tags.features.map((feature, index) => {
 						return (
 							<Tag
@@ -89,7 +76,6 @@ const Tool = ({ data, activeLink, onSearchPage, showRelationshipQuestion, update
 					})}
 
 				{data.tags.topics &&
-					data.tags.topics.length > 0 &&
 					data.tags.topics.map((topic, index) => {
 						return (
 							<Tag

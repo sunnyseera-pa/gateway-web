@@ -34,7 +34,6 @@ const Paper = ({ data, activeLink, onSearchPage, showRelationshipQuestion, updat
 					<SVGIcon name='newprojecticon' fill={'#3c3c3b'} className='badgeSvg mr-2' viewBox='-2 -2 22 22' />
 				</Tag>
 				{data.tags.features &&
-					data.tags.features.length > 0 &&
 					data.tags.features.map((feature, index) => {
 						return (
 							<Tag
@@ -49,7 +48,6 @@ const Paper = ({ data, activeLink, onSearchPage, showRelationshipQuestion, updat
 					})}
 
 				{data.tags.topics &&
-					data.tags.topics.length > 0 &&
 					data.tags.topics.map((topic, index) => {
 						return (
 							<Tag

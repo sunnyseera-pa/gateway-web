@@ -25,7 +25,7 @@ describe('Given the Paper component', () => {
 		});
 
 		it('Then Paper Title should be rendered with description', () => {
-			expect(screen.getByTestId('paper-title')).toHaveTextContent(props.data.name);
+			expect(screen.getByTestId(`title-${props.data.type}-${props.data.id}`)).toHaveTextContent(props.data.name);
 			expect(screen.getByTestId('paper-description')).toHaveTextContent(props.data.description);
 		});
 
@@ -52,7 +52,7 @@ describe('Given the Paper component', () => {
 		it('Then the Tilte should be clickable with a link', () => {
 			const { rerender } = wrapper;
 			rerender(<Paper {...props} activeLink={true} />);
-			expect(screen.getByTestId('paper-title')).toHaveAttribute('href', `/paper/${props.data.id}`);
+			expect(screen.getByTestId(`title-${props.data.type}-${props.data.id}`)).toHaveAttribute('href', `/paper/${props.data.id}`);
 		});
 		it('Then the Features Badge/Tag should be rendered with links', () => {
 			props.data.tags.features.map(value => {
