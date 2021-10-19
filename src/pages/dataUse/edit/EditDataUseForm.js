@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { Accordion, Card, Button, Form } from 'react-bootstrap';
 import SVGIcon from '../../../images/SVGIcon';
+import { ReactComponent as Calendar } from '../../../images/calendaricon.svg';
+
+import DatePicker from 'react-datepicker';
 
 const EditFormDataUse = data => {
 	const [safePeople, setSafePeople] = useState(true);
@@ -23,7 +26,6 @@ const EditFormDataUse = data => {
 		console.log(valueChange);
 	};
 
-	console.log(data);
 	return (
 		<Accordion defaultActiveKey='0' className='datause-accordion-header'>
 			<Card className='edit-datause-card'>
@@ -162,7 +164,9 @@ const EditFormDataUse = data => {
 									A unique identifier for the project that is preferably an industry used standard, such as IRAS ID. However for
 									non-research projects, a unique reference number created by the data custodian on receipt of the application is sufficient
 								</p>
-								<Form.Control type='text' placeholder='' defaultValue={data.data.projectIdText} />
+								<fieldset disabled>
+									<Form.Control type='text' placeholder='' value={data.data.projectIdText} readOnly />
+								</fieldset>
 							</Form.Group>
 
 							<Form.Group>
@@ -179,7 +183,8 @@ const EditFormDataUse = data => {
 									A concise and clear description of the project, (e.g. as required by URKI in funding applications). It should outline the
 									problem, objectives and expected outcomes in language that is understandable to the general public
 								</p>
-								<Form.Control type='text' placeholder='' defaultValue={data.data.laySummary} />
+								<p className='gray800-13-opacity datause-edit-laysummary'>(0/300)</p>
+								<Form.Control type='text' placeholder='' defaultValue={data.data.laySummary} style={{ height: '100px' }} />
 							</Form.Group>
 
 							<Form.Group>
@@ -187,7 +192,7 @@ const EditFormDataUse = data => {
 								<p className='gray800-13-opacity datause-edit-p'>
 									A description in plain English of the anticipated outcomes, or impact of project on the general public
 								</p>
-								<Form.Control type='text' placeholder='' defaultValue={data.data.publicBenefitStatement} />
+								<Form.Control type='text' placeholder='' defaultValue={data.data.publicBenefitStatement} style={{ height: '100px' }} />
 							</Form.Group>
 
 							<Form.Group>
@@ -207,7 +212,7 @@ const EditFormDataUse = data => {
 								<p className='gray800-13-opacity datause-edit-p'>
 									A summary of the proposed research, in a manner that is suitable for a specialist reader
 								</p>
-								<Form.Control type='text' placeholder='' defaultValue={data.data.technicalSummary} />
+								<Form.Control type='text' placeholder='' defaultValue={data.data.technicalSummary} style={{ height: '100px' }} />
 							</Form.Group>
 
 							<Form.Group>
@@ -225,13 +230,31 @@ const EditFormDataUse = data => {
 							<Form.Group>
 								<Form.Label className='black-14'>Project start date (optional)</Form.Label>
 								<p className='gray800-13-opacity datause-edit-p'>The date the project is scheduled to start or actual start date</p>
-								<Form.Control type='text' placeholder='' defaultValue={data.data.projectStartDate} />
+								{/*<Form.Control type='text' placeholder='' defaultValue={data.data.projectStartDate} />*/}
+								<DatePicker
+									name={`startDate`}
+									dateFormat='dd/MM/yyyy'
+									peekNextMonth
+									showMonthDropdown
+									showYearDropdown
+									dropdownMode='select'
+									selected={Date.parse(data.data.projectStartDate)}
+								/>
 							</Form.Group>
 
 							<Form.Group>
 								<Form.Label className='black-14'>Project end date (optional)</Form.Label>
 								<p className='gray800-13-opacity datause-edit-p'>The date the project is scheduled to end or actual end date</p>
-								<Form.Control type='text' placeholder='' defaultValue={data.data.projectEndDate} />
+								{/*<Form.Control type='text' placeholder='' defaultValue={data.data.projectEndDate} />*/}
+								<DatePicker
+									name={`endDate`}
+									dateFormat='dd/MM/yyyy'
+									peekNextMonth
+									showMonthDropdown
+									showYearDropdown
+									dropdownMode='select'
+									selected={Date.parse(data.data.projectEndDate)}
+								/>
 							</Form.Group>
 
 							<Form.Group>
@@ -239,7 +262,16 @@ const EditFormDataUse = data => {
 								<p className='gray800-13-opacity datause-edit-p'>
 									The last date the data access request for this project was approved by a data custodian
 								</p>
-								<Form.Control type='text' placeholder='' defaultValue={data.data.latestApprovalDate} />
+								{/*<Form.Control type='text' placeholder='' defaultValue={data.data.latestApprovalDate} />*/}
+								<DatePicker
+									name={`approvalDate`}
+									dateFormat='dd/MM/yyyy'
+									peekNextMonth
+									showMonthDropdown
+									showYearDropdown
+									dropdownMode='select'
+									selected={Date.parse(data.data.latestApprovalDate)}
+								/>
 							</Form.Group>
 						</Form>
 					</Card.Body>
@@ -267,11 +299,14 @@ const EditFormDataUse = data => {
 							<Form.Group>
 								<Form.Label className='black-14'>Dataset(s) name</Form.Label>
 								<p className='gray800-13-opacity datause-edit-p'>The name of the dataset(s) being accessed</p>
-								<Form.Control
-									type='text'
-									placeholder=''
-									defaultValue={data && data.data && data.data.datasetTitles && data.data.datasetTitles.map(a => a)}
-								/>
+								<fieldset disabled>
+									<Form.Control
+										type='text'
+										placeholder=''
+										defaultValue={data && data.data && data.data.datasetTitles && data.data.datasetTitles.map(a => a)}
+										readOnly
+									/>
+								</fieldset>
 							</Form.Group>
 
 							<Form.Group>
@@ -376,7 +411,17 @@ const EditFormDataUse = data => {
 							<Form.Group>
 								<Form.Label className='black-14'>Release/Access date (optional)</Form.Label>
 								<p className='gray800-13-opacity datause-edit-p'>The date the data access was granted and active research started</p>
-								<Form.Control type='text' placeholder='' defaultValue={data.data.accessDate} />
+								{/*<Form.Control type='text' placeholder='' defaultValue={data.data.accessDate} />*/}
+								<Calendar className='datePickerCalendar' />
+								<DatePicker
+									name={`releaseDate`}
+									dateFormat='dd/MM/yyyy'
+									peekNextMonth
+									showMonthDropdown
+									showYearDropdown
+									dropdownMode='select'
+									selected={Date.parse(data.data.accessDate)}
+								/>
 							</Form.Group>
 						</Form>
 					</Card.Body>

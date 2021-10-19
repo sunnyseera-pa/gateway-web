@@ -9,9 +9,11 @@ import EditFormDataUse from './EditDataUseForm';
 import SearchBar from '../../commonComponents/searchBar/SearchBar';
 import ErrorModal from '../../commonComponents/errorModal/ErrorModal';
 import ActionBar from '../../commonComponents/actionbar/ActionBar';
+import SaveModal from '../SaveEditModal';
 
 const EditDataUse = props => {
 	const [data, setData] = useState([]);
+	const [showModal, setShowModal] = useState(false);
 	const [searchBar] = useState(createRef());
 	const [searchString, setSearchString] = useState('');
 	const [showDrawer, setShowDrawer] = useState(false);
@@ -58,6 +60,15 @@ const EditDataUse = props => {
 		setShowDrawer(!showDrawer);
 	};
 
+	const showSaveModal = () => {
+		setShowModal(true);
+		console.log('saved');
+	};
+
+	const hideSaveModal = () => {
+		setShowModal(false);
+	};
+
 	return (
 		<Sentry.ErrorBoundary fallback={<ErrorModal show={showModalHandler} handleClose={hideModalHandler} />}>
 			<SearchBar
@@ -80,6 +91,7 @@ const EditDataUse = props => {
 						</span>
 					</Col>
 				</Row>
+
 				<Row>
 					<Col md={10}>
 						<p className='gray800-14-normal'>
@@ -96,9 +108,12 @@ const EditDataUse = props => {
 				{userState[0].loggedIn && (
 					<ActionBar userState={userState}>
 						<Button className='datause-cancel dark-14'>Cancel</Button>
-						<Button className='datause-save white-14'>Save</Button>
+						<Button onClick={showSaveModal} className='datause-save white-14'>
+							Save
+						</Button>
 					</ActionBar>
 				)}
+				{showModal && <SaveModal show={showSaveModal} hide={hideSaveModal} />}
 			</div>
 		</Sentry.ErrorBoundary>
 	);
