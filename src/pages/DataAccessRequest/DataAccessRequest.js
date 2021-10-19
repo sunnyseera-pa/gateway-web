@@ -162,6 +162,7 @@ class DataAccessRequest extends Component {
 
 	async componentDidMount() {
 		await this.initPage();
+		console.log("inside DataAccessRequest.js", this.state.datasets[0].name);
 	}
 
 	async componentDidUpdate(prevProps) {
@@ -1690,8 +1691,11 @@ class DataAccessRequest extends Component {
 					</Col>
 				</Row>
 
+				
 				<div id='darContainer' className='flex-form'>
+					
 					<div id='darLeftCol' className='scrollable-sticky-column'>
+				
 						{[...this.state.jsonSchema.pages].map((item, idx) => (
 							<div key={`navItem-${idx}`} className={`${item.active ? 'active-border' : ''}`}>
 								<div>
@@ -1720,6 +1724,14 @@ class DataAccessRequest extends Component {
 						))}
 					</div>
 					<div id='darCenterCol' className={isWideForm ? 'extended' : ''}>
+
+						{/*Download CSV button*/}
+						<CSVLink data={createCSV(this.state.questionAnswers, this.state._id, this.state.applicationStatus, this.state.createdAt, this.state.updatedAt, this.state.datasets)} filename={"test"}>
+							<button className={`button-secondary csv-btn mb-4`}>
+								Download Request as a CSV
+							</button>
+						</CSVLink>
+
 						{this.state.reviewWarning && (
 							<Alert variant='warning' className=''>
 								<SVGIcon name='attention' width={24} height={24} fill={'#f0bb24'} viewBox='2 -9 22 22'></SVGIcon>
@@ -1955,7 +1967,7 @@ class DataAccessRequest extends Component {
 					appToCloneId={this.state._id}
 			/>
 
-				<CSVLink data={createCSV(this.state.questionAnswers, this.state._id, this.state.applicationStatus, this.state.createdAt, this.updatedAt, this.datasets)} filename={"test"}>
+				<CSVLink data={createCSV(this.state.questionAnswers, this.state._id, this.state.applicationStatus, this.state.createdAt, this.state.updatedAt, this.state.datasets)} filename={"test"}>
 					<button className={`button-secondary`}>
 						Download Request as a CSV
 					</button>

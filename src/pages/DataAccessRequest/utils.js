@@ -1,6 +1,5 @@
 const createCSV = (questionAnswers, id, applicationStatus, createdAt, updatedAt, datasets) => {
 		
-		console.log("datasets", datasets);
 		// set headers
 		const headers = [
 			"ID", 
@@ -33,7 +32,7 @@ const createCSV = (questionAnswers, id, applicationStatus, createdAt, updatedAt,
 			"Status Notes",
 			createdAt,
 			updatedAt,
-			"datasets",
+			datasets[0].name,
 			questionAnswers.applicationthisapplication,
 			questionAnswers.safeprojectapplicantfullname,
 			questionAnswers.safeprojectapplicantfullname,
