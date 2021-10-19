@@ -3,6 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import Dataset from './Dataset';
 import mockData from './mockData';
+import { dataset } from './constants';
 const props = {
 	data: { ...mockData },
 	onSearchPage: false,
@@ -93,7 +94,7 @@ describe('Given the Dataset component', () => {
 		it('Then the Badge Tags/Features should be rendered with links', () => {
 			props.data.tags.features.map(value => {
 				expect(screen.getByTestId(`badge-${value}`)).toBeTruthy();
-				expect(screen.getByTestId(`badge-${value}-link`)).toHaveAttribute('href', `/search?search=&tab=Datasets&datasetfeatures=${value}`);
+				expect(screen.getByTestId(`badge-${value}-link`)).toHaveAttribute('href', `${dataset.FEATURES.url}${value}`);
 			});
 		});
 		describe('And onSearchPage is true', () => {
@@ -109,8 +110,8 @@ describe('Given the Dataset component', () => {
 			it('Then onclick Tags/Features updateOnFilterBadge should be called', () => {
 				fireEvent.click(screen.getByTestId(`badge-${props.data.tags.features[0]}`));
 				expect(updateOnFilterBadge.mock.calls.length).toBe(1);
-				expect(updateOnFilterBadge.mock.calls[0][0]).toEqual('datasetfeatures');
-				expect(updateOnFilterBadge.mock.calls[0][1]).toEqual({ label: props.data.tags.features[0], parentKey: 'datasetfeatures' });
+				expect(updateOnFilterBadge.mock.calls[0][0]).toEqual(dataset.FEATURES.filter);
+				expect(updateOnFilterBadge.mock.calls[0][1]).toEqual({ label: props.data.tags.features[0], parentKey: dataset.FEATURES.parentKey });
 			});
 		});
 	});

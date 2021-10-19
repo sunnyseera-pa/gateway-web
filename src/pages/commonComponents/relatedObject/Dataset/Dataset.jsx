@@ -12,6 +12,7 @@ import RemoveButton from '../RemoveButton/RemoveButton';
 import Title from '../Title/Title';
 import Description from '../Description/Description';
 import Tag from '../Tag/Tag';
+import { dataset } from './constants';
 import * as styles from './Dataset.styles';
 import '../../CommonComponents.scss';
 import '../RelatedObject.scss';
@@ -85,10 +86,10 @@ const Dataset = ({
 					<Title
 						id={data.pid}
 						name={data.name}
-						type='dataset'
+						type={data.type}
 						activeLink={activeLink}
 						onClickHandler={() => {
-							googleAnalytics.recordEvent('Datasets', 'Clicked on dataset to open', `Dataset name: ${data.name}`);
+							googleAnalytics.recordEvent(`${dataset.TAB}`, 'Clicked on dataset to open', `Dataset name: ${data.name}`);
 						}}
 					/>
 					<br />
@@ -118,29 +119,11 @@ const Dataset = ({
 					{showRelationshipQuestion && <RemoveButton removeButtonHandler={removeButton} />}
 				</Col>
 				<Col sm={12} lg={12} className='pad-left-24 pad-right-24 pad-top-16'>
-					<Tag
-						tagName='Dataset'
-						tagType='dataset'
-						activeLink={false}
-						onSearchPage={false}
-						parentKey=''
-						filter=''
-						url='/search?search=&tab=Datasets'
-						updateOnFilterBadgeHandler={updateOnFilterBadge}
-						showTagType={false}>
+					<Tag tagName={dataset.TAB} tagType={data.type} updateOnFilterBadgeHandler={updateOnFilterBadge}>
 						<SVGIcon name='dataseticon' fill={'#113328'} className='badgeSvg mr-2' viewBox='-2 -2 22 22' />
 					</Tag>
 					{isCohortDiscovery && (
-						<Tag
-							tagName='Cohort Discovery'
-							tagType='project'
-							activeLink={false}
-							onSearchPage={false}
-							parentKey=''
-							filter=''
-							url='/search?search=&tab=Datasets'
-							updateOnFilterBadgeHandler={updateOnFilterBadge}
-							showTagType={false}>
+						<Tag tagName='Cohort Discovery' tagType='project' updateOnFilterBadgeHandler={updateOnFilterBadge} showTagType={false}>
 							<SVGIcon name='cohorticon' fill={'#472505'} className='badgeSvg mr-2' width='22' height='22' viewBox='0 0 10 10' />
 						</Tag>
 					)}
@@ -149,14 +132,11 @@ const Dataset = ({
 						<Tag
 							key={`phenotypes-searched`}
 							tagName={phenotypesSearched[0].name}
-							tagType='phenotype'
 							activeLink={activeLink}
 							onSearchPage={onSearchPage}
-							parentKey='phenotypes'
-							filter='phenotypes'
-							url='/search?search=&tab=Datasets&phenotypes='
 							updateOnFilterBadgeHandler={updateOnFilterBadge}
 							showTagType={true}
+							{...dataset.PHENOTYPES}
 						/>
 					)}
 
@@ -168,14 +148,11 @@ const Dataset = ({
 									<Tag
 										key={`phenotypes-selected-${index}`}
 										tagName={phenotype}
-										tagType='phenotype'
 										activeLink={activeLink}
 										onSearchPage={onSearchPage}
-										parentKey='phenotypes'
-										filter='phenotypes'
-										url='/search?search=&tab=Datasets&phenotypes='
 										updateOnFilterBadgeHandler={updateOnFilterBadge}
 										showTagType={true}
+										{...dataset.PHENOTYPES}
 									/>
 								);
 							} else {
@@ -190,14 +167,10 @@ const Dataset = ({
 								<Tag
 									key={`tag-${index}`}
 									tagName={feature}
-									tagType='tag'
 									activeLink={activeLink}
 									onSearchPage={onSearchPage}
-									parentKey='datasetfeatures'
-									filter='datasetfeatures'
-									url='/search?search=&tab=Datasets&datasetfeatures='
 									updateOnFilterBadgeHandler={updateOnFilterBadge}
-									showTagType={false}
+									{...dataset.FEATURES}
 								/>
 							);
 						})}

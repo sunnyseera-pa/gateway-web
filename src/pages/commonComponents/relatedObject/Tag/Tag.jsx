@@ -33,7 +33,7 @@ const Tag = props => {
 			);
 		} else {
 			return (
-				<a href={`${url}${tagName}`} data-testid={`badge-${tagName}-link`}>
+				<a href={`${url}${tagName}`} data-testid={`badge-${tagName}-link`} css={styles.pointer}>
 					<div className={`badge-${tagType}`} data-testid={`badge-${tagName}`}>
 						{displayTagName}
 					</div>
@@ -65,6 +65,11 @@ Tag.propTypes = {
 Tag.defaultProps = {
 	version: '',
 	filter: '',
+	parentKey: '',
+	activeLink: false,
+	onSearchPage: false,
+	showTagType: false,
+	url: '/search?search',
 };
 
 export default Tag;

@@ -17,12 +17,10 @@ exports[`Given the Paper component When it is rendered Then matches the previous
         This is a test paper
       </span>
       <div
-        class="gray800-14"
-        style="margin-top: 2px;"
+        class="gray800-14 css-1akuxpc-Paper"
       />
       <div
-        class="gray800-14"
-        style="margin-top: 10px;"
+        class="gray800-14 css-1vbl8on-Paper"
       >
          
       </div>

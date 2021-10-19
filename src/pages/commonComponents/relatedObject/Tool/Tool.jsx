@@ -9,6 +9,7 @@ import RemoveButton from '../RemoveButton/RemoveButton';
 import Title from '../Title/Title';
 import Description from '../Description/Description';
 import Tag from '../Tag/Tag';
+import { tool } from './constants';
 import '../../CommonComponents.scss';
 
 const Tool = ({ data, activeLink, onSearchPage, showRelationshipQuestion, updateOnFilterBadge, removeButton }) => {
@@ -43,29 +44,16 @@ const Tool = ({ data, activeLink, onSearchPage, showRelationshipQuestion, update
 				{showRelationshipQuestion && <RemoveButton removeButtonHandler={removeButton} />}
 			</Col>
 			<Col className='pad-left-24 pad-right-24 pad-top-16'>
-				<Tag
-					tagName='Tool'
-					tagType='tool'
-					activeLink={false}
-					onSearchPage={false}
-					parentKey=''
-					filter=''
-					url='/search?search=&tab=Tools'
-					updateOnFilterBadgeHandler={updateOnFilterBadge}
-					showTagType={false}>
+				<Tag tagName={tool.TAB} tagType={data.type} updateOnFilterBadgeHandler={updateOnFilterBadge}>
 					<SVGIcon name='newtoolicon' fill={'#ffffff'} className='badgeSvg mr-2' viewBox='-2 -2 22 22' />
 				</Tag>
 				{data.categories.category && (
 					<Tag
 						tagName={data.categories.category}
-						tagType='tag'
 						activeLink={activeLink}
 						onSearchPage={onSearchPage}
-						parentKey='toolcategories'
-						filter='toolCategoriesSelected'
-						url='/search?search=&tab=Tools&toolcategories='
 						updateOnFilterBadgeHandler={updateOnFilterBadge}
-						showTagType={false}
+						{...tool.CATEGORIES}
 					/>
 				)}
 
@@ -76,15 +64,11 @@ const Tool = ({ data, activeLink, onSearchPage, showRelationshipQuestion, update
 							<Tag
 								key={`toolprogrammingLanguage-${i}`}
 								tagName={p.programmingLanguage}
-								tagType='version'
 								activeLink={activeLink}
 								onSearchPage={onSearchPage}
-								parentKey='toolprogrammingLanguage'
-								filter='toolProgrammingLanguageSelected'
-								url='/search?search=&tab=Tools&toolprogrammingLanguage='
 								updateOnFilterBadgeHandler={updateOnFilterBadge}
-								showTagType={false}
 								version={p.version}
+								{...tool.PL}
 							/>
 						);
 					})}
@@ -96,14 +80,10 @@ const Tool = ({ data, activeLink, onSearchPage, showRelationshipQuestion, update
 							<Tag
 								key={`toolfeatures-${index}`}
 								tagName={feature}
-								tagType='tag'
 								activeLink={activeLink}
 								onSearchPage={onSearchPage}
-								parentKey='toolfeatures'
-								filter='toolFeaturesSelected'
-								url='/search?search=&tab=Tools&toolfeatures='
 								updateOnFilterBadgeHandler={updateOnFilterBadge}
-								showTagType={false}
+								{...tool.FEATURES}
 							/>
 						);
 					})}
@@ -115,14 +95,10 @@ const Tool = ({ data, activeLink, onSearchPage, showRelationshipQuestion, update
 							<Tag
 								key={`tooltopics-${index}`}
 								tagName={topic}
-								tagType='tag'
 								activeLink={activeLink}
 								onSearchPage={onSearchPage}
-								parentKey='tooltopics'
-								filter='toolTopicsSelected'
-								url='/search?search=&tab=Tools&tooltopics='
 								updateOnFilterBadgeHandler={updateOnFilterBadge}
-								showTagType={false}
+								{...tool.TOPICS}
 							/>
 						);
 					})}

@@ -34,7 +34,7 @@ exports[`Given the Tool component When it is rendered Then matches the previous 
     >
       <div
         class="badge-tool"
-        data-testid="badge-Tool"
+        data-testid="badge-Datasets"
       >
         <svg
           class="badgeSvg mr-2"
@@ -51,7 +51,7 @@ exports[`Given the Tool component When it is rendered Then matches the previous 
           />
         </svg>
         <span>
-          Tool
+          Datasets
         </span>
         <span />
       </div>

@@ -2,6 +2,7 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import Paper from './Paper';
+import { paper } from './constants';
 import mockData from './mockData';
 const props = {
 	data: { ...mockData },
@@ -56,14 +57,14 @@ describe('Given the Paper component', () => {
 		it('Then the Features Badge/Tag should be rendered with links', () => {
 			props.data.tags.features.map(value => {
 				expect(screen.getByTestId(`badge-${value}`)).toBeTruthy();
-				expect(screen.getByTestId(`badge-${value}-link`)).toHaveAttribute('href', `/search?search=&tab=Papers&paperfeatures=${value}`);
+				expect(screen.getByTestId(`badge-${value}-link`)).toHaveAttribute('href', `${paper.FEATURES.url}${value}`);
 			});
 		});
 
 		it('Then the Topics Badge/Tag should be rendered with links', () => {
 			props.data.tags.topics.map(value => {
 				expect(screen.getByTestId(`badge-${value}`)).toBeTruthy();
-				expect(screen.getByTestId(`badge-${value}-link`)).toHaveAttribute('href', `/search?search=&tab=Papers&papertopics=${value}`);
+				expect(screen.getByTestId(`badge-${value}-link`)).toHaveAttribute('href', `${paper.TOPICS.url}${value}`);
 			});
 		});
 
@@ -80,8 +81,8 @@ describe('Given the Paper component', () => {
 			it('Then the Features Badge/Tag updateOnFilterBadge should be called', () => {
 				fireEvent.click(screen.getByTestId(`badge-${props.data.tags.features[0]}`));
 				expect(updateOnFilterBadge.mock.calls.length).toBe(1);
-				expect(updateOnFilterBadge.mock.calls[0][0]).toEqual('paperFeaturesSelected');
-				expect(updateOnFilterBadge.mock.calls[0][1]).toEqual({ label: props.data.tags.features[0], parentKey: 'paperfeatures' });
+				expect(updateOnFilterBadge.mock.calls[0][0]).toEqual(paper.FEATURES.filter);
+				expect(updateOnFilterBadge.mock.calls[0][1]).toEqual({ label: props.data.tags.features[0], parentKey: paper.FEATURES.parentKey });
 			});
 
 			it('Then the Topic Badge/Tag updateOnFilterBadge should be called', () => {
@@ -90,8 +91,8 @@ describe('Given the Paper component', () => {
 				rerender(<Paper {...props} activeLink={true} onSearchPage={true} updateOnFilterBadge={updateOnFilterBadgeTopic} />);
 				fireEvent.click(screen.getByTestId(`badge-${props.data.tags.topics[0]}`));
 				expect(updateOnFilterBadgeTopic.mock.calls.length).toBe(1);
-				expect(updateOnFilterBadgeTopic.mock.calls[0][0]).toEqual('paperTopicsSelected');
-				expect(updateOnFilterBadgeTopic.mock.calls[0][1]).toEqual({ label: props.data.tags.topics[0], parentKey: 'papertopics' });
+				expect(updateOnFilterBadgeTopic.mock.calls[0][0]).toEqual(paper.TOPICS.filter);
+				expect(updateOnFilterBadgeTopic.mock.calls[0][1]).toEqual({ label: props.data.tags.topics[0], parentKey: paper.TOPICS.parentKey });
 			});
 		});
 	});

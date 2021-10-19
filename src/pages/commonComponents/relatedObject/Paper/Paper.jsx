@@ -9,6 +9,7 @@ import RemoveButton from '../RemoveButton/RemoveButton';
 import Title from '../Title/Title';
 import Description from '../Description/Description';
 import Tag from '../Tag/Tag';
+import { paper } from './constants';
 import * as styles from './Paper.styles';
 import '../../CommonComponents.scss';
 
@@ -29,16 +30,7 @@ const Paper = ({ data, activeLink, onSearchPage, showRelationshipQuestion, updat
 				{showRelationshipQuestion && <RemoveButton removeButtonHandler={removeButton} />}
 			</Col>
 			<Col sm={12} lg={12} className='pad-left-24 pad-right-24 pad-top-16'>
-				<Tag
-					tagName='Paper'
-					tagType='paper'
-					activeLink={false}
-					onSearchPage={false}
-					parentKey=''
-					filter=''
-					url='/search?search=&tab=Paper'
-					updateOnFilterBadgeHandler={updateOnFilterBadge}
-					showTagType={false}>
+				<Tag tagName={paper.TAB} tagType={data.type} updateOnFilterBadgeHandler={updateOnFilterBadge}>
 					<SVGIcon name='newprojecticon' fill={'#3c3c3b'} className='badgeSvg mr-2' viewBox='-2 -2 22 22' />
 				</Tag>
 				{data.tags.features &&
@@ -48,14 +40,10 @@ const Paper = ({ data, activeLink, onSearchPage, showRelationshipQuestion, updat
 							<Tag
 								key={`${feature}-${index}`}
 								tagName={feature}
-								tagType='tag'
 								activeLink={activeLink}
 								onSearchPage={onSearchPage}
-								parentKey='paperfeatures'
-								filter='paperFeaturesSelected'
-								url='/search?search=&tab=Papers&paperfeatures='
 								updateOnFilterBadgeHandler={updateOnFilterBadge}
-								showTagType={false}
+								{...paper.FEATURES}
 							/>
 						);
 					})}
@@ -67,14 +55,10 @@ const Paper = ({ data, activeLink, onSearchPage, showRelationshipQuestion, updat
 							<Tag
 								key={`${topic}-${index}`}
 								tagName={topic}
-								tagType='tag'
 								activeLink={activeLink}
 								onSearchPage={onSearchPage}
-								parentKey='papertopics'
-								filter='paperTopicsSelected'
-								url='/search?search=&tab=Papers&papertopics='
 								updateOnFilterBadgeHandler={updateOnFilterBadge}
-								showTagType={false}
+								{...paper.TOPICS}
 							/>
 						);
 					})}

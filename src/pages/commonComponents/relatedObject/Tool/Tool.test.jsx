@@ -2,6 +2,7 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import Tool from './Tool';
+import { tool } from './constants';
 import mockData from './mockData';
 const props = {
 	data: { ...mockData },
@@ -12,7 +13,6 @@ const props = {
 	removeButton: jest.fn(),
 };
 let wrapper;
-let handlerFn;
 
 describe('Given the Tool component', () => {
 	describe('When it is rendered', () => {
@@ -76,21 +76,21 @@ describe('Given the Tool component', () => {
 		it('Then the Features Badge/Tag should be rendered with links', () => {
 			props.data.tags.features.map(value => {
 				expect(screen.getByTestId(`badge-${value}`)).toBeTruthy();
-				expect(screen.getByTestId(`badge-${value}-link`)).toHaveAttribute('href', `/search?search=&tab=Tools&toolfeatures=${value}`);
+				expect(screen.getByTestId(`badge-${value}-link`)).toHaveAttribute('href', `${tool.FEATURES.url}${value}`);
 			});
 		});
 
 		it('Then the Topics Badge/Tag should be rendered with links', () => {
 			props.data.tags.topics.map(value => {
 				expect(screen.getByTestId(`badge-${value}`)).toBeTruthy();
-				expect(screen.getByTestId(`badge-${value}-link`)).toHaveAttribute('href', `/search?search=&tab=Tools&tooltopics=${value}`);
+				expect(screen.getByTestId(`badge-${value}-link`)).toHaveAttribute('href', `${tool.TOPICS.url}${value}`);
 			});
 		});
 
 		it('Then the Categorie Badge/Tag should be rendered with links', () => {
 			const category = props.data.categories.category;
 			expect(screen.getByTestId(`badge-${category}`)).toBeTruthy();
-			expect(screen.getByTestId(`badge-${category}-link`)).toHaveAttribute('href', `/search?search=&tab=Tools&toolcategories=${category}`);
+			expect(screen.getByTestId(`badge-${category}-link`)).toHaveAttribute('href', `${tool.CATEGORIES.url}${category}`);
 		});
 
 		it('Then the Programming language Tags/Features should be rendered with links', () => {
@@ -98,7 +98,7 @@ describe('Given the Tool component', () => {
 				expect(screen.getByTestId(`badge-${value.programmingLanguage}`)).toBeTruthy();
 				expect(screen.getByTestId(`badge-${value.programmingLanguage}-link`)).toHaveAttribute(
 					'href',
-					`/search?search=&tab=Tools&toolprogrammingLanguage=${value.programmingLanguage}`
+					`${tool.PL.url}${value.programmingLanguage}`
 				);
 			});
 		});
@@ -115,8 +115,8 @@ describe('Given the Tool component', () => {
 			it('Then the Features Badge/Tag updateOnFilterBadge should be called', () => {
 				fireEvent.click(screen.getByTestId(`badge-${props.data.tags.features[0]}`));
 				expect(updateOnFilterBadge.mock.calls.length).toBe(1);
-				expect(updateOnFilterBadge.mock.calls[0][0]).toEqual('toolFeaturesSelected');
-				expect(updateOnFilterBadge.mock.calls[0][1]).toEqual({ label: props.data.tags.features[0], parentKey: 'toolfeatures' });
+				expect(updateOnFilterBadge.mock.calls[0][0]).toEqual(tool.FEATURES.filter);
+				expect(updateOnFilterBadge.mock.calls[0][1]).toEqual({ label: props.data.tags.features[0], parentKey: tool.FEATURES.parentKey });
 			});
 
 			it('Then the Topic Badge/Tag updateOnFilterBadge should be called', () => {
@@ -125,8 +125,8 @@ describe('Given the Tool component', () => {
 				rerender(<Tool {...props} activeLink={true} onSearchPage={true} updateOnFilterBadge={updateOnFilterBadgeTopic} />);
 				fireEvent.click(screen.getByTestId(`badge-${props.data.tags.topics[0]}`));
 				expect(updateOnFilterBadgeTopic.mock.calls.length).toBe(1);
-				expect(updateOnFilterBadgeTopic.mock.calls[0][0]).toEqual('toolTopicsSelected');
-				expect(updateOnFilterBadgeTopic.mock.calls[0][1]).toEqual({ label: props.data.tags.topics[0], parentKey: 'tooltopics' });
+				expect(updateOnFilterBadgeTopic.mock.calls[0][0]).toEqual(tool.TOPICS.filter);
+				expect(updateOnFilterBadgeTopic.mock.calls[0][1]).toEqual({ label: props.data.tags.topics[0], parentKey: tool.TOPICS.parentKey });
 			});
 
 			it('Then the Category Badge/Tag updateOnFilterBadge should be called', () => {
@@ -135,10 +135,10 @@ describe('Given the Tool component', () => {
 				rerender(<Tool {...props} activeLink={true} onSearchPage={true} updateOnFilterBadge={updateOnFilterBadgeCategory} />);
 				fireEvent.click(screen.getByTestId(`badge-${props.data.categories.category}`));
 				expect(updateOnFilterBadgeCategory.mock.calls.length).toBe(1);
-				expect(updateOnFilterBadgeCategory.mock.calls[0][0]).toEqual('toolCategoriesSelected');
+				expect(updateOnFilterBadgeCategory.mock.calls[0][0]).toEqual(tool.CATEGORIES.filter);
 				expect(updateOnFilterBadgeCategory.mock.calls[0][1]).toEqual({
 					label: props.data.categories.category,
-					parentKey: 'toolcategories',
+					parentKey: tool.CATEGORIES.parentKey,
 				});
 			});
 
@@ -148,10 +148,10 @@ describe('Given the Tool component', () => {
 				rerender(<Tool {...props} activeLink={true} onSearchPage={true} updateOnFilterBadge={updateOnFilterBadgeProLanguage} />);
 				fireEvent.click(screen.getByTestId(`badge-${props.data.programmingLanguage[0].programmingLanguage}`));
 				expect(updateOnFilterBadgeProLanguage.mock.calls.length).toBe(1);
-				expect(updateOnFilterBadgeProLanguage.mock.calls[0][0]).toEqual('toolProgrammingLanguageSelected');
+				expect(updateOnFilterBadgeProLanguage.mock.calls[0][0]).toEqual(tool.PL.filter);
 				expect(updateOnFilterBadgeProLanguage.mock.calls[0][1]).toEqual({
 					label: props.data.programmingLanguage[0].programmingLanguage,
-					parentKey: 'toolprogrammingLanguage',
+					parentKey: tool.PL.parentKey,
 				});
 			});
 		});
