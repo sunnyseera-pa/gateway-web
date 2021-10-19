@@ -1,7 +1,7 @@
 import React from 'react';
 import SearchResults from '.';
 import { render } from '@testing-library/react';
-import { data } from './mockProps';
+import { data } from './mockData';
 
 let wrapper;
 

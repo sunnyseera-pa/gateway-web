@@ -1,5 +1,5 @@
-import React from 'react';
 import _ from 'lodash';
+import React from 'react';
 import RelatedObject from '../../../commonComponents/relatedObject/RelatedObject';
 import SearchResults from '../../../commonComponents/SearchResults';
 

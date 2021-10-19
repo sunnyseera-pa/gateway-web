@@ -1,6 +1,6 @@
+import { render } from '@testing-library/react';
 import React from 'react';
 import ToolsSearchSort from './ToolsSearchSort';
-import { render } from '@testing-library/react';
 
 const mockSortDropdown = jest.fn();
 const mockOnSort = jest.fn();

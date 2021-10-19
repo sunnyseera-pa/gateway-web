@@ -1,6 +1,6 @@
+import { render } from '@testing-library/react';
 import React from 'react';
 import SearchFilters from '.';
-import { render } from '@testing-library/react';
 import googleAnalytics from '../../../../tracking';
 
 let wrapper;

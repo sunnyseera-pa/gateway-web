@@ -1,7 +1,7 @@
+import { render } from '@testing-library/react';
 import React from 'react';
 import DatasetSearchResults from '.';
-import { render } from '@testing-library/react';
-import { data } from './mockProps';
+import { data } from './mockData';
 
 const mockRelatedObject = jest.fn();
 
