@@ -50,23 +50,32 @@ const indexNames = ['datasetIndex', 'toolIndex', 'projectIndex', 'paperIndex', '
 const sortNames = ['datasetSort', 'toolSort', 'projectSort', 'paperSort', 'personSort', 'courseSort', 'collectionSort'];
 const filterNames = ['Datasets', 'Tools', 'Projects', 'Papers', 'Courses', 'Collections'];
 
+const initialState = {
+	selectedV2Datasets: [],
+	selectedV2Tools: [],
+	selectedV2Projects: [],
+	selectedV2Papers: [],
+	selectedV2Collections: [],
+	selectedV2Courses: [],
+	datasetIndex: 0,
+	toolIndex: 0,
+	projectIndex: 0,
+	paperIndex: 0,
+	personIndex: 0,
+	courseIndex: 0,
+	collectionIndex: 0,
+	datasetSort: '',
+	toolSort: '',
+	projectSort: '',
+	paperSort: '',
+	personSort: '',
+	courseSort: '',
+	collectionSort: '',
+};
+
 class SearchPage extends React.Component {
 	state = {
 		search: '',
-		datasetSort: '',
-		toolSort: '',
-		projectSort: '',
-		paperSort: '',
-		personSort: '',
-		courseSort: '',
-		collectionSort: '',
-		datasetIndex: 0,
-		toolIndex: 0,
-		projectIndex: 0,
-		paperIndex: 0,
-		personIndex: 0,
-		courseIndex: 0,
-		collectionIndex: 0,
 		datasetData: [],
 		toolData: [],
 		projectData: [],
@@ -116,17 +125,11 @@ class SearchPage extends React.Component {
 			},
 		],
 		filtersV2Datasets: [],
-		selectedV2Datasets: [],
 		filtersV2Tools: [],
-		selectedV2Tools: [],
 		filtersV2Projects: [],
-		selectedV2Projects: [],
 		filtersV2Papers: [],
-		selectedV2Papers: [],
 		filtersV2Collections: [],
-		selectedV2Collections: [],
 		filtersV2Courses: [],
-		selectedV2Courses: [],
 		savedSearchPanel: true,
 		saveSuccess: false,
 		showLoggedInModal: true,
@@ -136,6 +139,7 @@ class SearchPage extends React.Component {
 		showDataUtilityWizardModal: false,
 		showDataUtilityBanner: false,
 		activeDataUtilityWizardStep: 1,
+		...initialState,
 	};
 
 	constructor(props) {
@@ -409,27 +413,8 @@ class SearchPage extends React.Component {
 		});
 
 		this.setState(
-			prevState => ({
-				selectedV2Datasets: [],
-				selectedV2Tools: [],
-				selectedV2Projects: [],
-				selectedV2Papers: [],
-				selectedV2Collections: [],
-				selectedV2Courses: [],
-				datasetIndex: 0,
-				toolIndex: 0,
-				projectIndex: 0,
-				paperIndex: 0,
-				personIndex: 0,
-				courseIndex: 0,
-				collectionIndex: 0,
-				datasetSort: '',
-				toolSort: '',
-				projectSort: '',
-				paperSort: '',
-				personSort: '',
-				courseSort: '',
-				collectionSort: '',
+			() => ({
+				...initialState,
 				...filters,
 			}),
 			() => {
@@ -652,6 +637,7 @@ class SearchPage extends React.Component {
 					},
 				},
 			} = response;
+
 			if (!_.isEmpty(dataUtilityFilters)) {
 				const dataUtilityWizardSteps = dataUtilityFilters.filter(item => item.includeInWizard);
 				this.setState({ dataUtilityFilters, dataUtilityWizardSteps });
@@ -1147,50 +1133,19 @@ class SearchPage extends React.Component {
 
 	saveFiltersUpdate = viewSaved => {
 		this.setState({ showSavedPreferencesModal: false });
-		// 1. v2 take copy of data
-		let filtersV2DatasetsData = !_.isNil(this.state.filtersV2Datasets) ? [...this.state.filtersV2Datasets] : [];
-		let filtersV2ToolsData = !_.isNil(this.state.filtersV2Tools) ? [...this.state.filtersV2Tools] : [];
-		let filtersV2ProjectsData = !_.isNil(this.state.filtersV2Projects) ? [...this.state.filtersV2Projects] : [];
-		let filtersV2CollectionsData = !_.isNil(this.state.filtersV2Collections) ? [...this.state.filtersV2Collections] : [];
-		let filtersV2CoursesData = !_.isNil(this.state.filtersV2Courses) ? [...this.state.filtersV2Courses] : [];
-		let filtersV2PapersData = !_.isNil(this.state.filtersV2Papers) ? [...this.state.filtersV2Papers] : [];
 
-		// 2. v2 resets the filters UI tree back to default
-		let filtersV2Datasets = this.resetTreeChecked(filtersV2DatasetsData);
-		let filtersV2Tools = this.resetTreeChecked(filtersV2ToolsData);
-		let filtersV2Projects = this.resetTreeChecked(filtersV2ProjectsData);
-		let filtersV2Collections = this.resetTreeChecked(filtersV2CollectionsData);
-		let filtersV2Courses = this.resetTreeChecked(filtersV2CoursesData);
-		let filtersV2Papers = this.resetTreeChecked(filtersV2PapersData);
+		const filters = {};
+
+		filterNames.forEach(key => {
+			const filterKey = `filtersV2${key}`;
+			const filtersV2 = !_.isNil(this.state[filterKey]) ? [...this.state[filterKey]] : [];
+			filters[key] = this.resetTreeChecked(filtersV2);
+		});
 
 		this.setState(
 			prevState => ({
-				filtersV2Datasets,
-				selectedV2Datasets: [],
-				filtersV2Tools,
-				selectedV2Tools: [],
-				filtersV2Projects,
-				selectedV2Projects: [],
-				filtersV2Papers,
-				selectedV2Papers: [],
-				filtersV2Collections,
-				selectedV2Collections: [],
-				filtersV2Courses,
-				selectedV2Courses: [],
-				datasetIndex: 0,
-				toolIndex: 0,
-				projectIndex: 0,
-				paperIndex: 0,
-				personIndex: 0,
-				courseIndex: 0,
-				collectionIndex: 0,
-				datasetSort: '',
-				toolSort: '',
-				projectSort: '',
-				paperSort: '',
-				personSort: '',
-				courseSort: '',
-				collectionSort: '',
+				...initialState,
+				...filters,
 			}),
 			() => {
 				if (viewSaved.tab === 'Datasets') {
