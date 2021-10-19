@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Accordion, Card, Button, Form } from 'react-bootstrap';
 import SVGIcon from '../../../images/SVGIcon';
 import { ReactComponent as Calendar } from '../../../images/calendaricon.svg';
-
+import RelatedObject from '../../commonComponents/relatedObject/RelatedObject';
 import DatePicker from 'react-datepicker';
 
 const EditFormDataUse = data => {
@@ -14,6 +14,7 @@ const EditFormDataUse = data => {
 	const [keywords, setKeywords] = useState(true);
 	const [relatedResources, setRelatedResources] = useState(true);
 	const [valueChange, setValueChange] = useState('');
+	const [showRelatedObject, setShowRelatedObject] = useState(false);
 
 	const inputChange = e => {
 		setValueChange({
@@ -24,6 +25,10 @@ const EditFormDataUse = data => {
 
 	const onSubmitForm = () => {
 		console.log(valueChange);
+	};
+
+	const relatedResourcesComp = () => {
+		setShowRelatedObject(true);
 	};
 
 	return (
@@ -559,7 +564,8 @@ const EditFormDataUse = data => {
 							Link this to other papers, data uses, datasets, tools, courses and people. Resources must be added to the Gateway first.
 						</p>
 						<hr className='datause-border' />
-						<Button variant='outline-success' className='datatuse-add-resources dark-14'>
+						{showRelatedObject && <RelatedObject objectId={data && data.data && data.relatedObjects && data.data.relatedObjects._id} />}
+						<Button variant='outline-success' className='datatuse-add-resources dark-14' onClick={relatedResourcesComp}>
 							+ Add resources
 						</Button>
 					</Card.Body>
