@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Button, Tab, Tabs } from 'react-bootstrap';
+import { Container, Row, Col, Button, Tab, Tabs, Alert } from 'react-bootstrap';
 import Data from './MockData.json';
 import Table from './DataUseTable';
 import Pagination from './DataUsePagination';
 import Modal from './ArchiveModal';
+import SVGIcon from '../../images/SVGIcon';
+
 import './DataUse.scss';
 
 const DataUsePage = ({ userState }) => {
@@ -12,6 +14,7 @@ const DataUsePage = ({ userState }) => {
 	const [rowsPerPage] = useState(2);
 	const [showModal, setShowModal] = useState(false);
 	const [showUnarchiveModal, setShowUnarchiveModal] = useState(false);
+	const [showSuccessBanner, setShowSuccessBanner] = useState(false);
 
 	useEffect(() => {
 		setRow(Data);
@@ -54,6 +57,9 @@ const DataUsePage = ({ userState }) => {
 
 	return (
 		<Container>
+			<Alert variant='success' className='mt-3'>
+				<SVGIcon width='15px' height='15px' name='tick' fill={'#165724'} /> Your edits have been saved and are now visible on the gateway
+			</Alert>
 			<Row className='datause-card'>
 				<Col md={10}>
 					<Row>

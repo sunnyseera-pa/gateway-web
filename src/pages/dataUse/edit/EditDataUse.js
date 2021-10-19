@@ -113,7 +113,7 @@ const EditDataUse = props => {
 						</Button>
 					</ActionBar>
 				)}
-				{showModal && <SaveModal show={showSaveModal} hide={hideSaveModal} />}
+				{showModal && <SaveModal savedEdit={true} id={props.match.params.datauseID} show={showSaveModal} hide={hideSaveModal} />}
 			</div>
 		</Sentry.ErrorBoundary>
 	);
