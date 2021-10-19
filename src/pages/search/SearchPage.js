@@ -1451,21 +1451,7 @@ class SearchPage extends React.Component {
 	}
 
 	getShowSort(key) {
-		const {
-			summary: { datasetCount = 0, toolCount = 0, projectCount = 0, paperCount = 0, personCount = 0, courseCount = 0, collectionCount = 0 },
-		} = this.state;
-
-		let showSort = true;
-
-		if ((key === '' || key === 'Datasets') && datasetCount === 0) showSort = false;
-		if (key === 'Tools' && toolCount === 0) showSort = false;
-		if (key === 'Projects' && projectCount === 0) showSort = false;
-		if (key === 'Papers' && paperCount === 0) showSort = false;
-		if (key === 'People' && personCount === 0) showSort = false;
-		if (key === 'Courses' && courseCount === 0) showSort = false;
-		if (key === 'Collections' && collectionCount === 0) showSort = false;
-
-		return showSort;
+		return this.getCountByKey(key) > 0;
 	}
 
 	getFiltersSelectionProps(preferenceFilters) {
@@ -1488,7 +1474,6 @@ class SearchPage extends React.Component {
 			collectionData,
 			userState,
 			isLoading,
-			isResultsLoading,
 			datasetIndex,
 			toolIndex,
 			projectIndex,
