@@ -167,14 +167,14 @@ const DataUsePage = React.forwardRef(({ onClickDataUseUpload, team }, ref) => {
 							(team !== 'user' && team !== 'admin' && tabName === 'Archived' && tabName + ' (' + archived.length + ')')
 						}>
 						{(team === 'user' || (team !== 'user' && team !== 'admin')) && tabName === 'Active' && (
-							<Table data={currentActive} active={true} team={team} showArchiveModal={onClickArchive} />
+							<Table data={currentActive} active={true} team={team} onClickArchive={onClickArchive} />
 						)}
 						{(team === 'admin' || (team !== 'user' && team !== 'admin')) && tabName === 'Pending approval' && (
 							<Table team={team} data={currentPending} pending={true} onClickApprove={onClickApprove} onClickReject={onClickReject} />
 						)}
 						{team !== 'user' && team !== 'admin' && tabName === 'Rejected' && <Table team={team} data={currentRejected} />}
 						{team !== 'user' && team !== 'admin' && tabName === 'Archived' && (
-							<Table team={team} data={currentArchived} archived={true} showUnarchiveModal={onClickUnarchive} />
+							<Table team={team} data={currentArchived} archived={true} onClickUnarchive={onClickUnarchive} />
 						)}
 
 						<Pagination
