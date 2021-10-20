@@ -72,6 +72,7 @@ const AddEditCohortPage = props => {
 		if (radioButtonValue === 'createNew') {
 			getCohortFromDb('createNew');
 			setChangeLogValue('');
+			setSelectedCohort('');
 		}
 	}, [radioButtonValue]);
 

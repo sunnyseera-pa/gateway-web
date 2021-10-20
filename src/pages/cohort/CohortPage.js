@@ -18,8 +18,10 @@ import { ReactComponent as InfoFillSVG } from '../../images/infofill.svg';
 import { ReactComponent as CycleSVG } from '../../images/cycle.svg';
 import OmopCard from './OmopCard';
 import axios from 'axios';
-import { has, isEmpty } from 'lodash';
+import { has, isEmpty, isNil } from 'lodash';
 import { CohortDatasetPublisherCard } from './CohortDatasetPublisherCard';
+import NotFound from '../commonComponents/NotFound';
+import RelatedObject from '../commonComponents/relatedObject/RelatedObject';
 let baseURL = require('../commonComponents/BaseURL').getURL();
 
 export const CohortPage = props => {
@@ -66,7 +68,9 @@ export const CohortPage = props => {
 		});
 
 		setShowOldVersionBanner(
-			newCohortData.activeflag === 'archive' && newVersionHistory.length > 1 && newVersionHistory[0].version > newCohortData.version
+			newCohortData.activeflag === 'archived_version' &&
+				newVersionHistory.length > 1 &&
+				newVersionHistory[0].version > newCohortData.version
 		);
 
 		// Get datasets information for datasets tab
@@ -137,14 +141,14 @@ export const CohortPage = props => {
 					e.stopPropagation();
 					window.location.href = `/`;
 				}}>
-				<span className='versionNumber'>{versionNumber.toFixed(1)}</span>
+				<span className='versionNumber'>{!isNil(versionNumber) ? versionNumber.toFixed(1) : ''}</span>
 				{changeLog}
 			</a>
 		);
 	};
 
 	const [flagClosed, setFlagClosed] = useState(true);
-	const { name, description, counter, filterCriteria, persons, totalResultCount, numberOfDatasets } = cohortData;
+	const { name, description, counter, filterCriteria, persons, totalResultCount, numberOfDatasets, relatedObjects } = cohortData;
 	if (isLoading) {
 		return (
 			<Container>
@@ -347,7 +351,7 @@ export const CohortPage = props => {
 										</Row>
 									</Tab>
 
-									<Tab eventKey='Datasets' title='Datasets (3)'>
+									<Tab eventKey='Datasets' title={`Datasets (${numberOfDatasets})`}>
 										<Row>
 											<Col sm={12} lg={12}>
 												<div className='rectangle'>
@@ -412,7 +416,22 @@ export const CohortPage = props => {
 									<Tab eventKey='Discussion' title='Discussions'>
 										<DiscourseTopic toolId='' topicId='' userState={userState} onUpdateDiscoursePostCount='' />
 									</Tab>
-									<Tab eventKey='Related resources' title='Related resources'></Tab>
+									<Tab eventKey='Related resources' title={`Related resources (${relatedObjects.length})`}>
+										{relatedObjects.length <= 0 ? (
+											<NotFound word='related resources' />
+										) : (
+											relatedObjects.map(object => (
+												<RelatedObject
+													relatedObject={object}
+													objectType={object.objectType}
+													activeLink={true}
+													showRelationshipAnswer={true}
+													datasetPublisher={object.datasetPublisher}
+													datasetLogo={object.datasetLogo}
+												/>
+											))
+										)}
+									</Tab>
 								</Tabs>
 							</div>
 						</Col>
