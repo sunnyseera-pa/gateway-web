@@ -8,6 +8,7 @@ import { NotificationContainer } from 'react-notifications';
 import SVGIcon from '../../images/SVGIcon';
 import googleAnalytics from '../../tracking';
 import service from '../../services/search';
+import serviceAuth from '../../services/auth';
 import AdvancedSearchModal from '../commonComponents/AdvancedSearchModal/AdvancedSearchModal';
 import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
 import DataUtilityWizardModal from '../commonComponents/DataUtilityWizard/DataUtilityWizardModal';
@@ -243,7 +244,7 @@ class SearchPage extends React.Component {
 			}
 			// 5. if logout in params and is true redirect to logout and reload route
 			else if (this.state.userState[0].loggedIn && queryParams.logout === 'true') {
-				axios.get(baseURL + '/api/v1/auth/logout').then(res => {
+				serviceAuth.getLogout().then(() => {
 					window.location.reload();
 				});
 			}
