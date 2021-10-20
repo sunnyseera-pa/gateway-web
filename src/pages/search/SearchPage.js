@@ -612,9 +612,9 @@ class SearchPage extends React.Component {
 	};
 
 	handlePagination = (type = '', page = 0) => {
-		console.log('TYPE', type, page);
 		if (!_.isEmpty(type)) {
 			googleAnalytics.recordVirtualPageView(`${_.startCase(_.toLower(type))}s results page ${page / 40 + 1}`);
+
 			this.setState({ [`${type}Index`]: page, isResultsLoading: true }, () => {
 				window.scrollTo(0, 0);
 				this.doSearchCall();
@@ -1170,48 +1170,9 @@ class SearchPage extends React.Component {
 	};
 
 	getPreference(key) {
-		let {
-			datasetSort,
-			toolSort,
-			projectSort,
-			paperSort,
-			personSort,
-			collectionSort,
-			selectedV2Datasets,
-			selectedV2Tools,
-			selectedV2Projects,
-			selectedV2Papers,
-			selectedV2Courses,
-			selectedV2Collections,
-		} = this.state;
-
-		let preferenceFilters = {};
-		let preferenceSort = '';
-
-		if (key === 'Datasets') {
-			preferenceFilters = selectedV2Datasets;
-			preferenceSort = datasetSort;
-		} else if (key === 'Tools') {
-			preferenceFilters = selectedV2Tools;
-			preferenceSort = toolSort;
-		} else if (key === 'Projects') {
-			preferenceFilters = selectedV2Projects;
-			preferenceSort = projectSort;
-		} else if (key === 'Paper') {
-			preferenceFilters = selectedV2Papers;
-			preferenceSort = paperSort;
-		} else if (key === 'Collections') {
-			preferenceFilters = selectedV2Collections;
-			preferenceSort = collectionSort;
-		} else if (key === 'Courses') {
-			preferenceFilters = selectedV2Courses;
-		} else if (key === 'People') {
-			preferenceSort = personSort;
-		}
-
 		return {
-			preferenceFilters,
-			preferenceSort,
+			preferenceFilters: this.state[`selectedV2${key}`],
+			preferenceSort: this.state[`${typeMapper[key]}Sort`],
 		};
 	}
 
