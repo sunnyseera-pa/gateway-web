@@ -1,5 +1,4 @@
 import React from 'react';
-import axios from 'axios';
 import _ from 'lodash';
 import moment from 'moment';
 import { Row, Col, Button, Alert } from 'react-bootstrap';
@@ -8,9 +7,9 @@ import SVGIcon from '../../../images/SVGIcon';
 import { ReactComponent as CalendarSvg } from '../../../images/calendaricon.svg';
 import Dataset from './Dataset/Dataset';
 import { stripMarkdown } from '../../../utils/GeneralHelper.util';
+import relatedObjectService from '../../../services/related-object';
 import './RelatedObject.scss';
 
-var baseURL = require('../BaseURL').getURL();
 var cmsURL = require('../BaseURL').getCMSURL();
 const env = require('../BaseURL').getURLEnv();
 
@@ -36,6 +35,7 @@ class RelatedObject extends React.Component {
 		if (props.inCollection) {
 			this.state.inCollection = props.inCollection;
 		}
+		// what the hell is going on here
 		if (props.data) {
 			this.state.isCohortDiscovery = props.data.isCohortDiscovery || false;
 			this.state.data = props.data || [];
@@ -43,10 +43,10 @@ class RelatedObject extends React.Component {
 		} else if (props.objectId) {
 			this.state.relatedObject = props.relatedObject;
 			this.state.reason = props.reason;
-			this.getRelatedObjectFromDb(props.objectId, props.objectType);
+			this.getRelatedObjectFromApi(props.objectId, props.objectType);
 		} else {
 			this.state.relatedObject = props.relatedObject;
-			this.getRelatedObjectFromDb(this.state.relatedObject.objectId, this.state.relatedObject.objectType);
+			this.getRelatedObjectFromApi(this.state.relatedObject.objectId, this.state.relatedObject.objectType);
 		}
 	}
 
@@ -68,22 +68,22 @@ class RelatedObject extends React.Component {
 			reason: reason,
 		});
 
-		this.getRelatedObjectFromDb(id, type);
+		this.getRelatedObjectFromApi(id, type);
 	};
 
-	getRelatedObjectFromDb = (id, type) => {
+	getRelatedObjectFromApi = (id, type) => {
 		//need to handle error if no id is found
 		this.setState({ isLoading: true });
 
 		if (type === 'course') {
-			axios.get(baseURL + '/api/v1/relatedobject/course/' + id).then(res => {
+			relatedObjectService.getRelatedObjectForCourseRequest(id).then(res => {
 				this.setState({
 					data: res.data.data[0],
 					isLoading: false,
 				});
 			});
 		} else {
-			axios.get(baseURL + '/api/v1/relatedobject/' + id).then(res => {
+			relatedObjectService.getRelatedObjectRequest(id).then(res => {
 				this.setState({
 					data: res.data.data[0],
 					isCohortDiscovery: res.data.data[0].isCohortDiscovery || false,
@@ -169,7 +169,7 @@ class RelatedObject extends React.Component {
 						{(() => {
 							if (data.type === 'tool') {
 								return (
-									<Row className='noMargin'>
+									<Row data-testid='related-tool-object' className='noMargin'>
 										<Col sm={10} lg={10} className='pad-left-24'>
 											{activeLink === true ? (
 												<a className='purple-bold-16' style={{ cursor: 'pointer' }} href={'/tool/' + data.id}>
@@ -351,7 +351,7 @@ class RelatedObject extends React.Component {
 								);
 							} else if (data.type === 'project') {
 								return (
-									<Row className='noMargin'>
+									<Row data-testid='related-project-object' className='noMargin'>
 										<Col sm={10} lg={10} className='pad-left-24'>
 											{activeLink === true ? (
 												<a className='purple-bold-16' style={{ cursor: 'pointer' }} href={'/project/' + data.id}>
@@ -493,7 +493,7 @@ class RelatedObject extends React.Component {
 								);
 							} else if (data.type === 'paper') {
 								return (
-									<Row data-test-id='related-paper-object' className='noMargin'>
+									<Row data-testid='related-paper-object' className='noMargin'>
 										<Col sm={10} lg={10} className='pad-left-24'>
 											{activeLink === true ? (
 												<a className='purple-bold-16' style={{ cursor: 'pointer' }} href={'/paper/' + data.id}>
@@ -597,7 +597,7 @@ class RelatedObject extends React.Component {
 								);
 							} else if (data.type === 'person') {
 								return (
-									<Row className='noMargin pad-left-24'>
+									<Row data-testid='related-person-object' className='noMargin pad-left-24'>
 										<Col className='iconHolder noPadding widthAuto'>
 											<div class='avatar-circle'>
 												<span class='initials'>
@@ -635,7 +635,7 @@ class RelatedObject extends React.Component {
 								);
 							} else if (data.type === 'course') {
 								return (
-									<Row className='noMargin'>
+									<Row data-testid='related-course-object' className='noMargin'>
 										<Col sm={10} lg={10} className='pad-left-24'>
 											{activeLink === true ? (
 												<a className='purple-bold-16' style={{ cursor: 'pointer' }} href={'/course/' + data.id}>
