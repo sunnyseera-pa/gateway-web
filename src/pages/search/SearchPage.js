@@ -850,6 +850,7 @@ class SearchPage extends React.Component {
 		// 3. set state and call search
 		const filtersV2Entity = `filtersV2${this.state.key}`;
 		const selectedV2Entity = `selectedV2${this.state.key}`;
+
 		this.setState({ [filtersV2Entity]: filtersV2, [selectedV2Entity]: [], isResultsLoading: true }, () => {
 			this.doSearchCall();
 		});
@@ -1078,9 +1079,12 @@ class SearchPage extends React.Component {
 					// 8. set state
 					const filtersV2Entity = `filtersV2${this.state.key}`;
 					const selectedV2Entity = `selectedV2${this.state.key}`;
-					this.setState({ [filtersV2Entity]: filtersV2, [selectedV2Entity]: selectedV2, isResultsLoading: true }, () => {
+					const entityIndex = `${typeMapper[this.state.key]}Index`;
+
+					this.setState({ [filtersV2Entity]: filtersV2, [selectedV2Entity]: selectedV2, [entityIndex]: 0, isResultsLoading: true }, () => {
 						this.doSearchCall();
 					});
+
 					googleAnalytics.recordEvent(
 						'Datasets',
 						`${checkValue ? 'Applied' : 'Removed'} ${parentNode.label} filter ${
