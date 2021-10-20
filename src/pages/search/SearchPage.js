@@ -440,99 +440,14 @@ class SearchPage extends React.Component {
 		}
 	};
 
-	updateOnFilter = () => {
-		this.setState(
-			{ datasetIndex: 0, toolIndex: 0, projectIndex: 0, paperIndex: 0, personIndex: 0, courseIndex: 0, isResultsLoading: true },
-			() => {
-				this.doSearchCall();
-			}
-		);
-	};
+	doSearchQuery(textSearch, searchURL) {
+		const { search, key } = this.state;
 
-	/**
-	 * ClearFilter V1 function
-	 */
-	clearFilter = (filter, filterGroup) => {
-		if (filter === 'All') {
-			this.clearFilterStates();
-		} else {
-			this.state[filterGroup].splice(this.state[filterGroup].indexOf(filter), 1);
-		}
-
-		this.setState({ isResultsLoading: true }, () => {
-			this.doSearchCall();
-		});
-	};
-
-	doSearchCall(skipHistory, textSearch = '') {
-		let searchURL = '';
-		let { userState } = this.state;
-
-		this.toggleDataUtilityBanner(false);
-
-		// 1. build search object from list of selected fitlers v2 only
-		let searchObj = {
-			...this.buildSearchObj(this.state.selectedV2Datasets),
-			...this.buildSearchObj(this.state.selectedV2Tools),
-			...this.buildSearchObj(this.state.selectedV2Projects),
-			...this.buildSearchObj(this.state.selectedV2Papers),
-			...this.buildSearchObj(this.state.selectedV2Courses),
-			...this.buildSearchObj(this.state.selectedV2Collections),
-		};
-		// 2. dynamically build the searchUrl v2 only
-		searchURL = this.buildSearchUrl(searchObj);
-
-		indexNames.concat(sortNames).forEach(key => {
-			const n = this.state[key];
-			if (!!n) searchURL += `&${key}=${encodeURIComponent(n)}`;
-		});
-
-		// login status handler
-		if (userState[0].loggedIn === false) {
-			let values = queryString.parse(window.location.search);
-			if (values.showLogin === 'true' && values.loginReferrer && values.loginReferrer !== '') {
-				searchURL += '&loginReferrer=' + encodeURIComponent(values.loginReferrer);
-			} else if (values.showLogin === 'true' && document.referrer !== '') {
-				searchURL += '&loginReferrer=' + encodeURIComponent(document.referrer);
-			}
-		}
-
-		if (!skipHistory) {
-			if (this.state.key) searchURL += '&tab=' + this.state.key;
-
-			this.props.history.push(
-				`${window.location.pathname}?search=${encodeURIComponent(textSearch ? textSearch : this.state.search)}` + searchURL
-			);
-		}
-
-		if (this.state.key !== 'People') {
-			// remove once full migration to v2 filters for all other entities 'Tools, Projects, Courses and Papers'
-
-			service
-				.getFilterBy(`${encodeURIComponent(textSearch ? textSearch : this.state.search)}${searchURL}`)
-				.then(res => {
-					const filters = this.getFilterState(res);
-
-					if (filterNames.includes(this.state.key)) {
-						const filterKey = `filtersV2${this.state.key}`;
-						const currentFilters = this.state[filterKey] || [];
-						this.setState({ [filterKey]: this.setHighlightedFilters(filters, [...currentFilters]) });
-					} else {
-						this.setState({ ...filters });
-					}
-				})
-				.catch(err => {
-					console.error(err.message);
-				});
-		}
-		// search call brings back search results and now filters highlighting for v2
 		service
-			.getSearch(`${encodeURIComponent(textSearch ? textSearch : this.state.search)}${searchURL}`)
+			.getSearch(`${encodeURIComponent(textSearch ? textSearch : search)}${searchURL}`)
 			.then(res => {
-				// get the correct entity type from our mapper via the selected tab ie..'Dataset, Tools'
-				const entityType = typeMapper[`${this.state.key}`];
-				// pull out the dynamic key : set data and filters
-				let {
+				const entityType = typeMapper[key];
+				const {
 					[`${entityType}Results`]: { data = [] },
 					summary = [],
 				} = res.data;
@@ -554,6 +469,86 @@ class SearchPage extends React.Component {
 				console.error(err.message);
 			});
 	}
+
+	doFilterQuery(textSearch, searchURL) {
+		const { search, key } = this.state;
+
+		service
+			.getFilterBy(`${encodeURIComponent(textSearch ? textSearch : search)}${searchURL}`)
+			.then(res => {
+				const filters = this.getFilterState(res);
+
+				if (filterNames.includes(key)) {
+					const filterKey = `filtersV2${key}`;
+					const currentFilters = this.state[filterKey] || [];
+					this.setState({ [filterKey]: this.setHighlightedFilters(filters, [...currentFilters]) });
+				} else {
+					this.setState({ ...filters });
+				}
+			})
+			.catch(err => {
+				console.error(err.message);
+			});
+	}
+
+	getLoginReferrer() {
+		const { userState } = this.state;
+		const values = queryString.parse(window.location.search);
+		let url = '';
+
+		if (values && values.showLogin === 'true' && userState[0].loggedIn === false) {
+			if (!!values.loginReferrer) {
+				url = '&loginReferrer=' + encodeURIComponent(values.loginReferrer);
+			} else if (!!document.referrer) {
+				url = '&loginReferrer=' + encodeURIComponent(document.referrer);
+			}
+		}
+
+		return url;
+	}
+
+	doSearchCall(skipHistory, textSearch = '') {
+		let searchURL = '';
+
+		this.toggleDataUtilityBanner(false);
+
+		// 1. build search object from list of selected fitlers v2 only
+		let searchObj = {
+			...this.buildSearchObj(this.state.selectedV2Datasets),
+			...this.buildSearchObj(this.state.selectedV2Tools),
+			...this.buildSearchObj(this.state.selectedV2Projects),
+			...this.buildSearchObj(this.state.selectedV2Papers),
+			...this.buildSearchObj(this.state.selectedV2Courses),
+			...this.buildSearchObj(this.state.selectedV2Collections),
+		};
+		// 2. dynamically build the searchUrl v2 only
+		searchURL = this.buildSearchUrl(searchObj);
+
+		indexNames.concat(sortNames).forEach(key => {
+			const n = this.state[key];
+			if (!!n) searchURL += `&${key}=${encodeURIComponent(n)}`;
+		});
+
+		// login status handler
+		searchURL += this.getLoginReferrer();
+
+		if (!skipHistory) {
+			if (this.state.key) searchURL += '&tab=' + this.state.key;
+
+			this.props.history.push(
+				`${window.location.pathname}?search=${encodeURIComponent(textSearch ? textSearch : this.state.search)}` + searchURL
+			);
+		}
+
+		if (this.state.key !== 'People') {
+			// remove once full migration to v2 filters for all other entities 'Tools, Projects, Courses and Papers'
+			this.doFilterQuery(textSearch, searchURL);
+		}
+
+		// search call brings back search results and now filters highlighting for v2
+		this.doSearchQuery(textSearch, searchURL);
+	}
+
 	/**
 	 * GetFilterState
 	 *
@@ -1350,8 +1345,7 @@ class SearchPage extends React.Component {
 						<Container className={this.state.saveSuccess && !this.state.showSavedModal && 'container-saved-preference-banner'}>
 							<Row className='filters filter-save'>
 								<Col className='title' lg={4}>
-									Showing {this.getCountByKey(key)}
-									results {this.state.search != '' && `for '${this.state.search}'`}
+									Showing {this.getCountByKey(key)} results {this.state.search != '' && `for '${this.state.search}'`}
 								</Col>
 								<Col lg={8} className='saved-buttons'>
 									{this.state.saveSuccess ? (
