@@ -4,6 +4,7 @@ exports[`Given the Dataset component When it is rendered Then matches the previo
 <div>
   <div
     class="noMargin row"
+    data-testid="related-dataset-object"
   >
     <div
       class="pad-left-24 col-lg-10 col-sm-10"

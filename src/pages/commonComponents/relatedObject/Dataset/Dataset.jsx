@@ -81,7 +81,7 @@ const Dataset = ({
 	const phenotypesSearched = data.datasetfields.phenotypes.filter(phenotype => phenotype.name.toLowerCase() === searchTerm.toLowerCase());
 	return (
 		<>
-			<Row className='noMargin'>
+			<Row data-testid='related-dataset-object' className='noMargin'>
 				<Col sm={10} lg={10} className='pad-left-24'>
 					<Title
 						id={data.pid}
