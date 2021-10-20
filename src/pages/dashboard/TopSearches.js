@@ -46,7 +46,9 @@ class TopSearches extends React.Component {
 								(data.courses || 0) +
 								' courses, ' +
 								(data.papers || 0) +
-								' papers'}
+								' papers, ' +
+								(data.cohorts || 0) +
+								' cohorts'}
 						</span>
 					</Col>
 				</Row>
