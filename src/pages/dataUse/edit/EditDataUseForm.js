@@ -44,6 +44,8 @@ const EditFormDataUse = data => {
 		setShowRelatedObject(true);
 	};
 
+	console.log(data.data.relatedObjects);
+
 	return (
 		<Accordion defaultActiveKey='0' className='datause-accordion-header'>
 			<Card className='edit-datause-card'>
@@ -594,7 +596,42 @@ const EditFormDataUse = data => {
 							Link this to other papers, data uses, datasets, tools, courses and people. Resources must be added to the Gateway first.
 						</p>
 						<hr className='datause-border' />
-						{showRelatedObject && <RelatedObject objectId={data && data.data && data.relatedObjects && data.data.relatedObjects._id} />}
+						{/*{props.relatedObjects.map(object => {
+									return (
+										<div className='relatedObjectRectangle'>
+											<RelatedObject
+												showRelationshipQuestion={true} 
+												objectId={object.objectId}
+												pid={object.pid}
+												objectType={object.objectType}
+												doRemoveObject={props.doRemoveObject}
+												doUpdateReason={updateReason}
+												reason={object.reason}
+												didDelete={props.didDelete}
+												updateDeleteFlag={props.updateDeleteFlag}
+												inCollection={true}
+											/>
+										</div>
+									);
+								})} */}
+						{showRelatedObject &&
+							data.data.relatedObjects.map(object => {
+								return (
+									<div className='relatedObjectRectangle'>
+										<RelatedObject
+											showRelationshipQuestion={true}
+											objectId={object.objectId}
+											pid={object.pid}
+											objectType={object.objectType}
+											//doRemoveObject={doRemoveObject}
+											//doUpdateReason={updateReason}
+											reason={object.reason}
+											//didDelete={didDelete}
+											//updateDeleteFlag={updateDeleteFlag}
+										/>
+									</div>
+								);
+							})}
 						<Button variant='outline-success' className='datatuse-add-resources dark-14' onClick={relatedResourcesComp}>
 							+ Add resources
 						</Button>
