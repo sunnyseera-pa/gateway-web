@@ -1,6 +1,7 @@
 import React from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import { ReactComponent as CloseButtonSvg } from '../../../images/close-alt.svg';
+import DarHelperUtil from '../../../utils/DarHelper.util';
 import './DataUseModals.scss';
 
 const DataUseApproveModal = ({ isVisible, toggleModal, onConfirm }) => {
@@ -17,7 +18,10 @@ const DataUseApproveModal = ({ isVisible, toggleModal, onConfirm }) => {
 						<Button variant='white' className='techDetailButton mr-2' onClick={toggleModal}>
 							No, nevermind
 						</Button>
-						<Button variant='primary' className='white-14-semibold' onClick={() => onConfirm('active')}>
+						<Button
+							variant='primary'
+							className='white-14-semibold'
+							onClick={() => onConfirm(DarHelperUtil.dataUseRegisterStatus.INREVIEW, DarHelperUtil.dataUseRegisterStatus.ACTIVE)}>
 							Approve
 						</Button>
 					</div>

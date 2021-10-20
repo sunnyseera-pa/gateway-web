@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import { ReactComponent as CloseButtonSvg } from '../../../images/close-alt.svg';
+import DarHelperUtil from '../../../utils/DarHelper.util';
 import './DataUseModals.scss';
 
 const DataUseRejectModal = ({ isVisible, toggleModal, onConfirm }) => {
@@ -55,7 +56,9 @@ const DataUseRejectModal = ({ isVisible, toggleModal, onConfirm }) => {
 							disabled={!isValid}
 							variant='primary'
 							className='white-14-semibold'
-							onClick={() => onConfirm('rejected', rejectionReason)}>
+							onClick={() =>
+								onConfirm(DarHelperUtil.dataUseRegisterStatus.INREVIEW, DarHelperUtil.dataUseRegisterStatus.REJECTED, rejectionReason)
+							}>
 							Reject and send message
 						</Button>
 					</div>

@@ -9,6 +9,7 @@ import './DataUse.scss';
 import SVGIcon from '../../images/SVGIcon';
 import DataUseApproveModal from './modals/DataUseApproveModal';
 import DataUseRejectModal from './modals/DataUseRejectModal';
+import DarHelperUtil from './../../utils/DarHelper.util';
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
 const DataUsePage = React.forwardRef(({ onClickDataUseUpload, team }, ref) => {
@@ -77,29 +78,20 @@ const DataUsePage = React.forwardRef(({ onClickDataUseUpload, team }, ref) => {
 		}, 5000);
 	};
 
-	const updataDataUseStatus = (newStatus, rejectionReason = '') => {
+	const updataDataUseStatus = (oldStatus, newStatus, rejectionReason = '') => {
 		axios.patch(baseURL + '/api/v2/data-use-registers/' + dataUseId, { activeflag: newStatus, rejectionReason }).then(res => {
-			switch (newStatus) {
-				case 'archived': {
-					showAlert('Your data use have been successfully archived.');
-					toggleArchiveModal();
-					break;
-				}
-				case 'unarchive': {
-					showAlert('Your data use have been successfully unarchived.');
-					toggleUnarchiveModal();
-					break;
-				}
-				case 'active': {
-					showAlert('Your data use have been successfully approved.');
-					toggleApproveModal();
-					break;
-				}
-				case 'rejected': {
-					showAlert('Your data use have been successfully rejected.');
-					toggleRejectModal();
-					break;
-				}
+			if (oldStatus === DarHelperUtil.dataUseRegisterStatus.INREVIEW && newStatus === DarHelperUtil.dataUseRegisterStatus.ACTIVE) {
+				showAlert('Your data use have been successfully approved.');
+				toggleApproveModal();
+			} else if (oldStatus === DarHelperUtil.dataUseRegisterStatus.ARCHIVED && newStatus === DarHelperUtil.dataUseRegisterStatus.ACTIVE) {
+				showAlert('Your data use have been successfully unarchived.');
+				toggleUnarchiveModal();
+			} else if (newStatus === DarHelperUtil.dataUseRegisterStatus.REJECTED) {
+				showAlert('Your data use have been successfully rejected.');
+				toggleRejectModal();
+			} else if (newStatus === DarHelperUtil.dataUseRegisterStatus.ARCHIVED) {
+				showAlert('Your data use have been successfully archived.');
+				toggleArchiveModal();
 			}
 		});
 	};
