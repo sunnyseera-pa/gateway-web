@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { Table, Dropdown } from 'react-bootstrap';
 import { isUndefined } from 'lodash';
 
-const DataUseTable = ({ team, data, active, pending, archived, onClickArchive, onClickUnarchive }) => {
+const DataUseTable = ({ team, data, active, pending, archived, onClickArchive, onClickUnarchive, onClickApprove, onClickReject }) => {
 	const renderDatasets = dataUse => {
 		const datasets = dataUse.datasetTitles.map((datasetTitle, index) => {
 			const datasetId = dataUse.datasetIds[index];
@@ -64,8 +64,8 @@ const DataUseTable = ({ team, data, active, pending, archived, onClickArchive, o
 											Actions
 										</Dropdown.Toggle>
 										<Dropdown.Menu>
-											<Dropdown.Item href='#/action-1'>Approve</Dropdown.Item>
-											<Dropdown.Item href='#/action-2'>Reject</Dropdown.Item>
+											<Dropdown.Item onClick={() => onClickApprove(dataUse._id)}>Approve</Dropdown.Item>
+											<Dropdown.Item onClick={() => onClickReject(dataUse._id)}>Reject</Dropdown.Item>
 										</Dropdown.Menu>
 									</Dropdown>
 								)}

@@ -7,6 +7,8 @@ import Pagination from './DataUsePagination';
 import ArchiveModal from './ArchiveModal';
 import './DataUse.scss';
 import SVGIcon from '../../images/SVGIcon';
+import DataUseApproveModal from './modals/DataUseApproveModal';
+import DataUseRejectModal from './modals/DataUseRejectModal';
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
 const DataUsePage = React.forwardRef(({ onClickDataUseUpload, team }, ref) => {
@@ -19,6 +21,8 @@ const DataUsePage = React.forwardRef(({ onClickDataUseUpload, team }, ref) => {
 	const [rowsPerPage] = useState(40);
 	const [alert, setAlert] = useState('');
 	const [dataUseId, setDataUseId] = useState(-1);
+	const [showApproveModal, setShowApproveModal] = useState(false);
+	const [showRejectModal, setShowRejectModal] = useState(false);
 	const [showArchiveModal, setShowArchiveModal] = useState(false);
 	const [showUnarchiveModal, setShowUnarchiveModal] = useState(false);
 
@@ -40,6 +44,24 @@ const DataUsePage = React.forwardRef(({ onClickDataUseUpload, team }, ref) => {
 		setDataUseId(dataUseId);
 	};
 
+	const onClickApprove = dataUseId => {
+		toggleApproveModal();
+		setDataUseId(dataUseId);
+	};
+
+	const onClickReject = dataUseId => {
+		toggleRejectModal();
+		setDataUseId(dataUseId);
+	};
+
+	const toggleApproveModal = () => {
+		setShowApproveModal(!showApproveModal);
+	};
+
+	const toggleRejectModal = () => {
+		setShowRejectModal(!showRejectModal);
+	};
+
 	const toggleArchiveModal = () => {
 		setShowArchiveModal(!showArchiveModal);
 	};
@@ -55,14 +77,29 @@ const DataUsePage = React.forwardRef(({ onClickDataUseUpload, team }, ref) => {
 		}, 5000);
 	};
 
-	const updataDataUseStatus = newStatus => {
-		axios.patch(baseURL + '/api/v2/data-use-registers/' + dataUseId, { activeflag: newStatus }).then(res => {
-			if (newStatus === 'archived') {
-				showAlert('Your data use have been successfully archived.');
-				toggleArchiveModal();
-			} else {
-				showAlert('Your data use have been successfully unarchived.');
-				toggleUnarchiveModal();
+	const updataDataUseStatus = (newStatus, rejectionReason = '') => {
+		axios.patch(baseURL + '/api/v2/data-use-registers/' + dataUseId, { activeflag: newStatus, rejectionReason }).then(res => {
+			switch (newStatus) {
+				case 'archived': {
+					showAlert('Your data use have been successfully archived.');
+					toggleArchiveModal();
+					break;
+				}
+				case 'unarchive': {
+					showAlert('Your data use have been successfully unarchived.');
+					toggleUnarchiveModal();
+					break;
+				}
+				case 'active': {
+					showAlert('Your data use have been successfully approved.');
+					toggleApproveModal();
+					break;
+				}
+				case 'rejected': {
+					showAlert('Your data use have been successfully rejected.');
+					toggleRejectModal();
+					break;
+				}
 			}
 		});
 	};
@@ -130,14 +167,14 @@ const DataUsePage = React.forwardRef(({ onClickDataUseUpload, team }, ref) => {
 							(team !== 'user' && team !== 'admin' && tabName === 'Archived' && tabName + ' (' + archived.length + ')')
 						}>
 						{(team === 'user' || (team !== 'user' && team !== 'admin')) && tabName === 'Active' && (
-							<Table data={currentActive} active={true} team={team} onClickArchive={onClickArchive} />
+							<Table data={currentActive} active={true} team={team} showArchiveModal={onClickArchive} />
 						)}
 						{(team === 'admin' || (team !== 'user' && team !== 'admin')) && tabName === 'Pending approval' && (
-							<Table team={team} data={currentPending} pending={true} />
+							<Table team={team} data={currentPending} pending={true} onClickApprove={onClickApprove} onClickReject={onClickReject} />
 						)}
 						{team !== 'user' && team !== 'admin' && tabName === 'Rejected' && <Table team={team} data={currentRejected} />}
 						{team !== 'user' && team !== 'admin' && tabName === 'Archived' && (
-							<Table team={team} data={currentArchived} archived={true} onClickUnarchive={onClickUnarchive} />
+							<Table team={team} data={currentArchived} archived={true} showUnarchiveModal={onClickUnarchive} />
 						)}
 
 						<Pagination
@@ -158,11 +195,18 @@ const DataUsePage = React.forwardRef(({ onClickDataUseUpload, team }, ref) => {
 					</Tab>
 				))}
 			</Tabs>
+
 			{showArchiveModal && (
 				<ArchiveModal archive={true} onConfirm={updataDataUseStatus} isVisible={showArchiveModal} toggleModal={toggleArchiveModal} />
 			)}
 			{showUnarchiveModal && (
 				<ArchiveModal archive={false} onConfirm={updataDataUseStatus} isVisible={showUnarchiveModal} toggleModal={toggleUnarchiveModal} />
+			)}
+			{showApproveModal && (
+				<DataUseApproveModal onConfirm={updataDataUseStatus} isVisible={showApproveModal} toggleModal={toggleApproveModal} />
+			)}
+			{showRejectModal && (
+				<DataUseRejectModal onConfirm={updataDataUseStatus} isVisible={showRejectModal} toggleModal={toggleRejectModal} />
 			)}
 		</Container>
 	);
