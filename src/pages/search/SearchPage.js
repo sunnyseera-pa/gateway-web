@@ -215,10 +215,9 @@ class SearchPage extends React.Component {
 	async componentDidMount() {
 		// 1. fires on first time in or page is refreshed/url loaded / has search location
 		if (!!window.location.search) {
-			console.log(window.location);
-
 			const urlParams = new URLSearchParams(window.location.search);
 			const tab = urlParams.get('tab');
+
 			if (tab) {
 				this.setState({ key: tab });
 			}
@@ -589,11 +588,13 @@ class SearchPage extends React.Component {
 		if (this.state.key !== 'People') {
 			// remove once full migration to v2 filters for all other entities 'Tools, Projects, Courses and Papers'
 			const entityType = typeMapper[`${this.state.key}`];
+
 			axios
 				.get(`${baseURL}/api/v1/search/filter?search=${encodeURIComponent(textSearch ? textSearch : this.state.search)}${searchURL}`)
 				.then(res => {
 					let filters = this.getFilterState(res);
 					// test the type and set relevant state
+
 					if (entityType === 'dataset') {
 						let filtersV2DatasetsState = this.state.filtersV2Datasets || [];
 						filtersDatasetsV2 = this.setHighlightedFilters(filters, [...filtersV2DatasetsState]);
@@ -714,7 +715,6 @@ class SearchPage extends React.Component {
 	};
 
 	handlePagination = (type = '', page = 0) => {
-		console.log('TYPE', type, page);
 		if (!_.isEmpty(type)) {
 			googleAnalytics.recordVirtualPageView(`${_.startCase(_.toLower(type))}s results page ${page / 40 + 1}`);
 			this.setState({ [`${type}Index`]: page, isResultsLoading: true }, () => {
@@ -1231,9 +1231,12 @@ class SearchPage extends React.Component {
 					// 8. set state
 					const filtersV2Entity = `filtersV2${this.state.key}`;
 					const selectedV2Entity = `selectedV2${this.state.key}`;
-					this.setState({ [filtersV2Entity]: filtersV2, [selectedV2Entity]: selectedV2, isResultsLoading: true }, () => {
+					const entityIndex = `${typeMapper[this.state.key]}Index`;
+
+					this.setState({ [filtersV2Entity]: filtersV2, [selectedV2Entity]: selectedV2, [entityIndex]: 0, isResultsLoading: true }, () => {
 						this.doSearchCall();
 					});
+
 					googleAnalytics.recordEvent(
 						'Datasets',
 						`${checkValue ? 'Applied' : 'Removed'} ${parentNode.label} filter ${
@@ -1568,8 +1571,7 @@ class SearchPage extends React.Component {
 						<Container className={this.state.saveSuccess && !this.state.showSavedModal && 'container-saved-preference-banner'}>
 							<Row className='filters filter-save'>
 								<Col className='title' lg={4}>
-									Showing {this.getCountByKey(key)}
-									results {this.state.search != '' && `for '${this.state.search}'`}
+									Showing {this.getCountByKey(key)} results {this.state.search != '' && `for '${this.state.search}'`}
 								</Col>
 								<Col lg={8} className='saved-buttons'>
 									{this.state.saveSuccess ? (
