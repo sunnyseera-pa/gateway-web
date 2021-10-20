@@ -25,6 +25,11 @@ const AddEditCohortForm = props => {
 	const [removingOriginalUploader, setRemovingOriginalUploader] = useState(false);
 	const originalUploader = props.isEdit ? props.data.uploader : props.userState[0].id;
 	const [showForm, setShowForm] = useState(false);
+	const createMode = {
+		new: 'createNew',
+		minor: 'minorVersion',
+		major: 'majorVersion',
+	};
 
 	useEffect(() => {
 		buildListOfUploaders();
@@ -79,25 +84,29 @@ const AddEditCohortForm = props => {
 			values.request_id = props.data.request_id;
 			values.cohort = props.data.cohort;
 			values.updatedon = new Date();
+			values.activeflag = 'active';
 
-			// TODO - add correct paths for edit metadata and create new version when available - update prev. version to archived
 			if (!props.isEdit && props.radioButtonValue === 'createNew') {
-				values.activeflag = 'active';
-
+				// Create new version 1.0 from draft
+				values.createMode = createMode.new;
+				values.pid = props.data.pid;
 				axios.put(`${baseURL}/api/v1/cohorts/${props.data.id}`, values).then(res => {
 					window.location.href = `${window.location.search}/account?tab=cohorts&team=user&cohortSaved=createNew&cohortName=${values.name}`;
 				});
+			} else if (!props.isEdit && props.radioButtonValue === 'newVersion') {
+				// Create new major version from draft
+				values.createMode = createMode.major;
+				values.selectedCohort = props.selectedCohort;
+				axios.put(`${baseURL}/api/v1/cohorts/${props.data.id}`, values).then(res => {
+					window.location.href = `${window.location.search}/account?tab=cohorts&team=user&cohortSaved=newVersion&cohortName=${values.name}`;
+				});
+			} else if (props.isEdit) {
+				// Create new minor version of existing cohort
+				values.createMode = createMode.minor;
+				axios.put(`${baseURL}/api/v1/cohorts/${props.data.id}`, values).then(res => {
+					window.location.href = `${window.location.search}/account?tab=cohorts&team=user&cohortSaved=newVersion&cohortName=${values.name}`;
+				});
 			}
-
-			// if (props.isEdit) {
-			// 	axios.put(baseURL + '/api/v1/cohorts/' + props.data.id, values).then(res => {
-			// 		window.location.href = window.location.search + '/cohort/' + props.data.id + '/?cohortEdited=true';
-			// 	});
-			// } else {
-			// 	axios.post(baseURL + '/api/v1/cohorts/', values).then(res => {
-			// 		window.location.href = window.location.search + '/cohort/' + res.data.response.id + '/?cohortAdded=true';
-			// 	});
-			// }
 		},
 	});
 

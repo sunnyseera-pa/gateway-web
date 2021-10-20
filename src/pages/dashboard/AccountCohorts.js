@@ -63,11 +63,12 @@ const AccountCohorts = props => {
 
 		let apiUrl;
 		if (typeof index === 'undefined') {
-			apiUrl = baseURL + `/api/v1/cohorts?activeflag=${key}`;
+			apiUrl = baseURL + `/api/v1/cohorts?activeflag=${key}&sort=-updatedAt`;
 		} else {
 			userState.role === 'Admin'
-				? (apiUrl = baseURL + `/api/v1/cohorts?activeflag=${key}&page=${page}&limit=${maxResult}`)
-				: (apiUrl = baseURL + `/api/v1/cohorts?activeflag=${key}&page=${page}&limit=${maxResult}&uploaders=${userState.id}`);
+				? (apiUrl = baseURL + `/api/v1/cohorts?activeflag=${key}&page=${page}&limit=${maxResult}&sort=-updatedAt`)
+				: (apiUrl =
+						baseURL + `/api/v1/cohorts?activeflag=${key}&page=${page}&limit=${maxResult}&uploaders=${userState.id}&sort=-updatedAt`);
 		}
 
 		axios.get(apiUrl).then(async res => {
@@ -76,16 +77,16 @@ const AccountCohorts = props => {
 			if (updateCounts === true) {
 				let getActiveCountUrl =
 					userState.role === 'Admin'
-						? `${baseURL}/api/v1/cohorts?activeflag=active&count=true`
-						: `${baseURL}/api/v1/cohorts?activeflag=active&uploaders=${userState.id}&count=true`;
+						? `${baseURL}/api/v1/cohorts?activeflag=active&count=true&sort=-updatedAt`
+						: `${baseURL}/api/v1/cohorts?activeflag=active&uploaders=${userState.id}&count=true&sort=-updatedAt`;
 				let getArchiveCountUrl =
 					userState.role === 'Admin'
-						? `${baseURL}/api/v1/cohorts?activeflag=archive&count=true`
-						: `${baseURL}/api/v1/cohorts?activeflag=archive&uploaders=${userState.id}&count=true`;
+						? `${baseURL}/api/v1/cohorts?activeflag=archive&count=true&sort=-updatedAt`
+						: `${baseURL}/api/v1/cohorts?activeflag=archive&uploaders=${userState.id}&count=true&sort=-updatedAt`;
 				let getDraftCountUrl =
 					userState.role === 'Admin'
-						? `${baseURL}/api/v1/cohorts?activeflag=draft&count=true`
-						: `${baseURL}/api/v1/cohorts?activeflag=draft&uploaders=${userState.id}&count=true`;
+						? `${baseURL}/api/v1/cohorts?activeflag=draft&count=true&sort=-updatedAt`
+						: `${baseURL}/api/v1/cohorts?activeflag=draft&uploaders=${userState.id}&count=true&sort=-updatedAt`;
 
 				await axios.get(getActiveCountUrl).then(res => {
 					setActiveCount(res.data.data);
