@@ -4,6 +4,8 @@ import SVGIcon from '../../../images/SVGIcon';
 import { ReactComponent as Calendar } from '../../../images/calendaricon.svg';
 import RelatedObject from '../../commonComponents/relatedObject/RelatedObject';
 import DatePicker from 'react-datepicker';
+import Select from 'react-select';
+import Creatable from 'react-select/creatable';
 
 const EditFormDataUse = data => {
 	const [safePeople, setSafePeople] = useState(true);
@@ -44,7 +46,14 @@ const EditFormDataUse = data => {
 		setShowRelatedObject(true);
 	};
 
-	console.log(data.data.relatedObjects);
+	const aquaticCreatures = [
+		{ label: 'Shark', value: 'Shark' },
+		{ label: 'Dolphin', value: 'Dolphin' },
+		{ label: 'Whale', value: 'Whale' },
+		{ label: 'Octopus', value: 'Octopus' },
+		{ label: 'Crab', value: 'Crab' },
+		{ label: 'Lobster', value: 'Lobster' },
+	];
 
 	return (
 		<Accordion defaultActiveKey='0' className='datause-accordion-header'>
@@ -106,6 +115,14 @@ const EditFormDataUse = data => {
 										data.data.nonGatewayApplicants &&
 										data.data.gatewayApplicants.map(a => a) + data.data.nonGatewayApplicants.map(a => a)
 									}
+								/>
+
+								<Creatable
+									options={aquaticCreatures}
+									defaultValue={{ label: 'Applicant', value: 0 }}
+									onChange={(opt, meta) => console.log(opt, meta)}
+									isMulti
+									components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
 								/>
 							</Form.Group>
 
@@ -563,7 +580,12 @@ const EditFormDataUse = data => {
 								<p className='gray800-13-opacity datause-edit-p'>
 									Select maximum 5 keywords that will help make your data use easily searchable
 								</p>
-								<Form.Control type='text' placeholder='' defaultValue='TO DO:Search' />
+								<Creatable
+									options={aquaticCreatures}
+									onChange={(opt, meta) => console.log(opt, meta)}
+									isMulti
+									components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
+								/>
 							</Form.Group>
 						</Form>
 					</Card.Body>
