@@ -162,7 +162,6 @@ class DataAccessRequest extends Component {
 
 	async componentDidMount() {
 		await this.initPage();
-		console.log("inside DataAccessRequest.js", this.state.datasets[0].name);
 	}
 
 	async componentDidUpdate(prevProps) {
@@ -1726,11 +1725,14 @@ class DataAccessRequest extends Component {
 					<div id='darCenterCol' className={isWideForm ? 'extended' : ''}>
 
 						{/*Download CSV button*/}
-						<CSVLink data={createCSV(this.state.questionAnswers, this.state._id, this.state.applicationStatus, this.state.createdAt, this.state.updatedAt, this.state.datasets)} filename={"test"}>
-							<button className={`button-secondary csv-btn mb-4`}>
-								{"Download Request as a CSV"}
-							</button>
-						</CSVLink>
+						{ this.getUserRoles().includes('manager') ?
+							<CSVLink data={createCSV(this.state.questionAnswers, this.state._id, this.state.applicationStatus, this.state.createdAt, this.state.updatedAt, this.state.datasets)} filename={"test"}>
+								<button className={`button-secondary csv-btn mb-4`}>
+									{"Download Request as a CSV"}
+								</button>
+							</CSVLink>
+							: '' 
+						}
 
 						{this.state.reviewWarning && (
 							<Alert variant='warning' className=''>
