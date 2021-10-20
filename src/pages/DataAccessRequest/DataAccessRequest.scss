@@ -889,12 +889,13 @@ input[type='checkbox']:after {
 
 .csv-btn {
 	background-color: #56cca7 !important;
+
 	box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
   	transition: all .3s ease-out;
 }
 
 .csv-btn:hover {
-	background-color: #56cca7 !important; 
+	background-color: #56cca7 !important; 	
 	opacity: 0.8; 
 	box-shadow: none;
 	transition: all .3s ease-out;
