@@ -348,3 +348,21 @@ hr.datause-border {
 .datause-datasetTitle {
 	background: green;
 }
+
+.plusMinusButton {
+	background-color: $gray-light !important;
+
+	border: 0px !important;
+	text-align: center !important;
+
+	color: $plus-minus !important;
+}
+
+.plusMinusButton:hover:enabled {
+	background-color: $plus-minus;
+	color: $gray-light;
+}
+
+.plusMinusButton:disabled {
+	opacity: 0.2;
+}

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Accordion, Card, Button, Form } from 'react-bootstrap';
+import { Accordion, Card, Button, Form, Row, Col } from 'react-bootstrap';
 import SVGIcon from '../../../images/SVGIcon';
 import { ReactComponent as Calendar } from '../../../images/calendaricon.svg';
 import RelatedObject from '../../commonComponents/relatedObject/RelatedObject';
@@ -15,6 +15,19 @@ const EditFormDataUse = data => {
 	const [relatedResources, setRelatedResources] = useState(true);
 	const [valueChange, setValueChange] = useState('');
 	const [showRelatedObject, setShowRelatedObject] = useState(false);
+	const [researchOutputs, setResearchOutputs] = useState([{ input: '' }]);
+
+	const handleAddFields = () => {
+		const values = [...researchOutputs];
+		values.push({ input: '' });
+		setResearchOutputs(values);
+	};
+
+	const handleRemoveFields = () => {
+		const values = [...researchOutputs];
+		if (values.length > 0) values.pop();
+		setResearchOutputs(values);
+	};
 
 	const inputChange = e => {
 		setValueChange({
@@ -502,6 +515,23 @@ const EditFormDataUse = data => {
 									to a Gateway resource, this will automatically populate in related resources.
 								</p>
 								<Form.Control type='text' placeholder='' defaultValue={data.data.researchOutputs} />
+
+								{researchOutputs.map(i => {
+									return (
+										<Form.Group>
+											<Form.Control type='text' placeholder='' />
+										</Form.Group>
+									);
+								})}
+								<button className='plusMinusButton'>-</button>
+								<button className='plusMinusButton'>+</button>
+
+								<Button onClick={handleAddFields} className='plusMinusButton rounded-circle'>
+									+
+								</Button>
+								<Button onClick={handleRemoveFields} className='plusMinusButton rounded-circle'>
+									-
+								</Button>
 							</Form.Group>
 						</Form>
 					</Card.Body>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Modal, Button } from 'react-bootstrap';
 
-const SaveEditModal = ({ show, hide, id, savedEdit }) => (
+const SaveEditModal = ({ show, hide, savedEdit }) => (
 	<Modal show={show} onHide={hide}>
 		<Modal.Header closeButton>
 			<h3 className='black-20-semibold'>Save edits</h3>
@@ -15,7 +15,7 @@ const SaveEditModal = ({ show, hide, id, savedEdit }) => (
 			<Button className='data-use-no' variant='outline-primary'>
 				No, nevermind
 			</Button>
-			<Button className='data-use-arch' href={`/datause/${id}`} onClick={savedEdit}>
+			<Button className='data-use-arch' href={`/account?tab=datause`} onClick={savedEdit}>
 				Save
 			</Button>
 		</Modal.Footer>
