@@ -15,7 +15,7 @@ const SavedPreferencesModal = ({ show, onHide, viewSaved, activeTab }) => {
 	useEffect(() => {
 		axios.get(baseURL + '/api/v1/search-preferences').then(res => {
 			setData(res.data.data);
-		});
+		}); 
 	}, []);
 
 	const viewSavedSearch = () => {
