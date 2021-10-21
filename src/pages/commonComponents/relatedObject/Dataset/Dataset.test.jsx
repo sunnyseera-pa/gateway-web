@@ -3,6 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import Dataset from './Dataset';
 import mockData from './mockData';
+import { dataset } from './constants';
 const props = {
 	data: { ...mockData },
 	onSearchPage: false,
@@ -27,7 +28,7 @@ describe('Given the Dataset component', () => {
 		});
 
 		it('Then Dataset Title should be rendered with description', () => {
-			expect(screen.getByTestId('dataset-title')).toHaveTextContent(props.data.name);
+			expect(screen.getByTestId(`title-${props.data.type}-${props.data.pid}`)).toHaveTextContent(props.data.name);
 			expect(screen.getByTestId('dataset-description')).toHaveTextContent(props.data.datasetfields.abstract);
 		});
 
@@ -88,12 +89,12 @@ describe('Given the Dataset component', () => {
 		it('Then the Tilte should be clickable with a link', () => {
 			const { rerender } = wrapper;
 			rerender(<Dataset {...props} activeLink={true} />);
-			expect(screen.getByTestId('dataset-title')).toHaveAttribute('href', `/dataset/${props.data.pid}`);
+			expect(screen.getByTestId(`title-${props.data.type}-${props.data.pid}`)).toHaveAttribute('href', `/dataset/${props.data.pid}`);
 		});
 		it('Then the Badge Tags/Features should be rendered with links', () => {
 			props.data.tags.features.map(value => {
 				expect(screen.getByTestId(`badge-${value}`)).toBeTruthy();
-				expect(screen.getByTestId(`badge-${value}-link`)).toHaveAttribute('href', `/search?search=&tab=Datasets&datasetfeatures=${value}`);
+				expect(screen.getByTestId(`badge-${value}-link`)).toHaveAttribute('href', `${dataset.FEATURES.url}${value}`);
 			});
 		});
 		describe('And onSearchPage is true', () => {
@@ -109,8 +110,8 @@ describe('Given the Dataset component', () => {
 			it('Then onclick Tags/Features updateOnFilterBadge should be called', () => {
 				fireEvent.click(screen.getByTestId(`badge-${props.data.tags.features[0]}`));
 				expect(updateOnFilterBadge.mock.calls.length).toBe(1);
-				expect(updateOnFilterBadge.mock.calls[0][0]).toEqual('datasetfeatures');
-				expect(updateOnFilterBadge.mock.calls[0][1]).toEqual({ label: props.data.tags.features[0], parentKey: 'datasetfeatures' });
+				expect(updateOnFilterBadge.mock.calls[0][0]).toEqual(dataset.FEATURES.filter);
+				expect(updateOnFilterBadge.mock.calls[0][1]).toEqual({ label: props.data.tags.features[0], parentKey: dataset.FEATURES.parentKey });
 			});
 		});
 	});
@@ -126,6 +127,17 @@ describe('Given the Dataset component', () => {
 		});
 		it('Then the description should not be rendered', () => {
 			expect(screen.queryByTestId('dataset-description')).toBeNull();
+		});
+	});
+
+	describe('And when features is empty', () => {
+		it('Then Dataset should be rendered without error', () => {
+			const { rerender } = wrapper;
+			let data = { ...props.data };
+			data.tags.features = [];
+			rerender(<Dataset {...props} data={data} />);
+			expect(screen.getByTestId(`title-${data.type}-${data.pid}`)).toHaveTextContent(data.name);
+			expect(screen.getByTestId('dataset-description')).toHaveTextContent(data.datasetfields.abstract);
 		});
 	});
 
