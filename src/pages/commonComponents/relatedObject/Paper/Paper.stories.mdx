@@ -1,0 +1,28 @@
+import { Meta, Story, Canvas } from '@storybook/addon-docs';
+import Paper from './Paper';
+import mockData from './mockData';
+
+<Meta
+	title='Related Resources'
+	component={Paper}
+	args={{
+		data: mockData,
+		onSearchPage: false,
+		activeLink: false,
+		showRelationshipQuestion: false,
+	}}
+/>
+
+<Canvas>
+	<Story name='Paper'>
+		{props => {
+			const updateOnFilterBadge = () => {
+				alert('updateOnFilterBadge');
+			};
+			const removeButton = () => {
+				alert('removed');
+			};
+			return <Paper {...props} updateOnFilterBadge={updateOnFilterBadge} removeButton={removeButton} />;
+		}}
+	</Story>
+</Canvas>

@@ -46,14 +46,14 @@ let actionBar, footer;
 const history = createBrowserHistory();
 
 Sentry.init({
-	dsn: 'https://c7c564a153884dc0a6b676943b172121@o444579.ingest.sentry.io/5419637',
-	environment: urlEnv,
-	integrations: [
-		new Integrations.BrowserTracing({
-			routingInstrumentation: Sentry.reactRouterV5Instrumentation(history),
-		}),
-	],
-	tracesSampleRate: 1.0,
+    dsn: 'https://c7c564a153884dc0a6b676943b172121@o444579.ingest.sentry.io/5419637',
+    environment: urlEnv,
+    integrations: [
+        new Integrations.BrowserTracing({
+            routingInstrumentation: Sentry.reactRouterV5Instrumentation(history),
+        }),
+    ],
+    tracesSampleRate: 1.0,
 });
 
 class HDRRouter extends Component {

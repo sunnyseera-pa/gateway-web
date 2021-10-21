@@ -6,7 +6,6 @@ import * as Sentry from '@sentry/react';
 import { Container, Row, Col, Tabs, Tab, Pagination, Button, Alert } from 'react-bootstrap';
 import moment from 'moment';
 import _ from 'lodash';
-import { toTitleCase } from '../../utils/GeneralHelper.util';
 import Filter from './components/Filter';
 import FilterSelection from './components/FilterSelection';
 import SearchBar from '../commonComponents/searchBar/SearchBar';
@@ -18,7 +17,7 @@ import { NotificationContainer } from 'react-notifications';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
 import UserMessages from '../commonComponents/userMessages/UserMessages';
 import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
-import ErrorModal from '../commonComponents/errorModal/ErrorModal';
+import ErrorModal from '../commonComponents/errorModal';
 import SortDropdown from './components/SortDropdown';
 import { ReactComponent as CDStar } from '../../images/cd-star.svg';
 import AdvancedSearchModal from '../commonComponents/AdvancedSearchModal/AdvancedSearchModal';
@@ -149,12 +148,25 @@ class SearchPage extends React.Component {
 		this.onWizardStepChange = this.onWizardStepChange.bind(this);
 	}
 
-	showModal = () => {
-		this.setState({ showError: true });
+	hideSavedPreferencesModal = () => {
+		this.setState({ showSavedPreferencesModal: false });
 	};
 
-	hideModal = () => {
-		this.setState({ showError: false });
+	hideSavedModal = () => {
+		this.setState({ showSavedModal: false });
+	};
+
+	hideNoSaveSearchModal = () => {
+		this.setState({ showSavedModal: false });
+		this.setState({ saveSuccess: false });
+	};
+
+	showSuccessMessage = () => {
+		this.setState({ saveSuccess: true });
+	};
+
+	showSavedName = data => {
+		this.setState({ showSavedName: data });
 	};
 
 	hideSavedPreferencesModal = () => {
@@ -504,7 +516,7 @@ class SearchPage extends React.Component {
 			let { parentKey, label } = filter;
 			let node = {
 				parentKey,
-				label: toTitleCase(label),
+				label: label,
 			};
 			// 3. the filter will contain {label, parentKey (parentKey is defined the filters.mapper API)}
 			this.handleInputChange(node, parentKey, true);
@@ -840,7 +852,7 @@ class SearchPage extends React.Component {
 						const filtersV2Collections = this.mapFiltersToDictionary(filterDataCollections, this.state.dataUtilityFilters);
 						this.setState({ filtersV2Collections });
 					}
-
+					break;
 				case 'Cohorts':
 					const responseCohorts = await axios.get(`${baseURL}/api/v2/filters/cohort`);
 					const {
@@ -1402,7 +1414,6 @@ class SearchPage extends React.Component {
 			personSort,
 			collectionSort,
 			cohortSort,
-			courseSort,
 
 			filtersV2Datasets,
 			selectedV2Datasets,
@@ -1428,7 +1439,6 @@ class SearchPage extends React.Component {
 			key,
 		} = this.state;
 
-		console.log(filtersV2Courses);
 		if (isLoading) {
 			return (
 				<Container>
@@ -1681,7 +1691,7 @@ class SearchPage extends React.Component {
 		}
 
 		return (
-			<Sentry.ErrorBoundary fallback={<ErrorModal show={this.showModal} handleClose={this.hideModal} />}>
+			<Sentry.ErrorBoundary fallback={<ErrorModal />}>
 				<div>
 					<SearchBar
 						ref={this.searchBar}

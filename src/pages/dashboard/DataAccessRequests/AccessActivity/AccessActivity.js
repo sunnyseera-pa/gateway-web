@@ -24,8 +24,9 @@ const AccessActivity = ({
 	isReviewer = false,
 	stepName = '',
 	remainingActioners = [],
-	applicationId,
+	latestVersion,
 	amendmentStatus = '',
+	isStartReviewEnabled,
 }) => {
 	const setActivityMeta = () => {
 		let reviewDecision;
@@ -59,10 +60,6 @@ const AccessActivity = ({
 		}
 
 		return reviewDecision;
-	};
-
-	const onClickStartReview = e => {
-		navigateToLocation(e, applicationId, applicationStatus);
 	};
 
 	const buildAccessRequest = () => {
@@ -113,20 +110,26 @@ const AccessActivity = ({
 					{moment(updatedAt).format('D MMMM YYYY HH:mm')}
 					{isTeam === true ? (
 						<div className='box-meta'>
-							{applicationStatus === DarHelperUtil.darStatus.submitted ? (
-								<button
-									id='startReview'
-									className='button-primary'
-									onClick={e => {
-										onClickStartReview(e);
-									}}>
-									Start review
-								</button>
-							) : !_.isEmpty(reviewStatus) || !_.isEmpty(amendmentStatus) ? (
-								setActivityMeta()
-							) : (
-								''
-							)}
+							{applicationStatus === DarHelperUtil.darStatus.submitted && isStartReviewEnabled
+								? (Object.values(latestVersion.versionTree) || [])
+										.filter(version => version.applicationStatus === DarHelperUtil.darStatus.submitted)
+										.map(submittedVersion => {
+											return (
+												team !== 'user' && (
+													<button
+														id='startReview'
+														className='button-primary'
+														onClick={e => {
+															navigateToLocation(e, submittedVersion.applicationId);
+														}}>
+														Start review: {submittedVersion.displayTitle}
+													</button>
+												)
+											);
+										})
+								: !_.isEmpty(reviewStatus) || !_.isEmpty(amendmentStatus)
+								? setActivityMeta()
+								: ''}
 						</div>
 					) : !_.isEmpty(amendmentStatus) ? (
 						setActivityMeta()

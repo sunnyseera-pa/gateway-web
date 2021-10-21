@@ -1,12 +1,12 @@
 import React, { Fragment } from 'react';
 import axios from 'axios';
 import moment from 'moment';
-import UnmetDemand from './DARComponents/UnmetDemand';
 import TopSearches from './TopSearches';
 import TopDatasets from './TopDatasets';
-import { Row, Col, Tabs, Tab, DropdownButton, Dropdown } from 'react-bootstrap';
+import { Row, Col, DropdownButton, Dropdown } from 'react-bootstrap';
 import DashboardKPI from './DARComponents/DashboardKPI';
 import Loading from '../commonComponents/Loading';
+import UnmetDemandSection from './Components/UnmetDemand/UnmetDemandSection';
 import './Dashboard.scss';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
@@ -437,184 +437,8 @@ class AccountAnalyticsDashboard extends React.Component {
 								</Row>
 							</Fragment>
 						)}
-						<Row className='accountHeader margin-top-16'>
-							<Col sm={12} lg={12}>
-								<Row>
-									<Col sm={12} lg={12}>
-										<span className='black-20'>Unmet demand</span>
-									</Col>
-								</Row>
-								<Row>
-									<Col sm={12} lg={12}>
-										<span className='gray700-13'>
-											For each resource type, which searches yielded no results, ordered by highest number of repeat searches
-										</span>
-									</Col>
-								</Row>
-							</Col>
-						</Row>
 
-						<Row className='tabsBackground'>
-							<Col sm={12} lg={12}>
-								<Tabs
-									className='dataAccessTabs gray700-13'
-									data-test-id='unmet-tabs'
-									activeKey={this.state.key}
-									onSelect={this.handleSelect.bind(this)}>
-									<Tab eventKey='Datasets' title={'Datasets'}></Tab>
-									<Tab eventKey='Tools' title={'Tools'}></Tab>
-									<Tab eventKey='Projects' title={'Projects'}></Tab>
-									<Tab eventKey='Papers' title={'Papers'}></Tab>
-									<Tab eventKey='People' title={'People'}></Tab>
-									<Tab eventKey='Cohorts' title={'Cohorts'}></Tab>
-								</Tabs>
-							</Col>
-						</Row>
-
-						{data.length === 0
-							? this.renderNoResults("There isn't enough data available for this month yet")
-							: (() => {
-									switch (key) {
-										case 'Datasets':
-											return (
-												<div>
-													<Row>
-														<Col sm={12} lg={12}>
-															<Row className='subHeader mt-3 gray800-14-bold'>
-																<Col sm={8} lg={8}>
-																	Search term{' '}
-																</Col>
-																<Col sm={2} lg={2}>
-																	Searches
-																</Col>
-																<Col sm={2} lg={2}>
-																	Dataset results
-																</Col>
-															</Row>
-															{data.map((dat, i) => {
-																return <UnmetDemand key={i} data={dat} />;
-															})}
-														</Col>
-													</Row>
-												</div>
-											);
-										case 'Tools':
-											return (
-												<div>
-													<Row>
-														<Col sm={12} lg={12}>
-															<Row className='subHeader mt-3 gray800-14-bold'>
-																<Col sm={8} lg={8}>
-																	Search term{' '}
-																</Col>
-																<Col sm={2} lg={2}>
-																	Searches
-																</Col>
-																<Col sm={2} lg={2}>
-																	Tool results
-																</Col>
-															</Row>
-															{data.map(dat => {
-																return <UnmetDemand data={dat} />;
-															})}
-														</Col>
-													</Row>
-												</div>
-											);
-										case 'Projects':
-											return (
-												<div>
-													<Row>
-														<Col sm={12} lg={12}>
-															<Row className='subHeader mt-3 gray800-14-bold'>
-																<Col sm={8} lg={8}>
-																	Search term{' '}
-																</Col>
-																<Col sm={2} lg={2}>
-																	Searches
-																</Col>
-																<Col sm={2} lg={2}>
-																	Project results
-																</Col>
-															</Row>
-															{data.map(dat => {
-																return <UnmetDemand data={dat} />;
-															})}
-														</Col>
-													</Row>
-												</div>
-											);
-										case 'Papers':
-											return (
-												<div>
-													<Row>
-														<Col sm={12} lg={12}>
-															<Row className='subHeader mt-3 gray800-14-bold'>
-																<Col sm={8} lg={8}>
-																	Search term{' '}
-																</Col>
-																<Col sm={2} lg={2}>
-																	Searches
-																</Col>
-																<Col sm={2} lg={2}>
-																	Paper results
-																</Col>
-															</Row>
-															{data.map(dat => {
-																return <UnmetDemand data={dat} />;
-															})}
-														</Col>
-													</Row>
-												</div>
-											);
-										case 'People':
-											return (
-												<div>
-													<Row>
-														<Col sm={12} lg={12}>
-															<Row className='subHeader mt-3 gray800-14-bold'>
-																<Col sm={8} lg={8}>
-																	Search term{' '}
-																</Col>
-																<Col sm={2} lg={2}>
-																	Searches
-																</Col>
-																<Col sm={2} lg={2}>
-																	People results
-																</Col>
-															</Row>
-															{data.map(dat => {
-																return <UnmetDemand data={dat} />;
-															})}
-														</Col>
-													</Row>
-												</div>
-											);
-										case 'Cohorts':
-											return (
-												<div>
-													<Row>
-														<Col sm={12} lg={12}>
-															<Row className='subHeader mt-3 gray800-14-bold'>
-																<Col sm={8} lg={8}>
-																	Search term{' '}
-																</Col>
-																<Col sm={2} lg={2}>
-																	Searches
-																</Col>
-																<Col sm={2} lg={2}>
-																	Cohort results
-																</Col>
-															</Row>
-															{data.map(dat => {
-																return <UnmetDemand data={dat} />;
-															})}
-														</Col>
-													</Row>
-												</div>
-											);
-									}
-							  })()}
+						<UnmetDemandSection data={data} key={key} handleSelect={this.handleSelect.bind(this)} renderNoResults={this.renderNoResults} />
 					</Col>
 					<Col sm={1} lg={10} />
 				</Row>

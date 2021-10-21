@@ -1,0 +1,30 @@
+import { Meta, Story, Canvas } from '@storybook/addon-docs';
+import Dataset from './Dataset';
+import mockData from './mockData';
+
+<Meta
+	title='Related Resources'
+	component={Dataset}
+	args={{
+		data: mockData,
+		onSearchPage: false,
+		isCohortDiscovery: false,
+		publisherLogo: 'https://uatbeta.healthdatagateway.org/allianceMembers/NHS-Digital-logo_RGB-01.8952cf62.jpg',
+		activeLink: false,
+		showRelationshipQuestion: false,
+	}}
+/>
+
+<Canvas>
+	<Story name='Dataset'>
+		{props => {
+			const updateOnFilterBadge = () => {
+				alert('updateOnFilterBadge');
+			};
+			const removeButton = () => {
+				alert('removed');
+			};
+			return <Dataset {...props} updateOnFilterBadge={updateOnFilterBadge} removeButton={removeButton} />;
+		}}
+	</Story>
+</Canvas>
