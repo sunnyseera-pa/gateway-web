@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
-import { Accordion, Card, Button, Form, Row, Col } from 'react-bootstrap';
+import { Accordion, Card, Button, Form } from 'react-bootstrap';
 import SVGIcon from '../../../images/SVGIcon';
 import { ReactComponent as Calendar } from '../../../images/calendaricon.svg';
 import RelatedObject from '../../commonComponents/relatedObject/RelatedObject';
 import DatePicker from 'react-datepicker';
 import Creatable from 'react-select/creatable';
-import Select from 'react-select';
 
 const EditFormDataUse = data => {
+	const initalLaySummary = data && data.data && data.data.laySummary && data.data.laySummary.length;
+
 	const [safePeople, setSafePeople] = useState(true);
 	const [safeProject, setSafeProject] = useState(true);
 	const [safeData, setSafeData] = useState(true);
@@ -18,6 +19,9 @@ const EditFormDataUse = data => {
 	const [valueChange, setValueChange] = useState('');
 	const [showRelatedObject, setShowRelatedObject] = useState(false);
 	const [researchOutputs, setResearchOutputs] = useState([{ input: '' }]);
+	const [counter, setCounter] = useState(0);
+
+	const laySummaryMaxLength = 300;
 
 	const handleAddFields = () => {
 		const values = [...researchOutputs];
@@ -62,15 +66,16 @@ const EditFormDataUse = data => {
 
 	const allApplicants = gatewayApps && nonGatewayApps && [...gatewayApps, ...nonGatewayApps];
 
-	console.log(applicantsData);
-
-	console.log(allApplicants);
 	const keywordsData = [
 		{ label: 'keyword one', value: 'keyword one' },
 		{ label: 'keyword two', value: 'keyword two' },
 		{ label: 'keyword three', value: 'keyword three' },
 		{ label: 'keyword four', value: 'keyword four' },
 	];
+
+	const updateCounter = e => {
+		setCounter(initalLaySummary + e.target.value.length);
+	};
 
 	return (
 		<Accordion defaultActiveKey='0' className='datause-accordion-header'>
@@ -246,8 +251,16 @@ const EditFormDataUse = data => {
 									A concise and clear description of the project, (e.g. as required by URKI in funding applications). It should outline the
 									problem, objectives and expected outcomes in language that is understandable to the general public
 								</p>
-								<p className='gray800-13-opacity datause-edit-laysummary'>(0/300)</p>
-								<Form.Control type='text' placeholder='' defaultValue={data.data.laySummary} style={{ height: '100px' }} />
+								<p className='gray800-13-opacity datause-edit-laysummary'>
+									({counter}/{laySummaryMaxLength})
+								</p>
+								<Form.Control
+									type='text'
+									placeholder=''
+									defaultValue={data.data.laySummary}
+									style={{ height: '100px' }}
+									onChange={e => updateCounter(e)}
+								/>
 							</Form.Group>
 
 							<Form.Group>
