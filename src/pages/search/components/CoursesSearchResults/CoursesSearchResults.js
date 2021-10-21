@@ -15,16 +15,14 @@ const CoursesSearchResults = ({ updateOnFilterBadge, ...outerProps }) => {
 			data.forEach(course => {
 				let showHeader = false;
 
-				if (!showHeader) {
-					const courseStartDate = course.courseOptions.startDate && moment(course.courseOptions.startDate).format('MMMM');
+				const courseStartDate = course.courseOptions.startDate && moment(course.courseOptions.startDate).format('MMMM');
 
-					if (course.courseOptions.flexibleDates && currentHeader !== 'Flexible') {
-						currentHeader = 'Flexible';
-						showHeader = true;
-					} else if (courseStartDate) {
-						currentHeader = courseStartDate;
-						showHeader = true;
-					}
+				if (course.courseOptions.flexibleDates && currentHeader !== 'Flexible') {
+					currentHeader = 'Flexible';
+					showHeader = true;
+				} else if (courseStartDate) {
+					currentHeader = courseStartDate;
+					showHeader = true;
 				}
 
 				if (showHeader) {
