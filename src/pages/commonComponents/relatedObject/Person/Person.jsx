@@ -9,7 +9,7 @@ import Title from '../Title/Title';
 import '../../CommonComponents.scss';
 
 const Person = ({ data, activeLink, showRelationshipQuestion, removeButton }) => {
-	let name = data.firstname && data.lastname ? data.firstname + ' ' + data.lastname : '';
+	const name = data.firstname && data.lastname ? data.firstname + ' ' + data.lastname : '';
 	return (
 		<Row data-testid='related-person-object' className='noMargin pad-left-24'>
 			<Col className='iconHolder noPadding widthAuto'>

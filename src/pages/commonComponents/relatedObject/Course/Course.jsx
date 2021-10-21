@@ -16,9 +16,9 @@ import { course } from './constants';
 import '../../CommonComponents.scss';
 
 const Course = ({ data, activeLink, onSearchPage, showRelationshipQuestion, updateOnFilterBadge, removeButton }) => {
-	const courseRender = () => {
-		let courseRender = [];
-		let courseOptions = data.courseOptions;
+	const renderCourseDetails = () => {
+		const courseRender = [];
+		const courseOptions = data.courseOptions;
 		has(courseOptions[0], 'startDate') && isObject(courseOptions[0].startDate)
 			? courseRender.push(
 					<span data-testid='course-start-date'> Starts {moment(courseOptions.startDate).format('dddd Do MMMM YYYY')} </span>
@@ -54,7 +54,7 @@ const Course = ({ data, activeLink, onSearchPage, showRelationshipQuestion, upda
 				<Row className='margin-top-8'>
 					<Col sm={12} lg={12}>
 						<CalendarSvg className='calendarSVG' />
-						<span className='gray800-14 margin-left-10'>{courseRender()}</span>
+						<span className='gray800-14 margin-left-10'>{renderCourseDetails()}</span>
 					</Col>
 				</Row>
 			</Col>
