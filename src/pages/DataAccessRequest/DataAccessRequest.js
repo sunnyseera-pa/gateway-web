@@ -1726,6 +1726,7 @@ class DataAccessRequest extends Component {
 
 						{/*Download CSV button*/}
 						{ this.getUserRoles().includes('manager') ?
+							// pass this.state
 							<CSVLink data={createCSV(this.state.questionAnswers, this.state._id, this.state.applicationStatus, this.state.createdAt, this.state.updatedAt, this.state.datasets)} filename={"test"}>
 								<button className={`button-secondary csv-btn mb-4`}>
 									{"Download Request as a CSV"}
