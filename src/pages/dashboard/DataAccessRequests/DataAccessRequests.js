@@ -338,15 +338,13 @@ class DataAccessRequestsNew extends React.Component {
 												</Row>
 										</Col>
 										<Col xs={4} style={{ textAlign: "right" }}>
-												
+												  <CSVLink data={screenData} filename={"test"}>
+                            <button className={`button-secondary`}>
+                                Download This Form
+                            </button>
+                        </CSVLink>
 										</Col>
 								</div>
-
-            <CSVLink data={screenData} filename={"test"}>
-                <button className={`button-secondary`}>
-                    Download activity log
-                </button>
-            </CSVLink>
 
             <div className="tabsBackground">
               <Col sm={12} lg={12}>
@@ -423,11 +421,7 @@ class DataAccessRequestsNew extends React.Component {
 										this.navigateToLocation(e, _id, applicationStatus)
 									}
 								>
-                  <CSVLink data={screenData} filename={"test"}>
-                    <button className={`button-secondary`}>
-                        Download This Form
-                    </button>
-                </CSVLink>
+
 									<div className='col-md-12'>
 										<div className='layoutCard'>
 											<div className='header'>
