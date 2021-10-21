@@ -12,6 +12,7 @@
 		"axios": "^0.21.3",
 		"bootstrap": "^4.4.1",
 		"core-js": "^3.6.5",
+		"date-fns": "^2.25.0",
 		"dotenv": "^8.2.0",
 		"form-data": "^3.0.0",
 		"formik": "^2.1.4",
@@ -56,9 +57,9 @@
 	"scripts": {
 		"start": "react-scripts start",
 		"build": "react-scripts build",
-		"test:watchAll": "jest --watchAll --env=jsdom --coverage --config=jest.config.json",
-		"test": "jest --env=jsdom --coverage --config=jest.config.json",
-		"test-rtl": "jest --env=jsdom --testPathIgnorePatterns=/test/",
+		"test:watchAll": "jest --watchAll --env=jsdom-sixteen --coverage --config=jest.config.json",
+		"test": "jest --env=jsdom-sixteen --coverage --config=jest.config.json",
+		"test-rtl": "jest --env=jsdom-sixteen --testPathIgnorePatterns=/test/",
 		"eject": "react-scripts eject",
 		"snyk-protect": "snyk protect",
 		"prepare": "npm run snyk-protect",
@@ -119,6 +120,7 @@
 		"eslint-plugin-react-hooks": "1.7.0",
 		"jest": "24.9.0",
 		"jest-cli": "^26.0.1",
+		"jest-environment-jsdom-sixteen": "^2.0.0",
 		"moxios": "^0.4.0",
 		"react-scripts": "3.4.4"
 	},
