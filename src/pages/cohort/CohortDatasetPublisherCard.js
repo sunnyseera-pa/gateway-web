@@ -43,19 +43,9 @@ export const CohortDatasetPublisherCard = ({ publisher, publisherGroup }) => {
 				{publisherGroup.map(dataset => {
 					return (
 						<RelatedObject
-							data={{
-								tags: {
-									features: dataset.features,
-								},
-								datasetfields: {
-									abstract: dataset.abstract,
-									phenotypes: [],
-								},
-								name: dataset.name,
-								entries: parseInt(dataset.count).toLocaleString(),
-								pid: dataset.pid,
-								type: 'dataset',
-							}}
+							entries={parseInt(dataset.count).toLocaleString()}
+							objectId={dataset.pid}
+							objectType='dataset'
 							activeLink={true}
 							onSearchPage={false}
 						/>
