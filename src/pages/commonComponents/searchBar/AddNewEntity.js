@@ -57,13 +57,6 @@ const AddNewEntity = props => {
 					Collection
 				</Dropdown.Item>
 				<Dropdown.Item
-					href='/course/add'
-					className='black-14'
-					data-test-id='addNewCourse'
-					onClick={() => googleAnalytics.recordEvent('Courses', 'Add a new course', 'Search bar add new link clicked')}>
-					Course
-				</Dropdown.Item>
-				<Dropdown.Item
 					href='/paper/add'
 					className='black-14'
 					data-test-id='addNewPaper'

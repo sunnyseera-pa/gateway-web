@@ -2,15 +2,21 @@
 <html lang="en">
 
 <head>
+<!-- CookiePro Cookies Consent Notice start for web.icodagateway.icoda-research.org -->
+<script type="text/javascript" src="https://cookie-cdn.cookiepro.com/consent/7f3aa817-8a0e-47e7-b212-45edfae5e45c/OtAutoBlock.js" ></script>
+<script src="https://cookie-cdn.cookiepro.com/scripttemplates/otSDKStub.js"  type="text/javascript" charset="UTF-8" data-domain-script="7f3aa817-8a0e-47e7-b212-45edfae5e45c" ></script>
+<script type="text/javascript">
+function OptanonWrapper() { }
+</script>
+<!-- CookiePro Cookies Consent Notice end for web.icodagateway.icoda-research.org -->
     <meta charset="utf-8" />
-    <link rel="shortcut icon" type="image/png" href="/favicon.png" />
+    <link rel="shortcut icon" type="image/png" href="/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
     <meta name="theme-color" content="#000000" />
-    <meta name="description" content="The Health Data Research Innovation Gateway is a portal enabling researchers and innovators in academia, industry and the NHS to search for and request access to UK health research data." />
+    <meta name="description" content="The International COVID-19 Data Alliance (ICODA) Gateway is a portal to enable researchers in academia, industry and healthcare settings to search for and request access to health research data" />
     <link rel="stylesheet" href="https://use.typekit.net/xom6vjf.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"></link>
-    <title>Health Data Research Innovation Gateway</title>
-
+    <title>ICODA Gateway</title>
     <script>
         (function (w, a, y, f) {
             var openAthensId = '5614d0c5-9fbf-46a0-8311-baf34df79bdb';
@@ -18,6 +24,8 @@
             else if (window.location.href.includes('.uat.')) openAthensId = '685d4935-3c71-4716-afdd-9fb92d218ac6'
             else if (window.location.href.includes('.uatbeta.')) openAthensId = '5b5b4f69-c4a4-472f-92fe-e60678da6b04'
             else if (window.location.href.includes('.latest.')) openAthensId = '9e3ed49e-7566-4d2c-925e-6a6a86555d79'
+            else if (window.location.href.includes('.icodadev.')) openAthensId = '9575516d-bc2f-4116-ab6a-c6b6ad9f082f'
+            else if (window.location.href.includes('.icodagateway.')) openAthensId = '0da20104-1a5a-45ce-80ab-31873d2d3248'
 
             setTimeout(function () {
                 w._wayfinder = w._wayfinder || function () {
@@ -26,7 +34,7 @@
                 p = { oaDomain: 'hdruk.ac.uk', oaAppId: openAthensId };
                 w._wayfinder.settings = p;
                 h = a.getElementsByTagName('head')[0];
-                s = a.createElement('script');
+                s = a.createElements('script');
                 s.async = 1;
                 q = Object.keys(p).map(function (key) {
                     return key + '=' + p[key]
@@ -46,6 +54,28 @@
         })();
         
     </script>
+
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-5PHG2WK');
+
+    setTimeout(function () {
+        var _gaq = [];
+        var a = document.getElementsByTagName('a');
+        var regex = /^https:///i;
+        for(var i = 0; i < a.length; i++){
+            if (a[i].href.indexOf(location.host) == -1 && a[i].href.match(regex)){
+                a[i].onclick = function(){
+                    _gaq.push(['_trackEvent', 'outgoing_links', this.href.replace(regex)]);
+                }
+            }
+        }
+    }, 5000);
+    </script>
+    <!-- End Google Tag Manager -->
 </head>
 
 <body>

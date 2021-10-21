@@ -325,45 +325,23 @@ class SearchBar extends React.Component {
 						<Row className='whiteBackground'>
 							<Col lg={7} className='pr-0 pl-2'>
 								<div className='navBarLogoSpacing'>
-									<a style={{ cursor: 'pointer' }} href={cmsURL}>
+									<a style={{ cursor: 'pointer' }} href={'/'}>
 										<ColourLogoSvg className='ml-4 mt-3' />
 									</a>
 								</div>
 
 								<div className='navBarLinkSpacing'>
-									<CmsDropdown dropdownUrl='exploreDropdown' />
-								</div>
-								<div className='navBarLinkSpacing'>
-									<CmsDropdown dropdownUrl='helpDropdown' />
-								</div>
-								<div className='navBarLinkSpacing'>
-									<CmsDropdown dropdownUrl='usageDataDropdown' />
-								</div>
-								<div className='navBarLinkSpacing'>
-									<CmsDropdown dropdownUrl='aboutUsDropdown' />
+									<a href={'/search?aboutPage=true&search='} style={{ color: '#04365f', fontSize: '14px' }}>
+										About the Gateway
+									</a>
 								</div>
 
 								<div className='navBarLinkSpacing'>
-									<a
-										href={cmsURL + '/pages/latest-news'}
-										className='black-14 cmsDropdownTitle'
-										onClick={() => {
-											googleAnalytics.recordEvent('Search bar', 'Navigated to latest news', 'Clicked search bar navigation link');
-										}}>
-										News
+									<a href='https://icoda-research.org/about/about-us/' target='_blank' style={{ color: '#04365f', fontSize: '14px' }}>
+										About ICODA
 									</a>
 								</div>
-								<div className='navBarLinkSpacing'>
-									<a
-										href={communityLink}
-										className='black-14 cmsDropdownTitle'
-										data-test-id='lnkCommunity'
-										onClick={() => {
-											googleAnalytics.recordEvent('Search bar', 'Navigated to discourse', 'Clicked search bar navigation link');
-										}}>
-										Community
-									</a>
-								</div>
+
 							</Col>
 
 							<Col lg={5} className='text-right'>
@@ -1234,8 +1212,13 @@ class SearchBar extends React.Component {
 												<Col xs={6} className='logoSVGMobile'>
 													<div id='mobileSearchBarHidden'>
 														<div className='navBarLogoSpacing'>
-															<a href={cmsURL}>
-																<ColourLogoSvgMobile className='ml-4 mt-3' />
+															<a href={'/'}>
+																<ColourLogoSvg className='ml-4 mt-3' />
+															</a>
+														</div>
+														<div className='navBarSearchIconHolder'>
+															<a href='#' onClick={this.showSearchBar}>
+																<SVGIcon name='searchicon' width={20} height={20} fill={'#2c8267'} stroke='none' type='submit' />
 															</a>
 														</div>
 													</div>
@@ -1452,9 +1435,48 @@ class SearchBar extends React.Component {
 											<Col xs={10}>
 												<div id='mobileSearchBarHidden' style={{ display: 'block' }}>
 													<div className='navBarLogoSpacing'>
-														<a href={cmsURL}>
+														<a href={'/'}>
 															<ColourLogoSvg className='ml-4 mt-3' />
 														</a>
+													</div>
+
+													<div className='navBarSearchIconHolderAlt'>
+														<a href='#' onClick={this.showSearchBar}>
+															<SVGIcon name='searchicon' width={20} height={20} fill={'#2c8267'} stroke='none' type='submit' />
+														</a>
+													</div>
+												</div>
+
+												<div id='mobileSearchBarRevealed' style={{ display: 'none' }}>
+													<div className='navBarSearchBarSpacing'>
+														<Container>
+															<Row>
+																<Col>
+																	<span className='searchBarInputGrey'>
+																		<span className='searchInputIconGrey'>
+																			<SVGIcon name='searchicon' width={20} height={20} fill={'#2c8267'} stroke='none' type='submit' />
+																		</span>
+																		<span>
+																			<input
+																				type='text'
+																				placeholder='Search'
+																				id='searchInputSpanGrey'
+																				onChange={this.onSearch}
+																				onKeyDown={this.props.doSearchMethod}
+																				value={this.props.searchString}
+																			/>
+																		</span>
+																		{this.props.searchString !== '' && this.props.searchString !== undefined ? (
+																			<span className='searchInputClearGrey'>
+																				<a style={{ cursor: 'pointer' }} href={'/search?search='}>
+																					<ClearButtonSvg />
+																				</a>
+																			</span>
+																		) : null}
+																	</span>
+																</Col>
+															</Row>
+														</Container>
 													</div>
 												</div>
 											</Col>

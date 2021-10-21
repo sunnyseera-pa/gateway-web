@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from 'react';
-import { Container, Row, Col, Modal, Alert, Tooltip, Button } from 'react-bootstrap';
+import { History } from 'react-router';
+import { Container, Row, Col, Modal, Tabs, Tab, Alert, Tooltip, Button } from 'react-bootstrap';
 import Winterfell from 'winterfell';
 import queryString from 'query-string';
 import _ from 'lodash';
@@ -40,6 +41,7 @@ import ContributorModal from './components/ContributorModal/ContributorModal';
 import AssignWorkflowModal from './components/AssignWorkflowModal/AssignWorkflowModal';
 import SLA from '../commonComponents/sla/SLA';
 import AboutApplication from './components/AboutApplication/AboutApplication';
+import Guidance from './components/Guidance/Guidance';
 import Uploads from './components/Uploads/Uploads';
 import UpdateRequestModal from './components/UpdateRequestModal/UpdateRequestModal';
 import MissingFieldsModal from './components/MissingFieldsModal/MissingFieldsModal';
@@ -684,12 +686,15 @@ class DataAccessRequest extends Component {
 		let errors = DarValidation.formatValidationObj(inValidMessages, [...this.state.jsonSchema.questionPanels]);
 		let isValid = Object.keys(errors).length ? false : true;
 
-		if (isValid) {
+		let isAboutApplicationValid = this.isAboutApplicationValid(this.state.aboutApplication);
+		console.log("isAboutApplicationValid ", isAboutApplicationValid)
+        		if (isValid && isAboutApplicationValid) {
 			// if 'amendment' show new amendment modal
+			console.log(" in if isValid && isAboutApplicationValid)" )
 			this.state.applicationType === DarHelper.darApplicationTypes.amendment &&
 			this.state.unansweredAmendments === 0 &&
 			this.state.answeredAmendments === 0
-				? this.setState({ showSubmitAmendmentModal: true })
+				? this.setState({ showSugbmitAmendmentModal: true })
 				: this.setState({ showConfirmSubmissionModal: true });
 		} else {
 			let activePage = _.get(_.keys({ ...errors }), 0);
@@ -1257,18 +1262,6 @@ class DataAccessRequest extends Component {
 					// Do nothing, valid state for project name step handled by existence of text
 					break;
 				case 2:
-					aboutApplication.completedInviteCollaborators = completed;
-					break;
-				case 3:
-					aboutApplication.completedReadAdvice = completed;
-					break;
-				case 4:
-					aboutApplication.completedCommunicateAdvice = completed;
-					break;
-				case 5:
-					aboutApplication.completedApprovalsAdvice = completed;
-					break;
-				case 6:
 					aboutApplication.completedSubmitAdvice = completed;
 					break;
 				default:
@@ -1888,7 +1881,7 @@ class DataAccessRequest extends Component {
 			versions = [],
 			messageDescription,
 		} = this.state;
-		const { userState } = this.props;
+		const { userState, location, t } = this.props;
 
 		const selectedVersion = !_.isEmpty(versions) ? versions.find(v => v.isCurrent).displayTitle : '';
 
@@ -1976,7 +1969,7 @@ class DataAccessRequest extends Component {
 										${item.active ? 'section-header-active' : 'section-header'} 
 										${this.state.allowedNavigation ? '' : 'disabled'}`}
 										onClick={e => this.updateNavigation(item)}>
-										<span>{item.title}</span>
+										<span>{t(item.title)}</span>
 										<span>{item.flag && <i className={DarHelper.flagIcons[item.flag]} />}</span>
 									</h3>
 									{item.active && (
@@ -2017,13 +2010,13 @@ class DataAccessRequest extends Component {
 								enabled={allowedNavigation}
 							/>
 						</div>
-						<div style={{ backgroundColor: '#ffffff' }} className='dar__header'>
+						<div style={{ backgroundColor: '#ffffff', whiteSpace: 'pre-line' }} className='dar__header'>
 							{this.state.jsonSchema.pages
 								? [...this.state.jsonSchema.pages].map((item, idx) =>
 										item.active ? (
 											<Fragment key={`pageContent-${idx}`}>
-												<p className='black-20-semibold mb-0'>{item.active ? item.title : ''}</p>
-												<ReactMarkdown className='gray800-14' source={item.description} />
+												<p className='black-20-semibold mb-0'>{item.active ? t(item.title) : ''}</p>
+												<ReactMarkdown className='gray800-14' source={t(item.description)} />
 											</Fragment>
 										) : (
 											''

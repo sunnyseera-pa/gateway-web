@@ -32,9 +32,16 @@ import Footer from './pages/commonComponents/Footer';
 import LoginErrorPage from './pages/commonComponents/LoginErrorPage';
 import ErrorModal from './pages/commonComponents/errorModal/ErrorModal';
 import DatasetOnboarding from './pages/DatasetOnboarding/DatasetOnboarding';
+import AboutPage from './pages/commonComponents/AboutPage';
+import CookiePage from './pages/commonComponents/CookiePage';
+import { withTranslation } from 'react-i18next'
 import { GuardedRoute } from './pages/commonComponents/GuardedRoute';
 import AdvancedSearchTAndCs from './pages/dashboard/AdvancedSearchTAndCs';
 import { ThemeProvider } from 'react-bootstrap';
+
+const DataAccessRequestTranslated = withTranslation('common')(DataAccessRequest);
+const AboutPageTranslated = withTranslation('common')(AboutPage);
+const CookiePageTranslated = withTranslation('common')(CookiePage);
 
 const baseURL = require('./pages/commonComponents/BaseURL').getURL();
 const urlEnv = require('./pages/commonComponents/BaseURL').getURLEnv();
@@ -220,6 +227,8 @@ class HDRRouter extends Component {
                                 path="/search"
                                 render={(props) => <SearchPage {...props} userState={userState} />}
                             />
+                            	<Route path='/about' render={props => <AboutPageTranslated {...props} userState={userState} />} />
+
                             <Route
                                 path="/loginerror"
                                 render={(props) => (
@@ -262,17 +271,17 @@ class HDRRouter extends Component {
                             />
                             <GuardedRoute
                                 path="/data-access-request/dataset/:datasetId"
-                                component={DataAccessRequest}
+                                component={DataAccessRequestTranslated}
                                 userState={userState}
                             />
                             <GuardedRoute
                                 path="/data-access-request/publisher/:publisherId"
-                                component={DataAccessRequest}
+                                component={DataAccessRequestTranslated}
                                 userState={userState}
                             />
                             <GuardedRoute
                                 path="/data-access-request/:accessId"
-                                component={DataAccessRequest}
+                                component={DataAccessRequestTranslated}
                                 userState={userState}
                             />
                             <GuardedRoute
@@ -358,7 +367,9 @@ class HDRRouter extends Component {
                                     <AdvancedSearchTAndCs {...props} userState={userState} />
                                 )}
                             />
-                            <Redirect to="/search?search=" />
+                            	<Route path='/cookies' render={props => <CookiePageTranslated {...props} userState={userState} />} />
+
+                           <Redirect to='/search?aboutPage=true&search=' />
                         </Switch>
                     </div>
                     <Footer />

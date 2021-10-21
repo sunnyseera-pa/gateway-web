@@ -163,6 +163,7 @@ const ActivityLog = React.forwardRef(({ dataaccessrequest, team, onClickStartRev
 								<SVGIcon name='check' width={24} height={24} fill={'#2C8267'} /> {alert}
 							</Alert>
 						)}
+
 						<div className='layoutCard'>
 							<div className='header-version'>
 								<div className='header-version-title'>
@@ -189,6 +190,7 @@ const ActivityLog = React.forwardRef(({ dataaccessrequest, team, onClickStartRev
 									)}
 								</div>
 							</div>
+
 							<div className='body'>
 								<AccessActivity
 									datasets={datasets}
@@ -208,7 +210,7 @@ const ActivityLog = React.forwardRef(({ dataaccessrequest, team, onClickStartRev
 									isReviewer={isReviewer}
 									stepName={stepName}
 									remainingActioners={remainingActioners}
-									navigateToLocation={onClickStartReview}
+									navigateToLocation={e => onClickStartReview(e, dataaccessrequest._id, applicationStatus)}
 									latestVersion={dataaccessrequest}
 									amendmentStatus={amendmentStatus}
 									isStartReviewEnabled={true}

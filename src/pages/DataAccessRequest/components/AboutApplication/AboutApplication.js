@@ -1,14 +1,13 @@
 import React, { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
-import { Accordion, Card, OverlayTrigger } from 'react-bootstrap';
+import { Accordion, Card, Overlay, OverlayTrigger } from 'react-bootstrap';
 import DarHelper from '../../../../utils/DarHelper.util';
 import SVGIcon from '../../../../images/SVGIcon';
 import { ReactComponent as InfoSVG } from '../../../../images/info.svg';
 import TypeaheadDataset from '../TypeaheadDataset/TypeaheadDataset';
 import AlertBox from '../AlertBox/AlertBox';
 import moment from 'moment';
-
 import { useTranslation } from 'react-i18next';
 
 const AboutApplication = props => {
@@ -45,11 +44,14 @@ const AboutApplication = props => {
 		toggleContributorModal,
 		context,
 		areDatasetsAmended = false,
-		datasetsAmendedDate= ''
+		datasetsAmendedDate = '',
 	} = props;
 
-	const datasetsAmendedMessage = `Applicant has requested this as an amendment to the approved application on ${moment(datasetsAmendedDate).format('Do MMM YYYY')}`;
+	const datasetsAmendedMessage = `Applicant has requested this as an amendment to the approved application on ${moment(
+		datasetsAmendedDate
+	).format('Do MMM YYYY')}`;
 
+	const { t } = useTranslation('common');
 	return (
 		<div className='aboutAccordion'>
 			<Accordion defaultActiveKey='0' activeKey={activeAccordionCard.toString()}>
@@ -66,19 +68,18 @@ const AboutApplication = props => {
 						) : (
 							<div className={`stepNumber ${activeAccordionCard === 0 ? 'active' : ''}`}>1</div>
 						)}
-						Select the datasets you need
+						{t('dataAccessRequestForm.aboutThisApplicationSection.datasets.title')}
 					</Accordion.Toggle>
 					<Accordion.Collapse eventKey='0'>
 						<Card.Body className='gray800-14'>
-							<div className='margin-bottom-16'>
-								The datasets you select may impact the questions being asked in this application form. You cannot change this later. If
-								you’re not sure,{' '}
-								<Link
+							<div style={{ whiteSpace: 'pre-line' }} className='margin-bottom-16'>
+								{t('dataAccessRequestForm.aboutThisApplicationSection.datasets.paragraphOne')}{' '}
+								<a
 									id='messageLink'
 									className={allowedNavigation && userType.toUpperCase() !== 'CUSTODIAN' ? '' : 'disabled'}
 									onClick={e => toggleDrawer()}>
-									send a message to the data custodian
-								</Link>{' '}
+									{t('dataAccessRequestForm.aboutThisApplicationSection.datasets.paragraphTwo')}
+								</a>{' '}
 								to clarify. The custodian will help you understand if the data you would like to access can be used to answer your research
 								question. Below you can include datasets that are listed in the Gateway. Please note that you will be able to add datasets
 								not currently listed in the Gateway under the ‘Safe people’ section of this form. If you need to request access to datasets
@@ -86,7 +87,7 @@ const AboutApplication = props => {
 								form.
 							</div>
 							<div>
-								<span>Datasets</span>
+								<span>{t('dataAccessRequestForm.aboutThisApplicationSection.datasets.paragraphThree')}</span>
 								<div className='form-group'>
 									<TypeaheadDataset
 										key={key}
@@ -96,7 +97,7 @@ const AboutApplication = props => {
 										allowAllCustodians={false}
 									/>
 								</div>
-								{_.isEmpty(selectedDatasets) ? <div className='errorMessages'>You must select at least one dataset</div> : null}
+								{_.isEmpty(selectedDatasets) ? <div className='errorMessages'>{t('dataAccessRequestForm.aboutThisApplicationSection.datasets.errorOne')}</div> : null}
 								<div className='panConfirm d-flex justify-content-end'>
 									{userType.toUpperCase() === 'APPLICANT' && !readOnly && (
 										<button
@@ -106,12 +107,12 @@ const AboutApplication = props => {
 											onClick={e => {
 												onNextStep(allowedNavigation);
 											}}>
-											Confirm
+											{t('button.confirm')}
 										</button>
 									)}
 								</div>
 							</div>
-							{ areDatasetsAmended && <AlertBox text={datasetsAmendedMessage} status='WARNING'/>}
+							{areDatasetsAmended && <AlertBox text={datasetsAmendedMessage} status='WARNING' />}
 						</Card.Body>
 					</Accordion.Collapse>
 				</Card>
@@ -128,15 +129,13 @@ const AboutApplication = props => {
 						) : (
 							<div className={`stepNumber ${activeAccordionCard === 0 ? 'active' : ''}`}>2</div>
 						)}
-						Name your application
+						{t('dataAccessRequestForm.aboutThisApplicationSection.applicationName.title')}
 					</Accordion.Toggle>
 					<Accordion.Collapse eventKey='1'>
 						<Card.Body className='gray800-14'>
-							<div className='margin-bottom-16'>
-								This can be your project name or anything that helps the custodian identify your application.
-							</div>
+							<div className='margin-bottom-16'>{t('dataAccessRequestForm.aboutThisApplicationSection.applicationName.paragraphOne')}</div>
 							<div>
-								<span>Application title</span>
+								<span>{t('dataAccessRequestForm.aboutThisApplicationSection.applicationName.paragraphTwo')}</span>
 								<div className='form-group'>
 									<input
 										className={`form-control ${!projectNameValid && _.isEmpty(projectName) ? 'emptyFormInput' : ''}`}
@@ -146,75 +145,26 @@ const AboutApplication = props => {
 										value={projectName}
 										disabled={readOnly}
 									/>
-									{!projectNameValid && _.isEmpty(projectName) ? <div className='errorMessages'>This cannot be empty</div> : null}
+									{!projectNameValid && _.isEmpty(projectName) ? <div className='errorMessages'>{t('dataAccessRequestForm.aboutThisApplicationSection.applicationName.errorOne')}</div> : null}
 								</div>
-								<div className='dar-form-check-group margin-top-8'>
-									<input
-										type='checkbox'
-										id='chkNationalCoreStudies'
-										checked={isNationalCoreStudies}
-										className='dar-form-check'
-										disabled={readOnly}
-										onChange={e => onHandleProjectIsNCSToggle(e)}
-									/>
-									<span className='dar-form-check-label'>This application is part of a National Core Studies project</span>
-
-									<OverlayTrigger
-										placement='top'
-										delay={{ show: 250, hide: 400 }}
-										overlay={renderTooltip('We use this information for overall reporting on the efficiency of the programme.')}>
-										<InfoSVG className='margin-left-8 pointer' />
-									</OverlayTrigger>
-								</div>
-								{isNationalCoreStudies ? (
-									<Fragment>
-										<div className='margin-top-24'>
-											<span>National Core Studies project</span>
-											<OverlayTrigger
-												placement='top'
-												delay={{ show: 250, hide: 400 }}
-												overlay={renderTooltip(
-													'Projects must be added to the Gateway first using the appropriate tags associated with the National Core Studies.'
-												)}>
-												<InfoSVG className='margin-left-8 pointer' viewBox='0 0 24 16' />
-											</OverlayTrigger>
-										</div>
-										<div className='form-group'>
-											<select
-												id='ddlNationalCoreStudiesProject'
-												className='form-input-dropdown'
-												value={nationalCoreStudiesProjectId}
-												onChange={e => onHandleNCSProjectChange(e.target.value)}
-												disabled={readOnly}>
-												<option key='' value=''>
-													Select a project
-												</option>
-												{nationalCoreStudiesProjects.map(item => (
-													<option key={item.id} value={item.id}>
-														{item.name}
-													</option>
-												))}
-											</select>
-											{!ncsValid ? <div className='errorMessages'>You must indicate a project or untick the option above</div> : null}
-										</div>
-									</Fragment>
-								) : null}
-								<div className='panConfirm d-flex justify-content-end'>
-									{userType.toUpperCase() === 'APPLICANT' && !readOnly && (
+								<div className='panConfirm'>
+									{userType.toUpperCase() === 'APPLICANT' ? (
 										<button
 											type='input'
 											className={`button-primary ${allowedNavigation ? '' : 'disabled'}`}
 											disabled={!allowedNavigation}
 											onClick={e => onNextStep(allowedNavigation)}>
-											Confirm
+											{t('button.confirm')}
 										</button>
+									) : (
+										''
 									)}
 								</div>
 							</div>
 						</Card.Body>
 					</Accordion.Collapse>
 				</Card>
-				<Card className={activeAccordionCard === 2 ? 'activeCard' : ''}>
+				{/* <Card className={activeAccordionCard === 2 ? 'activeCard' : ''}>
 					<Accordion.Toggle
 						as={Card.Header}
 						className={DarHelper.calcAccordionClasses(activeAccordionCard === 2, allowedNavigation)}
@@ -227,21 +177,21 @@ const AboutApplication = props => {
 						) : (
 							<div className={`stepNumber ${activeAccordionCard === 0 ? 'active' : ''}`}>3</div>
 						)}
-						Invite contributors
+						{t('dataAccessRequestForm.aboutThisApplicationSection.contributors.title')}
 					</Accordion.Toggle>
 					<Accordion.Collapse eventKey='2'>
 						<Card.Body className='gray800-14'>
 							<Fragment>
 								<div className='margin-bottom-16'>
-									Applications are often a team effort, so you can add others to help. Contributors can exchange private notes, make edits,
-									message the data custodian, invite others and submit the application. If they’re named in the application, you can fill in
-									some of their details automatically. You can do this later too.
+								{t('dataAccessRequestForm.aboutThisApplicationSection.contributors.paragraphOne')}
 								</div>
 								<div className='dar-form-check-group'>
-									{userType.toUpperCase() !== 'CUSTODIAN' && !readOnly && (
-										<button className='button-secondary' type='button' onClick={e => toggleContributorModal()}>
-											Add contributors
+									{userType.toUpperCase() !== 'CUSTODIAN' ? (
+										<button className='button-secondary' type='button' onClick={(e) => toggleContributorModal()}>
+											{t('dataAccessRequestForm.aboutThisApplicationSection.contributors.addContributorsButton')}
 										</button>
+									) : (
+										''
 									)}
 									<input
 										type='checkbox'
@@ -251,7 +201,7 @@ const AboutApplication = props => {
 										disabled={readOnly}
 										onChange={e => onNextStep(e.target.checked)}
 									/>
-									<span className='dar-form-check-label'>I have completed this step</span>
+									<span className='dar-form-check-label'>	{t('dataAccessRequestForm.stepCompleted')}</span>
 								</div>
 							</Fragment>
 						</Card.Body>
@@ -270,13 +220,13 @@ const AboutApplication = props => {
 						) : (
 							<div className={`stepNumber ${activeAccordionCard === 0 ? 'active' : ''}`}>4</div>
 						)}
-						Read the advice from the data custodian
+						{t('dataAccessRequestForm.aboutThisApplicationSection.dataCustodianAdvice.title')}
 					</Accordion.Toggle>
 					<Accordion.Collapse eventKey='3'>
 						<Card.Body className='gray800-14'>
 							<Fragment>
 								<div className='margin-bottom-16'>
-									Please make sure you have read the advice provided by the data custodian on how to request access to their datasets.
+								{t('dataAccessRequestForm.aboutThisApplicationSection.dataCustodianAdvice.paragraphOne')}
 								</div>
 								<div className='dar-form-check-group'>
 									<input
@@ -288,18 +238,18 @@ const AboutApplication = props => {
 										onChange={e => onNextStep(e.target.checked)}
 									/>
 									<span className='dar-form-check-label'>
-										I have read{' '}
+									{t('dataAccessRequestForm.aboutThisApplicationSection.dataCustodianAdvice.paragraphTwo')}{' '}
 										<Link
 											id='howToRequestAccessLink'
 											className={allowedNavigation && userType.toUpperCase() !== 'CUSTODIAN' ? '' : 'disabled'}
-											onClick={e => {
-												e.preventDefault();
+											onClick={e =>
 												toggleModal(false, {
 													...context,
 													showActionButtons: false,
-												})}
-											}>
-											how to request access
+												})
+											}
+										>
+											{t('dataAccessRequestForm.aboutThisApplicationSection.dataCustodianAdvice.paragraphThree')}
 										</Link>
 									</span>
 								</div>
@@ -320,21 +270,21 @@ const AboutApplication = props => {
 						) : (
 							<div className={`stepNumber ${activeAccordionCard === 0 ? 'active' : ''}`}>5</div>
 						)}
-						Communicate with the data custodian
+				{t('dataAccessRequestForm.aboutThisApplicationSection.dataCustodianCommunication.title')}
 					</Accordion.Toggle>
 					<Accordion.Collapse eventKey='4'>
 						<Card.Body className='gray800-14'>
 							<Fragment>
 								<div className='margin-bottom-16'>
-									The earlier you get in touch, the better. If you've not done so yet, we recommend sending a message with a brief
-									description of your project and the data you are interested in. The data custodian will help you understand the data and
-									provide information on how to complete the data access application form.
+								{t('dataAccessRequestForm.aboutThisApplicationSection.dataCustodianCommunication.paragraphOne')}
 								</div>
 								<div className='dar-form-check-group'>
-									{userType.toUpperCase() !== 'CUSTODIAN' && (
-										<button className='button-secondary' type='button' onClick={e => toggleDrawer()}>
-											Send message
+									{userType.toUpperCase() !== 'CUSTODIAN' ? (
+										<button className='button-secondary' type='button' onClick={(e) => toggleDrawer()}>
+											{t('button.sendMessage')}
 										</button>
+									) : (
+										''
 									)}
 									<input
 										type='checkbox'
@@ -344,7 +294,7 @@ const AboutApplication = props => {
 										disabled={readOnly ? true : false}
 										onChange={e => onNextStep(e.target.checked)}
 									/>
-									<span className='dar-form-check-label'>I have completed this step</span>
+									<span className='dar-form-check-label'>	{t('dataAccessRequestForm.stepCompleted')}</span>
 								</div>
 							</Fragment>
 						</Card.Body>
@@ -363,7 +313,7 @@ const AboutApplication = props => {
 						) : (
 							<div className={`stepNumber ${activeAccordionCard === 0 ? 'active' : ''}`}>6</div>
 						)}
-						Check what approvals you might need
+						{t('dataAccessRequestForm.aboutThisApplicationSection.approvalsCheck.title')}
 					</Accordion.Toggle>
 					<Accordion.Collapse eventKey='5'>
 						<Card.Body className='gray800-14'>
@@ -415,8 +365,8 @@ const AboutApplication = props => {
 									</p>
 								</div>
 								<div className='dar-form-check-group'>
-									<button className='button-secondary' type='button' onClick={e => toggleMrcModal()}>
-										MRC Health Data Access toolkit
+									<button className='button-secondary' type='button' onClick={(e) => toggleMrcModal()}>
+									{t('dataAccessRequestForm.aboutThisApplicationSection.approvalsCheck.buttonOne')}
 									</button>
 									<input
 										type='checkbox'
@@ -426,41 +376,42 @@ const AboutApplication = props => {
 										disabled={readOnly ? true : false}
 										onChange={e => onNextStep(e.target.checked)}
 									/>
-									<span className='dar-form-check-label'>I have completed this step</span>
+									<span className='dar-form-check-label'>{t('dataAccessRequestForm.stepCompleted')}</span>
 								</div>
 							</Fragment>
 						</Card.Body>
 					</Accordion.Collapse>
-				</Card>
-				<Card className={activeAccordionCard === 6 ? 'activeCard' : ''}>
+				</Card> */}
+				<Card className={activeAccordionCard === 2 ? 'activeCard' : ''}>
 					<Accordion.Toggle
 						as={Card.Header}
-						className={DarHelper.calcAccordionClasses(activeAccordionCard === 6, allowedNavigation)}
-						eventKey='6'
-						onClick={e => toggleCard(e, 6)}>
+						className={DarHelper.calcAccordionClasses(activeAccordionCard === 2, allowedNavigation)}
+						eventKey='2'
+						onClick={e => toggleCard(e, 2)}>
 						{completedSubmitAdvice ? (
 							<div className='stepNumber completed'>
 								<SVGIcon name='check' width={24} height={24} fill={'#ffffff'} />
 							</div>
 						) : (
-							<div className={`stepNumber ${activeAccordionCard === 0 ? 'active' : ''}`}>7</div>
+							<div className={`stepNumber ${activeAccordionCard === 0 ? 'active' : ''}`}>3</div>
 						)}
-						Understand what happens after you submit the application
+						{t('dataAccessRequestForm.aboutThisApplicationSection.AfterYourSubmission.title')}
 					</Accordion.Toggle>
-					<Accordion.Collapse eventKey='6'>
+					<Accordion.Collapse eventKey='2'>
 						<Card.Body className='gray800-14'>
 							<Fragment>
-								<div className='margin-bottom-16'>After you have completed the form, you can submit the application.</div>
+								<div className='margin-bottom-16'>
+									{t('dataAccessRequestForm.aboutThisApplicationSection.AfterYourSubmission.paragraphOne')}
+								</div>
 								<div className='margin-bottom-16'>
 									<ul>
-										<li>Make sure to double-check everything before submitting.</li>
-										<li>
-											You will be able to edit your responses via the Gateway after submission, but please speak to the data custodian
-											before making any updates as this could impact the time it takes to review your application.
-										</li>
-										<li>Both you and the data custodian will receive an email with a copy of the information submitted using this form.</li>
-										<li>Once you have submitted, the data custodian might still ask for some additional information.</li>
+										<li>{t('dataAccessRequestForm.aboutThisApplicationSection.AfterYourSubmission.paragraphTwo')}</li>
+										<li>{t('dataAccessRequestForm.aboutThisApplicationSection.AfterYourSubmission.paragraphThree')}</li>
+										<li>{t('dataAccessRequestForm.aboutThisApplicationSection.AfterYourSubmission.paragraphFour')}</li>
 									</ul>
+								</div>
+								<div className='margin-bottom-16'>
+									{t('dataAccessRequestForm.aboutThisApplicationSection.AfterYourSubmission.paragraphFive')}
 								</div>
 								<div className='dar-form-check-group'>
 									<input
@@ -471,7 +422,7 @@ const AboutApplication = props => {
 										disabled={readOnly ? true : false}
 										onChange={e => onNextStep(e.target.checked)}
 									/>
-									<span className='dar-form-check-label'>I have completed this step</span>
+									<span className='dar-form-check-label'>{t('dataAccessRequestForm.informationRead')}</span>
 								</div>
 							</Fragment>
 						</Card.Body>

@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react';
+import { Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
-import { has, isNil, isEmpty, isUndefined } from 'lodash';
+import { _, has, isNil, isEmpty, isUndefined } from 'lodash';
 import axios from 'axios';
 import * as Sentry from '@sentry/react';
 import { Row, Col, Container, Tabs, Tab, Alert, Tooltip, Button, OverlayTrigger } from 'react-bootstrap/';
@@ -18,6 +19,9 @@ import { ReactComponent as MetadataGold } from '../../images/goldNew.svg';
 import { ReactComponent as MetadataPlatinum } from '../../images/platinumNew.svg';
 import { ReactComponent as MetadataNotRated } from '../../images/notRatedNew.svg';
 import { ReactComponent as GoldStar } from '../../images/cd-star.svg';
+import { PageView, initGA } from '../../tracking';
+import { Event } from '../../tracking';
+import moment from 'moment';
 import googleAnalytics from '../../tracking';
 import Linkify from 'react-linkify';
 import DatasetSchema from './DatasetSchema';
@@ -53,6 +57,10 @@ class DatasetDetail extends Component {
 		collections: [],
 		dataClassOpen: -1,
 		relatedObjects: [],
+		datarequest: [],
+		DBData: [],
+		activeKey: false,
+		selectedItem: 'tab-1',
 		isLoading: true,
 		userState: [
 			{
@@ -79,6 +87,10 @@ class DatasetDetail extends Component {
 		showModal: false,
 		showCustodianModal: false,
 		showError: false,
+		requiresModal: false,
+		allowsMessaging: false,
+		allowNewMessage: false,
+		dataRequestModalContent: {},
 		showAllPhenotype: false,
 		showAllLinkedDatasets: false,
 		showEmpty: false,
@@ -122,6 +134,8 @@ class DatasetDetail extends Component {
 	async componentDidMount() {
 		await this.getDataset();
 		this.checkAlerts();
+		initGA('UA-183238557-1');
+		PageView();
 	}
 
 	// on loading of tool detail page were id is different
@@ -174,7 +188,7 @@ class DatasetDetail extends Component {
 				this.updateCounter(this.state.data.datasetid, counter);
 
 				if (!isUndefined(res.data.data.relatedObjects)) {
-					this.getAdditionalObjectInfo(res.data.data.relatedObjects);
+					await this.getAdditionalObjectInfo(res.data.data.relatedObjects);
 				}
 
 				if (!isEmpty(this.topicContext.title)) {
@@ -667,6 +681,8 @@ class DatasetDetail extends Component {
 			discoursePostCount,
 			showDrawer,
 			showModal,
+			requiresModal,
+			allowsMessaging,
 			showCustodianModal,
 			showAllPhenotype,
 			showAllLinkedDatasets,
@@ -684,7 +700,12 @@ class DatasetDetail extends Component {
 			publisherLogoURL,
 		} = this.state;
 
-		let publisherLogo = !isEmpty(v2data) && !isEmpty(v2data.summary.publisher.logo) ? v2data.summary.publisher.logo : publisherLogoURL;
+		let publisherLogo = '';
+		if (v2data.summary != undefined) {
+			publisherLogo = isEmpty(v2data) && isEmpty(v2data.summary.publisher.logo) ? v2data.summary.publisher.logo : publisherLogoURL;
+		} else {
+			publisherLogo = publisherLogoURL;
+		}
 
 		const componentDecorator = (href, text, key) => (
 			<span>
@@ -743,7 +764,14 @@ class DatasetDetail extends Component {
 					Click to read more about how the score is calculated.
 					<br />
 					<br />
+					Click to read more about how the score is calculated.
+					<br />
+					<br />
+					{Math.trunc(data.datasetfields.metadataquality.completeness_percent)} Completeness %
+					<br />
 					{Math.trunc(data.datasetfields.metadataquality.weighted_completeness_percent)} Weighted completeness %
+					<br />
+					{Math.trunc(data.datasetfields.metadataquality.error_percent)} Error %
 					<br />
 					{Math.trunc(data.datasetfields.metadataquality.weighted_error_percent)} Weighted error %
 				</Tooltip>
@@ -886,19 +914,38 @@ class DatasetDetail extends Component {
 
 										{this.state.isLatestVersion && !this.state.isDatasetArchived && (
 											<Col sm={6} className='text-right'>
-												<button
-													data-test-id='dataset-request-access-btn'
-													className='btn btn-primary addButton pointer float-right'
-													onClick={() => {
-														this.toggleModal();
-														googleAnalytics.recordEvent(
-															'Data access request',
-															'How to request access',
-															'Dataset page primary button clicked'
-														);
-													}}>
-													How to request access
-												</button>
+												{!userState[0].loggedIn ? (
+													<button className='btn button-tertiary dark-14 float-right ' onClick={() => this.showLoginModal(data.name)}>
+														Request access
+													</button>
+												) : requiresModal ? (
+													<button
+														className='btn btn-primary addButton pointer float-right'
+														onClick={() => {
+															this.toggleModal();
+														}}>
+														How to request access
+													</button>
+												) : (
+													<Fragment>
+														{allowsMessaging ? (
+															<button
+																className={`btn button-tertiary dark-14  ${allowsMessaging ? 'mr-2' : 'float-right'}`}
+																onClick={() => this.toggleDrawer()}>
+																Ask a question
+															</button>
+														) : null}
+														<Link
+															className='btn button-primary addButton pointer'
+															id='requestAccess'
+															to={{
+																pathname: `/data-access-request/dataset/${data.datasetid}`,
+															}}
+															onClick={() => Event('Buttons', 'Click', 'Request Access')}>
+															Request access
+														</Link>
+													</Fragment>
+												)}
 											</Col>
 										)}
 									</Row>

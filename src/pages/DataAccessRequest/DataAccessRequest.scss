@@ -303,11 +303,10 @@ span.toolTipText:after {
 }
 
 .darTab {
-	padding: 15px 0 0 0;
+	padding: 15px 0;
 	background-color: $white;
 	max-height: calc(100vh - 169px);
 	margin-left: 1px;
-	font-size: 14px;
 	header {
 		padding: 0 24px 15px 24px;
 		display: flex;
@@ -336,7 +335,7 @@ span.toolTipText:after {
 		padding: 24px;
 	}
 	&-guidance {
-		height: 57vh;
+		height: 40vh;
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -682,12 +681,6 @@ input[type='radio']:disabled {
 			width: 90%;
 			white-space: pre-line;
 		}
-
-		p {
-			@include font-source(13px, $gray-700, $font-weight-semibold);
-			margin-bottom: 5px;
-			width: 90%;
-		}
 	}
 }
 
@@ -784,9 +777,11 @@ input[type='radio']:disabled {
 	position: absolute;
 	top: -8px;
 	right: 25px;
+	visibility: hidden;
 	cursor: pointer;
 	min-width: 32px;
 	height: 32px;
+	opacity: 0;
 	transition: visibility 0.55s linear, opacity 0.35s ease-in-out;
 
 	& > i {
@@ -807,12 +802,10 @@ input[type='radio']:disabled {
 	&:hover {
 		background: #f6f7f8;
 		> .action-control {
+			visibility: visible;
+			opacity: 1;
 			background: $white;
 			box-shadow: 3px 3px 6px 0 rgba(0, 0, 0, 0.09), -3px -3px 4px 0 rgba(0, 0, 0, 0.03);
-			> .toolTipHidden {
-				visibility: visible;
-				opacity: 1;
-			}
 		}
 	}
 }

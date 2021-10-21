@@ -738,6 +738,7 @@ class Account extends Component {
 										<DataAccessRequests setDataAccessRequest={this.setDataAccessRequest} userState={userState} team={team} alert={alert} />
 									) : (
 										<ActivityLog
+										applicationId={this.state._id}
 											onClickStartReview={this.navigateToLocation}
 											dataaccessrequest={dataaccessrequest}
 											userState={userState}
@@ -771,6 +772,7 @@ class Account extends Component {
 												/>
 											) : (
 												<ActivityLog
+												applicationId={this.state._id}
 													onClickStartReview={this.navigateToLocation}
 													dataaccessrequest={dataaccessrequest}
 													userState={userState}
@@ -830,7 +832,8 @@ class Account extends Component {
 					<ActionBar userState={userState}>
 						<div className='action-bar'>
 							<div className='action-bar-actions'>
-								<ActivityLogActionButtons
+							<ActivityLogActionButtons
+								 applicationId={this.state._id}
 									team={team}
 									latestVersion={this.state.dataaccessrequest}
 									onClickStartReview={this.navigateToLocation}

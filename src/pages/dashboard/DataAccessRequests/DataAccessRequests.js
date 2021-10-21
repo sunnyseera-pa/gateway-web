@@ -11,6 +11,7 @@ import TimeDuration from '../../commonComponents/timeDuration/TimeDuration';
 import WorkflowReviewStepsModal from '../../commonComponents/workflowReviewStepsModal/WorkflowReviewStepsModal';
 import CommentItem from './CommentItem/CommentItem';
 import AccessActivity from './AccessActivity/AccessActivity';
+import { initGA } from '../../../tracking';
 import { baseURL } from '../../../configs/url.config';
 import DarHelperUtil from '../../../utils/DarHelper.util';
 import VersionSelector from '../../commonComponents/versionSelector/VersionSelector';
@@ -62,6 +63,7 @@ class DataAccessRequestsNew extends React.Component {
 
 	componentDidMount() {
 		window.scrollTo(0, 0);
+		initGA('UA-183238557-1');
 		this.fetchDataAccessRequests(this.state);
 	}
 
@@ -430,7 +432,7 @@ class DataAccessRequestsNew extends React.Component {
 															selectedVersion={selectedVersion}
 															versionList={versions}
 															displayType='chevron'
-															onToggleClick={this.navigateToLocation}
+															onToggleClick={e => this.navigateToLocation(e, projectId)}
 														/>
 													) : (
 														<span className='gray800-14 mb-2'>Version 1.0</span>
@@ -476,7 +478,7 @@ class DataAccessRequestsNew extends React.Component {
 													isReviewer={isReviewer}
 													stepName={stepName}
 													remainingActioners={remainingActioners}
-													navigateToLocation={this.navigateToLocation}
+													navigateToLocation={e => this.navigateToLocation(e, projectId)}
 													amendmentStatus={amendmentStatus}
 													isStartReviewEnabled={false}
 												/>
