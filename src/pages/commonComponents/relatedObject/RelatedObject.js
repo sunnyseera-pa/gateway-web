@@ -1,5 +1,4 @@
 import React from 'react';
-import axios from 'axios';
 import _ from 'lodash';
 import moment from 'moment';
 import { Row, Col, Button, Alert } from 'react-bootstrap';
@@ -7,10 +6,12 @@ import Loading from '../Loading';
 import SVGIcon from '../../../images/SVGIcon';
 import { ReactComponent as CalendarSvg } from '../../../images/calendaricon.svg';
 import Dataset from './Dataset/Dataset';
+import Tool from './Tool/Tool';
+import Paper from './Paper/Paper';
 import { stripMarkdown } from '../../../utils/GeneralHelper.util';
+import relatedObjectService from '../../../services/related-object';
 import './RelatedObject.scss';
 
-var baseURL = require('../BaseURL').getURL();
 var cmsURL = require('../BaseURL').getCMSURL();
 const env = require('../BaseURL').getURLEnv();
 
@@ -36,6 +37,7 @@ class RelatedObject extends React.Component {
 		if (props.inCollection) {
 			this.state.inCollection = props.inCollection;
 		}
+		// what the hell is going on here
 		if (props.data) {
 			this.state.isCohortDiscovery = props.data.isCohortDiscovery || false;
 			this.state.data = props.data || [];
@@ -43,10 +45,10 @@ class RelatedObject extends React.Component {
 		} else if (props.objectId) {
 			this.state.relatedObject = props.relatedObject;
 			this.state.reason = props.reason;
-			this.getRelatedObjectFromDb(props.objectId, props.objectType);
+			this.getRelatedObjectFromApi(props.objectId, props.objectType);
 		} else {
 			this.state.relatedObject = props.relatedObject;
-			this.getRelatedObjectFromDb(this.state.relatedObject.objectId, this.state.relatedObject.objectType);
+			this.getRelatedObjectFromApi(this.state.relatedObject.objectId, this.state.relatedObject.objectType);
 		}
 	}
 
@@ -68,22 +70,22 @@ class RelatedObject extends React.Component {
 			reason: reason,
 		});
 
-		this.getRelatedObjectFromDb(id, type);
+		this.getRelatedObjectFromApi(id, type);
 	};
 
-	getRelatedObjectFromDb = (id, type) => {
+	getRelatedObjectFromApi = (id, type) => {
 		//need to handle error if no id is found
 		this.setState({ isLoading: true });
 
 		if (type === 'course') {
-			axios.get(baseURL + '/api/v1/relatedobject/course/' + id).then(res => {
+			relatedObjectService.getRelatedObjectForCourseRequest(id).then(res => {
 				this.setState({
 					data: res.data.data[0],
 					isLoading: false,
 				});
 			});
 		} else {
-			axios.get(baseURL + '/api/v1/relatedobject/' + id).then(res => {
+			relatedObjectService.getRelatedObjectRequest(id).then(res => {
 				this.setState({
 					data: res.data.data[0],
 					isCohortDiscovery: res.data.data[0].isCohortDiscovery || false,
@@ -169,189 +171,18 @@ class RelatedObject extends React.Component {
 						{(() => {
 							if (data.type === 'tool') {
 								return (
-									<Row className='noMargin'>
-										<Col sm={10} lg={10} className='pad-left-24'>
-											{activeLink === true ? (
-												<a className='purple-bold-16' style={{ cursor: 'pointer' }} href={'/tool/' + data.id}>
-													{data.name}
-												</a>
-											) : (
-												<span className='black-bold-16'> {data.name}</span>
-											)}
-											<br />
-											{!data.persons || data.persons <= 0 ? (
-												<span className='gray800-14'>Author not listed</span>
-											) : (
-												data.persons.map((person, index) => {
-													if (activeLink === true) {
-														return (
-															<a className='gray800-14' href={'/person/' + person.id} key={`person-${index}`}>
-																{person.firstname} {person.lastname}
-																{data.persons.length === index + 1 ? '' : ', '}
-															</a>
-														);
-													} else {
-														return (
-															<span className='gray800-14' key={`person-${index}`}>
-																{person.firstname} {person.lastname}
-																{data.persons.length === index + 1 ? '' : ', '}
-															</span>
-														);
-													}
-												})
-											)}
-										</Col>
-										<Col sm={2} lg={2} className='pad-right-24'>
-											{this.props.showRelationshipQuestion ? (
-												<Button variant='medium' className='soft-black-14' onClick={this.removeButton}>
-													<SVGIcon name='closeicon' fill={'#979797'} className='buttonSvg mr-2' />
-													Remove
-												</Button>
-											) : (
-												''
-											)}
-										</Col>
-										<Col className='pad-left-24 pad-right-24 pad-top-16'>
-											<span className='badge-tool'>
-												<SVGIcon name='newtoolicon' fill={'#ffffff'} className='badgeSvg mr-2' viewBox='-2 -2 22 22' />
-												<span>Tool</span>
-											</span>
-
-											{!data.categories.category ? (
-												''
-											) : activeLink === true ? (
-												onSearchPage === true ? (
-													<span
-														className='pointer'
-														onClick={event =>
-															this.updateOnFilterBadge('toolCategoriesSelected', {
-																label: data.categories.category,
-																parentKey: 'toolcategories',
-															})
-														}>
-														<div className='badge-tag'>{data.categories.category}</div>
-													</span>
-												) : (
-													<a href={'/search?search=&tab=Tools&toolcategories=' + data.categories.category}>
-														<div className='badge-tag'>{data.categories.category}</div>
-													</a>
-												)
-											) : (
-												<div className='badge-tag'>{data.categories.category}</div>
-											)}
-
-											{!data.programmingLanguage || data.programmingLanguage.length <= 0
-												? ''
-												: data.programmingLanguage.map((p, i) => {
-														if (activeLink === true) {
-															if (onSearchPage === true) {
-																return (
-																	<span
-																		className='pointer'
-																		onClick={event =>
-																			this.updateOnFilterBadge('toolProgrammingLanguageSelected', {
-																				label: p.programmingLanguage,
-																				parentKey: 'toolprogrammingLanguage',
-																			})
-																		}>
-																		<div className='badge-version' key={i}>
-																			<span>{p.programmingLanguage}</span>
-																			<span>{p.version}</span>
-																		</div>
-																	</span>
-																);
-															} else {
-																return (
-																	<a href={'/search?search=&tab=Tools&toolprogrammingLanguage=' + p.programmingLanguage}>
-																		<div className='badge-version' key={i}>
-																			<span>{p.programmingLanguage}</span>
-																			<span>{p.version}</span>
-																		</div>
-																	</a>
-																);
-															}
-														} else {
-															return (
-																<div className='badge-version' key={i}>
-																	<span>{p.programmingLanguage}</span>
-																	<span>{p.version}</span>
-																</div>
-															);
-														}
-												  })}
-
-											{!data.tags.features || data.tags.features.length <= 0
-												? ''
-												: data.tags.features.map((feature, index) => {
-														if (activeLink === true) {
-															if (onSearchPage === true) {
-																return (
-																	<span
-																		className='pointer'
-																		onClick={event =>
-																			this.updateOnFilterBadge('toolFeaturesSelected', { label: feature, parentKey: 'toolfeatures' })
-																		}
-																		key={`feature-${index}`}>
-																		<div className='badge-tag'>{feature}</div>
-																	</span>
-																);
-															} else {
-																return (
-																	<a href={'/search?search=&tab=Tools&toolfeatures=' + feature} key={`feature-${index}`}>
-																		<div className='badge-tag'>{feature}</div>
-																	</a>
-																);
-															}
-														} else {
-															return (
-																<div className='badge-tag' key={`feature-${index}`}>
-																	{feature}
-																</div>
-															);
-														}
-												  })}
-
-											{!data.tags.topics || data.tags.topics.length <= 0
-												? ''
-												: data.tags.topics.map((topic, index) => {
-														if (activeLink === true) {
-															if (onSearchPage === true) {
-																return (
-																	<span
-																		className='pointer'
-																		onClick={event =>
-																			this.updateOnFilterBadge('toolTopicsSelected', { label: topic, parentKey: 'tooltopics' })
-																		}
-																		key={`topic-${index}`}>
-																		<div className='badge-tag'>{topic}</div>
-																	</span>
-																);
-															} else {
-																return (
-																	<a href={'/search?search=&tab=Tools&tooltopics=' + topic} key={`topic-${index}`}>
-																		<div className='badge-tag'>{topic}</div>
-																	</a>
-																);
-															}
-														} else {
-															return (
-																<div className='badge-tag' key={`topic-${index}`}>
-																	{topic}
-																</div>
-															);
-														}
-												  })}
-										</Col>
-										{!this.props.showRelationshipQuestion && (
-											<Col sm={12} lg={12} className='pad-left-24 pad-right-24 pad-top-24 pad-bottom-16'>
-												<span className='gray800-14'>{stripMarkdown(data.description, 255)}</span>
-											</Col>
-										)}
-									</Row>
+									<Tool
+										data={data}
+										activeLink={activeLink ? activeLink : false}
+										onSearchPage={onSearchPage ? onSearchPage : false}
+										showRelationshipQuestion={this.props.showRelationshipQuestion ? this.props.showRelationshipQuestion : false}
+										updateOnFilterBadge={this.updateOnFilterBadge}
+										removeButton={this.removeButton}
+									/>
 								);
 							} else if (data.type === 'project') {
 								return (
-									<Row className='noMargin'>
+									<Row data-testid='related-project-object' className='noMargin'>
 										<Col sm={10} lg={10} className='pad-left-24'>
 											{activeLink === true ? (
 												<a className='purple-bold-16' style={{ cursor: 'pointer' }} href={'/project/' + data.id}>
@@ -493,111 +324,18 @@ class RelatedObject extends React.Component {
 								);
 							} else if (data.type === 'paper') {
 								return (
-									<Row data-test-id='related-paper-object' className='noMargin'>
-										<Col sm={10} lg={10} className='pad-left-24'>
-											{activeLink === true ? (
-												<a className='purple-bold-16' style={{ cursor: 'pointer' }} href={'/paper/' + data.id}>
-													{data.name}
-												</a>
-											) : (
-												<span className='black-bold-16'> {data.name}</span>
-											)}
-
-											<div className='gray800-14' style={{ marginTop: '2px' }}>
-												{data.authorsNew}
-											</div>
-
-											<div className='gray800-14' style={{ marginTop: '10px' }}>
-												{data.journal} {data.journalYear}
-											</div>
-										</Col>
-										<Col sm={2} lg={2} className='pad-right-24'>
-											{this.props.showRelationshipQuestion ? (
-												<Button variant='medium' className='soft-black-14' onClick={this.removeButton}>
-													<SVGIcon name='closeicon' fill={'#979797'} className='buttonSvg mr-2' />
-													Remove
-												</Button>
-											) : (
-												''
-											)}
-										</Col>
-										<Col sm={2} lg={2} className='pad-right-24'>
-											{this.props.showRelationshipQuestion ? (
-												<Button variant='medium' className='soft-black-14' onClick={this.removeButton}>
-													<SVGIcon name='closeicon' fill={'#979797'} className='buttonSvg mr-2' />
-													Remove
-												</Button>
-											) : (
-												''
-											)}
-										</Col>
-										<Col sm={12} lg={12} className='pad-left-24 pad-right-24 pad-top-16'>
-											<span className='badge-paper'>
-												<SVGIcon name='newprojecticon' fill={'#3c3c3b'} className='badgeSvg mr-2' viewBox='-2 -2 22 22' />
-												<span>Paper</span>
-											</span>
-											{!data.tags.features || data.tags.features.length <= 0
-												? ''
-												: data.tags.features.map(feature => {
-														if (activeLink === true) {
-															if (onSearchPage === true) {
-																return (
-																	<span
-																		className='pointer'
-																		onClick={event =>
-																			this.updateOnFilterBadge('paperFeaturesSelected', { label: feature, parentKey: 'paperfeatures' })
-																		}>
-																		<div className='badge-tag'>{feature}</div>
-																	</span>
-																);
-															} else {
-																return (
-																	<a href={'/search?search=&tab=Papers&paperfeatures=' + feature}>
-																		<div className='badge-tag'>{feature}</div>
-																	</a>
-																);
-															}
-														} else {
-															return <div className='badge-tag'>{feature}</div>;
-														}
-												  })}
-
-											{!data.tags.topics || data.tags.topics.length <= 0
-												? ''
-												: data.tags.topics.map(topic => {
-														if (activeLink === true) {
-															if (onSearchPage === true) {
-																return (
-																	<span
-																		className='pointer'
-																		onClick={event =>
-																			this.updateOnFilterBadge('paperTopicsSelected', { label: topic, parentKey: 'papertopics' })
-																		}>
-																		<div className='badge-tag'>{topic}</div>
-																	</span>
-																);
-															} else {
-																return (
-																	<a href={'/search?search=&tab=Projects&papertopics=' + topic}>
-																		<div className='badge-tag'>{topic}</div>
-																	</a>
-																);
-															}
-														} else {
-															return <div className='badge-tag'>{topic}</div>;
-														}
-												  })}
-										</Col>
-										{!this.props.showRelationshipQuestion && (
-											<Col sm={12} lg={12} className='pad-left-24 pad-right-24 pad-top-24 pad-bottom-16'>
-												<span className='gray800-14'>{stripMarkdown(data.description, 255)}</span>
-											</Col>
-										)}
-									</Row>
+									<Paper
+										data={data}
+										activeLink={activeLink ? activeLink : false}
+										onSearchPage={onSearchPage ? onSearchPage : false}
+										showRelationshipQuestion={this.props.showRelationshipQuestion ? this.props.showRelationshipQuestion : false}
+										updateOnFilterBadge={this.updateOnFilterBadge}
+										removeButton={this.removeButton}
+									/>
 								);
 							} else if (data.type === 'person') {
 								return (
-									<Row className='noMargin pad-left-24'>
+									<Row data-testid='related-person-object' className='noMargin pad-left-24'>
 										<Col className='iconHolder noPadding widthAuto'>
 											<div class='avatar-circle'>
 												<span class='initials'>
@@ -635,7 +373,7 @@ class RelatedObject extends React.Component {
 								);
 							} else if (data.type === 'course') {
 								return (
-									<Row className='noMargin'>
+									<Row data-testid='related-course-object' className='noMargin'>
 										<Col sm={10} lg={10} className='pad-left-24'>
 											{activeLink === true ? (
 												<a className='purple-bold-16' style={{ cursor: 'pointer' }} href={'/course/' + data.id}>
@@ -772,7 +510,7 @@ class RelatedObject extends React.Component {
 								return (
 									<Dataset
 										data={data}
-										activeLink={activeLink}
+										activeLink={activeLink ? activeLink : false}
 										publisherLogo={publisherLogo}
 										onSearchPage={onSearchPage ? onSearchPage : false}
 										showRelationshipQuestion={this.props.showRelationshipQuestion ? this.props.showRelationshipQuestion : false}
