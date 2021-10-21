@@ -4,8 +4,8 @@ import SVGIcon from '../../../images/SVGIcon';
 import { ReactComponent as Calendar } from '../../../images/calendaricon.svg';
 import RelatedObject from '../../commonComponents/relatedObject/RelatedObject';
 import DatePicker from 'react-datepicker';
-import Select from 'react-select';
 import Creatable from 'react-select/creatable';
+import Select from 'react-select';
 
 const EditFormDataUse = data => {
 	const [safePeople, setSafePeople] = useState(true);
@@ -46,13 +46,30 @@ const EditFormDataUse = data => {
 		setShowRelatedObject(true);
 	};
 
-	const aquaticCreatures = [
-		{ label: 'Shark', value: 'Shark' },
-		{ label: 'Dolphin', value: 'Dolphin' },
-		{ label: 'Whale', value: 'Whale' },
-		{ label: 'Octopus', value: 'Octopus' },
-		{ label: 'Crab', value: 'Crab' },
-		{ label: 'Lobster', value: 'Lobster' },
+	const applicantsData = [
+		{ label: 'GatewayApplicant', value: 'GatewayApplicant', type: 'gateway' },
+		{ label: 'NonGatewayApplicant', value: 'NonGatewayApplicant', value: 'nonegate' },
+	];
+
+	const gatewayApps =
+		data && data.data && data.data.gatewayApplicants && data.data.gatewayApplicants.map(a => ({ label: a, value: a, type: 'gateway' }));
+
+	const nonGatewayApps =
+		data &&
+		data.data &&
+		data.data.nonGatewayApplicants &&
+		data.data.nonGatewayApplicants.map(b => ({ label: b, value: b, type: 'nongateway' }));
+
+	const allApplicants = gatewayApps && nonGatewayApps && [...gatewayApps, ...nonGatewayApps];
+
+	console.log(applicantsData);
+
+	console.log(allApplicants);
+	const keywordsData = [
+		{ label: 'keyword one', value: 'keyword one' },
+		{ label: 'keyword two', value: 'keyword two' },
+		{ label: 'keyword three', value: 'keyword three' },
+		{ label: 'keyword four', value: 'keyword four' },
 	];
 
 	return (
@@ -105,7 +122,7 @@ const EditFormDataUse = data => {
 									The name of the Principal Investigator, as well as any other individuals that have been authorised to use the data. If
 									they are on the Gateway, please provide their profile URL
 								</p>
-								<Form.Control
+								{/*<Form.Control
 									type='text'
 									placeholder=''
 									defaultValue={
@@ -115,15 +132,24 @@ const EditFormDataUse = data => {
 										data.data.nonGatewayApplicants &&
 										data.data.gatewayApplicants.map(a => a) + data.data.nonGatewayApplicants.map(a => a)
 									}
-								/>
+								/>*/}
 
-								<Creatable
-									options={aquaticCreatures}
-									defaultValue={{ label: 'Applicant', value: 0 }}
+								{/*<Creatable
+									options={applicantsData}
+									defaultValue={applicantsData}
 									onChange={(opt, meta) => console.log(opt, meta)}
 									isMulti
 									components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
-								/>
+                />*/}
+								{allApplicants && (
+									<Creatable
+										options={allApplicants}
+										defaultValue={allApplicants}
+										onChange={(opt, meta) => console.log(opt, meta)}
+										isMulti
+										components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
+									/>
+								)}
 							</Form.Group>
 
 							<Form.Group>
@@ -268,6 +294,7 @@ const EditFormDataUse = data => {
 								<Form.Label className='black-14'>Project start date (optional)</Form.Label>
 								<p className='gray800-13-opacity datause-edit-p'>The date the project is scheduled to start or actual start date</p>
 								{/*<Form.Control type='text' placeholder='' defaultValue={data.data.projectStartDate} />*/}
+								<Calendar className='datePickerCalendar' />
 								<DatePicker
 									name={`startDate`}
 									dateFormat='dd/MM/yyyy'
@@ -283,6 +310,7 @@ const EditFormDataUse = data => {
 								<Form.Label className='black-14'>Project end date (optional)</Form.Label>
 								<p className='gray800-13-opacity datause-edit-p'>The date the project is scheduled to end or actual end date</p>
 								{/*<Form.Control type='text' placeholder='' defaultValue={data.data.projectEndDate} />*/}
+								<Calendar className='datePickerCalendar' />
 								<DatePicker
 									name={`endDate`}
 									dateFormat='dd/MM/yyyy'
@@ -299,6 +327,7 @@ const EditFormDataUse = data => {
 								<p className='gray800-13-opacity datause-edit-p'>
 									The last date the data access request for this project was approved by a data custodian
 								</p>
+								<Calendar className='datePickerCalendar' />
 								{/*<Form.Control type='text' placeholder='' defaultValue={data.data.latestApprovalDate} />*/}
 								<DatePicker
 									name={`approvalDate`}
@@ -581,7 +610,7 @@ const EditFormDataUse = data => {
 									Select maximum 5 keywords that will help make your data use easily searchable
 								</p>
 								<Creatable
-									options={aquaticCreatures}
+									options={keywordsData}
 									onChange={(opt, meta) => console.log(opt, meta)}
 									isMulti
 									components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
