@@ -6,6 +6,7 @@
 
 This is a React Application, which provides the Front End to the Gateway. It uses [axios](https://www.npmjs.com/package/axios) to perform XMLHttpRequests from the browser to negotiate with the Gateway's Back-end API server [gateway-api](https://github.com/HDRUK/gateway-api) for all user interactions with the Gateway resources.
 
+
 ### Installation / Running Instructions
 
 To set up the API on your local do the following steps
