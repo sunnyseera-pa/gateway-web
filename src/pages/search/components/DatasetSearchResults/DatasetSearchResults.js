@@ -1,7 +1,9 @@
 import _ from 'lodash';
 import React from 'react';
+import { omit } from '../../../../configs/propTypes';
 import RelatedObject from '../../../commonComponents/relatedObject/RelatedObject';
 import SearchResults from '../../../commonComponents/SearchResults';
+import { PROP_TYPES_SEARCH_RESULTS } from '../../../commonComponents/SearchResults/SearchResults.propTypes';
 
 const DatasetSearchResults = ({ updateOnFilterBadge, ...outerProps }) => {
 	const mapResults = React.useCallback(
@@ -36,5 +38,7 @@ const DatasetSearchResults = ({ updateOnFilterBadge, ...outerProps }) => {
 
 	return <SearchResults type='dataset' results={mapResults} {...outerProps} />;
 };
+
+DatasetSearchResults.propTypes = omit(PROP_TYPES_SEARCH_RESULTS, ['type', 'results']);
 
 export default DatasetSearchResults;

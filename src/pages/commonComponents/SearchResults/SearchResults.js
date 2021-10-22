@@ -3,6 +3,7 @@ import { Pagination, Row } from 'react-bootstrap';
 import Loading from '../Loading';
 import NoResults from '../NoResults';
 import RelatedObject from '../relatedObject/RelatedObject';
+import { DEFAULT_PROPS_SEARCH_RESULTS, PROP_TYPES_SEARCH_RESULTS } from './SearchResults.propTypes';
 
 const SearchResults = ({
 	results,
@@ -35,7 +36,7 @@ const SearchResults = ({
 						);
 					})}
 				{results && count > 0 && results(data)}
-				{count > maxResult && (
+				{count > maxResult && onPagination && (
 					<Pagination>
 						{new Array(Math.ceil(totalPages)).fill().map((value, i) => (
 							<Pagination.Item key={i} active={i === pageNumber} onClick={() => onPagination(type, i * maxResult)}>
@@ -53,5 +54,9 @@ const SearchResults = ({
 		)}
 	</>
 );
+
+SearchResults.propTypes = PROP_TYPES_SEARCH_RESULTS;
+
+SearchResults.defaultProps = DEFAULT_PROPS_SEARCH_RESULTS;
 
 export default SearchResults;

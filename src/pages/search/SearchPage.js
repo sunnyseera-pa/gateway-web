@@ -226,10 +226,9 @@ class SearchPage extends React.Component {
 	async componentDidMount() {
 		// 1. fires on first time in or page is refreshed/url loaded / has search location
 		if (!!window.location.search) {
-			console.log(window.location);
-
 			const urlParams = new URLSearchParams(window.location.search);
 			const tab = urlParams.get('tab');
+
 			if (tab) {
 				this.setState({ key: tab });
 			}
