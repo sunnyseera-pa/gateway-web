@@ -54,7 +54,7 @@ const DataUseTable = ({ team, data, active, pending, archived, onClickArchive, o
 										</Dropdown.Toggle>
 										<Dropdown.Menu>
 											<Dropdown.Item href='#/action-1'>Edit</Dropdown.Item>
-											{team !== 'user' && <Dropdown.Item onClick={() => onClickArchive(dataUse._id)}>Archive</Dropdown.Item>}
+											{team !== 'user' && <Dropdown.Item onClick={() => onClickArchive(dataUse.id)}>Archive</Dropdown.Item>}
 										</Dropdown.Menu>
 									</Dropdown>
 								)}
@@ -64,8 +64,8 @@ const DataUseTable = ({ team, data, active, pending, archived, onClickArchive, o
 											Actions
 										</Dropdown.Toggle>
 										<Dropdown.Menu>
-											<Dropdown.Item onClick={() => onClickApprove(dataUse._id)}>Approve</Dropdown.Item>
-											<Dropdown.Item onClick={() => onClickReject(dataUse._id)}>Reject</Dropdown.Item>
+											<Dropdown.Item onClick={() => onClickApprove(dataUse.id)}>Approve</Dropdown.Item>
+											<Dropdown.Item onClick={() => onClickReject(dataUse.id)}>Reject</Dropdown.Item>
 										</Dropdown.Menu>
 									</Dropdown>
 								)}
@@ -75,7 +75,7 @@ const DataUseTable = ({ team, data, active, pending, archived, onClickArchive, o
 											Actions
 										</Dropdown.Toggle>
 										<Dropdown.Menu>
-											<Dropdown.Item onClick={() => onClickUnarchive(dataUse._id)}>Unarchive</Dropdown.Item>
+											<Dropdown.Item onClick={() => onClickUnarchive(dataUse.id)}>Unarchive</Dropdown.Item>
 										</Dropdown.Menu>
 									</Dropdown>
 								)}
