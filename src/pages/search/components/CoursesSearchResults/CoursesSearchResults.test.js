@@ -8,8 +8,7 @@ const mockRelatedObject = jest.fn();
 jest.mock('../../../commonComponents/relatedObject/RelatedObject', () => props => {
 	mockRelatedObject(props);
 
-	const RelatedObject = require.requireActual('../../../commonComponents/relatedObject/RelatedObject');
-	return <RelatedObject {...props} />;
+	return <div />;
 });
 
 let wrapper;

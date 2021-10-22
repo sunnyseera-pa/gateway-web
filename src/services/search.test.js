@@ -26,16 +26,12 @@ describe('Given the search service', () => {
 
 	describe('When getSearch is called', () => {
 		it('Then calls getRequest with the correct arguments', async () => {
-			await service.getSearch({
-				params: {
-					search: 'search term',
-				},
+			await service.getSearch('search_term', {
+				option1: true,
 			});
 
-			expect(getRequest).toHaveBeenCalledWith(`${apiURL}/search`, {
-				params: {
-					search: 'search term',
-				},
+			expect(getRequest).toHaveBeenCalledWith(`${apiURL}/search?search=search_term`, {
+				option1: true,
 			});
 		});
 	});
@@ -47,6 +43,18 @@ describe('Given the search service', () => {
 			});
 
 			expect(getRequest).toHaveBeenCalledWith(`${apiURL}/search/filter/topic/paper`, {
+				option1: true,
+			});
+		});
+	});
+
+	describe('When getFilterBy is called', () => {
+		it('Then calls getRequest with the correct arguments', async () => {
+			await service.getFilterBy('search_term', {
+				option1: true,
+			});
+
+			expect(getRequest).toHaveBeenCalledWith(`${apiURL}/search/filter?search=search_term`, {
 				option1: true,
 			});
 		});
@@ -69,7 +77,7 @@ describe('Given the search service', () => {
 			const getSpy = jest.spyOn(service, 'getSearch');
 			const rendered = renderHook(() => service.useGetSearch({ option1: true }), { wrapper });
 
-			assertServiceRefetchCalled(rendered, getSpy, { params: { search: 'search term' } });
+			assertServiceRefetchCalled(rendered, getSpy, 'search_term', { option1: true });
 		});
 	});
 
@@ -79,6 +87,15 @@ describe('Given the search service', () => {
 			const rendered = renderHook(() => service.useGetTopic({ option1: true }), { wrapper });
 
 			assertServiceRefetchCalled(rendered, getSpy, 'paper', { option1: true });
+		});
+	});
+
+	describe('When useGetFilterBy is called', () => {
+		it('Then calls getFilterBy with the correct arguments', async () => {
+			const getSpy = jest.spyOn(service, 'getFilterBy');
+			const rendered = renderHook(() => service.useGetFilterBy({ option1: true }), { wrapper });
+
+			assertServiceRefetchCalled(rendered, getSpy, 'search_term', { option1: true });
 		});
 	});
 
