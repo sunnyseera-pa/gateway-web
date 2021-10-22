@@ -7,6 +7,9 @@ import Pagination from './DataUsePagination';
 import ArchiveModal from './ArchiveModal';
 import './DataUse.scss';
 import SVGIcon from '../../images/SVGIcon';
+import DataUseApproveModal from './modals/DataUseApproveModal';
+import DataUseRejectModal from './modals/DataUseRejectModal';
+import DarHelperUtil from './../../utils/DarHelper.util';
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
 const DataUsePage = React.forwardRef(({ onClickDataUseUpload, team }, ref) => {
@@ -19,6 +22,8 @@ const DataUsePage = React.forwardRef(({ onClickDataUseUpload, team }, ref) => {
 	const [rowsPerPage] = useState(40);
 	const [alert, setAlert] = useState('');
 	const [dataUseId, setDataUseId] = useState(-1);
+	const [showApproveModal, setShowApproveModal] = useState(false);
+	const [showRejectModal, setShowRejectModal] = useState(false);
 	const [showArchiveModal, setShowArchiveModal] = useState(false);
 	const [showUnarchiveModal, setShowUnarchiveModal] = useState(false);
 
@@ -40,6 +45,24 @@ const DataUsePage = React.forwardRef(({ onClickDataUseUpload, team }, ref) => {
 		setDataUseId(dataUseId);
 	};
 
+	const onClickApprove = dataUseId => {
+		toggleApproveModal();
+		setDataUseId(dataUseId);
+	};
+
+	const onClickReject = dataUseId => {
+		toggleRejectModal();
+		setDataUseId(dataUseId);
+	};
+
+	const toggleApproveModal = () => {
+		setShowApproveModal(!showApproveModal);
+	};
+
+	const toggleRejectModal = () => {
+		setShowRejectModal(!showRejectModal);
+	};
+
 	const toggleArchiveModal = () => {
 		setShowArchiveModal(!showArchiveModal);
 	};
@@ -55,14 +78,20 @@ const DataUsePage = React.forwardRef(({ onClickDataUseUpload, team }, ref) => {
 		}, 5000);
 	};
 
-	const updataDataUseStatus = newStatus => {
-		axios.patch(baseURL + '/api/v2/data-use-registers/' + dataUseId, { activeflag: newStatus }).then(res => {
-			if (newStatus === 'archived') {
-				showAlert('Your data use have been successfully archived.');
-				toggleArchiveModal();
-			} else {
+	const updataDataUseStatus = (oldStatus, newStatus, rejectionReason = '') => {
+		axios.patch(baseURL + '/api/v2/data-use-registers/' + dataUseId, { activeflag: newStatus, rejectionReason }).then(res => {
+			if (oldStatus === DarHelperUtil.dataUseRegisterStatus.INREVIEW && newStatus === DarHelperUtil.dataUseRegisterStatus.ACTIVE) {
+				showAlert('Your data use have been successfully approved.');
+				toggleApproveModal();
+			} else if (oldStatus === DarHelperUtil.dataUseRegisterStatus.ARCHIVED && newStatus === DarHelperUtil.dataUseRegisterStatus.ACTIVE) {
 				showAlert('Your data use have been successfully unarchived.');
 				toggleUnarchiveModal();
+			} else if (newStatus === DarHelperUtil.dataUseRegisterStatus.REJECTED) {
+				showAlert('Your data use have been successfully rejected.');
+				toggleRejectModal();
+			} else if (newStatus === DarHelperUtil.dataUseRegisterStatus.ARCHIVED) {
+				showAlert('Your data use have been successfully archived.');
+				toggleArchiveModal();
 			}
 		});
 	};
@@ -133,7 +162,7 @@ const DataUsePage = React.forwardRef(({ onClickDataUseUpload, team }, ref) => {
 							<Table data={currentActive} active={true} team={team} onClickArchive={onClickArchive} />
 						)}
 						{(team === 'admin' || (team !== 'user' && team !== 'admin')) && tabName === 'Pending approval' && (
-							<Table team={team} data={currentPending} pending={true} />
+							<Table team={team} data={currentPending} pending={true} onClickApprove={onClickApprove} onClickReject={onClickReject} />
 						)}
 						{team !== 'user' && team !== 'admin' && tabName === 'Rejected' && <Table team={team} data={currentRejected} />}
 						{team !== 'user' && team !== 'admin' && tabName === 'Archived' && (
@@ -158,11 +187,18 @@ const DataUsePage = React.forwardRef(({ onClickDataUseUpload, team }, ref) => {
 					</Tab>
 				))}
 			</Tabs>
+
 			{showArchiveModal && (
 				<ArchiveModal archive={true} onConfirm={updataDataUseStatus} isVisible={showArchiveModal} toggleModal={toggleArchiveModal} />
 			)}
 			{showUnarchiveModal && (
 				<ArchiveModal archive={false} onConfirm={updataDataUseStatus} isVisible={showUnarchiveModal} toggleModal={toggleUnarchiveModal} />
+			)}
+			{showApproveModal && (
+				<DataUseApproveModal onConfirm={updataDataUseStatus} isVisible={showApproveModal} toggleModal={toggleApproveModal} />
+			)}
+			{showRejectModal && (
+				<DataUseRejectModal onConfirm={updataDataUseStatus} isVisible={showRejectModal} toggleModal={toggleRejectModal} />
 			)}
 		</Container>
 	);
