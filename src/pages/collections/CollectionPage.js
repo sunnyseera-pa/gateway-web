@@ -29,6 +29,7 @@ import ProjectCollectionResults from './Components/ProjectCollectionResults';
 import PaperCollectionResults from './Components/PaperCollectionResults';
 import PersonCollectionResults from './Components/PersonCollectionResults';
 import CourseCollectionResults from './Components/CourseCollectionResults';
+import CohortCollectionResults from './Components/CohortCollectionResults';
 
 export const CollectionPage = props => {
 	const [collectionData, setCollectionData] = useState([]);
@@ -40,12 +41,14 @@ export const CollectionPage = props => {
 	const [projectCount, setProjectCount] = useState(0);
 	const [paperCount, setPaperCount] = useState(0);
 	const [courseCount, setCourseCount] = useState(0);
+	const [cohortCount, setCohortCount] = useState(0);
 	const [datasetIndex, setDatasetIndex] = useState(0);
 	const [toolIndex, setToolIndex] = useState(0);
 	const [projectIndex, setProjectIndex] = useState(0);
 	const [paperIndex, setPaperIndex] = useState(0);
 	const [personIndex, setPersonIndex] = useState(0);
 	const [courseIndex, setCourseIndex] = useState(0);
+	const [cohortIndex, setCohortIndex] = useState(0);
 	const [collectionAdded, setCollectionAdded] = useState(false);
 	const [collectionEdited, setCollectionEdited] = useState(false);
 	const [searchString, setSearchString] = useState('');
@@ -77,7 +80,7 @@ export const CollectionPage = props => {
 			setCollectionEdited(values.collectionEdited);
 		}
 		getCollectionDataFromApi();
-	}, []); 
+	}, []);
 
 	useEffect(() => {
 		handleSort(collectionsPageSort);
@@ -93,7 +96,7 @@ export const CollectionPage = props => {
 			} else {
 				const localCollectionData = res.data.data[0];
 				let counter = !localCollectionData.counter ? 1 : localCollectionData.counter + 1;
-				postCollectionCounterUpdateRequest({ id: props.match.params.collectionID, counter});
+				postCollectionCounterUpdateRequest({ id: props.match.params.collectionID, counter });
 
 				setCollectionData(res.data.data[0]);
 				getObjectData();
@@ -134,6 +137,8 @@ export const CollectionPage = props => {
 			key = 'person';
 		} else if (entityCounts.course > 0) {
 			key = 'course';
+		} else if (entityCounts.cohort > 0) {
+			key = 'cohort';
 		}
 		setKey(key);
 
@@ -143,6 +148,7 @@ export const CollectionPage = props => {
 		setDatasetCount(entityCounts.dataset || 0);
 		setPaperCount(entityCounts.paper || 0);
 		setCourseCount(entityCounts.course || 0);
+		setCohortCount(entityCounts.cohort || 0);
 	};
 
 	const updateDiscoursePostCount = count => {
@@ -216,22 +222,32 @@ export const CollectionPage = props => {
 			setFilteredData(tempFilteredData);
 
 			countEntities(filteredCollectionItems);
+
 			handlePagination(key, 0);
 		}
 	};
 
-	const setIndexByType = page => {
+	const setIndexByType = (type, page) => {
+		const typeMapper = {
+			dataset: setDatasetIndex,
+			tool: setToolIndex,
+			project: setProjectIndex,
+			paper: setPaperIndex,
+			person: setPersonIndex,
+			course: setCourseIndex,
+			cohort: setCohortIndex,
+		};
+
+		const method = typeMapper[type];
+
 		return {
-			dataset: setDatasetIndex(page),
-			tool: setToolIndex(page),
-			project: setProjectIndex(page),
-			paper: setPaperIndex(page),
-			person: setPersonIndex(page),
-			course: setCourseIndex(page)
-		}
-	}
+			type: method(page),
+		};
+	};
+
 	const handlePagination = (type, page) => {
-		setIndexByType(page)[type]();
+		setIndexByType(type, page);
+
 		window.scrollTo(0, 0);
 	};
 
@@ -241,6 +257,7 @@ export const CollectionPage = props => {
 	const paperPaginationItems = generatePaginatedItems('paper', paperCount, paperIndex, handlePagination);
 	const personPaginationItems = generatePaginatedItems('person', personCount, personIndex, handlePagination);
 	const coursePaginationItems = generatePaginatedItems('course', courseCount, courseIndex, handlePagination);
+	const cohortPaginationItems = generatePaginatedItems('cohort', cohortCount, cohortIndex, handlePagination);
 
 	const dropdownItems = generateDropdownItems(key);
 	const { relatedObjects } = collectionData;
@@ -260,7 +277,7 @@ export const CollectionPage = props => {
 				<SearchBar
 					ref={searchBar}
 					searchString={searchString}
-					doSearchMethod={e => e.key === 'Enter' ? window.location.href = `/search?search=${encodeURIComponent(searchString)}` : null}
+					doSearchMethod={e => (e.key === 'Enter' ? (window.location.href = `/search?search=${encodeURIComponent(searchString)}`) : null)}
 					doUpdateSearchString={searchString => setSearchString(searchString)}
 					doToggleDrawer={toggleDrawer}
 					userState={userState}
@@ -426,6 +443,7 @@ export const CollectionPage = props => {
 					<Tab eventKey='project' title={'Projects (' + projectCount + ')'}></Tab>
 					<Tab eventKey='person' title={'People (' + personCount + ')'}></Tab>
 					<Tab eventKey='course' title={'Course (' + courseCount + ')'}></Tab>
+					<Tab eventKey='cohort' title={'Cohorts (' + cohortCount + ')'}></Tab>
 					<Tab eventKey='discussion' title={`Discussion (${discoursePostCount})`}>
 						<Container className='resource-card'>
 							<Row>
@@ -465,30 +483,35 @@ export const CollectionPage = props => {
 				<Row>
 					<Col sm={1} lg={1} />
 					<Col sm={10} lg={10}>
-						{key === 'dataset'
-							? <DatasetCollectionResults searchResults={handlePaginatedItems(datasetIndex)} relatedObjects={relatedObjects} userId={userId} />
-							: null
-						}
-						{key === 'tool'
-							? <ToolCollectionResults searchResults={handlePaginatedItems(toolIndex)} relatedObjects={relatedObjects} userId={userId} /> 
-							: null
-						}
-						{key === 'project'
-							? <ProjectCollectionResults searchResults={handlePaginatedItems(projectIndex)} relatedObjects={relatedObjects} userId={userId} /> 
-							: null
-						}
-						{key === 'paper'
-							? <PaperCollectionResults searchResults={handlePaginatedItems(paperIndex)} relatedObjects={relatedObjects} userId={userId} /> 
-							: null
-						} 
-						{key === 'person'
-							? <PersonCollectionResults searchResults={handlePaginatedItems(personIndex)} relatedObjects={relatedObjects} userId={userId} /> 
-							: null
-						}
-						{key === 'course'
-							? <CourseCollectionResults searchResults={handlePaginatedItems(courseIndex)} relatedObjects={relatedObjects} userId={userId} /> 
-							: null
-						}
+						{key === 'dataset' ? (
+							<DatasetCollectionResults
+								searchResults={handlePaginatedItems(datasetIndex)}
+								relatedObjects={relatedObjects}
+								userId={userId}
+							/>
+						) : null}
+						{key === 'tool' ? (
+							<ToolCollectionResults searchResults={handlePaginatedItems(toolIndex)} relatedObjects={relatedObjects} userId={userId} />
+						) : null}
+						{key === 'project' ? (
+							<ProjectCollectionResults
+								searchResults={handlePaginatedItems(projectIndex)}
+								relatedObjects={relatedObjects}
+								userId={userId}
+							/>
+						) : null}
+						{key === 'paper' ? (
+							<PaperCollectionResults searchResults={handlePaginatedItems(paperIndex)} relatedObjects={relatedObjects} userId={userId} />
+						) : null}
+						{key === 'person' ? (
+							<PersonCollectionResults searchResults={handlePaginatedItems(personIndex)} relatedObjects={relatedObjects} userId={userId} />
+						) : null}
+						{key === 'course' ? (
+							<CourseCollectionResults searchResults={handlePaginatedItems(courseIndex)} relatedObjects={relatedObjects} userId={userId} />
+						) : null}
+						{key === 'cohort' ? (
+							<CohortCollectionResults searchResults={handlePaginatedItems(cohortIndex)} relatedObjects={relatedObjects} userId={userId} />
+						) : null}
 
 						<div className='text-center'>
 							{key === 'dataset' && datasetCount > MAXRESULT ? <Pagination>{datasetPaginationItems}</Pagination> : ''}
@@ -497,24 +520,25 @@ export const CollectionPage = props => {
 							{key === 'paper' && paperCount > MAXRESULT ? <Pagination>{paperPaginationItems}</Pagination> : ''}
 							{key === 'person' && personCount > MAXRESULT ? <Pagination>{personPaginationItems}</Pagination> : ''}
 							{key === 'course' && courseCount > MAXRESULT ? <Pagination>{coursePaginationItems}</Pagination> : ''}
+							{key === 'cohort' && cohortCount > MAXRESULT ? <Pagination>{cohortPaginationItems}</Pagination> : ''}
 						</div>
 					</Col>
 					<Col sm={1} lg={10} />
 				</Row>
 			</Container>
 
-				{userState[0].loggedIn &&
-					(userState[0].role === 'Admin' || (collectionData.authors && collectionData.authors.includes(userState[0].id))) && (
-						<ActionBar userState={userState}>
-							<ResourcePageButtons data={collectionData} userState={userState} isCollection={true} />
-						</ActionBar>
-					)}
+			{userState[0].loggedIn &&
+				(userState[0].role === 'Admin' || (collectionData.authors && collectionData.authors.includes(userState[0].id))) && (
+					<ActionBar userState={userState}>
+						<ResourcePageButtons data={collectionData} userState={userState} isCollection={true} />
+					</ActionBar>
+				)}
 
-				<SideDrawer open={showDrawer} closed={toggleDrawer}>
-					<UserMessages userState={userState[0]} closed={toggleDrawer} toggleModal={toggleModal} drawerIsOpen={showDrawer} />
-				</SideDrawer>
+			<SideDrawer open={showDrawer} closed={toggleDrawer}>
+				<UserMessages userState={userState[0]} closed={toggleDrawer} toggleModal={toggleModal} drawerIsOpen={showDrawer} />
+			</SideDrawer>
 
-				<DataSetModal open={showModal} context={context} closed={toggleModal} userState={userState[0]} />
+			<DataSetModal open={showModal} context={context} closed={toggleModal} userState={userState[0]} />
 		</Sentry.ErrorBoundary>
 	);
 };
