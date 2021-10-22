@@ -5,7 +5,8 @@ import queryString from 'query-string';
 import * as Sentry from '@sentry/react';
 import { Container, Row, Col, Tabs, Tab, Pagination, Button, Alert } from 'react-bootstrap';
 import moment from 'moment';
-import _ from 'lodash';
+import _, { isEmpty } from 'lodash';
+import { CSVLink } from 'react-csv';
 import { toTitleCase } from '../../utils/GeneralHelper.util';
 import Filter from './components/Filter';
 import FilterSelection from './components/FilterSelection';
@@ -60,6 +61,7 @@ class SearchPage extends React.Component {
 		datasetData: [],
 		toolData: [],
 		dataUseRegisterData: [],
+		dataUseRegisterFullData: [],
 		paperData: [],
 		personData: [],
 		courseData: [],
@@ -140,6 +142,7 @@ class SearchPage extends React.Component {
 		this.openDataUtilityWizard = this.openDataUtilityWizard.bind(this);
 		this.toggleDataUtilityBanner = this.toggleDataUtilityBanner.bind(this);
 		this.onWizardStepChange = this.onWizardStepChange.bind(this);
+		this.csvLink = React.createRef();
 	}
 
 	showModal = () => {
@@ -1333,6 +1336,40 @@ class SearchPage extends React.Component {
 		);
 	};
 
+	onClickDownloadResults = () => {
+		let queryString = '?search=' + this.state.search;
+
+		this.state.selectedV2Datauses.forEach(selectedFilter => {
+			const dataUseFilter = this.state.filtersV2Datauses.find(filter => filter.alias === selectedFilter.parentKey);
+			queryString += '&' + dataUseFilter.dataPath + '=' + selectedFilter.value;
+			console.log(queryString);
+		});
+
+		axios.get(baseURL + '/api/v2/data-use-registers' + queryString).then(response => {
+			this.formatDataUseRegisterForDownload(response.data.data);
+		});
+	};
+
+	formatDataUseRegisterForDownload(dataUses) {
+		let formattedDataUses = dataUses;
+
+		// let formattedDataUses = [];
+
+		// dataUses.forEach(dataUse => {
+
+		// 	formattedDataUses.push({
+
+		// 	})
+
+		// })
+
+		this.setState({ dataUseRegisterFullData: formattedDataUses }, () => {
+			setTimeout(() => {
+				this.csvLink.current.link.click();
+			});
+		});
+	}
+
 	render() {
 		let {
 			summary,
@@ -1340,6 +1377,7 @@ class SearchPage extends React.Component {
 			datasetData,
 			toolData,
 			dataUseRegisterData,
+			dataUseRegisterFullData,
 			paperData,
 			personData,
 			courseData,
@@ -1678,6 +1716,15 @@ class SearchPage extends React.Component {
 									results {this.state.search != '' && `for '${this.state.search}'`}
 								</Col>
 								<Col lg={8} className='saved-buttons'>
+									{this.state.key === 'Datauses' && (
+										<>
+											<button className={`button-tertiary`} onClick={() => this.onClickDownloadResults()}>
+												Download Results
+											</button>
+											<CSVLink data={dataUseRegisterFullData} filename='data.csv' className='hidden' ref={this.csvLink} target='_blank' />
+										</>
+									)}
+
 									{this.state.saveSuccess ? (
 										<Button variant='success' className='saved-disabled button-teal button-teal' disabled>
 											<SVGIcon width='15px' height='15px' name='tick' fill={'#fff'} /> Saved
