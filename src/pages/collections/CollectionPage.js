@@ -29,6 +29,7 @@ import ProjectCollectionResults from './Components/ProjectCollectionResults';
 import PaperCollectionResults from './Components/PaperCollectionResults';
 import PersonCollectionResults from './Components/PersonCollectionResults';
 import CourseCollectionResults from './Components/CourseCollectionResults';
+import CohortCollectionResults from './Components/CohortCollectionResults';
 
 export const CollectionPage = props => {
 	const [collectionData, setCollectionData] = useState([]);
@@ -40,12 +41,14 @@ export const CollectionPage = props => {
 	const [projectCount, setProjectCount] = useState(0);
 	const [paperCount, setPaperCount] = useState(0);
 	const [courseCount, setCourseCount] = useState(0);
+	const [cohortCount, setCohortCount] = useState(0);
 	const [datasetIndex, setDatasetIndex] = useState(0);
 	const [toolIndex, setToolIndex] = useState(0);
 	const [projectIndex, setProjectIndex] = useState(0);
 	const [paperIndex, setPaperIndex] = useState(0);
 	const [personIndex, setPersonIndex] = useState(0);
 	const [courseIndex, setCourseIndex] = useState(0);
+	const [cohortIndex, setCohortIndex] = useState(0);
 	const [collectionAdded, setCollectionAdded] = useState(false);
 	const [collectionEdited, setCollectionEdited] = useState(false);
 	const [searchString, setSearchString] = useState('');
@@ -134,6 +137,8 @@ export const CollectionPage = props => {
 			key = 'person';
 		} else if (entityCounts.course > 0) {
 			key = 'course';
+		} else if (entityCounts.cohort > 0) {
+			key = 'cohort';
 		}
 		setKey(key);
 
@@ -143,6 +148,7 @@ export const CollectionPage = props => {
 		setDatasetCount(entityCounts.dataset || 0);
 		setPaperCount(entityCounts.paper || 0);
 		setCourseCount(entityCounts.course || 0);
+		setCohortCount(entityCounts.cohort || 0);
 	};
 
 	const updateDiscoursePostCount = count => {
@@ -229,6 +235,7 @@ export const CollectionPage = props => {
 			paper: setPaperIndex,
 			person: setPersonIndex,
 			course: setCourseIndex,
+			cohort: setCohortIndex,
 		};
 
 		const method = typeMapper[type];
@@ -250,6 +257,7 @@ export const CollectionPage = props => {
 	const paperPaginationItems = generatePaginatedItems('paper', paperCount, paperIndex, handlePagination);
 	const personPaginationItems = generatePaginatedItems('person', personCount, personIndex, handlePagination);
 	const coursePaginationItems = generatePaginatedItems('course', courseCount, courseIndex, handlePagination);
+	const cohortPaginationItems = generatePaginatedItems('cohort', cohortCount, cohortIndex, handlePagination);
 
 	const dropdownItems = generateDropdownItems(key);
 	const { relatedObjects } = collectionData;
@@ -435,6 +443,7 @@ export const CollectionPage = props => {
 					<Tab eventKey='project' title={'Projects (' + projectCount + ')'}></Tab>
 					<Tab eventKey='person' title={'People (' + personCount + ')'}></Tab>
 					<Tab eventKey='course' title={'Course (' + courseCount + ')'}></Tab>
+					<Tab eventKey='cohort' title={'Cohorts (' + cohortCount + ')'}></Tab>
 					<Tab eventKey='discussion' title={`Discussion (${discoursePostCount})`}>
 						<Container className='resource-card'>
 							<Row>
@@ -500,6 +509,9 @@ export const CollectionPage = props => {
 						{key === 'course' ? (
 							<CourseCollectionResults searchResults={handlePaginatedItems(courseIndex)} relatedObjects={relatedObjects} userId={userId} />
 						) : null}
+						{key === 'cohort' ? (
+							<CohortCollectionResults searchResults={handlePaginatedItems(cohortIndex)} relatedObjects={relatedObjects} userId={userId} />
+						) : null}
 
 						<div className='text-center'>
 							{key === 'dataset' && datasetCount > MAXRESULT ? <Pagination>{datasetPaginationItems}</Pagination> : ''}
@@ -508,6 +520,7 @@ export const CollectionPage = props => {
 							{key === 'paper' && paperCount > MAXRESULT ? <Pagination>{paperPaginationItems}</Pagination> : ''}
 							{key === 'person' && personCount > MAXRESULT ? <Pagination>{personPaginationItems}</Pagination> : ''}
 							{key === 'course' && courseCount > MAXRESULT ? <Pagination>{coursePaginationItems}</Pagination> : ''}
+							{key === 'cohort' && cohortCount > MAXRESULT ? <Pagination>{cohortPaginationItems}</Pagination> : ''}
 						</div>
 					</Col>
 					<Col sm={1} lg={10} />
