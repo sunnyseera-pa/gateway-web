@@ -48,6 +48,7 @@ export const CohortDatasetPublisherCard = ({ publisher, publisherGroup }) => {
 							objectType='dataset'
 							activeLink={true}
 							onSearchPage={false}
+							isCohortDatasetsTab={true}
 						/>
 					);
 				})}

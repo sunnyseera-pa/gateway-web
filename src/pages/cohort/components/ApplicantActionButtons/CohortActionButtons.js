@@ -1,8 +1,13 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useState } from 'react';
+import _ from 'lodash';
 import ActionBarMenu from '../../../commonComponents/ActionBarMenu/ActionBarMenu';
+import EntityActionModal from '../../../dashboard/EntityActionModal';
 import '../../Cohorts.scss';
 
-const ApplicantActionButtons = ({ allowedNavigation = false }) => {
+const CohortActionButtons = ({ id, bcpLink, disabled }) => {
+	const [show, setShow] = useState(false);
+	const handleClose = () => setShow(false);
+
 	const options = [
 		{
 			description: '',
@@ -10,10 +15,16 @@ const ApplicantActionButtons = ({ allowedNavigation = false }) => {
 				{
 					title: 'New version: edit metadata',
 					isVisible: true,
+					onClick: () => {
+						window.location.href = `${window.location.search}/cohort/edit/${id}`;
+					},
 				},
 				{
 					title: 'New version: edit inclusion/exclusion criteria',
 					isVisible: true,
+					onClick: () => {
+						setShow(!show);
+					},
 				},
 			],
 		},
@@ -26,14 +37,16 @@ const ApplicantActionButtons = ({ allowedNavigation = false }) => {
 
 	return (
 		<Fragment>
+			<EntityActionModal show={show} handleClose={handleClose} actionType='editCriteria' bcpLink={bcpLink} />
 			<ActionBarMenu
 				label='Create a new version'
 				options={availableOptions}
-				disabled={!allowedNavigation}
+				disabled={disabled}
 				buttonClass='techDetailButton newCohortVersionButton'
+				isCohortPage={true}
 			/>
 		</Fragment>
 	);
 };
 
-export default ApplicantActionButtons;
+export default CohortActionButtons;

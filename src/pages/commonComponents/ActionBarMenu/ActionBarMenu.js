@@ -1,7 +1,7 @@
 import React from 'react';
 import Dropdown from 'react-bootstrap/Dropdown';
 
-const ActionBarMenu = ({ label, options = [], disabled, buttonClass = 'button-secondary' }) => {
+const ActionBarMenu = ({ label, options = [], disabled, buttonClass = 'button-secondary', isCohortPage = false }) => {
 	const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
 		<a
 			href='javascript:void(0)'
@@ -25,16 +25,22 @@ const ActionBarMenu = ({ label, options = [], disabled, buttonClass = 'button-se
 							{label}
 						</button>
 					</Dropdown.Toggle>
-					<Dropdown.Menu className='actionMenuDropdown'>
+					<Dropdown.Menu className={isCohortPage ? 'cohortActionMenuDropdown' : 'actionMenuDropdown'}>
 						{options.map(option => {
 							return (
 								option.actions.length > 0 && (
 									<>
 										<div className='actionMenuSection'>
-											<div className='actionMenuHeader'>
-												<span className='gray800-14-bold description'>{option.description}</span>
-												{option.detailedDescription && <span className='gray700-13 detailedDescription'>{option.detailedDescription}</span>}
-											</div>
+											{option.description ? (
+												<div className='actionMenuHeader'>
+													<span className='gray800-14-bold description'>{option.description}</span>
+													{option.detailedDescription && (
+														<span className='gray700-13 detailedDescription'>{option.detailedDescription}</span>
+													)}
+												</div>
+											) : (
+												''
+											)}
 
 											{option.actions.map(action => {
 												return (

@@ -85,9 +85,18 @@
 }
 
 .newCohortVersionButton {
-	width: 166px;
+	width: 166px !important;
 }
 
 .cohort-card-row {
 	margin-top: 1px;
+}
+
+.cohortActionMenuDropdown {
+	position: relative;
+	width: max-content !important;
+	max-height: 314px !important;
+	box-shadow: 3px 3px 6px 0 rgba(0, 0, 0, 0.09), -3px -3px 4px 0 rgba(0, 0, 0, 0.03) !important;
+	background-color: $white !important;
+	padding: 5px 20px 16px !important;
 }
