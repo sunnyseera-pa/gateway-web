@@ -18,42 +18,45 @@ const SearchResults = ({
 	updateOnFilterBadge,
 	isLoading,
 	totalPages,
-}) => (
-	<>
-		{!isLoading && (
-			<>
-				{sort && (
-					<Row>
-						<div className='text-right save-dropdown'>{sort}</div>
-					</Row>
-				)}
-				{count <= 0 && <NoResults type={type} searchString={search} />}
-				{!results &&
-					count > 0 &&
-					data.map(item => {
-						return (
-							<RelatedObject key={item.id} data={item} activeLink={true} onSearchPage={true} updateOnFilterBadge={updateOnFilterBadge} />
-						);
-					})}
-				{results && count > 0 && results(data)}
-				{count > maxResult && (
-					<Pagination>
-						{new Array(Math.ceil(totalPages)).fill().map((value, i) => (
-							<Pagination.Item key={i} active={i === pageNumber} onClick={() => onPagination(type, i * maxResult)}>
-								{i + 1}
-							</Pagination.Item>
-						))}
-					</Pagination>
-				)}
-			</>
-		)}
-		{!!isLoading && (
-			<div style={{ marginTop: '30px' }}>
-				<Loading data-testid='loader' />
-			</div>
-		)}
-	</>
-);
+}) => {
+	console.log(count, maxResult);
+	return (
+		<>
+			{!isLoading && (
+				<>
+					{sort && (
+						<Row>
+							<div className='text-right save-dropdown'>{sort}</div>
+						</Row>
+					)}
+					{count <= 0 && <NoResults type={type} searchString={search} />}
+					{!results &&
+						count > 0 &&
+						data.map(item => {
+							return (
+								<RelatedObject key={item.id} data={item} activeLink={true} onSearchPage={true} updateOnFilterBadge={updateOnFilterBadge} />
+							);
+						})}
+					{results && count > 0 && results(data)}
+					{count > maxResult && onPagination && (
+						<Pagination>
+							{new Array(Math.ceil(totalPages)).fill().map((value, i) => (
+								<Pagination.Item key={i} active={i === pageNumber} onClick={() => onPagination(type, i + 1, i * maxResult)}>
+									{i + 1}
+								</Pagination.Item>
+							))}
+						</Pagination>
+					)}
+				</>
+			)}
+			{!!isLoading && (
+				<div style={{ marginTop: '30px' }}>
+					<Loading data-testid='loader' />
+				</div>
+			)}
+		</>
+	);
+};
 
 SearchResults.propTypes = PROP_TYPES_SEARCH_RESULTS;
 

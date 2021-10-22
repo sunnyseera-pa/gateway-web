@@ -714,10 +714,11 @@ class SearchPage extends React.Component {
 		});
 	};
 
-	handlePagination = (type = '', page = 0) => {
+	handlePagination = (type = '', page = 0, index) => {
 		if (!_.isEmpty(type)) {
-			googleAnalytics.recordVirtualPageView(`${_.startCase(_.toLower(type))}s results page ${page / 40 + 1}`);
-			this.setState({ [`${type}Index`]: page, isResultsLoading: true }, () => {
+			googleAnalytics.recordVirtualPageView(`${_.startCase(_.toLower(type))}s results page ${page}`);
+
+			this.setState({ [`${type}Index`]: index, isResultsLoading: true }, () => {
 				window.scrollTo(0, 0);
 				this.doSearchCall();
 			});

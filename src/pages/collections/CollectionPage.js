@@ -77,7 +77,7 @@ export const CollectionPage = props => {
 			setCollectionEdited(values.collectionEdited);
 		}
 		getCollectionDataFromApi();
-	}, []); 
+	}, []);
 
 	useEffect(() => {
 		handleSort(collectionsPageSort);
@@ -93,7 +93,7 @@ export const CollectionPage = props => {
 			} else {
 				const localCollectionData = res.data.data[0];
 				let counter = !localCollectionData.counter ? 1 : localCollectionData.counter + 1;
-				postCollectionCounterUpdateRequest({ id: props.match.params.collectionID, counter});
+				postCollectionCounterUpdateRequest({ id: props.match.params.collectionID, counter });
 
 				setCollectionData(res.data.data[0]);
 				getObjectData();
@@ -227,24 +227,26 @@ export const CollectionPage = props => {
 			project: setProjectIndex(page),
 			paper: setPaperIndex(page),
 			person: setPersonIndex(page),
-			course: setCourseIndex(page)
-		}
-	}
+			course: setCourseIndex(page),
+		};
+	};
+
 	const handlePagination = (type, page) => {
 		setIndexByType(page)[type]();
 		window.scrollTo(0, 0);
 	};
 
-	const datasetPaginationItems = generatePaginatedItems('dataset', datasetCount, datasetIndex, handlePagination);
-	const toolPaginationItems = generatePaginatedItems('tool', toolCount, toolIndex, handlePagination);
-	const projectPaginationItems = generatePaginatedItems('project', projectCount, projectIndex, handlePagination);
-	const paperPaginationItems = generatePaginatedItems('paper', paperCount, paperIndex, handlePagination);
-	const personPaginationItems = generatePaginatedItems('person', personCount, personIndex, handlePagination);
-	const coursePaginationItems = generatePaginatedItems('course', courseCount, courseIndex, handlePagination);
-
 	const dropdownItems = generateDropdownItems(key);
 	const { relatedObjects } = collectionData;
 	const userId = userState[0].id;
+
+	const searchProps = {
+		isLoading: isResultsLoading || isLoading,
+		maxResult: MAXRESULT,
+		onPagination: handlePagination,
+		relatedObjects,
+		userId,
+	};
 
 	if (isLoading) {
 		return (
@@ -260,7 +262,7 @@ export const CollectionPage = props => {
 				<SearchBar
 					ref={searchBar}
 					searchString={searchString}
-					doSearchMethod={e => e.key === 'Enter' ? window.location.href = `/search?search=${encodeURIComponent(searchString)}` : null}
+					doSearchMethod={e => (e.key === 'Enter' ? (window.location.href = `/search?search=${encodeURIComponent(searchString)}`) : null)}
 					doUpdateSearchString={searchString => setSearchString(searchString)}
 					doToggleDrawer={toggleDrawer}
 					userState={userState}
@@ -444,13 +446,6 @@ export const CollectionPage = props => {
 			</div>
 
 			<Container className='resource-card'>
-				{isResultsLoading && (
-					<Row className='width-100'>
-						<Col xs={12} className='noPadding'>
-							<Loading />
-						</Col>
-					</Row>
-				)}
 				{key !== 'discussion' && (
 					<CollectionsSearch
 						doCollectionsSearchMethod={doCollectionsSearch}
@@ -465,56 +460,82 @@ export const CollectionPage = props => {
 				<Row>
 					<Col sm={1} lg={1} />
 					<Col sm={10} lg={10}>
-						{key === 'dataset'
-							? <DatasetCollectionResults searchResults={handlePaginatedItems(datasetIndex)} relatedObjects={relatedObjects} userId={userId} />
-							: null
-						}
-						{key === 'tool'
-							? <ToolCollectionResults searchResults={handlePaginatedItems(toolIndex)} relatedObjects={relatedObjects} userId={userId} /> 
-							: null
-						}
-						{key === 'project'
-							? <ProjectCollectionResults searchResults={handlePaginatedItems(projectIndex)} relatedObjects={relatedObjects} userId={userId} /> 
-							: null
-						}
-						{key === 'paper'
-							? <PaperCollectionResults searchResults={handlePaginatedItems(paperIndex)} relatedObjects={relatedObjects} userId={userId} /> 
-							: null
-						} 
-						{key === 'person'
-							? <PersonCollectionResults searchResults={handlePaginatedItems(personIndex)} relatedObjects={relatedObjects} userId={userId} /> 
-							: null
-						}
-						{key === 'course'
-							? <CourseCollectionResults searchResults={handlePaginatedItems(courseIndex)} relatedObjects={relatedObjects} userId={userId} /> 
-							: null
-						}
+						{key === 'dataset' && (
+							<DatasetCollectionResults
+								data={handlePaginatedItems(datasetIndex)}
+								count={datasetCount}
+								pageNumber={datasetIndex / MAXRESULT}
+								totalPages={datasetCount / MAXRESULT}
+								{...searchProps}
+							/>
+						)}
 
-						<div className='text-center'>
-							{key === 'dataset' && datasetCount > MAXRESULT ? <Pagination>{datasetPaginationItems}</Pagination> : ''}
-							{key === 'tool' && toolCount > MAXRESULT ? <Pagination>{toolPaginationItems}</Pagination> : ''}
-							{key === 'project' && projectCount > MAXRESULT ? <Pagination>{projectPaginationItems}</Pagination> : ''}
-							{key === 'paper' && paperCount > MAXRESULT ? <Pagination>{paperPaginationItems}</Pagination> : ''}
-							{key === 'person' && personCount > MAXRESULT ? <Pagination>{personPaginationItems}</Pagination> : ''}
-							{key === 'course' && courseCount > MAXRESULT ? <Pagination>{coursePaginationItems}</Pagination> : ''}
-						</div>
+						{key === 'tool' && (
+							<ToolCollectionResults
+								data={handlePaginatedItems(toolIndex)}
+								count={toolCount}
+								pageNumber={toolIndex / MAXRESULT}
+								totalPages={toolCount / MAXRESULT}
+								{...searchProps}
+							/>
+						)}
+
+						{key === 'project' && (
+							<ProjectCollectionResults
+								data={handlePaginatedItems(projectIndex)}
+								count={projectCount}
+								pageNumber={projectIndex / MAXRESULT}
+								totalPages={projectCount / MAXRESULT}
+								{...searchProps}
+							/>
+						)}
+
+						{key === 'paper' && (
+							<PaperCollectionResults
+								data={handlePaginatedItems(paperIndex)}
+								count={paperCount}
+								pageNumber={paperIndex / MAXRESULT}
+								totalPages={paperCount / MAXRESULT}
+								{...searchProps}
+							/>
+						)}
+
+						{key === 'person' && (
+							<PersonCollectionResults
+								data={handlePaginatedItems(personIndex)}
+								count={personCount}
+								pageNumber={personIndex / MAXRESULT}
+								totalPages={personCount / MAXRESULT}
+								{...searchProps}
+							/>
+						)}
+
+						{key === 'course' && (
+							<CourseCollectionResults
+								data={handlePaginatedItems(courseIndex)}
+								count={courseCount}
+								pageNumber={courseIndex / MAXRESULT}
+								totalPages={courseCount / MAXRESULT}
+								{...searchProps}
+							/>
+						)}
 					</Col>
 					<Col sm={1} lg={10} />
 				</Row>
 			</Container>
 
-				{userState[0].loggedIn &&
-					(userState[0].role === 'Admin' || (collectionData.authors && collectionData.authors.includes(userState[0].id))) && (
-						<ActionBar userState={userState}>
-							<ResourcePageButtons data={collectionData} userState={userState} isCollection={true} />
-						</ActionBar>
-					)}
+			{userState[0].loggedIn &&
+				(userState[0].role === 'Admin' || (collectionData.authors && collectionData.authors.includes(userState[0].id))) && (
+					<ActionBar userState={userState}>
+						<ResourcePageButtons data={collectionData} userState={userState} isCollection={true} />
+					</ActionBar>
+				)}
 
-				<SideDrawer open={showDrawer} closed={toggleDrawer}>
-					<UserMessages userState={userState[0]} closed={toggleDrawer} toggleModal={toggleModal} drawerIsOpen={showDrawer} />
-				</SideDrawer>
+			<SideDrawer open={showDrawer} closed={toggleDrawer}>
+				<UserMessages userState={userState[0]} closed={toggleDrawer} toggleModal={toggleModal} drawerIsOpen={showDrawer} />
+			</SideDrawer>
 
-				<DataSetModal open={showModal} context={context} closed={toggleModal} userState={userState[0]} />
+			<DataSetModal open={showModal} context={context} closed={toggleModal} userState={userState[0]} />
 		</Sentry.ErrorBoundary>
 	);
 };
