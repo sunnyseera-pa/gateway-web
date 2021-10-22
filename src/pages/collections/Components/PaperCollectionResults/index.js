@@ -11,8 +11,6 @@ const PaperCollectionResults = ({ relatedObjects, userId, ...outerProps }) => {
 
 	const mapResults = React.useCallback(
 		searchResults => {
-			console.log('CAN VIEW');
-
 			return searchResults.map(object => {
 				if (canViewResults(object)) {
 					let reason = '';

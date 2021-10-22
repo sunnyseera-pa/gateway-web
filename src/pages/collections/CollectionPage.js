@@ -192,17 +192,9 @@ export const CollectionPage = props => {
 	};
 
 	const handlePaginatedItems = index => {
-		// Returns the related resources that have the same object type as the current active tab and performs a chunk on them to ensure each page returns 24 results
-		let paginatedItems = _.chunk(
-			filteredData.filter(object => object.type === key),
-			24
-		);
-		// If there are items to show based on search results, display them on the currently active page
-		if (paginatedItems.length > 0) {
-			return paginatedItems[index];
-		} else {
-			return [];
-		}
+		const filteredByKey = filteredData.filter(object => object.type === key);
+
+		return filteredByKey.slice(index * MAXRESULT, (index + 1) * MAXRESULT);
 	};
 
 	const doCollectionsSearch = e => {
@@ -220,19 +212,31 @@ export const CollectionPage = props => {
 		}
 	};
 
-	const setIndexByType = page => {
-		return {
-			dataset: setDatasetIndex(page),
-			tool: setToolIndex(page),
-			project: setProjectIndex(page),
-			paper: setPaperIndex(page),
-			person: setPersonIndex(page),
-			course: setCourseIndex(page),
-		};
+	const setIndexByType = (type, page) => {
+		switch (type) {
+			case 'dataset':
+				setDatasetIndex(page);
+				break;
+			case 'tool':
+				setToolIndex(page);
+				break;
+			case 'project':
+				setProjectIndex(page);
+				break;
+			case 'person':
+				setPersonIndex(page);
+				break;
+			case 'course':
+				setCourseIndex(page);
+				break;
+			default:
+				break;
+		}
 	};
 
 	const handlePagination = (type, page) => {
-		setIndexByType(page)[type]();
+		setIndexByType(type, page - 1);
+
 		window.scrollTo(0, 0);
 	};
 
@@ -464,7 +468,7 @@ export const CollectionPage = props => {
 							<DatasetCollectionResults
 								data={handlePaginatedItems(datasetIndex)}
 								count={datasetCount}
-								pageNumber={datasetIndex / MAXRESULT}
+								pageNumber={datasetIndex}
 								totalPages={datasetCount / MAXRESULT}
 								{...searchProps}
 							/>
@@ -474,7 +478,7 @@ export const CollectionPage = props => {
 							<ToolCollectionResults
 								data={handlePaginatedItems(toolIndex)}
 								count={toolCount}
-								pageNumber={toolIndex / MAXRESULT}
+								pageNumber={toolIndex}
 								totalPages={toolCount / MAXRESULT}
 								{...searchProps}
 							/>
@@ -484,7 +488,7 @@ export const CollectionPage = props => {
 							<ProjectCollectionResults
 								data={handlePaginatedItems(projectIndex)}
 								count={projectCount}
-								pageNumber={projectIndex / MAXRESULT}
+								pageNumber={projectIndex}
 								totalPages={projectCount / MAXRESULT}
 								{...searchProps}
 							/>
@@ -494,7 +498,7 @@ export const CollectionPage = props => {
 							<PaperCollectionResults
 								data={handlePaginatedItems(paperIndex)}
 								count={paperCount}
-								pageNumber={paperIndex / MAXRESULT}
+								pageNumber={paperIndex}
 								totalPages={paperCount / MAXRESULT}
 								{...searchProps}
 							/>
@@ -504,7 +508,7 @@ export const CollectionPage = props => {
 							<PersonCollectionResults
 								data={handlePaginatedItems(personIndex)}
 								count={personCount}
-								pageNumber={personIndex / MAXRESULT}
+								pageNumber={personIndex}
 								totalPages={personCount / MAXRESULT}
 								{...searchProps}
 							/>
@@ -514,7 +518,7 @@ export const CollectionPage = props => {
 							<CourseCollectionResults
 								data={handlePaginatedItems(courseIndex)}
 								count={courseCount}
-								pageNumber={courseIndex / MAXRESULT}
+								pageNumber={courseIndex}
 								totalPages={courseCount / MAXRESULT}
 								{...searchProps}
 							/>

@@ -11,6 +11,8 @@ const DatasetCollectionResults = ({ relatedObjects, userId, ...outerProps }) => 
 				(object.type === 'dataset' && object.activeflag === 'review' && object.authors.includes(userId))
 		);
 
+	console.log('/outerprops', outerProps);
+
 	const mapResults = React.useCallback(
 		searchResults => {
 			return searchResults.map(object => {
@@ -62,7 +64,7 @@ const DatasetCollectionResults = ({ relatedObjects, userId, ...outerProps }) => 
 		},
 		[relatedObjects]
 	);
-	console.log('outerProps', outerProps);
+
 	return <SearchResults type='dataset' results={mapResults} {...outerProps} />;
 };
 
