@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Accordion, Card, Button, Form } from 'react-bootstrap';
+import { Accordion, Card, Button, Form, Row, Col } from 'react-bootstrap';
 import SVGIcon from '../../../images/SVGIcon';
 import { ReactComponent as Calendar } from '../../../images/calendaricon.svg';
 import RelatedObject from '../../commonComponents/relatedObject/RelatedObject';
@@ -303,55 +303,68 @@ const EditFormDataUse = data => {
 								/>
 							</Form.Group>
 
-							<Form.Group>
-								<Form.Label className='black-14'>Project start date (optional)</Form.Label>
-								<p className='gray800-13-opacity datause-edit-p'>The date the project is scheduled to start or actual start date</p>
-								{/*<Form.Control type='text' placeholder='' defaultValue={data.data.projectStartDate} />*/}
-								<Calendar className='datePickerCalendar' />
-								<DatePicker
-									name={`startDate`}
-									dateFormat='dd/MM/yyyy'
-									peekNextMonth
-									showMonthDropdown
-									showYearDropdown
-									dropdownMode='select'
-									selected={Date.parse(data.data.projectStartDate)}
-								/>
-							</Form.Group>
+							<Row>
+								<Col>
+									{' '}
+									<Form.Group>
+										<Form.Label className='black-14'>Project start date (optional)</Form.Label>
+										<p className='gray800-13-opacity datause-edit-p'>The date the project is scheduled to start or actual start date</p>
+										{/*<Form.Control type='text' placeholder='' defaultValue={data.data.projectStartDate} />*/}
 
-							<Form.Group>
-								<Form.Label className='black-14'>Project end date (optional)</Form.Label>
-								<p className='gray800-13-opacity datause-edit-p'>The date the project is scheduled to end or actual end date</p>
-								{/*<Form.Control type='text' placeholder='' defaultValue={data.data.projectEndDate} />*/}
-								<Calendar className='datePickerCalendar' />
-								<DatePicker
-									name={`endDate`}
-									dateFormat='dd/MM/yyyy'
-									peekNextMonth
-									showMonthDropdown
-									showYearDropdown
-									dropdownMode='select'
-									selected={Date.parse(data.data.projectEndDate)}
-								/>
-							</Form.Group>
+										<DatePicker
+											name={`startDate`}
+											dateFormat='dd/MM/yyyy'
+											peekNextMonth
+											showMonthDropdown
+											showYearDropdown
+											dropdownMode='select'
+											selected={Date.parse(data.data.projectStartDate)}
+										/>
 
-							<Form.Group>
-								<Form.Label className='black-14'>Latest approval date (optional)</Form.Label>
-								<p className='gray800-13-opacity datause-edit-p'>
-									The last date the data access request for this project was approved by a data custodian
-								</p>
-								<Calendar className='datePickerCalendar' />
-								{/*<Form.Control type='text' placeholder='' defaultValue={data.data.latestApprovalDate} />*/}
-								<DatePicker
-									name={`approvalDate`}
-									dateFormat='dd/MM/yyyy'
-									peekNextMonth
-									showMonthDropdown
-									showYearDropdown
-									dropdownMode='select'
-									selected={Date.parse(data.data.latestApprovalDate)}
-								/>
-							</Form.Group>
+										<Calendar className='datePickerCalendar' />
+									</Form.Group>
+								</Col>
+								<Col>
+									<Form.Group>
+										<Form.Label className='black-14'>Project end date (optional)</Form.Label>
+										<p className='gray800-13-opacity datause-edit-p'>The date the project is scheduled to end or actual end date</p>
+										{/*<Form.Control type='text' placeholder='' defaultValue={data.data.projectEndDate} />*/}
+
+										<DatePicker
+											name={`endDate`}
+											dateFormat='dd/MM/yyyy'
+											peekNextMonth
+											showMonthDropdown
+											showYearDropdown
+											dropdownMode='select'
+											selected={Date.parse(data.data.projectEndDate)}
+										/>
+										<Calendar className='datePickerCalendar' />
+									</Form.Group>
+								</Col>
+							</Row>
+							<Row>
+								<Col md={6}>
+									<Form.Group>
+										<Form.Label className='black-14'>Latest approval date (optional)</Form.Label>
+										<p className='gray800-13-opacity datause-edit-p'>
+											The last date the data access request for this project was approved by a data custodian
+										</p>
+
+										{/*<Form.Control type='text' placeholder='' defaultValue={data.data.latestApprovalDate} />*/}
+										<DatePicker
+											name={`approvalDate`}
+											dateFormat='dd/MM/yyyy'
+											peekNextMonth
+											showMonthDropdown
+											showYearDropdown
+											dropdownMode='select'
+											selected={Date.parse(data.data.latestApprovalDate)}
+										/>
+										<Calendar className='datePickerCalendar' />
+									</Form.Group>
+								</Col>
+							</Row>
 						</Form>
 					</Card.Body>
 				</Accordion.Collapse>

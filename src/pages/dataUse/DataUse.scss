@@ -366,3 +366,19 @@ hr.datause-border {
 .plusMinusButton:disabled {
 	opacity: 0.2;
 }
+
+.datause-save-edit-modal {
+	padding: 16px;
+	width: 394px;
+	margin: 0 auto;
+}
+
+button.close {
+	color: $purple;
+	opacity: 1;
+}
+
+button.close:hover,
+button.close:focus {
+	outline: none;
+}
