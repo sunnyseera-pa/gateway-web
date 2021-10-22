@@ -218,9 +218,14 @@ const AccountCohorts = props => {
 									View
 								</Dropdown.Item>
 							)}
-							{(key === 'active' || key === 'draft') && (
+							{key === 'active' && (
 								<Dropdown.Item href={'/cohort/edit/' + cohort.id} className='black-14'>
 									New version: edit metadata
+								</Dropdown.Item>
+							)}
+							{key === 'draft' && (
+								<Dropdown.Item href={'/cohort/add/' + cohort.id} className='black-14'>
+									Edit: complete draft
 								</Dropdown.Item>
 							)}
 							{/* bcpLink will be updated to cohort.query_url or cohort.cohort.query_url */}

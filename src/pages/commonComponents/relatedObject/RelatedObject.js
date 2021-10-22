@@ -10,6 +10,7 @@ import Tool from './Tool/Tool';
 import Paper from './Paper/Paper';
 import { stripMarkdown } from '../../../utils/GeneralHelper.util';
 import relatedObjectService from '../../../services/related-object';
+import '../../cohort/Cohorts.scss';
 import './RelatedObject.scss';
 
 var cmsURL = require('../BaseURL').getCMSURL();
@@ -28,12 +29,14 @@ class RelatedObject extends React.Component {
 		inCollection: false,
 		isCohortDiscovery: false,
 		publisherLogoURL: '',
+		isCohortDatasetsTab: false,
 	};
 
 	constructor(props) {
 		super(props);
 		this.state.activeLink = props.activeLink;
 		this.state.onSearchPage = props.onSearchPage;
+		this.state.isCohortDatasetsTab = props.isCohortDatasetsTab;
 		if (props.inCollection) {
 			this.state.inCollection = props.inCollection;
 		}
@@ -116,7 +119,7 @@ class RelatedObject extends React.Component {
 		}
 	};
 	render() {
-		const { data, isLoading, activeLink, onSearchPage, relatedObject, inCollection, publisherLogoURL } = this.state;
+		const { data, isLoading, activeLink, onSearchPage, relatedObject, inCollection, publisherLogoURL, isCohortDatasetsTab } = this.state;
 
 		let publisherLogo;
 
@@ -145,7 +148,7 @@ class RelatedObject extends React.Component {
 		}
 
 		return (
-			<Row className='resource-card-row'>
+			<Row className={isCohortDatasetsTab ? 'cohort-card-row' : 'resource-card-row'}>
 				<Col>
 					<div
 						className={rectangleClassName}

@@ -10,7 +10,7 @@ import DiscourseTopic from '../discourse/DiscourseTopic';
 import ErrorModal from '../commonComponents/errorModal/ErrorModal';
 import CohortDiscoveryBanner from '../dataset/components/CohortDiscoveryBanner';
 import ActionBar from '../commonComponents/actionbar/ActionBar';
-import ApplicantActionButtons from './components/ApplicantActionButtons/ApplicantActionButtons';
+import CohortActionButtons from './components/ApplicantActionButtons/CohortActionButtons';
 import ToolTips from '../commonComponents/ToolTips/ToolTips';
 import './Cohorts.scss';
 import { ReactComponent as InfoSVG } from '../../images/info.svg';
@@ -23,6 +23,7 @@ import { CohortDatasetPublisherCard } from './CohortDatasetPublisherCard';
 import NotFound from '../commonComponents/NotFound';
 import RelatedObject from '../commonComponents/relatedObject/RelatedObject';
 let baseURL = require('../commonComponents/BaseURL').getURL();
+const urlEnv = require('../commonComponents/BaseURL').getURLEnv();
 
 export const CohortPage = props => {
 	const [isLoading, setIsLoading] = useState(true);
@@ -33,7 +34,9 @@ export const CohortPage = props => {
 	const [versionHistory, setVersionHistory] = useState([]);
 	const [searchBar] = useState(React.createRef());
 	const [showOldVersionBanner, setShowOldVersionBanner] = useState(false);
+	const [showArchivedBanner, setShowArchivedBanner] = useState(false);
 	const [datasetsGroupedByPublisher, setDatasetsGroupedByPublisher] = useState([]);
+	const [bcpBaseUrl, setBcpBaseUrl] = useState('');
 	const [userState] = useState(
 		props.userState || [
 			{
@@ -48,6 +51,9 @@ export const CohortPage = props => {
 
 	useEffect(() => {
 		getCohortFromDb();
+		urlEnv === 'prod'
+			? setBcpBaseUrl('https://rquest.prod.healthdatagateway.org/bcrquest/')
+			: setBcpBaseUrl('https://rquest.test.healthdatagateway.org/bcrquest/');
 	}, []);
 
 	const getCohortFromDb = async () => {
@@ -60,6 +66,8 @@ export const CohortPage = props => {
 			if (has(newCohortData, 'cohort.input.cohorts[0].groups')) {
 				setCohortGroups(newCohortData.cohort.input.cohorts[0].groups);
 			}
+			const updatedCounter = !newCohortData.counter ? 1 : newCohortData.counter + 1;
+			updateCounter(newCohortData.id, updatedCounter);
 		});
 
 		await axios.get(baseURL + `/api/v1/cohorts?pid=${newCohortData.pid}&fields=id,version,changeLog&sort=-version`).then(res => {
@@ -72,6 +80,7 @@ export const CohortPage = props => {
 				newVersionHistory.length > 1 &&
 				newVersionHistory[0].version > newCohortData.version
 		);
+		setShowArchivedBanner(newCohortData.activeflag === 'archive');
 
 		// Get datasets information for datasets tab
 		getDatasets(newCohortData);
@@ -132,6 +141,10 @@ export const CohortPage = props => {
 		setShowDrawer(!showDrawer);
 	};
 
+	const updateCounter = (id, counter) => {
+		axios.post(baseURL + '/api/v1/cohortcounter/update', { id, counter });
+	};
+
 	const getVersionLink = (id, versionNumber, changeLog) => {
 		return (
 			<a
@@ -187,6 +200,19 @@ export const CohortPage = props => {
 						''
 					)}
 
+					{showArchivedBanner ? (
+						<Row className='mt-2'>
+							<Col sm={1} lg={1} />
+							<Col sm={10} lg={10}>
+								<Alert variant='warning' className='mt-3'>
+									This cohort has been archived and there are no active versions.
+								</Alert>
+							</Col>
+						</Row>
+					) : (
+						''
+					)}
+
 					<Row className='mt-2'>
 						<Col sm={1} lg={1} />
 						<Col sm={10} lg={10}>
@@ -214,7 +240,10 @@ export const CohortPage = props => {
 
 								<Row className='margin-top-20'>
 									<Col xs={12} className='line-height-normal'>
-										<span className='gray700-14'>{counter} views</span>
+										<span className='gray700-14'>
+											{counter === undefined ? 1 : counter + 1}
+											{counter === undefined ? ' view' : ' views'}
+										</span>
 									</Col>
 								</Row>
 							</div>
@@ -441,7 +470,12 @@ export const CohortPage = props => {
 
 				<ActionBar userState={props.userState}>
 					<div className='action-bar-actions'>
-						<ApplicantActionButtons allowedNavigation={true} />
+						<CohortActionButtons
+							allowedNavigation={true}
+							id={cohortData.id}
+							bcpLink={bcpBaseUrl}
+							disabled={cohortData.activeflag !== 'active'}
+						/>
 					</div>
 				</ActionBar>
 			</div>
