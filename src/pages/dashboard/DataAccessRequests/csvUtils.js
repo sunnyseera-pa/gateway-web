@@ -1,5 +1,22 @@
-cosnt createCSV = (dataAccessRequests) => {
+const onDownloadCsvClick = (team) => {
 	
+	// call the backend
+	const dataAccessRequests = getDataAccessRequests(team);
+	cosnt csvData = createCSV(dataAccessRequests);
+	
+	// we pass the 2nd argument, and set a timeout, to ensure that we will get the csv 
+	// back from the backend before we download the csv
+	this.setState({ csvData: csvData }, () => {
+		setTimeout(() => {
+			this.csvLink.current.link.click();
+		});
+	});
+
+	return;
+}
+
+const createCSV = (dataAccessRequests) => {
+
 	// set headers
 	const headers = buildHeaders();
 
@@ -9,10 +26,25 @@ cosnt createCSV = (dataAccessRequests) => {
 	// for each dataAccessRequest create csv rows and append it to the csv rows
 	for (const dar in dataAccessRequests) {
 		const rows = buildRows(dar);
-		csvRows.append.apply(rows);
+		csvRows.push(rows);
 	}
 
 	return csvRows
+}
+
+const getDataAccessRequests(team) {
+	
+	// TODO: change it to the correct route. Probably baseURL + '/api/v2/dataAccessRequests/:team' or similiar.
+	// Create the route on the backend.
+	const response = await axios.get(baseURL + '/api/v2/data-use-registers' + queryString)
+	createCSV(response.data.data);
+
+	return;
+}
+
+
+const buildRows = () => {
+	return [];
 }
 
 const buildHeaders = () => {
@@ -41,4 +73,4 @@ const buildHeaders = () => {
 			];
 }
 
-export default createCSV;
+export default onDownloadCsvClick;

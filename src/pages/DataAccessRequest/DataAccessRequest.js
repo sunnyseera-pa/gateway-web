@@ -47,9 +47,6 @@ import ConfirmSubmissionModal from './components/ConfirmSubmissionModal/ConfirmS
 import DeleteDraftModal from './components/DeleteDraftModal/DeleteDraftModal';
 import DuplicateApplicationModal from './components/DuplicateApplicationModal/DuplicateApplicationModal';
 import SelectDatasetModal from './components/SelectDatasetModal/SelectDatasetModal';
-import createCSV from './utils';
-
-import { CSVLink } from 'react-csv';
 
 class DataAccessRequest extends Component {
 	constructor(props) {
@@ -1724,17 +1721,6 @@ class DataAccessRequest extends Component {
 					</div>
 					<div id='darCenterCol' className={isWideForm ? 'extended' : ''}>
 
-						{/*Download CSV button*/}
-						{ this.getUserRoles().includes('manager') ?
-							// pass this.state
-							<CSVLink data={createCSV(this.state.questionAnswers, this.state._id, this.state.applicationStatus, this.state.createdAt, this.state.updatedAt, this.state.datasets)} filename={"test"}>
-								<button className={`button-secondary csv-btn mb-4`}>
-									{"Download Request as a CSV"}
-								</button>
-							</CSVLink>
-							: '' 
-						}
-
 						{this.state.reviewWarning && (
 							<Alert variant='warning' className=''>
 								<SVGIcon name='attention' width={24} height={24} fill={'#f0bb24'} viewBox='2 -9 22 22'></SVGIcon>
@@ -1969,12 +1955,6 @@ class DataAccessRequest extends Component {
 					duplicateApplication={this.onDuplicateApplication}
 					appToCloneId={this.state._id}
 			/>
-
-				<CSVLink data={createCSV(this.state.questionAnswers, this.state._id, this.state.applicationStatus, this.state.createdAt, this.state.updatedAt, this.state.datasets)} filename={"test"}>
-					<button className={`button-secondary`}>
-						Download Request as a CSV
-					</button>
-				</CSVLink>
 
 			</div>
 		);

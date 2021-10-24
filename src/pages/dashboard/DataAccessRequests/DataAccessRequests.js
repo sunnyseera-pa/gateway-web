@@ -16,6 +16,7 @@ import { baseURL } from '../../../configs/url.config';
 import DarHelperUtil from '../../../utils/DarHelper.util';
 import './DataAccessRequests.scss';
 
+import createCSV from './csvUtils';
 import { CSVLink } from 'react-csv';
 
 class DataAccessRequestsNew extends React.Component {
@@ -40,7 +41,8 @@ class DataAccessRequestsNew extends React.Component {
     avgDecisionTime: 0,
     alert: {},
     showWorkflowReviewModal: false,
-    canViewSubmitted: false
+    canViewSubmitted: false,
+    csvData = []
   };
 
   constructor(props) {
@@ -308,7 +310,8 @@ class DataAccessRequestsNew extends React.Component {
       alert,
       screenData,
       avgDecisionTime,
-      canViewSubmitted
+      canViewSubmitted,
+      csvData
     } = this.state;
 
     if (isLoading) {
@@ -329,9 +332,9 @@ class DataAccessRequestsNew extends React.Component {
 				<Row>
 						<Col xs={1}></Col>
 						<div className="col-sm-10">
-                <CSVLink data={screenData} filename={"test"}>
-                  <button className={`button-secondary`}>
-                      Download This Form
+                <CSVLink data={csvData} filename={"Data Requests - Applications"}>
+                  <button className={`button-secondary`} onClick={onClickDownloadCsv}>
+                      {"Download Applications as CSV"}
                   </button>
                 </CSVLink>
 								<div className="accountHeader dataAccessHeader">
