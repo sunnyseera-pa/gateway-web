@@ -150,7 +150,7 @@ const AccountCohorts = props => {
 			<Row className='subHeader mt-3 gray800-14-bold'>
 				<Col xs={2}>Last updated</Col>
 				<Col xs={5}>Name</Col>
-				<Col xs={2}>Latest version</Col>
+				<Col xs={2}>{key === 'draft' ? '' : 'Latest version'}</Col>
 				<Col xs={3}></Col>
 			</Row>
 		);
@@ -209,7 +209,7 @@ const AccountCohorts = props => {
 						)}
 					</Col>
 					<Col sm={12} lg={2} className='pt-2 gray800-14'>
-						{cohort.version}
+						{cohort.version && cohort.version.toFixed(1)}
 					</Col>
 					<Col sm={12} lg={3} style={{ textAlign: 'right' }} className='toolsButtons'>
 						<DropdownButton variant='outline-secondary' alignRight title='Actions' className='floatRight'>
@@ -225,7 +225,7 @@ const AccountCohorts = props => {
 							)}
 							{key === 'draft' && (
 								<Dropdown.Item href={'/cohort/add/' + cohort.id} className='black-14'>
-									Edit: complete draft
+									Edit draft
 								</Dropdown.Item>
 							)}
 							{/* bcpLink will be updated to cohort.query_url or cohort.cohort.query_url */}
