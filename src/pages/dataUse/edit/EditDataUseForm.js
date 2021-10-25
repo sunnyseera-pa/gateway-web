@@ -56,10 +56,6 @@ const EditFormDataUse = data => {
 		setShowRelatedObject(true);
 	};
 
-	const applicantsData = [
-		{ label: 'GatewayApplicant', value: 'GatewayApplicant', type: 'gateway' },
-		{ label: 'NonGatewayApplicant', value: 'NonGatewayApplicant', value: 'nonegate' },
-	];
 	const { Option } = components;
 	const CustomSelectOption = props => (
 		<Option {...props}>
@@ -82,7 +78,7 @@ const EditFormDataUse = data => {
 						? 'input-select__multi-value gateway-input-select'
 						: 'input-select__multi-value nongateway-input-select'
 				}>
-				<SVGIcon width='20px' height='20px' name={props.data.icon} fill={'#3db28c'} />
+				{props.data.type === 'gateway' && <SVGIcon width='20px' height='20px' name={props.data.icon} fill={'#3db28c'} />}
 				{props.data.label}
 			</div>
 		</div>
@@ -472,14 +468,14 @@ const EditFormDataUse = data => {
 							<Form.Group>
 								<Form.Label className='black-14'>Dataset(s) name</Form.Label>
 								<p className='gray800-13-opacity datause-edit-p'>The name of the dataset(s) being accessed</p>
-								<fieldset disabled>
+								{/*<fieldset disabled>
 									<Form.Control
 										type='text'
 										placeholder=''
 										defaultValue={data && data.data && data.data.datasetTitles && data.data.datasetTitles.map(a => a)}
 										readOnly
 									/>
-								</fieldset>
+                </fieldset>*/}
 							</Form.Group>
 							<Row className='datause-datasettitles'>
 								{data &&
@@ -688,8 +684,8 @@ const EditFormDataUse = data => {
 										</Form.Group>
 									);
 								})}
-								<button className='plusMinusButton'>-</button>
-								<button className='plusMinusButton'>+</button>
+								{/*<button className='plusMinusButton'>-</button>
+								<button className='plusMinusButton'>+</button>*/}
 
 								<Button onClick={handleAddFields} className='plusMinusButton rounded-circle'>
 									+

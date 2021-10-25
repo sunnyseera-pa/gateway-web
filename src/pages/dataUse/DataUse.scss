@@ -388,6 +388,7 @@ button.close:focus {
 .input-select__multi-value {
 	border: 1px solid #e5f7f1 !important;
 	border-radius: 25px !important;
+	padding: 4px;
 }
 
 .css-xb97g8:hover,
@@ -410,7 +411,7 @@ button.close:focus {
 	/* background-color: #fff; */
 	/* background-image: none; */
 	/* background-clip: padding-box; */
-	border: 2px solid rgba(0, 0, 0, 0.15);
+	margin: 0 auto !important;
 	border-radius: 0.25rem;
 }
 
@@ -424,10 +425,17 @@ button.close:focus {
 
 .datause-datepicker {
 	position: relative;
+	margin-left: 14px;
 }
 
 .datause-calendar-svg {
 	position: absolute;
 	margin-left: -32px;
 	margin-top: 8px;
+}
+
+.input-select {
+	color: $gray-700 !important;
+	font-size: 14px;
+	padding: 4px;
 }
