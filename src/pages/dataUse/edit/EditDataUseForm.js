@@ -21,7 +21,7 @@ const EditFormDataUse = data => {
 	const [relatedResources, setRelatedResources] = useState(true);
 	const [valueChange, setValueChange] = useState('');
 	const [showRelatedObject, setShowRelatedObject] = useState(false);
-	const [researchOutputs, setResearchOutputs] = useState([{ input: '' }]);
+	const [researchOutputs, setResearchOutputs] = useState([]);
 	const [defaultResearchOutputs, setDefaultResearchOutputs] = useState(true);
 	const [showExtraInput, setShowExtraInput] = useState(false);
 	const laySummaryMaxLength = 300;
@@ -37,7 +37,6 @@ const EditFormDataUse = data => {
 		const values = [...researchOutputs];
 		if (values.length > 0) values.pop();
 		setDefaultResearchOutputs(false);
-		setShowExtraInput(false);
 		setResearchOutputs(values);
 	};
 
@@ -650,7 +649,11 @@ const EditFormDataUse = data => {
 								</p>
 								{defaultResearchOutputs && <Form.Control type='text' placeholder='' defaultValue={data.data.researchOutputs} />}
 								{researchOutputs.map(i => {
-									return <Form.Group>{showExtraInput && <Form.Control type='text' placeholder='' />}</Form.Group>;
+									return (
+										<Form.Group>
+											<Form.Control type='text' placeholder='' />
+										</Form.Group>
+									);
 								})}
 								<button className='plusMinusButton'>-</button>
 								<button className='plusMinusButton'>+</button>
