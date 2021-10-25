@@ -10,6 +10,10 @@ const getRelatedObjectForCourseRequest = (_id, options) => {
 	return getRequest(`${apiURL}/relatedobject/course/${_id}`, options);
 };
 
+const getRelatedObjectForCohortRequest = (_id, options) => {
+	return getRequest(`${apiURL}/relatedobject/cohort/${_id}`, options);
+};
+
 const useGetRelatedObjectRequest = (requestOptions, queryOptions = { queryKey: 'getRelatedObjectRequest' }) => {
 	return useQuery({
 		...queryOptions,
@@ -25,8 +29,9 @@ const useGetRelatedObjectForCourseRequest = (requestOptions, queryOptions = { qu
 };
 
 export default {
-    getRelatedObjectRequest,
-    getRelatedObjectForCourseRequest,
-    useGetRelatedObjectRequest,
-    useGetRelatedObjectForCourseRequest
-}
+	getRelatedObjectRequest,
+	getRelatedObjectForCourseRequest,
+	getRelatedObjectForCohortRequest,
+	useGetRelatedObjectRequest,
+	useGetRelatedObjectForCourseRequest,
+};
