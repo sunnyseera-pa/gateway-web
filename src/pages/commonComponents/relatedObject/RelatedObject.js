@@ -87,6 +87,13 @@ class RelatedObject extends React.Component {
 					isLoading: false,
 				});
 			});
+		} else if (type === 'cohort') {
+			relatedObjectService.getRelatedObjectForCohortRequest(id).then(res => {
+				this.setState({
+					data: res.data.data[0],
+					isLoading: false,
+				});
+			});
 		} else {
 			relatedObjectService.getRelatedObjectRequest(id).then(res => {
 				this.setState({

@@ -88,6 +88,7 @@ export const PaperDetail = props => {
 						let localAdditionalObjInfo = await getAdditionalObjectInfo(localPaperData.relatedObjects);
 						await populateRelatedObjects(localPaperData, localAdditionalObjInfo);
 					}
+
 					setPaperData(localPaperData);
 					populateCollections(localPaperData);
 				}
@@ -127,6 +128,13 @@ export const PaperDetail = props => {
 			const promises = additionalObjInfo.map(async (object, index) => {
 				if (object.objectType === 'course') {
 					await axios.get(baseURL + '/api/v1/relatedobject/course/' + object.objectId).then(res => {
+						tempObjects.push({
+							id: object.objectId,
+							activeflag: res.data.data[0].activeflag,
+						});
+					});
+				} else if (object.objectType === 'cohort') {
+					await axios.get(baseURL + '/api/v1/relatedobject/cohort/' + object.objectId).then(res => {
 						tempObjects.push({
 							id: object.objectId,
 							activeflag: res.data.data[0].activeflag,

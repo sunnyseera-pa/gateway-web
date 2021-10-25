@@ -125,6 +125,13 @@ export const CourseDetail = props => {
 							activeflag: res.data.data[0].activeflag,
 						});
 					});
+				} else if (object.objectType === 'cohort') {
+					await axios.get(baseURL + '/api/v1/relatedobject/cohort/' + object.objectId).then(res => {
+						tempObjects.push({
+							id: object.objectId,
+							activeflag: res.data.data[0].activeflag,
+						});
+					});
 				} else {
 					await axios.get(baseURL + '/api/v1/relatedobject/' + object.objectId).then(res => {
 						let datasetPublisher;
