@@ -228,7 +228,7 @@ export const CohortPage = props => {
 											<SVGIcon name='dashboard' fill={'#472505'} className='badgeSvg mr-2' viewBox='-2 -2 22 22' />
 											<span>Cohort</span>
 										</span>
-										{filterCriteria.map(criteria => {
+										{[...new Set(filterCriteria)].map(criteria => {
 											return (
 												<a href={'/search?search=&tab=Cohorts&cohortinclusionexclusion=' + criteria}>
 													<div className='badge-tag'>{criteria}</div>
