@@ -386,15 +386,17 @@ button.close:focus {
 
 .css-1rhbuit-multiValue,
 .input-select__multi-value {
-	border: 2px solid $teal !important;
+	border: 1px solid #e5f7f1 !important;
 	border-radius: 25px !important;
-	background: #fff !important;
 }
 
 .css-xb97g8:hover,
 .input-select__multi-value {
-	background-color: transparent !important;
 	color: $indigo !important;
+}
+
+.gateway-input-select {
+	background: #e5f7f1;
 }
 
 .datause-datasettitles {

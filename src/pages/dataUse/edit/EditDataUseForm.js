@@ -76,7 +76,12 @@ const EditFormDataUse = data => {
 	);
 	const customMultiValue = props => (
 		<div className='input-select'>
-			<div className='input-select__multi-value'>
+			<div
+				className={
+					props.data.type === 'gateway'
+						? 'input-select__multi-value gateway-input-select'
+						: 'input-select__multi-value nongateway-input-select'
+				}>
 				<SVGIcon width='20px' height='20px' name={props.data.icon} fill={'#3db28c'} />
 				{props.data.label}
 			</div>
@@ -92,7 +97,7 @@ const EditFormDataUse = data => {
 		data &&
 		data.data &&
 		data.data.nonGatewayApplicants &&
-		data.data.nonGatewayApplicants.map(b => ({ label: b, value: b, type: 'nongateway', icon: 'personiconwithbg' }));
+		data.data.nonGatewayApplicants.map(b => ({ label: b, value: b, type: 'nongateway' }));
 
 	const allApplicants = gatewayApps && nonGatewayApps && [...gatewayApps, ...nonGatewayApps];
 
