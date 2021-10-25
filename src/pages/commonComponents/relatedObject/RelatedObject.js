@@ -558,7 +558,7 @@ class RelatedObject extends React.Component {
 												<span>Cohort</span>
 											</span>
 											{!_.isEmpty(data.filterCriteria) &&
-												data.filterCriteria.map(criteria => {
+												[...new Set(data.filterCriteria)].map(criteria => {
 													if (activeLink) {
 														if (onSearchPage) {
 															return (
