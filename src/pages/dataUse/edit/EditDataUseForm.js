@@ -5,6 +5,7 @@ import { ReactComponent as Calendar } from '../../../images/calendaricon.svg';
 import RelatedObject from '../../commonComponents/relatedObject/RelatedObject';
 import DatePicker from 'react-datepicker';
 import Creatable from 'react-select/creatable';
+import { components } from 'react-select';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 
@@ -59,15 +60,39 @@ const EditFormDataUse = data => {
 		{ label: 'GatewayApplicant', value: 'GatewayApplicant', type: 'gateway' },
 		{ label: 'NonGatewayApplicant', value: 'NonGatewayApplicant', value: 'nonegate' },
 	];
+	const { Option } = components;
+	const CustomSelectOption = props => (
+		<Option {...props}>
+			<SVGIcon width='20px' height='20px' name={props.data.icon} fill={'#3db28c'} />
+			{props.data.label}
+		</Option>
+	);
 
+	const CustomSelectValue = props => (
+		<div>
+			<SVGIcon width='20px' height='20px' name={props.data.icon} fill={'#3db28c'} />
+			{props.data.label}
+		</div>
+	);
+	const customMultiValue = props => (
+		<div className='input-select'>
+			<div className='input-select__multi-value'>
+				<SVGIcon width='20px' height='20px' name={props.data.icon} fill={'#3db28c'} />
+				{props.data.label}
+			</div>
+		</div>
+	);
 	const gatewayApps =
-		data && data.data && data.data.gatewayApplicants && data.data.gatewayApplicants.map(a => ({ label: a, value: a, type: 'gateway' }));
+		data &&
+		data.data &&
+		data.data.gatewayApplicants &&
+		data.data.gatewayApplicants.map(a => ({ label: a, value: a, type: 'gateway', icon: 'personiconwithbg' }));
 
 	const nonGatewayApps =
 		data &&
 		data.data &&
 		data.data.nonGatewayApplicants &&
-		data.data.nonGatewayApplicants.map(b => ({ label: b, value: b, type: 'nongateway' }));
+		data.data.nonGatewayApplicants.map(b => ({ label: b, value: b, type: 'nongateway', icon: 'personiconwithbg' }));
 
 	const allApplicants = gatewayApps && nonGatewayApps && [...gatewayApps, ...nonGatewayApps];
 
@@ -196,7 +221,10 @@ const EditFormDataUse = data => {
 										defaultValue={allApplicants}
 										onChange={(opt, meta) => console.log(opt, meta)}
 										isMulti
-										components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
+										components={
+											({ DropdownIndicator: () => null, IndicatorSeparator: () => null },
+											{ MultiValue: customMultiValue, Option: CustomSelectOption, SingleValue: CustomSelectValue })
+										}
 									/>
 								)}
 							</Form.Group>
