@@ -425,7 +425,6 @@ button.close:focus {
 
 .datause-datepicker {
 	position: relative;
-	margin-left: 14px;
 }
 
 .datause-calendar-svg {
@@ -438,4 +437,8 @@ button.close:focus {
 	color: $gray-700 !important;
 	font-size: 14px;
 	padding: 4px;
+}
+
+.datapicker-releaseaccess {
+	margin-left: 14px;
 }

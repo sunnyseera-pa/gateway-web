@@ -589,7 +589,7 @@ const EditFormDataUse = data => {
 								{/*<Form.Control type='text' placeholder='' defaultValue={data.data.accessDate} />*/}
 								<Row md={6}>
 									{' '}
-									<span className='datause-datepicker'>
+									<span className='datause-datepicker datapicker-releaseaccess'>
 										<DatePicker
 											name={`releaseDate`}
 											dateFormat='dd/MM/yyyy'
