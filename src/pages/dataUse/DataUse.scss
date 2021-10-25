@@ -373,7 +373,8 @@ hr.datause-border {
 	margin: 0 auto;
 }
 
-button.close {
+button.close,
+button.close:hover {
 	color: $purple;
 	opacity: 1;
 }
@@ -381,4 +382,48 @@ button.close {
 button.close:hover,
 button.close:focus {
 	outline: none;
+}
+
+.css-1rhbuit-multiValue {
+	border: 2px solid $teal !important;
+	border-radius: 25px !important;
+	background: #fff !important;
+}
+
+.css-xb97g8:hover {
+	background-color: transparent !important;
+	color: $indigo !important;
+}
+
+.datause-datasettitles {
+	background: #e7e9ed;
+	/* display: block; */
+	width: 100%;
+	padding: 0.5rem 0.75rem;
+	/* font-size: 1rem; */
+	line-height: 1.25;
+	color: #53575a;
+	/* background-color: #fff; */
+	/* background-image: none; */
+	/* background-clip: padding-box; */
+	border: 2px solid rgba(0, 0, 0, 0.15);
+	border-radius: 0.25rem;
+}
+
+.datause-datasettitles-pills {
+	background: white;
+	border-radius: 16px;
+	font-size: 13px;
+	padding: 4px;
+	margin-left: 8px;
+}
+
+.datause-datepicker {
+	position: relative;
+}
+
+.datause-calendar-svg {
+	position: absolute;
+	margin-left: -32px;
+	margin-top: 8px;
 }

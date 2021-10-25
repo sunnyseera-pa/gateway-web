@@ -5,10 +5,13 @@ import { ReactComponent as Calendar } from '../../../images/calendaricon.svg';
 import RelatedObject from '../../commonComponents/relatedObject/RelatedObject';
 import DatePicker from 'react-datepicker';
 import Creatable from 'react-select/creatable';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 
 const EditFormDataUse = data => {
 	const initalLaySummary = data && data.data && data.data.laySummary && data.data.laySummary.length;
 
+	const [counter, setCounter] = useState(initalLaySummary);
 	const [safePeople, setSafePeople] = useState(true);
 	const [safeProject, setSafeProject] = useState(true);
 	const [safeData, setSafeData] = useState(true);
@@ -19,19 +22,22 @@ const EditFormDataUse = data => {
 	const [valueChange, setValueChange] = useState('');
 	const [showRelatedObject, setShowRelatedObject] = useState(false);
 	const [researchOutputs, setResearchOutputs] = useState([{ input: '' }]);
-	const [counter, setCounter] = useState(0);
-
+	const [defaultResearchOutputs, setDefaultResearchOutputs] = useState(true);
+	const [showExtraInput, setShowExtraInput] = useState(false);
 	const laySummaryMaxLength = 300;
 
 	const handleAddFields = () => {
 		const values = [...researchOutputs];
 		values.push({ input: '' });
 		setResearchOutputs(values);
+		setShowExtraInput(true);
 	};
 
 	const handleRemoveFields = () => {
 		const values = [...researchOutputs];
 		if (values.length > 0) values.pop();
+		setDefaultResearchOutputs(false);
+		setShowExtraInput(false);
 		setResearchOutputs(values);
 	};
 
@@ -74,8 +80,47 @@ const EditFormDataUse = data => {
 	];
 
 	const updateCounter = e => {
-		setCounter(initalLaySummary + e.target.value.length);
+		setCounter(e.target.value.length);
 	};
+
+	/*
+  	const formik = useFormik({
+		initialValues: {
+			id: props.data.id || '',
+			name: props.data.name || '',
+			description: props.data.description || '',
+			authors: props.data.authors || [props.userState[0].id],
+			imageLink: props.data.imageLink || '',
+			relatedObjects: props.relatedObjects,
+			publicflag: props.publicFlag || false,
+			keywords: props.data.keywords || [],
+			previousPublicFlag: props.publicFlag,
+		},
+
+		validationSchema: Yup.object({
+			name: Yup.string().required('This cannot be empty'),
+			description: Yup.string().max(5000, 'Maximum of 5,000 characters').required('This cannot be empty'),
+			authors: Yup.lazy(val => (Array.isArray(val) ? Yup.array().of(Yup.number()) : Yup.number())),
+			imageLink: Yup.string().matches(/^(http|https){1}:\/\/[A-Za-z0-9-_~:#@!&',;%=]+$/, {
+				message: 'Invalid URL: should start with http:// or https://',
+			}),
+		}),
+
+		onSubmit: values => {
+			values.relatedObjects = props.relatedObjects;
+			values.collectionCreator = props.userState[0];
+
+			if (props.isEdit) {
+				axios.put(baseURL + '/api/v1/collections/edit/' + props.data.id, values).then(res => {
+					window.location.href = windowUrl + '/collection/' + props.data.id + '/?collectionEdited=true';
+				});
+			} else {
+				axios.post(baseURL + '/api/v1/collections/add', values).then(res => {
+					window.location.href = windowUrl + '/collection/' + res.data.id + '/?collectionAdded=true';
+				});
+			}
+		},
+	}); */
 
 	return (
 		<Accordion defaultActiveKey='0' className='datause-accordion-header'>
@@ -310,18 +355,19 @@ const EditFormDataUse = data => {
 										<Form.Label className='black-14'>Project start date (optional)</Form.Label>
 										<p className='gray800-13-opacity datause-edit-p'>The date the project is scheduled to start or actual start date</p>
 										{/*<Form.Control type='text' placeholder='' defaultValue={data.data.projectStartDate} />*/}
+										<span className='datause-datepicker'>
+											<DatePicker
+												name={`startDate`}
+												dateFormat='dd/MM/yyyy'
+												peekNextMonth
+												showMonthDropdown
+												showYearDropdown
+												dropdownMode='select'
+												selected={Date.parse(data.data.projectStartDate)}
+											/>
 
-										<DatePicker
-											name={`startDate`}
-											dateFormat='dd/MM/yyyy'
-											peekNextMonth
-											showMonthDropdown
-											showYearDropdown
-											dropdownMode='select'
-											selected={Date.parse(data.data.projectStartDate)}
-										/>
-
-										<Calendar className='datePickerCalendar' />
+											<Calendar className='datePickerCalendar datause-calendar-svg' />
+										</span>
 									</Form.Group>
 								</Col>
 								<Col>
@@ -329,17 +375,18 @@ const EditFormDataUse = data => {
 										<Form.Label className='black-14'>Project end date (optional)</Form.Label>
 										<p className='gray800-13-opacity datause-edit-p'>The date the project is scheduled to end or actual end date</p>
 										{/*<Form.Control type='text' placeholder='' defaultValue={data.data.projectEndDate} />*/}
-
-										<DatePicker
-											name={`endDate`}
-											dateFormat='dd/MM/yyyy'
-											peekNextMonth
-											showMonthDropdown
-											showYearDropdown
-											dropdownMode='select'
-											selected={Date.parse(data.data.projectEndDate)}
-										/>
-										<Calendar className='datePickerCalendar' />
+										<span className='datause-datepicker'>
+											<DatePicker
+												name={`endDate`}
+												dateFormat='dd/MM/yyyy'
+												peekNextMonth
+												showMonthDropdown
+												showYearDropdown
+												dropdownMode='select'
+												selected={Date.parse(data.data.projectEndDate)}
+											/>
+											<Calendar className='datePickerCalendar datause-calendar-svg' />
+										</span>
 									</Form.Group>
 								</Col>
 							</Row>
@@ -352,16 +399,18 @@ const EditFormDataUse = data => {
 										</p>
 
 										{/*<Form.Control type='text' placeholder='' defaultValue={data.data.latestApprovalDate} />*/}
-										<DatePicker
-											name={`approvalDate`}
-											dateFormat='dd/MM/yyyy'
-											peekNextMonth
-											showMonthDropdown
-											showYearDropdown
-											dropdownMode='select'
-											selected={Date.parse(data.data.latestApprovalDate)}
-										/>
-										<Calendar className='datePickerCalendar' />
+										<span className='datause-datepicker'>
+											<DatePicker
+												name={`approvalDate`}
+												dateFormat='dd/MM/yyyy'
+												peekNextMonth
+												showMonthDropdown
+												showYearDropdown
+												dropdownMode='select'
+												selected={Date.parse(data.data.latestApprovalDate)}
+											/>
+											<Calendar className='datePickerCalendar datause-calendar-svg' />
+										</span>
 									</Form.Group>
 								</Col>
 							</Row>
@@ -400,6 +449,12 @@ const EditFormDataUse = data => {
 									/>
 								</fieldset>
 							</Form.Group>
+							<Row className='datause-datasettitles'>
+								{data &&
+									data.data &&
+									data.data.datasetTitles &&
+									data.data.datasetTitles.map(a => <span className='datause-datasettitles-pills'>{a}</span>)}
+							</Row>
 
 							<Form.Group>
 								<Form.Label className='black-14'>Dataset sensitivity level (optional)</Form.Label>
@@ -504,16 +559,21 @@ const EditFormDataUse = data => {
 								<Form.Label className='black-14'>Release/Access date (optional)</Form.Label>
 								<p className='gray800-13-opacity datause-edit-p'>The date the data access was granted and active research started</p>
 								{/*<Form.Control type='text' placeholder='' defaultValue={data.data.accessDate} />*/}
-								<Calendar className='datePickerCalendar' />
-								<DatePicker
-									name={`releaseDate`}
-									dateFormat='dd/MM/yyyy'
-									peekNextMonth
-									showMonthDropdown
-									showYearDropdown
-									dropdownMode='select'
-									selected={Date.parse(data.data.accessDate)}
-								/>
+								<Row md={6}>
+									{' '}
+									<span className='datause-datepicker'>
+										<DatePicker
+											name={`releaseDate`}
+											dateFormat='dd/MM/yyyy'
+											peekNextMonth
+											showMonthDropdown
+											showYearDropdown
+											dropdownMode='select'
+											selected={Date.parse(data.data.accessDate)}
+										/>
+										<Calendar className='datePickerCalendar datause-calendar-svg' />
+									</span>
+								</Row>
 							</Form.Group>
 						</Form>
 					</Card.Body>
@@ -588,14 +648,9 @@ const EditFormDataUse = data => {
 									A URL link to any academic or non-academic research outputs, as they become available, including code used. If the link is
 									to a Gateway resource, this will automatically populate in related resources.
 								</p>
-								<Form.Control type='text' placeholder='' defaultValue={data.data.researchOutputs} />
-
+								{defaultResearchOutputs && <Form.Control type='text' placeholder='' defaultValue={data.data.researchOutputs} />}
 								{researchOutputs.map(i => {
-									return (
-										<Form.Group>
-											<Form.Control type='text' placeholder='' />
-										</Form.Group>
-									);
+									return <Form.Group>{showExtraInput && <Form.Control type='text' placeholder='' />}</Form.Group>;
 								})}
 								<button className='plusMinusButton'>-</button>
 								<button className='plusMinusButton'>+</button>
