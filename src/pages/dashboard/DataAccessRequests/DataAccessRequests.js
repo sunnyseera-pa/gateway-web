@@ -16,7 +16,7 @@ import { baseURL } from '../../../configs/url.config';
 import DarHelperUtil from '../../../utils/DarHelper.util';
 import './DataAccessRequests.scss';
 
-import testCreateCSV from './csvUtils';
+import createCSV from './csvUtils';
 import { getDataAccessRequests } from './DataAccessRequestsApi';
 import { CSVLink } from 'react-csv';
 
@@ -303,7 +303,7 @@ class DataAccessRequestsNew extends React.Component {
     const dataAccessRequests = await getDataAccessRequests(team);
     
     // format the 
-    const csvData = testCreateCSV(dataAccessRequests);
+    const csvData = createCSV(dataAccessRequests);
     
     // we pass the 2nd argument, and set a timeout, to ensure that we will get the csv 
     // back from the backend before we download the csv

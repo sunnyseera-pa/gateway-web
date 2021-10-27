@@ -1,4 +1,4 @@
-const testCreateCSV = (dataAccessRequests) => {
+const createCSV = (dataAccessRequests) => {
 
 	// set headers
 	const headers = buildHeaders();
@@ -128,4 +128,4 @@ const buildHeaders = () => {
 			];
 }
 
-export default testCreateCSV
+export default createCSV
