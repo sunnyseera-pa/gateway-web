@@ -314,7 +314,7 @@ class DataAccessRequestsNew extends React.Component {
     // call the backend
     const dataAccessRequests = await getDataAccessRequests(team);
     
-    // format the 
+    // generate csv 
     const csvData = createCSV(dataAccessRequests);
     
     // we pass the 2nd argument, and set a timeout, to ensure that we will get the csv 
