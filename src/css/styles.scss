@@ -907,6 +907,7 @@ iframe#discourse-embed-frame {
 
 .pagination {
 	margin-top: 20px;
+	flex-wrap: wrap;
 }
 
 .page-item.active .page-link,

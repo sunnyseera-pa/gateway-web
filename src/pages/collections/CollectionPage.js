@@ -244,7 +244,6 @@ export const CollectionPage = props => {
 			type: method(page),
 		};
 	};
-
 	const handlePagination = (type, page) => {
 		setIndexByType(type, page);
 

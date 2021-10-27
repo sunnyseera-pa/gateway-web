@@ -1,32 +1,38 @@
-import React, { Fragment } from 'react';
-import axios from 'axios';
-import googleAnalytics from '../../tracking';
-import queryString from 'query-string';
 import * as Sentry from '@sentry/react';
-import { Container, Row, Col, Tabs, Tab, Pagination, Button, Alert } from 'react-bootstrap';
-import moment from 'moment';
-import _ from 'lodash';
-import Filter from './components/Filter';
-import FilterSelection from './components/FilterSelection';
-import SearchBar from '../commonComponents/searchBar/SearchBar';
-import RelatedObject from '../commonComponents/relatedObject/RelatedObject';
-import CollectionCard from '../commonComponents/collectionCard/CollectionCard';
-import Loading from '../commonComponents/Loading';
-import NoResults from '../commonComponents/NoResults';
+import axios from 'axios';
+import _, { upperFirst } from 'lodash';
+import queryString from 'query-string';
+import React from 'react';
+import { Alert, Button, Col, Container, Row, Tab, Tabs } from 'react-bootstrap';
 import { NotificationContainer } from 'react-notifications';
-import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
-import UserMessages from '../commonComponents/userMessages/UserMessages';
-import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
-import ErrorModal from '../commonComponents/errorModal';
-import SortDropdown from './components/SortDropdown';
-import { ReactComponent as CDStar } from '../../images/cd-star.svg';
+import SVGIcon from '../../images/SVGIcon';
+import googleAnalytics from '../../tracking';
 import AdvancedSearchModal from '../commonComponents/AdvancedSearchModal/AdvancedSearchModal';
+import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
+import DataUtilityWizardModal from '../commonComponents/DataUtilityWizard/DataUtilityWizardModal';
+import ErrorModal from '../commonComponents/errorModal';
+import Loading from '../commonComponents/Loading';
 import SavedPreferencesModal from '../commonComponents/savedPreferencesModal/SavedPreferencesModal';
 import SaveModal from '../commonComponents/saveModal/SaveModal';
-import DataUtilityWizardModal from '../commonComponents/DataUtilityWizard/DataUtilityWizardModal';
-import SVGIcon from '../../images/SVGIcon';
+import SearchBar from '../commonComponents/searchBar/SearchBar';
+import SearchResults from '../commonComponents/SearchResults';
+import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
+import UserMessages from '../commonComponents/userMessages/UserMessages';
+import CollectionsSearchResults from './components/CollectionsSearchResults/CollectionsSearchResults';
+import CollectionsSearchSort from './components/CollectionsSearchResults/CollectionsSearchSort';
+import CoursesSearchResults from './components/CoursesSearchResults';
+import DatasetSearchResults from './components/DatasetSearchResults';
+import DatasetSearchSort from './components/DatasetSearchResults/DatasetSearchSort';
+import Filter from './components/Filter';
+import FilterSelection from './components/FilterSelection';
+import PapersSearchSort from './components/PapersSearchResults/PapersSearchSort';
+import PeopleSearchSort from './components/PeopleSearchResult/PeopleSearchSort';
+import ProjectsSearchSort from './components/ProjectsSearchResults/ProjectsSearchSort';
+import SearchFilters from './components/SearchFilters';
+import SearchUtilityBanner from './components/SearchUtilityBanner';
+import ToolsSearchSort from './components/ToolsSearchResults/ToolsSearchSort';
+import CohortsSearchSort from './components/CohortSearchResults/CohortsSearchSort';
 import './Search.scss';
-import { upperFirst } from 'lodash';
 
 let baseURL = require('../commonComponents/BaseURL').getURL();
 const typeMapper = {
@@ -58,6 +64,7 @@ class SearchPage extends React.Component {
 		personIndex: 0,
 		courseIndex: 0,
 		collectionIndex: 0,
+		cohortIndex: 0,
 		datasetData: [],
 		toolData: [],
 		projectData: [],
@@ -65,6 +72,7 @@ class SearchPage extends React.Component {
 		personData: [],
 		courseData: [],
 		collectionData: [],
+		cohortData: [],
 		filterOptions: [],
 		allFilters: [],
 		toolCategoriesSelected: [],
@@ -148,10 +156,6 @@ class SearchPage extends React.Component {
 		this.onWizardStepChange = this.onWizardStepChange.bind(this);
 	}
 
-	hideSavedPreferencesModal = () => {
-		this.setState({ showSavedPreferencesModal: false });
-	};
-
 	hideSavedModal = () => {
 		this.setState({ showSavedModal: false });
 	};
@@ -171,23 +175,6 @@ class SearchPage extends React.Component {
 
 	hideSavedPreferencesModal = () => {
 		this.setState({ showSavedPreferencesModal: false });
-	};
-
-	hideSavedModal = () => {
-		this.setState({ showSavedModal: false });
-	};
-
-	hideNoSaveSearchModal = () => {
-		this.setState({ showSavedModal: false });
-		this.setState({ saveSuccess: false });
-	};
-
-	showSuccessMessage = () => {
-		this.setState({ saveSuccess: true });
-	};
-
-	showSavedName = data => {
-		this.setState({ showSavedName: data });
 	};
 
 	toggleAdvancedSearchModal = () => {
@@ -236,10 +223,9 @@ class SearchPage extends React.Component {
 	async componentDidMount() {
 		// 1. fires on first time in or page is refreshed/url loaded / has search location
 		if (!!window.location.search) {
-			console.log(window.location);
-
 			const urlParams = new URLSearchParams(window.location.search);
 			const tab = urlParams.get('tab');
+
 			if (tab) {
 				this.setState({ key: tab });
 			}
@@ -495,6 +481,7 @@ class SearchPage extends React.Component {
 				personIndex: 0,
 				courseIndex: 0,
 				collectionIndex: 0,
+				cohortIndex: 0,
 				datasetSort: '',
 				toolSort: '',
 				projectSort: '',
@@ -502,6 +489,7 @@ class SearchPage extends React.Component {
 				personSort: '',
 				courseSort: '',
 				collectionSort: '',
+				cohortSort: '',
 			}),
 			() => {
 				this.doSearchCall();
@@ -525,9 +513,19 @@ class SearchPage extends React.Component {
 		}
 	};
 
+	//TODO - add collectionIndex?
 	updateOnFilter = () => {
 		this.setState(
-			{ datasetIndex: 0, toolIndex: 0, projectIndex: 0, paperIndex: 0, personIndex: 0, courseIndex: 0, isResultsLoading: true },
+			{
+				datasetIndex: 0,
+				toolIndex: 0,
+				projectIndex: 0,
+				paperIndex: 0,
+				personIndex: 0,
+				courseIndex: 0,
+				cohortIndex: 0,
+				isResultsLoading: true,
+			},
 			() => {
 				this.doSearchCall();
 			}
@@ -627,11 +625,13 @@ class SearchPage extends React.Component {
 		if (this.state.key !== 'People') {
 			// remove once full migration to v2 filters for all other entities 'Tools, Projects, Courses and Papers'
 			const entityType = typeMapper[`${this.state.key}`];
+
 			axios
 				.get(`${baseURL}/api/v1/search/filter?search=${encodeURIComponent(textSearch ? textSearch : this.state.search)}${searchURL}`)
 				.then(res => {
 					let filters = this.getFilterState(res);
 					// test the type and set relevant state
+
 					if (entityType === 'dataset') {
 						let filtersV2DatasetsState = this.state.filtersV2Datasets || [];
 						filtersDatasetsV2 = this.setHighlightedFilters(filters, [...filtersV2DatasetsState]);
@@ -862,7 +862,7 @@ class SearchPage extends React.Component {
 						const filtersV2Cohorts = this.mapFiltersToDictionary(filterDataCohorts, this.state.dataUtilityFilters);
 						this.setState({ filtersV2Cohorts });
 					}
-
+					break;
 				default:
 			}
 		} catch (error) {
@@ -1222,6 +1222,42 @@ class SearchPage extends React.Component {
 		}
 	};
 
+	getCountByKey = key => {
+		let {
+			summary: {
+				datasetCount = 0,
+				toolCount = 0,
+				projectCount = 0,
+				paperCount = 0,
+				personCount = 0,
+				courseCount = 0,
+				collectionCount = 0,
+				cohortCount = 0,
+			},
+		} = this.state;
+
+		switch (key) {
+			case 'Datasets':
+				return datasetCount;
+			case 'Tools':
+				return toolCount;
+			case 'Projects':
+				return projectCount;
+			case 'Papers':
+				return paperCount;
+			case 'Courses':
+				return courseCount;
+			case 'Collections':
+				return collectionCount;
+			case 'People':
+				return personCount;
+			case 'Cohorts':
+				return cohortCount;
+			default:
+				return 0;
+		}
+	};
+
 	/**
 	 * Handle Filter event bubble for option click
 	 * within the filter panel
@@ -1261,7 +1297,9 @@ class SearchPage extends React.Component {
 					// 8. set state
 					const filtersV2Entity = `filtersV2${this.state.key}`;
 					const selectedV2Entity = `selectedV2${this.state.key}`;
-					this.setState({ [filtersV2Entity]: filtersV2, [selectedV2Entity]: selectedV2, isResultsLoading: true }, () => {
+					const entityIndex = `${typeMapper[this.state.key]}Index`;
+
+					this.setState({ [filtersV2Entity]: filtersV2, [selectedV2Entity]: selectedV2, [entityIndex]: 0, isResultsLoading: true }, () => {
 						this.doSearchCall();
 					});
 					googleAnalytics.recordEvent(
@@ -1353,6 +1391,7 @@ class SearchPage extends React.Component {
 				personIndex: 0,
 				courseIndex: 0,
 				collectionIndex: 0,
+				cohortIndex: 0,
 				datasetSort: '',
 				toolSort: '',
 				projectSort: '',
@@ -1360,6 +1399,7 @@ class SearchPage extends React.Component {
 				personSort: '',
 				courseSort: '',
 				collectionSort: '',
+				cohortSort: '',
 			}),
 			() => {
 				if (viewSaved.tab === 'Datasets') {
@@ -1368,12 +1408,14 @@ class SearchPage extends React.Component {
 					this.setState({ toolSort: viewSaved.sort });
 				} else if (viewSaved.tab === 'Projects') {
 					this.setState({ projectSort: viewSaved.sort });
-				} else if (viewSaved.tab === 'Papers') {
-					this.setState({ paperSort: viewSaved.sort });
-				} else if (viewSaved.tab === 'People') {
-					this.setState({ personSort: viewSaved.sort });
 				} else if (viewSaved.tab === 'Collections') {
 					this.setState({ collectionSort: viewSaved.sort });
+				} else if (viewSaved.tab === 'Papers') {
+					this.setState({ paperSort: viewSaved.sort });
+				} else if (viewSaved.tab === 'Cohorts') {
+					this.setState({ cohortSort: viewSaved.sort });
+				} else if (viewSaved.tab === 'People') {
+					this.setState({ personSort: viewSaved.sort });
 				}
 
 				this.setState({ search: viewSaved.search, key: viewSaved.tab, [`selectedV2${viewSaved.tab}`]: viewSaved.filters }, () => {
@@ -1383,30 +1425,8 @@ class SearchPage extends React.Component {
 		);
 	};
 
-	render() {
+	getPreference(key) {
 		let {
-			summary,
-			search,
-			datasetData,
-			toolData,
-			projectData,
-			paperData,
-			personData,
-			courseData,
-			collectionData,
-			cohortData,
-			userState,
-			isLoading,
-			isResultsLoading,
-			datasetIndex,
-			toolIndex,
-			projectIndex,
-			paperIndex,
-			personIndex,
-			courseIndex,
-			collectionIndex,
-			cohortIndex,
-
 			datasetSort,
 			toolSort,
 			projectSort,
@@ -1414,258 +1434,18 @@ class SearchPage extends React.Component {
 			personSort,
 			collectionSort,
 			cohortSort,
-
-			filtersV2Datasets,
 			selectedV2Datasets,
-			filtersV2Tools,
 			selectedV2Tools,
-			filtersV2Projects,
 			selectedV2Projects,
-			filtersV2Papers,
 			selectedV2Papers,
-			filtersV2Courses,
 			selectedV2Courses,
-			filtersV2Cohorts,
-			selectedV2Cohorts,
-			filtersV2Collections,
 			selectedV2Collections,
-
-			showDrawer,
-			showModal,
-			showAdvancedSearchModal,
-			context,
-			activeDataUtilityWizardStep,
-
-			key,
+			selectedV2Cohorts,
 		} = this.state;
-
-		if (isLoading) {
-			return (
-				<Container>
-					<Loading />
-				</Container>
-			);
-		}
-		// destructure counts from summary
-		let {
-			datasetCount = 0,
-			toolCount = 0,
-			projectCount = 0,
-			paperCount = 0,
-			personCount = 0,
-			courseCount = 0,
-			collectionCount = 0,
-			cohortCount = 0,
-		} = summary;
-		// clean needed here at later date
-		if (key === '' || typeof key === 'undefined') {
-			if (datasetCount > 0) {
-				key = 'Datasets';
-			} else if (toolCount > 0) {
-				key = 'Tools';
-			} else if (projectCount > 0) {
-				key = 'Projects';
-			} else if (paperCount > 0) {
-				key = 'Papers';
-			} else if (personCount > 0) {
-				key = 'People';
-			} else if (courseCount > 0) {
-				key = 'Course';
-			} else if (collectionCount > 0) {
-				key = 'Collections';
-			} else if (cohortCount > 0) {
-				key = 'Cohorts';
-			} else {
-				key = 'Datasets';
-			}
-		}
-		// default show sort
-		let showSort = true;
-		// clean needed here at later date
-		if ((key === '' || key === 'Datasets') && datasetCount === 0) showSort = false;
-		if (key === 'Tools' && toolCount === 0) showSort = false;
-		if (key === 'Projects' && projectCount === 0) showSort = false;
-		if (key === 'Papers' && paperCount === 0) showSort = false;
-		if (key === 'People' && personCount === 0) showSort = false;
-		if (key === 'Courses' && courseCount === 0) showSort = false;
-		if (key === 'Collections' && collectionCount === 0) showSort = false;
-		if (key === 'Cohorts' && cohortCount === 0) showSort = false;
-
-		let datasetPaginationItems = [];
-		let toolPaginationItems = [];
-		let projectPaginationItems = [];
-		let paperPaginationItems = [];
-		let personPaginationItems = [];
-		let coursePaginationItems = [];
-		let collectionPaginationItems = [];
-		let cohortPaginationItems = [];
-		let maxResult = 40;
-		// Dataset pagination
-		for (let i = 1; i <= Math.max(Math.ceil(datasetCount / maxResult), 1); i++) {
-			datasetPaginationItems.push(
-				<Pagination.Item
-					key={i}
-					active={i === datasetIndex / maxResult + 1}
-					onClick={() => this.handlePagination(typeMapper.Datasets, (i - 1) * maxResult)}>
-					{i}
-				</Pagination.Item>
-			);
-		}
-		// Tool Pagination
-		for (let i = 1; i <= Math.ceil(toolCount / maxResult); i++) {
-			toolPaginationItems.push(
-				<Pagination.Item
-					key={i}
-					active={i === toolIndex / maxResult + 1}
-					onClick={() => this.handlePagination(typeMapper.Tools, (i - 1) * maxResult)}>
-					{i}
-				</Pagination.Item>
-			);
-		}
-		// Project Pagination
-		for (let i = 1; i <= Math.ceil(projectCount / maxResult); i++) {
-			projectPaginationItems.push(
-				<Pagination.Item
-					key={i}
-					active={i === projectIndex / maxResult + 1}
-					onClick={() => this.handlePagination(typeMapper.Projects, (i - 1) * maxResult)}>
-					{i}
-				</Pagination.Item>
-			);
-		}
-		// Paper Pagination
-		for (let i = 1; i <= Math.ceil(paperCount / maxResult); i++) {
-			paperPaginationItems.push(
-				<Pagination.Item
-					key={i}
-					active={i === paperIndex / maxResult + 1}
-					onClick={() => this.handlePagination(typeMapper.Papers, (i - 1) * maxResult)}>
-					{i}
-				</Pagination.Item>
-			);
-		}
-		// Person Pagination
-		for (let i = 1; i <= Math.ceil(personCount / maxResult); i++) {
-			personPaginationItems.push(
-				<Pagination.Item
-					key={i}
-					active={i === personIndex / maxResult + 1}
-					onClick={() => this.handlePagination(typeMapper.People, (i - 1) * maxResult)}>
-					{i}
-				</Pagination.Item>
-			);
-		}
-		// Course Pagination
-		for (let i = 1; i <= Math.ceil(courseCount / maxResult); i++) {
-			coursePaginationItems.push(
-				<Pagination.Item
-					key={i}
-					active={i === courseIndex / maxResult + 1}
-					onClick={() => this.handlePagination(typeMapper.Courses, (i - 1) * maxResult)}>
-					{i}
-				</Pagination.Item>
-			);
-		}
-		// Collection Pagination
-		for (let i = 1; i <= Math.ceil(collectionCount / maxResult); i++) {
-			collectionPaginationItems.push(
-				<Pagination.Item
-					key={i}
-					active={i === collectionIndex / maxResult + 1}
-					onClick={() => this.handlePagination(typeMapper.Collections, (i - 1) * maxResult)}>
-					{i}
-				</Pagination.Item>
-			);
-		}
-		// Cohort Pagination
-		for (let i = 1; i <= Math.ceil(cohortCount / maxResult); i++) {
-			cohortPaginationItems.push(
-				<Pagination.Item
-					key={i}
-					active={i === cohortIndex / maxResult + 1}
-					onClick={() => this.handlePagination(typeMapper.Cohorts, (i - 1) * maxResult)}>
-					{i}
-				</Pagination.Item>
-			);
-		}
-
-		const dropdownMenu = (
-			<div className='text-right save-dropdown'>
-				{key === 'Tools' ? (
-					<SortDropdown
-						handleSort={this.handleSort}
-						sort={toolSort === '' ? (search === '' ? 'latest' : 'relevance') : toolSort}
-						dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
-					/>
-				) : (
-					''
-				)}
-
-				{key === 'Datasets' ? (
-					<SortDropdown
-						handleSort={this.handleSort}
-						sort={datasetSort === '' ? (search === '' ? 'metadata' : 'relevance') : datasetSort}
-						dropdownItems={['relevance', 'popularity', 'metadata', 'latest', 'resources']}
-					/>
-				) : (
-					''
-				)}
-
-				{key === 'Projects' ? (
-					<SortDropdown
-						handleSort={this.handleSort}
-						sort={projectSort === '' ? (search === '' ? 'latest' : 'relevance') : projectSort}
-						dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
-					/>
-				) : (
-					''
-				)}
-
-				{key === 'Collections' ? (
-					<SortDropdown
-						handleSort={this.handleSort}
-						sort={collectionSort === '' ? (search === '' ? 'latest' : 'relevance') : collectionSort}
-						dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
-					/>
-				) : (
-					''
-				)}
-
-				{key === 'Papers' ? (
-					<SortDropdown
-						handleSort={this.handleSort}
-						sort={paperSort === '' ? (search === '' ? 'sortbyyear' : 'relevance') : paperSort}
-						dropdownItems={['relevance', 'popularity', 'sortbyyear', 'resources']}
-					/>
-				) : (
-					''
-				)}
-
-				{key === 'Cohorts' ? (
-					<SortDropdown
-						handleSort={this.handleSort}
-						sort={cohortSort === '' ? (search === '' ? 'latest' : 'relevance') : cohortSort}
-						dropdownItems={['relevance', 'popularity', 'latest', 'resources', 'entries', 'datasets']}
-						savedSearch={true}
-					/>
-				) : (
-					''
-				)}
-
-				{key === 'People' ? (
-					<SortDropdown
-						handleSort={this.handleSort}
-						sort={personSort === '' ? (search === '' ? 'latest' : 'relevance') : personSort}
-						dropdownItems={['relevance', 'popularity', 'latest']}
-					/>
-				) : (
-					''
-				)}
-			</div>
-		);
 
 		let preferenceFilters = {};
 		let perferenceSort = '';
+
 		if (key === 'Datasets') {
 			preferenceFilters = selectedV2Datasets;
 			perferenceSort = datasetSort;
@@ -1690,6 +1470,180 @@ class SearchPage extends React.Component {
 			perferenceSort = personSort;
 		}
 
+		return {
+			preferenceFilters,
+			perferenceSort,
+		};
+	}
+
+	getFilterProps(key) {
+		return {
+			data: this.getFilterStateByKey(key),
+			onHandleInputChange: this.handleInputChange,
+			onHandleClearSection: this.handleClearSection,
+			onHandleToggle: this.handleToggle,
+		};
+	}
+
+	getSearchProps(showSort, sortMenu, maxResult) {
+		const { savedSearchPanel, isResultsLoading: isLoading, search } = this.state;
+
+		return {
+			maxResult,
+			search,
+			isLoading,
+			sort: showSort && !savedSearchPanel && sortMenu,
+			updateOnFilterBadge: this.updateOnFilterBadge,
+			onPagination: this.handlePagination,
+		};
+	}
+
+	getKey() {
+		let {
+			summary: {
+				datasetCount = 0,
+				toolCount = 0,
+				projectCount = 0,
+				paperCount = 0,
+				personCount = 0,
+				courseCount = 0,
+				collectionCount = 0,
+				cohortCount = 0,
+			},
+			key,
+		} = this.state;
+
+		if (key === '' || typeof key === 'undefined') {
+			if (datasetCount > 0) {
+				key = 'Datasets';
+			} else if (toolCount > 0) {
+				key = 'Tools';
+			} else if (projectCount > 0) {
+				key = 'Projects';
+			} else if (paperCount > 0) {
+				key = 'Papers';
+			} else if (personCount > 0) {
+				key = 'People';
+			} else if (courseCount > 0) {
+				key = 'Course';
+			} else if (cohortCount > 0) {
+				key = 'Cohorts';
+			} else if (collectionCount > 0) {
+				key = 'Collections';
+			} else {
+				key = 'Datasets';
+			}
+		}
+
+		return key;
+	}
+
+	getShowSort(key) {
+		return this.getCountByKey(key) > 0;
+	}
+
+	getFiltersSelectionProps(preferenceFilters) {
+		return {
+			selectedCount: preferenceFilters.length,
+			selectedItems: preferenceFilters,
+		};
+	}
+
+	render() {
+		let {
+			summary: {
+				datasetCount = 0,
+				toolCount = 0,
+				projectCount = 0,
+				paperCount = 0,
+				personCount = 0,
+				courseCount = 0,
+				collectionCount = 0,
+				cohortCount = 0,
+			},
+			search,
+			datasetData,
+			toolData,
+			projectData,
+			paperData,
+			personData,
+			courseData,
+			collectionData,
+			cohortData,
+			userState,
+			isLoading,
+			datasetIndex,
+			toolIndex,
+			projectIndex,
+			paperIndex,
+			personIndex,
+			courseIndex,
+			collectionIndex,
+			cohortIndex,
+
+			datasetSort,
+			toolSort,
+			projectSort,
+			paperSort,
+			personSort,
+			collectionSort,
+			cohortSort,
+
+			// TODO - remove
+			// filtersV2Datasets,
+			selectedV2Datasets,
+			// filtersV2Tools,
+			// selectedV2Tools,
+			// filtersV2Projects,
+			// selectedV2Projects,
+			// filtersV2Papers,
+			// selectedV2Papers,
+			// filtersV2Courses,
+			// selectedV2Courses,
+			// filtersV2Cohorts,
+			// selectedV2Cohorts,
+			// filtersV2Collections,
+			// selectedV2Collections,
+
+			showDrawer,
+			showModal,
+			showAdvancedSearchModal,
+			context,
+			activeDataUtilityWizardStep,
+
+			key: baseKey,
+		} = this.state;
+
+		if (isLoading) {
+			return (
+				<Container>
+					<Loading />
+				</Container>
+			);
+		}
+
+		const key = this.getKey(baseKey);
+
+		let maxResult = 40;
+
+		const sortMenu = (
+			<div className='text-right save-dropdown'>
+				{key === 'Tools' && <ToolsSearchSort onSort={this.handleSort} sort={toolSort} search={search} />}
+				{key === 'Datasets' && <DatasetSearchSort onSort={this.handleSort} sort={datasetSort} search={search} />}
+				{key === 'Projects' && <ProjectsSearchSort onSort={this.handleSort} sort={projectSort} search={search} />}
+				{key === 'Collections' && <CollectionsSearchSort onSort={this.handleSort} sort={collectionSort} search={search} />}
+				{key === 'Papers' && <PapersSearchSort onSort={this.handleSort} sort={paperSort} search={search} />}
+				{key === 'Cohorts' && <CohortsSearchSort onSort={this.handleSort} sort={cohortSort} search={search} />}
+				{key === 'People' && <PeopleSearchSort onSort={this.handleSort} sort={personSort} search={search} />}
+			</div>
+		);
+
+		const { preferenceFilters, perferenceSort } = this.getPreference(key);
+		const showSort = this.getShowSort(key);
+		const filterProps = this.getFilterProps(key);
+		const filtersSelectionProps = this.getFiltersSelectionProps(preferenceFilters);
+		const searchProps = this.getSearchProps(showSort, sortMenu, maxResult);
+
 		return (
 			<Sentry.ErrorBoundary fallback={<ErrorModal />}>
 				<div>
@@ -1713,38 +1667,14 @@ class SearchPage extends React.Component {
 								<Tab eventKey='Courses' title={'Courses (' + courseCount + ')'} />
 								<Tab eventKey='Papers' title={'Papers (' + paperCount + ')'} />
 								<Tab eventKey='Cohorts' title={'Cohorts (' + cohortCount + ')'} />
-								<Tab eventKey='People' title={'People (' + personCount + ')'}>
-									{personCount <= 0 && !isResultsLoading ? <NoResults type='profiles' search={search} /> : ''}
-								</Tab>
+								<Tab eventKey='People' title={'People (' + personCount + ')'} />
 							</Tabs>
 						</div>
 					</div>
 
 					<div className='container'>
 						{this.state.showDataUtilityBanner && (
-							<Alert variant='primary' className='blue-banner saved-preference-banner'>
-								<Row>
-									<Col>
-										<h5 className='indigo-bold-14'>Data utility wizard applied: Customer filters</h5>
-									</Col>
-								</Row>
-								<Row>
-									<Col md={9}>
-										You can continue to customise your filters below or edit alongside the search term in the data utility wizard.
-									</Col>
-									<Col md={3} className='data-utility-banner'>
-										<p
-											className='data-utility-link'
-											onClick={() => {
-												googleAnalytics.recordVirtualPageView('Data utility wizard');
-												googleAnalytics.recordEvent('Datasets', 'Clicked edit data utility wizard', 'Reopened data utility wizard modal');
-												this.openDataUtilityWizard(activeDataUtilityWizardStep);
-											}}>
-											Edit in data utility wizard
-										</p>
-									</Col>
-								</Row>
-							</Alert>
+							<SearchUtilityBanner onClick={this.openDataUtilityWizard} step={activeDataUtilityWizardStep} />
 						)}
 
 						{this.state.saveSuccess && !this.state.showSavedModal && (
@@ -1752,17 +1682,11 @@ class SearchPage extends React.Component {
 								Saved preference: "{this.state.showSavedName}"
 							</Alert>
 						)}
+
 						<Container className={this.state.saveSuccess && !this.state.showSavedModal && 'container-saved-preference-banner'}>
 							<Row className='filters filter-save'>
 								<Col className='title' lg={4}>
-									Showing {key === 'Datasets' ? <>{datasetCount} </> : ''}
-									{key === 'Tools' ? <>{toolCount} </> : ''}
-									{key === 'Projects' ? <>{projectCount} </> : ''}
-									{key === 'Collections' ? <>{collectionCount} </> : ''}
-									{key === 'Courses' ? <>{courseCount} </> : ''}
-									{key === 'Papers' ? <>{paperCount} </> : ''}
-									{key === 'People' ? <>{personCount} </> : ''}
-									results {this.state.search != '' && `for '${this.state.search}'`}
+									Showing {this.getCountByKey(key)} results {this.state.search != '' && `for '${this.state.search}'`}
 								</Col>
 								<Col lg={8} className='saved-buttons'>
 									{this.state.saveSuccess ? (
@@ -1814,431 +1738,117 @@ class SearchPage extends React.Component {
 										/>
 									)}
 
-									{dropdownMenu}
+									{sortMenu}
 								</Col>
 							</Row>
 							<Row>
-								{this.state.key === 'Datasets' ? (
+								{key !== 'People' && (
 									<FilterSelection
-										selectedCount={selectedV2Datasets.length}
-										selectedItems={selectedV2Datasets}
+										{...filtersSelectionProps}
 										onHandleClearSelection={this.handleClearSelection}
 										onHandleClearAll={this.handleClearAll}
 										savedSearches={true}
 									/>
-								) : (
-									''
-								)}
-								{this.state.key === 'Tools' ? (
-									<FilterSelection
-										selectedCount={selectedV2Tools.length}
-										selectedItems={selectedV2Tools}
-										onHandleClearSelection={this.handleClearSelection}
-										onHandleClearAll={this.handleClearAll}
-										savedSearches={true}
-									/>
-								) : (
-									''
-								)}
-								{this.state.key === 'Projects' ? (
-									<FilterSelection
-										selectedCount={selectedV2Projects.length}
-										selectedItems={selectedV2Projects}
-										onHandleClearSelection={this.handleClearSelection}
-										onHandleClearAll={this.handleClearAll}
-										savedSearches={true}
-									/>
-								) : (
-									''
-								)}
-								{this.state.key === 'Papers' ? (
-									<FilterSelection
-										selectedCount={selectedV2Papers.length}
-										selectedItems={selectedV2Papers}
-										onHandleClearSelection={this.handleClearSelection}
-										onHandleClearAll={this.handleClearAll}
-										savedSearches={true}
-									/>
-								) : (
-									''
-								)}
-								{this.state.key === 'Courses' ? (
-									<FilterSelection
-										selectedCount={selectedV2Courses.length}
-										selectedItems={selectedV2Courses}
-										onHandleClearSelection={this.handleClearSelection}
-										onHandleClearAll={this.handleClearAll}
-										savedSearches={true}
-									/>
-								) : (
-									''
-								)}
-								{this.state.key === 'Cohorts' ? (
-									<FilterSelection
-										selectedCount={selectedV2Cohorts.length}
-										selectedItems={selectedV2Cohorts}
-										onHandleClearSelection={this.handleClearSelection}
-										onHandleClearAll={this.handleClearAll}
-										savedSearches={true}
-									/>
-								) : (
-									''
-								)}
-								{this.state.key === 'Collections' ? (
-									<FilterSelection
-										selectedCount={selectedV2Collections.length}
-										selectedItems={selectedV2Collections}
-										onHandleClearSelection={this.handleClearSelection}
-										onHandleClearAll={this.handleClearAll}
-										savedSearches={true}
-									/>
-								) : (
-									''
 								)}
 							</Row>
 						</Container>
 					</div>
 					<Container>
 						<Row>
-							{key !== 'People' ? (
-								<Col sm={12} md={12} lg={3} className='mt-1 mb-5'>
-									{key === 'Datasets' ? (
-										<Fragment>
-											<div className='saved-filterHolder'>
-												<Filter
-													data={filtersV2Datasets}
-													onHandleInputChange={this.handleInputChange}
-													onHandleClearSection={this.handleClearSection}
-													onHandleToggle={this.handleToggle}
-												/>
-											</div>
-										</Fragment>
-									) : (
-										''
-									)}
+							<Col sm={12} md={12} lg={3} className='mt-1 mb-5'>
+								{key !== 'People' && (
+									<SearchFilters filters={<Filter {...filterProps} />} onAdvancedSearchClick={this.toggleAdvancedSearchModal} />
+								)}
+							</Col>
+							<Col sm={12} md={12} lg={9} className='mt-1 mb-5'>
+								{key === 'Datasets' && (
+									<DatasetSearchResults
+										data={datasetData}
+										count={datasetCount}
+										pageNumber={datasetIndex / maxResult}
+										totalPages={datasetCount / maxResult}
+										{...searchProps}
+									/>
+								)}
 
-									{key === 'Tools' ? (
-										<Fragment>
-											<div className='saved-filterHolder'>
-												<Filter
-													data={filtersV2Tools}
-													onHandleInputChange={this.handleInputChange}
-													onHandleClearSection={this.handleClearSection}
-													onHandleToggle={this.handleToggle}
-												/>
-											</div>
-										</Fragment>
-									) : (
-										''
-									)}
+								{key === 'Tools' && (
+									<SearchResults
+										type='tool'
+										data={toolData}
+										count={toolCount}
+										pageNumber={toolIndex / maxResult}
+										totalPages={toolCount / maxResult}
+										{...searchProps}
+									/>
+								)}
 
-									{key === 'Projects' ? (
-										<Fragment>
-											<div className='saved-filterHolder'>
-												<Filter
-													data={filtersV2Projects}
-													onHandleInputChange={this.handleInputChange}
-													onHandleClearSection={this.handleClearSection}
-													onHandleToggle={this.handleToggle}
-												/>
-											</div>
-										</Fragment>
-									) : (
-										''
-									)}
-									{key === 'Papers' ? (
-										<Fragment>
-											<div className='saved-filterHolder'>
-												<Filter
-													data={filtersV2Papers}
-													onHandleInputChange={this.handleInputChange}
-													onHandleClearSection={this.handleClearSection}
-													onHandleToggle={this.handleToggle}
-												/>
-											</div>
-										</Fragment>
-									) : (
-										''
-									)}
-									{key === 'Courses' ? (
-										<Fragment>
-											<div className='saved-filterHolder'>
-												<Filter
-													data={filtersV2Courses}
-													onHandleInputChange={this.handleInputChange}
-													onHandleClearSection={this.handleClearSection}
-													onHandleToggle={this.handleToggle}
-												/>
-											</div>
-										</Fragment>
-									) : (
-										''
-									)}
-									{key === 'Cohorts' ? (
-										<Fragment>
-											<div className='saved-filterHolder'>
-												<Filter
-													data={filtersV2Cohorts}
-													onHandleInputChange={this.handleInputChange}
-													onHandleClearSection={this.handleClearSection}
-													onHandleToggle={this.handleToggle}
-												/>
-											</div>
-										</Fragment>
-									) : (
-										''
-									)}
-									{key === 'Collections' ? (
-										<Fragment>
-											<div className='saved-filterHolder'>
-												<Filter
-													data={filtersV2Collections}
-													onHandleInputChange={this.handleInputChange}
-													onHandleClearSection={this.handleClearSection}
-													onHandleToggle={this.handleToggle}
-												/>
-											</div>
-										</Fragment>
-									) : (
-										''
-									)}
+								{key === 'Projects' && (
+									<SearchResults
+										type='project'
+										data={projectData}
+										count={projectCount}
+										pageNumber={projectIndex / maxResult}
+										totalPages={projectCount / maxResult}
+										{...searchProps}
+									/>
+								)}
 
-									<div className='advanced-search-link-container'>
-										<CDStar fill='#f98e2b' height='20' width='20' />
-										<a
-											href='javascript:void(0)'
-											className='textUnderline gray800-14 cursorPointer'
-											onClick={() => {
-												googleAnalytics.recordEvent('Datasets', 'User clicked advanced search link', 'Advanced search modal opened');
-												this.toggleAdvancedSearchModal();
-											}}>
-											Advanced Search
-										</a>
-									</div>
-								</Col>
-							) : (
-								<Col sm={12} md={12} lg={3} />
-							)}
+								{key === 'Collections' && (
+									<CollectionsSearchResults
+										data={collectionData}
+										count={collectionCount}
+										pageNumber={collectionIndex}
+										totalPages={collectionCount / maxResult}
+										{...searchProps}
+									/>
+								)}
 
-							{!isResultsLoading ? (
-								<Col sm={12} md={12} lg={9} className='mt-1 mb-5'>
-									{!showSort ? '' : <Fragment>{!this.state.savedSearchPanel && <Row>{dropdownMenu}</Row>}</Fragment>}
-									{key === 'Datasets' ? (
-										datasetCount <= 0 ? (
-											<NoResults type='datasets' search={search} />
-										) : (
-											datasetData.map(dataset => {
-												let datasetPublisher;
-												let datasetLogo;
+								{key === 'Papers' && (
+									<SearchResults
+										type='paper'
+										data={paperData}
+										count={paperCount}
+										pageNumber={paperIndex / maxResult}
+										totalPages={paperCount / maxResult}
+										{...searchProps}
+									/>
+								)}
 
-												!_.isEmpty(dataset.datasetv2) && _.has(dataset, 'datasetv2.summary.publisher.name')
-													? (datasetPublisher = dataset.datasetv2.summary.publisher.name)
-													: (datasetPublisher = '');
+								{key === 'Cohorts' && (
+									<SearchResults
+										type='cohort'
+										data={cohortData}
+										count={cohortCount}
+										pageNumber={cohortIndex / maxResult}
+										totalPages={cohortCount / maxResult}
+										{...searchProps}
+									/>
+								)}
 
-												!_.isEmpty(dataset.datasetv2) && _.has(dataset, 'datasetv2.summary.publisher.logo')
-													? (datasetLogo = dataset.datasetv2.summary.publisher.logo)
-													: (datasetLogo = '');
+								{key === 'People' && (
+									<SearchResults
+										type='person'
+										data={personData}
+										count={personCount}
+										pageNumber={personIndex / maxResult}
+										totalPages={personCount / maxResult}
+										{...searchProps}
+									/>
+								)}
 
-												return (
-													<RelatedObject
-														key={dataset.id}
-														data={dataset}
-														activeLink={true}
-														onSearchPage={true}
-														updateOnFilterBadge={this.updateOnFilterBadge}
-														datasetPublisher={datasetPublisher}
-														datasetLogo={datasetLogo}
-													/>
-												);
-											})
-										)
-									) : (
-										''
-									)}
-
-									{key === 'Tools' ? (
-										toolCount <= 0 ? (
-											<NoResults type='tools' search={search} />
-										) : (
-											toolData.map(tool => {
-												return (
-													<RelatedObject
-														key={tool.id}
-														data={tool}
-														activeLink={true}
-														onSearchPage={true}
-														updateOnFilterBadge={this.updateOnFilterBadge}
-													/>
-												);
-											})
-										)
-									) : (
-										''
-									)}
-
-									{key === 'Projects' ? (
-										projectCount <= 0 ? (
-											<NoResults type='projects' search={search} />
-										) : (
-											projectData.map(project => {
-												return (
-													<RelatedObject
-														key={project.id}
-														data={project}
-														activeLink={true}
-														onSearchPage={true}
-														updateOnFilterBadge={this.updateOnFilterBadge}
-													/>
-												);
-											})
-										)
-									) : (
-										''
-									)}
-
-									{key === 'Collections' ? (
-										collectionCount <= 0 ? (
-											<NoResults type='collections' search={search} />
-										) : (
-											<Row className='mt-2'>
-												{collectionData.map(collection => {
-													return (
-														<Col sm={12} md={12} lg={6} style={{ 'text-align': '-webkit-center' }}>
-															<CollectionCard key={collection.id} data={collection} />
-														</Col>
-													);
-												})}
-											</Row>
-										)
-									) : (
-										''
-									)}
-
-									{key === 'Papers' ? (
-										paperCount <= 0 ? (
-											<NoResults type='papers' search={search} />
-										) : (
-											paperData.map(paper => {
-												return (
-													<RelatedObject
-														key={paper.id}
-														data={paper}
-														activeLink={true}
-														onSearchPage={true}
-														updateOnFilterBadge={this.updateOnFilterBadge}
-													/>
-												);
-											})
-										)
-									) : (
-										''
-									)}
-
-									{key === 'Cohorts' ? (
-										cohortCount <= 0 ? (
-											<NoResults type='cohorts' search={search} />
-										) : (
-											cohortData.map(cohort => {
-												return (
-													<RelatedObject
-														key={cohort.id}
-														data={{ ...cohort, type: 'cohort' }}
-														activeLink={true}
-														onSearchPage={true}
-														updateOnFilterBadge={this.updateOnFilterBadge}
-													/>
-												);
-											})
-										)
-									) : (
-										''
-									)}
-
-									{key === 'People'
-										? personData.map(person => {
-												return (
-													<RelatedObject
-														key={person.id}
-														data={person}
-														activeLink={true}
-														onSearchPage={true}
-														updateOnFilterBadge={this.updateOnFilterBadge}
-													/>
-												);
-										  })
-										: ''}
-
-									{(() => {
-										if (key === 'Courses') {
-											let courseRender = [];
-											if (courseCount <= 0) return <NoResults type='courses' search={search} />;
-											else {
-												let currentHeader = '';
-												courseData.map(course => {
-													let showHeader = false;
-
-													if (!showHeader && course.courseOptions.flexibleDates && currentHeader !== 'Flexible') {
-														currentHeader = 'Flexible';
-														showHeader = true;
-													} else if (
-														!showHeader &&
-														course.courseOptions.startDate &&
-														currentHeader !== moment(course.courseOptions.startDate).format('MMMM')
-													) {
-														currentHeader = moment(course.courseOptions.startDate).format('MMMM');
-														showHeader = true;
-													}
-
-													if (showHeader) {
-														courseRender.push(
-															<Row className='courseDateHeader'>
-																<Col>
-																	<span className='black-20-semibold '>{currentHeader}</span>
-																</Col>
-															</Row>
-														);
-													}
-
-													courseRender.push(
-														<RelatedObject
-															key={course.id}
-															data={course}
-															activeLink={true}
-															onSearchPage={true}
-															updateOnFilterBadge={this.updateOnFilterBadge}
-														/>
-													);
-												});
-											}
-											return <>{courseRender}</>;
-										}
-									})()}
-									{/* PAGINATION */}
-									<div className='text-center'>
-										{key === 'Datasets' && datasetCount > maxResult ? <Pagination>{datasetPaginationItems}</Pagination> : ''}
-
-										{key === 'Tools' && toolCount > maxResult ? <Pagination>{toolPaginationItems}</Pagination> : ''}
-
-										{key === 'Projects' && projectCount > maxResult ? <Pagination>{projectPaginationItems}</Pagination> : ''}
-
-										{key === 'Papers' && paperCount > maxResult ? <Pagination>{paperPaginationItems}</Pagination> : ''}
-
-										{key === 'People' && personCount > maxResult ? <Pagination>{personPaginationItems}</Pagination> : ''}
-
-										{key === 'Courses' && courseCount > maxResult ? <Pagination>{coursePaginationItems}</Pagination> : ''}
-
-										{key === 'Collections' && collectionCount > maxResult ? <Pagination>{collectionPaginationItems}</Pagination> : ''}
-
-										{key === 'Cohorts' && cohortCount > maxResult ? <Pagination>{cohortPaginationItems}</Pagination> : ''}
-									</div>
-								</Col>
-							) : (
-								<Col style={{ marginTop: '30px' }} sm={12} md={12} lg={9}>
-									<Loading />
-								</Col>
-							)}
+								{key === 'Courses' && (
+									<CoursesSearchResults
+										data={courseData}
+										count={courseCount}
+										pageNumber={courseIndex / maxResult}
+										totalPages={courseCount / maxResult}
+										{...searchProps}
+									/>
+								)}
+							</Col>
 						</Row>
 					</Container>
+
 					<NotificationContainer />
 					<SideDrawer open={showDrawer} closed={this.toggleDrawer}>
 						<UserMessages
