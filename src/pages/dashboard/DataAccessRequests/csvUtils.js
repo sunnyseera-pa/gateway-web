@@ -144,9 +144,6 @@ const buildOneRow = (dar, applicant) => {
 			dar.createdAt.substring(0, 10), // YYYY-MM-DD
 			dar.updatedAt.substring(0, 10), // YYYY-MM-DD
 			dar.datasetTitles[0],			
-			"Project name",
-			"Project submitted by",
-			// dar.questionAnswers.applicationthisapplication,
 
 			applicant.safeprojectapplicantfullname, //"Project submitted by"
 			applicant.safeprojectapplicantjobtitle,
@@ -182,8 +179,6 @@ const buildHeaders = () => {
 				"Created At", 
 				"Updated At", 
 				"Datasets", 
-				"Project name", 
-				"Project submitted by", 
 				"Applicant full name", 
 				"Job title", 
 				"Telephone", 
