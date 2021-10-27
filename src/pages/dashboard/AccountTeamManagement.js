@@ -111,7 +111,7 @@ const AccountTeamManagement = ({
 		const team = userState[0].teams.filter(t => {
 			return t._id === teamId;
 		})[0];
-		return team && team.isAdmin;
+		return team && team.isAdmin && !team.roles.includes(userTypes.MANAGER);
 	};
 
 	const getTotalGatewayTeamEmails = (data = []) => {
@@ -449,7 +449,11 @@ const AccountTeamManagement = ({
 							<Tabs className='dataAccessTabs gray700-14' activeKey={activeTabKey} onSelect={onTabChange}>
 								{!userRoleIsAdmin(teamId)
 									? Object.keys(tabTypes).map((keyName, i) => (
-											<Tab key={i} eventKey={`${tabTypes[keyName]}`} title={`${upperFirst(tabTypes[keyName])}`}></Tab>
+											<Tab
+												key={i}
+												eventKey={`${tabTypes[keyName]}`}
+												title={`${upperFirst(tabTypes[keyName])}`}
+												data-testid={tabTypes[keyName]}></Tab>
 									  ))
 									: ''}
 							</Tabs>

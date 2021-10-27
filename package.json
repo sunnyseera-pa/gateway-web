@@ -4,13 +4,15 @@
 	"private": true,
 	"type": "module",
 	"dependencies": {
+		"@emotion/css": "^11.5.0",
+		"@emotion/react": "^11.4.1",
 		"@sentry/node": "^6.4.1",
 		"@sentry/react": "^6.4.1",
 		"@sentry/tracing": "^6.4.1",
-		"@testing-library/react": "^9.3.2",
 		"axios": "^0.21.3",
 		"bootstrap": "^4.4.1",
 		"core-js": "^3.6.5",
+		"date-fns": "^2.25.0",
 		"dotenv": "^8.2.0",
 		"form-data": "^3.0.0",
 		"formik": "^2.1.4",
@@ -34,12 +36,14 @@
 		"react-moment": "^0.9.7",
 		"react-notification-badge": "^1.5.1",
 		"react-notifications": "^1.6.0",
+		"react-query": "^3.24.4",
 		"react-rating": "^2.0.4",
 		"react-router-dom": "^5.1.2",
 		"react-schemaorg": "^1.1.0",
 		"react-slidedown": "^2.4.5",
 		"react-switch": "^6.0.0",
 		"react-tabs": "^3.1.0",
+		"react-test-renderer": "^17.0.2",
 		"react-web-tabs": "^1.0.1",
 		"read-excel-file": "^5.0.0",
 		"remove-markdown": "^0.3.0",
@@ -53,13 +57,29 @@
 	"scripts": {
 		"start": "react-scripts start",
 		"build": "react-scripts build",
-		"test": "jest --env=jsdom --coverage --config=jest.config.json",
+		"test:watchAll": "jest --watchAll --env=jsdom-sixteen --coverage --config=jest.config.json",
+		"test": "jest --env=jsdom-sixteen --coverage --config=jest.config.json",
+		"test-rtl": "jest --env=jsdom-sixteen --testPathIgnorePatterns=/test/",
 		"eject": "react-scripts eject",
 		"snyk-protect": "snyk protect",
-		"prepare": "npm run snyk-protect"
+		"prepare": "npm run snyk-protect",
+		"lint": "eslint ./src",
+		"lint:fix": "eslint --fix --ext .js,.jsx ./src",
+		"storybook": "start-storybook -p 6006 -s public",
+		"build-storybook": "build-storybook -s public"
 	},
 	"eslintConfig": {
-		"extends": "react-app"
+		"extends": "react-app",
+		"overrides": [
+			{
+				"files": [
+					"**/*.stories.*"
+				],
+				"rules": {
+					"import/no-anonymous-default-export": "off"
+				}
+			}
+		]
 	},
 	"browserslist": {
 		"production": [
@@ -77,13 +97,30 @@
 	"jest": {},
 	"devDependencies": {
 		"@babel/preset-env": "^7.10.2",
+		"@storybook/addon-actions": "^6.3.8",
+		"@storybook/addon-essentials": "^6.3.8",
+		"@storybook/addon-links": "^6.3.8",
+		"@storybook/node-logger": "^6.3.8",
+		"@storybook/preset-create-react-app": "^3.2.0",
+		"@storybook/react": "^6.3.8",
+		"@testing-library/dom": "^8.7.2",
 		"@testing-library/jest-dom": "^4.2.4",
 		"@testing-library/react": "^12.1.0",
+		"@testing-library/react-hooks": "^7.0.2",
 		"babel-preset-react-app": "^9.1.2",
 		"enzyme": "^3.11.0",
 		"enzyme-adapter-react-16": "^1.15.2",
+		"eslint": "7.2.0",
+		"eslint-config-airbnb": "18.2.1",
+		"eslint-config-prettier": "^8.3.0",
+		"eslint-plugin-import": "2.22.1",
+		"eslint-plugin-jsx-a11y": "6.4.1",
+		"eslint-plugin-prettier": "^4.0.0",
+		"eslint-plugin-react": "7.21.5",
+		"eslint-plugin-react-hooks": "1.7.0",
 		"jest": "24.9.0",
 		"jest-cli": "^26.0.1",
+		"jest-environment-jsdom-sixteen": "^2.0.0",
 		"moxios": "^0.4.0",
 		"react-scripts": "3.4.4"
 	},
