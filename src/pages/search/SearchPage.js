@@ -513,7 +513,6 @@ class SearchPage extends React.Component {
 		}
 	};
 
-	//TODO - add collectionIndex?
 	updateOnFilter = () => {
 		this.setState(
 			{
@@ -1589,21 +1588,7 @@ class SearchPage extends React.Component {
 			collectionSort,
 			cohortSort,
 
-			// TODO - remove
-			// filtersV2Datasets,
 			selectedV2Datasets,
-			// filtersV2Tools,
-			// selectedV2Tools,
-			// filtersV2Projects,
-			// selectedV2Projects,
-			// filtersV2Papers,
-			// selectedV2Papers,
-			// filtersV2Courses,
-			// selectedV2Courses,
-			// filtersV2Cohorts,
-			// selectedV2Cohorts,
-			// filtersV2Collections,
-			// selectedV2Collections,
 
 			showDrawer,
 			showModal,
