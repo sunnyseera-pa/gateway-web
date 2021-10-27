@@ -297,6 +297,18 @@ class DataAccessRequestsNew extends React.Component {
     )`${this.state.avgDecisionTime} average time from submission to decision`;
   };
 
+  /**
+ * written by: Sam H. @ PA
+ * 
+ * onClickDownloadCsv gets a team (e.g. 'ICODA') and generate a csv with all the
+ * the dataAccessRequests that are under this team.
+ * 
+ * This function: 
+ *  1. Generate the CSV
+ *  2. set the csv(csvData) in the state.
+ *  3. redirecting the to the hidden <CSVlink> to download the file
+ * 
+ */
   onClickDownloadCsv = async (team) => {
     
     // call the backend
