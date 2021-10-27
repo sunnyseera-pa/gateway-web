@@ -1,66 +1,4 @@
-const mockData = {
-    authorIds: [],
-    datasetIds: [ 'datasetid-fair-driver-project-1-data-model-output' ],
-    datasetTitles: [ 'Driver Project 1 datasets' ],
-    applicationStatus: 'inReview',
-    publisher: 'ICODA',
-    formType: '5 safe',
-    version: 1,
-    userId: 3492768768829626,
-    dataSetId: 'datasetid-fair-driver-project-1-data-model-output',
-    isCloneable: false,
-    jsonSchema: {},
-    questionAnswers: {
-      applicationthisapplication: 'A new application',
-      applicationaccreditation: 'No',
-
-      // First Applicant
-      safeprojectapplicantfullname: 'Full name*',
-      safeprojectapplicantjobtitle: 'Job title*',
-      safeprojectapplicanttelephone: 'Telephone',
-      safeprojectapplicantaffiliation: 'Institutional affiliation*',
-      safeprojectapplicantorcid: 'ORCID',
-      safeprojectapplicantemail: 'sam.haim@paconsulting.com',
-      safeprojectapplicantrole: 'Principal investigator',
-      safeprojectapplicantdataaccess: 'Yes',
-
-      // Second Applicant 
-      safeprojectapplicantfullname_tNX9H: 'Joe DiMaggio',
-      safeprojectapplicantjobtitle_tNX9H: 'Job title* applicant 2',
-      safeprojectapplicanttelephone_tNX9H: 'Telephone Applicant 2',
-      safeprojectapplicantaffiliation_tNX9H: 'Applicant 2 Institutional affiliation*',
-      safeprojectapplicantorcid_tNX9H: 'Applicant 2 ORCID',
-      safeprojectapplicantemail_tNX9H: 'joe@test.test',
-      safeprojectapplicantrole_tNX9H: 'Principal investigator',
-      safeprojectapplicantdataaccess_tNX9H: 'No',
-
-      safeprojectanotherperson: '\n' +
-        "Please provide evidence of the team's expertise and experience relevant to delivering the project (3000 characters)*",
-      
-      safeprojectorganisationname: 'Organisation name*',
-      safeprojectorganisationaddress1: 'Registered address (line 1)*',
-      safeprojectorganisationaddress2: 'Registered address (line 2)*',
-      safeprojectorganisationpostcode: 'Postcode*',
-      safeprojectorganisationcity: 'City*',
-      safeprojectorganisationcountry: 'United Kingdom',
-      projectdetalisisaproject: 'No',
-      linkingdataintention: 'No',
-      
-      linkingdataintentiondata: 'Please indicate the data necessary to conduct the study, the data fields required and the justifications for including each field. (3000 characters)*',
-      linkingdataintentiontimeperiod: 'Time period for which data is requested*',
-      linkingdataintentionarea: 'Geographical area for which data is requested*',
-      linkingdataintentiongender: 'Gender variables requested*',
-      linkingdataintentionage: 'Age variables requested*',
-      linkingdataintentionlistofitems: 'Please list any sensitive data items required with justification for their requirement. (500 characters)*',
-      publicationfindings: 'How will your findings be made public, to which audiences and in which formats, including how you intend to generate impact? (1000 characters)*',
-      publicationplans: 'Please describe your publication plans, including how you would publicise potentially sensitive findings . (1000 characters)*',
-      publicationdisclosure: 'Please describe what disclosure control policy and procedures will be applied to ensure individual level data is not identifiable. (1000 characters)*'
-    },
-    dateSubmitted: "2021-10-21T13:59:05.513Z",
-    dateReviewStart: "2021-10-21T16:27:55.430Z"
- };
-
-const testCreateCSV = (mockData) => {
+const testCreateCSV = (dataAccessRequests) => {
 
 	// set headers
 	const headers = buildHeaders();
@@ -69,23 +7,26 @@ const testCreateCSV = (mockData) => {
 	let csvRows = [ headers ];
 
 	// for each dataAccessRequest create csv rows and append it to the csv rows
-	for (const dar in dataAccessRequests) {
-		const rows = buildRows(dar);
-		csvRows.push(rows);
+	let i = 0;
+	for (const dar of dataAccessRequests) {
+		const rows = buildRows(dar, i);
+		csvRows = csvRows.concat(rows);
+		i++;
 	}
 
+	console.log("csvRows", csvRows);
 	return csvRows
 }
 
-const buildRows = (dar) => {
+const buildRows = (dar, index) => {
 	let rows = [];
 	const applicants = extractApplicants(dar);
 	for (const applicant of applicants) {
-		console.log("applicant", applicants);
 		const row = buildOneRow(dar, applicant);
-		console.log("row = ", row);
 		rows.push(row);
 	}
+
+	console.log(`rows of dar ${index}`, rows);
 	return rows;
 }
 
@@ -96,22 +37,19 @@ const extractApplicants = (dar) => {
 	let userFound = 0;
 	let applicant = {};
 	let index = 0;
+	let propertyName = '';
 	for (let key in dar.questionAnswers) {
 
 		if (key.substring(0, 28) === 'safeprojectapplicantfullname') {
 			index = 0;
 			userFound = 1;
-			
-			if (key.indexOf('_') > 0)
-				key = key.substring(0, key.indexOf('_'));
-			applicant[key] = dar.questionAnswers[key];  			
+			propertyName = FetchKeyNameBeforeTheUnderScore(key);
+			applicant[propertyName] = dar.questionAnswers[key];  			
 		}
 
 		if (userFound === 1 && index < 8) {
-
-			if (key.indexOf('_') > 0)
-				key = key.substring(0, key.indexOf('_'));
-			applicant[key] = dar.questionAnswers[key];
+			propertyName = FetchKeyNameBeforeTheUnderScore(key);
+			applicant[propertyName] = dar.questionAnswers[key];
 			index++;
 		}
 
@@ -127,16 +65,25 @@ const extractApplicants = (dar) => {
 	return applicants;
 }
 
+const FetchKeyNameBeforeTheUnderScore = (key) => {
+	if (key.indexOf('_') > -1) 
+		return key.substring(0, key.indexOf('_'))
+	else
+		return key;
+}
+
 // buildOneRow and not buildRow: To make it distinct from buildRows
 const buildOneRow = (dar, applicant) => {
 
 	const row = [
-			"test",
+			dar._id,
 			dar.applicationStatus,
-			dar.createdAt,
-			dar.updatedAt,
+			dar.createdAt.substring(0, 10),
+			dar.updatedAt.substring(0, 10),
 			dar.datasetTitles[0],			
-			dar.questionAnswers.applicationthisapplication,
+			"Project name",
+			"Project submitted by",
+			// dar.questionAnswers.applicationthisapplication,
 
 			applicant.safeprojectapplicantfullname, //"Project submitted by"
 			applicant.safeprojectapplicantjobtitle,
@@ -177,12 +124,12 @@ const buildHeaders = () => {
 				"Role", 
 				"Access to data", 
 				"Organisation name", 
-				"Line address 1",	
-				"Line address 2", 
-				"Postcode", 
-				"City", 
-				"Country"
+				"Organisation Line address 1",	
+				"Organisation Line address 2", 
+				"Organisation Postcode", 
+				"Organisation City", 
+				"Organisation Country"
 			];
 }
 
-buildRows(mockData);
+export default testCreateCSV

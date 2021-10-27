@@ -16,7 +16,8 @@ import { baseURL } from '../../../configs/url.config';
 import DarHelperUtil from '../../../utils/DarHelper.util';
 import './DataAccessRequests.scss';
 
-import createCSV from './csvUtils';
+import testCreateCSV from './csvUtils';
+import { getDataAccessRequests } from './DataAccessRequestsApi';
 import { CSVLink } from 'react-csv';
 
 class DataAccessRequestsNew extends React.Component {
@@ -42,7 +43,7 @@ class DataAccessRequestsNew extends React.Component {
     alert: {},
     showWorkflowReviewModal: false,
     canViewSubmitted: false,
-    csvData = []
+    csvData: []
   };
 
   constructor(props) {
@@ -53,6 +54,8 @@ class DataAccessRequestsNew extends React.Component {
       this.state.alert = props.alert; 
       this.state.team = props.alert.publisher;
     }
+
+    this.csvLink = React.createRef();
   }
 
   componentDidMount() {
@@ -294,6 +297,77 @@ class DataAccessRequestsNew extends React.Component {
     )`${this.state.avgDecisionTime} average time from submission to decision`;
   };
 
+  // TO DO: Export this ?
+  onClickDownloadCsv = async (team) => {
+    
+    // call the backend
+    const dataAccessRequests = await getDataAccessRequests(team);
+    
+    // format the 
+    const csvData = testCreateCSV(dataAccessRequests);
+    
+    // we pass the 2nd argument, and set a timeout, to ensure that we will get the csv 
+    // back from the backend before we download the csv
+    this.setState({ csvData: csvData }, () => {
+      setTimeout(() => {
+        this.csvLink.current.link.click();
+      });
+    });
+
+    return;
+  }
+
+  createCSV = (dataAccessRequests) => {
+
+    // set headers
+    const headers = this.buildHeaders();
+
+    // push the headers as the first row of the csv document
+    let csvRows = [ headers ];
+
+    // for each dataAccessRequest create csv rows and append it to the csv rows
+    for (const dar in dataAccessRequests) {
+      const rows = this.buildRows(dar);
+      csvRows.push(rows);
+    }
+
+    return csvRows
+  }
+
+  
+
+  buildRows = () => {
+    return [];
+  }
+
+  buildHeaders = () => {
+    return [
+          "ID", 
+          "Status", 
+          "Created At", 
+          "Updated At", 
+          "Datasets", 
+          "Project name", 
+          "Project submitted by", 
+          "Applicant full name", 
+          "Job title", 
+          "Telephone", 
+          "Institutional afflilation", 
+          "ORCID", 
+          "Email", 
+          "Role", 
+          "Access to data", 
+          "Organisation name", 
+          "Line address 1", 
+          "Line address 2", 
+          "Postcode", 
+          "City", 
+          "Country"
+        ];
+  }
+
+  // export till here ^
+
   render() {
     const {
       key,
@@ -332,11 +406,9 @@ class DataAccessRequestsNew extends React.Component {
 				<Row>
 						<Col xs={1}></Col>
 						<div className="col-sm-10">
-                <CSVLink data={csvData} filename={"Data Requests - Applications"}>
-                  <button className={`button-secondary`} onClick={onClickDownloadCsv}>
-                      {"Download Applications as CSV"}
-                  </button>
-                </CSVLink>
+
+              
+
 								<div className="accountHeader dataAccessHeader">
 										<Col xs={8}>
 												<Row>
@@ -348,7 +420,15 @@ class DataAccessRequestsNew extends React.Component {
 										<Col xs={4} style={{ textAlign: "right" }}>
 										</Col>
 								</div>
+
             <div className="tabsBackground">
+                <div>
+
+                  <button className={`button-tertiary mr-0`} onClick={() => this.onClickDownloadCsv('ICODA')}>
+                    Download Requests as CSV
+                  </button>
+                <CSVLink data={csvData} filename='data.csv' className='hidden' ref={this.csvLink} target='_blank' />
+              </div>
               <Col sm={12} lg={12}>
                 <Tabs
                   className="dataAccessTabs gray700-13"
