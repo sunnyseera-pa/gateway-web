@@ -7,18 +7,15 @@ const testCreateCSV = (dataAccessRequests) => {
 	let csvRows = [ headers ];
 
 	// for each dataAccessRequest create csv rows and append it to the csv rows
-	let i = 0;
 	for (const dar of dataAccessRequests) {
-		const rows = buildRows(dar, i);
+		const rows = buildRows(dar);
 		csvRows = csvRows.concat(rows);
-		i++;
 	}
 
-	console.log("csvRows", csvRows);
 	return csvRows
 }
 
-const buildRows = (dar, index) => {
+const buildRows = (dar) => {
 	let rows = [];
 	const applicants = extractApplicants(dar);
 	for (const applicant of applicants) {
@@ -26,7 +23,6 @@ const buildRows = (dar, index) => {
 		rows.push(row);
 	}
 
-	console.log(`rows of dar ${index}`, rows);
 	return rows;
 }
 
