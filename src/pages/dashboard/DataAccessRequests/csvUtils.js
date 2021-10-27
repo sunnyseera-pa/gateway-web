@@ -1,3 +1,16 @@
+/**
+ * written by: Sam H. @ PA
+ * 
+ * createCSV gets a dataAccessRequest and create an array of arrays that represent 
+ * a csv and can be used easily with react-csv library.
+ * 
+ * output structure:
+ * [
+ * 	["first name", "last name"],
+ *  ["Joe", "DiMaggio"],
+ *  ["Micky", "Mental"]
+ * ]
+ */
 const createCSV = (dataAccessRequests) => {
 
 	// set headers
@@ -15,9 +28,19 @@ const createCSV = (dataAccessRequests) => {
 	return csvRows
 }
 
+/**
+ * written by: Sam H. @ PA
+ * 
+ * buildRows gets a dataAccessRequest and build the csv rows.
+ * The logic in this function dictated stricted by the client.
+ * client: Matt @ HDR UK
+ */
 const buildRows = (dar) => {
 	let rows = [];
 	const applicants = extractApplicants(dar);
+
+	/* for each applicant we will create a new line. This logic was a specific requirement 
+	   of the client, Matt @ HDR UK */
 	for (const applicant of applicants) {
 		const row = buildOneRow(dar, applicant);
 		rows.push(row);
@@ -26,9 +49,29 @@ const buildRows = (dar) => {
 	return rows;
 }
 
+/**
+ * written by: Sam H. @ PA
+ * 
+ * extractApplicants is a helper function to support buildRows.
+ * extractApplicants gets dataAccressRequest and returns array javascript generic objects
+ * Each object contain applicant details
+ * 
+ * extractApplicants returns array of object. Each object has the following structure:
+ * {
+ *  safeprojectapplicantaffiliation: "NY Yankees"
+ *  safeprojectapplicantdataaccess: "No"
+ *  safeprojectapplicantemail: "joe@test.test"
+ *  safeprojectapplicantfullname: "Joe DiMaggio"
+ *  safeprojectapplicantjobtitle: "Baseball Player"
+ *  safeprojectapplicantorcid: "12345"
+ *  safeprojectapplicantrole: "Center Field"
+ *  safeprojectapplicanttelephone: "07425 123 456"
+ * }
+ *  
+ * Note: This function is a good candidate for refactoring
+ */
 const extractApplicants = (dar) => {
 
-	// Take the uncommon part (after applicationthisapplication and before safeprojectorganisationname)
 	let applicants = [];
 	let userFound = 0;
 	let applicant = {};
@@ -55,12 +98,23 @@ const extractApplicants = (dar) => {
 			applicants.push(applicant);
 			applicant = {};
 		}
-	
-	}
+	};
 
 	return applicants;
 }
 
+/**
+ * written by: Sam H. @ PA
+ * 
+ * extractApplicants is a helper function to support buildRows.
+ *  
+ * input 1: safeprojectapplicantfullname_tNX9H 
+ * output 1: safeprojectapplicantfullname
+ * 	
+ * input 2: safeprojectapplicantfullname
+ * output 2: safeprojectapplicantfullname
+ * 
+ */
 const FetchKeyNameBeforeTheUnderScore = (key) => {
 	if (key.indexOf('_') > -1) 
 		return key.substring(0, key.indexOf('_'))
@@ -68,14 +122,27 @@ const FetchKeyNameBeforeTheUnderScore = (key) => {
 		return key;
 }
 
-// buildOneRow and not buildRow: To make it distinct from buildRows
+/**
+ * written by: Sam H. @ PA
+ * 
+ * buildOneRow is a helper function to support buildRows.
+ * 
+ * function named buildOneRow and not buildRow to make it distinct from buildRows
+ * and  avoid confusiom
+ *  
+ * buildOneRow gets dataAccessRequest and build a csv row according the headers that were 
+ * dictated by the client and according to the way that dataAccessRequest is stored in the 
+ * database. Any changes of these two (csv headers or db implementation) will most likely will
+ * impact this function, and changes will need to be done
+ * 
+ */
 const buildOneRow = (dar, applicant) => {
 
 	const row = [
 			dar._id,
 			dar.applicationStatus,
-			dar.createdAt.substring(0, 10),
-			dar.updatedAt.substring(0, 10),
+			dar.createdAt.substring(0, 10), // YYYY-MM-DD
+			dar.updatedAt.substring(0, 10), // YYYY-MM-DD
 			dar.datasetTitles[0],			
 			"Project name",
 			"Project submitted by",
@@ -102,6 +169,12 @@ const buildOneRow = (dar, applicant) => {
 
 }
 
+/**
+ * written by: Sam H. @ PA
+ * 
+ * buildHeaders is a helper function to support buildRows.
+ * buildHeaders returns the headers as dictated by HDR UK
+ */
 const buildHeaders = () => {
 	return [
 				"ID", 
