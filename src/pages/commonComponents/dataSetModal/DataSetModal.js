@@ -1,17 +1,12 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import { Modal } from 'react-bootstrap';
-import axios from 'axios';
 import _ from 'lodash';
 import ReactMarkdown from 'react-markdown';
 import { ReactComponent as CloseButtonSvg } from '../../../images/close-alt.svg';
 import DataSetHelper from '../../../utils/DataSetHelper.util';
+import { getNon5SafesModalContentRequest } from '../../../services/content';
 
 import './DataSetModal.scss';
-
-const baseURL = require('../BaseURL');
-const cmsURL = baseURL.getCMSURL();
-const env = baseURL.getURLEnv();
-const local = 'local';
 
 const DataSetModal = ({ open, closed, context, userState, is5Safes, showLoginModal }) => {
 	let datasets = [],
@@ -24,8 +19,10 @@ const DataSetModal = ({ open, closed, context, userState, is5Safes, showLoginMod
 	const { loggedIn: isLoggedIn } = userState;
 	const [screenData, setScreenData] = useState({});
 	const [non5SafesData, setNon5SafesData] = useState('');
+
 	const showNon5SafesData = () =>
 		!_.isEmpty(non5SafesData) && typeof non5SafesData !== 'undefined' ? <div dangerouslySetInnerHTML={{ __html: non5SafesData }} /> : '';
+
 	const initScreenData = () => {
 		if (typeof context !== 'undefined' && !_.isEmpty(context) && !_.isEmpty(context.datasets)) {
 			({ datasets, title, subTitle, contactPoint, dataRequestModalContent, showActionButtons = true } = context);
@@ -49,10 +46,12 @@ const DataSetModal = ({ open, closed, context, userState, is5Safes, showLoginMod
 	useEffect(() => {
 		if (open) initScreenData();
 
-		let url = env === local ? 'https://uatbeta.healthdatagateway.org' : cmsURL;
-		axios.get(url + '/Non5SafesModalContent', { withCredentials: false }).then(res => {
-			setNon5SafesData(res.data);
-		});
+		const getNon5SafesModalContent = async () => {
+			const content = await getNon5SafesModalContentRequest({ withCredentials: false });
+			setNon5SafesData(content.data);
+		};
+		
+		getNon5SafesModalContent();
 	}, [open, context]);
 
 	return (
@@ -82,7 +81,7 @@ const DataSetModal = ({ open, closed, context, userState, is5Safes, showLoginMod
 
 				<div className='appModal-footer'>
 					{screenData.showActionButtons ? (
-						<div className='appModal-footer--wrap'>
+						<div className='appModal-footer--wrap' data-testid='actionButtons'>
 							{is5Safes ? (
 								<button
 									className='button-secondary mr-2'
