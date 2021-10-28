@@ -310,24 +310,20 @@ class DataAccessRequestsNew extends React.Component {
  * 
  */
   onClickDownloadCsv = async (team) => {
-    
-    console.log("roles", this.state.userState);
-    return;
+   
     // call the backend
     const dataAccessRequests = await getDataAccessRequests(team);
     
     // generate csv 
     const csvData = createCSV(dataAccessRequests);
     
-    // we pass the 2nd argument, and set a timeout, to ensure that we will get the csv 
+    // we pass anonnymous function as 2nd argument, and set a timeout, to ensure that we will get the csv 
     // back from the backend before we download the csv
     this.setState({ csvData: csvData }, () => {
       setTimeout(() => {
         this.csvLink.current.link.click();
-      });
+      }, 0);
     });
-
-    return;
   }
 
   render() {
@@ -385,7 +381,6 @@ class DataAccessRequestsNew extends React.Component {
 
             <div className="tabsBackground">
 
-              {/*{this.state.team === 'ICODA accreditation' ? }*/}
               {isUserManagerofCurrentTeam(this.state.team, this.state.userState[0].teams) ?
                 <div>
                   <button className={`button-secondary csv-btn mb-4`} onClick={() => this.onClickDownloadCsv('ICODA')}>
