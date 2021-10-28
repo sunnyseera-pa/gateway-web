@@ -8,6 +8,7 @@ import Tool from './Tool/Tool';
 import Paper from './Paper/Paper';
 import Course from './Course/Course';
 import Person from './Person/Person';
+import Cohort from './Cohort/Cohort';
 import { stripMarkdown } from '../../../utils/GeneralHelper.util';
 import relatedObjectService from '../../../services/related-object';
 import '../../cohort/Cohorts.scss';
@@ -364,93 +365,16 @@ class RelatedObject extends React.Component {
 								);
 							} else if (data.type === 'cohort') {
 								return (
-									<Row data-test-id='related-cohort-object' className='noMargin'>
-										<Col sm={10} lg={10} className='pad-left-24'>
-											{activeLink === true ? (
-												<a className='purple-bold-16' style={{ cursor: 'pointer' }} href={'/cohort/' + data.id}>
-													{data.name}
-												</a>
-											) : (
-												<span className='black-bold-16'> {data.name}</span>
-											)}
-											<br />
-											{!data.persons || data.persons <= 0 ? (
-												<span className='gray800-14'>Author not listed</span>
-											) : (
-												data.persons.map((person, index) => {
-													if (activeLink === true) {
-														return (
-															<a className='gray800-14' href={'/person/' + person.id} key={`person-${index}`}>
-																{person.firstname} {person.lastname}
-																{data.persons.length === index + 1 ? '' : ', '}
-															</a>
-														);
-													} else {
-														return (
-															<span className='gray800-14' key={`person-${index}`}>
-																{person.firstname} {person.lastname}
-																{data.persons.length === index + 1 ? '' : ', '}
-															</span>
-														);
-													}
-												})
-											)}
-										</Col>
-										<Col sm={2} lg={2} className='pad-right-24'>
-											{this.props.showRelationshipQuestion ? (
-												<Button variant='medium' className='soft-black-14' onClick={this.removeButton}>
-													<SVGIcon name='closeicon' fill={'#979797'} className='buttonSvg mr-2' />
-													Remove
-												</Button>
-											) : (
-												''
-											)}
-										</Col>
-										<Col sm={12} lg={12} className='pad-left-24 pad-right-24 pad-top-16'>
-											<span className='badge-paper'>
-												<SVGIcon name='cohort' fill={'#3c3c3b'} className='badgeSvg mr-2' />
-												<span>Cohort</span>
-											</span>
-											{!_.isEmpty(data.filterCriteria) &&
-												[...new Set(data.filterCriteria)].map(criteria => {
-													if (activeLink) {
-														if (onSearchPage) {
-															return (
-																<span
-																	className='pointer'
-																	onClick={event =>
-																		this.updateOnFilterBadge('cohortInclusionExclusionSelected', {
-																			label: criteria,
-																			parentKey: 'cohortinclusionexclusion',
-																		})
-																	}>
-																	<div className='badge-tag'>{criteria}</div>
-																</span>
-															);
-														} else {
-															return (
-																<a href={'/search?search=&tab=Cohorts&cohortcriterias=' + criteria}>
-																	<div className='badge-tag'>{criteria}</div>
-																</a>
-															);
-														}
-													} else {
-														return <div className='badge-tag'>{criteria}</div>;
-													}
-												})}
-										</Col>
-										<div class='pad-left-24 pad-right-24 pad-top-24 pad-bottom-16 col-lg-12 col-sm-12'>
-											{data.totalResultCount && data.numberOfDatasets ? (
-												<span className='gray800-14'>
-													{data.totalResultCount} entries across {data.numberOfDatasets} datasets
-												</span>
-											) : (
-												''
-											)}
-										</div>
-									</Row>
-                                );
-                            } else {
+									<Cohort
+										data={data}
+										activeLink={activeLink ? activeLink : false}
+										onSearchPage={onSearchPage ? onSearchPage : false}
+										showRelationshipQuestion={this.props.showRelationshipQuestion ? this.props.showRelationshipQuestion : false}
+										updateOnFilterBadge={this.updateOnFilterBadge}
+										removeButton={this.removeButton}
+									/>
+								);
+							} else {
 								return (
 									<Dataset
 										data={data}

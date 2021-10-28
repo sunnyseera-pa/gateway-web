@@ -364,6 +364,7 @@ a.nav-item.nav-link.active {
 	&-cohort {
 		@extend .badge;
 		background-color: $duck-egg;
+		color: $gray-800 !important;
 	}
 }
 
