@@ -392,7 +392,7 @@ class RelatedObject extends React.Component {
 													Data custodian
 												</Col>
 												<Col md={9} className='gray800-14'>
-													custodian info
+													{_.has(data, 'publisherInfo.name') ? data.publisherInfo.name : 'custodian info'}
 												</Col>
 											</Row>
 										</Col>

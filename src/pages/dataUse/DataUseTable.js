@@ -1,13 +1,27 @@
 import React from 'react';
+import moment from 'moment';
+import { Link } from 'react-router-dom';
 import { Table, Dropdown } from 'react-bootstrap';
+import { isUndefined } from 'lodash';
 
-const DataUseTable = ({ data, active, pending, archived, showModal, showUnarchiveModal }) => {
-	const Modal = () => {
-		showModal(true);
-	};
+const DataUseTable = ({ team, data, active, pending, archived, onClickArchive, onClickUnarchive, onClickApprove, onClickReject }) => {
+	const renderDatasets = dataUse => {
+		const datasets = dataUse.datasetTitles.map((datasetTitle, index) => {
+			const datasetId = dataUse.datasetIds[index];
+			if (isUndefined(datasetId)) {
+				return <div className='data-use-namedDataset'>{datasetTitle}</div>;
+			} else {
+				return (
+					<div>
+						<Link className='data-use-link' to={'/dataset/' + datasetId} target='_blank'>
+							{datasetTitle}
+						</Link>
+					</div>
+				);
+			}
+		});
 
-	const UnArchiveModal = () => {
-		showUnarchiveModal(true);
+		return datasets;
 	};
 
 	return (
@@ -21,36 +35,50 @@ const DataUseTable = ({ data, active, pending, archived, showModal, showUnarchiv
 			<tbody>
 				{data.map(dataUse => (
 					<tr>
-						<td>{dataUse.lastActivity}</td>
+						<td>{moment(dataUse.lastActivity).format('DD/MM/YYYY')}</td>
 						<td>
-							<p>{dataUse.projectTitle}</p>
-							<p>{dataUse.institution}</p>
+							<Link className='data-use-link' to={'/datause/' + dataUse.id} target='_blank'>
+								{dataUse.projectTitle}
+							</Link>
+							<p>{dataUse.organisationName}</p>
 						</td>
-						<td>{dataUse.datasets}</td>
+						<td>
+							<p>{renderDatasets(dataUse)}</p>
+						</td>
 						{(active || pending || archived) && (
 							<td>
-								<Dropdown>
-									<Dropdown.Toggle variant='outline-secondary' className='data-use-action'>
-										Actions
-									</Dropdown.Toggle>
-									{active && (
+								{active && (
+									<Dropdown>
+										<Dropdown.Toggle variant='outline-secondary' className='data-use-action'>
+											Actions
+										</Dropdown.Toggle>
 										<Dropdown.Menu>
 											<Dropdown.Item href='#/action-1'>Edit</Dropdown.Item>
-											<Dropdown.Item onClick={Modal}>Archive</Dropdown.Item>
+											{team !== 'user' && <Dropdown.Item onClick={() => onClickArchive(dataUse.id)}>Archive</Dropdown.Item>}
 										</Dropdown.Menu>
-									)}
-									{pending && (
+									</Dropdown>
+								)}
+								{pending && team === 'admin' && (
+									<Dropdown>
+										<Dropdown.Toggle variant='outline-secondary' className='data-use-action'>
+											Actions
+										</Dropdown.Toggle>
 										<Dropdown.Menu>
-											<Dropdown.Item href='#/action-1'>Approve</Dropdown.Item>
-											<Dropdown.Item href='#/action-2'>Reject</Dropdown.Item>
+											<Dropdown.Item onClick={() => onClickApprove(dataUse.id)}>Approve</Dropdown.Item>
+											<Dropdown.Item onClick={() => onClickReject(dataUse.id)}>Reject</Dropdown.Item>
 										</Dropdown.Menu>
-									)}
-									{archived && (
+									</Dropdown>
+								)}
+								{archived && (
+									<Dropdown>
+										<Dropdown.Toggle variant='outline-secondary' className='data-use-action'>
+											Actions
+										</Dropdown.Toggle>
 										<Dropdown.Menu>
-											<Dropdown.Item onClick={UnArchiveModal}>Unarchive</Dropdown.Item>
+											<Dropdown.Item onClick={() => onClickUnarchive(dataUse.id)}>Unarchive</Dropdown.Item>
 										</Dropdown.Menu>
-									)}
-								</Dropdown>
+									</Dropdown>
+								)}
 							</td>
 						)}
 					</tr>

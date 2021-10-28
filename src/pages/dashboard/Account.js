@@ -32,8 +32,9 @@ import './Dashboard.scss';
 import ActivityLog from '../DataAccessRequest/components/ActivityLog/ActivityLog';
 import DataUsePage from '../dataUse/DataUsePage';
 import AccountTeams from './AccountTeams';
+import DataUseUpload from '../dataUse/upload/DataUseUpload';
+import DataUseUploadActionButtons from '../dataUse/upload/DataUseUploadActionButtons';
 import googleAnalytics from '../../tracking';
-
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -97,6 +98,7 @@ class Account extends Component {
 		isSubmitting: false,
 		teamManagementInternalTab: 'Notifications',
 		accountUpdated: false,
+		showDataUseUploadPage: false,
 		dataaccessrequest: {},
 	};
 
@@ -104,6 +106,8 @@ class Account extends Component {
 		super(props);
 		this.state.userState = props.userState;
 		this.searchBar = React.createRef();
+		this.dataUseUpload = React.createRef();
+		this.dataUsePage = React.createRef();
 		this.activityLog = React.createRef();
 
 		// 1. used for DAR custodian update status of application
@@ -415,6 +419,7 @@ class Account extends Component {
 				activeKey: tab.tabId,
 				alert: !_.isEmpty(alert) ? alert : {},
 				activeAccordion,
+				showDataUseUploadPage: false,
 				dataaccessrequest: {},
 			});
 			// 6. push state
@@ -453,6 +458,13 @@ class Account extends Component {
 
 	onClearInnerTab = () => {
 		this.setState({ innertab: '' });
+	};
+
+
+	toggleDataUseUploadPage = () => {
+		this.setState(prevState => {
+			return { showDataUseUploadPage: !prevState.showDataUseUploadPage };
+		});
 	};
 
 	setDataAccessRequest = (dar = {}) => {
@@ -509,6 +521,7 @@ class Account extends Component {
 			isSubmitting,
 			teamManagementTab,
 			accountUpdated,
+			showDataUseUploadPage,
 			dataaccessrequest,
 		} = this.state;
 
@@ -662,7 +675,6 @@ class Account extends Component {
 											<span style={{ marginLeft: '11px' }}>Team Management</span>
 										</Nav.Link>
 									</div>
-
 									{allowAccessRequestManagement && this.userHasRole(team, ['manager', 'reviewer']) && (
 										<div
 											className={`${
@@ -755,7 +767,26 @@ class Account extends Component {
 									''
 								)}
 
-								{tabId === 'datause' ? <DataUsePage userState={userState} team={team} /> : ''}
+								{tabId === 'datause' ? (
+									showDataUseUploadPage ? (
+										<DataUseUpload
+											userState={userState}
+											onSubmit={this.toggleDataUseUploadPage}
+											team={team}
+											ref={this.dataUseUpload}
+											dataUsePage={this.dataUsePage}
+										/>
+									) : (
+										<DataUsePage
+											userState={userState}
+											team={team}
+											onClickDataUseUpload={this.toggleDataUseUploadPage}
+											ref={this.dataUsePage}
+										/>
+									)
+								) : (
+									''
+								)}
 
 								{tabId === 'collections' ? <AccountCollections userState={userState} /> : ''}
 
@@ -805,7 +836,26 @@ class Account extends Component {
 									</>
 								)}
 
-								{tabId === 'datause' ? <DataUsePage userState={userState} team={team} /> : ''}
+								{tabId === 'datause' ? (
+									showDataUseUploadPage ? (
+										<DataUseUpload
+											userState={userState}
+											team={team}
+											ref={this.dataUseUpload}
+											dataUsePage={this.dataUsePage}
+											onSubmit={this.toggleDataUseUploadPage}
+										/>
+									) : (
+										<DataUsePage
+											userState={userState}
+											team={team}
+											onClickDataUseUpload={this.toggleDataUseUploadPage}
+											ref={this.dataUsePage}
+										/>
+									)
+								) : (
+									''
+								)}
 
 								{allowWorkflow && this.userHasRole(team, 'manager') && (
 									<>{tabId === 'workflows' ? <WorkflowDashboard userState={userState} team={team} /> : ''}</>
@@ -880,6 +930,17 @@ class Account extends Component {
 						</div>
 					</ActionBar>
 				)}
+
+				{showDataUseUploadPage && (
+					<ActionBar userState={userState}>
+						<div className='action-bar'>
+							<div className='action-bar-actions'>
+								<DataUseUploadActionButtons dataUseUpload={this.dataUseUpload} />
+							</div>
+						</div>
+					</ActionBar>
+				)}
+
 				<DataSetModal open={showModal} context={context} closed={this.toggleModal} userState={userState[0]} />
 			</Fragment>
 		);
