@@ -17,7 +17,7 @@ import DarHelperUtil from '../../../utils/DarHelper.util';
 import './DataAccessRequests.scss';
 
 import createCSV from './csvUtils';
-import { getDataAccessRequests } from './DataAccessRequestsApi';
+import { getDataAccessRequests, isUserManagerofCurrentTeam } from './DataAccessRequestsService';
 import { CSVLink } from 'react-csv';
 
 class DataAccessRequestsNew extends React.Component {
@@ -311,6 +311,8 @@ class DataAccessRequestsNew extends React.Component {
  */
   onClickDownloadCsv = async (team) => {
     
+    console.log("roles", this.state.userState);
+    return;
     // call the backend
     const dataAccessRequests = await getDataAccessRequests(team);
     
@@ -382,13 +384,17 @@ class DataAccessRequestsNew extends React.Component {
 								</div>
 
             <div className="tabsBackground">
-                <div>
 
-                  <button className={`button-tertiary mr-0`} onClick={() => this.onClickDownloadCsv('ICODA')}>
+              {/*{this.state.team === 'ICODA accreditation' ? }*/}
+              {isUserManagerofCurrentTeam(this.state.team, this.state.userState[0].teams) ?
+                <div>
+                  <button className={`button-secondary csv-btn mb-4`} onClick={() => this.onClickDownloadCsv('ICODA')}>
                     Download Requests as CSV
                   </button>
                 <CSVLink data={csvData} filename='data.csv' className='hidden' ref={this.csvLink} target='_blank' />
               </div>
+              : ''}
+              
               <Col sm={12} lg={12}>
                 <Tabs
                   className="dataAccessTabs gray700-13"
