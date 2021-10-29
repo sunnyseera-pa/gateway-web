@@ -1,5 +1,5 @@
 const dataUseSchema = {
-	'Project Title*': {
+	'Project title*': {
 		prop: 'projectTitle',
 		type: String,
 		required: true,
@@ -8,12 +8,12 @@ const dataUseSchema = {
 		prop: 'projectIdText',
 		type: String,
 	},
-	'Dataset(s) Name*': {
+	'Dataset(s) name*': {
 		prop: 'datasetNames',
 		type: String,
 		required: true,
 	},
-	'Organisation Name*': {
+	'Organisation name*': {
 		prop: 'organisationName',
 		type: String,
 		required: true,
@@ -22,11 +22,11 @@ const dataUseSchema = {
 		prop: 'organisationId',
 		type: String,
 	},
-	'Organisation Sector': {
+	'Organisation sector': {
 		prop: 'organisationSector',
 		type: String,
 	},
-	'Applicant Name(s)': {
+	'Applicant name(s)': {
 		prop: 'applicantNames',
 		type: String,
 	},
@@ -38,58 +38,56 @@ const dataUseSchema = {
 		prop: 'fundersAndSponsors',
 		type: String,
 	},
-	'Accredited Researcher Status': {
+	'DEA accredited researcher?': {
 		prop: 'accreditedResearcherStatus',
 		type: String,
 	},
-	'Sub-Licence Arrangements (if any)?': {
+	'Sub-licence arrangements (if any)?': {
 		prop: 'sublicenceArrangements',
 		type: String,
 	},
 
-	'Lay Summary*': {
+	'Lay summary*': {
 		prop: 'laySummary',
 		type: String,
-		required: true,
 	},
 
-	'Public Benefit Statement': {
+	'Public benefit statement*': {
 		prop: 'publicBenefitStatement',
 		type: String,
 	},
 
-	'Request Category Type': {
+	'Request category type': {
 		prop: 'requestCategoryType',
 		type: String,
 	},
 
-	'Technical Summary': {
+	'Technical summary': {
 		prop: 'technicalSummary',
 		type: String,
 	},
 
-	'Other Approval Committees': {
+	'Other approval committees': {
 		prop: 'otherApprovalCommittees',
 		type: String,
 	},
 
-	'Project Start Date': {
+	'Project start date': {
 		prop: 'projectStartDate',
 		type: Date,
 	},
 
-	'Project End Date': {
+	'Project end date': {
 		prop: 'projectEndDate',
 		type: Date,
 	},
 
-	'Latest Approval Date*': {
+	'Latest approval date*': {
 		prop: 'latestApprovalDate',
 		type: Date,
-		required: true,
 	},
 
-	'Data Sensitivity Level': {
+	'Data sensitivity level': {
 		prop: 'dataSensitivityLevel',
 		type: String,
 	},
@@ -109,12 +107,12 @@ const dataUseSchema = {
 		type: String,
 	},
 
-	'National Data Opt-out applied?': {
+	'National data opt-out applied?': {
 		prop: 'nationalDataOptOut',
 		type: String,
 	},
 
-	'Request Frequency': {
+	'Request frequency': {
 		prop: 'requestFrequency',
 		type: String,
 	},
@@ -134,10 +132,9 @@ const dataUseSchema = {
 		type: Date,
 	},
 
-	'TRE or any other specified location*': {
+	'Access type*': {
 		prop: 'dataLocation',
 		type: String,
-		required: true,
 	},
 
 	'How has data been processed to enhance privacy?': {
@@ -145,7 +142,7 @@ const dataUseSchema = {
 		type: String,
 	},
 
-	'Link to Research Outputs': {
+	'Link to research outputs': {
 		prop: 'researchOutputs',
 		type: String,
 	},

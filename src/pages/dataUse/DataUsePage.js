@@ -133,7 +133,7 @@ const DataUsePage = React.forwardRef(({ onClickDataUseUpload, team }, ref) => {
 						<p className='soft-black-14 datause-para'>Manage your data use register by uploading or editing data uses.</p>
 					</Row>
 				</Col>
-				{team !== 'user' && (
+				{team !== 'user' && team !== 'admin' && (
 					<Col md={2} className='datause-button-grid'>
 						<Button className='button-tertiary' onClick={onClickDataUseUpload}>
 							+ Upload data uses

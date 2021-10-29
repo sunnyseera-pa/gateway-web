@@ -1337,31 +1337,52 @@ class SearchPage extends React.Component {
 	};
 
 	onClickDownloadResults = () => {
-		let queryString = '?search=' + this.state.search;
+		let searchObject = this.buildSearchObj(this.state.selectedV2Datauses);
+		let searchURL = this.buildSearchUrl(searchObject);
 
-		this.state.selectedV2Datauses.forEach(selectedFilter => {
-			const dataUseFilter = this.state.filtersV2Datauses.find(filter => filter.alias === selectedFilter.parentKey);
-			queryString += '&' + dataUseFilter.dataPath + '=' + selectedFilter.value;
-			console.log(queryString);
-		});
-
-		axios.get(baseURL + '/api/v2/data-use-registers' + queryString).then(response => {
-			this.formatDataUseRegisterForDownload(response.data.data);
+		axios.get(`${baseURL}/api/v2/data-use-registers/search?search=${encodeURIComponent(this.state.search)}${searchURL}`).then(response => {
+			this.formatDataUseRegisterForDownload(response.data.result);
 		});
 	};
 
 	formatDataUseRegisterForDownload(dataUses) {
-		let formattedDataUses = dataUses;
+		let formattedDataUses = [];
 
-		// let formattedDataUses = [];
-
-		// dataUses.forEach(dataUse => {
-
-		// 	formattedDataUses.push({
-
-		// 	})
-
-		// })
+		dataUses.forEach(dataUse => {
+			formattedDataUses.push({
+				'Project ID': dataUse.projectIdText,
+				'Project Title': dataUse.projectTitle,
+				'Oganisation Name': dataUse.organisationName,
+				'Organisation Sector': dataUse.organisationSector,
+				'Gateway Applicants': dataUse.gatewayApplicants,
+				Applicants: dataUse.nonGatewayApplicants,
+				'Funders/Sponsors': dataUse.fundersAndSponsors,
+				'DEA Accredited Researcher': dataUse.accreditedResearcherStatus,
+				'Sub-Licence Arrangements': dataUse.sublicenceArrangements,
+				'Lay Summary': dataUse.laySummary,
+				'Public Benefit Statement': dataUse.publicBenefitStatement,
+				'Request Category Type': dataUse.requestCategoryType,
+				'Techinical Summary': dataUse.technicalSummary,
+				'Other Approval Committees': dataUse.otherApprovalCommittees,
+				'Project Start Date': moment(dataUse.projectStartDate).format('DD/MM/YY'),
+				'Project End Date': moment(dataUse.projectEndDate).format('DD/MM/YY'),
+				'Latest Approval Date': moment(dataUse.latestApprovalDate).format('DD/MM/YY'),
+				'Dataset(s) Names': dataUse.datasetTitles,
+				'Data Sensitivity Level': dataUse.dataSensitivityLevel,
+				'Legal Basis For Data Article 6': dataUse.legalBasisForDataArticle6,
+				'Legal Basis For Data Article 9': dataUse.legalBasisForDataArticle9,
+				'Common Law Duty Of Confidentiality': dataUse.dutyOfConfidentiality,
+				'National Data Opt-Out Applied': dataUse.nationalDataOptOut,
+				'Request Frequency': dataUse.requestFrequency,
+				'Dataset Linkage Description': dataUse.datasetLinkageDescription,
+				'Confidential Data Description': dataUse.confidentialDataDescription,
+				'Access Date': moment(dataUse.accessDate).format('DD/MM/YY'),
+				'Access Type': dataUse.dataLocation,
+				'Privacy Enhancements': dataUse.privacyEnhancements,
+				'Research Outputs': dataUse.researchOutputs,
+				Keywords: dataUse.keywords,
+			});
+		});
 
 		this.setState({ dataUseRegisterFullData: formattedDataUses }, () => {
 			setTimeout(() => {
@@ -1718,10 +1739,17 @@ class SearchPage extends React.Component {
 								<Col lg={8} className='saved-buttons'>
 									{this.state.key === 'Datauses' && (
 										<>
-											<button className={`button-tertiary`} onClick={() => this.onClickDownloadResults()}>
+											<Button variant='light' className='saved-preference button-tertiary' onClick={() => this.onClickDownloadResults()}>
+												{' '}
 												Download Results
-											</button>
-											<CSVLink data={dataUseRegisterFullData} filename='data.csv' className='hidden' ref={this.csvLink} target='_blank' />
+											</Button>
+											<CSVLink
+												data={dataUseRegisterFullData}
+												filename={`data-use-registers-${moment().format('DDMMYYYYHHmmss')}.csv`}
+												className='hidden'
+												ref={this.csvLink}
+												target='_blank'
+											/>
 										</>
 									)}
 
