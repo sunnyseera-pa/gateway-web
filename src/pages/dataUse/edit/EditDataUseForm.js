@@ -58,9 +58,10 @@ const EditFormDataUse = data => {
 
 	const { Option } = components;
 	const CustomSelectOption = props => (
-		<Option {...props}>
+		<Option {...props} className='datause-app-options'>
 			<SVGIcon width='20px' height='20px' name={props.data.icon} fill={'#3db28c'} />
 			{props.data.label}
+			{props.data.type === 'gateway' && <p className='gray-200'>organisation</p>}
 		</Option>
 	);
 
@@ -103,6 +104,15 @@ const EditFormDataUse = data => {
 		{ label: 'keyword three', value: 'keyword three' },
 		{ label: 'keyword four', value: 'keyword four' },
 	];
+
+	const CustomSelectOptionKeywords = props => <Option {...props}>{props.data.label}</Option>;
+
+	const CustomSelectValueKeywords = props => <div>{props.data.label}</div>;
+	const customMultiValueKeywords = props => (
+		<div className='input-select'>
+			<div className='input-select__multi-value gateway-input-select'>{props.data.label}</div>
+		</div>
+	);
 
 	const updateCounter = e => {
 		setCounter(e.target.value.length);
@@ -328,7 +338,9 @@ const EditFormDataUse = data => {
 									({counter}/{laySummaryMaxLength})
 								</p>
 								<Form.Control
-									type='text'
+									as='textarea'
+									multiline
+									rows='30'
 									placeholder=''
 									defaultValue={data.data.laySummary}
 									style={{ height: '100px' }}
@@ -341,7 +353,15 @@ const EditFormDataUse = data => {
 								<p className='gray800-13-opacity datause-edit-p'>
 									A description in plain English of the anticipated outcomes, or impact of project on the general public
 								</p>
-								<Form.Control type='text' placeholder='' defaultValue={data.data.publicBenefitStatement} style={{ height: '100px' }} />
+								<Form.Control
+									as='textarea'
+									placeholder=''
+									multiline
+									rows='30'
+									placeholder=''
+									defaultValue={data.data.publicBenefitStatement}
+									style={{ height: '100px' }}
+								/>
 							</Form.Group>
 
 							<Form.Group>
@@ -361,7 +381,14 @@ const EditFormDataUse = data => {
 								<p className='gray800-13-opacity datause-edit-p'>
 									A summary of the proposed research, in a manner that is suitable for a specialist reader
 								</p>
-								<Form.Control type='text' placeholder='' defaultValue={data.data.technicalSummary} style={{ height: '100px' }} />
+								<Form.Control
+									as='textarea'
+									placeholder=''
+									multiline
+									rows='30'
+									defaultValue={data.data.technicalSummary}
+									style={{ height: '100px' }}
+								/>
 							</Form.Group>
 
 							<Form.Group>
@@ -723,13 +750,31 @@ const EditFormDataUse = data => {
 									Select maximum 5 keywords that will help make your data use easily searchable
 								</p>
 								<Creatable
+									className='datause-keyword-select'
 									options={keywordsData}
 									onChange={(opt, meta) => console.log(opt, meta)}
 									isMulti
-									components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
+									defaultValue={keywordsData}
+									components={
+										({ DropdownIndicator: () => null, IndicatorSeparator: () => null },
+										{ MultiValue: customMultiValueKeywords, Option: CustomSelectOptionKeywords, SingleValue: CustomSelectValueKeywords })
+									}
 								/>
 							</Form.Group>
 						</Form>
+						{/*
+            	{allApplicants && (
+									<Creatable
+										options={allApplicants}
+										defaultValue={allApplicants}
+										onChange={(opt, meta) => console.log(opt, meta)}
+										isMulti
+										components={
+											({ DropdownIndicator: () => null, IndicatorSeparator: () => null },
+											{ MultiValue: customMultiValue, Option: CustomSelectOption, SingleValue: CustomSelectValue })
+										}
+									/>
+								)} */}
 					</Card.Body>
 				</Accordion.Collapse>
 			</Card>
