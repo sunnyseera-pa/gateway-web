@@ -687,15 +687,8 @@ class DataAccessRequest extends Component {
 		let isValid = Object.keys(errors).length ? false : true;
 
 		let isAboutApplicationValid = this.isAboutApplicationValid(this.state.aboutApplication);
-		console.log("isAboutApplicationValid ", isAboutApplicationValid)
-        		if (isValid && isAboutApplicationValid) {
-			// if 'amendment' show new amendment modal
-			console.log(" in if isValid && isAboutApplicationValid)" )
-			this.state.applicationType === DarHelper.darApplicationTypes.amendment &&
-			this.state.unansweredAmendments === 0 &&
-			this.state.answeredAmendments === 0
-				? this.setState({ showSugbmitAmendmentModal: true })
-				: this.setState({ showConfirmSubmissionModal: true });
+		if (isValid && isAboutApplicationValid) {
+			this.setState({ showConfirmSubmissionModal: true });
 		} else {
 			let activePage = _.get(_.keys({ ...errors }), 0);
 			let activePanel = _.get(_.keys({ ...errors }[activePage]), 0);
