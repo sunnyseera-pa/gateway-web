@@ -1,58 +1,60 @@
-import React from 'react';
 import { render, screen } from '@testing-library/react';
+import React from 'react';
 import DatasetCollectionResults from './index';
-import { getRelatedObjectRequest } from '../../../../services/related-object';
+import { data, relatedObjects } from './mockData';
 
-jest.mock('../../../../services/related-object', () => ({ __esModule: true, getRelatedObjectRequest: jest.fn() }));
+const mockRelatedObject = jest.fn();
+
+jest.mock('../../../commonComponents/relatedObject/RelatedObject', () => props => {
+	mockRelatedObject(props);
+	return <div />;
+});
 
 describe('Given the DatasetCollectionResults component', () => {
-    describe('When no results can be viewed', () => {
-        
-        const searchResults = [
-            { 
-                activeFlag: 'review',
-                type: 'course'
-            }
-        ];
+	describe('When no results can be viewed', () => {
+		const props = {
+			count: 0,
+			pageNumber: 0,
+			totalPages: 0,
+			onPagination: jest.fn(),
+			maxResult: 40,
+			isLoading: false,
+			data: [],
+			relatedObjects: [],
+		};
 
-        test('Then no related results will be rendered', () => {
-            render(<DatasetCollectionResults searchResults={searchResults} relatedObjects={[]} />);
-            expect(screen.queryByTestId('related-dataset-object')).toBeFalsy();
-        });
-    });
+		test('Then no related results will be rendered', () => {
+			render(<DatasetCollectionResults {...props} />);
+			expect(mockRelatedObject).not.toHaveBeenCalled();
+		});
+	});
 
-    describe('When results can be viewed', () => {
-        const searchResults = [
-            { 
-                type: 'dataset',
-                activeflag: 'active',
-                datasetfields: {
-                    phenotypes: [],
-                    publisher: 'publisher'
-                },
-                tags: { features: [] }
-            }
-        ];
+	describe('When results can be viewed', () => {
+		const props = {
+			count: 1,
+			pageNumber: 1,
+			totalPages: 1,
+			onPagination: jest.fn(),
+			maxResult: 40,
+			isLoading: false,
+			data,
+			relatedObjects,
+		};
 
-        const relatedDatasetObject = {
-            id: 'id',
-            datasetid: 'datasetid',
-            pid: 'pid',
-            type: 'dataset',
-            name: 'name',
-            datasetfields: {
-                phenotypes: [],
-                publisher: 'publisher'
-            }
-        };
+		test('Then related results will be rendered', async () => {
+			render(<DatasetCollectionResults {...props} />);
 
-        beforeAll(() => {
-            getRelatedObjectRequest.mockReturnValue([relatedDatasetObject]);
-        });
-
-        test('Then related results will be rendered', async () => {
-            render(<DatasetCollectionResults searchResults={searchResults} relatedObjects={[]} />);
-            expect(await screen.findByTestId('related-dataset-object')).toBeTruthy();
-        });
-    });
+			expect(mockRelatedObject).toHaveBeenCalledWith({
+				data: data[0],
+				activeLink: true,
+				datasetLogo: '',
+				datasetPublisher: 'NHS DIGITAL',
+				collectionReason: '',
+				collectionUpdated: '',
+				collectionUpdated: '',
+				collectionUser: '',
+				showRelationshipAnswer: false,
+			});
+		});
+	});
 });

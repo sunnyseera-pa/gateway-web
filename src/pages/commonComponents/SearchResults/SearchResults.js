@@ -19,7 +19,6 @@ const SearchResults = ({
 	isLoading,
 	totalPages,
 }) => {
-	console.log('PAGE NUMBER', pageNumber);
 	return (
 		<>
 			{!isLoading && (

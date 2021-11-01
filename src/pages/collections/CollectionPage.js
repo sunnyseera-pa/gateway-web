@@ -240,6 +240,13 @@ export const CollectionPage = props => {
 		window.scrollTo(0, 0);
 	};
 
+	const handleTabSelect = React.useCallback(eventKey => {
+		setKey(eventKey);
+
+		googleAnalytics.recordVirtualPageView(`${eventKey} tab`);
+		googleAnalytics.recordEvent('Collections', `Clicked ${eventKey} tab`, `Viewing ${eventKey}`);
+	}, []);
+
 	const dropdownItems = generateDropdownItems(key);
 	const { relatedObjects } = collectionData;
 	const userId = userState[0].id;
@@ -417,15 +424,7 @@ export const CollectionPage = props => {
 			</div>
 
 			<div>
-				<Tabs
-					className='tabsBackground gray700-13'
-					activeKey={key}
-					onSelect={key => {
-						setKey(key);
-						googleAnalytics.recordVirtualPageView(`${key} tab`);
-						googleAnalytics.recordEvent('Collections', `Clicked ${key} tab`, `Viewing ${key}`);
-					}}
-					data-testid='collectionPageTabs'>
+				<Tabs className='tabsBackground gray700-13' activeKey={key} onSelect={handleTabSelect} data-testid='collectionPageTabs'>
 					<Tab eventKey='dataset' title={'Datasets (' + datasetCount + ')'}></Tab>
 					<Tab eventKey='tool' title={'Tools (' + toolCount + ')'}></Tab>
 					<Tab eventKey='paper' title={'Papers (' + paperCount + ')'}></Tab>
