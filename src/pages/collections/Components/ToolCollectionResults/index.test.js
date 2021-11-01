@@ -1,50 +1,52 @@
+import { render } from '@testing-library/react';
 import React from 'react';
-import { render, screen } from '@testing-library/react';
 import ToolCollectionResults from './index';
-import { getRelatedObjectRequest } from '../../../../services/related-object';
+import { data, relatedObjects } from './mockData';
 
-jest.mock('../../../../services/related-object', () => ({ __esModule: true, getRelatedObjectRequest: jest.fn() }));
+const mockRelatedObject = jest.fn();
+
+jest.mock('../../../commonComponents/relatedObject/RelatedObject', () => props => {
+	mockRelatedObject(props);
+	return <div />;
+});
 
 describe('Given the ToolCollectionResults component', () => {
-    describe('When no results can be viewed', () => {
-        
-        const searchResults = [
-            { 
-                activeFlag: 'review',
-                type: 'course'
-            }
-        ];
+	describe('When no results can be viewed', () => {
+		const props = {
+			count: 0,
+			pageNumber: 0,
+			totalPages: 0,
+			data: [],
+			relatedObjects: [],
+		};
 
-        test('Then no related results will be rendered', () => {
-            render(<ToolCollectionResults searchResults={searchResults} relatedObjects={[]} />);
-            expect(screen.queryByTestId('related-tool-object')).toBeFalsy();
-        });
-    });
+		test('Then no related results will be rendered', () => {
+			render(<ToolCollectionResults {...props} />);
 
-    describe('When results can be viewed', () => {
-        const searchResults = [
-            { 
-                type: 'tool',
-                activeflag: 'active',
-                categories: {},
-                tags: { features: [] }
-            }
-        ];
+			expect(mockRelatedObject).not.toHaveBeenCalled();
+		});
+	});
 
-        const relatedToolObject = {
-            id: 'id',
-            name: 'name',
-            categories: {},
-            tags: { features: [] }
-        };
+	describe('When results can be viewed', () => {
+		const props = {
+			count: 1,
+			pageNumber: 1,
+			totalPages: 1,
+			data,
+			relatedObjects,
+		};
 
-        beforeAll(() => {
-            getRelatedObjectRequest.mockReturnValue([relatedToolObject]);
-        });
+		test('Then related results will be rendered', async () => {
+			render(<ToolCollectionResults {...props} />);
 
-        test('Then related results will be rendered', async () => {
-            render(<ToolCollectionResults searchResults={searchResults} relatedObjects={[]} />);
-            expect(await screen.findByTestId('related-tool-object')).toBeTruthy();
-        });
-    });
+			expect(mockRelatedObject).toHaveBeenCalledWith({
+				data: data[0],
+				activeLink: true,
+				collectionReason: '',
+				collectionUpdated: '20 May 2021',
+				collectionUser: 'Lewis Kearsey',
+				showRelationshipAnswer: false,
+			});
+		});
+	});
 });

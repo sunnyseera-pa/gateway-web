@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import React from 'react';
 import DatasetCollectionResults from './index';
 import { data, relatedObjects } from './mockData';
@@ -16,15 +16,13 @@ describe('Given the DatasetCollectionResults component', () => {
 			count: 0,
 			pageNumber: 0,
 			totalPages: 0,
-			onPagination: jest.fn(),
-			maxResult: 40,
-			isLoading: false,
 			data: [],
 			relatedObjects: [],
 		};
 
 		test('Then no related results will be rendered', () => {
 			render(<DatasetCollectionResults {...props} />);
+
 			expect(mockRelatedObject).not.toHaveBeenCalled();
 		});
 	});
@@ -34,9 +32,6 @@ describe('Given the DatasetCollectionResults component', () => {
 			count: 1,
 			pageNumber: 1,
 			totalPages: 1,
-			onPagination: jest.fn(),
-			maxResult: 40,
-			isLoading: false,
 			data,
 			relatedObjects,
 		};
@@ -50,7 +45,6 @@ describe('Given the DatasetCollectionResults component', () => {
 				datasetLogo: '',
 				datasetPublisher: 'NHS DIGITAL',
 				collectionReason: '',
-				collectionUpdated: '',
 				collectionUpdated: '',
 				collectionUser: '',
 				showRelationshipAnswer: false,

@@ -24,8 +24,13 @@ const PersonCollectionResults = ({ relatedObjects, userId, ...outerProps }) => {
 								updated = dat.updated;
 								user = dat.user;
 								showAnswer = !_.isEmpty(reason);
+
+								console.log('Dat', dat);
 							}
 						});
+
+						console.log('Object', object);
+
 						return (
 							<RelatedObject
 								key={object.id}

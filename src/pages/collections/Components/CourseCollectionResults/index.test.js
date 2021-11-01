@@ -1,50 +1,52 @@
+import { render } from '@testing-library/react';
 import React from 'react';
-import { render, screen } from '@testing-library/react';
 import CourseCollectionResults from './index';
-import { getRelatedObjectForCourseRequest } from '../../../../services/related-object';
+import { data, relatedObjects } from './mockData';
 
-jest.mock('../../../../services/related-object', () => ({ __esModule: true, getRelatedObjectForCourseRequest: jest.fn() }));
+const mockRelatedObject = jest.fn();
+
+jest.mock('../../../commonComponents/relatedObject/RelatedObject', () => props => {
+	mockRelatedObject(props);
+	return <div />;
+});
 
 describe('Given the CourseCollectionResults component', () => {
-    describe('When no results can be viewed', () => {
-        
-        const searchResults = [
-            { 
-                activeFlag: 'review',
-                type: 'dataset'
-            }
-        ];
+	describe('When no results can be viewed', () => {
+		const props = {
+			count: 0,
+			pageNumber: 0,
+			totalPages: 0,
+			data: [],
+			relatedObjects: [],
+		};
 
-        test('Then no related results will be rendered', () => {
-            render(<CourseCollectionResults searchResults={searchResults} relatedObjects={[]} />);
-            expect(screen.queryByTestId('related-course-object')).toBeFalsy();
-        });
-    });
+		test('Then no related results will be rendered', () => {
+			render(<CourseCollectionResults {...props} />);
 
-    describe('When results can be viewed', () => {
-        const searchResults = [
-            { 
-                type: 'course',
-                activeflag: 'active',
-                courseOptions: []
-            }
-        ];
+			expect(mockRelatedObject).not.toHaveBeenCalled();
+		});
+	});
 
-        const relatedCourseObject = {
-            id: 'id',
-            type: 'course',
-            title: 'title',
-            provider: 'provider',
-            courseOptions: []
-        };
+	describe('When results can be viewed', () => {
+		const props = {
+			count: 1,
+			pageNumber: 1,
+			totalPages: 1,
+			data,
+			relatedObjects,
+		};
 
-        beforeAll(() => {
-            getRelatedObjectForCourseRequest.mockResolvedValue([relatedCourseObject]);
-        });
+		test('Then related results will be rendered', async () => {
+			render(<CourseCollectionResults {...props} />);
 
-        test('Then related results will be rendered', async () => {
-            render(<CourseCollectionResults searchResults={searchResults} relatedObjects={[]} />);
-            expect(await screen.findByTestId('related-course-object')).toBeTruthy();
-        });
-    });
+			expect(mockRelatedObject).toHaveBeenCalledWith({
+				data: data[0],
+				activeLink: true,
+				collectionReason: '',
+				collectionUpdated: '20 May 2021',
+				collectionUser: 'Lewis Kearsey',
+				showRelationshipAnswer: false,
+			});
+		});
+	});
 });

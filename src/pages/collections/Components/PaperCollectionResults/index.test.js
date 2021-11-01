@@ -1,51 +1,52 @@
+import { render } from '@testing-library/react';
 import React from 'react';
-import { render, screen } from '@testing-library/react';
 import PaperCollectionResults from './index';
-import { getRelatedObjectRequest } from '../../../../services/related-object';
+import { data, relatedObjects } from './mockData';
 
-jest.mock('../../../../services/related-object', () => ({ __esModule: true, getRelatedObjectRequest: jest.fn() }));
+const mockRelatedObject = jest.fn();
+
+jest.mock('../../../commonComponents/relatedObject/RelatedObject', () => props => {
+	mockRelatedObject(props);
+	return <div />;
+});
 
 describe('Given the PaperCollectionResults component', () => {
-    describe('When no results can be viewed', () => {
-        
-        const searchResults = [
-            { 
-                activeFlag: 'review',
-                type: 'course'
-            }
-        ];
+	describe('When no results can be viewed', () => {
+		const props = {
+			count: 0,
+			pageNumber: 0,
+			totalPages: 0,
+			data: [],
+			relatedObjects: [],
+		};
 
-        test('Then no related results will be rendered', () => {
-            render(<PaperCollectionResults searchResults={searchResults} relatedObjects={[]} />);
-            expect(screen.queryByTestId('related-paper-object')).toBeFalsy();
-        });
-    });
+		test('Then no related results will be rendered', () => {
+			render(<PaperCollectionResults {...props} />);
 
-    describe('When results can be viewed', () => {
-        const searchResults = [
-            { 
-                type: 'paper',
-                activeflag: 'active',
-                tags: { features: [] }
-            }
-        ];
+			expect(mockRelatedObject).not.toHaveBeenCalled();
+		});
+	});
 
-        const relatedPaperObject = {
-            id: 'id',
-            authorsNew: 'authorsNew',
-            type: 'paper',
-            name: 'name',
-            journal: 'journal',
-            journalYear: 'journalYear'
-        };
+	describe('When results can be viewed', () => {
+		const props = {
+			count: 1,
+			pageNumber: 1,
+			totalPages: 1,
+			data,
+			relatedObjects,
+		};
 
-        beforeAll(() => {
-            getRelatedObjectRequest.mockReturnValue([relatedPaperObject]);
-        });
+		test('Then related results will be rendered', async () => {
+			render(<PaperCollectionResults {...props} />);
 
-        test('Then related results will be rendered', async () => {
-            render(<PaperCollectionResults searchResults={searchResults} relatedObjects={[]} />);
-            expect(await screen.findByTestId('related-paper-object')).toBeTruthy();
-        });
-    });
+			expect(mockRelatedObject).toHaveBeenCalledWith({
+				data: data[0],
+				activeLink: true,
+				collectionReason: '',
+				collectionUpdated: '20 May 2021',
+				collectionUser: 'Lewis Kearsey',
+				showRelationshipAnswer: false,
+			});
+		});
+	});
 });

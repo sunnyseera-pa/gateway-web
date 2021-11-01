@@ -25,8 +25,12 @@ const ToolCollectionResults = ({ relatedObjects, userId, ...outerProps }) => {
 								updated = dat.updated;
 								user = dat.user;
 								showAnswer = !_.isEmpty(reason);
+
+								console.log('dat', dat);
 							}
 						});
+
+						console.log('object', object);
 
 						return (
 							<RelatedObject
