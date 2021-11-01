@@ -5,7 +5,8 @@ import queryString from 'query-string';
 import * as Sentry from '@sentry/react';
 import { Container, Row, Col, Tabs, Tab, Pagination, Button, Alert } from 'react-bootstrap';
 import moment from 'moment';
-import _ from 'lodash';
+import _, { isEmpty } from 'lodash';
+import { CSVLink } from 'react-csv';
 import { toTitleCase } from '../../utils/GeneralHelper.util';
 import Filter from './components/Filter';
 import FilterSelection from './components/FilterSelection';
@@ -60,6 +61,7 @@ class SearchPage extends React.Component {
 		datasetData: [],
 		toolData: [],
 		dataUseRegisterData: [],
+		dataUseRegisterFullData: [],
 		paperData: [],
 		personData: [],
 		courseData: [],
@@ -140,6 +142,7 @@ class SearchPage extends React.Component {
 		this.openDataUtilityWizard = this.openDataUtilityWizard.bind(this);
 		this.toggleDataUtilityBanner = this.toggleDataUtilityBanner.bind(this);
 		this.onWizardStepChange = this.onWizardStepChange.bind(this);
+		this.csvLink = React.createRef();
 	}
 
 	showModal = () => {
@@ -1333,6 +1336,61 @@ class SearchPage extends React.Component {
 		);
 	};
 
+	onClickDownloadResults = () => {
+		let searchObject = this.buildSearchObj(this.state.selectedV2Datauses);
+		let searchURL = this.buildSearchUrl(searchObject);
+
+		axios.get(`${baseURL}/api/v2/data-use-registers/search?search=${encodeURIComponent(this.state.search)}${searchURL}`).then(response => {
+			this.formatDataUseRegisterForDownload(response.data.result);
+		});
+	};
+
+	formatDataUseRegisterForDownload(dataUses) {
+		let formattedDataUses = [];
+
+		dataUses.forEach(dataUse => {
+			formattedDataUses.push({
+				'Project ID': dataUse.projectIdText,
+				'Project Title': dataUse.projectTitle,
+				'Oganisation Name': dataUse.organisationName,
+				'Organisation Sector': dataUse.organisationSector,
+				'Gateway Applicants': dataUse.gatewayApplicants,
+				Applicants: dataUse.nonGatewayApplicants,
+				'Funders/Sponsors': dataUse.fundersAndSponsors,
+				'DEA Accredited Researcher': dataUse.accreditedResearcherStatus,
+				'Sub-Licence Arrangements': dataUse.sublicenceArrangements,
+				'Lay Summary': dataUse.laySummary,
+				'Public Benefit Statement': dataUse.publicBenefitStatement,
+				'Request Category Type': dataUse.requestCategoryType,
+				'Techinical Summary': dataUse.technicalSummary,
+				'Other Approval Committees': dataUse.otherApprovalCommittees,
+				'Project Start Date': moment(dataUse.projectStartDate).format('DD/MM/YY'),
+				'Project End Date': moment(dataUse.projectEndDate).format('DD/MM/YY'),
+				'Latest Approval Date': moment(dataUse.latestApprovalDate).format('DD/MM/YY'),
+				'Dataset(s) Names': dataUse.datasetTitles,
+				'Data Sensitivity Level': dataUse.dataSensitivityLevel,
+				'Legal Basis For Data Article 6': dataUse.legalBasisForDataArticle6,
+				'Legal Basis For Data Article 9': dataUse.legalBasisForDataArticle9,
+				'Common Law Duty Of Confidentiality': dataUse.dutyOfConfidentiality,
+				'National Data Opt-Out Applied': dataUse.nationalDataOptOut,
+				'Request Frequency': dataUse.requestFrequency,
+				'Dataset Linkage Description': dataUse.datasetLinkageDescription,
+				'Confidential Data Description': dataUse.confidentialDataDescription,
+				'Access Date': moment(dataUse.accessDate).format('DD/MM/YY'),
+				'Access Type': dataUse.dataLocation,
+				'Privacy Enhancements': dataUse.privacyEnhancements,
+				'Research Outputs': dataUse.researchOutputs,
+				Keywords: dataUse.keywords,
+			});
+		});
+
+		this.setState({ dataUseRegisterFullData: formattedDataUses }, () => {
+			setTimeout(() => {
+				this.csvLink.current.link.click();
+			});
+		});
+	}
+
 	render() {
 		let {
 			summary,
@@ -1340,6 +1398,7 @@ class SearchPage extends React.Component {
 			datasetData,
 			toolData,
 			dataUseRegisterData,
+			dataUseRegisterFullData,
 			paperData,
 			personData,
 			courseData,
@@ -1678,6 +1737,22 @@ class SearchPage extends React.Component {
 									results {this.state.search != '' && `for '${this.state.search}'`}
 								</Col>
 								<Col lg={8} className='saved-buttons'>
+									{this.state.key === 'Datauses' && (
+										<>
+											<Button variant='light' className='saved-preference button-tertiary' onClick={() => this.onClickDownloadResults()}>
+												{' '}
+												Download Results
+											</Button>
+											<CSVLink
+												data={dataUseRegisterFullData}
+												filename={`data-use-registers-${moment().format('DDMMYYYYHHmmss')}.csv`}
+												className='hidden'
+												ref={this.csvLink}
+												target='_blank'
+											/>
+										</>
+									)}
+
 									{this.state.saveSuccess ? (
 										<Button variant='success' className='saved-disabled button-teal button-teal' disabled>
 											<SVGIcon width='15px' height='15px' name='tick' fill={'#fff'} /> Saved
