@@ -34,12 +34,11 @@ import ActivityLog from '../DataAccessRequest/components/ActivityLog/ActivityLog
 import AccountTeams from './AccountTeams';
 import googleAnalytics from '../../tracking';
 
-
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
 	<a
-		href='javascript:void(0)'
+		href='!#'
 		ref={ref}
 		onClick={e => {
 			e.preventDefault();
@@ -114,6 +113,7 @@ class Account extends Component {
 			this.alertTimeOut = setTimeout(() => this.setState({ alert: {} }), 10000);
 		}
 		let values = queryString.parse(window.location.search);
+
 		if (values.team === 'user') {
 			this.state.team = 'user';
 			localStorage.setItem('HDR_TEAM', 'user');
@@ -518,7 +518,6 @@ class Account extends Component {
 			dataaccessrequest,
 		} = this.state;
 
-
 		return (
 			<Fragment>
 				<SearchBar
@@ -600,7 +599,6 @@ class Account extends Component {
 											<span className='navLinkItem'>Courses</span>
 										</Nav.Link>
 									</div>
-
 									<div
 										className={`${tabId === 'dataaccessrequests' ? 'activeCard' : 'accountNav'}`}
 										onClick={e => this.toggleNav('dataaccessrequests')}>
@@ -642,7 +640,9 @@ class Account extends Component {
 									</div>
 									<div className={`${tabId === 'teams' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('teams')}>
 										<Nav.Link className='verticalNavBar gray700-13'>
-											<span className='grey-circle-border'><SVGIcon name='plusChunky' fill={'#b3b8bd'} viewBox='-1 -1 26 26' className='accountSvgs' /></span>
+											<span className='grey-circle-border'>
+												<SVGIcon name='plusChunky' fill={'#b3b8bd'} viewBox='-1 -1 26 26' className='accountSvgs' />
+											</span>
 											<span style={{ 'margin-left': '5px' }}>Teams</span>
 										</Nav.Link>
 									</div>
@@ -737,15 +737,16 @@ class Account extends Component {
 									_.isEmpty(dataaccessrequest) ? (
 										<DataAccessRequests setDataAccessRequest={this.setDataAccessRequest} userState={userState} team={team} alert={alert} />
 									) : (
-										<ActivityLog
-										applicationId={this.state._id}
-											onClickStartReview={this.navigateToLocation}
-											dataaccessrequest={dataaccessrequest}
-											userState={userState}
-											team={team}
-											ref={this.activityLog}
-											onUpdateLogs={this.loadActivityLogNotifications}
-										/>
+
+																				<ActivityLog
+																				applicationId={this.state._id}
+																					onClickStartReview={this.navigateToLocation}
+																					dataaccessrequest={dataaccessrequest}
+																					userState={userState}
+																					team={team}
+																					ref={this.activityLog}
+																					onUpdateLogs={this.loadActivityLogNotifications}
+																				/>
 									)
 								) : (
 									''
@@ -772,7 +773,7 @@ class Account extends Component {
 												/>
 											) : (
 												<ActivityLog
-												applicationId={this.state._id}
+													applicationId={this.state._id}
 													onClickStartReview={this.navigateToLocation}
 													dataaccessrequest={dataaccessrequest}
 													userState={userState}
@@ -832,8 +833,8 @@ class Account extends Component {
 					<ActionBar userState={userState}>
 						<div className='action-bar'>
 							<div className='action-bar-actions'>
-							<ActivityLogActionButtons
-								 applicationId={this.state._id}
+								<ActivityLogActionButtons
+									applicationId={this.state._id}
 									team={team}
 									latestVersion={this.state.dataaccessrequest}
 									onClickStartReview={this.navigateToLocation}
