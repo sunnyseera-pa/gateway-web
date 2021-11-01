@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Container, Row, Col, Button, OverlayTrigger } from 'react-bootstrap';
+import moment from 'moment';
 import SVGIcon from '../../../images/SVGIcon';
 
 const About = ({ data, renderTooltip }) => {
@@ -19,10 +20,10 @@ const About = ({ data, renderTooltip }) => {
 	return (
 		<>
 			<>
-				<Container className='datause-card datause-safeInfo'>
+				<Container className='rectangle'>
 					<p className='black-14-bold'>Safe people</p>
 					{!data.organisationName > 0 && hide ? (
-						''
+						count++
 					) : (
 						<Row className='soft-black-14 datause-view-grid '>
 							<Col md={4}>Organisation name</Col>
@@ -101,8 +102,9 @@ const About = ({ data, renderTooltip }) => {
 													<span className='datatuse-personicon-bg'>
 														<SVGIcon name='personiconwithbg' width={17} height={16} fill={'#3db28c'} />
 													</span>
-													<a href={`/person/${gatewayApplicant}`} className='soft-black-14 badge-datause-bold'>
-														{gatewayApplicant}
+													<a href={`/person/${gatewayApplicant.id}`} className='soft-black-14 badge-datause-bold'>
+														{' '}
+														{gatewayApplicant.firstname} {gatewayApplicant.lastname}
 													</a>
 												</span>
 											))}
@@ -117,7 +119,7 @@ const About = ({ data, renderTooltip }) => {
 							</Col>
 						</Row>
 					)}
-					{!data.applicantID > 0 && hide ? (
+					{!data.applicantId > 0 && hide ? (
 						''
 					) : (
 						<Row className='soft-black-14 datause-view-grid'>
@@ -131,7 +133,7 @@ const About = ({ data, renderTooltip }) => {
 									<SVGIcon name='info' width={10} height={10} fill={'#475da7'} className='datause-info-icon' />
 								</button>
 							</OverlayTrigger>
-							<Col md={7}>{data.applicantID.length > 0 ? data.applicantID : <p className='gray800-14-opacity'>Not specified</p>}</Col>
+							<Col md={7}>{data.applicantId.length > 0 ? data.applicantId : <p className='gray800-14-opacity'>Not specified</p>}</Col>
 						</Row>
 					)}
 					{!data.fundersAndSponsors > 0 && hide ? (
@@ -146,7 +148,11 @@ const About = ({ data, renderTooltip }) => {
 							</OverlayTrigger>
 							<Col md={6}>
 								{data.fundersAndSponsors.length > 0 ? (
-									data.fundersAndSponsors.map(a => <span className='badge-tag badge-datause-bold'>{a}</span>)
+									data.fundersAndSponsors.map(a => (
+										<a href={'/search?search=&tab=Datauses&datausefundersandsponsors=' + a}>
+											<span className='badge-tag badge-datause-bold'>{a}</span>
+										</a>
+									))
 								) : (
 									<p className='gray800-14-opacity'>Not specified</p>
 								)}
@@ -238,11 +244,21 @@ const About = ({ data, renderTooltip }) => {
 						<Row className='soft-black-14 datause-view-grid'>
 							<Col md={4}>
 								Lay summary
-								<button
-									className='datause-arrow'
-									onClick={() => (!closedLaySummary ? setClosedLaySummary(true) : setClosedLaySummary(false))}>
-									<SVGIcon width='20px' height='20px' name='chevronbottom' fill={'#475da7'} className={closedLaySummary ? '' : 'flip180'} />
-								</button>
+								{data.laySummary.length >= 250 ? (
+									<button
+										className='datause-arrow'
+										onClick={() => (!closedLaySummary ? setClosedLaySummary(true) : setClosedLaySummary(false))}>
+										<SVGIcon
+											width='20px'
+											height='20px'
+											name='chevronbottom'
+											fill={'#475da7'}
+											className={closedLaySummary ? '' : 'flip180'}
+										/>
+									</button>
+								) : (
+									''
+								)}
 							</Col>
 							<OverlayTrigger
 								placement='top'
@@ -256,7 +272,10 @@ const About = ({ data, renderTooltip }) => {
 							<Col md={7}>
 								{data.laySummary.length > 0 ? (
 									closedLaySummary ? (
-										data.laySummary.substr(0, 250)
+										<>
+											{data.laySummary.substr(0, 250)}
+											{data.laySummary.length >= 250 ? '...' : ''}
+										</>
 									) : (
 										data.laySummary
 									)
@@ -267,22 +286,28 @@ const About = ({ data, renderTooltip }) => {
 						</Row>
 					)}
 					{!data.publicBenefitStatement > 0 && hide ? (
-						''
+						(() => {
+							count++;
+						})()
 					) : (
 						<Row className='soft-black-14 datause-view-grid'>
 							<Col md={4}>
 								Public benefit statement
-								<button
-									className='datause-arrow'
-									onClick={() => (!closedPublicBenefit ? setClosedPublicBenefit(true) : setClosedPublicBenefit(false))}>
-									<SVGIcon
-										width='20px'
-										height='20px'
-										name='chevronbottom'
-										fill={'#475da7'}
-										className={closedPublicBenefit ? 'flip180' : ''}
-									/>
-								</button>
+								{data.publicBenefitStatement.length >= 250 ? (
+									<button
+										className='datause-arrow'
+										onClick={() => (!closedPublicBenefit ? setClosedPublicBenefit(true) : setClosedPublicBenefit(false))}>
+										<SVGIcon
+											width='20px'
+											height='20px'
+											name='chevronbottom'
+											fill={'#475da7'}
+											className={closedPublicBenefit ? '' : 'flip180'}
+										/>
+									</button>
+								) : (
+									''
+								)}
 							</Col>
 							<OverlayTrigger
 								placement='top'
@@ -296,7 +321,10 @@ const About = ({ data, renderTooltip }) => {
 							<Col md={7}>
 								{data.publicBenefitStatement.length > 0 ? (
 									closedPublicBenefit ? (
-										data.publicBenefitStatement.substr(0, 250)
+										<>
+											{data.publicBenefitStatement.substr(0, 250)}
+											{data.publicBenefitStatement.length >= 250 ? '...' : ''}
+										</>
 									) : (
 										data.publicBenefitStatement
 									)
@@ -370,7 +398,11 @@ const About = ({ data, renderTooltip }) => {
 								</button>
 							</OverlayTrigger>
 							<Col md={6}>
-								{data.projectStartDate.length > 0 ? data.projectStartDate : <p className='gray800-14-opacity'>Not specified</p>}
+								{data.projectStartDate.length > 0 ? (
+									moment(data.projectStartDate).format('YYYY-MM-DD')
+								) : (
+									<p className='gray800-14-opacity'>Not specified</p>
+								)}
 							</Col>
 						</Row>
 					)}
@@ -384,7 +416,13 @@ const About = ({ data, renderTooltip }) => {
 									<SVGIcon name='info' width={10} height={10} fill={'#475da7'} className='datause-info-icon' />
 								</button>
 							</OverlayTrigger>
-							<Col md={7}>{data.projectEndDate.length > 0 ? data.projectEndDate : <p className='gray800-14-opacity'>Not specified</p>}</Col>
+							<Col md={7}>
+								{data.projectEndDate.length > 0 ? (
+									moment(data.projectEndDate).format('YYYY-MM-DD')
+								) : (
+									<p className='gray800-14-opacity'>Not specified</p>
+								)}
+							</Col>
 						</Row>
 					)}
 					{!data.latestApprovalDate > 0 && hide ? (
@@ -400,7 +438,11 @@ const About = ({ data, renderTooltip }) => {
 								</button>
 							</OverlayTrigger>
 							<Col md={7}>
-								{data.latestApprovalDate.length > 0 ? data.latestApprovalDate : <p className='gray800-14-opacity'>Not specified</p>}
+								{data.latestApprovalDate.length > 0 ? (
+									moment(data.latestApprovalDate).format('YYYY-MM-DD')
+								) : (
+									<p className='gray800-14-opacity'>Not specified</p>
+								)}
 							</Col>
 						</Row>
 					)}
@@ -521,9 +563,13 @@ const About = ({ data, renderTooltip }) => {
 						<Row className='soft-black-14 datause-view-grid'>
 							<Col md={4}>
 								Description of how the data will be used
-								<button className='datause-arrow' onClick={() => (!closedDataUse ? setClosedDataUse(true) : setClosedDataUse(false))}>
-									<SVGIcon width='20px' height='20px' name='chevronbottom' fill={'#475da7'} className={closedDataUse ? 'flip180' : ''} />
-								</button>
+								{data.confidentialDataDescription.length >= 250 ? (
+									<button className='datause-arrow' onClick={() => (!closedDataUse ? setClosedDataUse(true) : setClosedDataUse(false))}>
+										<SVGIcon width='20px' height='20px' name='chevronbottom' fill={'#475da7'} className={closedDataUse ? '' : 'flip180'} />
+									</button>
+								) : (
+									''
+								)}
 							</Col>
 							<OverlayTrigger
 								placement='top'
@@ -570,7 +616,13 @@ const About = ({ data, renderTooltip }) => {
 									<SVGIcon name='info' width={10} height={10} fill={'#475da7'} className='datause-info-icon' />
 								</button>
 							</OverlayTrigger>
-							<Col md={7}>{data.accessDate.length > 0 ? data.accessDate : <p className='gray800-14-opacity'>Not specified</p>}</Col>
+							<Col md={7}>
+								{data.accessDate.length > 0 ? (
+									moment(data.accessDate).format('YYYY-MM-DD')
+								) : (
+									<p className='gray800-14-opacity'>Not specified</p>
+								)}
+							</Col>
 						</Row>
 					)}
 				</Container>

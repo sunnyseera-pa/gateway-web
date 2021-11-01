@@ -387,7 +387,7 @@ class SearchPage extends React.Component {
 		if (!_.isEmpty(this.state.filtersV2Datauses)) {
 			const filtersV2Datauses = [...this.state.filtersV2Datauses];
 			const selectedV2Datauses = [...this.state.selectedV2Datauses];
-			this.setSelectedFiltersFromQueryParams(filtersV2Datauses, selectedV2Datauses, queryParams, 'dataUseRegister');
+			this.setSelectedFiltersFromQueryParams(filtersV2Datauses, selectedV2Datauses, queryParams, 'datause');
 		}
 		if (!_.isEmpty(this.state.filtersV2Papers)) {
 			const filtersV2Papers = [...this.state.filtersV2Papers];
