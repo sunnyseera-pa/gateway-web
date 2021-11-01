@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import readXlsxFile from 'read-excel-file';
 import convertToJson from 'read-excel-file/schema';
 import { Row, Col, Alert, Image, Tooltip, OverlayTrigger } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import { isEmpty, some, find } from 'lodash';
+import { isEmpty, some, find, isUndefined } from 'lodash';
 import axios from 'axios';
 import { SlideDown } from 'react-slidedown';
 import moment from 'moment';
@@ -17,7 +17,7 @@ import './DataUseUpload.scss';
 
 var baseURL = require('../../commonComponents/BaseURL').getURL();
 
-const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage }, ref) => {
+const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState }, ref) => {
 	React.useImperativeHandle(ref, () => ({
 		toggleSubmitModal,
 	}));
@@ -29,6 +29,7 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage }, ref) =>
 	const [alert, setAlert] = useState('');
 	const [uploadedData, setUploadedData] = useState({ rows: [], uploadErrors: [], checks: [] });
 	const [dataUseIndexes, setDataUseIndexes] = useState([]);
+	const [recommendedFieldsMissing, setRecommendedFieldsMissing] = useState(false);
 
 	const onUploadDataUseRegister = event => {
 		if (maxSize < event.target.files[0].size) {
@@ -59,6 +60,23 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage }, ref) =>
 		}
 		event.target.value = null;
 	};
+
+	useEffect(() => {
+		const uploadedRows = uploadedData.rows;
+		uploadedRows.forEach(row => {
+			console.log(isEmpty(row.latestApprovalDate));
+			if (
+				isEmpty(row.laySummary) ||
+				isEmpty(row.publicBenefitStatement) ||
+				isUndefined(row.latestApprovalDate) ||
+				isEmpty(row.dataLocation)
+			) {
+				setRecommendedFieldsMissing(true);
+				return;
+			}
+			setRecommendedFieldsMissing(false);
+		});
+	}, [uploadedData]);
 
 	const submitDataUse = () => {
 		const payload = {
@@ -180,10 +198,8 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage }, ref) =>
 			el =>
 				el.projectIdText === dataUse.projectIdText ||
 				(el.projectTitle === dataUse.projectTitle &&
-					el.laySummary === dataUse.laySummary &&
 					el.organisationName === dataUse.organisationName &&
-					el.datasetTitles === dataUse.datasetTitles &&
-					el.latestApprovalDate === dataUse.latestApprovalDate)
+					el.datasetTitles === dataUse.datasetTitles)
 		);
 
 		return dataUseCheck;
@@ -284,7 +300,7 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage }, ref) =>
 											className={
 												some(filtered, ['error', 'duplicate'])
 													? 'invalid-info dataUseGridItem duplicate-data-use'
-													: some(filtered, ['column', 'Project Title*'])
+													: some(filtered, ['column', 'Project title*'])
 													? 'invalid-info dataUseGridItem soft-black-14'
 													: 'dataUseGridItem soft-black-14'
 											}
@@ -296,21 +312,21 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage }, ref) =>
 												fill={'#3c4e8c'}
 												className={!dataUseIndexes.includes(index) ? 'mr-3' : 'flip180 mr-3'}
 											/>
-											{some(filtered, ['column', 'Project Title*'])
-												? find(filtered, ['column', 'Project Title*']).value
+											{some(filtered, ['column', 'Project title*'])
+												? find(filtered, ['column', 'Project title*']).value
 												: data.projectTitle}
 										</div>
 										<div
 											className={
 												some(filtered, ['error', 'duplicate'])
 													? 'invalid-info dataUseGridItem duplicate-data-use'
-													: some(filtered, ['column', 'Dataset(s) Name*'])
+													: some(filtered, ['column', 'Dataset(s) name*'])
 													? 'invalid-info dataUseGridItem soft-black-14'
 													: 'dataUseGridItem soft-black-14'
 											}
 											onClick={() => toggleDataUseSection(index)}>
-											{some(filtered, ['column', 'Dataset(s) Name*'])
-												? find(filtered, ['column', 'Dataset(s) Name*']).value
+											{some(filtered, ['column', 'Dataset(s) name*'])
+												? find(filtered, ['column', 'Dataset(s) name*']).value
 												: renderDatasets(data)}
 										</div>
 
@@ -318,53 +334,53 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage }, ref) =>
 											className={
 												some(filtered, ['error', 'duplicate'])
 													? 'invalid-info dataUseGridItem duplicate-data-use'
-													: some(filtered, ['column', 'Organisation Name*'])
+													: some(filtered, ['column', 'Organisation name*'])
 													? 'invalid-info dataUseGridItem soft-black-14'
 													: 'dataUseGridItem soft-black-14'
 											}
 											onClick={() => toggleDataUseSection(index)}>
-											{some(filtered, ['column', 'Organisation Name*'])
-												? find(filtered, ['column', 'Organisation Name*']).value
+											{some(filtered, ['column', 'Organisation name*'])
+												? find(filtered, ['column', 'Organisation name*']).value
 												: data.organisationName}
 										</div>
 										<div
 											className={
 												some(filtered, ['error', 'duplicate'])
 													? 'invalid-info dataUseGridItem duplicate-data-use'
-													: some(filtered, ['column', 'Latest Approval Date*'])
+													: some(filtered, ['column', 'Latest approval date*'])
 													? 'invalid-info dataUseGridItem soft-black-14'
 													: 'dataUseGridItem soft-black-14'
 											}
 											onClick={() => toggleDataUseSection(index)}>
-											{some(filtered, ['column', 'Latest Approval Date*'])
-												? find(filtered, ['column', 'Latest Approval Date*']).value
+											{some(filtered, ['column', 'Latest approval date*'])
+												? find(filtered, ['column', 'Latest approval date*']).value
 												: moment(data.latestApprovalDate).format('DD/MM/YY')}
 										</div>
 
 										<SlideDown className='dataUseDetails' closed={!dataUseIndexes.includes(index)}>
 											<div className='dataUseDetailsGrid'>
-												<div className='gray800-14-bold dataUseDetailsGridSection'>Safe People</div>
+												<div className='gray800-14-bold dataUseDetailsGridSection'>Safe people</div>
 												<div className='dataUseDetailsGridHeader'>Project ID</div>
 												<div className='dataUseDetailsGridItem'>{data.projectIdText}</div>
 
-												<div className='dataUseDetailsGridHeader'>Organisation Name</div>
+												<div className='dataUseDetailsGridHeader'>Organisation name</div>
 												<div
 													className={
-														some(filtered, ['column', 'Organisation Name*'])
+														some(filtered, ['column', 'Organisation name*'])
 															? 'invalid-info dataUseDetailsGridItem'
 															: 'dataUseDetailsGridItem'
 													}>
-													{some(filtered, ['column', 'Organisation Name*'])
-														? find(filtered, ['column', 'Organisation Name*']).value
+													{some(filtered, ['column', 'Organisation name*'])
+														? find(filtered, ['column', 'Organisation name*']).value
 														: data.organisationName}
 												</div>
 												<div className='dataUseDetailsGridHeader'>Organisation ID</div>
 												<div className='dataUseDetailsGridItem'>{data.organisationId}</div>
 
-												<div className='dataUseDetailsGridHeader'>Organisation Sector</div>
+												<div className='dataUseDetailsGridHeader'>Organisation sector</div>
 												<div className='dataUseDetailsGridItem'>{data.organisationSector}</div>
 
-												<div className='dataUseDetailsGridHeader'>Applicant Name(s)</div>
+												<div className='dataUseDetailsGridHeader'>Applicant name(s)</div>
 												<div className='dataUseDetailsGridItem'>{renderApplicants(data)}</div>
 
 												<div className='dataUseDetailsGridHeader'>Applicant ID</div>
@@ -372,76 +388,76 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage }, ref) =>
 
 												<div className='dataUseDetailsGridHeader'>Funders/ Sponsors</div>
 												<div className='dataUseDetailsGridItem'>{data.fundersAndSponsors}</div>
-												<div className='dataUseDetailsGridHeader'>Accredited Researcher Status</div>
+												<div className='dataUseDetailsGridHeader'>Accredited researcher status</div>
 												<div className='dataUseDetailsGridItem'>{data.accreditedResearcherStatus}</div>
-												<div className='dataUseDetailsGridHeader'>Sub-Licence Arrangements (if any)?</div>
+												<div className='dataUseDetailsGridHeader'>Sub-licence arrangements</div>
 												<div className='dataUseDetailsGridItem'>{data.sublicenceArrangements}</div>
 
 												<div className='gray800-14-bold dataUseDetailsGridSection'>Safe Project</div>
-												<div className='dataUseDetailsGridHeader'>Project Title</div>
+												<div className='dataUseDetailsGridHeader'>Project title</div>
 												<div
 													className={
-														some(filtered, ['column', 'Project Title*']) ? 'invalid-info dataUseDetailsGridItem' : 'dataUseDetailsGridItem'
+														some(filtered, ['column', 'Project title*']) ? 'invalid-info dataUseDetailsGridItem' : 'dataUseDetailsGridItem'
 													}>
-													{some(filtered, ['column', 'Project Title*'])
-														? find(filtered, ['column', 'Project Title*']).value
+													{some(filtered, ['column', 'Project title*'])
+														? find(filtered, ['column', 'Project title*']).value
 														: data.projectTitle}
 												</div>
 												<div className='dataUseDetailsGridHeader'>Lay Summary</div>
 												<div
 													className={
-														some(filtered, ['column', 'Lay Summary*']) ? 'invalid-info dataUseDetailsGridItem' : 'dataUseDetailsGridItem'
+														some(filtered, ['column', 'Lay summary*']) ? 'invalid-info dataUseDetailsGridItem' : 'dataUseDetailsGridItem'
 													}>
-													{some(filtered, ['column', 'Lay Summary*']) ? find(filtered, ['column', 'Lay Summary*']).value : data.laySummary}
+													{some(filtered, ['column', 'Lay summary*']) ? find(filtered, ['column', 'Lay summary*']).value : data.laySummary}
 												</div>
-												<div className='dataUseDetailsGridHeader'>Public Benefit Statement</div>
+												<div className='dataUseDetailsGridHeader'>Public benefit statement</div>
 												<div className='dataUseDetailsGridItem'>{data.publicBenefitStatement}</div>
-												<div className='dataUseDetailsGridHeader'>Request Category Type</div>
+												<div className='dataUseDetailsGridHeader'>Request category type</div>
 												<div className='dataUseDetailsGridItem'>{data.requestCategoryType}</div>
-												<div className='dataUseDetailsGridHeader'>Technical Summary</div>
+												<div className='dataUseDetailsGridHeader'>Technical summary</div>
 												<div className='dataUseDetailsGridItem'>{data.technicalSummary}</div>
-												<div className='dataUseDetailsGridHeader'>Other Approval Committees</div>
+												<div className='dataUseDetailsGridHeader'>Other approval committees</div>
 												<div className='dataUseDetailsGridItem'>{data.otherApprovalCommittees}</div>
-												<div className='dataUseDetailsGridHeader'>Project Start Date</div>
+												<div className='dataUseDetailsGridHeader'>Project start date</div>
 												<div className='dataUseDetailsGridItem'>{moment(data.projectStartDate).format('DD/MM/YY')}</div>
-												<div className='dataUseDetailsGridHeader'>Project End Date</div>
+												<div className='dataUseDetailsGridHeader'>Project end date</div>
 												<div className='dataUseDetailsGridItem'>{moment(data.projectEndDate).format('DD/MM/YY')}</div>
-												<div className='dataUseDetailsGridHeader'>Latest Approval Date</div>
+												<div className='dataUseDetailsGridHeader'>Latest approval date</div>
 												<div
 													className={
-														some(filtered, ['column', 'Latest Approval Date*'])
+														some(filtered, ['column', 'Latest approval date*'])
 															? 'invalid-info dataUseDetailsGridItem'
 															: 'dataUseDetailsGridItem '
 													}
 													onClick={() => toggleDataUseSection(index)}>
-													{some(filtered, ['column', 'Latest Approval Date*'])
-														? find(filtered, ['column', 'Latest Approval Date*']).value
+													{some(filtered, ['column', 'Latest approval date*'])
+														? find(filtered, ['column', 'Latest approval date*']).value
 														: moment(data.latestApprovalDate).format('DD/MM/YY')}
 												</div>
 
-												<div className='gray800-14-bold dataUseDetailsGridSection'>Safe Data</div>
-												<div className='dataUseDetailsGridHeader'>Dataset(s) Name</div>
+												<div className='gray800-14-bold dataUseDetailsGridSection'>Safe data</div>
+												<div className='dataUseDetailsGridHeader'>Dataset(s) name</div>
 												<div
 													className={
-														some(filtered, ['column', 'Dataset(s) Name*'])
+														some(filtered, ['column', 'Dataset(s) name*'])
 															? 'invalid-info dataUseDetailsGridItem '
 															: 'dataUseDetailsGridItem'
 													}>
-													{some(filtered, ['column', 'Dataset(s) Name*'])
-														? find(filtered, ['column', 'Dataset(s) Name*']).value
+													{some(filtered, ['column', 'Dataset(s) name*'])
+														? find(filtered, ['column', 'Dataset(s) name*']).value
 														: renderDatasets(data)}
 												</div>
-												<div className='dataUseDetailsGridHeader'>Data Sensitivity Level</div>
+												<div className='dataUseDetailsGridHeader'>Data sensitivity level</div>
 												<div className='dataUseDetailsGridItem'>{data.dataSensitivityLevel}</div>
 												<div className='dataUseDetailsGridHeader'>Legal basis for provision of data under Article 6</div>
 												<div className='dataUseDetailsGridItem'>{data.legalBasisForDataArticle6}</div>
 												<div className='dataUseDetailsGridHeader'>Lawful conditions for provision of data under Article 9</div>
 												<div className='dataUseDetailsGridItem'>{data.legalBasisForDataArticle9}</div>
-												<div className='dataUseDetailsGridHeader'>Common Law Duty of Confidentiality</div>
+												<div className='dataUseDetailsGridHeader'>Common law duty of confidentiality</div>
 												<div className='dataUseDetailsGridItem'>{data.dutyOfConfidentiality}</div>
-												<div className='dataUseDetailsGridHeader'>National Data Opt-out applied?</div>
+												<div className='dataUseDetailsGridHeader'>National data opt-out applied?</div>
 												<div className='dataUseDetailsGridItem'>{data.nationalDataOptOut}</div>
-												<div className='dataUseDetailsGridHeader'>Request Frequency</div>
+												<div className='dataUseDetailsGridHeader'>Request frequency</div>
 												<div className='dataUseDetailsGridItem'>{data.requestFrequency}</div>
 												<div className='dataUseDetailsGridHeader'>For linked datasets, specify how the linkage will take place</div>
 												<div className='dataUseDetailsGridItem'>{data.datasetLinkageDescription}</div>
@@ -451,23 +467,21 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage }, ref) =>
 												<div className='dataUseDetailsGridItem'>{moment(data.accessDate).format('DD/MM/YY')}</div>
 
 												<div className='gray800-14-bold dataUseDetailsGridSection'>Safe Settings</div>
-												<div className='dataUseDetailsGridHeader'>TRE or any other specified location</div>
+												<div className='dataUseDetailsGridHeader'>Access type</div>
 												<div
 													className={
-														some(filtered, ['column', 'TRE or any other specified location*'])
-															? 'invalid-info dataUseDetailsGridItem'
-															: 'dataUseDetailsGridItem '
+														some(filtered, ['column', 'Access type*']) ? 'invalid-info dataUseDetailsGridItem' : 'dataUseDetailsGridItem '
 													}
 													onClick={() => toggleDataUseSection(index)}>
-													{some(filtered, ['column', 'TRE or any other specified location*'])
-														? find(filtered, ['column', 'TRE or any other specified location*']).value
+													{some(filtered, ['column', 'Access type*'])
+														? find(filtered, ['column', 'Access type*']).value
 														: data.dataLocation}
 												</div>
 												<div className='dataUseDetailsGridHeader'>How has data been processed to enhance privacy?</div>
 												<div className='dataUseDetailsGridItem'>{data.privacyEnhancements}</div>
 
 												<div className='gray800-14-bold dataUseDetailsGridSection'>Safe Outputs</div>
-												<div className='dataUseDetailsGridHeader'>Link to Research Outputs</div>
+												<div className='dataUseDetailsGridHeader'>Link to research outputs</div>
 												<div className='dataUseDetailsGridItem'>
 													<a className='data-use-link' href={data.researchOutputs} target='_blank'>
 														{data.researchOutputs}
@@ -489,7 +503,8 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage }, ref) =>
 					close={toggleSubmitModal}
 					confirm={submitDataUse}
 					isValid={isEmpty(uploadedData.uploadErrors)}
-					isAdmin={team === 'admin'}
+					isAdmin={userState[0].teams.some(team => team.type === 'admin')}
+					recommendedFieldsMissing={recommendedFieldsMissing}
 				/>
 			</Col>
 			<Col xs={1}></Col>
