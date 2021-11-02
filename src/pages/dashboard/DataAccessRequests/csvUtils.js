@@ -13,19 +13,23 @@
  */
 const createCSV = (dataAccessRequests) => {
 
-	// set headers
-	const headers = buildHeaders();
+	try {
+		// set headers
+		const headers = buildHeaders();
 
-	// push the headers as the first row of the csv document
-	let csvRows = [ headers ];
+		// push the headers as the first row of the csv document
+		let csvRows = [ headers ];
+		// for each dataAccessRequest create csv rows and append it to the csv rows
+		for (const dar of dataAccessRequests) {
+			const rows = buildRows(dar);
+			csvRows = csvRows.concat(rows);
+		}
 
-	// for each dataAccessRequest create csv rows and append it to the csv rows
-	for (const dar of dataAccessRequests) {
-		const rows = buildRows(dar);
-		csvRows = csvRows.concat(rows);
+		return csvRows		
+	} catch (err) {
+		console.log("error inside createCSV");
+		return [["there", "was", "an", "error", "inside", "createCSV"]];
 	}
-
-	return csvRows
 }
 
 /**

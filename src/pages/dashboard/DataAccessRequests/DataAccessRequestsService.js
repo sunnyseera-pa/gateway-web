@@ -5,7 +5,7 @@ export const getDataAccessRequests = async (team) => {
 	try {
 		const url = `${getBaseUrl()}/api/v1/publishers/team/${team}/dar`;
 		const response = await axios.get(url)		
-		return response.data.dars;
+		return response.data.data;
 	} catch (err) {
 		console.log("This is some error");
 		return;	
