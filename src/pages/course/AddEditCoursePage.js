@@ -1,6 +1,5 @@
 import React from 'react';
 import axios from 'axios';
-import { initGA } from '../../tracking';
 import moment from 'moment';
 import { Container } from 'react-bootstrap';
 import SearchBar from '../commonComponents/searchBar/SearchBar';
@@ -47,7 +46,6 @@ class AddEditCoursePage extends React.Component {
 	};
 
 	async componentDidMount() {
-		initGA('UA-183238557-1');
 		await Promise.all([this.doGetDomainsCall(), this.doGetKeywordsCall(), this.doGetAwardsCall()]);
 		if (this.state.isEdit) this.getToolFromDb();
 		else this.setState({ isLoading: false });
@@ -133,7 +131,7 @@ class AddEditCoursePage extends React.Component {
 
 	doSearch = e => {
 		//fires on enter on searchbar
-		if (e.key === 'Enter') window.location.href = '/search?search=' + this.state.searchString;
+		if (e.key === 'Enter') window.location.href = `/search?search=${encodeURIComponent(this.state.searchString)}`;
 	};
 
 	updateSearchString = searchString => {
@@ -152,7 +150,7 @@ class AddEditCoursePage extends React.Component {
 			if (type === 'course' && page > 0) searchURL += '&courseIndex=' + page;
 
 			axios
-				.get(baseURL + '/api/v1/search?search=' + this.state.searchString + searchURL, {
+				.get(baseURL + '/api/v1/search?search=' + encodeURIComponent(this.state.searchString) + searchURL, {
 					params: {
 						form: true,
 						userID: this.state.userState[0].id,

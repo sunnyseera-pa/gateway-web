@@ -1,6 +1,5 @@
 import React from 'react';
 import axios from 'axios';
-import { initGA } from '../../tracking';
 import moment from 'moment';
 import { Container } from 'react-bootstrap';
 import SearchBar from '../commonComponents/searchBar/SearchBar';
@@ -41,7 +40,6 @@ class AddEditToolPage extends React.Component {
 		courseData: [],
 		summary: [],
 		tempRelatedObjectIds: [],
-		relatedObjectIds: [],
 		relatedObjects: [],
 		didDelete: false,
 		isEdit: isEditMode(window.location.pathname),
@@ -51,7 +49,6 @@ class AddEditToolPage extends React.Component {
 	};
 
 	async componentDidMount() {
-		initGA('UA-183238557-1');
 		await Promise.all([
 			this.doGetTopicsCall(),
 			this.doGetFeaturesCall(),
@@ -316,7 +313,7 @@ class AddEditToolPage extends React.Component {
 
 	doSearch = e => {
 		//fires on enter on searchbar
-		if (e.key === 'Enter') window.location.href = '/search?search=' + this.state.searchString;
+		if (e.key === 'Enter') window.location.href = `/search?search=${encodeURIComponent(this.state.searchString)}`;
 	};
 
 	updateSearchString = searchString => {
@@ -335,7 +332,7 @@ class AddEditToolPage extends React.Component {
 			if (type === 'course' && page > 0) searchURL += '&courseIndex=' + page;
 
 			axios
-				.get(baseURL + '/api/v1/search?search=' + this.state.searchString + searchURL, {
+				.get(baseURL + '/api/v1/search?search=' + encodeURIComponent(this.state.searchString) + searchURL, {
 					params: {
 						form: true,
 						userID: this.state.userState[0].id,
@@ -357,12 +354,13 @@ class AddEditToolPage extends React.Component {
 	};
 
 	addToTempRelatedObjects = (id, type, pid) => {
+		let updatedTempRelatedObjectIds = [...this.state.tempRelatedObjectIds];
 		if (this.state.tempRelatedObjectIds && this.state.tempRelatedObjectIds.some(object => object.objectId === id)) {
-			this.state.tempRelatedObjectIds = this.state.tempRelatedObjectIds.filter(object => object.objectId !== id);
+			updatedTempRelatedObjectIds = updatedTempRelatedObjectIds.filter(object => object.objectId !== id);
 		} else {
-			this.state.tempRelatedObjectIds.push({ objectId: id, objectType: type, pid: pid });
+			updatedTempRelatedObjectIds.push({ objectId: id, objectType: type, pid: pid });
 		}
-		this.setState({ tempRelatedObjectIds: this.state.tempRelatedObjectIds });
+		this.setState({ tempRelatedObjectIds: updatedTempRelatedObjectIds });
 	};
 
 	addToRelatedObjects = () => {

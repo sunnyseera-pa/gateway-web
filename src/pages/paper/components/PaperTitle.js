@@ -1,10 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
-import Rating from 'react-rating';
 import { Row, Col } from 'react-bootstrap/';
-import { ReactComponent as EmptyStarIconSvg } from '../../../images/starempty.svg';
-import { ReactComponent as FullStarIconSvg } from '../../../images/star.svg';
 import { baseURL } from '../../../configs/url.config';
 import moment from 'moment';
 import '../Paper.scss';

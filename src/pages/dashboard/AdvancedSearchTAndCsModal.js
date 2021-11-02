@@ -1,5 +1,4 @@
 import React, { Fragment } from 'react';
-import _ from 'lodash';
 import { Modal, Form } from 'react-bootstrap';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';

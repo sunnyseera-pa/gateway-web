@@ -6,9 +6,8 @@ import NotFound from '../commonComponents/NotFound';
 import Loading from '../commonComponents/Loading';
 import './Dashboard.scss';
 import ActionModal from '../commonComponents/ActionModal/ActionModal';
-import _ from 'lodash';
 import { EntityActionButton } from './EntityActionButton.jsx';
-import { Event, initGA } from '../../tracking';
+import googleAnalytics from '../../tracking';
 import { PaginationHelper } from '../commonComponents/PaginationHelper';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
@@ -34,9 +33,6 @@ export const AccountCourses = props => {
 	const maxResult = 40;
 
 	useEffect(() => {
-		if (process.env.NODE_ENV === 'production') {
-			initGA('UA-183238557-1');
-		}
 		doCoursesCall('active', true, 0, true);
 	}, []);
 
@@ -190,10 +186,11 @@ export const AccountCourses = props => {
 						</Col>
 						<Col sm={12} md={4} style={{ textAlign: 'right' }}>
 							<Button
+								data-test-id='add-course-btn'
 								variant='primary'
 								href='/course/add'
 								className='addButton'
-								onClick={() => Event('Buttons', 'Click', 'Add a new course')}>
+								onClick={() => googleAnalytics.recordEvent('Courses', 'Add a new course', 'Courses dashboard button clicked')}>
 								+ Add a new course
 							</Button>
 						</Col>
@@ -512,6 +509,8 @@ export const AccountCourses = props => {
 											)}
 										</div>
 									);
+								default:
+									return key;
 							}
 						})()}
 

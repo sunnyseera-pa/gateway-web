@@ -6,6 +6,7 @@ import { useHistory } from 'react-router-dom';
 import _ from 'lodash';
 import axios from 'axios';
 import { baseURL } from '../../../../configs/url.config';
+import googleAnalytics from '../../../../tracking';
 
 const AssignWorkflowModal = ({ open, close, workflows, publisher, applicationId }) => {
 	// workflow(s) state // this.state.steps = [];
@@ -93,7 +94,13 @@ const AssignWorkflowModal = ({ open, close, workflows, publisher, applicationId 
 					{isWorkflowSelected ? (
 						<div className='assignNotify'>
 							<div className='assignNotifyAction'>
-								<button className='button-primary' value='Reject' onClick={e => assignNotify()}>
+								<button
+									className='button-primary'
+									value='Reject'
+									onClick={e => {
+										assignNotify();
+										googleAnalytics.recordEvent('Data access request', 'Clicked assign workflow', 'Assigned workflow to application');
+									}}>
 									Assign and notify
 								</button>
 							</div>
