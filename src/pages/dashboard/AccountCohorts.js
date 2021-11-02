@@ -10,7 +10,6 @@ import { PaginationHelper } from '../commonComponents/PaginationHelper';
 import { isEmpty } from 'lodash';
 
 const baseURL = require('../commonComponents/BaseURL').getURL();
-const urlEnv = require('../commonComponents/BaseURL').getURLEnv();
 
 const AccountCohorts = props => {
 	const [key, setKey] = useState('active');
@@ -25,7 +24,6 @@ const AccountCohorts = props => {
 	const [isResultsLoading, setIsResultsLoading] = useState(true);
 	const [cohortSaved, setCohortSaved] = useState('');
 	const [cohortName, setCohortName] = useState('');
-	const [bcpBaseUrl, setBcpBaseUrl] = useState('');
 	const [userState] = useState(props.userState[0]);
 	const maxResult = 40;
 
@@ -33,9 +31,6 @@ const AccountCohorts = props => {
 		setCohortSaved(props.cohortSaved);
 		setCohortName(props.cohortName);
 		doCohortsCall('active', true, 0, true);
-		urlEnv === 'prod'
-			? setBcpBaseUrl('https://rquest.prod.healthdatagateway.org/bcrquest/')
-			: setBcpBaseUrl('https://rquest.test.healthdatagateway.org/bcrquest/');
 	}, []);
 
 	const handleSelect = key => {
