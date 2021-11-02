@@ -40,6 +40,7 @@ export const EntityActionButton = props => {
 				handleClose={handleClose}
 				actionType={props.actionType}
 				entity={props.entity}
+				bcpLink={props.bcpLink}
 			/>
 		</Fragment>
 	);

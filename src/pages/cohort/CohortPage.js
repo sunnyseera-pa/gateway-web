@@ -23,7 +23,6 @@ import { CohortDatasetPublisherCard } from './CohortDatasetPublisherCard';
 import NotFound from '../commonComponents/NotFound';
 import RelatedObject from '../commonComponents/relatedObject/RelatedObject';
 let baseURL = require('../commonComponents/BaseURL').getURL();
-const urlEnv = require('../commonComponents/BaseURL').getURLEnv();
 
 export const CohortPage = props => {
 	const [isLoading, setIsLoading] = useState(true);
@@ -36,7 +35,6 @@ export const CohortPage = props => {
 	const [showOldVersionBanner, setShowOldVersionBanner] = useState(false);
 	const [showArchivedBanner, setShowArchivedBanner] = useState(false);
 	const [datasetsGroupedByPublisher, setDatasetsGroupedByPublisher] = useState([]);
-	const [bcpBaseUrl, setBcpBaseUrl] = useState('');
 	const [userState] = useState(
 		props.userState || [
 			{
@@ -51,9 +49,6 @@ export const CohortPage = props => {
 
 	useEffect(() => {
 		getCohortFromDb();
-		urlEnv === 'prod'
-			? setBcpBaseUrl('https://rquest.prod.healthdatagateway.org/bcrquest/')
-			: setBcpBaseUrl('https://rquest.test.healthdatagateway.org/bcrquest/');
 	}, []);
 
 	const getCohortFromDb = async () => {
@@ -477,7 +472,7 @@ export const CohortPage = props => {
 						<CohortActionButtons
 							allowedNavigation={true}
 							id={cohortData.id}
-							bcpLink={bcpBaseUrl}
+							bcpLink={cohortData.cohort.query_url}
 							disabled={cohortData.activeflag !== 'active'}
 						/>
 					</div>
