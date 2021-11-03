@@ -803,10 +803,11 @@ class Account extends Component {
 								)}
 
 								{(this.userHasRole(team, ['manager', 'metadata_editor']) || team === 'admin') && (
-									<>{tabId === 'datasets' ? <AccountDatasets userState={userState} team={team} alert={alert} /> : ''}</>
+									<>
+										{tabId === 'datasets' ? <AccountDatasets userState={userState} team={team} alert={alert} /> : ''}
+										<Route path='/account/datasets/:id' component={AccountDataset} />
+									</>
 								)}
-
-								<Route path='/account/datasets/:id' component={AccountDataset} />
 
 								{team === 'admin' && (
 									<>

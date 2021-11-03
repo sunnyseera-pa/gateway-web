@@ -127,7 +127,7 @@ class HDRRouter extends Component {
 			function (error) {
 				// allow 404 errors to be handled by frontend logic
 				if (error.response && error.response.status === 404) {
-					return error;
+					return Promise.reject(error);
 				}
 				// catch all and report any other error type to Sentry
 				console.error(error);
@@ -141,25 +141,6 @@ class HDRRouter extends Component {
 			.then(async res => {
 				let person = await axios.get(baseURL + '/api/v1/person/' + res.data.data[0].id);
 				this.setState({
-					userState: [
-						{
-							loggedIn: res.data.data[0].loggedIn,
-							role: res.data.data[0].role,
-							id: res.data.data[0].id,
-							name: res.data.data[0].name,
-							teams: res.data.data[0].teams,
-							email: res.data.data[0].email,
-							profileComplete: person.data.person.profileComplete,
-							provider: res.data.data[0].provider,
-							advancedSearchRoles: res.data.data[0].advancedSearchRoles,
-							acceptedAdvancedSearchTerms: res.data.data[0].acceptedAdvancedSearchTerms,
-							terms: person.data.person.terms,
-						},
-					],
-					isLoading: false,
-				});
-
-				console.log({
 					userState: [
 						{
 							loggedIn: res.data.data[0].loggedIn,
