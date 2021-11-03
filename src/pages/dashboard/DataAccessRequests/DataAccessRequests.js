@@ -363,32 +363,36 @@ class DataAccessRequestsNew extends React.Component {
 				<Fragment>{!_.isEmpty(alert) ? this.generateAlert() : ""}</Fragment>
 				<Row>
 						<Col xs={1}></Col>
-						<div className="col-sm-10">
+						
+            <Col className="col-sm-10">
+                <Row className="accountHeader dataAccessHeader">
+                  <Col xs={6}>
+                        <Row>
+                            <div className="black-20">Data access request applications {!_.isEmpty(team) && team !== 'user' ? team : ''}</div>
+                            <div className="gray700-13">Manage forms and applications</div>
+                        </Row>
+                    </Col>
+                </Row>
 
-              
-
-								<div className="accountHeader dataAccessHeader">
-										<Col xs={8}>
+								<Row className="accountHeader dataAccessHeader">
+										<Col xs={6}>
 												<Row>
-														<div className="black-20">Data access request applications {!_.isEmpty(team) && team !== 'user' ? team : ''}</div>
-														<div className="gray700-13">Manage forms and applications</div>
 														<div><Clock /> {`${avgDecisionTime > 0 ? avgDecisionTime : '-'} days`} <span className="gray700-13">average time from submission to decision</span></div>
 												</Row>
 										</Col>
-										<Col xs={4} style={{ textAlign: "right" }}>
+										<Col xs={6} className="text-right align-text-bottom">
+                      {isUserManagerofCurrentTeam(this.state.team, this.state.userState[0].teams) ?
+                        <div>
+                          <button className={`button-secondary csv-btn mb-4`} onClick={() => this.onClickDownloadCsv(this.state.team)}>
+                            Download Requests as CSV
+                          </button>
+                        <CSVLink data={csvData} filename='data.csv' className='hidden' ref={this.csvLink} target='_blank' />
+                      </div>
+                      : ''}
 										</Col>
-								</div>
+								</Row>
 
-            <div className="tabsBackground">
-
-              {isUserManagerofCurrentTeam(this.state.team, this.state.userState[0].teams) ?
-                <div>
-                  <button className={`button-secondary csv-btn mb-4`} onClick={() => this.onClickDownloadCsv(this.state.team)}>
-                    Download Requests as CSV
-                  </button>
-                <CSVLink data={csvData} filename='data.csv' className='hidden' ref={this.csvLink} target='_blank' />
-              </div>
-              : ''}
+            <Row className="tabsBackground">
               
               <Col sm={12} lg={12}>
                 <Tabs
@@ -427,7 +431,7 @@ class DataAccessRequestsNew extends React.Component {
                   ></Tab>
                 </Tabs>
               </Col>
-            </div>
+            </Row>
 
 						{screenData.map((request, i) => {
 							let {
@@ -465,7 +469,7 @@ class DataAccessRequestsNew extends React.Component {
 									}
 								>
 
-									<div className='col-md-12'>
+									<Col>
 										<div className='layoutCard'>
 											<div className='header'>
 												<div className='header-title'>
@@ -521,11 +525,11 @@ class DataAccessRequestsNew extends React.Component {
                         decisionDate
 											)}
 										</div>
-									</div>
+									</Col>
 								</Row>
 							);
 						})}
-					</div>{/*CLOSE col-sm-10 */}
+					</Col>{/*CLOSE col-sm-10 */}
 					<Col xs={1}></Col>
 				</Row>
 
