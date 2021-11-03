@@ -48,11 +48,6 @@ const DataSetModal = ({ open, closed, context, userState, is5Safes, showLoginMod
 
 	useEffect(() => {
 		if (open) initScreenData();
-
-		let url = env === local ? 'https://uatbeta.healthdatagateway.org' : cmsURL;
-		axios.get(url + '/Non5SafesModalContent', { withCredentials: false }).then(res => {
-			setNon5SafesData(res.data);
-		});
 	}, [open, context]);
 
 	return (
