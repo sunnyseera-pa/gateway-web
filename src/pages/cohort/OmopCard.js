@@ -32,7 +32,7 @@ const OmopCard = props => {
 							</span>
 						)}
 
-						<span className='gray800-14-bold'> {props.groupRule.varname} </span>
+						<span className='gray800-14-bold'> {props.groupRule.description} </span>
 					</Col>
 					<Col sm={5} lg={5}>
 						<span className='floatRight'>
@@ -43,7 +43,7 @@ const OmopCard = props => {
 								</span>
 							)}
 
-							<span className='gray700-13-bold verticalAlignSuper pad-left-24'>OMOP {props.groupRule.value}</span>
+							<span className='gray700-13-bold verticalAlignSuper pad-left-24'>{props.groupRule.varname.replace(':', ' ')}</span>
 						</span>
 					</Col>
 				</Row>

@@ -10,7 +10,6 @@ import { PaginationHelper } from '../commonComponents/PaginationHelper';
 import { isEmpty } from 'lodash';
 
 const baseURL = require('../commonComponents/BaseURL').getURL();
-const urlEnv = require('../commonComponents/BaseURL').getURLEnv();
 
 const AccountCohorts = props => {
 	const [key, setKey] = useState('active');
@@ -25,7 +24,6 @@ const AccountCohorts = props => {
 	const [isResultsLoading, setIsResultsLoading] = useState(true);
 	const [cohortSaved, setCohortSaved] = useState('');
 	const [cohortName, setCohortName] = useState('');
-	const [bcpBaseUrl, setBcpBaseUrl] = useState('');
 	const [userState] = useState(props.userState[0]);
 	const maxResult = 40;
 
@@ -33,9 +31,6 @@ const AccountCohorts = props => {
 		setCohortSaved(props.cohortSaved);
 		setCohortName(props.cohortName);
 		doCohortsCall('active', true, 0, true);
-		urlEnv === 'prod'
-			? setBcpBaseUrl('https://rquest.prod.healthdatagateway.org/bcrquest/')
-			: setBcpBaseUrl('https://rquest.test.healthdatagateway.org/bcrquest/');
 	}, []);
 
 	const handleSelect = key => {
@@ -63,12 +58,12 @@ const AccountCohorts = props => {
 
 		let apiUrl;
 		if (typeof index === 'undefined') {
-			apiUrl = baseURL + `/api/v1/cohorts?activeflag=${key}&sort=-updatedAt`;
+			apiUrl = baseURL + `/api/v1/cohorts?activeflag=${key}&sort=-updatedon`;
 		} else {
 			userState.role === 'Admin'
-				? (apiUrl = baseURL + `/api/v1/cohorts?activeflag=${key}&page=${page}&limit=${maxResult}&sort=-updatedAt`)
+				? (apiUrl = baseURL + `/api/v1/cohorts?activeflag=${key}&page=${page}&limit=${maxResult}&sort=-updatedon`)
 				: (apiUrl =
-						baseURL + `/api/v1/cohorts?activeflag=${key}&page=${page}&limit=${maxResult}&uploaders=${userState.id}&sort=-updatedAt`);
+						baseURL + `/api/v1/cohorts?activeflag=${key}&page=${page}&limit=${maxResult}&uploaders=${userState.id}&sort=-updatedon`);
 		}
 
 		axios.get(apiUrl).then(async res => {
@@ -77,16 +72,16 @@ const AccountCohorts = props => {
 			if (updateCounts === true) {
 				let getActiveCountUrl =
 					userState.role === 'Admin'
-						? `${baseURL}/api/v1/cohorts?activeflag=active&count=true&sort=-updatedAt`
-						: `${baseURL}/api/v1/cohorts?activeflag=active&uploaders=${userState.id}&count=true&sort=-updatedAt`;
+						? `${baseURL}/api/v1/cohorts?activeflag=active&count=true`
+						: `${baseURL}/api/v1/cohorts?activeflag=active&uploaders=${userState.id}&count=true`;
 				let getArchiveCountUrl =
 					userState.role === 'Admin'
-						? `${baseURL}/api/v1/cohorts?activeflag=archive&count=true&sort=-updatedAt`
-						: `${baseURL}/api/v1/cohorts?activeflag=archive&uploaders=${userState.id}&count=true&sort=-updatedAt`;
+						? `${baseURL}/api/v1/cohorts?activeflag=archive&count=true`
+						: `${baseURL}/api/v1/cohorts?activeflag=archive&uploaders=${userState.id}&count=true`;
 				let getDraftCountUrl =
 					userState.role === 'Admin'
-						? `${baseURL}/api/v1/cohorts?activeflag=draft&count=true&sort=-updatedAt`
-						: `${baseURL}/api/v1/cohorts?activeflag=draft&uploaders=${userState.id}&count=true&sort=-updatedAt`;
+						? `${baseURL}/api/v1/cohorts?activeflag=draft&count=true`
+						: `${baseURL}/api/v1/cohorts?activeflag=draft&uploaders=${userState.id}&count=true`;
 
 				await axios.get(getActiveCountUrl).then(res => {
 					setActiveCount(res.data.data);
@@ -197,7 +192,7 @@ const AccountCohorts = props => {
 			<>
 				<Row className='entryBox' data-testid={testId}>
 					<Col sm={12} lg={2} className='pt-2 gray800-14'>
-						{moment(cohort.updatedAt).format('D MMMM YYYY HH:mm')}
+						{moment(cohort.updatedon).format('D MMMM YYYY HH:mm')}
 					</Col>
 					<Col sm={12} lg={5} className='pt-2'>
 						{key === 'draft' ? (
@@ -228,8 +223,9 @@ const AccountCohorts = props => {
 									Edit draft
 								</Dropdown.Item>
 							)}
-							{/* bcpLink will be updated to cohort.query_url or cohort.cohort.query_url */}
-							{key === 'active' && <EntityActionButton id={cohort.id} bcpLink={bcpBaseUrl} actionType='editCriteria' entity='cohort' />}
+							{key === 'active' && (
+								<EntityActionButton id={cohort.id} bcpLink={cohort.cohort.query_url} actionType='editCriteria' entity='cohort' />
+							)}
 							{key === 'active' && <EntityActionButton id={cohort.id} action={archiveCohort} actionType='archive' entity='cohort' />}
 							{key === 'archive' && <EntityActionButton id={cohort.id} action={unarchiveCohort} actionType='unarchive' entity='cohort' />}
 						</DropdownButton>
