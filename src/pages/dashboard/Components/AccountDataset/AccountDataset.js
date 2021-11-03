@@ -39,7 +39,10 @@ const AccountDataset = props => {
 				},
 			} = dataPublisher.data;
 
-			const inReview = datasets.filter(dataset => dataset.activeFlag === props.activeFlag);
+			const inReview = datasets.filter(dataset => {
+				console.log('dataset.activeFlag', dataset);
+				return dataset.activeflag === props.activeflag;
+			});
 
 			const currentIndex = _.findIndex(inReview, dataset => {
 				return dataset.pid == id;
@@ -137,7 +140,7 @@ const AccountDataset = props => {
 };
 
 AccountDataset.defaultProps = {
-	activeFlag: 'inReview',
+	activeflag: 'inReview',
 };
 
 export default AccountDataset;

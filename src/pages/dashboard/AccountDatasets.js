@@ -189,10 +189,8 @@ const AccountDatasets = props => {
 												if (dataset.activeflag !== 'active' && dataset.activeflag !== 'draft') {
 													return <></>;
 												} else {
-													console.log('Dataset', dataset);
 													return (
 														<DatasetCard
-															path={getDatasetPath(dataset.pid)}
 															id={dataset._id}
 															title={dataset.name}
 															publisher={dataset.datasetv2.summary.publisher.name}
@@ -252,7 +250,6 @@ const AccountDatasets = props => {
 													console.log('Dataset', dataset);
 													return (
 														<DatasetCard
-															path={getDatasetPath(dataset.pid)}
 															id={dataset._id}
 															title={dataset.name}
 															publisher={dataset.datasetv2.summary.publisher.name}
