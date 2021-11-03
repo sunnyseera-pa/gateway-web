@@ -2,9 +2,10 @@ import axios from 'axios';
 import { getURL as getBaseUrl } from '../../commonComponents/BaseURL';
 
 export const getDataAccessRequests = async (team) => {
-	const url = `${getBaseUrl()}/api/v1/publishers/team/${team}/dar`;
+
+	const url = `${getBaseUrl()}/api/v1/data-access-request/publisher/${team}`;
 	const response = await axios.get(url)		
-	return response.data.data;
+	return response.data.dars;
 }
 
 export const isUserManagerofCurrentTeam = (currentTeam, userTeams) => {
