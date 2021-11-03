@@ -168,7 +168,7 @@ class DataAccessRequest extends Component {
 	}
 
 	async initPage() {
-		try {			
+		try {
 			// 1. Determine the entry point to the Data Access Request
 			//  a) Dataset - route will contain only the 'datasetId' from the dataset page from which they came
 			//	b) Message Panel - route will contain only the 'publisherId' with historic state passed from the message panel component which includes datasetId(s)
@@ -316,9 +316,7 @@ class DataAccessRequest extends Component {
 	};
 
 	loadDataAccessRequest = async accessId => {
-				
 		try {
-			
 			// 1. Make API call to find and return the application form schema and answers matching this Id
 			let response = await axios.get(`${baseURL}/api/v1/data-access-request/${accessId}`);
 			// 2. Destructure backend response for this context containing details of DAR including question set and current progress
@@ -358,8 +356,6 @@ class DataAccessRequest extends Component {
 			workflow,
 			files,
 			isCloneable,
-			createdAt,
-			updatedAt
 		} = context;
 		let {
 			datasetfields: { publisher },
@@ -461,8 +457,6 @@ class DataAccessRequest extends Component {
 			workflowAssigned: !_.isEmpty(workflow) ? true : false,
 			files,
 			isCloneable,
-			createdAt,
-			updatedAt
 		});
 	};
 
@@ -610,7 +604,8 @@ class DataAccessRequest extends Component {
 		let errors = DarValidation.formatValidationObj(inValidMessages, [...this.state.jsonSchema.questionPanels]);
 		let isValid = Object.keys(errors).length ? false : true;
 
-		if (isValid) {
+		let isAboutApplicationValid = this.isAboutApplicationValid(this.state.aboutApplication);
+		if (isValid && isAboutApplicationValid) {
 			this.setState({ showConfirmSubmissionModal: true });
 		} else {
 			let activePage = _.get(_.keys({ ...errors }), 0);
@@ -718,7 +713,10 @@ class DataAccessRequest extends Component {
 			// copy state pages
 			const pages = [...this.state.jsonSchema.pages];
 			// get the index of new form
-			const newPageindex = pages.findIndex(page => page.pageId === newForm.pageId);
+			let newPageindex = pages.findIndex(page => page.pageId === newForm.pageId);
+			if (newPageindex < 0)
+				newPageindex = 0;
+
 			reviewWarning = !pages[newPageindex].inReview && this.state.inReviewMode;
 			// reset the current state of active to false for all pages
 			const newFormState = [...this.state.jsonSchema.pages].map(item => {
@@ -1687,11 +1685,8 @@ class DataAccessRequest extends Component {
 					</Col>
 				</Row>
 
-				
 				<div id='darContainer' className='flex-form'>
-					
 					<div id='darLeftCol' className='scrollable-sticky-column'>
-				
 						{[...this.state.jsonSchema.pages].map((item, idx) => (
 							<div key={`navItem-${idx}`} className={`${item.active ? 'active-border' : ''}`}>
 								<div>
@@ -1720,7 +1715,6 @@ class DataAccessRequest extends Component {
 						))}
 					</div>
 					<div id='darCenterCol' className={isWideForm ? 'extended' : ''}>
-
 						{this.state.reviewWarning && (
 							<Alert variant='warning' className=''>
 								<SVGIcon name='attention' width={24} height={24} fill={'#f0bb24'} viewBox='2 -9 22 22'></SVGIcon>
@@ -1954,8 +1948,7 @@ class DataAccessRequest extends Component {
 					closeModal={this.toggleSelectDatasetModal}
 					duplicateApplication={this.onDuplicateApplication}
 					appToCloneId={this.state._id}
-			/>
-
+				/>
 			</div>
 		);
 	}
