@@ -80,7 +80,7 @@ const AccountDataset = props => {
 	if (statusError) {
 		return (
 			<AccountContent>
-				<NotFound text='The activity log for this dataset cannot be accessed' />
+				<NotFound text='The activity log for this dataset cannot be accessed. It must be set to in review.' />
 			</AccountContent>
 		);
 	}
