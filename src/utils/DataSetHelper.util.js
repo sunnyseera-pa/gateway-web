@@ -13,6 +13,26 @@ let showLoginPanel = (window, title, contactPoint) => {
 	};
 };
 
+const isActive = dataset => {
+	return !(dataset.activeflag !== 'active' && dataset.activeflag !== 'draft');
+};
+
+const isInReview = dataset => {
+	return dataset.activeflag === 'inReview';
+};
+
+const isRejected = dataset => {
+	return dataset.activeflag === 'rejected';
+};
+
+const isArchived = dataset => {
+	return dataset.activeflag === 'archive';
+};
+
 export default {
 	showLoginPanel: showLoginPanel,
+	isActive,
+	isInReview,
+	isRejected,
+	isArchived,
 };

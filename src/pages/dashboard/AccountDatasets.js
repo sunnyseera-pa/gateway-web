@@ -112,6 +112,10 @@ const AccountDatasets = props => {
 		);
 	};
 
+	const getDatasetPath = id => {
+		return `/account/datasets/${id}`;
+	};
+
 	if (isLoading) {
 		return (
 			<Row>
@@ -148,7 +152,10 @@ const AccountDatasets = props => {
 								<Button
 									variant='primary'
 									className='addButton'
-									onClick={(() => googleAnalytics.recordEvent('Datasets', 'Add a new dataset', 'Datasets dashboard button clicked'), createNewDataset)}>
+									onClick={
+										(() => googleAnalytics.recordEvent('Datasets', 'Add a new dataset', 'Datasets dashboard button clicked'),
+										createNewDataset)
+									}>
 									+ Add a new dataset
 								</Button>
 							</Col>
@@ -195,8 +202,10 @@ const AccountDatasets = props => {
 												if (dataset.activeflag !== 'active' && dataset.activeflag !== 'draft') {
 													return <></>;
 												} else {
+													console.log('Dataset', dataset);
 													return (
 														<DatasetCard
+															path={getDatasetPath(dataset.pid)}
 															id={dataset._id}
 															title={dataset.name}
 															publisher={dataset.datasetv2.summary.publisher.name}
@@ -223,8 +232,10 @@ const AccountDatasets = props => {
 												if (dataset.activeflag !== 'inReview') {
 													return <></>;
 												} else {
+													console.log('Dataset', dataset);
 													return (
 														<DatasetCard
+															path={getDatasetPath(dataset.pid)}
 															id={dataset._id}
 															title={dataset.name}
 															publisher={dataset.datasetv2.summary.publisher.name}
@@ -251,8 +262,10 @@ const AccountDatasets = props => {
 												if (dataset.activeflag !== 'rejected') {
 													return <></>;
 												} else {
+													console.log('Dataset', dataset);
 													return (
 														<DatasetCard
+															path={getDatasetPath(dataset.pid)}
 															id={dataset._id}
 															title={dataset.name}
 															publisher={dataset.datasetv2.summary.publisher.name}
@@ -281,8 +294,10 @@ const AccountDatasets = props => {
 												if (dataset.activeflag !== 'archive') {
 													return <></>;
 												} else {
+													console.log('Dataset', dataset);
 													return (
 														<DatasetCard
+															path={getDatasetPath(dataset.pid)}
 															id={dataset._id}
 															title={dataset.name}
 															//publisher={dataset.datasetv2.summary.publisher.name}
