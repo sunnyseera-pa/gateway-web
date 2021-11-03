@@ -365,7 +365,7 @@ class Account extends Component {
 		return renderItem;
 	}
 
-	toggleNav = (tabId = '') => {
+	toggleNav = (tabId = '', path) => {
 		googleAnalytics.recordVirtualPageView(tabId);
 		let {
 			activeAccordion,
@@ -409,7 +409,7 @@ class Account extends Component {
 				dataaccessrequest: {},
 			});
 			// 6. push state
-			this.props.history.push({ pathname: window.location.pathname, search: `?tab=${tab.tabId}`, state: { team: tab.team } });
+			this.props.history.push({ pathname: path || window.location.pathname, search: `?tab=${tab.tabId}`, state: { team: tab.team } });
 		}
 	};
 
@@ -635,7 +635,7 @@ class Account extends Component {
 
 							{team === 'admin' ? (
 								<Fragment>
-									<div className={this.getNavActiveClass('datasets')} onClick={e => this.toggleNav('datasets')}>
+									<div className={this.getNavActiveClass('datasets')} onClick={e => this.toggleNav('datasets', '/account')}>
 										<Nav.Link className='verticalNavBar gray700-13' activeClassName='is-active' to='/account'>
 											<SVGIcon name='dataseticon' fill={'#b3b8bd'} className='accountSvgs' />
 											<span style={{ 'margin-left': '11px' }}>Datasets</span>
@@ -694,8 +694,8 @@ class Account extends Component {
 										</div>
 									)}
 									{this.userHasRole(team, ['manager', 'metadata_editor']) && (
-										<div className={this.getNavActiveClass('datasets')} onClick={e => this.toggleNav('datasets')}>
-											<Nav.Link className='verticalNavBar gray700-13'>
+										<div className={this.getNavActiveClass('datasets')} onClick={e => this.toggleNav('datasets', '/account')}>
+											<Nav.Link className='verticalNavBar gray700-13' to='/account'>
 												<SVGIcon name='dataseticon' fill={'#b3b8bd'} className='accountSvgs' />
 												<span style={{ 'margin-left': '11px' }}>Datasets</span>
 											</Nav.Link>

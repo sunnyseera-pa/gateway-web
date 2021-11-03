@@ -17,11 +17,13 @@ const AccountDataset = props => {
 	const { id } = useParams();
 	const { userState } = useAuth();
 	const [team, setTeam] = useState();
-	const dataDataset = serviceDatasets.useGetDataset(id);
 	const [state, setState] = useState({
 		showPrevious: true,
 		showDisabled: true,
+		statusError: false,
 	});
+
+	const dataDataset = serviceDatasets.useGetDataset(id);
 	const publisherId = utils.getPublisherID(userState[0], team);
 	const dataPublisher = serviceDatasetOnboarding.useGetPublisher(publisherId);
 
@@ -37,16 +39,26 @@ const AccountDataset = props => {
 				},
 			} = dataPublisher.data;
 
-			const currentIndex = _.findIndex(datasets, dataset => {
+			const inReview = datasets.filter(dataset => dataset.activeFlag === props.activeFlag);
+
+			const currentIndex = _.findIndex(inReview, dataset => {
 				return dataset.pid == id;
 			});
 
 			setState({
-				showNext: currentIndex < datasets.length - 1,
+				showNext: currentIndex < inReview.length - 1,
 				showPrevious: currentIndex > 0,
 			});
 
-			return datasets[currentIndex + i].pid;
+			if (currentIndex === -1) {
+				setState({
+					statusError: true,
+				});
+
+				return;
+			}
+
+			return inReview[currentIndex + i].pid;
 		}
 	};
 
@@ -62,6 +74,16 @@ const AccountDataset = props => {
 		},
 		[id, dataPublisher.data, team]
 	);
+
+	const { showPrevious, showNext, statusError } = state;
+
+	if (statusError) {
+		return (
+			<AccountContent>
+				<NotFound text='The activity log for this dataset cannot be accessed' />
+			</AccountContent>
+		);
+	}
 
 	if (!dataDataset.data && dataDataset.isError && dataDataset.isFetched) {
 		return (
@@ -83,17 +105,6 @@ const AccountDataset = props => {
 		data: { data: dataset },
 	} = dataDataset.data;
 
-	const { showPrevious, showNext } = state;
-
-	const getRejectedProps = dataset => {
-		if (utils.isRejected(dataset)) {
-			return {
-				rejectionText: dataset.applicationStatusDesc,
-				rejectionAuthor: dataset.applicationStatusAuthor,
-			};
-		}
-	};
-
 	return (
 		<AccountContent>
 			<DatasetCard
@@ -106,16 +117,15 @@ const AccountDataset = props => {
 				timeStamps={dataset.timestamps}
 				completion={dataset.percentageCompleted}
 				listOfVersions={dataset.listOfVersions || []}
-				{...getRejectedProps(dataset)}
 			/>
 			<ActionBar userState={userState}>
 				<div className='action-bar-actions'>
-					{showPrevious && (
+					{showPrevious && !statusError && (
 						<Button variant='light' onClick={() => handlePaginationClick(-1)}>
 							Previous
 						</Button>
 					)}
-					{showNext && (
+					{showNext && !statusError && (
 						<Button variant='light' onClick={() => handlePaginationClick(1)}>
 							Next
 						</Button>
@@ -124,6 +134,10 @@ const AccountDataset = props => {
 			</ActionBar>
 		</AccountContent>
 	);
+};
+
+AccountDataset.defaultProps = {
+	activeFlag: 'inReview',
 };
 
 export default AccountDataset;

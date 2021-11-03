@@ -19,6 +19,10 @@ const isActive = dataset => {
 	return !(dataset.activeflag !== 'active' && dataset.activeflag !== 'draft');
 };
 
+const isDraft = dataset => {
+	return dataset.activeflag === 'draft';
+};
+
 const isInReview = dataset => {
 	return dataset.activeflag === 'inReview';
 };
@@ -55,4 +59,5 @@ export default {
 	isRejected,
 	isArchived,
 	getPublisherID,
+	isDraft,
 };
