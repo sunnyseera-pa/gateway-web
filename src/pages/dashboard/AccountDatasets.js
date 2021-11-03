@@ -7,6 +7,7 @@ import Loading from '../commonComponents/Loading';
 import DatasetCard from '../commonComponents/DatasetCard';
 import NotFound from '../commonComponents/NotFound';
 import SVGIcon from '../../images/SVGIcon';
+import utils from '../../utils/DataSetHelper.util';
 import './Dashboard.scss';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
@@ -34,7 +35,7 @@ const AccountDatasets = props => {
 
 	const doDatasetsCall = async () => {
 		setIsLoading(true);
-		let isPublisher = getPublisherID();
+		let isPublisher = utils.getPublisherID(props.userState[0], props.team);
 		setPublisherID(isPublisher);
 
 		await axios.get(baseURL + `/api/v1/dataset-onboarding/publisher/${isPublisher}`).then(res => {
@@ -63,25 +64,11 @@ const AccountDatasets = props => {
 		});
 	};
 
-	const getPublisherID = () => {
-		let { teams } = props.userState[0];
-		let foundAdmin = teams.filter(x => x.type === team);
-		if (!_.isEmpty(foundAdmin)) {
-			return 'admin';
-		}
-		let foundTeam = teams.filter(x => x._id === team);
-		if (_.isEmpty(teams) || _.isEmpty(foundTeam)) {
-			return ['applicant']; //pass back to user
-		}
-
-		return foundTeam[0]._id;
-	};
-
 	const createNewDataset = e => {
 		e.preventDefault();
 		//call to API to create new dataset
 		setIsLoading(true);
-		let isPublisher = getPublisherID();
+		let isPublisher = utils.getPublisherID(props.userState[0], props.team);
 		axios.post(baseURL + '/api/v1/dataset-onboarding', { publisherID: isPublisher }).then(res => {
 			let { id } = res.data.data;
 			//load dataset onboarding page

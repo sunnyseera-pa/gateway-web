@@ -10,11 +10,7 @@ const useGetDataset = (id, requestOptions, queryOptions = { queryKey: 'getDatase
 	return useQuery({
 		...queryOptions,
 		queryKey: [queryOptions.queryKey, id],
-		queryFn: async ({ queryKey }) => {
-			const x = await getDataset(queryKey[1], requestOptions);
-			console.log('x', x);
-			return x;
-		},
+		queryFn: async ({ queryKey }) => getDataset(queryKey[1], requestOptions),
 	});
 };
 

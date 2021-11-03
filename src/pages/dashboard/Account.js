@@ -38,6 +38,7 @@ import AccountTeams from './AccountTeams';
 import googleAnalytics from '../../tracking';
 import { isRouteMatch } from '../../utils/router';
 import { Route } from 'react-router';
+import { getTeam } from '../../utils/auth';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -117,28 +118,8 @@ class Account extends Component {
 			this.state.alert = props.location.state.alert;
 			this.alertTimeOut = setTimeout(() => this.setState({ alert: {} }), 10000);
 		}
-		let values = queryString.parse(window.location.search);
-		if (values.team === 'user') {
-			this.state.team = 'user';
-			localStorage.setItem('HDR_TEAM', 'user');
-		} else if (values.team === 'admin') {
-			this.state.team = 'admin';
-			localStorage.setItem('HDR_TEAM', 'admin');
-		} else if (!_.isEmpty(values.team)) {
-			this.state.team = values.team;
-			localStorage.setItem('HDR_TEAM', values.team);
-		} else if (
-			(_.has(props, 'location.state.team') && props.location.state.team !== '') ||
-			(_.has(props, 'location.state.publisher') && props.location.state.team !== '')
-		) {
-			this.state.team = props.location.state.team;
-			localStorage.setItem('HDR_TEAM', props.location.state.team);
-		} else if (!_.isEmpty(localStorage.getItem('HDR_TEAM'))) {
-			this.state.team = localStorage.getItem('HDR_TEAM');
-		} else {
-			this.state.team = 'user';
-			localStorage.setItem('HDR_TEAM', 'user');
-		}
+
+		this.state.team = getTeam(props);
 
 		if (_.has(props, 'profileComplete')) {
 			this.state.profileComplete = props.profileComplete;

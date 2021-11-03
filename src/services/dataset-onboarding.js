@@ -41,17 +41,23 @@ const useGetDatasetOnboardings = (requestOptions, queryOptions = { queryKey: 'ge
 	});
 };
 
-export const useGetDatasetOnboarding = (requestOptions, queryOptions = { queryKey: 'getDatasetOnboarding' }) => {
+const useGetDatasetOnboarding = (requestOptions, queryOptions = { queryKey: 'getDatasetOnboarding' }) => {
 	return useQuery({
 		...queryOptions,
 		queryFn: _id => getDatasetOnboarding(_id, requestOptions),
 	});
 };
 
-export const useGetPublisher = (requestOptions, queryOptions = { queryKey: 'getPublisher' }) => {
+const useGetPublisher = (_id, requestOptions, queryOptions = { queryKey: 'getPublisher' }) => {
+	console.log({
+		...queryOptions,
+		queryKey: [queryOptions.queryKey, _id],
+		queryFn: async ({ queryKey }) => getPublisher(queryKey[1], requestOptions),
+	});
 	return useQuery({
 		...queryOptions,
-		queryFn: _id => getPublisher(_id, requestOptions),
+		queryKey: [queryOptions.queryKey, _id],
+		queryFn: async ({ queryKey }) => getPublisher(queryKey[1], requestOptions),
 	});
 };
 
@@ -79,7 +85,7 @@ const usePatchDatasetOnboarding = (requestOptions, mutateOptions = { queryKey: '
 	});
 };
 
-export const useDeleteDatasetOnboarding = (requestOptions, queryOptions = { queryKey: 'deleteDatasetOnboarding' }) => {
+const useDeleteDatasetOnboarding = (requestOptions, queryOptions = { queryKey: 'deleteDatasetOnboarding' }) => {
 	return useQuery({
 		...queryOptions,
 		queryFn: _id => deleteDatasetOnboarding(_id, requestOptions),
