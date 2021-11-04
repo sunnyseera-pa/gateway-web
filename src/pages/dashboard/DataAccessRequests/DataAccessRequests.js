@@ -383,8 +383,8 @@ class DataAccessRequestsNew extends React.Component {
 										<Col xs={6} className="text-right align-text-bottom">
                       {isUserManagerofCurrentTeam(this.state.team, this.state.userState[0].teams) ?
                         <div>
-                          <button className={`button-secondary csv-btn mb-4`} onClick={() => this.onClickDownloadCsv(this.state.team)}>
-                            Download Requests as CSV
+                          <button className={`btn button-primary csv-btn`} onClick={() => this.onClickDownloadCsv(this.state.team)}>
+                            Download applications as CSV
                           </button>
                         <CSVLink data={csvData} filename='data.csv' className='hidden' ref={this.csvLink} target='_blank' />
                       </div>
