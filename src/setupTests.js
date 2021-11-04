@@ -1,7 +1,7 @@
 import React from 'react';
 import Enzyme, { shallow, render, mount } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
-
+import { server } from './services/mockServer';
 import * as rtl from '@testing-library/react';
 import '@testing-library/jest-dom';
 import 'regenerator-runtime/runtime';
@@ -46,5 +46,3 @@ global.createPortalContainer = () => {
 global.removePortalContainer = div => {
 	div.parentNode.removeChild(div);
 };
-
-global.assertServicePatchCalled = async () => {};

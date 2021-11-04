@@ -3,8 +3,8 @@ import React, { useState } from 'react';
 import { Button } from 'react-bootstrap';
 import { useParams } from 'react-router';
 import { useAuth } from '../../../../context/AuthContext';
-import serviceDatasetOnboarding from '../../../../services/dataset-onboarding';
-import serviceDatasets from '../../../../services/datasets';
+import serviceDatasetOnboarding from '../../../../services/dataset-onboarding/dataset-onboarding';
+import serviceDatasets from '../../../../services/datasets/datasets';
 import { getTeam } from '../../../../utils/auth';
 import utils from '../../../../utils/DataSetHelper.util';
 import ActionBar from '../../../commonComponents/actionbar/ActionBar';
@@ -25,7 +25,7 @@ const AccountDataset = props => {
 
 	const dataDataset = serviceDatasets.useGetDataset(id);
 	const publisherId = utils.getPublisherID(userState[0], team);
-	const dataPublisher = serviceDatasetOnboarding.useGetPublisher(publisherId);
+	const dataPublisher = serviceDatasetOnboarding.useGetPublisher('applicant');
 
 	React.useEffect(() => {
 		setTeam(getTeam(props));
@@ -39,10 +39,7 @@ const AccountDataset = props => {
 				},
 			} = dataPublisher.data;
 
-			const inReview = datasets.filter(dataset => {
-				console.log('dataset.activeFlag', dataset);
-				return dataset.activeflag === props.activeflag;
-			});
+			const inReview = datasets.filter(dataset => dataset.activeflag === props.activeflag);
 
 			const currentIndex = _.findIndex(inReview, dataset => {
 				return dataset.pid == id;
@@ -73,7 +70,7 @@ const AccountDataset = props => {
 		i => {
 			const pid = goToDataset(i);
 
-			window.location = `/account/datasets/${pid}`;
+			window.location.href = `/account/datasets/${pid}`;
 		},
 		[id, dataPublisher.data, team]
 	);

@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from 'react-query';
-import { apiURL } from '../configs/url.config';
-import { deleteRequest, getRequest, patchRequest, postRequest, putRequest } from '../utils/requests';
+import { apiURL } from '../../configs/url.config';
+import { deleteRequest, getRequest, patchRequest, postRequest, putRequest } from '../../utils/requests';
 
 const getDatasetOnboardings = options => {
 	return getRequest(`${apiURL}/dataset-onboarding`, options);
@@ -11,6 +11,7 @@ const getDatasetOnboarding = (_id, options) => {
 };
 
 const getPublisher = (_id, options) => {
+	console.log('*********************** PUBLISHER', `${apiURL}/dataset-onboarding/publisher/${_id}`);
 	return getRequest(`${apiURL}/dataset-onboarding/publisher/${_id}`, options);
 };
 
@@ -49,11 +50,6 @@ const useGetDatasetOnboarding = (requestOptions, queryOptions = { queryKey: 'get
 };
 
 const useGetPublisher = (_id, requestOptions, queryOptions = { queryKey: 'getPublisher' }) => {
-	console.log({
-		...queryOptions,
-		queryKey: [queryOptions.queryKey, _id],
-		queryFn: async ({ queryKey }) => getPublisher(queryKey[1], requestOptions),
-	});
 	return useQuery({
 		...queryOptions,
 		queryKey: [queryOptions.queryKey, _id],

@@ -36,7 +36,6 @@ const isArchived = dataset => {
 };
 
 const getPublisherID = (userState, team) => {
-	console.log('Userstate', userState);
 	let { teams } = userState;
 	let foundAdmin = teams.filter(x => x.type === team);
 

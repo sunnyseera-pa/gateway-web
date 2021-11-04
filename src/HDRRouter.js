@@ -132,7 +132,7 @@ class HDRRouter extends Component {
 				// catch all and report any other error type to Sentry
 				console.error(error);
 				Sentry.captureException(error);
-				return Promise.reject(error).then(currentComponent.setState({ showError: true }));
+				return Promise.reject(error);
 			}
 		);
 
