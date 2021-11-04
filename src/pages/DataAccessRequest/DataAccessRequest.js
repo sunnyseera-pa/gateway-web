@@ -810,7 +810,10 @@ class DataAccessRequest extends Component {
 			// copy state pages
 			const pages = [...this.state.jsonSchema.pages];
 			// get the index of new form
-			const newPageindex = pages.findIndex(page => page.pageId === newForm.pageId);
+			let newPageindex = pages.findIndex(page => page.pageId === newForm.pageId);
+			if (newPageindex < 0)
+				newPageindex = 0;
+
 			reviewWarning = !pages[newPageindex].inReview && this.state.inReviewMode;
 			// reset the current state of active to false for all pages
 			const newFormState = [...this.state.jsonSchema.pages].map(item => {
