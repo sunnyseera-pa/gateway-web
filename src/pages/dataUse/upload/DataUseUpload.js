@@ -64,7 +64,6 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
 	useEffect(() => {
 		const uploadedRows = uploadedData.rows;
 		uploadedRows.forEach(row => {
-			console.log(isEmpty(row.latestApprovalDate));
 			if (
 				isEmpty(row.laySummary) ||
 				isEmpty(row.publicBenefitStatement) ||
@@ -79,6 +78,7 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
 	}, [uploadedData]);
 
 	const submitDataUse = () => {
+		debugger;
 		const payload = {
 			teamId: team,
 			dataUses: uploadedData.rows,
@@ -172,7 +172,7 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
 		const linkedDatasets = dataUseCheck.linkedDatasets.map(linkedDataset => {
 			return (
 				<Link className='data-use-link' to={'/dataset/' + linkedDataset.datasetid} target='_blank'>
-					{linkedDataset.name}
+					{linkedDataset.name}{' '}
 				</Link>
 			);
 		});
@@ -216,7 +216,7 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
 				)}
 
 				<div className='layoutCard p-4'>
-					<p className='black-20-semibold mb-2'>Upload Data uses</p>
+					<p className='black-20-semibold mb-2'>Download template</p>
 
 					<p className='dataUseSubHeader mb-4'>
 						Please use the template provided to add new approved data uses . You can also download your current data use register from the
