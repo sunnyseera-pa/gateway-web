@@ -15,7 +15,6 @@ import TagManager from 'react-gtm-module';
 import { hotjar } from 'react-hotjar';
 
 if (process.env.REACT_APP_HOTJAR_CODE && process.env.REACT_APP_HOTJAR_CODE_VERSION) {
-	console.log(process.env.REACT_APP_HOTJAR_CODE, process.env.REACT_APP_HOTJAR_CODE_VERSION);
 	hotjar.initialize(process.env.REACT_APP_HOTJAR_CODE, process.env.REACT_APP_HOTJAR_CODE_VERSION);
 }
 
