@@ -57,7 +57,8 @@ body.modal-open {
 	.searchBarInputGrey {
 		border: 0;
 		background-color: #f6f7f8;
-		display: inline-block;
+		display: flex;
+		align-content: center;
 		border-radius: 4px;
 		padding: 5px;
 		width: 100%;
@@ -69,13 +70,16 @@ body.modal-open {
 		outline: none;
 		border: 0;
 		font-size: 16px;
-		background-color: #f6f7f8;
+		background-color: #f8f6f6;
 		color: $gray-800;
 		padding-top: 7px;
 	}
 
 	.desktopLoginMenu {
-		width: 200px;
+		width: 375px;
+		overflow-x: hidden;
+		overflow-y: scroll;
+		max-height: 400px;
 	}
 
 	.desktopNotificationMenu {
@@ -101,23 +105,22 @@ body.modal-open {
 		padding: 0px 0px 0px 15px;
 	}
 
-	.navBarLoginSpacing {
-		padding: 0px 20px 0px 0px;
-	}
-
-	.navBarNotificationSpacing {
-		padding: 0px 15px 0px 15px;
+	.navBarBellNotificationSpacing {
+		padding: 0px 16px 0px 0px;
 		display: flex;
 		flex-flow: row;
 		justify-content: center;
 		align-items: center;
 		align-self: stretch;
 		height: 100%;
+		margin: auto;
 	}
 
 	.navBarSearchBarSpacing {
 		width: 50%;
 		text-align: left;
+		margin: auto;
+		min-width: 150px;
 	}
 
 	.searchBarInputGrey {
@@ -154,6 +157,16 @@ body.modal-open {
 	}
 }
 
+.navBarSearchIconHolder {
+	@include mq('tablet-wide', max) {
+		float: right;
+		background-color: #f6f7f8;
+		padding: 10px 10px 5px 10px;
+		border-radius: 15px;
+		margin-top: 20px;
+	}
+}
+
 @media (max-width: 991px) {
 	.navBarLogoSpacing {
 		vertical-align: middle;
@@ -165,26 +178,11 @@ body.modal-open {
 		padding: 0px 0px 0px 5px;
 	}
 
-	.navBarLoginSpacing {
-		padding: 0px 20px 0px 0px;
-	}
-
-	.navBarNotificationSpacing {
-		margin-right: 30px;
-		padding: 0px 0px 0px 5px;
-	}
-
 	.navBarSearchBarSpacing {
 		width: 100%;
 		text-align: left;
-	}
-
-	.navBarSearchIconHolder {
-		float: right;
-		background-color: #f6f7f8;
-		padding: 10px 10px 5px 10px;
-		border-radius: 15px;
-		margin-top: 20px;
+		margin: auto;
+		min-width: 150px;
 	}
 
 	.navBarSearchIconHolderAlt {
@@ -199,7 +197,7 @@ body.modal-open {
 	.searchBarInputGrey {
 		border: 0;
 		background-color: #f6f7f8;
-		display: inline-block;
+		display: flex;
 		border-radius: 4px;
 		margin-top: 16px;
 		padding: 5px;
@@ -221,6 +219,8 @@ body.modal-open {
 		width: 300px;
 		top: 16px !important;
 		left: -5px !important;
+		max-height: 500px;
+		overflow-y: scroll;
 	}
 
 	.mobileNotificationMenu {
@@ -239,7 +239,7 @@ body.modal-open {
 	display: flex;
 	flex-flow: row nowrap;
 	align-items: center;
-	justify-content: flex-end;
+	justify-content: space-between;
 	width: 100%;
 	height: 100%;
 }
@@ -255,10 +255,6 @@ body.modal-open {
 	padding: 8px 10px 0px 0px;
 }
 
-.navBarNotificationSpacing {
-	position: relative;
-}
-
 #notificationsBell:hover {
 	background-size: 40px, 40px;
 	background: $gray-300;
@@ -267,8 +263,19 @@ body.modal-open {
 
 .notificationsBell {
 	background-size: 40px, 40px;
-	background: $gray-300;
-	@include rounded(70px);
+	width: 40px;
+}
+
+.notificationsBellBadge {
+	top: -13px !important;
+	right: -30px !important;
+	background-color: #29235c !important;
+}
+
+.messagesBadge {
+	top: -1px !important;
+	right: -15px !important;
+	background-color: #29235c !important;
 }
 
 .desktopLoginMenu {
@@ -322,23 +329,225 @@ body.modal-open {
 }
 
 #desktopSearchBar {
-	display: none;
+	display: block;
+	@include mq('tablet-wide', max) {
+		display: none;
+	}
 }
 
 #mobileSearchBar {
-	display: block;
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100%;
+	display: none;
+	@include mq('tablet-wide', max) {
+		display: block;
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+	}
 }
 
-@media (min-width: 1020px) {
-	#desktopSearchBar {
-		display: block;
-	}
+.dropdown-subitem {
+	font-size: 14px;
+	color: $gray-800;
+	margin-top: -10px;
+	padding: 3px 23px 0px 24px;
+}
 
-	#mobileSearchBar {
-		display: none;
+.dropdown-subitem:hover {
+	color: #191919;
+	text-decoration: none;
+	background-color: $gray-light;
+}
+
+.cmsDropdownTitle:hover {
+	font-weight: bold;
+	text-decoration: none;
+}
+
+.helpDropdownHeader,
+.dropdown-item-container .dropdown-header,
+.explore-right-container .dropdown-header {
+	font-size: 16px !important;
+	color: $gray-dark !important;
+}
+
+.cmsDropdown .dropdown-item,
+.cmsDropdownMenu .dropdown-item {
+	font-size: 14px;
+	white-space: break-spaces;
+	color: #3c3c3b;
+}
+.cmsDropdown .dropdown-item:hover,
+.cmsDropdownMenu .dropdown-item:hover {
+	width: auto;
+}
+
+.dropdown-button {
+	background-color: $gray-200;
+	border: none;
+	width: 57%;
+	color: $indigo;
+	font-size: 14px;
+	// float: right;
+	margin-right: 15px;
+	text-align: center;
+	padding: 10px;
+	margin-top: auto;
+	align-self: flex-end;
+
+	@include mq('tablet-wide', max) {
+		align-self: flex-start;
+		margin-left: 24px;
+	}
+}
+.dropdown-button:focus {
+	outline: none;
+}
+
+.dropdown-item-container:hover {
+	text-decoration: none;
+}
+
+.viewAllCollectionsLink {
+	color: $indigo;
+}
+.viewAllCollectionsLink:hover {
+	color: $indigo;
+	text-decoration: none;
+}
+
+.divider {
+	border-left: 1px solid #d8d8d8;
+	height: 95%;
+	position: absolute;
+	left: 55%;
+
+	@include mq('tablet-wide', max) {
+		border: none;
+	}
+}
+
+.cmsDropdown {
+	@include mq('tablet-wide', max) {
+		padding: 8px 24px !important;
+	}
+}
+
+.cmsDropdown .cmsDropdownMenu {
+	margin-top: 8px;
+	min-width: 300px;
+}
+
+.cmsDropdownMenu .list-unstyled {
+	margin-bottom: 0px;
+}
+
+.explore-container {
+	display: flex;
+	min-width: 600px;
+	@include mq('tablet-wide', max) {
+		display: block;
+		min-width: 0px;
+	}
+}
+
+.explore-left-container {
+	width: 55%;
+	@include mq('tablet-wide', max) {
+		width: 100%;
+	}
+}
+
+.explore-right-container {
+	display: flex;
+	flex-direction: column;
+	width: 45%;
+	@include mq('tablet-wide', max) {
+		width: 100%;
+		border-top: 1px solid #d8d8d8;
+		margin-top: 8px;
+	}
+}
+
+.floatRightChevron {
+	float: right;
+}
+
+.navBarAvatarSpacing {
+	padding: 0px 8px;
+	margin: auto;
+}
+
+.dropdown-sub-menu {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 4px 16px 4px 16px;
+	@include mq('tablet-wide', max) {
+		padding: 8px 24px;
+	}
+}
+
+.user-dropdown-menu {
+	display: flex;
+	align-items: center;
+}
+
+.user-dropdown-item {
+	padding: 4px 16px 4px 16px !important;
+	@include mq('tablet-wide', max) {
+		padding: 4px 24px !important;
+	}
+}
+
+.navBarMessageSpacing {
+	display: flex;
+	align-items: center;
+}
+
+.notificationBadgeMobile {
+	top: -18px !important;
+	right: -30px !important;
+}
+
+.messageBadgeMobile {
+	top: -8px !important;
+	right: -15px !important;
+}
+
+.searchBarInputMobile {
+	margin: 10px;
+	max-width: 275px;
+}
+
+.notificationOverallStyle {
+	display: flex;
+	flex-wrap: nowrap !important;
+	justify-content: space-evenly;
+	margin-left: -5px !important;
+	@include mq('tablet-wide', max) {
+		margin-left: 90px !important;
+	}
+	@include mq('tablet-small', max) {
+		margin-left: 60px !important;
+	}
+	@include mq('phablet', max) {
+		margin-left: 5px !important;
+	}
+	@include mq('phone', max) {
+		margin-left: -15px !important;
+	}
+}
+
+.searchBarRow {
+	padding-left: 0px;
+}
+
+.logoSVGMobile {
+	display: flex;
+	align-items: center;
+	padding-left: 0px !important;
+	@include mq('phablet', max) {
+		padding-left: 15px !important;
 	}
 }

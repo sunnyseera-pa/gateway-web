@@ -12,7 +12,6 @@ import Project from '../commonComponents/Project';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
 import UserMessages from '../commonComponents/userMessages/UserMessages';
 import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
-import { PageView, initGA } from '../../tracking';
 import _ from 'lodash';
 let baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -37,8 +36,6 @@ const PersonDetail = props => {
 
 	useEffect(() => {
 		getDataSearchFromDb();
-		initGA('UA-183238557-1');
-		PageView();
 	}, []);
 
 	const getDataSearchFromDb = () => {
@@ -49,7 +46,12 @@ const PersonDetail = props => {
 				window.localStorage.setItem('redirectMsg', `Person not found for Id: ${props.match.params.personID}`);
 				props.history.push({ pathname: '/search?search=', search: '' });
 			} else {
-				setData(res.data.person);
+				let { person = {} } = res.data;
+				person = {
+					...person,
+					datasetids: person.datasetids || [],
+				};
+				setData(person);
 				setIsLoading(false);
 			}
 		});
@@ -57,7 +59,7 @@ const PersonDetail = props => {
 
 	const doSearch = e => {
 		//fires on enter on searchbar
-		if (e.key === 'Enter') window.location.href = '/search?search=' + searchString;
+		if (e.key === 'Enter') window.location.href = `/search?search=${encodeURIComponent(searchString)}`;
 	};
 
 	const updateSearchString = searchString => {
@@ -83,10 +85,6 @@ const PersonDetail = props => {
 				<Loading />
 			</Container>
 		);
-	}
-
-	if (typeof data.datasetids === 'undefined') {
-		data.datasetids = [];
 	}
 
 	let tools = [];

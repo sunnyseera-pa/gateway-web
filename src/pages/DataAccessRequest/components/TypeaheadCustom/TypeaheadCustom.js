@@ -6,7 +6,6 @@ class TypaheadCustom extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			value: this.props.value || '',
 			readOnly: props.readOnly || false,
 		};
 		this.handleChange = this.handleChange.bind(this);
@@ -15,12 +14,7 @@ class TypaheadCustom extends React.Component {
 	}
 
 	handleChange(e) {
-		this.setState(
-			{
-				value: e,
-			},
-			this.props.onChange.bind(null, e)
-		);
+		this.setState(this.props.onChange.bind(null, e));
 	}
 
 	handleFocus(e) {

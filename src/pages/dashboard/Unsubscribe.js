@@ -11,7 +11,6 @@ var baseURL = require('../commonComponents/BaseURL').getURL();
 
 class Unsubscribe extends Component {
 	state = {
-		isLoading: true,
 		userState: [
 			{
 				loggedIn: false,
@@ -39,26 +38,22 @@ class Unsubscribe extends Component {
 
 	unsubscribeUser = async () => {
 		if (this.props.match.params.userObjectID) {
-			this.setState({ isLoading: true });
 			await axios
 				.put(baseURL + '/api/v1/person/unsubscribe/' + this.props.match.params.userObjectID)
 				.then(response => {
 					this.setState({
-						isLoading: false,
 						msg: response.data.msg,
 						error: false,
 					});
 				})
 				.catch(err => {
 					this.setState({
-						isLoading: false,
 						msg: err.response.data.msg,
 						error: true,
 					});
 				});
 		} else {
 			this.setState({
-				isLoading: false,
 				msg: 'A problem occurred unsubscribing from email notifications.',
 				error: true,
 			});
@@ -69,7 +64,7 @@ class Unsubscribe extends Component {
 		//fires on enter on searchbar
 		if (e.key === 'Enter') {
 			if (!!this.state.searchString) {
-				window.location.href = window.location.search + '/search?search=' + this.state.searchString;
+				window.location.href = `/search?search=${encodeURIComponent(this.state.searchString)}`;
 			}
 		}
 	};

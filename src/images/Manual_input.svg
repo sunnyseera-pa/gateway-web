@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="30px" height="30px" viewBox="0 0 30 30" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Manual_input_event</title>
+    <defs>
+        <path d="M10.0645207,0.251645801 C10.5352701,-0.114384455 11.2159474,-0.0811089773 11.6485281,0.351472235 C12.1171573,0.820101882 12.1171573,1.57990066 11.6485281,2.04853031 L11.6485281,2.04853031 L7.697,6 L11.6485281,9.95148241 C12.1171573,10.4201121 12.1171573,11.1799108 11.6485281,11.6485405 C11.2159474,12.0811217 10.5352701,12.1143972 10.0645207,11.7483669 L9.95147186,11.6485405 L6,7.697 L2.04852814,11.6485405 L1.93547933,11.7483669 C1.46472988,12.1143972 0.784052617,12.0811217 0.351471863,11.6485405 C-0.117157288,11.1799108 -0.117157288,10.4201121 0.351471863,9.95148241 L0.351471863,9.95148241 L4.303,6 L0.351471863,2.04853031 C-0.117157288,1.57990066 -0.117157288,0.820101882 0.351471863,0.351472235 C0.784052617,-0.0811089773 1.46472988,-0.114384455 1.93547933,0.251645801 L2.04852814,0.351472235 L6,4.303 L9.95147186,0.351472235 Z" id="manual-event-path-1"></path>
+    </defs>
+    <g id="✅-Activity-Log" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Activity-log:-Spec" transform="translate(-402.000000, -782.000000)">
+            <g id="Stacked-Group" transform="translate(370.000000, 360.000000)">
+                <g id="Version-2-events" transform="translate(24.000000, 91.000000)">
+                    <g id="Event" transform="translate(0.000000, 322.999951)">
+                        <g id="Manual_input_event" transform="translate(8.000000, 8.000008)">
+                            <ellipse id="Oval" fill="#868E96" cx="15" cy="15.0000159" rx="15" ry="15.0000159"></ellipse>
+                            <g id="Group" transform="translate(9.000000, 9.000010)">
+                                <g id="icon-/-close" transform="translate(6.000000, 6.000006) rotate(-315.000000) translate(-6.000000, -6.000006) ">
+                                    <mask id="manual-event-mask-2" fill="white">
+                                        <use xlink:href="#manual-event-path-1"></use>
+                                    </mask>
+                                    <use id="Combined-Shape" fill="#475DA7" fill-rule="nonzero" xlink:href="#manual-event-path-1"></use>
+                                    <g id="Group" mask="url(#manual-event-mask-2)" fill="#FFFFFF">
+                                        <g id="colour/purple">
+                                            <rect id="Rectangle" x="0" y="0" width="12" height="12.0000127"></rect>
+                                        </g>
+                                    </g>
+                                </g>
+                            </g>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -86,7 +86,7 @@ const Uploads = ({ id, files, onFilesUpdate, readOnly }) => {
 	const onDescriptionChange = event => {
 		event.preventDefault();
 		let { name, value } = event.currentTarget;
-		let [key, uniqueId = ''] = name.split('_');
+		let [, uniqueId = ''] = name.split('_');
 		if (!_.isEmpty(uniqueId)) {
 			const allFiles = [...uploadFiles].map(file => {
 				if (file.fileId === uniqueId) return Object.assign(file, { ...file, description: value });
@@ -98,7 +98,7 @@ const Uploads = ({ id, files, onFilesUpdate, readOnly }) => {
 	};
 
 	const onUploadFiles = async () => {
-    retryCount = 0;
+		retryCount = 0;
 		setSubmitted(true);
 		// 1. filter out files that have description and newFile to upload
 		const acceptedFiles = [...uploadFiles].filter(f => !_.isEmpty(f.description) && f.status === fileStatus.NEWFILE);
@@ -193,18 +193,18 @@ const Uploads = ({ id, files, onFilesUpdate, readOnly }) => {
 								if (file.status === fileStatus.SCANNED || file.status === fileStatus.QUARANTINED || file.status === fileStatus.ERROR) {
 									onFilesUpdate(files, false);
 									retryCount = 0;
-                  clearInterval(timer);
+									clearInterval(timer);
 								}
 							})
 							.catch(err => {
 								console.error(err.message);
-                clearInterval(timer);
-							})
+								clearInterval(timer);
+							});
 					}
 				});
 			} else {
-        clearInterval(timer);
-      }
+				clearInterval(timer);
+			}
 		}, 10000);
 		return () => {
 			clearInterval(timer);

@@ -6,6 +6,7 @@ import { Modal } from 'react-bootstrap';
 import { baseURL } from '../../../../configs/url.config';
 import { ReactComponent as CloseButtonSvg } from '../../../../images/close-alt.svg';
 import './UpdateRequestModal.scss';
+import googleAnalytics from '../../../../tracking';
 
 const UpdateRequestModal = ({ open, close, fullAmendments, publisher, applicationId, projectName = '' }) => {
 	let history = useHistory();
@@ -48,7 +49,9 @@ const UpdateRequestModal = ({ open, close, fullAmendments, publisher, applicatio
 				<div className='updateRequest-body'>
 					{Object.keys(fullAmendments).map(section => (
 						<div key={section} className='request-wrap'>
-							<h6 className='black-16-semibold' data-spec='request-section-title'>{section}</h6>
+							<h6 className='black-16-semibold' data-spec='request-section-title'>
+								{section}
+							</h6>
 							{fullAmendments[section].map((item, i) => (
 								<div key={`item-${i}`} className='request-section' data-spec='request-section'>
 									<Fragment>
@@ -71,7 +74,13 @@ const UpdateRequestModal = ({ open, close, fullAmendments, publisher, applicatio
 						<button onClick={e => onHandleClose(e)} className='button-secondary' data-spec='btn-cancel'>
 							No, nevermind
 						</button>
-						<button className='button-primary' onClick={e => onRequestUpdate(e)} data-spec='btn-submit'>
+						<button
+							className='button-primary'
+							onClick={e => {
+								onRequestUpdate(e);
+								googleAnalytics.recordEvent('Data access request', 'Clicked request update', 'Custodian requested updates')
+							}}
+							data-spec='btn-submit'>
 							Request update
 						</button>
 					</div>

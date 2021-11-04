@@ -6,9 +6,8 @@ import NotFound from '../commonComponents/NotFound';
 import Loading from '../commonComponents/Loading';
 import './Dashboard.scss';
 import ActionModal from '../commonComponents/ActionModal/ActionModal';
-import _ from 'lodash';
 import { EntityActionButton } from './EntityActionButton.jsx';
-import { Event, initGA } from '../../tracking';
+import googleAnalytics from '../../tracking';
 import { PaginationHelper } from '../commonComponents/PaginationHelper';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
@@ -34,9 +33,6 @@ export const AccountPapers = props => {
 	const maxResult = 40;
 
 	useEffect(() => {
-		if (process.env.NODE_ENV === 'production') {
-			initGA('UA-183238557-1');
-		}
 		doPapersCall('active', true, 0, true);
 	}, []);
 
@@ -195,7 +191,7 @@ export const AccountPapers = props => {
 								variant='primary'
 								href='/paper/add'
 								className='addButton'
-								onClick={() => Event('Buttons', 'Click', 'Add a new paper')}>
+								onClick={() => googleAnalytics.recordEvent('Papers', 'Add a new paper', 'Papers dashboard button clicked')}>
 								+ Add a new paper
 							</Button>
 						</Col>
@@ -237,9 +233,9 @@ export const AccountPapers = props => {
 												''
 											) : (
 												<Row className='subHeader mt-3 gray800-14-bold'>
-													<Col xs={2}>UpdLast activityated</Col>
+													<Col xs={2}>Last activity</Col>
 													<Col xs={5}>Name</Col>
-													<Col xs={2}>Author</Col>
+													<Col xs={2}>Uploader(s)</Col>
 													<Col xs={3}></Col>
 												</Row>
 											)}
@@ -503,6 +499,8 @@ export const AccountPapers = props => {
 											)}
 										</div>
 									);
+								default:
+									return key;
 							}
 						})()}
 
