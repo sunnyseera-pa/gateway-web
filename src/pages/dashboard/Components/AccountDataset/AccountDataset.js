@@ -70,7 +70,7 @@ const AccountDataset = props => {
 		i => {
 			const pid = goToDataset(i);
 
-			window.location.href = `/account/datasets/${pid}`;
+			window.location.assign(`/account/datasets/${pid}`);
 		},
 		[id, dataPublisher.data, team]
 	);

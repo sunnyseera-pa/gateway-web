@@ -11,7 +11,6 @@ const getDatasetOnboarding = (_id, options) => {
 };
 
 const getPublisher = (_id, options) => {
-	console.log('*********************** PUBLISHER', `${apiURL}/dataset-onboarding/publisher/${_id}`);
 	return getRequest(`${apiURL}/dataset-onboarding/publisher/${_id}`, options);
 };
 

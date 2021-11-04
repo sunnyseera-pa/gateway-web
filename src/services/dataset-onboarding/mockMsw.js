@@ -2,7 +2,6 @@ import { rest } from 'msw';
 import { apiURL } from '../../configs/url.config';
 
 export const mswGetPublisher = rest.get(`${apiURL}/dataset-onboarding/publisher/applicant`, (req, res, ctx) => {
-	console.log('Applicant', `${apiURL}/dataset-onboarding/publisher/applicant`);
 	return res(
 		ctx.status(200),
 		ctx.json({

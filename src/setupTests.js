@@ -46,3 +46,8 @@ global.createPortalContainer = () => {
 global.removePortalContainer = div => {
 	div.parentNode.removeChild(div);
 };
+
+Object.defineProperty(window, 'location', {
+	writable: true,
+	value: { assign: jest.fn() },
+});

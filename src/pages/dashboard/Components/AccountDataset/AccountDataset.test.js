@@ -9,6 +9,8 @@ import { server } from '../../../../services/mockServer';
 
 const mockDatasetCard = jest.fn();
 
+window.location.assign = jest.fn();
+
 jest.mock('../../../commonComponents/DatasetCard', () => props => {
 	mockDatasetCard(props);
 	return <div />;
@@ -70,7 +72,7 @@ describe('Given the AccountDataset component', () => {
 			});
 
 			it('Then loads the new dataset', async () => {
-				expect(window.location.href).toEqual('asdasd');
+				expect(window.location.assign).toHaveBeenCalledWith('/account/datasets/d5c99a71-c039-4a0b-9171-dba8a1c33154');
 			});
 		});
 	});
