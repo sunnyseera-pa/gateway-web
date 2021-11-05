@@ -68,7 +68,7 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
 				isEmpty(row.laySummary) ||
 				isEmpty(row.publicBenefitStatement) ||
 				isUndefined(row.latestApprovalDate) ||
-				isEmpty(row.dataLocation)
+				isEmpty(row.accessType)
 			) {
 				setRecommendedFieldsMissing(true);
 				return;
@@ -384,7 +384,7 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
 												<div className='dataUseDetailsGridItem'>{renderApplicants(data)}</div>
 
 												<div className='dataUseDetailsGridHeader'>Applicant ID</div>
-												<div className='dataUseDetailsGridItem'>{data.organisationName}</div>
+												<div className='dataUseDetailsGridItem'>{data.applicantId}</div>
 
 												<div className='dataUseDetailsGridHeader'>Funders/ Sponsors</div>
 												<div className='dataUseDetailsGridItem'>{data.fundersAndSponsors}</div>
@@ -419,9 +419,13 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
 												<div className='dataUseDetailsGridHeader'>Other approval committees</div>
 												<div className='dataUseDetailsGridItem'>{data.otherApprovalCommittees}</div>
 												<div className='dataUseDetailsGridHeader'>Project start date</div>
-												<div className='dataUseDetailsGridItem'>{moment(data.projectStartDate).format('DD/MM/YY')}</div>
+												<div className='dataUseDetailsGridItem'>
+													{data.projectStartDate ? moment(data.projectStartDate).format('DD/MM/YY') : ''}
+												</div>
 												<div className='dataUseDetailsGridHeader'>Project end date</div>
-												<div className='dataUseDetailsGridItem'>{moment(data.projectEndDate).format('DD/MM/YY')}</div>
+												<div className='dataUseDetailsGridItem'>
+													{data.projectEndDate ? moment(data.projectEndDate).format('DD/MM/YY') : ''}
+												</div>
 												<div className='dataUseDetailsGridHeader'>Latest approval date</div>
 												<div
 													className={
@@ -432,7 +436,9 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
 													onClick={() => toggleDataUseSection(index)}>
 													{some(filtered, ['column', 'Latest approval date*'])
 														? find(filtered, ['column', 'Latest approval date*']).value
-														: moment(data.latestApprovalDate).format('DD/MM/YY')}
+														: data.latestApprovalDate
+														? moment(data.latestApprovalDate).format('DD/MM/YY')
+														: ''}
 												</div>
 
 												<div className='gray800-14-bold dataUseDetailsGridSection'>Safe data</div>
@@ -464,7 +470,7 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
 												<div className='dataUseDetailsGridHeader'>Description of the confidential data being used</div>
 												<div className='dataUseDetailsGridItem'>{data.confidentialDataDescription}</div>
 												<div className='dataUseDetailsGridHeader'>Release/Access Date</div>
-												<div className='dataUseDetailsGridItem'>{moment(data.accessDate).format('DD/MM/YY')}</div>
+												<div className='dataUseDetailsGridItem'>{data.accessDate ? moment(data.accessDate).format('DD/MM/YY') : ''}</div>
 
 												<div className='gray800-14-bold dataUseDetailsGridSection'>Safe Settings</div>
 												<div className='dataUseDetailsGridHeader'>Access type</div>
@@ -473,9 +479,7 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
 														some(filtered, ['column', 'Access type*']) ? 'invalid-info dataUseDetailsGridItem' : 'dataUseDetailsGridItem '
 													}
 													onClick={() => toggleDataUseSection(index)}>
-													{some(filtered, ['column', 'Access type*'])
-														? find(filtered, ['column', 'Access type*']).value
-														: data.dataLocation}
+													{some(filtered, ['column', 'Access type*']) ? find(filtered, ['column', 'Access type*']).value : data.accessType}
 												</div>
 												<div className='dataUseDetailsGridHeader'>How has data been processed to enhance privacy?</div>
 												<div className='dataUseDetailsGridItem'>{data.privacyEnhancements}</div>

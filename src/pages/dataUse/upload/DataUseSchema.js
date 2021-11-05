@@ -127,13 +127,13 @@ const dataUseSchema = {
 		type: String,
 	},
 
-	'Release/Access Date': {
+	'Release/Access date': {
 		prop: 'accessDate',
 		type: Date,
 	},
 
 	'Access type*': {
-		prop: 'dataLocation',
+		prop: 'accessType',
 		type: String,
 	},
 

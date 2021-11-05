@@ -1377,7 +1377,7 @@ class SearchPage extends React.Component {
 				'Dataset Linkage Description': dataUse.datasetLinkageDescription,
 				'Confidential Data Description': dataUse.confidentialDataDescription,
 				'Access Date': moment(dataUse.accessDate).format('DD/MM/YY'),
-				'Access Type': dataUse.dataLocation,
+				'Access Type': dataUse.accessType,
 				'Privacy Enhancements': dataUse.privacyEnhancements,
 				'Research Outputs': dataUse.researchOutputs,
 				Keywords: dataUse.keywords,

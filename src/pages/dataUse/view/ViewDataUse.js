@@ -94,7 +94,7 @@ export const DataUseView = props => {
 
 					let counter = !localDataUseData.counter ? 1 : localDataUseData.counter + 1;
 					updateCounter(props.match.params.datauseID, counter);
-
+					debugger;
 					if (!_.isUndefined(localDataUseData.relatedObjects)) {
 						let localAdditionalObjInfo = await getAdditionalObjectInfo(localDataUseData.relatedObjects);
 						await populateRelatedObjects(localDataUseData, localAdditionalObjInfo);
@@ -171,6 +171,7 @@ export const DataUseView = props => {
 	};
 
 	const populateRelatedObjects = (localDataUseData, localAdditionalObjInfo) => {
+		debugger;
 		let tempRelatedObjects = [];
 
 		if (localDataUseData.relatedObjects && localAdditionalObjInfo) {
@@ -324,203 +325,6 @@ export const DataUseView = props => {
 									}}>
 									<Tab eventKey='about' title={'About'}>
 										<About data={dataUseData} renderTooltip={renderTooltip} />
-										{/* <Row className='mt-2'>
-											<Col>
-												<div className='rectangle'>
-													<Row>
-														<Col>
-															<span className='gray800-14-bold'>Details</span>
-														</Col>
-													</Row>
-													<Row className='mt-2'>
-														<Col sm={2}>
-															<span className='gray800-14'>URL</span>
-														</Col>
-														<Col sm={10}>
-															<div>
-																{paperData.document_links ? (
-																	paperData.document_links.doi.map((paperDoi, i) => (
-																		<a
-																			data-test-id={`document-links-doi-${i}`}
-																			href={paperDoi}
-																			rel='noopener noreferrer'
-																			target='_blank'
-																			className='purple-14 text-break paper-links'>
-																			{paperDoi}
-																		</a>
-																	))
-																) : (
-																	<a href={paperData.link} rel='noopener noreferrer' target='_blank' className='purple-14 text-break'>
-																		{paperData.link}
-																	</a>
-																)}
-																{paperData.document_links &&
-																	paperData.document_links.pdf &&
-																	paperData.document_links.pdf.map((paperPdf, i) => (
-																		<a
-																			data-test-id={`document-links-pdf-${i}`}
-																			href={paperPdf}
-																			rel='noopener noreferrer'
-																			target='_blank'
-																			className='purple-14 text-break paper-links'>
-																			{paperPdf}
-																		</a>
-																	))}
-																{paperData.document_links &&
-																	paperData.document_links.html &&
-																	paperData.document_links.html.map((paperHtml, i) => (
-																		<a
-																			data-test-id={`document-links-html-${i}`}
-																			href={paperHtml}
-																			rel='noopener noreferrer'
-																			target='_blank'
-																			className='purple-14 text-break paper-links'>
-																			{paperHtml}
-																		</a>
-																	))}
-															</div>
-														</Col>
-													</Row>
-													{paperData.isPreprint ? (
-														''
-													) : (
-														<Fragment>
-															<Row className='mt-2'>
-																<Col sm={2}>
-																	<span className='gray800-14'>Journal</span>
-																</Col>
-																<Col sm={10}>
-																	<span data-test-id='paper-journal' className='gray800-14'>
-																		{paperData.journal}
-																	</span>
-																</Col>
-															</Row>
-															<Row className='mt-2'>
-																<Col sm={2}>
-																	<span className='gray800-14'>Year</span>
-																</Col>
-																<Col sm={10}>
-																	<span data-test-id='paper-year' className='gray800-14'>
-																		{paperData.journalYear}
-																	</span>
-																</Col>
-															</Row>
-														</Fragment>
-													)}
-													{paperData.authorsNew ? (
-														<Row className='mt-2'>
-															<Col sm={2}>
-																<span className='gray800-14'>Authors</span>
-															</Col>
-															<Col sm={10} className='gray800-14 overflowWrap' data-test-id='paper-authors'>
-																{paperData.authorsNew}
-															</Col>
-														</Row>
-													) : (
-														''
-													)}
-													<Row className='mt-3'>
-														<Col sm={2}>
-															<span className='gray800-14'>Uploaders</span>
-														</Col>
-														<Col sm={10} className='gray800-14 overflowWrap'>
-															{paperData.persons.map(uploader => (
-																<span key={uploader.id}>
-																	<Uploader key={uploader.id} uploader={uploader} />
-																</span>
-															))}
-														</Col>
-													</Row>
-													<Row className='mt-2'>
-														<Col sm={2}>
-															<span className='gray800-14'>Keywords</span>
-														</Col>
-														<Col sm={10}>
-															<span className='gray800-14'>
-																{!paperData.tags.features || paperData.tags.features.length <= 0
-																	? ''
-																	: paperData.tags.features.map((feature, i) => {
-																			return (
-																				<div className='badge-tag' key={i}>
-																					<a
-																						data-test-id={`keywords-${i}`}
-																						className='gray800-14'
-																						href={'/search?search=&tab=Papers&paperfeatures=' + feature + '&type=all'}>
-																						{feature}
-																					</a>
-																				</div>
-																			);
-																	  })}
-															</span>
-														</Col>
-													</Row>
-													<Row className='mt-2'>
-														<Col sm={2}>
-															<span className='gray800-14'>Domain</span>
-														</Col>
-														<Col sm={10}>
-															<span className='gray800-14'>
-																{!paperData.tags.topics || paperData.tags.topics.length <= 0
-																	? ''
-																	: paperData.tags.topics.map((topic, i) => {
-																			return (
-																				<div className='badge-tag' key={i}>
-																					<a
-																						data-test-id={`domain-${i}`}
-																						className='gray800-14'
-																						href={'/search?search=&tab=Papers&papertopics=' + topic + '&type=all'}>
-																						{topic}
-																					</a>
-																				</div>
-																			);
-																	  })}
-															</span>
-														</Col>
-													</Row>
-												</div>
-											</Col>
-										</Row>
-										<Row className='mt-2'>
-											<Col>
-												<div className='rectangle'>
-													<Row>
-														<Col>
-															<span className='gray800-14-bold'>Abstract</span>
-														</Col>
-													</Row>
-													<Row className='mt-3'>
-														<Col>
-															<span data-test-id='paper-abstract' className='gray800-14 hdruk-section-body'>
-																<ReactMarkdown source={paperData.description} />
-															</span>
-														</Col>
-													</Row>
-												</div>
-											</Col>
-										</Row>
-
-										{!_.isEmpty(paperData.resultsInsights) ? (
-											<Row className='mt-2'>
-												<Col>
-													<div className='rectangle'>
-														<Row>
-															<Col>
-																<span className='gray800-14-bold'>Results/Insights</span>
-															</Col>
-														</Row>
-														<Row className='mt-3'>
-															<Col>
-																<span data-test-id='paper-results' className='gray800-14 hdruk-section-body'>
-																	<ReactMarkdown source={paperData.resultsInsights} />
-																</span>
-															</Col>
-														</Row>
-													</div>
-												</Col>
-											</Row>
-										) : (
-											''
-										)} */}
 									</Tab>
 
 									<Tab eventKey='Discussion' title={`Discussion (${discoursePostCount})`}>
