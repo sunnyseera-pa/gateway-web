@@ -5,7 +5,7 @@ import { deleteRequest, getRequest, patchRequest, postRequest, putRequest } from
 import service from './dataset-onboarding';
 
 jest.mock('axios');
-jest.mock('../utils/requests');
+jest.mock('../../utils/requests');
 
 let wrapper;
 
@@ -173,7 +173,7 @@ describe('Given the dataset-onboarding service', () => {
 	describe('When useGetPublisher is called', () => {
 		it('Then calls getPublisher with the correct arguments', async () => {
 			const getSpy = jest.spyOn(service, 'getPublisher');
-			const rendered = renderHook(() => service.useGetPublisher({ option1: true }), { wrapper });
+			const rendered = renderHook(() => service.useGetPublisher('1234', { option1: true }), { wrapper });
 
 			assertServiceRefetchCalled(rendered, getSpy, '1234');
 		});

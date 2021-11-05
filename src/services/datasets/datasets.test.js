@@ -39,7 +39,7 @@ describe('Given the datasets service', () => {
 	describe('When useGetDataset is called', () => {
 		it('Then calls getLogout with the correct arguments', async () => {
 			const getSpy = jest.spyOn(service, 'getDataset');
-			const rendered = renderHook(() => service.useGetDataset({ option1: true }), { wrapper });
+			const rendered = renderHook(() => service.useGetDataset('1234', { option1: true }), { wrapper });
 
 			assertServiceRefetchCalled(rendered, getSpy, '1234');
 		});
