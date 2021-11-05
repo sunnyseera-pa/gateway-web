@@ -25,7 +25,7 @@ const AccountDataset = props => {
 
 	const dataDataset = serviceDatasets.useGetDataset(id);
 	const publisherId = utils.getPublisherID(userState[0], team);
-	const dataPublisher = serviceDatasetOnboarding.useGetPublisher('applicant');
+	const dataPublisher = serviceDatasetOnboarding.useGetPublisher(publisherId);
 
 	React.useEffect(() => {
 		setTeam(getTeam(props));
@@ -77,18 +77,18 @@ const AccountDataset = props => {
 
 	const { showPrevious, showNext, statusError } = state;
 
-	if (statusError) {
-		return (
-			<AccountContent>
-				<NotFound text='The activity log for this dataset cannot be accessed. It must be set to in review.' />
-			</AccountContent>
-		);
-	}
-
 	if (!dataDataset.data && dataDataset.isError && dataDataset.isFetched) {
 		return (
 			<AccountContent>
 				<NotFound word='dataset' />
+			</AccountContent>
+		);
+	}
+
+	if (statusError) {
+		return (
+			<AccountContent>
+				<NotFound text='The activity log for this dataset cannot be accessed. It must be set to in review.' />
 			</AccountContent>
 		);
 	}
