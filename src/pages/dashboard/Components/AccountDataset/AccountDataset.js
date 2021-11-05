@@ -25,7 +25,7 @@ const AccountDataset = props => {
 
 	const dataDataset = serviceDatasets.useGetDataset(id);
 	const publisherId = utils.getPublisherID(userState[0], team);
-	const dataPublisher = serviceDatasetOnboarding.useGetPublisher(publisherId);
+	const dataPublisher = serviceDatasetOnboarding.useGetPublisher(Array.isArray(publisherId) ? publisherId[0] : publisherId);
 
 	React.useEffect(() => {
 		setTeam(getTeam(props));
