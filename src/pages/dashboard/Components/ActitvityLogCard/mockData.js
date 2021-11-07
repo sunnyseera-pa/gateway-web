@@ -1,0 +1,37 @@
+export default {
+	version: 'Version 2.0.0',
+	versionNumber: 2,
+	dateSubmitted: '2021-11-03T14:18:45.536Z',
+	applicationStatus: 'active',
+	events: [
+		{
+			_id: '61829a9ae4ea0f9763bd3fd7',
+			userTypes: ['applicant', 'custodian'],
+			eventType: 'datasetVersionApproved',
+			logType: 'dataset',
+			timestamp: '2021-11-03T14:20:10.420Z',
+			plainText: 'Version 2.0.0 of this dataset has been approved by portal admin Callum Reekie',
+			html: '<b>Version 2.0.0</b> of this dataset has been approved by portal admin <b>Callum Reekie</b>',
+			detailedText: 'Comment:\nThis is a quality dataset!',
+			detailedHtml:
+				"<div class='activity-log-detail'><div class='activity-log-detail-header'>Comment:</div><div class='activity-log-detail-row'>This is a quality dataset!</div></div>",
+			user: '611cfb5a19d737331dad4aff',
+			version: '2.0.0',
+			versionId: '61829a39e4ea0f9763bd3f6b',
+			__v: 0,
+		},
+		{
+			_id: '61829a45e4ea0f9763bd3f8c',
+			userTypes: ['applicant', 'custodian'],
+			eventType: 'newDatasetVersionSubmitted',
+			logType: 'dataset',
+			timestamp: '2021-11-03T14:18:45.576Z',
+			plainText: 'Version 2.0.0 of this dataset has been submitted by data custodian Callum Reekie',
+			html: '<b>Version 2.0.0</b> of this dataset has been submitted by data custodian <b>Callum Reekie</b>',
+			user: '616993c3034a7d773064e208',
+			version: '2.0.0',
+			versionId: '61829a39e4ea0f9763bd3f6b',
+			__v: 0,
+		},
+	],
+};

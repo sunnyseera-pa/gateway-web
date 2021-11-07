@@ -1,0 +1,167 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Given the ActivityLogCard component When it is rendered Then matches the previous snapshot 1`] = `
+<div>
+  <div
+    class="row"
+  >
+    <div
+      class="col-md-12"
+    >
+      <div
+        class="layoutCard"
+      >
+        <div
+          class="css-fqw8e5-ActivityLogCard"
+        >
+          <div
+            class="css-1s3f5pl-ActivityLogCard row"
+          >
+            <div
+              class="col-lg-6 col-sm-6"
+              data-testid="version-title"
+            >
+              <h1>
+                Version 2
+              </h1>
+              <span>
+                Submitted 03 November 2021
+              </span>
+            </div>
+            <div
+              class="col-lg-6 col-sm-6"
+            >
+              <span
+                class="css-zlbsue-ActivityLogCard"
+                data-testid="status"
+              >
+                <div
+                  class="sla sla-green"
+                  data-testid="green"
+                >
+                  Live
+                </div>
+              </span>
+            </div>
+          </div>
+          <div>
+            <div
+              class="css-2998cc row"
+            >
+              <div
+                class="col-lg-12 col-sm-12"
+              >
+                <h1>
+                  <span
+                    data-testid="event-title-0"
+                  >
+                    03 November 2021
+                  </span>
+                </h1>
+              </div>
+            </div>
+            <div
+              class="css-2998cc row"
+            >
+              <div
+                class="col-lg-1 col-sm-1"
+              >
+                <span>
+                  14:20
+                </span>
+              </div>
+              <div
+                class="col-lg-1 col-sm-1"
+              >
+                <span
+                  data-testid="event-time-0"
+                >
+                  14:20
+                </span>
+              </div>
+              <div
+                class="col-lg-10 col-sm-10"
+              >
+                <span
+                  data-testid="event-text-0"
+                >
+                  Version 2.0.0 of this dataset has been approved by portal admin Callum Reekie
+                </span>
+              </div>
+            </div>
+            <div
+              class="css-2998cc row"
+            >
+              <div
+                class="col-lg-1 col-sm-1"
+              />
+              <div
+                class="col-lg-1 col-sm-1"
+              />
+              <div
+                class="col-lg-10 col-sm-10"
+              >
+                <div
+                  class="jumbotron"
+                  data-testid="event-detailed-text-0"
+                >
+                  <span>
+                    Comment:
+This is a quality dataset!
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div
+              class="css-2998cc row"
+            >
+              <div
+                class="col-lg-12 col-sm-12"
+              >
+                <h1>
+                  <span
+                    data-testid="event-title-1"
+                  >
+                    03 November 2021
+                  </span>
+                </h1>
+              </div>
+            </div>
+            <div
+              class="css-2998cc row"
+            >
+              <div
+                class="col-lg-1 col-sm-1"
+              >
+                <span>
+                  14:18
+                </span>
+              </div>
+              <div
+                class="col-lg-1 col-sm-1"
+              >
+                <span
+                  data-testid="event-time-1"
+                >
+                  14:18
+                </span>
+              </div>
+              <div
+                class="col-lg-10 col-sm-10"
+              >
+                <span
+                  data-testid="event-text-1"
+                >
+                  Version 2.0.0 of this dataset has been submitted by data custodian Callum Reekie
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

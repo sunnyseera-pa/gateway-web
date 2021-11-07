@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import removeMd from 'remove-markdown';
+import moment from 'moment';
 
 export const isEditMode = (url = '') => {
 	if (!_.isEmpty(url)) {
@@ -37,4 +38,11 @@ export const stripMarkdown = (value = '', truncate = 0) => {
 		value = removeMd(value);
 	}
 	return value;
+};
+
+export const dateFormats = timestamp => {
+	return {
+		dateOnly: moment(timestamp).format('DD MMMM YYYY'),
+		timeOnly: moment(timestamp).format('HH:mm'),
+	};
 };
