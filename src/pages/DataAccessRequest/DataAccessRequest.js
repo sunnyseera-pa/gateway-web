@@ -1014,8 +1014,10 @@ class DataAccessRequest extends Component {
 			projectNameValid,
 			ncsValid,
 		});
+		const checkbox = this.state.aboutApplication.completedSubmitAdvice;
+		console.log("checkbox", checkbox);
 		// 4. Determine overall valid state
-		if (projectNameValid && ncsValid) {
+		if (projectNameValid && ncsValid && checkbox) {
 			isValid = true;
 		}
 		// 5. Return result
@@ -1522,6 +1524,11 @@ class DataAccessRequest extends Component {
 		this.toggleDuplicateApplicationModal();
 	};
 
+	// TODO: icodara-150
+	onHandleCheckboxToggle = () => {
+		console.log("handle the checkbox");
+	}
+
 	renderApp = () => {
 		let { activePanelId } = this.state;
 		if (activePanelId === 'about') {
@@ -1558,6 +1565,7 @@ class DataAccessRequest extends Component {
 					toggleModal={this.toggleModal}
 					toggleMrcModal={this.toggleMrcModal}
 					toggleContributorModal={this.toggleContributorModal}
+					onHandleCheckboxToggle={this.onHandleCheckboxToggle}
 				/>
 			);
 		} else if (activePanelId === 'files') {
