@@ -1,0 +1,35 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Given the AccountDataset component When it is rendered Then matches the previous snapshot 1`] = `
+<div>
+  <div
+    class="row"
+  >
+    <div
+      class="col-1"
+    />
+    <div
+      class="col-10"
+    >
+      <div />
+      <div
+        class="actionBar"
+      >
+        <div
+          class="action-bar-actions"
+        >
+          <button
+            class="btn btn-light"
+            type="button"
+          >
+            Next
+          </button>
+        </div>
+      </div>
+    </div>
+    <div
+      class="col-1"
+    />
+  </div>
+</div>
+`;
