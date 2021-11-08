@@ -73,6 +73,12 @@ describe('Given the AccountDataset component', () => {
 			expect(wrapper.container).toMatchSnapshot();
 		});
 
+		it('Then has the correct number of versions', async () => {
+			await waitFor(() => expect(wrapper.container.querySelectorAll('.layoutCard')).toHaveLength(4));
+
+			expect(wrapper.container).toMatchSnapshot();
+		});
+
 		describe('And the next button is clicked', () => {
 			beforeAll(async () => {
 				await waitFor(() => expect(wrapper.getByText('Next')).toBeTruthy());

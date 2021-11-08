@@ -782,26 +782,21 @@ class Account extends Component {
 										)}
 									</>
 								)}
-
 								{(this.userHasRole(team, ['manager', 'metadata_editor']) || team === 'admin') && (
 									<>{tabId === 'datasets' ? <AccountDatasets userState={userState} team={team} alert={alert} /> : ''}</>
 								)}
-
-								{team === 'admin' ? (
+								<Route path='/account/datasets/:id' component={AccountDataset} />
+								{team === 'admin' && (
 									<>
-										<Route path='/account/datasets/:id' component={AccountDataset} />
 										{tabId === 'teams' && (
 											<AccountTeams userState={userState} onTeamsTabChange={this.onTeamsTabChange} team={team} alert={alert} />
 										)}
 									</>
-								) : (
-									<Route path='/account/datasets/:id' render={() => <Redirect to='/account?tab=datasets' />} />
 								)}
 
 								{allowWorkflow && this.userHasRole(team, 'manager') && (
 									<>{tabId === 'workflows' ? <WorkflowDashboard userState={userState} team={team} /> : ''}</>
 								)}
-
 								{tabId === 'teamManagement' ? (
 									<AccountTeamManagement
 										userState={userState}
@@ -817,7 +812,6 @@ class Account extends Component {
 								) : (
 									''
 								)}
-
 								{tabId === 'help' ? <TeamHelp /> : ''}
 							</>
 						) : (

@@ -81,7 +81,7 @@ const AccountDataset = props => {
 				return;
 			}
 
-			return datasets[currentIndex + i]._id;
+			return datasets[currentIndex + i].pid;
 		}
 	};
 
@@ -144,7 +144,7 @@ const AccountDataset = props => {
 
 			{dataActivityLog.data &&
 				dataActivityLog.data.data.logs.map(({ version, meta: { applicationStatus } }) => (
-					<Row>
+					<Row key={version}>
 						<div className='col-md-12'>
 							<div className='layoutCard mb-0'>
 								<div className='datasetHeader mb-0 mt-2'>

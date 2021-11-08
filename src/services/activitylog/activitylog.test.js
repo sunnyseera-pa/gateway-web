@@ -1,8 +1,8 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { apiURL } from '../../configs/url.config';
-import { getRequest } from '../../utils/requests';
-import service from './datasets';
+import { postRequest } from '../../utils/requests';
+import service from './activitylog';
 
 jest.mock('axios');
 jest.mock('../../utils/requests');
@@ -10,6 +10,11 @@ jest.mock('../../utils/requests');
 let wrapper;
 
 const queryClient = new QueryClient();
+
+const mockBody = {
+	versionIds: ['1234', '5678'],
+	type: 'datasets',
+};
 
 describe('Given the datasets service', () => {
 	beforeAll(() => {
@@ -24,24 +29,24 @@ describe('Given the datasets service', () => {
 		jest.resetAllMocks();
 	});
 
-	describe('When getDataset is called', () => {
-		it('Then calls getRequest with the correct arguments', async () => {
-			await service.getDataset('1234', {
+	describe('When postActivityLog is called', () => {
+		it('Then calls postRequest with the correct arguments', async () => {
+			await service.postActivityLog(mockBody, {
 				option1: true,
 			});
 
-			expect(getRequest).toHaveBeenCalledWith(`${apiURL}/datasets/1234`, {
+			expect(postRequest).toHaveBeenCalledWith(`${apiURL}/activitylog`, mockBody, {
 				option1: true,
 			});
 		});
 	});
 
-	describe('When useGetDataset is called', () => {
-		it('Then calls getLogout with the correct arguments', async () => {
-			const getSpy = jest.spyOn(service, 'getDataset');
-			const rendered = renderHook(() => service.useGetDataset('1234', { option1: true }), { wrapper });
+	describe('When usePostActivityLog is called', () => {
+		it('Then calls postActivityLog with the correct arguments', async () => {
+			const postSpy = jest.spyOn(service, 'postActivityLog');
+			const rendered = renderHook(() => service.usePostActivityLog(mockBody, { option1: true }), { wrapper });
 
-			assertServiceRefetchCalled(rendered, getSpy, '1234');
+			assertServiceMutateAsyncCalled(rendered, postSpy, mockBody);
 		});
 	});
 });
