@@ -11,6 +11,7 @@ import 'react-bootstrap-typeahead/css/Typeahead.css';
 import SVGIcon from '../../images/SVGIcon';
 import ToolTip from '../../images/imageURL-ToolTip.gif';
 import ActionBar from '../commonComponents/actionbar/ActionBar';
+import googleAnalytics from '../../tracking';
 import './Collections.scss';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
@@ -46,7 +47,7 @@ const AddEditCollectionForm = props => {
 			values.collectionCreator = props.userState[0];
 
 			if (props.isEdit) {
-				axios.put(baseURL + '/api/v1/collections/edit', values).then(res => {
+				axios.put(baseURL + '/api/v1/collections/edit/' + props.data.id, values).then(res => {
 					window.location.href = windowUrl + '/collection/' + props.data.id + '/?collectionEdited=true';
 				});
 			} else {
@@ -344,7 +345,10 @@ const AddEditCollectionForm = props => {
 
 					<Button
 						data-test-id='add-resource'
-						onClick={() => relatedResourcesRef.current.showModal()}
+						onClick={() => {
+							relatedResourcesRef.current.showModal();
+							googleAnalytics.recordVirtualPageView('Related resources modal');
+						}}
 						variant='white'
 						className='techDetailButton mr-2'>
 						+ Add resource

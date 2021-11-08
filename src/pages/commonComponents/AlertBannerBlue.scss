@@ -1,0 +1,32 @@
+@import '../../css/variables.scss';
+
+.blue-banner {
+	display: block;
+	border: 2px solid $purple;
+	border-radius: 5px;
+	background-color: #cdd7f7;
+	color: $purple;
+	padding: 8px 22px 8px 22px;
+	font-weight: bold;
+	font-size: 14px;
+	&:hover {
+		text-decoration: none;
+		color: $purple;
+		cursor: default;
+	}
+}
+
+.blue-banner-hover {
+	&:hover {
+		cursor: pointer;
+		display: block;
+		border: 2px solid $purple;
+		border-radius: 5px;
+		background-color: $purple;
+		color: #ffffff;
+		text-decoration: none;
+		padding: 8px 22px 8px 22px;
+		font-weight: bold;
+		font-size: 14px;
+	}
+}

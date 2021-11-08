@@ -8,7 +8,6 @@ import TopDatasets from '../dashboard/TopDatasets';
 import { Container, Row, Col, Tabs, Tab, DropdownButton, Dropdown } from 'react-bootstrap';
 import DashboardKPI from '../dashboard/DARComponents/DashboardKPI';
 import Loading from '../commonComponents/Loading';
-import { initGA } from '../../tracking';
 import SearchBar from '../commonComponents/searchBar/SearchBar';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
 import UserMessages from '../commonComponents/userMessages/UserMessages';
@@ -24,7 +23,6 @@ class PublicAnalyticsDashboard extends React.Component {
 		data: [],
 		topSearches: [],
 		statsDataType: [],
-		statsDataTime: [],
 		totalGAUsers: 0,
 		gaUsers: 0,
 		searchesWithResults: 0,
@@ -61,7 +59,8 @@ class PublicAnalyticsDashboard extends React.Component {
 		if (eventKey === null) {
 			eventKey = 0;
 		}
-		this.setState({ selectedOption: this.state.dates[eventKey] });
+		let selectedDate = this.state.dates[eventKey];
+		this.setState({ selectedOption: selectedDate });
 		await Promise.all([this.getUnmetDemand(this.state.dates[eventKey]), this.getTopSearches(this.state.dates[eventKey])]);
 
 		this.setState({ isLoading: false });
@@ -78,14 +77,12 @@ class PublicAnalyticsDashboard extends React.Component {
 			this.getDatasetsWithTechMetadata(),
 			this.getTopDatasets(this.state.dates[eventKey]),
 		]);
-		this.setState({ uniqueUsers: (this.state.statsDataType.person / this.state.totalGAUsers) * 100 });
+		let uniqueUsers = (this.state.statsDataType.person / this.state.totalGAUsers) * 100;
+		this.setState({ uniqueUsers: uniqueUsers });
 	}
 
 	async componentDidMount() {
-		initGA('UA-183238557-1');
 		await Promise.all([this.getUnmetDemand(), this.getTopSearches()]);
-
-		this.setState({ isLoading: false });
 
 		await Promise.all([
 			this.getTotalGAUsers(),
@@ -100,7 +97,8 @@ class PublicAnalyticsDashboard extends React.Component {
 			this.getTopDatasets(this.state.selectedOption),
 		]);
 
-		this.setState({ uniqueUsers: (this.state.statsDataType.person / this.state.totalGAUsers) * 100 });
+		let uniqueUsers = (this.state.statsDataType.person / this.state.totalGAUsers) * 100;
+		this.setState({ uniqueUsers: uniqueUsers, isLoading: false });
 	}
 
 	getUnmetDemand(selectedOption) {
@@ -143,7 +141,6 @@ class PublicAnalyticsDashboard extends React.Component {
 			axios.get(baseURL + '/api/v1/stats').then(res => {
 				this.setState({
 					statsDataType: res.data.data.typecounts,
-					statsDataTime: res.data.data.daycounts,
 				});
 				resolve();
 			});
@@ -234,7 +231,7 @@ class PublicAnalyticsDashboard extends React.Component {
 
 	doSearch = e => {
 		//fires on enter on searchbar
-		if (e.key === 'Enter') window.location.href = '/search?search=' + this.state.searchString;
+		if (e.key === 'Enter') window.location.href = `/search?search=${encodeURIComponent(this.state.searchString)}`;
 	};
 
 	updateSearchString = searchString => {
@@ -306,7 +303,7 @@ class PublicAnalyticsDashboard extends React.Component {
 								<Col sm={12} lg={12}>
 									<Row>
 										<Col sm={8} lg={8}>
-											<span className='black-20'>Dashboard</span>
+											<span className='black-20-semibold'>Dashboard</span>
 										</Col>
 										<Col sm={4} lg={4}>
 											<span className='gray700-13 floatRight' data-test-id='dashboard-metrics-last-updated'>
@@ -315,12 +312,54 @@ class PublicAnalyticsDashboard extends React.Component {
 										</Col>
 									</Row>
 									<Row>
-										<Col sm={8} lg={8}>
+										<Col sm={12} lg={12}>
 											<span className='gray700-13'>
 												A collection of statistics, metrics and analytics; giving an overview of the sites data and performance
 											</span>
 										</Col>
-										<Col sm={4} lg={4}>
+									</Row>
+								</Col>
+							</Row>
+
+							<Row className='kpiContainer'>
+								<Col sm={3} lg={3} className='kpiClass'>
+									<DashboardKPI kpiText='total datasets' kpiValue={statsDataType.dataset} testId='dashboard-dataset-count' />
+								</Col>
+								<Col sm={3} lg={3} className='kpiClass'>
+									<DashboardKPI
+										kpiText='datasets with technical metadata'
+										kpiValue={datasetsWithTechMetaData.toFixed(0)}
+										percentageFlag={true}
+										testId='dashboard-dataset-metadata-percent'
+									/>
+								</Col>
+								<Col sm={3} lg={3} className='kpiClass'>
+									<DashboardKPI
+										kpiText='unique registered users'
+										kpiValue={uniqueUsers.toFixed(0)}
+										percentageFlag={true}
+										testId='dashboard-users-registered-percent'
+									/>
+								</Col>
+								<Col sm={3} lg={3} className='kpiClass'>
+									<DashboardKPI
+										kpiText='uptime in current month'
+										kpiValue={uptime.toFixed(2) % 1 === 0 ? Math.trunc(uptime.toFixed(2)) : uptime.toFixed(2)}
+										percentageFlag={true}
+										testId='dashboard-gateway-uptime-percent'
+									/>
+								</Col>
+							</Row>
+
+							<Row className='accountHeader mt-2'>
+								<Col sm={12} lg={12}>
+									<Row>
+										<Col sm={7} lg={8}>
+											<span className='black-16-semibold'>Monthly</span>
+											<br />
+											<span className='gray700-13'>View the site’s data and performance on a monthly basis</span>
+										</Col>
+										<Col sm={5} lg={4}>
 											<div className='select_option'>
 												<DropdownButton
 													variant='light'
@@ -343,30 +382,8 @@ class PublicAnalyticsDashboard extends React.Component {
 
 							<Row className='kpiContainer'>
 								<Col sm={3} lg={3} className='kpiClass'>
-									<DashboardKPI kpiText='total datasets' kpiValue={statsDataType.dataset} testId='dashboard-dataset-count' />
-								</Col>
-								<Col sm={3} lg={3} className='kpiClass'>
-									<DashboardKPI
-										kpiText='datasets with technical metadata'
-										kpiValue={datasetsWithTechMetaData.toFixed(0)}
-										percentageFlag={true}
-										testId='dashboard-dataset-metadata-percent'
-									/>
-								</Col>
-								<Col sm={3} lg={3} className='kpiClass'>
 									<DashboardKPI kpiText='users this month' kpiValue={gaUsers} testId='dashboard-users-monthly-count' />
 								</Col>
-								<Col sm={3} lg={3} className='kpiClass'>
-									<DashboardKPI
-										kpiText='unique registered users'
-										kpiValue={uniqueUsers.toFixed(0)}
-										percentageFlag={true}
-										testId='dashboard-users-registered-percent'
-									/>
-								</Col>
-							</Row>
-
-							<Row className='kpiContainer'>
 								<Col sm={3} lg={3} className='kpiClass'>
 									<DashboardKPI
 										kpiText='searches with results this month'
@@ -376,14 +393,10 @@ class PublicAnalyticsDashboard extends React.Component {
 									/>
 								</Col>
 								<Col sm={3} lg={3} className='kpiClass'>
-									<DashboardKPI kpiText='new access requests' kpiValue={accessRequests} testId='dashboard-data-access-requests-count' />
-								</Col>
-								<Col sm={3} lg={3} className='kpiClass'>
 									<DashboardKPI
-										kpiText='uptime this month'
-										kpiValue={uptime.toFixed(2) % 1 === 0 ? Math.trunc(uptime.toFixed(2)) : uptime.toFixed(2)}
-										percentageFlag={true}
-										testId='dashboard-gateway-uptime-percent'
+										kpiText='data access requests this month'
+										kpiValue={accessRequests}
+										testId='dashboard-data-access-requests-count'
 									/>
 								</Col>
 								<Col sm={3} lg={3} className='kpiClass'>
@@ -648,6 +661,8 @@ class PublicAnalyticsDashboard extends React.Component {
 														</Row>
 													</div>
 												);
+											default:
+												return key;
 										}
 								  })()}
 						</Col>

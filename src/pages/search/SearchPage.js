@@ -2085,9 +2085,9 @@ class SearchPage extends React.Component {
 									toggleModal={this.toggleModal}
 									drawerIsOpen={this.state.showDrawer}
 								/>
-								</SideDrawer>	
+								</SideDrawer>
 							</>
-							
+
 					)}
 				</div>
 			</Sentry.ErrorBoundary>

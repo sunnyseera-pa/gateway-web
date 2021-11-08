@@ -35,7 +35,7 @@ const DuplicateApplicationModal = ({ isOpen, closeModal, duplicateApplication, s
 
 	const resetModalState = () => {
 		setIsNewApplication(false);
-		setApplicationId = null;
+		setApplicationId(null);
 	};
 
 	return (
@@ -63,7 +63,12 @@ const DuplicateApplicationModal = ({ isOpen, closeModal, duplicateApplication, s
 							<div className='newAppButtonText'>Create new application</div>
 						</button>
 					) : (
-						<button className='duplicateApplicationModal-body-newappbutton' onClick={() => setIsNewApplication(true)}>
+						<button
+							className='duplicateApplicationModal-body-newappbutton'
+							onClick={() => {
+								setIsNewApplication(true);
+								setApplicationId(null);
+							}}>
 							<SVGIcon className='newAppButtonIcon' name='plusChunky' width={20} height={20} fill={'#475da7'} />
 							<div className='newAppButtonText'>Create new application</div>{' '}
 						</button>
@@ -81,9 +86,9 @@ const DuplicateApplicationModal = ({ isOpen, closeModal, duplicateApplication, s
 							createdAt,
 						} = request;
 						return (
-							<button
+							<div
 								key={`request_${i}`}
-								className='duplicateApplicationModal-body-presubmittedappbutton'
+								className={`duplicateApplicationModal-body-presubmittedappbutton ${applicationId === _id ? 'active-duplicate' : ''}`}
 								onClick={() => {
 									setApplicationId(_id);
 									setIsNewApplication(false);
@@ -117,7 +122,7 @@ const DuplicateApplicationModal = ({ isOpen, closeModal, duplicateApplication, s
 									<div className='box-header'>Last activity</div>
 									<div className='box-field'>{moment(updatedAt).format('D MMMM YYYY HH:mm')}</div>
 								</div>
-							</button>
+							</div>
 						);
 					})}
 				</div>

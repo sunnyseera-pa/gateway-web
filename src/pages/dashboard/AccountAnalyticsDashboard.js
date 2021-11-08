@@ -1,13 +1,13 @@
-import React, { useState, Fragment } from 'react';
+import React, { Fragment } from 'react';
 import axios from 'axios';
 import moment from 'moment';
 import UnmetDemand from './DARComponents/UnmetDemand';
 import TopSearches from './TopSearches';
 import TopDatasets from './TopDatasets';
-import { Row, Col, Button, Modal, Tabs, Tab, DropdownButton, Dropdown } from 'react-bootstrap';
+import { Row, Col, Tabs, Tab, DropdownButton, Dropdown } from 'react-bootstrap';
 import DashboardKPI from './DARComponents/DashboardKPI';
 import Loading from '../commonComponents/Loading';
-import { Event, initGA } from '../../tracking';
+import UnmetDemandSection from './Components/UnmetDemand/UnmetDemandSection';
 import './Dashboard.scss';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
@@ -16,12 +16,10 @@ let isMounted = false;
 class AccountAnalyticsDashboard extends React.Component {
 	// initialize our state
 	state = {
-		userState: [],
 		key: 'Datasets',
 		data: [],
 		topSearches: [],
 		statsDataType: [],
-		statsDataTime: [],
 		totalGAUsers: 0,
 		gaUsers: 0,
 		searchesWithResults: 0,
@@ -37,13 +35,11 @@ class AccountAnalyticsDashboard extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.state.userState = props.userState;
 		this.state.selectedOption = this.state.dates[0];
 	}
 
 	async componentDidMount() {
 		isMounted = true;
-		initGA('UA-183238557-1');
 		await Promise.all([this.getUnmetDemand(), this.getTopSearches()]);
 
 		await Promise.all([
@@ -59,7 +55,8 @@ class AccountAnalyticsDashboard extends React.Component {
 			this.getTopDatasets(this.state.selectedOption),
 		]);
 
-		if (isMounted) this.setState({ uniqueUsers: (this.state.statsDataType.person / this.state.totalGAUsers) * 100, isLoading: false });
+		let uniqueUsers = (this.state.statsDataType.person / this.state.totalGAUsers) * 100;
+		if (isMounted) this.setState({ uniqueUsers: uniqueUsers, isLoading: false });
 	}
 
 	componentWillUnmount() {
@@ -78,7 +75,8 @@ class AccountAnalyticsDashboard extends React.Component {
 		if (eventKey === null) {
 			eventKey = 0;
 		}
-		this.setState({ selectedOption: this.state.dates[eventKey] });
+		let selectedDate = this.state.dates[eventKey];
+		this.setState({ selectedOption: selectedDate });
 		await Promise.all([this.getUnmetDemand(this.state.dates[eventKey]), this.getTopSearches(this.state.dates[eventKey])]);
 
 		this.setState({ isLoading: false });
@@ -95,7 +93,8 @@ class AccountAnalyticsDashboard extends React.Component {
 			this.getDatasetsWithTechMetadata(),
 			this.getTopDatasets(this.state.dates[eventKey]),
 		]);
-		this.setState({ uniqueUsers: (this.state.statsDataType.person / this.state.totalGAUsers) * 100 });
+		let uniqueUsers = (this.state.statsDataType.person / this.state.totalGAUsers) * 100;
+		this.setState({ uniqueUsers: uniqueUsers });
 	}
 
 	getUnmetDemand(selectedOption) {
@@ -138,7 +137,6 @@ class AccountAnalyticsDashboard extends React.Component {
 			axios.get(baseURL + '/api/v1/stats').then(res => {
 				this.setState({
 					statsDataType: res.data.data.typecounts,
-					statsDataTime: res.data.data.daycounts,
 				});
 				resolve();
 			});
@@ -259,7 +257,7 @@ class AccountAnalyticsDashboard extends React.Component {
 							<Col sm={12} lg={12}>
 								<Row>
 									<Col sm={8} lg={8}>
-										<span className='black-20'>Dashboard</span>
+										<span className='black-20-semibold'>Dashboard</span>
 									</Col>
 									<Col sm={4} lg={4}>
 										<span className='gray700-13 floatRight' data-test-id='dashboard-metrics-last-updated'>
@@ -268,12 +266,54 @@ class AccountAnalyticsDashboard extends React.Component {
 									</Col>
 								</Row>
 								<Row>
-									<Col sm={8} lg={8}>
+									<Col sm={12} lg={12}>
 										<span className='gray700-13'>
 											A collection of statistics, metrics and analytics; giving an overview of the sites data and performance
 										</span>
 									</Col>
-									<Col sm={4} lg={4}>
+								</Row>
+							</Col>
+						</Row>
+
+						<Row className='kpiContainer'>
+							<Col sm={3} lg={3} className='kpiClass'>
+								<DashboardKPI kpiText='total datasets' kpiValue={statsDataType.dataset} testId='dashboard-dataset-count' />
+							</Col>
+							<Col sm={3} lg={3} className='kpiClass'>
+								<DashboardKPI
+									kpiText='datasets with technical metadata'
+									kpiValue={datasetsWithTechMetaData.toFixed(0)}
+									percentageFlag={true}
+									testId='dashboard-dataset-metadata-percent'
+								/>
+							</Col>
+							<Col sm={3} lg={3} className='kpiClass'>
+								<DashboardKPI
+									kpiText='unique registered users'
+									kpiValue={uniqueUsers.toFixed(0)}
+									percentageFlag={true}
+									testId='dashboard-users-registered-percent'
+								/>
+							</Col>
+							<Col sm={3} lg={3} className='kpiClass'>
+								<DashboardKPI
+									kpiText='uptime in current month'
+									kpiValue={uptime.toFixed(2) % 1 === 0 ? Math.trunc(uptime.toFixed(2)) : uptime.toFixed(2)}
+									percentageFlag={true}
+									testId='dashboard-gateway-uptime-percent'
+								/>
+							</Col>
+						</Row>
+
+						<Row className='accountHeader mt-2'>
+							<Col sm={12} lg={12}>
+								<Row>
+									<Col sm={7} lg={8}>
+										<span className='black-16-semibold'>Monthly</span>
+										<br />
+										<span className='gray700-13'>View the site’s data and performance on a monthly basis</span>
+									</Col>
+									<Col sm={5} lg={4}>
 										<div className='select_option'>
 											<DropdownButton
 												variant='light'
@@ -296,30 +336,8 @@ class AccountAnalyticsDashboard extends React.Component {
 
 						<Row className='kpiContainer'>
 							<Col sm={3} lg={3} className='kpiClass'>
-								<DashboardKPI kpiText='total datasets' kpiValue={statsDataType.dataset} testId='dashboard-dataset-count' />
-							</Col>
-							<Col sm={3} lg={3} className='kpiClass'>
-								<DashboardKPI
-									kpiText='datasets with technical metadata'
-									kpiValue={datasetsWithTechMetaData.toFixed(0)}
-									percentageFlag={true}
-									testId='dashboard-dataset-metadata-percent'
-								/>
-							</Col>
-							<Col sm={3} lg={3} className='kpiClass'>
 								<DashboardKPI kpiText='users this month' kpiValue={gaUsers} testId='dashboard-users-monthly-count' />
 							</Col>
-							<Col sm={3} lg={3} className='kpiClass'>
-								<DashboardKPI
-									kpiText='unique registered users'
-									kpiValue={uniqueUsers.toFixed(0)}
-									percentageFlag={true}
-									testId='dashboard-users-registered-percent'
-								/>
-							</Col>
-						</Row>
-
-						<Row className='kpiContainer'>
 							<Col sm={3} lg={3} className='kpiClass'>
 								<DashboardKPI
 									kpiText='searches with results this month'
@@ -329,14 +347,10 @@ class AccountAnalyticsDashboard extends React.Component {
 								/>
 							</Col>
 							<Col sm={3} lg={3} className='kpiClass'>
-								<DashboardKPI kpiText='new access requests' kpiValue={accessRequests} testId='dashboard-data-access-requests-count' />
-							</Col>
-							<Col sm={3} lg={3} className='kpiClass'>
 								<DashboardKPI
-									kpiText='uptime this month'
-									kpiValue={uptime.toFixed(2) % 1 === 0 ? Math.trunc(uptime.toFixed(2)) : uptime.toFixed(2)}
-									percentageFlag={true}
-									testId='dashboard-gateway-uptime-percent'
+									kpiText='data access requests this month'
+									kpiValue={accessRequests}
+									testId='dashboard-data-access-requests-count'
 								/>
 							</Col>
 							<Col sm={3} lg={3} className='kpiClass'>
@@ -424,160 +438,8 @@ class AccountAnalyticsDashboard extends React.Component {
 								</Row>
 							</Fragment>
 						)}
-						<Row className='accountHeader margin-top-16'>
-							<Col sm={12} lg={12}>
-								<Row>
-									<Col sm={12} lg={12}>
-										<span className='black-20'>Unmet demand</span>
-									</Col>
-								</Row>
-								<Row>
-									<Col sm={12} lg={12}>
-										<span className='gray700-13'>
-											For each resource type, which searches yielded no results, ordered by highest number of repeat searches
-										</span>
-									</Col>
-								</Row>
-							</Col>
-						</Row>
 
-						<Row className='tabsBackground'>
-							<Col sm={12} lg={12}>
-								<Tabs
-									className='dataAccessTabs gray700-13'
-									data-test-id='unmet-tabs'
-									activeKey={this.state.key}
-									onSelect={this.handleSelect.bind(this)}>
-									<Tab eventKey='Datasets' title={'Datasets'}></Tab>
-									<Tab eventKey='Tools' title={'Tools'}></Tab>
-									<Tab eventKey='Projects' title={'Projects'}></Tab>
-									<Tab eventKey='Papers' title={'Papers'}></Tab>
-									<Tab eventKey='People' title={'People'}></Tab>
-								</Tabs>
-							</Col>
-						</Row>
-
-						{data.length === 0
-							? this.renderNoResults("There isn't enough data available for this month yet")
-							: (() => {
-									switch (key) {
-										case 'Datasets':
-											return (
-												<div>
-													<Row>
-														<Col sm={12} lg={12}>
-															<Row className='subHeader mt-3 gray800-14-bold'>
-																<Col sm={8} lg={8}>
-																	Search term{' '}
-																</Col>
-																<Col sm={2} lg={2}>
-																	Searches
-																</Col>
-																<Col sm={2} lg={2}>
-																	Dataset results
-																</Col>
-															</Row>
-															{data.map((dat, i) => {
-																return <UnmetDemand key={i} data={dat} />;
-															})}
-														</Col>
-													</Row>
-												</div>
-											);
-										case 'Tools':
-											return (
-												<div>
-													<Row>
-														<Col sm={12} lg={12}>
-															<Row className='subHeader mt-3 gray800-14-bold'>
-																<Col sm={8} lg={8}>
-																	Search term{' '}
-																</Col>
-																<Col sm={2} lg={2}>
-																	Searches
-																</Col>
-																<Col sm={2} lg={2}>
-																	Tool results
-																</Col>
-															</Row>
-															{data.map(dat => {
-																return <UnmetDemand data={dat} />;
-															})}
-														</Col>
-													</Row>
-												</div>
-											);
-										case 'Projects':
-											return (
-												<div>
-													<Row>
-														<Col sm={12} lg={12}>
-															<Row className='subHeader mt-3 gray800-14-bold'>
-																<Col sm={8} lg={8}>
-																	Search term{' '}
-																</Col>
-																<Col sm={2} lg={2}>
-																	Searches
-																</Col>
-																<Col sm={2} lg={2}>
-																	Project results
-																</Col>
-															</Row>
-															{data.map(dat => {
-																return <UnmetDemand data={dat} />;
-															})}
-														</Col>
-													</Row>
-												</div>
-											);
-										case 'Papers':
-											return (
-												<div>
-													<Row>
-														<Col sm={12} lg={12}>
-															<Row className='subHeader mt-3 gray800-14-bold'>
-																<Col sm={8} lg={8}>
-																	Search term{' '}
-																</Col>
-																<Col sm={2} lg={2}>
-																	Searches
-																</Col>
-																<Col sm={2} lg={2}>
-																	Paper results
-																</Col>
-															</Row>
-															{data.map(dat => {
-																return <UnmetDemand data={dat} />;
-															})}
-														</Col>
-													</Row>
-												</div>
-											);
-										case 'People':
-											return (
-												<div>
-													<Row>
-														<Col sm={12} lg={12}>
-															<Row className='subHeader mt-3 gray800-14-bold'>
-																<Col sm={8} lg={8}>
-																	Search term{' '}
-																</Col>
-																<Col sm={2} lg={2}>
-																	Searches
-																</Col>
-																<Col sm={2} lg={2}>
-																	People results
-																</Col>
-															</Row>
-															{data.map(dat => {
-																return <UnmetDemand data={dat} />;
-															})}
-														</Col>
-													</Row>
-												</div>
-											);
-									}
-							  })()}
+						<UnmetDemandSection data={data} key={key} handleSelect={this.handleSelect.bind(this)} renderNoResults={this.renderNoResults} />
 					</Col>
 					<Col sm={1} lg={10} />
 				</Row>
