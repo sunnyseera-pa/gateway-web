@@ -48,4 +48,4 @@ const _getRegexURL = (urlType, href) => {
 
 export const baseURL = _buildUrl('http');
 export const cmsURL = _buildUrl('cms');
-export const apiURL = `${baseURL}/api/${process.env.REACT_APP_API_VERSION}`;
+export const apiURL = `${baseURL}/api/v1`;

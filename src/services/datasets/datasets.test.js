@@ -1,11 +1,11 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { apiURL } from '../configs/url.config';
-import { getRequest } from '../utils/requests';
+import { apiURL } from '../../configs/url.config';
+import { getRequest } from '../../utils/requests';
 import service from './datasets';
 
 jest.mock('axios');
-jest.mock('../utils/requests');
+jest.mock('../../utils/requests');
 
 let wrapper;
 
@@ -39,7 +39,7 @@ describe('Given the datasets service', () => {
 	describe('When useGetDataset is called', () => {
 		it('Then calls getLogout with the correct arguments', async () => {
 			const getSpy = jest.spyOn(service, 'getDataset');
-			const rendered = renderHook(() => service.useGetDataset({ option1: true }), { wrapper });
+			const rendered = renderHook(() => service.useGetDataset('1234', { option1: true }), { wrapper });
 
 			assertServiceRefetchCalled(rendered, getSpy, '1234');
 		});
