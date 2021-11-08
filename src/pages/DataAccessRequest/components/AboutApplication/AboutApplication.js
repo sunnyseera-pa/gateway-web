@@ -414,9 +414,6 @@ const AboutApplication = props => {
 									{t('dataAccessRequestForm.aboutThisApplicationSection.AfterYourSubmission.paragraphFive')}
 								</div>
 
-								{(!completedSubmitAdvice) ? (
-										<div className='errorMessages'>{t('dataAccessRequestForm.aboutThisApplicationSection.applicationName.errorOne')}</div>
-									) : null}
 								<div className='dar-form-check-group'>
 									<input
 										type='checkbox'
@@ -428,6 +425,9 @@ const AboutApplication = props => {
 									/>
 									<span className='dar-form-check-label'>{t('dataAccessRequestForm.informationRead')}</span>
 								</div>
+								{(!completedSubmitAdvice) ? (
+										<div className='errorMessages'>{t('dataAccessRequestForm.aboutThisApplicationSection.AfterYourSubmission.errorOne')}</div>
+									) : null}
 							</Fragment>
 						</Card.Body>
 					</Accordion.Collapse>
