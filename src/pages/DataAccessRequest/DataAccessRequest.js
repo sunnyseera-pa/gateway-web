@@ -603,7 +603,9 @@ class DataAccessRequest extends Component {
 		let isValid = Object.keys(errors).length ? false : true;
 
 		let isAboutApplicationValid = this.isAboutApplicationValid(this.state.aboutApplication);
-		if (isValid && isAboutApplicationValid) {
+		const checkbox = this.state.aboutApplication.completedSubmitAdvice;
+		
+		if (isValid && isAboutApplicationValid & checkbox) {
 			this.setState({ showConfirmSubmissionModal: true });
 		} else {
 			let activePage = _.get(_.keys({ ...errors }), 0);
@@ -1014,10 +1016,9 @@ class DataAccessRequest extends Component {
 			projectNameValid,
 			ncsValid,
 		});
-		const checkbox = this.state.aboutApplication.completedSubmitAdvice;
-		console.log("checkbox", checkbox);
+		
 		// 4. Determine overall valid state
-		if (projectNameValid && ncsValid && checkbox) {
+		if (projectNameValid && ncsValid) {
 			isValid = true;
 		}
 		// 5. Return result
