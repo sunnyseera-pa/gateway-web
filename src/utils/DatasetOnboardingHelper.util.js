@@ -1,6 +1,9 @@
 import _ from 'lodash';
 import randomstring from 'randomstring';
 import moment from 'moment';
+import tick from '../images/tick.svg';
+import amber from '../images/small-attention.svg';
+import rejected from '../images/Application_rejected.svg';
 
 let autoCompleteLookUps = { fullname: ['orcid', 'email', 'bio'] };
 
@@ -96,6 +99,14 @@ let datasetStatusColours = {
 	inReview: 'amber',
 	active: 'green',
 	rejected: 'red',
+};
+
+let datasetStatusIcons = {
+	draft: amber,
+	archive: amber,
+	inReview: amber,
+	active: tick,
+	rejected: rejected,
 };
 
 /**
@@ -384,8 +395,7 @@ let configActionModal = (type = '') => {
 			case 'DUPLICATE':
 				config = {
 					title: 'Duplicate this dataset metadata?',
-					subTitle:
-						'Are you sure you want to duplicate this dataset? All team members will be notified of this duplication.',
+					subTitle: 'Are you sure you want to duplicate this dataset? All team members will be notified of this duplication.',
 					description: false,
 					buttons: {
 						cancel: {
@@ -401,7 +411,7 @@ let configActionModal = (type = '') => {
 					},
 				};
 				break;
-       default:
+			default:
 				return type;
 		}
 	}
@@ -999,7 +1009,7 @@ export default {
 	datasetStatus: datasetStatus,
 	datasetStatusColours: datasetStatusColours,
 	datasetSLAText: datasetSLAText,
-
+	datasetStatusIcons: datasetStatusIcons,
 	darCommentTitle: darCommentTitle,
 	darStaticPageIds: darStaticPageIds,
 	actionKeys: actionKeys,
