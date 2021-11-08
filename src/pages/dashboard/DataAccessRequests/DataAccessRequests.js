@@ -17,60 +17,7 @@ import DarHelperUtil from '../../../utils/DarHelper.util';
 import VersionSelector from '../../commonComponents/versionSelector/VersionSelector';
 import './DataAccessRequests.scss';
 
-import createCSV from './csvUtils';
-import { getDataAccessRequests, isUserManagerofCurrentTeam } from './DataAccessRequestsService';
-import { CSVLink } from 'react-csv';
-
 class DataAccessRequestsNew extends React.Component {
-<<<<<<< HEAD
-  durationLookups = ["inProgress", "submitted"];
-  finalDurationLookups = ["rejected", "approved", "approved with conditions"];
-
-  state = {
-    userState: [],
-    key: "all",
-    data: [],
-    screenData: [],
-    workflows: [],
-    isLoading: true,
-    allCount: 0,
-    approvedCount: 0,
-    rejectedCount: 0,
-    archivedCount: 0,
-    preSubmissionCount: 0,
-    submittedCount: 0,
-    inReviewCount: 0,
-    team: "",
-    avgDecisionTime: 0,
-    alert: {},
-    showWorkflowReviewModal: false,
-    canViewSubmitted: false,
-    csvData: []
-  };
-
-  constructor(props) {
-    super(props);
-    this.state.userState = props.userState;
-    this.state.team = props.team || "";
-    if (!_.isEmpty(props.alert)) {
-      this.state.alert = props.alert; 
-      this.state.team = props.alert.publisher;
-    }
-
-    this.csvLink = React.createRef();
-  }
-
-  componentDidMount() {
-    window.scrollTo(0, 0);
-    initGA("UA-183238557-1");
-    this.fetchDataAccessRequests(this.state);
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.team !== this.props.team) {
-      this.setState({ isLoading: true });
-      this.fetchDataAccessRequests(nextProps);
-=======
 	durationLookups = ['inProgress', 'submitted', 'inReview'];
 	finalDurationLookups = ['rejected', 'approved', 'approved with conditions'];
 
@@ -118,7 +65,6 @@ class DataAccessRequestsNew extends React.Component {
 		window.scrollTo(0, 0);
 		initGA('UA-183238557-1');
 		this.fetchDataAccessRequests(this.state);
->>>>>>> 9bf6f25cae0b19895df755c6532dc271457bdcca
 	}
 
 	componentWillReceiveProps(nextProps) {
@@ -265,188 +211,6 @@ class DataAccessRequestsNew extends React.Component {
 		return [];
 	};
 
-<<<<<<< HEAD
-  calculateTimeDifference = startTime => {
-    let start = moment(startTime);
-    let end = moment();
-    return end.diff(start, "days");
-  };
-
-
-  renderComment = (
-    applicationStatusDesc = "",
-    applicationStatus = "",
-    decisionComments = "",
-    reviewPanels = "",
-    decisionMade = false,
-    decisionApproved = false,
-    decisionDate
-  ) => {
-    const decisionApprovedType = decisionApproved
-      ? "No issues found:"
-      : "Issues found:";
-    if (!_.isEmpty(applicationStatusDesc) && !_.isEmpty(applicationStatus)) {
-      if (this.finalDurationLookups.includes(applicationStatus)) {
-        return (
-          <CommentItem
-            text={applicationStatusDesc}
-            title={DarHelperUtil.darCommentTitle[applicationStatus]}
-          />
-        );
-      }
-    } else if (
-      decisionMade &&
-      !this.finalDurationLookups.includes(applicationStatus)
-    ) {
-      return (
-        <CommentItem
-          text={decisionComments}
-          title={"Phase decision"}
-          subtitle={`${decisionApprovedType} ${reviewPanels}`}
-          decisionDate={decisionDate}
-        />
-      );
-    }
-    return "";
-  };
-
-  renderDuration = (accessRequest, team = {}) => {
-    let {
-      applicationStatus = "",
-      createdAt,
-      dateSubmitted,
-      decisionDuration = 0
-    } = accessRequest;
-    let diff = 0;
-    if (this.durationLookups.includes(applicationStatus)) {
-      if (applicationStatus === DarHelperUtil.darStatus.inProgress) {
-        diff = this.calculateTimeDifference(createdAt);
-        return <TimeDuration text={`${diff} days since start`} />;
-      }
-
-      if (applicationStatus === DarHelperUtil.darStatus.submitted) {
-        diff = this.calculateTimeDifference(dateSubmitted);
-        return <TimeDuration text={`${diff} days since submission`} />;
-      }
-    }
-    if (this.finalDurationLookups.includes(applicationStatus) && team) {
-      if (!_.isEmpty(decisionDuration.toString())) {
-        return <TimeDuration text={`${decisionDuration} days total`} />;
-      }
-    }
-    return "";
-  };
-
-  navigateToLocation = (e, applicationId, applicationStatus) => {
-    e.stopPropagation();
-    // 1. split the id up into two parts
-    let [id, uniqueId] = e.currentTarget.id.split('_');
-    // 2. test the Id we have clicked on
-    switch (id) {
-      case "workflow":
-        // 3. get workflows remove undefined values from map
-        const workflows = _.without([...this.state.screenData].map(d =>  d.workflow),  undefined) ;
-        // 4. if workflows in array
-        if(!_.isEmpty(workflows)) {
-          // 5. find the workflow
-          const workflow = workflows.find(w => w._id === uniqueId) || {};
-          if(!_.isEmpty(workflow)) {
-            // 6. set state
-            this.setState({ workflow });
-            // 7. display showWorkflowReviewModal
-            this.toggleWorkflowReviewModal();
-          }
-        }
-        break;
-      case "startReview":
-        this.startWorkflowReview(applicationId);
-        break;
-      default:
-        if (applicationStatus !== DarHelperUtil.darStatus.submitted || this.state.team === "user") {
-          window.location.href = `/data-access-request/${applicationId}`;
-        }
-        break;
-    }
-  };
-
-  startWorkflowReview = async applicationId => {
-    await axios
-      .put(`${baseURL}/api/v1/data-access-request/${applicationId}/startreview`)
-      .then(() => {
-        window.location.href = `/data-access-request/${applicationId}`;
-      })
-      .catch(err => {
-        console.error(err.message);
-      });
-  };
-
-  renderAverageSubmission = () => {
-    return (
-      <Clock />
-    )`${this.state.avgDecisionTime} average time from submission to decision`;
-  };
-
-  /**
- * written by: Sam H. @ PA
- * 
- * onClickDownloadCsv gets a team (e.g. 'ICODA') and generate a csv with all the
- * the dataAccessRequests that are under this team.
- * 
- * This function: 
- *  1. Generate the CSV
- *  2. set the csv(csvData) in the state.
- *  3. redirecting the to the hidden <CSVlink> to download the file
- * 
- */
-  onClickDownloadCsv = async (team) => {
-   
-    // call the backend
-    const dataAccessRequests = await getDataAccessRequests(team);
-    
-    // generate csv 
-    const csvData = createCSV(dataAccessRequests);
-    
-    // we pass anonnymous function as 2nd argument, and set a timeout, to ensure that we will get the csv 
-    // back from the backend before we download the csv
-    this.setState({ csvData: csvData }, () => {
-      setTimeout(() => {
-        this.csvLink.current.link.click();
-      }, 0);
-    });
-  }
-
-  render() {
-    const {
-      key,
-      isLoading,
-      data,
-      approvedCount,
-      rejectedCount,
-      archivedCount,
-      preSubmissionCount,
-      submittedCount,
-      inReviewCount,
-      allCount,
-      team,
-      alert,
-      screenData,
-      avgDecisionTime,
-      canViewSubmitted,
-      csvData
-    } = this.state;
-
-    if (isLoading) {
-      return (
-        <Row>
-          <Col xs={1}></Col>
-          <Col xs={10}>
-            <Loading />
-          </Col>
-          <Col xs={1}></Col>
-        </Row>
-      );
-    }
-=======
 	calculateTimeDifference = startTime => {
 		let start = moment(startTime);
 		let end = moment();
@@ -584,84 +348,11 @@ class DataAccessRequestsNew extends React.Component {
 				</Row>
 			);
 		}
->>>>>>> 9bf6f25cae0b19895df755c6532dc271457bdcca
 
 		return (
 			<Fragment>
 				<Fragment>{!_.isEmpty(alert) && !_.isNil(alert.message) ? this.generateAlert() : ''}</Fragment>
 				<Row>
-<<<<<<< HEAD
-						<Col xs={1}></Col>
-						
-            <Col className="col-sm-10">
-                <Row className="accountHeader dataAccessHeader">
-                  <Col xs={6}>
-                        <Row>
-                            <div className="black-20">Data access request applications {!_.isEmpty(team) && team !== 'user' ? team : ''}</div>
-                            <div className="gray700-13">Manage forms and applications</div>
-                        </Row>
-                    </Col>
-                </Row>
-
-								<Row className="accountHeader dataAccessHeader">
-										<Col xs={6}>
-												<Row>
-														<div><Clock /> {`${avgDecisionTime > 0 ? avgDecisionTime : '-'} days`} <span className="gray700-13">average time from submission to decision</span></div>
-												</Row>
-										</Col>
-										<Col xs={6} className="text-right align-text-bottom">
-                      {isUserManagerofCurrentTeam(this.state.team, this.state.userState[0].teams) ?
-                        <div>
-                          <button className={`btn button-primary csv-btn`} onClick={() => this.onClickDownloadCsv(this.state.team)}>
-                            Download applications as CSV
-                          </button>
-                        <CSVLink data={csvData} filename='data.csv' className='hidden' ref={this.csvLink} target='_blank' />
-                      </div>
-                      : ''}
-										</Col>
-								</Row>
-
-            <Row className="tabsBackground">
-              
-              <Col sm={12} lg={12}>
-                <Tabs
-                  className="dataAccessTabs gray700-13"
-                  activeKey={this.state.key}
-                  onSelect={this.onTabChange}
-                >
-                  <Tab eventKey="all" title={"All (" + allCount + ")"}></Tab>
-                  {team === 'user' ? (
-                    <Tab
-                      eventKey="inProgress"
-                      title={"Pre-submission (" + preSubmissionCount + ")"}
-                    ></Tab>
-                  ) : (
-                    ""
-                  )}
-                  {canViewSubmitted ? (
-                  <Tab
-                    eventKey="submitted"
-                    title={"Submitted (" + submittedCount + ")"}
-                  ></Tab>
-                  ) : (
-                    ""
-                  )}
-                  <Tab
-                    eventKey="inReview"
-                    title={"In review (" + inReviewCount + ")"}
-                  ></Tab>
-                  <Tab
-                    eventKey="approved"
-                    title={"Approved (" + approvedCount + ")"}
-                  ></Tab>
-                  <Tab
-                    eventKey="rejected"
-                    title={"Rejected (" + rejectedCount + ")"}
-                  ></Tab>
-                </Tabs>
-              </Col>
-            </Row>
-=======
 					<Col xs={1}></Col>
 					<div className='col-sm-10'>
 						<div className='accountHeader dataAccessHeader'>
@@ -696,7 +387,6 @@ class DataAccessRequestsNew extends React.Component {
 						</div>
 
 						{team !== 'user' && this.state.key === 'inProgress' ? this.generatePreSubmissionWarning() : ''}
->>>>>>> 9bf6f25cae0b19895df755c6532dc271457bdcca
 
 						{screenData.map((request, i) => {
 							let {
@@ -731,20 +421,8 @@ class DataAccessRequestsNew extends React.Component {
 							const selectedVersion = versions.find(v => v.isCurrent)?.displayTitle;
 
 							return (
-<<<<<<< HEAD
-								<Row
-									key={`request_${i}`}
-									// onClick={event =>  window.location.href=`/data-access-request/${request._id}`}>
-									onClick={(e) =>
-										this.navigateToLocation(e, _id, applicationStatus)
-									}
-								>
-
-									<Col>
-=======
 								<Row key={`request_${i}`} onClick={e => this.navigateToLocation(e, projectId)}>
 									<div className='col-md-12'>
->>>>>>> 9bf6f25cae0b19895df755c6532dc271457bdcca
 										<div className='layoutCard'>
 											<div className='header-version'>
 												<div className='header-version-title'>
@@ -815,16 +493,12 @@ class DataAccessRequestsNew extends React.Component {
 												decisionDate
 											)}
 										</div>
-									</Col>
+									</div>
 								</Row>
 							);
 						})}
-<<<<<<< HEAD
-					</Col>{/*CLOSE col-sm-10 */}
-=======
 					</div>
 					{/*CLOSE col-sm-10 */}
->>>>>>> 9bf6f25cae0b19895df755c6532dc271457bdcca
 					<Col xs={1}></Col>
 				</Row>
 				<WorkflowReviewStepsModal
