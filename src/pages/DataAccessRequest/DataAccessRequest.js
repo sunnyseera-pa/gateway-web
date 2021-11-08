@@ -605,7 +605,7 @@ class DataAccessRequest extends Component {
 		let isAboutApplicationValid = this.isAboutApplicationValid(this.state.aboutApplication);
 		const checkbox = this.state.aboutApplication.completedSubmitAdvice;
 		
-		if (isValid && isAboutApplicationValid & checkbox) {
+		if (isValid && isAboutApplicationValid) {
 			this.setState({ showConfirmSubmissionModal: true });
 		} else {
 			let activePage = _.get(_.keys({ ...errors }), 0);
@@ -1525,11 +1525,6 @@ class DataAccessRequest extends Component {
 		this.toggleDuplicateApplicationModal();
 	};
 
-	// TODO: icodara-150
-	onHandleCheckboxToggle = () => {
-		console.log("handle the checkbox");
-	}
-
 	renderApp = () => {
 		let { activePanelId } = this.state;
 		if (activePanelId === 'about') {
@@ -1566,7 +1561,6 @@ class DataAccessRequest extends Component {
 					toggleModal={this.toggleModal}
 					toggleMrcModal={this.toggleMrcModal}
 					toggleContributorModal={this.toggleContributorModal}
-					onHandleCheckboxToggle={this.onHandleCheckboxToggle}
 				/>
 			);
 		} else if (activePanelId === 'files') {
