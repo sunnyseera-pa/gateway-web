@@ -10,10 +10,10 @@
 		},
 		"created": "created"
 	},
-	"newDatasetVersionSubmitted": "Version {{versionNumber}} of this dataset been submitted by data custodian {{firstName}} {{lastName}}",
+	"newDatasetVersionSubmitted": "<b>Version {{versionNumber}}</b> of this dataset been submitted by data custodian <b>{{firstName}} {{lastName}}</b>",
 	"datasetVersionApproved": "tst",
-	"datasetVersionRejected": "Application rejected by portal admin {{firstName}} {{lastName}}",
+	"datasetVersionRejected": "Application rejected by portal admin <b>{{firstName}} {{lastName}}</b>",
 	"datasetVersionArchived": "test",
 	"datasetVersionUnarchived": "test",
-	"datasetUpdatesSubmitted": "Updates submitted by data custodian {{firstName}} {{lastName}}"
+	"datasetUpdatesSubmitted": "Updates submitted by data custodian <b>{{firstName}} {{lastName}}</b>"
 }

@@ -68,8 +68,7 @@ const ActivityLogCard = props => {
 												</span>
 											</Col>
 											<Col sm={10} lg={10}>
-												<span>{t(event.eventType, { versionNumber: '2', ...event.userDetails })}</span>
-												<span data-testid={`event-text-${i}`}>{event.plainText && event.plainText}</span>
+												<span dangerouslySetInnerHTML={{ __html: t(event.eventType, { versionNumber: '2', ...event.userDetails }) }} />
 											</Col>
 										</Row>
 										{event.detailedText && (
