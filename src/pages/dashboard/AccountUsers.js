@@ -8,8 +8,6 @@ import NotFound from '../commonComponents/NotFound';
 import Loading from '../commonComponents/Loading';
 import './Dashboard.scss';
 
-import { Event, initGA } from '../../tracking';
-
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
 class AccountUsers extends React.Component {
@@ -31,7 +29,6 @@ class AccountUsers extends React.Component {
 	};
 
 	componentDidMount() {
-		initGA('UA-183238557-1');
 		this.doUsersCall();
 	}
 
@@ -52,7 +49,7 @@ class AccountUsers extends React.Component {
 	};
 
 	render() {
-		const { userState, key, isLoading, data } = this.state;
+		const { key, isLoading, data } = this.state;
 
 		if (isLoading) {
 			return (
@@ -171,6 +168,8 @@ class AccountUsers extends React.Component {
 											)}
 										</div>
 									);
+								default:
+									return userCount <= 0;
 							}
 						})()}
 					</Col>

@@ -16,7 +16,7 @@ const _buildUrl = urlType => {
 	} else if (!href.includes('localhost')) {
 		let regArray = _getRegexURL(urlType, href);
 		if (regArray) {
-			let [one, two, url] = regArray;
+			let url = regArray[2];
 			//add -api to the sub domain for API requests
 			switch (urlType) {
 				case 'cms':
@@ -48,3 +48,4 @@ const _getRegexURL = (urlType, href) => {
 
 export const baseURL = _buildUrl('http');
 export const cmsURL = _buildUrl('cms');
+export const apiURL = `${baseURL}/api/${process.env.REACT_APP_API_VERSION}`;

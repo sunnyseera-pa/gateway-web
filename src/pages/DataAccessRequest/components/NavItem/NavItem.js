@@ -1,4 +1,4 @@
-import React, { useState, Fragment } from 'react';
+import React, { Fragment } from 'react';
 import { isEmpty } from 'lodash';
 import DarHelper from '../../../../utils/DarHelper.util';
 import '../../DataAccessRequest.scss';

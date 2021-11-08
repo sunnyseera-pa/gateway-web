@@ -11,7 +11,7 @@ const ResourcePageButtons = props => {
 		} else {
 			setType(props.data.type);
 		}
-	}, []);
+	}, [props.data.type, props.isCollection]);
 
 	return (
 		<div className='floatRight row'>
@@ -20,7 +20,11 @@ const ResourcePageButtons = props => {
 			((props.data.authors && props.data.authors.includes(props.userState[0].id)) ||
 				(props.data.creator && props.data.creator[0].id === props.userState[0].id) ||
 				props.userState[0].role === 'Admin') ? (
-				<Button variant='white' href={'/' + type + '/edit/' + props.data.id} className='techDetailButton mr-2'>
+				<Button
+					data-test-id='action-bar-edit'
+					variant='white'
+					href={'/' + type + '/edit/' + props.data.id}
+					className='techDetailButton mr-2'>
 					Edit
 				</Button>
 			) : (

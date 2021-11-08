@@ -6,7 +6,8 @@ import DarHelper from '../../../../utils/DarHelper.util';
 import SVGIcon from '../../../../images/SVGIcon';
 import { ReactComponent as InfoSVG } from '../../../../images/info.svg';
 import TypeaheadDataset from '../TypeaheadDataset/TypeaheadDataset';
-
+import AlertBox from '../AlertBox/AlertBox';
+import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 
 const AboutApplication = props => {
@@ -42,10 +43,15 @@ const AboutApplication = props => {
 		toggleMrcModal,
 		toggleContributorModal,
 		context,
+		areDatasetsAmended = false,
+		datasetsAmendedDate = '',
 	} = props;
 
-	const { t } = useTranslation('common');
+	const datasetsAmendedMessage = `Applicant has requested this as an amendment to the approved application on ${moment(
+		datasetsAmendedDate
+	).format('Do MMM YYYY')}`;
 
+	const { t } = useTranslation('common');
 	return (
 		<div className='aboutAccordion'>
 			<Accordion defaultActiveKey='0' activeKey={activeAccordionCard.toString()}>
@@ -68,12 +74,17 @@ const AboutApplication = props => {
 						<Card.Body className='gray800-14'>
 							<div style={{ whiteSpace: 'pre-line' }} className='margin-bottom-16'>
 								{t('dataAccessRequestForm.aboutThisApplicationSection.datasets.paragraphOne')}{' '}
-								<Link
+								<a
 									id='messageLink'
 									className={allowedNavigation && userType.toUpperCase() !== 'CUSTODIAN' ? '' : 'disabled'}
 									onClick={e => toggleDrawer()}>
 									{t('dataAccessRequestForm.aboutThisApplicationSection.datasets.paragraphTwo')}
-								</Link>{' '}
+								</a>{' '}
+								to clarify. The custodian will help you understand if the data you would like to access can be used to answer your research
+								question. Below you can include datasets that are listed in the Gateway. Please note that you will be able to add datasets
+								not currently listed in the Gateway under the ‘Safe people’ section of this form. If you need to request access to datasets
+								from multiple data custodians please contact the custodians using the messaging function before completing the application
+								form.
 							</div>
 							<div>
 								<span>{t('dataAccessRequestForm.aboutThisApplicationSection.datasets.paragraphThree')}</span>
@@ -86,11 +97,9 @@ const AboutApplication = props => {
 										allowAllCustodians={false}
 									/>
 								</div>
-								{_.isEmpty(selectedDatasets) ? (
-									<div className='errorMessages'>{t('dataAccessRequestForm.aboutThisApplicationSection.datasets.errorOne')}</div>
-								) : null}
-								<div className='panConfirm'>
-									{userType.toUpperCase() === 'APPLICANT' ? (
+								{_.isEmpty(selectedDatasets) ? <div className='errorMessages'>{t('dataAccessRequestForm.aboutThisApplicationSection.datasets.errorOne')}</div> : null}
+								<div className='panConfirm d-flex justify-content-end'>
+									{userType.toUpperCase() === 'APPLICANT' && !readOnly && (
 										<button
 											type='input'
 											className={`button-primary ${allowedNavigation ? '' : 'disabled'}`}
@@ -100,11 +109,10 @@ const AboutApplication = props => {
 											}}>
 											{t('button.confirm')}
 										</button>
-									) : (
-										''
 									)}
 								</div>
 							</div>
+							{areDatasetsAmended && <AlertBox text={datasetsAmendedMessage} status='WARNING' />}
 						</Card.Body>
 					</Accordion.Collapse>
 				</Card>
@@ -137,9 +145,7 @@ const AboutApplication = props => {
 										value={projectName}
 										disabled={readOnly}
 									/>
-									{!projectNameValid && _.isEmpty(projectName) ? (
-										<div className='errorMessages'>{t('dataAccessRequestForm.aboutThisApplicationSection.applicationName.errorOne')}</div>
-									) : null}
+									{!projectNameValid && _.isEmpty(projectName) ? <div className='errorMessages'>{t('dataAccessRequestForm.aboutThisApplicationSection.applicationName.errorOne')}</div> : null}
 								</div>
 								<div className='panConfirm'>
 									{userType.toUpperCase() === 'APPLICANT' ? (
@@ -313,36 +319,50 @@ const AboutApplication = props => {
 						<Card.Body className='gray800-14'>
 							<Fragment>
 								<div className='margin-bottom-16'>
-									<p>{t('dataAccessRequestForm.aboutThisApplicationSection.approvalsCheck.paragraphOne')}</p>
-									<p>{t('dataAccessRequestForm.aboutThisApplicationSection.approvalsCheck.paragraphTwo')}</p>
-									<p>{t('dataAccessRequestForm.aboutThisApplicationSection.approvalsCheck.paragraphThree')}</p>
-									<p><a
-										id='approvedResearcherLink'
-										target='_blank'
-										rel='noopener noreferrer'
-										href='https://www.ons.gov.uk/aboutus/whatwedo/statistics/requestingstatistics/approvedresearcherscheme#becoming-an-approved-researcher-through-the-ons-approved-researcher-scheme'
-									>
-									{t('dataAccessRequestForm.aboutThisApplicationSection.approvalsCheck.paragraphFour')}
-									</a></p>
-									<p><a
-										id='infoGovernanceLink'
-										target='_blank'
-										rel='noopener noreferrer'
-										href='https://web.www.healthdatagateway.org/collection/4782731178031727'
-									>
-										{t('dataAccessRequestForm.aboutThisApplicationSection.approvalsCheck.paragraphFive')}
-									</a></p>
-									<h2>{t('dataAccessRequestForm.aboutThisApplicationSection.approvalsCheck.paragraphSix')}</h2>
-									<p>{t('dataAccessRequestForm.aboutThisApplicationSection.approvalsCheck.paragraphSeven')}</p>
-									<p><a
-										id='dsptLink'
-										target="_blank"
-										rel='noopener noreferrer'
-										href='https://www.dsptoolkit.nhs.uk/Account/Register'
-									>
-										{t('dataAccessRequestForm.aboutThisApplicationSection.approvalsCheck.paragraphEight')}
-									</a></p>
-									<p>{t('dataAccessRequestForm.aboutThisApplicationSection.approvalsCheck.paragraphNine')}</p>
+									<p>
+										Before requesting access to health data, you might need to demonstrate that everyone involved in the project has
+										appropriate information governance training and / or seek approvals for research projects (e.g. ethics). For example, to
+										access administrative data from custodians such as the Office for National Statistics you need to be an accredited
+										researcher under the Digital Economy Act.
+									</p>
+									<p>
+										Alternatively you might be asked to demonstrate that you have or are planning to attend recognised Information
+										Governance training.
+									</p>
+									<p>Contact the data custodian to know more about recognised training and accreditation.</p>
+									<p>
+										<a
+											id='approvedResearcherLink'
+											target='_blank'
+											rel='noopener noreferrer'
+											href='https://www.ons.gov.uk/aboutus/whatwedo/statistics/requestingstatistics/approvedresearcherscheme#becoming-an-approved-researcher-through-the-ons-approved-researcher-scheme'>
+											Becoming an approved researcher through the ONS approved researcher scheme
+										</a>
+									</p>
+									<p>
+										<a
+											id='infoGovernanceLink'
+											target='_blank'
+											rel='noopener noreferrer'
+											href='https://web.www.healthdatagateway.org/collection/4782731178031727'>
+											Information governance training recognised by some data custodians
+										</a>
+									</p>
+									<h2>Data Security</h2>
+									<p>
+										Data custodians require you to provide assurance that your organisation has appropriate data security processes in
+										place. For example, use of NHS England data has to meet the standards set out in the Data Security Protection Toolkit.
+										We encourage you to contact the data custodian for more information.
+									</p>
+									<p>
+										<a id='dsptLink' target='_blank' rel='noopener noreferrer' href='https://www.dsptoolkit.nhs.uk/Account/Register'>
+											DSPT
+										</a>
+									</p>
+									<p>
+										The MRC Health Data Access toolkit aims to help you understand some of the approvals required for your research project.
+										Data custodians request that these approvals are in place before you gain access to data.
+									</p>
 								</div>
 								<div className='dar-form-check-group'>
 									<button className='button-secondary' type='button' onClick={(e) => toggleMrcModal()}>

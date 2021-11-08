@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import queryString from 'query-string';
 import * as Sentry from '@sentry/react';
-import { Row, Col, Tabs, Tab, Container, Alert, Button } from 'react-bootstrap';
+import { Row, Col, Tabs, Tab, Container, Alert } from 'react-bootstrap';
 import NotFound from '../commonComponents/NotFound';
-import Creators from '../commonComponents/Creators';
+import Uploader from '../commonComponents/Uploader';
 import Loading from '../commonComponents/Loading';
 import RelatedObject from '../commonComponents/relatedObject/RelatedObject';
 import SearchBar from '../commonComponents/searchBar/SearchBar';
@@ -18,14 +18,13 @@ import ErrorModal from '../commonComponents/errorModal/ErrorModal';
 import CollectionCard from '../commonComponents/collectionCard/CollectionCard';
 import 'react-tabs/style/react-tabs.css';
 import { baseURL } from '../../configs/url.config';
-import { PageView, initGA } from '../../tracking';
 import SVGIcon from '../../images/SVGIcon';
 import ReactMarkdown from 'react-markdown';
-import moment from 'moment';
 import _ from 'lodash';
 import { ReactComponent as InfoSVG } from '../../images/info.svg';
 import './Paper.scss';
 import { Fragment } from 'react';
+import googleAnalytics from '../../tracking';
 
 export const PaperDetail = props => {
 	const [id] = useState('');
@@ -61,10 +60,6 @@ export const PaperDetail = props => {
 			let values = queryString.parse(window.location.search);
 			setPaperAdded(values.toolAdded);
 			setPaperEdited(values.toolEdited);
-		}
-		if (process.env.NODE_ENV === 'production') {
-			initGA('UA-183238557-1');
-			PageView();
 		}
 		getPaperDataFromDb();
 	}, []);
@@ -121,7 +116,7 @@ export const PaperDetail = props => {
 
 	const doSearch = e => {
 		//fires on enter on searchbar
-		if (e.key === 'Enter') window.location.href = '/search?search=' + searchString;
+		if (e.key === 'Enter') window.location.href = `/search?search=${encodeURIComponent(searchString)}`;
 	};
 
 	const updateSearchString = searchString => {
@@ -152,16 +147,13 @@ export const PaperDetail = props => {
 						let datasetPublisher;
 						let datasetLogo;
 
-						{
-							!_.isEmpty(res.data.data[0].datasetv2) && _.has(res.data.data[0], 'datasetv2.summary.publisher.name')
-								? (datasetPublisher = res.data.data[0].datasetv2.summary.publisher.name)
-								: (datasetPublisher = '');
-						}
-						{
-							!_.isEmpty(res.data.data[0].datasetv2) && _.has(res.data.data[0], 'datasetv2.summary.publisher.logo')
-								? (datasetLogo = res.data.data[0].datasetv2.summary.publisher.logo)
-								: (datasetLogo = '');
-						}
+						!_.isEmpty(res.data.data[0].datasetv2) && _.has(res.data.data[0], 'datasetv2.summary.publisher.name')
+							? (datasetPublisher = res.data.data[0].datasetv2.summary.publisher.name)
+							: (datasetPublisher = '');
+
+						!_.isEmpty(res.data.data[0].datasetv2) && _.has(res.data.data[0], 'datasetv2.summary.publisher.logo')
+							? (datasetLogo = res.data.data[0].datasetv2.summary.publisher.logo)
+							: (datasetLogo = '');
 
 						tempObjects.push({
 							id: object.objectId,
@@ -344,7 +336,10 @@ export const PaperDetail = props => {
 						<Col sm={1} lg={1} />
 						<Col sm={10} lg={10}>
 							<div>
-								<Tabs className='tabsBackground gray700-13 margin-bottom-16'>
+								<Tabs className='tabsBackground gray700-13 margin-bottom-16' onSelect={key => {
+										googleAnalytics.recordVirtualPageView(`${key} tab`);
+										googleAnalytics.recordEvent('Papers', `Clicked ${key} tab`, `Viewing ${key}`);
+									}}>
 									<Tab eventKey='about' title={'About'}>
 										<Row className='mt-2'>
 											<Col>
@@ -429,26 +424,30 @@ export const PaperDetail = props => {
 															</Row>
 														</Fragment>
 													)}
-													<Row className='mt-2'>
-														<Col sm={2}>
-															<span className='gray800-14'>Last update</span>
-														</Col>
-														<Col sm={10}>
-															<span className='gray800-14'>{moment(paperData.updatedon).format('DD MMMM YYYY')}</span>
-														</Col>
-													</Row>
-													{paperData.uploader ? (
+													{paperData.authorsNew ? (
 														<Row className='mt-2'>
-															<Col sm={2} className='gray800-14'>
-																Uploader
+															<Col sm={2}>
+																<span className='gray800-14'>Authors</span>
 															</Col>
-															<Col sm={10} className='gray800-14 overflowWrap'>
-																{paperData.uploader}
+															<Col sm={10} className='gray800-14 overflowWrap' data-test-id='paper-authors'>
+																{paperData.authorsNew}
 															</Col>
 														</Row>
 													) : (
 														''
 													)}
+													<Row className='mt-3'>
+														<Col sm={2}>
+															<span className='gray800-14'>Uploaders</span>
+														</Col>
+														<Col sm={10} className='gray800-14 overflowWrap'>
+															{paperData.persons.map(uploader => (
+																<span key={uploader.id}>
+																	<Uploader key={uploader.id} uploader={uploader} />
+																</span>
+															))}
+														</Col>
+													</Row>
 													<Row className='mt-2'>
 														<Col sm={2}>
 															<span className='gray800-14'>Keywords</span>
@@ -539,28 +538,9 @@ export const PaperDetail = props => {
 										) : (
 											''
 										)}
-
-										<Row className='mt-2'>
-											<Col className='mb-5'>
-												<div className='rectangle'>
-													<Row>
-														<Col>
-															<span className='gray800-14-bold'>Authors</span>
-														</Col>
-													</Row>
-													<Row className='mt-3'>
-														{paperData.persons.map(author => (
-															<Col sm={6} key={author.id}>
-																<Creators key={author.id} author={author} />
-															</Col>
-														))}
-													</Row>
-												</div>
-											</Col>
-										</Row>
 									</Tab>
 
-									<Tab eventKey='Collaboration' title={`Discussion (${discoursePostCount})`}>
+									<Tab eventKey='Discussion' title={`Discussion (${discoursePostCount})`}>
 										<DiscourseTopic
 											toolId={paperData.id}
 											topicId={paperData.discourseTopicId || 0}
@@ -568,7 +548,7 @@ export const PaperDetail = props => {
 											onUpdateDiscoursePostCount={updateDiscoursePostCount}
 										/>
 									</Tab>
-									<Tab eventKey='Projects' title={'Related resources (' + relatedObjects.length + ')'}>
+									<Tab eventKey='Related resources' title={'Related resources (' + relatedObjects.length + ')'}>
 										{relatedObjects.length <= 0 ? (
 											<NotFound word='related resources' />
 										) : (
