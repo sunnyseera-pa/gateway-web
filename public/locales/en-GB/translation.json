@@ -11,9 +11,9 @@
 		"created": "created"
 	},
 	"newDatasetVersionSubmitted": "<b>Version {{versionNumber}}</b> of this dataset been submitted by data custodian <b>{{firstName}} {{lastName}}</b>",
-	"datasetVersionApproved": "tst",
-	"datasetVersionRejected": "Application rejected by portal admin <b>{{firstName}} {{lastName}}</b>",
-	"datasetVersionArchived": "test",
-	"datasetVersionUnarchived": "test",
-	"datasetUpdatesSubmitted": "Updates submitted by data custodian <b>{{firstName}} {{lastName}}</b>"
+	"datasetVersionApproved": "<b>Version {{versionNumber}}</b> of this dataset been approved by admin <b>{{firstName}} {{lastName}}</b>",
+	"datasetVersionRejected": "<b>Application rejected</b> by portal admin <b>{{firstName}} {{lastName}}</b>",
+	"datasetVersionArchived": "<b>Version {{versionNumber}}</b> of this dataset been archived by data custodian <b>{{firstName}} {{lastName}}",
+	"datasetVersionUnarchived": "<b>Version {{versionNumber}}</b> of this dataset been unarchived by data custodian <b>{{firstName}} {{lastName}}",
+	"datasetUpdatesSubmitted": "<b>Updates submitted</b> by data custodian <b>{{firstName}} {{lastName}}</b>"
 }

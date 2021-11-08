@@ -8,6 +8,15 @@ export const applicationStatus = css`
 	float: right;
 `;
 
-export const activityLog = css`
-	margin-bottom: 20px;
+export const activityLog = (mb = 20) => css`
+	margin-bottom: ${mb}px;
+`;
+
+export const changeLog = css`
+	color: #9ea6ad;
+`;
+
+export const changeLogCard = css`
+	background: #f6f7f8;
+	padding: 10px 10px 10px 10px;
 `;
