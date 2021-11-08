@@ -602,9 +602,9 @@ class DataAccessRequest extends Component {
 		let errors = DarValidation.formatValidationObj(inValidMessages, [...this.state.jsonSchema.questionPanels]);
 		let isValid = Object.keys(errors).length ? false : true;
 
-		let isAboutApplicationValid = this.isAboutApplicationValid(this.state.aboutApplication);
-		
+		let isAboutApplicationValid = this.isAboutApplicationValid(this.state.aboutApplication);		
 		const checkbox = this.state.aboutApplication.completedSubmitAdvice;
+		
 		if (isValid && isAboutApplicationValid && checkbox) {
 			this.setState({ showConfirmSubmissionModal: true });
 		} else {
@@ -1016,7 +1016,6 @@ class DataAccessRequest extends Component {
 			projectNameValid,
 			ncsValid,
 		});
-		
 		// 4. Determine overall valid state
 		if (projectNameValid && ncsValid) {
 			isValid = true;
