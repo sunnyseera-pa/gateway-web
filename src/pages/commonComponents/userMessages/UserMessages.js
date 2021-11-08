@@ -93,7 +93,16 @@ const UserMessages = ({ userState, topicContext, closed, toggleModal, drawerIsOp
 				_id: '',
 				title,
 				subTitle,
-				tags: [{ _id: relatedObjectIds[0], name: subTitle, publisher: datasets[0].publisher }],
+				tags:
+					datasets.length > 1
+						? datasets.map((dataset, i) => {
+								return {
+									_id: relatedObjectIds[i],
+									name: subTitle[i],
+									publisher: dataset.publisher,
+								};
+						  })
+						: [{ _id: relatedObjectIds[0], name: subTitle, publisher: datasets[0].publisher }],
 				recipients: [],
 				status: 'active',
 				isDeleted: false,
@@ -347,7 +356,7 @@ const UserMessages = ({ userState, topicContext, closed, toggleModal, drawerIsOp
 	useEffect(() => {
 		// 1. GET Topics for current user
 		if (drawerIsOpen) {
-			googleAnalytics.recordVirtualPageView('Message drawer open')
+			googleAnalytics.recordVirtualPageView('Message drawer open');
 			getUserTopics();
 		}
 	}, [drawerIsOpen, topicContext]);
