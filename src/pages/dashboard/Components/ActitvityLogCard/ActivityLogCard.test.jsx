@@ -38,9 +38,21 @@ describe('Given the ActivityLogCard component', () => {
 				const timestamp = dateFormats(event.timestamp);
 				expect(screen.getByTestId(`event-title-${i}`)).toHaveTextContent(timestamp.dateOnly);
 				expect(screen.getByTestId(`event-time-${i}`)).toHaveTextContent(timestamp.timeOnly);
-				expect(screen.getByTestId(`event-text-${i}`)).toHaveTextContent(event.plainText);
-				// expect(screen.getByTestId(`event-detailed-text-${i}`)).toHaveTextContent(event.detailedText);
-				event.detailedText && expect(screen.getByTestId(`event-detailed-text-${i}`)).toHaveClass('jumbotron');
+			});
+		});
+
+		it('Then updates submiited log be rendered', () => {
+			props.events.map((event, i) => {
+				if (event.datasetUpdates) {
+					event.datasetUpdates.map((item, i) => {
+						const log = DatasetOnboardingHelper.getUpdatesSubmittedLog(item);
+						expect(screen.getByTestId(`heading-${i}`)).toHaveTextContent(log.heading);
+						expect(screen.getByTestId(`question-${i}`)).toHaveTextContent(`Question ${log.question}`);
+						expect(screen.getByTestId(`answers-${i}`)).toHaveTextContent(
+							`Previous Answer ${log.answers.previousAnswer}Updated Answer ${log.answers.updatedAnswer}`
+						);
+					});
+				}
 			});
 		});
 	});

@@ -43,68 +43,14 @@ export default {
 			datasetUpdates: [
 				{
 					'summary/abstract': {
-						previousAnswer: 'testtesttesttesttesttesttesttesttest',
-						updatedAnswer: 'testtesttesttesttesttesttesttesttest - I have changed the abstract!',
+						previousAnswer: 'test',
+						updatedAnswer: 'I have changed the abstract!',
 					},
 				},
 				{
 					'provenance/temporal/distributionReleaseDate': {
 						previousAnswer: '',
 						updatedAnswer: '02/11/2021',
-					},
-				},
-			],
-			__v: 0,
-		},
-		{
-			_id: '61893905df1feefcdd2b78b9',
-			eventType: 'datasetUpdatesSubmitted',
-			logType: 'dataset',
-			timestamp: '2021-11-08T14:49:41.389Z',
-			user: '616993c3034a7d773064e208',
-			userDetails: {
-				firstName: 'Callum',
-				lastName: 'Reekie',
-				role: 'custodian',
-			},
-			version: '2.0.0',
-			versionId: '618936afe87de1fbd16d1135',
-			userTypes: ['admin', 'custodian'],
-			datasetUpdates: [
-				{
-					'summary/keywords': {
-						previousAnswer: 'testKeywordBowel, testKeywordCancer',
-						updatedAnswer: 'testKeywordBowel, testKeywordCancer, testKeywordLungs',
-					},
-				},
-				{
-					'observations/2/observedNode': {
-						previousAnswer: '',
-						updatedAnswer: 'PERSONS',
-					},
-				},
-				{
-					'observations/2/measuredValue': {
-						previousAnswer: '',
-						updatedAnswer: '10000',
-					},
-				},
-				{
-					'observations/2/disambiguatingDescription': {
-						previousAnswer: '',
-						updatedAnswer: 'Test',
-					},
-				},
-				{
-					'observations/2/observationDate': {
-						previousAnswer: '',
-						updatedAnswer: '19/11/2021',
-					},
-				},
-				{
-					'observations/2/measuredProperty': {
-						previousAnswer: '',
-						updatedAnswer: 'Count',
 					},
 				},
 			],

@@ -24,8 +24,10 @@ exports[`Given the ActivityLogCard component When it is rendered Then matches th
               <h1>
                 Version 2
               </h1>
-              <span>
-                Submitted 03 November 2021
+              <span
+                class="gray800-14"
+              >
+                Submitted 8 November 2021
               </span>
             </div>
             <div
@@ -55,7 +57,7 @@ exports[`Given the ActivityLogCard component When it is rendered Then matches th
                   <span
                     data-testid="event-title-0"
                   >
-                    03 November 2021
+                    8 November 2021
                   </span>
                 </h1>
               </div>
@@ -67,25 +69,107 @@ exports[`Given the ActivityLogCard component When it is rendered Then matches th
                 class="col-lg-1 col-sm-1"
               >
                 <span>
-                  14:20
+                  <img
+                    alt="Icon"
+                    data-testid="0-datasetVersionApproved"
+                    src="[object Object]"
+                  />
                 </span>
               </div>
               <div
                 class="col-lg-1 col-sm-1"
               >
                 <span
+                  class="gray800-14"
                   data-testid="event-time-0"
                 >
-                  14:20
+                  14:50
                 </span>
               </div>
               <div
                 class="col-lg-10 col-sm-10"
               >
-                <span
-                  data-testid="event-text-0"
+                <span>
+                  datasetVersionApproved
+                </span>
+              </div>
+            </div>
+            <div
+              class="row"
+            >
+              <div
+                class="col-lg-1 col-sm-1"
+              />
+              <div
+                class="col-lg-1 col-sm-1"
+              />
+              <div
+                class="col-lg-10 col-sm-10"
+              >
+                <div
+                  class="css-10z29td"
                 >
-                  Version 2.0.0 of this dataset has been approved by portal admin Callum Reekie
+                  <div>
+                    <span
+                      class="css-1x1itm9"
+                    >
+                      Admin comment:
+                    </span>
+                  </div>
+                  <div>
+                    <span>
+                      Approved with minor changes!
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div
+              class="css-2998cc row"
+            >
+              <div
+                class="col-lg-12 col-sm-12"
+              >
+                <h1>
+                  <span
+                    data-testid="event-title-1"
+                  >
+                    8 November 2021
+                  </span>
+                </h1>
+              </div>
+            </div>
+            <div
+              class="css-2998cc row"
+            >
+              <div
+                class="col-lg-1 col-sm-1"
+              >
+                <span>
+                  <img
+                    alt="Icon"
+                    data-testid="1-datasetUpdatesSubmitted"
+                    src="[object Object]"
+                  />
+                </span>
+              </div>
+              <div
+                class="col-lg-1 col-sm-1"
+              >
+                <span
+                  class="gray800-14"
+                  data-testid="event-time-1"
+                >
+                  14:50
+                </span>
+              </div>
+              <div
+                class="col-lg-10 col-sm-10"
+              >
+                <span>
+                  datasetUpdatesSubmitted
                 </span>
               </div>
             </div>
@@ -102,13 +186,110 @@ exports[`Given the ActivityLogCard component When it is rendered Then matches th
                 class="col-lg-10 col-sm-10"
               >
                 <div
-                  class="jumbotron"
-                  data-testid="event-detailed-text-0"
+                  class="css-10z29td"
+                  data-testid="event-dataset-updates-0"
                 >
-                  <span>
-                    Comment:
-This is a quality dataset!
-                  </span>
+                  <div
+                    data-testid="heading-0"
+                  >
+                    <span
+                      class="css-1x1itm9"
+                    >
+                      Summary
+                    </span>
+                  </div>
+                  <div
+                    data-testid="question-0"
+                  >
+                    <span
+                      class="css-1x1itm9"
+                    >
+                      Question
+                    </span>
+                     
+                    Abstract
+                  </div>
+                  <div
+                    data-testid="answers-0"
+                  >
+                    <p>
+                      <span
+                        class="css-1x1itm9"
+                      >
+                        Previous Answer
+                      </span>
+                       
+                      test
+                      <br />
+                      <span
+                        class="css-1x1itm9"
+                      >
+                        Updated Answer
+                      </span>
+                       
+                      I have changed the abstract!
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="css-2998cc row"
+            >
+              <div
+                class="col-lg-1 col-sm-1"
+              />
+              <div
+                class="col-lg-1 col-sm-1"
+              />
+              <div
+                class="col-lg-10 col-sm-10"
+              >
+                <div
+                  class="css-10z29td"
+                  data-testid="event-dataset-updates-1"
+                >
+                  <div
+                    data-testid="heading-1"
+                  >
+                    <span
+                      class="css-1x1itm9"
+                    >
+                      Provenance | Temporal
+                    </span>
+                  </div>
+                  <div
+                    data-testid="question-1"
+                  >
+                    <span
+                      class="css-1x1itm9"
+                    >
+                      Question
+                    </span>
+                     
+                    Distribution Release Date
+                  </div>
+                  <div
+                    data-testid="answers-1"
+                  >
+                    <p>
+                      <span
+                        class="css-1x1itm9"
+                      >
+                        Previous Answer
+                      </span>
+                       
+                      
+                      <br />
+                      <span
+                        class="css-1x1itm9"
+                      >
+                        Updated Answer
+                      </span>
+                       
+                      02/11/2021
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -122,9 +303,9 @@ This is a quality dataset!
               >
                 <h1>
                   <span
-                    data-testid="event-title-1"
+                    data-testid="event-title-2"
                   >
-                    03 November 2021
+                    8 November 2021
                   </span>
                 </h1>
               </div>
@@ -136,25 +317,28 @@ This is a quality dataset!
                 class="col-lg-1 col-sm-1"
               >
                 <span>
-                  14:18
+                  <img
+                    alt="Icon"
+                    data-testid="2-newDatasetVersionSubmitted"
+                    src="[object Object]"
+                  />
                 </span>
               </div>
               <div
                 class="col-lg-1 col-sm-1"
               >
                 <span
-                  data-testid="event-time-1"
+                  class="gray800-14"
+                  data-testid="event-time-2"
                 >
-                  14:18
+                  14:49
                 </span>
               </div>
               <div
                 class="col-lg-10 col-sm-10"
               >
-                <span
-                  data-testid="event-text-1"
-                >
-                  Version 2.0.0 of this dataset has been submitted by data custodian Callum Reekie
+                <span>
+                  newDatasetVersionSubmitted
                 </span>
               </div>
             </div>

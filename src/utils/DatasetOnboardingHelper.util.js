@@ -1,9 +1,7 @@
 import _ from 'lodash';
 import randomstring from 'randomstring';
 import moment from 'moment';
-import tick from '../images/tick.svg';
-import amber from '../images/small-attention.svg';
-import rejected from '../images/Application_rejected.svg';
+import { startCase } from 'lodash';
 
 let autoCompleteLookUps = { fullname: ['orcid', 'email', 'bio'] };
 
@@ -99,14 +97,6 @@ let datasetStatusColours = {
 	inReview: 'amber',
 	active: 'green',
 	rejected: 'red',
-};
-
-let datasetStatusIcons = {
-	draft: amber,
-	archive: amber,
-	inReview: amber,
-	active: tick,
-	rejected: rejected,
 };
 
 /**
@@ -986,6 +976,13 @@ const _calculateTimeDifference = startTime => {
 	return end.diff(start, 'days');
 };
 
+const getUpdatesSubmittedLog = obj => {
+	let _temp = Object.entries(obj);
+	const _tmpArray = _temp[0][0].split('/').map(startCase);
+	const question = _tmpArray.pop();
+	return { heading: _tmpArray.join(' | '), question: question, answers: _temp[0][1] };
+};
+
 export default {
 	questionSetToDuplicate: questionSetToDuplicate,
 	insertSchemaUpdates: insertSchemaUpdates,
@@ -1004,12 +1001,10 @@ export default {
 	createModalContext: createModalContext,
 	configActionModal: configActionModal,
 	generateStatusCounts: generateStatusCounts,
-
 	staticContent: staticContent,
 	datasetStatus: datasetStatus,
 	datasetStatusColours: datasetStatusColours,
 	datasetSLAText: datasetSLAText,
-	datasetStatusIcons: datasetStatusIcons,
 	darCommentTitle: darCommentTitle,
 	darStaticPageIds: darStaticPageIds,
 	actionKeys: actionKeys,
@@ -1021,4 +1016,5 @@ export default {
 	removeStaticPages: removeStaticPages,
 	calculateTimeDifference: _calculateTimeDifference,
 	buildCompletionWheels: _buildCompletionWheels,
+	getUpdatesSubmittedLog: getUpdatesSubmittedLog,
 };
