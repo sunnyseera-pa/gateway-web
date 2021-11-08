@@ -18,7 +18,7 @@ const ActivityLogCard = props => {
 						<Row css={styles.activityLog}>
 							<Col sm={6} lg={6} data-testid='version-title'>
 								<h1>{`Version ${versionNumber}`}</h1>
-								<span>{`Submitted ${dateFormats(dateSubmitted).dateOnly}`}</span>
+								<span className='gray800-14'>{`Submitted ${dateFormats(dateSubmitted).dateOnly}`}</span>
 							</Col>
 							<Col sm={6} lg={6}>
 								<span css={styles.applicationStatus} data-testid='status'>
@@ -29,7 +29,7 @@ const ActivityLogCard = props => {
 								</span>
 							</Col>
 						</Row>
-						{events.map((event, i) => {
+						{events.map((event, i, { length, lastIndex = length - 1 }) => {
 							const timestamp = dateFormats(event.timestamp);
 							return (
 								<div key={`event-${i}`}>
@@ -42,10 +42,12 @@ const ActivityLogCard = props => {
 									</Row>
 									<Row css={styles.activityLog}>
 										<Col sm={1} lg={1}>
-											<span>{timestamp.timeOnly}</span>
+											<span>{i === lastIndex ? 'Start' : applicationStatus}</span>
 										</Col>
 										<Col sm={1} lg={1}>
-											<span data-testid={`event-time-${i}`}>{timestamp.timeOnly}</span>
+											<span className='gray800-14' data-testid={`event-time-${i}`}>
+												{timestamp.timeOnly}
+											</span>
 										</Col>
 										<Col sm={10} lg={10}>
 											<span data-testid={`event-text-${i}`}>{event.plainText}</span>
