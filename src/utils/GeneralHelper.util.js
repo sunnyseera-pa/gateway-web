@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import removeMd from 'remove-markdown';
-import moment from 'moment';
+import { format } from 'date-fns';
 import { DISPLAY_DATE_STANDARD } from '../configs/constants';
 
 export const isEditMode = (url = '') => {
@@ -42,8 +42,9 @@ export const stripMarkdown = (value = '', truncate = 0) => {
 };
 
 export const dateFormats = timestamp => {
+	const date = new Date(timestamp);
 	return {
-		dateOnly: moment(timestamp).format(DISPLAY_DATE_STANDARD),
-		timeOnly: moment(timestamp).format('HH:mm'),
+		dateOnly: format(date, DISPLAY_DATE_STANDARD),
+		timeOnly: format(date, 'HH:mm'),
 	};
 };
