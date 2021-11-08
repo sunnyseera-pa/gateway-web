@@ -393,6 +393,10 @@ const AboutApplication = props => {
 								<div className='margin-bottom-16'>
 									{t('dataAccessRequestForm.aboutThisApplicationSection.AfterYourSubmission.paragraphFive')}
 								</div>
+
+								{(!completedSubmitAdvice) ? (
+										<div className='errorMessages'>{t('dataAccessRequestForm.aboutThisApplicationSection.applicationName.errorOne')}</div>
+									) : null}
 								<div className='dar-form-check-group'>
 									<input
 										type='checkbox'
