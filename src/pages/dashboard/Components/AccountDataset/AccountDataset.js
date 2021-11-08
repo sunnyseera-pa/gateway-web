@@ -9,6 +9,7 @@ import serviceDatasets from '../../../../services/datasets/datasets';
 import { getTeam } from '../../../../utils/auth';
 import utils from '../../../../utils/DataSetHelper.util';
 import DatasetOnboardingHelper from '../../../../utils/DatasetOnboardingHelper.util';
+import DataSetHelper from '../../../../utils/DataSetHelper.util';
 import ActionBar from '../../../commonComponents/actionbar/ActionBar';
 import DatasetCard from '../../../commonComponents/DatasetCard';
 import Loading from '../../../commonComponents/Loading';
@@ -57,9 +58,11 @@ const AccountDataset = props => {
 		if (dataPublisher.data) {
 			const {
 				data: {
-					data: { listOfDatasets: datasets },
+					data: { listOfDatasets },
 				},
 			} = dataPublisher.data;
+
+			const datasets = listOfDatasets.filter(dataset => DataSetHelper.isInReview(dataset));
 
 			const currentIndex = _.findIndex(datasets, dataset => {
 				return dataset.pid == id;
@@ -138,6 +141,7 @@ const AccountDataset = props => {
 				completion={dataset.percentageCompleted}
 				listOfVersions={dataset.listOfVersions || []}
 			/>
+
 			{dataActivityLog.data &&
 				dataActivityLog.data.data.logs.map(({ version, meta: { applicationStatus } }) => (
 					<Row>
@@ -159,6 +163,7 @@ const AccountDataset = props => {
 						</div>
 					</Row>
 				))}
+
 			<ActionBar userState={userState}>
 				<div className='action-bar-actions'>
 					{showPrevious && !statusError && (

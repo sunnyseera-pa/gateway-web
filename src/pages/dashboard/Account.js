@@ -37,7 +37,7 @@ import ActivityLog from '../DataAccessRequest/components/ActivityLog/ActivityLog
 import AccountTeams from './AccountTeams';
 import googleAnalytics from '../../tracking';
 import { isRouteMatch } from '../../utils/router';
-import { Route } from 'react-router';
+import { Redirect, Route } from 'react-router';
 import { getTeam } from '../../utils/auth';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
@@ -784,20 +784,18 @@ class Account extends Component {
 								)}
 
 								{(this.userHasRole(team, ['manager', 'metadata_editor']) || team === 'admin') && (
-									<>
-										{tabId === 'datasets' ? <AccountDatasets userState={userState} team={team} alert={alert} /> : ''}
-										<Route path='/account/datasets/:id' component={AccountDataset} />
-									</>
+									<>{tabId === 'datasets' ? <AccountDatasets userState={userState} team={team} alert={alert} /> : ''}</>
 								)}
 
-								{team === 'admin' && (
+								{team === 'admin' ? (
 									<>
-										{tabId === 'teams' ? (
+										<Route path='/account/datasets/:id' component={AccountDataset} />
+										{tabId === 'teams' && (
 											<AccountTeams userState={userState} onTeamsTabChange={this.onTeamsTabChange} team={team} alert={alert} />
-										) : (
-											''
 										)}
 									</>
+								) : (
+									<Route path='/account/datasets/:id' render={() => <Redirect to='/account?tab=datasets' />} />
 								)}
 
 								{allowWorkflow && this.userHasRole(team, 'manager') && (
