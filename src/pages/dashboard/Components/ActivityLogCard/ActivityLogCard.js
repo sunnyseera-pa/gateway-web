@@ -12,6 +12,7 @@ import tick from '../../../../images/tick.svg';
 import amber from '../../../../images/attention.svg';
 import rejected from '../../../../images/Application_rejected.svg';
 import * as styles from './ActivityLogCard.styles';
+import Timeline from '../../../commonComponents/Timeline/Timeline';
 
 let eventStatusIcons = {
 	newDatasetVersionSubmitted: rejected,
@@ -51,46 +52,30 @@ const ActivityLogCard = props => {
 									</span>
 								</Col>
 							</Row>
-							{events.map((event, i) => {
-								const timestamp = dateFormats(event.timestamp);
-								return (
-									<div key={`event-${i}`}>
-										<Row css={styles.activityLog}>
-											<Col sm={12} lg={12}>
-												<h1>
-													<span data-testid={`event-title-${i}`}>{timestamp.dateOnly}</span>
-												</h1>
-											</Col>
-										</Row>
-										<Row css={styles.activityLog}>
-											<Col sm={1} lg={1}>
-												<span>
-													<img src={eventStatusIcons[event.eventType]} data-testid={`${i}-${event.eventType}`} alt='Icon' />
-												</span>
-											</Col>
-											<Col sm={1} lg={1}>
-												<span className='gray800-14' data-testid={`event-time-${i}`}>
-													{timestamp.timeOnly}
-												</span>
-											</Col>
-											<Col sm={10} lg={10}>
-												<span dangerouslySetInnerHTML={{ __html: t(event.eventType, { versionNumber: '2', ...event.userDetails }) }} />
-											</Col>
-										</Row>
-										{event.detailedText && (
-											<Row css={styles.activityLog}>
-												<Col sm={1} lg={1}></Col>
-												<Col sm={1} lg={1}></Col>
-												<Col sm={10} lg={10}>
+							<Timeline
+								data={events.map((event, i) => {
+									const dateTime = dateFormats(event.timestamp);
+
+									return {
+										icon: <img src={eventStatusIcons[event.eventType]} data-testid={`${i}-${event.eventType}`} alt='Icon' />,
+										time: dateTime.timeOnly,
+										content: (
+											<div>
+												<span
+													dangerouslySetInnerHTML={{
+														__html: t(event.eventType, { versionNumber: event.version.replace(/\..*$/, ''), ...event.userDetails }),
+													}}
+												/>{' '}
+												{event.detailedText && (
 													<div className='jumbotron' data-testid={`event-detailed-text-${i}`}>
 														<span>{event.detailedText}</span>
 													</div>
-												</Col>
-											</Row>
-										)}
-									</div>
-								);
-							})}
+												)}
+											</div>
+										),
+									};
+								})}
+							/>
 						</div>
 					</div>
 				</div>
