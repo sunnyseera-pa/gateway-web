@@ -26,12 +26,10 @@ const ActivityLogCard = props => {
 	const { t } = useTranslation();
 	const {
 		versionNumber,
-		meta: { applicationStatus },
+		meta: { applicationStatus, dateCreated },
 		dateSubmitted,
 		events,
 	} = props;
-
-	console.log(props);
 
 	return (
 		<Suspense fallback={'loading'}>
