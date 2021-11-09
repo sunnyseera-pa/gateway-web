@@ -22,6 +22,9 @@ import { has, isEmpty, isNil } from 'lodash';
 import { CohortDatasetPublisherCard } from './CohortDatasetPublisherCard';
 import NotFound from '../commonComponents/NotFound';
 import RelatedObject from '../commonComponents/relatedObject/RelatedObject';
+import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
+import UserMessages from '../commonComponents/userMessages/UserMessages';
+import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
 let baseURL = require('../commonComponents/BaseURL').getURL();
 
 export const CohortPage = props => {
@@ -30,11 +33,14 @@ export const CohortPage = props => {
 	const [cohortGroups, setCohortGroups] = useState([]);
 	const [searchString, setSearchString] = useState('');
 	const [showDrawer, setShowDrawer] = useState(false);
+	const [showModal, setShowModal] = useState(false);
+	const [context, setContext] = useState({});
 	const [versionHistory, setVersionHistory] = useState([]);
 	const [searchBar] = useState(React.createRef());
 	const [showOldVersionBanner, setShowOldVersionBanner] = useState(false);
 	const [showArchivedBanner, setShowArchivedBanner] = useState(false);
 	const [datasetsGroupedByPublisher, setDatasetsGroupedByPublisher] = useState([]);
+	const [topicContextByPublisher, setTopicContextByPublisher] = useState({});
 	const [userState] = useState(
 		props.userState || [
 			{
@@ -78,7 +84,9 @@ export const CohortPage = props => {
 		setShowArchivedBanner(newCohortData.activeflag === 'archive');
 
 		// Get datasets information for datasets tab
-		getDatasets(newCohortData);
+		await getDatasets(newCohortData);
+		//Get publisher info for data request
+		await getPublisherDetailsForTopicContext(topicContextByPublisher);
 
 		setIsLoading(false);
 	};
@@ -88,7 +96,16 @@ export const CohortPage = props => {
 		const datasets = await Promise.all(
 			newCohortData.countsPerDataset.map(async cpDataset => {
 				const dataset = await axios.get(baseURL + '/api/v1/datasets/' + cpDataset.pid);
-				const { name, pid, datasetid, tags: { features } = {}, datasetfields: { publisher, abstract } = {} } = dataset.data.data;
+				const {
+					_id,
+					name,
+					pid,
+					datasetid,
+					tags: { features } = {},
+					datasetfields: { publisher, abstract, contactPoint } = {},
+				} = dataset.data.data;
+
+				buildTopicContextForDAR(publisher, datasetid, _id, name, contactPoint);
 
 				const datasetInfo = {
 					name,
@@ -110,6 +127,48 @@ export const CohortPage = props => {
 			return result;
 		}, Object.create(null));
 		setDatasetsGroupedByPublisher(datasetsGrouped);
+	};
+
+	const buildTopicContextForDAR = (publisher, datasetid, _id, name, contactPoint) => {
+		// Check if key for current publisher already exists
+		let topicContextTemp = topicContextByPublisher;
+		if (topicContextTemp.hasOwnProperty(publisher)) {
+			topicContextTemp[publisher].datasets.push({ datasetId: datasetid, publisher });
+			topicContextTemp[publisher].relatedObjectIds.push(_id);
+			topicContextTemp[publisher].subTitle.push(name);
+			topicContextTemp[publisher].tags.push(name);
+		} else {
+			topicContextTemp[publisher] = {
+				datasets: [{ datasetId: datasetid, publisher }] || [],
+				relatedObjectIds: [_id] || [],
+				subTitle: [name],
+				tags: [name],
+				title: publisher,
+				contactPoint: contactPoint || '',
+			};
+		}
+
+		setTopicContextByPublisher(topicContextTemp);
+	};
+
+	// Extract data required for DAR message enquiry
+	const getPublisherDetailsForTopicContext = async topicContext => {
+		let topicContextTemp = topicContext;
+		// Iterate through keys (publishers)
+		for (const publisher of Object.keys(topicContext)) {
+			const response = await axios.get(`${baseURL}/api/v1/publishers/${publisher}`);
+			const {
+				data: {
+					publisher: { dataRequestModalContent = {}, allowsMessaging = false, uses5Safes = false },
+				},
+			} = response;
+
+			topicContextTemp[publisher].dataRequestModalContent = dataRequestModalContent;
+			topicContextTemp[publisher].allowsMessaging = allowsMessaging;
+			topicContextTemp[publisher].is5Safes = uses5Safes;
+			topicContextTemp[publisher].allowNewMessage = false;
+		}
+		setTopicContextByPublisher(topicContextTemp);
 	};
 
 	const showModalHandler = () => {
@@ -153,6 +212,12 @@ export const CohortPage = props => {
 				{changeLog}
 			</a>
 		);
+	};
+
+	const toggleModal = (showEnquiry = false, context = {}) => {
+		setShowModal(!showModal);
+		setContext(context);
+		setShowDrawer(showEnquiry);
 	};
 
 	const [flagClosed, setFlagClosed] = useState(true);
@@ -404,7 +469,15 @@ export const CohortPage = props => {
 
 										{!isEmpty(datasetsGroupedByPublisher) &&
 											Object.keys(datasetsGroupedByPublisher).map(publisher => {
-												return <CohortDatasetPublisherCard publisher={publisher} publisherGroup={datasetsGroupedByPublisher[publisher]} />;
+												return (
+													<CohortDatasetPublisherCard
+														publisher={publisher}
+														publisherGroup={datasetsGroupedByPublisher[publisher]}
+														userState={userState[0]}
+														topicContext={topicContextByPublisher[publisher]}
+														searchBar={searchBar}
+													/>
+												);
 											})}
 
 										<Row className='mt-2'>
@@ -466,6 +539,12 @@ export const CohortPage = props => {
 						<Col sm={1} lg={1} />
 					</Row>
 				</Container>
+
+				<SideDrawer open={showDrawer} closed={toggleDrawer}>
+					<UserMessages userState={userState[0]} closed={toggleDrawer} toggleModal={toggleModal} drawerIsOpen={showDrawer} />
+				</SideDrawer>
+
+				<DataSetModal open={showModal} closed={toggleModal} context={context} userState={userState[0]} />
 
 				<ActionBar userState={props.userState}>
 					<div className='action-bar-actions'>
