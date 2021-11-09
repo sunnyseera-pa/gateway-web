@@ -404,6 +404,9 @@ const AboutApplication = props => {
 									/>
 									<span className='dar-form-check-label'>{t('dataAccessRequestForm.informationRead')}</span>
 								</div>
+								{(!isCheckboxMarked) ? (
+									<div className='errorMessages'>{t('dataAccessRequestForm.aboutThisApplicationSection.AfterYourSubmission.errorOne')}</div>
+								) : null}
 							</Fragment>
 						</Card.Body>
 					</Accordion.Collapse>
