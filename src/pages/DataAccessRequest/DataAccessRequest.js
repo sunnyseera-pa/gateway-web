@@ -605,7 +605,9 @@ class DataAccessRequest extends Component {
 		let isValid = Object.keys(errors).length ? false : true;
 
 		let isAboutApplicationValid = this.isAboutApplicationValid(this.state.aboutApplication);
-		if (isValid && isAboutApplicationValid) {
+		const checkbox = this.state.aboutApplication.completedSubmitAdvice;
+
+		if (isValid && isAboutApplicationValid && checkbox) {
 			this.setState({ showConfirmSubmissionModal: true });
 		} else {
 			let activePage = _.get(_.keys({ ...errors }), 0);
