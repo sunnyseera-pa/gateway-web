@@ -231,6 +231,7 @@ exports[`Given the SearchResults component When it is rendered Then matches the 
   >
     <div
       class="mt-2 row"
+      data-testid="loader"
     >
       <div
         class="col"

@@ -16,6 +16,7 @@ import Loading from '../../../commonComponents/Loading';
 import NotFound from '../../../commonComponents/NotFound';
 import SLA from '../../../commonComponents/sla/SLA';
 import AccountContent from '../AccountContent';
+import ActivityLogCard from '../ActivityLogCard';
 
 const AccountDataset = props => {
 	const { id } = useParams();
@@ -62,7 +63,8 @@ const AccountDataset = props => {
 				},
 			} = dataPublisher.data;
 
-			const datasets = listOfDatasets.filter(dataset => DataSetHelper.isInReview(dataset));
+			// const datasets = listOfDatasets.filter(dataset => DataSetHelper.isInReview(dataset));
+			const datasets = listOfDatasets;
 
 			const currentIndex = _.findIndex(datasets, dataset => {
 				return dataset.pid == id;
@@ -142,27 +144,7 @@ const AccountDataset = props => {
 				listOfVersions={dataset.listOfVersions || []}
 			/>
 
-			{dataActivityLog.data &&
-				dataActivityLog.data.data.logs.map(({ version, meta: { applicationStatus } }) => (
-					<Row key={version}>
-						<div className='col-md-12'>
-							<div className='layoutCard mb-0'>
-								<div className='datasetHeader mb-0 mt-2'>
-									<div className='datasetHeader-title'>
-										<h1>{version}</h1>
-									</div>
-									<div className='datasetHeader-status'>
-										<SLA
-											classProperty={DatasetOnboardingHelper.datasetStatusColours[applicationStatus]}
-											text={DatasetOnboardingHelper.datasetSLAText[applicationStatus]}
-										/>
-									</div>
-								</div>
-								<div className='body'>Text goes here</div>
-							</div>
-						</div>
-					</Row>
-				))}
+			{dataActivityLog.data && dataActivityLog.data.data.logs.map(version => <ActivityLogCard {...version} />)}
 
 			<ActionBar userState={userState}>
 				<div className='action-bar-actions'>
