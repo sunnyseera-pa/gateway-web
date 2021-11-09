@@ -31,7 +31,10 @@
 .danger {
 	color: #dc3645;
 }
-
+.action-bar--questions,
+.action-bar-status {
+	margin-left: 75px;
+}
 .alert {
 	margin-bottom: 8px !important;
 	font-size: 14px;
@@ -382,6 +385,10 @@ span.toolTipText:after {
 }
 
 @media (max-width: 768px) {
+	.action-bar--questions,
+	.action-bar-status {
+		margin-left: 50px;
+	}
 	#darLeftCol,
 	#darRightCol {
 		display: none !important;
