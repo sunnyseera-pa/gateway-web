@@ -798,6 +798,10 @@ input[type='radio']:disabled {
 	height: 24px;
 }
 
+.dar-form-check-group > input[type='checkbox'] {
+	cursor: pointer;
+}
+
 .dar-form-check-group > button {
 	margin-right: 32px;
 }
