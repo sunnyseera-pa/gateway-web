@@ -34,7 +34,7 @@ const AboutApplication = props => {
 		completedReadAdvice = false,
 		completedCommunicateAdvice = false,
 		completedApprovalsAdvice = false,
-		completedSubmitAdvice = false,
+		completedSubmitAdvice: isCheckboxMarked,
 		completedInviteCollaborators = false,
 		completedDatasetSelection = false,
 		isNationalCoreStudies = false,
@@ -368,12 +368,12 @@ const AboutApplication = props => {
 						className={DarHelper.calcAccordionClasses(activeAccordionCard === 2, allowedNavigation)}
 						eventKey='2'
 						onClick={e => toggleCard(e, 2)}>
-						{completedSubmitAdvice ? (
+						{isCheckboxMarked ? (
 							<div className='stepNumber completed'>
 								<SVGIcon name='check' width={24} height={24} fill={'#ffffff'} />
 							</div>
 						) : (
-							<div className={`stepNumber ${activeAccordionCard === 0 ? 'active' : ''}`}>3</div>
+							<div className={`stepNumber ${activeAccordionCard === 0 ? 'active' : ''}`}>3</div>							
 						)}
 						{t('dataAccessRequestForm.aboutThisApplicationSection.AfterYourSubmission.title')}
 					</Accordion.Toggle>
@@ -397,7 +397,7 @@ const AboutApplication = props => {
 									<input
 										type='checkbox'
 										id='chkSubmitAdvice'
-										checked={completedSubmitAdvice}
+										checked={isCheckboxMarked}
 										className='dar-form-check'
 										disabled={readOnly ? true : false}
 										onChange={e => onNextStep(e.target.checked)}
