@@ -12,8 +12,12 @@
 /tmp
 
 # misc
+.env
 .DS_Store
 npm-debug.log*
 package-lock.json
 .env
+<<<<<<< HEAD
 
+=======
+>>>>>>> d185b8b517a3c0bd51b6436179dd557ec326a725

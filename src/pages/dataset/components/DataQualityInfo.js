@@ -3,10 +3,12 @@ import { Col, Row, Collapse } from 'react-bootstrap';
 import _ from 'lodash';
 import SVGIcon from '../../../images/SVGIcon';
 import '../Dataset.scss';
+import { ReactComponent as SubUnfilledSVG } from '../../../images/sub_unfilled.svg';
 import { ReactComponent as SubBronzeSVG } from '../../../images/sub_bronze.svg';
 import { ReactComponent as SubSilverSVG } from '../../../images/sub_silver.svg';
 import { ReactComponent as SubGoldSVG } from '../../../images/sub_gold.svg';
 import { ReactComponent as SubPlatinumSVG } from '../../../images/sub_platinum.svg';
+import { ReactComponent as UnfilledSVG } from '../../../images/unfilledUtility.svg';
 import { ReactComponent as BronzeSVG } from '../../../images/bronzeUtility.svg';
 import { ReactComponent as SilverSVG } from '../../../images/silverUtility.svg';
 import { ReactComponent as GoldSVG } from '../../../images/goldUtility.svg';
@@ -323,28 +325,30 @@ class DataQualityInfo extends React.Component {
 	getSectionRating(rating) {
 		switch (rating) {
 			case 'Platinum':
-				return <PlatinumSVG />;
+				return <PlatinumSVG data-testid='platinumSvg' />;
 			case 'Gold':
-				return <GoldSVG />;
+				return <GoldSVG data-testid='goldSvg' />;
 			case 'Silver':
-				return <SilverSVG />;
+				return <SilverSVG data-testid='silverSvg' />;
+			case 'Bronze':
+				return <BronzeSVG data-testid='bronzeSvg' />;
 			default:
-				return <BronzeSVG />;
+				return <UnfilledSVG data-testid='unfilledSvg' />;
 		}
 	}
 
 	getSubSectionRating(rating) {
 		switch (rating) {
 			case 'Platinum':
-				return <SubPlatinumSVG />;
+				return <SubPlatinumSVG data-testid='platinumSubSvg' />;
 			case 'Gold':
-				return <SubGoldSVG />;
+				return <SubGoldSVG data-testid='goldSubSvg' />;
 			case 'Silver':
-				return <SubSilverSVG />;
+				return <SubSilverSVG data-testid='silverSubSvg' />;
 			case 'Bronze':
-				return <SubBronzeSVG />;
+				return <SubBronzeSVG data-testid='bronzeSubSvg' />;
 			default:
-				return '';
+				return <SubUnfilledSVG data-testid='unfilledSubSvg' />;
 		}
 	}
 
@@ -429,10 +433,10 @@ class DataQualityInfo extends React.Component {
 										className={flagClosed === true ? 'svg-20 dataQualityArrow' : 'svg-20 flipSVG dataQualityArrow'}
 									/>
 								</Col>
-								<Col xs={8} sm={5} md={4} lg={3} xl={2} className='gray800-14 dataUtilityTitle'>
+								<Col xs={8} sm={5} md={4} lg={3} xl={2} className='gray800-14 dataUtilityTitle' data-testid='documentationWeight'>
 									Documentation
 								</Col>
-								<Col xs={2} sm={5} md={5} lg={8} xl={9} className='dataUtilitySvg'>
+								<Col xs={2} sm={5} md={5} lg={8} xl={9} className='dataUtilitySvg' data-testid='documentation'>
 									{this.getSectionRating(documentationWeight)}
 								</Col>
 							</Row>
@@ -456,12 +460,15 @@ class DataQualityInfo extends React.Component {
 										</Col>
 										<Col sm={8} lg={8}>
 											{ratings.map(rating => {
-												if (
-													rating.dimension === 'Additional documentation and support' &&
-													rating.rating === availability_of_additional_documentation_and_support.trim()
-												) {
-													return <span className='gray800-13'> {rating.response} </span>;
-												}
+												return rating.dimension === 'Additional documentation and support' &&
+													rating.rating === availability_of_additional_documentation_and_support.trim() ? (
+													<span className='gray800-13' data-testid='addDocAndSupport'>
+														{' '}
+														{rating.response}{' '}
+													</span>
+												) : (
+													''
+												);
 											})}
 										</Col>
 										<Col sm={1} lg={1}>
@@ -476,11 +483,16 @@ class DataQualityInfo extends React.Component {
 											<span className='gray800-13-opacity'>Data model</span>
 										</Col>
 										<Col sm={8} lg={8}>
-											{ratings.map(rating => {
-												if (rating.dimension === 'Data Model' && rating.rating === data_model.trim()) {
-													return <span className='gray800-13'> {rating.response} </span>;
-												}
-											})}
+											{ratings.map(rating =>
+												rating.dimension === 'Data Model' && rating.rating === data_model.trim() ? (
+													<span className='gray800-13' data-testid='dataModel'>
+														{' '}
+														{rating.response}{' '}
+													</span>
+												) : (
+													''
+												)
+											)}
 										</Col>
 										<Col sm={1} lg={1}>
 											<span>{!_.isEmpty(data_model) && this.getSubSectionRating(data_model.trim())}</span>
@@ -491,11 +503,16 @@ class DataQualityInfo extends React.Component {
 											<span className='gray800-13-opacity'>Data dictionary</span>
 										</Col>
 										<Col sm={8} lg={8}>
-											{ratings.map(rating => {
-												if (rating.dimension === 'Data Dictionary' && rating.rating === data_dictionary.trim()) {
-													return <span className='gray800-13'> {rating.response} </span>;
-												}
-											})}
+											{ratings.map(rating =>
+												rating.dimension === 'Data Dictionary' && rating.rating === data_dictionary.trim() ? (
+													<span className='gray800-13' data-testid='dataDictionary'>
+														{' '}
+														{rating.response}{' '}
+													</span>
+												) : (
+													''
+												)
+											)}
 										</Col>
 										<Col sm={1} lg={1}>
 											<span>{!_.isEmpty(data_dictionary) && this.getSubSectionRating(data_dictionary.trim())}</span>
@@ -506,11 +523,16 @@ class DataQualityInfo extends React.Component {
 											<span className='gray800-13-opacity'>Provenance</span>
 										</Col>
 										<Col sm={8} lg={8}>
-											{ratings.map(rating => {
-												if (rating.dimension === 'Provenance' && rating.rating === provenance.trim()) {
-													return <span className='gray800-13'> {rating.response} </span>;
-												}
-											})}
+											{ratings.map(rating =>
+												rating.dimension === 'Provenance' && rating.rating === provenance.trim() ? (
+													<span className='gray800-13' data-testid='provenance'>
+														{' '}
+														{rating.response}{' '}
+													</span>
+												) : (
+													''
+												)
+											)}
 										</Col>
 										<Col sm={1} lg={1}>
 											<span>{!_.isEmpty(provenance) && this.getSubSectionRating(provenance.trim())}</span>
@@ -566,7 +588,7 @@ class DataQualityInfo extends React.Component {
 						</div>
 					);
 				}
-
+				break;
 			case 'TechQuality':
 				if (techQualitySection === true) {
 					return (
@@ -594,14 +616,14 @@ class DataQualityInfo extends React.Component {
 											<span className='gray800-13-opacity'>Data Quality Management Process</span>
 										</Col>
 										<Col sm={8} lg={8}>
-											{ratings.map(rating => {
-												if (
-													rating.dimension === 'Data Quality Management Process' &&
-													rating.rating === data_quality_management_process.trim()
-												) {
-													return <span className='gray800-13'> {rating.response} </span>;
-												}
-											})}
+											{ratings.map(rating =>
+												rating.dimension === 'Data Quality Management Process' &&
+												rating.rating === data_quality_management_process.trim() ? (
+													<span className='gray800-13'> {rating.response} </span>
+												) : (
+													''
+												)
+											)}
 										</Col>
 										<Col sm={1} lg={1}>
 											<span>
@@ -642,7 +664,7 @@ class DataQualityInfo extends React.Component {
 						</div>
 					);
 				}
-
+				break;
 			case 'Access':
 				if (accessProvisionSection === true) {
 					return (
@@ -670,11 +692,16 @@ class DataQualityInfo extends React.Component {
 											<span className='gray800-13-opacity'>Allowable uses</span>
 										</Col>
 										<Col sm={8} lg={8}>
-											{ratings.map(rating => {
-												if (rating.dimension === 'Allowable uses' && rating.rating === allowable_uses.trim()) {
-													return <span className='gray800-13'> {rating.response} </span>;
-												}
-											})}
+											{ratings.map(rating =>
+												rating.dimension === 'Allowable uses' && rating.rating === allowable_uses.trim() ? (
+													<span className='gray800-13' data-testid='allowableUses'>
+														{' '}
+														{rating.response}{' '}
+													</span>
+												) : (
+													''
+												)
+											)}
 										</Col>
 										<Col sm={1} lg={1}>
 											<span>{!_.isEmpty(allowable_uses) && this.getSubSectionRating(allowable_uses.trim())}</span>
@@ -685,11 +712,16 @@ class DataQualityInfo extends React.Component {
 											<span className='gray800-13-opacity'>Time lag</span>
 										</Col>
 										<Col sm={8} lg={8}>
-											{ratings.map(rating => {
-												if (rating.dimension === 'Time Lag' && rating.rating === time_lag.trim()) {
-													return <span className='gray800-13'> {rating.response} </span>;
-												}
-											})}
+											{ratings.map(rating =>
+												rating.dimension === 'Time Lag' && rating.rating === time_lag.trim() ? (
+													<span className='gray800-13' data-testid='timeLag'>
+														{' '}
+														{rating.response}{' '}
+													</span>
+												) : (
+													''
+												)
+											)}
 										</Col>
 										<Col sm={1} lg={1}>
 											<span>{!_.isEmpty(time_lag) && this.getSubSectionRating(time_lag.trim())}</span>
@@ -700,11 +732,16 @@ class DataQualityInfo extends React.Component {
 											<span className='gray800-13-opacity'>Timeliness</span>
 										</Col>
 										<Col sm={8} lg={8}>
-											{ratings.map(rating => {
-												if (rating.dimension === 'Timeliness' && rating.rating === timeliness.trim()) {
-													return <span className='gray800-13'> {rating.response} </span>;
-												}
-											})}
+											{ratings.map(rating =>
+												rating.dimension === 'Timeliness' && rating.rating === timeliness.trim() ? (
+													<span className='gray800-13' data-testid='timeliness'>
+														{' '}
+														{rating.response}{' '}
+													</span>
+												) : (
+													''
+												)
+											)}
 										</Col>
 										<Col sm={1} lg={1}>
 											<span>{!_.isEmpty(timeliness) && this.getSubSectionRating(timeliness.trim())}</span>
@@ -732,7 +769,7 @@ class DataQualityInfo extends React.Component {
 						</div>
 					);
 				}
-
+				break;
 			case 'Value':
 				if (valueInterestSection === true) {
 					return (
@@ -760,11 +797,13 @@ class DataQualityInfo extends React.Component {
 											<span className='gray800-13-opacity'>Linkages</span>
 										</Col>
 										<Col sm={8} lg={8}>
-											{ratings.map(rating => {
-												if (rating.dimension === 'Linkages' && rating.rating === linkages.trim()) {
-													return <span className='gray800-13'> {rating.response} </span>;
-												}
-											})}
+											{ratings.map(rating =>
+												rating.dimension === 'Linkages' && rating.rating === linkages.trim() ? (
+													<span className='gray800-13'> {rating.response} </span>
+												) : (
+													''
+												)
+											)}
 										</Col>
 										<Col sm={1} lg={1}>
 											<span>{!_.isEmpty(linkages) && this.getSubSectionRating(linkages.trim())}</span>
@@ -775,11 +814,13 @@ class DataQualityInfo extends React.Component {
 											<span className='gray800-13-opacity'>Data Enrichments</span>
 										</Col>
 										<Col sm={8} lg={8}>
-											{ratings.map(rating => {
-												if (rating.dimension === 'Data Enrichments' && rating.rating === data_enrichments.trim()) {
-													return <span className='gray800-13'> {rating.response} </span>;
-												}
-											})}
+											{ratings.map(rating =>
+												rating.dimension === 'Data Enrichments' && rating.rating === data_enrichments.trim() ? (
+													<span className='gray800-13'> {rating.response} </span>
+												) : (
+													''
+												)
+											)}
 										</Col>
 										<Col sm={1} lg={1}>
 											<span>{!_.isEmpty(data_enrichments) && this.getSubSectionRating(data_enrichments.trim())}</span>
@@ -807,7 +848,7 @@ class DataQualityInfo extends React.Component {
 						</div>
 					);
 				}
-
+				break;
 			case 'Coverage':
 				if (coverageSection === true) {
 					return (
@@ -835,11 +876,13 @@ class DataQualityInfo extends React.Component {
 											<span className='gray800-13-opacity'>Pathway coverage</span>
 										</Col>
 										<Col sm={8} lg={8}>
-											{ratings.map(rating => {
-												if (rating.dimension === 'Pathway coverage' && rating.rating === pathway_coverage.trim()) {
-													return <span className='gray800-13'> {rating.response} </span>;
-												}
-											})}
+											{ratings.map(rating =>
+												rating.dimension === 'Pathway coverage' && rating.rating === pathway_coverage.trim() ? (
+													<span className='gray800-13'> {rating.response} </span>
+												) : (
+													''
+												)
+											)}
 										</Col>
 										<Col sm={1} lg={1}>
 											<span>{!_.isEmpty(pathway_coverage) && this.getSubSectionRating(pathway_coverage.trim())}</span>
@@ -850,11 +893,13 @@ class DataQualityInfo extends React.Component {
 											<span className='gray800-13-opacity'>Length of follow up</span>
 										</Col>
 										<Col sm={8} lg={8}>
-											{ratings.map(rating => {
-												if (rating.dimension === 'Length of follow up' && rating.rating === length_of_follow_up.trim()) {
-													return <span className='gray800-13'> {rating.response} </span>;
-												}
-											})}
+											{ratings.map(rating =>
+												rating.dimension === 'Length of follow up' && rating.rating === length_of_follow_up.trim() ? (
+													<span className='gray800-13'> {rating.response} </span>
+												) : (
+													''
+												)
+											)}
 										</Col>
 										<Col sm={1} lg={1}>
 											<span>{!_.isEmpty(length_of_follow_up) && this.getSubSectionRating(length_of_follow_up.trim())}</span>
@@ -882,6 +927,9 @@ class DataQualityInfo extends React.Component {
 						</div>
 					);
 				}
+				break;
+			default:
+				return section;
 		}
 	}
 }

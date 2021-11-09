@@ -10,7 +10,7 @@ import RelatedObject from '../commonComponents/relatedObject/RelatedObject';
 import NotFound from '../commonComponents/NotFound';
 import SearchBar from '../commonComponents/searchBar/SearchBar';
 import Loading from '../commonComponents/Loading';
-import Creators from '../commonComponents/Creators';
+import Uploader from '../commonComponents/Uploader';
 import SVGIcon from '../../images/SVGIcon';
 import DiscourseTopic from '../discourse/DiscourseTopic';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
@@ -20,13 +20,13 @@ import ResourcePageButtons from '../commonComponents/resourcePageButtons/Resourc
 import ErrorModal from '../commonComponents/errorModal/ErrorModal';
 import CollectionCard from '../commonComponents/collectionCard/CollectionCard';
 import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
-import { PageView, initGA } from '../../tracking';
+import googleAnalytics from '../../tracking';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
 export const ProjectDetail = props => {
 	const [id] = useState('');
-	const [projectData, setProjectData] = useState([]);
+	const [projectData, setProjectData] = useState({});
 	const [isLoading, setIsLoading] = useState(true);
 	const [projectAdded, setProjectAdded] = useState(false);
 	const [projectEdited, setProjectEdited] = useState(false);
@@ -58,8 +58,6 @@ export const ProjectDetail = props => {
 			setProjectEdited(values.projectEdited);
 		}
 		getProjectDataFromDb();
-		initGA('UA-183238557-1');
-		PageView();
 	}, []);
 
 	//componentDidUpdate - on render of project detail page were id is different
@@ -96,7 +94,6 @@ export const ProjectDetail = props => {
 						let localAdditionalObjInfo = await getAdditionalObjectInfo(localProjectData.relatedObjects);
 						await populateRelatedObjects(localProjectData, localAdditionalObjInfo);
 					}
-
 					setProjectData(localProjectData);
 					popluateCollections(localProjectData);
 				}
@@ -115,7 +112,7 @@ export const ProjectDetail = props => {
 
 	const doSearch = e => {
 		//fires on enter on searchbar
-		if (e.key === 'Enter') window.location.href = '/search?search=' + searchString;
+		if (e.key === 'Enter') window.location.href = `/search?search=${encodeURIComponent(searchString)}`;
 	};
 
 	const updateSearchString = searchString => {
@@ -146,16 +143,13 @@ export const ProjectDetail = props => {
 						let datasetPublisher;
 						let datasetLogo;
 
-						{
-							!_.isEmpty(res.data.data[0].datasetv2) && _.has(res.data.data[0], 'datasetv2.summary.publisher.name')
-								? (datasetPublisher = res.data.data[0].datasetv2.summary.publisher.name)
-								: (datasetPublisher = '');
-						}
-						{
-							!_.isEmpty(res.data.data[0].datasetv2) && _.has(res.data.data[0], 'datasetv2.summary.publisher.logo')
-								? (datasetLogo = res.data.data[0].datasetv2.summary.publisher.logo)
-								: (datasetLogo = '');
-						}
+						!_.isEmpty(res.data.data[0].datasetv2) && _.has(res.data.data[0], 'datasetv2.summary.publisher.name')
+							? (datasetPublisher = res.data.data[0].datasetv2.summary.publisher.name)
+							: (datasetPublisher = '');
+
+						!_.isEmpty(res.data.data[0].datasetv2) && _.has(res.data.data[0], 'datasetv2.summary.publisher.logo')
+							? (datasetLogo = res.data.data[0].datasetv2.summary.publisher.logo)
+							: (datasetLogo = '');
 
 						tempObjects.push({
 							id: object.objectId,
@@ -262,7 +256,7 @@ export const ProjectDetail = props => {
 						<Row className=''>
 							<Col sm={1} lg={1} />
 							<Col sm={10} lg={10}>
-								<Alert variant='warning' className='mt-3'>
+								<Alert variant='warning' className='mt-3' data-test-id='project-pending-banner'>
 									Your project is pending review. Only you can see this page.
 								</Alert>
 							</Col>
@@ -277,7 +271,7 @@ export const ProjectDetail = props => {
 						<Col sm={10} lg={10}>
 							<div className='rectangle'>
 								<Row>
-									<Col className='line-height-normal'>
+									<Col data-test-id='project-name' className='line-height-normal'>
 										<span className='black-16'>{projectData.name}</span>
 									</Col>
 								</Row>
@@ -288,9 +282,11 @@ export const ProjectDetail = props => {
 											<span>Project</span>
 										</span>
 
-										<a href={'/search?search=&tab=Projects&projectcategories=' + projectData.categories.category}>
-											<div className='badge-tag'>{projectData.categories.category}</div>
-										</a>
+										{!_.isNil(projectData.categories) && (
+											<a href={'/search?search=&tab=Projects&projectcategories=' + projectData.categories.category}>
+												<div className='badge-tag'>{projectData.categories.category}</div>
+											</a>
+										)}
 									</Col>
 								</Row>
 
@@ -311,7 +307,12 @@ export const ProjectDetail = props => {
 						<Col sm={1} lg={1} />
 						<Col sm={10} lg={10}>
 							<div>
-								<Tabs className='tabsBackground gray700-13 margin-bottom-16'>
+								<Tabs
+									className='tabsBackground gray700-13 margin-bottom-16'
+									onSelect={key => {
+										googleAnalytics.recordVirtualPageView(`${key} tab`);
+										googleAnalytics.recordEvent('Projects', `Clicked ${key} tab`, `Viewing ${key}`);
+									}}>
 									<Tab eventKey='About' title={'About'}>
 										<Row className='mt-2'>
 											<Col sm={12} lg={12}>
@@ -320,7 +321,7 @@ export const ProjectDetail = props => {
 														<Col sm={12}>Description</Col>
 													</Row>
 													<Row className='mt-3'>
-														<Col sm={12} className='gray800-14 hdruk-section-body'>
+														<Col sm={12} className='gray800-14 hdruk-section-body' data-test-id='project-description'>
 															<ReactMarkdown source={projectData.description} />
 														</Col>
 													</Row>
@@ -336,7 +337,7 @@ export const ProjectDetail = props => {
 															<Col sm={12}>Results/Insights</Col>
 														</Row>
 														<Row className='mt-3'>
-															<Col sm={12} className='gray800-14 hdruk-section-body'>
+															<Col sm={12} className='gray800-14 hdruk-section-body' data-test-id='project-results'>
 																<ReactMarkdown source={projectData.resultsInsights} />
 															</Col>
 														</Row>
@@ -357,7 +358,7 @@ export const ProjectDetail = props => {
 														<Col sm={2} className='gray800-14'>
 															URL
 														</Col>
-														<Col sm={10} className='gray800-14'>
+														<Col sm={10} data-test-id='link' className='gray800-14'>
 															<a href={projectData.link} rel='noopener noreferrer' target='_blank' className='purple-14 text-break'>
 																{projectData.link}
 															</a>
@@ -371,13 +372,37 @@ export const ProjectDetail = props => {
 															{moment(projectData.updatedon).format('DD MMM YYYY')}
 														</Col>
 													</Row>
-													{projectData.uploader ? (
+													<Row className='mt-3'>
+														<Col sm={2}>
+															<span className='gray800-14'>Uploaders</span>
+														</Col>
+														<Col sm={10} className='gray800-14 overflowWrap'>
+															{projectData.persons.map(uploader => (
+																<span key={uploader.id}>
+																	<Uploader key={uploader.id} uploader={uploader} />
+																</span>
+															))}
+														</Col>
+													</Row>
+													{projectData.authorsNew ? (
 														<Row className='mt-2'>
-															<Col sm={2} className='gray800-14'>
-																Uploader
+															<Col sm={2}>
+																<span className='gray800-14'>Collaborators</span>
 															</Col>
-															<Col sm={10} className='gray800-14 overflowWrap'>
-																{projectData.uploader}
+															<Col sm={10} className='gray800-14 overflowWrap' data-test-id='project-authors'>
+																{projectData.authorsNew}
+															</Col>
+														</Row>
+													) : (
+														''
+													)}
+													{projectData.leadResearcher ? (
+														<Row className='mt-2'>
+															<Col sm={2}>
+																<span className='gray800-14'>Lead researcher</span>
+															</Col>
+															<Col sm={10} className='gray800-14 overflowWrap' data-test-id='project-leadResearcher'>
+																{projectData.leadResearcher}
 															</Col>
 														</Row>
 													) : (
@@ -387,7 +412,7 @@ export const ProjectDetail = props => {
 														<Col sm={2} className='gray800-14'>
 															Type
 														</Col>
-														<Col sm={10} className='gray800-14'>
+														<Col sm={10} className='gray800-14' data-test-id='project-type'>
 															<a href={'/search?search=&tab=Projects&projectcategories=' + projectData.categories.category}>
 																<div className='badge-tag'>{projectData.categories.category}</div>
 															</a>
@@ -401,9 +426,9 @@ export const ProjectDetail = props => {
 															{!projectData.tags.features || projectData.tags.features.length <= 0 ? (
 																<span className='gray800-14-opacity'>Not specified</span>
 															) : (
-																projectData.tags.features.map(keyword => {
+																projectData.tags.features.map((keyword, i) => {
 																	return (
-																		<a href={'/search?search=&tab=Projects&projectfeatures=' + keyword}>
+																		<a href={'/search?search=&tab=Projects&projectfeatures=' + keyword} data-test-id={`keywords-${i}`}>
 																			<div className='badge-tag'>{keyword}</div>
 																		</a>
 																	);
@@ -419,9 +444,9 @@ export const ProjectDetail = props => {
 															{!projectData.tags.topics || projectData.tags.topics.length <= 0 ? (
 																<span className='gray800-14-opacity'>Not specified</span>
 															) : (
-																projectData.tags.topics.map(domain => {
+																projectData.tags.topics.map((domain, i) => {
 																	return (
-																		<a href={'/search?search=&tab=Projects&projecttopics=' + domain}>
+																		<a href={'/search?search=&tab=Projects&projecttopics=' + domain} data-test-id={`domain-${i}`}>
 																			<div className='badge-tag'>{domain}</div>
 																		</a>
 																	);
@@ -432,26 +457,9 @@ export const ProjectDetail = props => {
 												</div>
 											</Col>
 										</Row>
-
-										<Row className='mt-2'>
-											<Col sm={12} className='mb-5'>
-												<div className='rectangle'>
-													<Row className='gray800-14-bold'>
-														<Col sm={12}>Collaborators</Col>
-													</Row>
-													<Row className='mt-3'>
-														{projectData.persons.map(author => (
-															<Col sm={6} key={author.id}>
-																<Creators key={author.id} author={author} />
-															</Col>
-														))}
-													</Row>
-												</div>
-											</Col>
-										</Row>
 									</Tab>
 
-									<Tab eventKey='Collaboration' title={`Discussion (${discoursePostCount})`}>
+									<Tab eventKey='Discussion' title={`Discussion (${discoursePostCount})`}>
 										<DiscourseTopic
 											toolId={projectData.id}
 											topicId={projectData.discourseTopicId || 0}
@@ -459,7 +467,7 @@ export const ProjectDetail = props => {
 											onUpdateDiscoursePostCount={updateDiscoursePostCount}
 										/>
 									</Tab>
-									<Tab eventKey='Projects' title={'Related resources (' + relatedObjects.length + ')'}>
+									<Tab eventKey='Related resources' title={'Related resources (' + relatedObjects.length + ')'}>
 										{relatedObjects.length <= 0 ? (
 											<NotFound word='related resources' />
 										) : (

@@ -4,7 +4,7 @@
     <title>Group</title>
     <desc>Created with Sketch.</desc>
     <defs>
-        <circle id="path-1" cx="12" cy="12" r="12"></circle>
+        <circle id="person-placeholder" cx="12" cy="12" r="12"></circle>
         <pattern id="pattern-2" patternUnits="objectBoundingBox" x="0%" width="100%" height="100%">
             <use xlink:href="#image-3" transform="scale(0.09375,0.09375)"></use>
         </pattern>
@@ -15,9 +15,9 @@
             <g id="Group-2">
                 <g id="Group" transform="translate(16.000000, 16.000000)">
                     <mask id="mask-4" fill="white">
-                        <use xlink:href="#path-1"></use>
+                        <use xlink:href="#person-placeholder"></use>
                     </mask>
-                    <use id="Face" fill="url(#pattern-2)" xlink:href="#path-1"></use>
+                    <use id="Face" fill="url(#pattern-2)" xlink:href="#person-placeholder"></use>
                     <rect id="Rectangle" fill="#A1E6CF" mask="url(#mask-4)" x="0" y="0" width="24" height="24"></rect>
                     <path d="M16.3527273,17.3775 C15.0133636,16.9166667 14.3252727,15.9108333 13.9759091,15.1 C15.9051818,13.9216667 16.9090909,11.125 16.9090909,9 C16.9090909,6.23833333 14.7114545,4 12,4 C9.28854545,4 7.09090909,6.23833333 7.09090909,9 C7.09090909,11.1266667 8.09563636,13.925 10.0273636,15.1016667 C9.67963636,15.9191667 8.99318182,16.9325 7.65709091,17.3741667 C5.30072727,18.1516667 3,18.4058333 3,22.3333333 L3,24 L21,24 L21,22.3333333 C21,18.4641667 18.8015455,18.22 16.3527273,17.3775 Z" id="Path" fill="#3DB28C" fill-rule="nonzero" mask="url(#mask-4)"></path>
                 </g>

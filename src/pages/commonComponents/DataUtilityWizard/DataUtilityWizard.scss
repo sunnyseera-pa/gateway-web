@@ -1,0 +1,131 @@
+@import '../../../css/variables';
+@import '../../../css/typography';
+
+.data-utility-wizard-modal {
+	box-sizing: border-box;
+
+	.modal-dialog {
+		max-width: 620px !important;
+	}
+
+	.rbt-input {
+		font-size: 14px !important;
+	}
+
+	.rbt-close {
+		color: #475da7 !important;
+		margin-top: 0px !important;
+	}
+}
+
+.Use-this-tool-to-fin {
+	font-size: 14px;
+	color: #3c3c3b;
+}
+
+.radio-buttons-container {
+	display: flex;
+	flex-direction: column;
+}
+
+.current-question {
+	width: 12px;
+	height: 12px;
+	margin-left: 8px;
+	border-radius: 12px;
+	background-color: #475da7;
+}
+
+.next-question {
+	width: 12px;
+	height: 12px;
+	margin-left: 8px;
+	opacity: 0.2;
+	border-radius: 12px;
+	background-color: #868e96;
+}
+
+.previous-question {
+	width: 12px;
+	height: 12px;
+	margin-left: 8px;
+	opacity: 0.4;
+	border-radius: 12px;
+	background-color: #475da7;
+}
+
+.data-utility-wizard-title {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+}
+
+.data-utility-wizard-footer {
+	display: flex;
+	width: 100%;
+
+	border-top: 1px solid #e7e9ed;
+
+	&--wrap {
+		display: flex;
+		justify-content: space-between;
+		width: 100%;
+		padding: 16px;
+	}
+}
+
+.data-utility-wizard-header {
+	display: flex;
+	width: 100%;
+	background: #ffffff;
+	border-bottom: 1px solid #e7e9ed;
+
+	&--wrap {
+		width: 100%;
+		padding: 32px 24px 32px 32px;
+	}
+}
+
+.data-utility-wizard-body {
+	display: flex;
+	width: 100%;
+	background: #ffffff;
+	border-bottom: 1px solid #e7e9ed;
+	min-height: 358px;
+
+	&--wrap {
+		width: 100%;
+		padding: 24px 32px 32px 32px;
+	}
+}
+
+.data-utility-wizard-modal-close {
+	position: absolute;
+	top: 16px;
+	right: 16px;
+	width: 17px;
+	height: 17px;
+	color: #111111;
+}
+
+.data-utility-wizard-modal-search {
+	position: relative;
+	border-radius: 4px;
+	border: solid 2px #d0d3d4;
+	height: min-content !important;
+	min-height: 40px;
+}
+
+.data-utility-wizard-modal-search:focus-within {
+	border: solid 2px #3db28c !important;
+}
+
+.data-utility-wizard-modal-search-icon {
+	position: absolute;
+	top: 10px;
+	left: 10px;
+}
+
+.data-utility-wizard-modal-search .data-utility-wizard-modal-search-input {
+	padding-left: 30px !important;
+}

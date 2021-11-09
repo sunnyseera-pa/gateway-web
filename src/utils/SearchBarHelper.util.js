@@ -4,7 +4,7 @@
  */
 let doSearch = (e, component) => {
 	//fires on enter on searchbar
-	if (e.key === 'Enter') window.location.href = '/search?search=' + component.state.searchString;
+	if (e.key === 'Enter') window.location.href = `/search?search=${encodeURIComponent(component.state.searchString)}`;
 };
 
 let updateSearchString = (searchString, component) => {

@@ -1,4 +1,4 @@
-var thisBaseURL = window.location.href;
+var thisBaseURL = window.location.toString();
 
 module.exports = {
 	getURL: function () {
@@ -36,7 +36,7 @@ module.exports = {
 			return 'local';
 		}
 
-		const rx = /^([http|https]+:\/\/[a-z]+)\.([^\/.]*)/;
+		const rx = /^([http|https]+:\/\/[a-z]+)\.([^.]*)/;
 		const url = rx.exec(thisBaseURL);
 
 		if (url.length <= 0) {
@@ -49,5 +49,10 @@ module.exports = {
 		} else {
 			return env;
 		}
+	},
+	getDiscourseURL: function () {
+		return window.location.href.includes('.www.')
+			? 'https://discourse.healthdatagateway.org'
+			: 'https://discourse-dev.healthresearch.tools';
 	},
 };

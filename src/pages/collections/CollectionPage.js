@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import axios from 'axios';
 import queryString from 'query-string';
-import { Row, Col, Tabs, Tab, Container, Alert } from 'react-bootstrap';
+import { Row, Col, Tabs, Tab, Container, Alert, Pagination } from 'react-bootstrap';
 import Loading from '../commonComponents/Loading';
 import RelatedObject from '../commonComponents/relatedObject/RelatedObject';
 import SearchBar from '../commonComponents/searchBar/SearchBar';
@@ -18,6 +18,8 @@ import ActionBar from '../commonComponents/actionbar/ActionBar';
 import ResourcePageButtons from '../commonComponents/resourcePageButtons/ResourcePageButtons';
 import SVGIcon from '../../images/SVGIcon';
 import './Collections.scss';
+import CollectionsSearch from './CollectionsSearch';
+import googleAnalytics from '../../tracking';
 
 export const CollectionPage = props => {
 	const [collectionData, setCollectionData] = useState([]);
@@ -29,16 +31,25 @@ export const CollectionPage = props => {
 	const [projectCount, setProjectCount] = useState(0);
 	const [paperCount, setPaperCount] = useState(0);
 	const [courseCount, setCourseCount] = useState(0);
+	const [datasetIndex, setDatasetIndex] = useState(0);
+	const [toolIndex, setToolIndex] = useState(0);
+	const [projectIndex, setProjectIndex] = useState(0);
+	const [paperIndex, setPaperIndex] = useState(0);
+	const [personIndex, setPersonIndex] = useState(0);
+	const [courseIndex, setCourseIndex] = useState(0);
 	const [collectionAdded, setCollectionAdded] = useState(false);
 	const [collectionEdited, setCollectionEdited] = useState(false);
 	const [searchString, setSearchString] = useState('');
+	const [searchCollectionsString, setCollectionsSearchString] = useState('');
+	const [collectionsPageSort, setCollectionsPageSort] = useState('recentlyadded');
 	const [discoursePostCount, setDiscoursePostCount] = useState(0);
-	const [key, setKey] = useState('Datasets');
+	const [key, setKey] = useState('dataset');
 	const [searchBar] = useState(React.createRef());
 	const [showDrawer, setShowDrawer] = useState(false);
 	const [showModal, setShowModal] = useState(false);
 	const [context, setContext] = useState({});
 	const [objectData, setObjectData] = useState([]);
+	const [filteredData, setFilteredData] = useState([]);
 	const [userState] = useState(
 		props.userState || [
 			{
@@ -60,14 +71,22 @@ export const CollectionPage = props => {
 		getCollectionDataFromDb();
 	}, []);
 
+	useEffect(() => {
+		handleSort(collectionsPageSort);
+	}, [filteredData]);
+
 	const getCollectionDataFromDb = async () => {
 		setIsLoading(true);
 		await axios.get(baseURL + '/api/v1/collections/' + props.match.params.collectionID).then(async res => {
 			if (_.isNil(res.data)) {
-				//redirect user if invalid collection id is supplied
+				// Redirect user if invalid collection id is supplied
 				window.localStorage.setItem('redirectMsg', `Collection not found for Id: ${props.match.params.collectionID}`);
 				props.history.push({ pathname: '/search?search=', search: '' });
 			} else {
+				const localCollectionData = res.data.data[0];
+				let counter = !localCollectionData.counter ? 1 : localCollectionData.counter + 1;
+				updateCounter(props.match.params.collectionID, counter);
+
 				setCollectionData(res.data.data[0]);
 				getObjectData();
 				setIsLoading(false);
@@ -75,16 +94,21 @@ export const CollectionPage = props => {
 		});
 	};
 
+	const updateCounter = (id, counter) => {
+		axios.post(baseURL + '/api/v1/collectioncounter/update', { id, counter });
+	};
+
 	const getObjectData = async () => {
 		await axios.get(baseURL + '/api/v1/collections/relatedobjects/' + props.match.params.collectionID).then(async res => {
 			setObjectData(res.data.data);
+			setFilteredData(res.data.data);
 			countEntities(res.data.data);
 		});
 		setIsResultsLoading(false);
 	};
 
-	const countEntities = objectData => {
-		const entityCounts = objectData.reduce((entityCountsByType, currentValue) => {
+	const countEntities = filteredData => {
+		const entityCounts = filteredData.reduce((entityCountsByType, currentValue) => {
 			let type = currentValue.type;
 			if (!entityCountsByType.hasOwnProperty(type)) {
 				entityCountsByType[type] = 0;
@@ -95,17 +119,17 @@ export const CollectionPage = props => {
 
 		let key;
 		if (entityCounts.dataset > 0) {
-			key = 'Datasets';
+			key = 'dataset';
 		} else if (entityCounts.tool > 0) {
-			key = 'Tools';
+			key = 'tool';
 		} else if (entityCounts.paper > 0) {
-			key = 'Papers';
+			key = 'paper';
 		} else if (entityCounts.project > 0) {
-			key = 'Projects';
+			key = 'project';
 		} else if (entityCounts.person > 0) {
-			key = 'People';
+			key = 'person';
 		} else if (entityCounts.course > 0) {
-			key = 'Course';
+			key = 'course';
 		}
 		setKey(key);
 
@@ -122,8 +146,8 @@ export const CollectionPage = props => {
 	};
 
 	const doSearch = e => {
-		//fires on enter on searchbar
-		if (e.key === 'Enter') window.location.href = '/search?search=' + searchString;
+		// Fires on enter on searchbar
+		if (e.key === 'Enter') window.location.href = `/search?search=${encodeURIComponent(searchString)}`;
 	};
 
 	const updateSearchString = searchString => {
@@ -147,8 +171,270 @@ export const CollectionPage = props => {
 		setShowDrawer(showEnquiry);
 	};
 
+	const handleSort = sort => {
+		googleAnalytics.recordEvent('Collections', `Sorted collection entities by ${sort}`, 'Sort dropdown option changed');
+		setCollectionsPageSort(sort);
+		switch (sort) {
+			case 'metadata': {
+				sortByMetadataQuality();
+				break;
+			}
+			case 'recentlyadded': {
+				sortByRecentlyAdded();
+				break;
+			}
+			case 'resources': {
+				sortByResources();
+				break;
+			}
+			case 'relevance': {
+				sortByRelevance();
+				break;
+			}
+			case 'popularity': {
+				sortByPopularity();
+				break;
+			}
+			default:
+				return sort;
+		}
+	};
+
+	const sortByMetadataQuality = () =>
+		filteredData.sort((a, b) =>
+			_.has(a, 'datasetfields.metadataquality.quality_score') && _.has(b, 'datasetfields.metadataquality.quality_score')
+				? b.datasetfields.metadataquality.quality_score - a.datasetfields.metadataquality.quality_score
+				: ''
+		);
+
+	const sortByRecentlyAdded = () => {
+		return filteredData.sort((a, b) => b.updated - a.updated);
+	};
+
+	const sortByResources = () => {
+		return filteredData.sort((a, b) => b.relatedresources - a.relatedresources);
+	};
+
+	const sortByRelevance = () => {
+		filteredData.forEach(function (data) {
+			if (data.type === 'course') {
+				let containsSearchTermCount =
+					getCountOfSearchTerm(data.title) +
+					getCountOfSearchTerm(data.description) +
+					getCountOfSearchTerm(data.award) +
+					getCountOfSearchTerm(data.domains);
+				data.searchTermInstances = containsSearchTermCount;
+			} else if (data.type === 'person') {
+				let containsSearchTermCount =
+					getCountOfSearchTerm(data.firstname) + getCountOfSearchTerm(data.lastname) + getCountOfSearchTerm(data.bio);
+				data.searchTermInstances = containsSearchTermCount;
+			} else if (data.type === 'dataset') {
+				let abstractOrDescriptionCount;
+				if (_.has(data, 'datasetfields.abstract') && !_.isNull(data.datasetfields.abstract)) {
+					abstractOrDescriptionCount = getCountOfSearchTerm(data.datasetfields.abstract);
+				} else {
+					abstractOrDescriptionCount = getCountOfSearchTerm(data.description);
+				}
+
+				let containsSearchTermCount =
+					abstractOrDescriptionCount +
+					getCountOfSearchTerm(data.name) +
+					getCountOfSearchTerm(data.tags.topics) +
+					getCountOfSearchTerm(data.tags.features);
+				data.searchTermInstances = containsSearchTermCount;
+			} else {
+				//Other entities ie. Tools, Papers, Projects
+				let containsSearchTermCount =
+					getCountOfSearchTerm(data.name) +
+					getCountOfSearchTerm(data.description) +
+					getCountOfSearchTerm(data.tags.topics) +
+					getCountOfSearchTerm(data.tags.features) +
+					(_.has(data, 'categories.category') && getCountOfSearchTerm(data.categories.category));
+				data.searchTermInstances = containsSearchTermCount;
+			}
+		});
+
+		return filteredData.sort((a, b) => b.searchTermInstances - a.searchTermInstances);
+	};
+
+	const getCountOfSearchTerm = field => {
+		if (_.isArray(field)) {
+			return field.toString().toLowerCase().split(searchCollectionsString.toLowerCase()).length - 1;
+		} else {
+			return field.toLowerCase().split(searchCollectionsString.toLowerCase()).length - 1;
+		}
+	};
+
+	const sortByPopularity = () => {
+		return filteredData.sort((a, b) => b.counter - a.counter);
+	};
+
+	const handlePaginatedItems = index => {
+		// Returns the related resources that have the same object type as the current active tab and performs a chunk on them to ensure each page returns 24 results
+		let paginatedItems = _.chunk(
+			filteredData.filter(object => object.type === key),
+			24
+		);
+		// If there are items to show based on search results, display them on the currently active page
+		if (paginatedItems.length > 0) {
+			return paginatedItems[index];
+		} else {
+			return [];
+		}
+	};
+
+	const doCollectionsSearch = e => {
+		// Fires on enter on searchbar
+		if (e.key === 'Enter') {
+			let filteredCollectionItems = objectData.map(object => {
+				// Searching functionality - searches through object data and returns true if there is a match with the search term
+				if (
+					(_.has(object, 'name') ? object.name.toLowerCase().includes(searchCollectionsString.toLowerCase()) : false) ||
+					(_.has(object, 'title') ? object.title.toLowerCase().includes(searchCollectionsString.toLowerCase()) : false) ||
+					(_.has(object, 'firstname') ? object.firstname.toLowerCase().includes(searchCollectionsString.toLowerCase()) : false) ||
+					(_.has(object, 'lastname') ? object.lastname.toLowerCase().includes(searchCollectionsString.toLowerCase()) : false) ||
+					(_.has(object, 'bio') ? object.bio.toLowerCase().includes(searchCollectionsString.toLowerCase()) : false) ||
+					(_.has(object, 'description') && !_.isNull(object.description)
+						? object.description.toLowerCase().includes(searchCollectionsString.toLowerCase())
+						: false) ||
+					(_.has(object, 'datasetfields.abstract') && !_.isNull(object.datasetfields.abstract)
+						? object.datasetfields.abstract.toLowerCase().includes(searchCollectionsString.toLowerCase())
+						: false) ||
+					(_.has(object, 'tags.features') && object.tags.features && object.tags.features.length > 0
+						? new RegExp(object.tags.features.join('|'), 'i').test(searchCollectionsString)
+						: false) ||
+					(_.has(object, 'tags.topics') && object.tags.topics && object.tags.topics.length > 0
+						? new RegExp(object.tags.topics.join('|'), 'i').test(searchCollectionsString)
+						: false) ||
+					(_.has(object, 'categories.category')
+						? object.categories.category.toLowerCase().includes(searchCollectionsString.toLowerCase())
+						: false) ||
+					(_.has(object, 'award') && object.award && object.award.length > 0
+						? new RegExp(object.award.join('|'), 'i').test(searchCollectionsString)
+						: false) ||
+					(_.has(object, 'domains') && object.domains && object.domains.length > 0
+						? new RegExp(object.domains.join('|'), 'i').test(searchCollectionsString)
+						: false)
+				) {
+					return object;
+				} else {
+					return '';
+				}
+			});
+
+			let tempFilteredData = filteredCollectionItems.filter(dat => {
+				return dat !== '';
+			});
+			setFilteredData(tempFilteredData);
+
+			countEntities(filteredCollectionItems);
+			handlePagination(key, 0);
+		}
+	};
+
+	const updateCollectionsSearchString = searchCollectionsString => {
+		setCollectionsSearchString(searchCollectionsString);
+	};
+
+	const handlePagination = (type, page) => {
+		if (type === 'dataset') {
+			setDatasetIndex(page);
+		} else if (type === 'tool') {
+			setToolIndex(page);
+		} else if (type === 'project') {
+			setProjectIndex(page);
+		} else if (type === 'paper') {
+			setPaperIndex(page);
+		} else if (type === 'person') {
+			setPersonIndex(page);
+		} else if (type === 'course') {
+			setCourseIndex(page);
+		}
+		window.scrollTo(0, 0);
+	};
+
 	let datasetPublisher;
 	let datasetLogo;
+
+	let datasetPaginationItems = [];
+	let toolPaginationItems = [];
+	let projectPaginationItems = [];
+	let paperPaginationItems = [];
+	let personPaginationItems = [];
+	let coursePaginationItems = [];
+	let maxResult = 24;
+	for (let i = 1; i <= Math.ceil(datasetCount / maxResult); i++) {
+		datasetPaginationItems.push(
+			<Pagination.Item
+				key={i}
+				active={i === datasetIndex + 1}
+				onClick={e => {
+					handlePagination('dataset', i - 1);
+				}}>
+				{i}
+			</Pagination.Item>
+		);
+	}
+	for (let i = 1; i <= Math.ceil(toolCount / maxResult); i++) {
+		toolPaginationItems.push(
+			<Pagination.Item
+				key={i}
+				active={i === toolIndex + 1}
+				onClick={e => {
+					handlePagination('tool', i - 1);
+				}}>
+				{i}
+			</Pagination.Item>
+		);
+	}
+	for (let i = 1; i <= Math.ceil(projectCount / maxResult); i++) {
+		projectPaginationItems.push(
+			<Pagination.Item
+				key={i}
+				active={i === projectIndex + 1}
+				onClick={e => {
+					handlePagination('project', i - 1);
+				}}>
+				{i}
+			</Pagination.Item>
+		);
+	}
+	for (let i = 1; i <= Math.ceil(paperCount / maxResult); i++) {
+		paperPaginationItems.push(
+			<Pagination.Item
+				key={i}
+				active={i === paperIndex + 1}
+				onClick={e => {
+					handlePagination('paper', i - 1);
+				}}>
+				{i}
+			</Pagination.Item>
+		);
+	}
+	for (let i = 1; i <= Math.ceil(personCount / maxResult); i++) {
+		personPaginationItems.push(
+			<Pagination.Item
+				key={i}
+				active={i === personIndex + 1}
+				onClick={e => {
+					handlePagination('person', i - 1);
+				}}>
+				{i}
+			</Pagination.Item>
+		);
+	}
+	for (let i = 1; i <= Math.ceil(courseCount / maxResult); i++) {
+		coursePaginationItems.push(
+			<Pagination.Item
+				key={i}
+				active={i === courseIndex + 1}
+				onClick={e => {
+					handlePagination('course', i - 1);
+				}}>
+				{i}
+			</Pagination.Item>
+		);
+	}
 
 	if (isLoading) {
 		return (
@@ -156,6 +442,15 @@ export const CollectionPage = props => {
 				<Loading data-testid='isLoading' />
 			</Container>
 		);
+	}
+
+	let dropdownItems;
+	if (key === 'dataset') {
+		dropdownItems = ['relevance', 'popularity', 'recentlyadded', 'resources', 'metadata'];
+	} else if (key === 'person') {
+		dropdownItems = ['relevance', 'popularity', 'recentlyadded'];
+	} else {
+		dropdownItems = ['relevance', 'popularity', 'recentlyadded', 'resources'];
 	}
 
 	return (
@@ -283,6 +578,10 @@ export const CollectionPage = props => {
 					</Row>
 
 					<Row>
+						<div className='col-sm-12 mt-3 gray800-14 text-center'>{collectionData.counter ? collectionData.counter : 0} views</div>
+					</Row>
+
+					<Row>
 						<Col sm={1} lg={1} />
 						<Col sm={10} lg={10} className='collectionKeywords'>
 							{collectionData.keywords &&
@@ -311,14 +610,22 @@ export const CollectionPage = props => {
 			</div>
 
 			<div>
-				<Tabs className='tabsBackground gray700-13' activeKey={key} onSelect={handleSelect} data-testid='collectionPageTabs'>
-					<Tab eventKey='Datasets' title={'Datasets (' + datasetCount + ')'}></Tab>
-					<Tab eventKey='Tools' title={'Tools (' + toolCount + ')'}></Tab>
-					<Tab eventKey='Papers' title={'Papers (' + paperCount + ')'}></Tab>
-					<Tab eventKey='Projects' title={'Projects (' + projectCount + ')'}></Tab>
-					<Tab eventKey='People' title={'People (' + personCount + ')'}></Tab>
-					<Tab eventKey='Course' title={'Course (' + courseCount + ')'}></Tab>
-					<Tab eventKey='Collaboration' title={`Discussion (${discoursePostCount})`}>
+				<Tabs
+					className='tabsBackground gray700-13'
+					activeKey={key}
+					onSelect={key => {
+						handleSelect(key);
+						googleAnalytics.recordVirtualPageView(`${key} tab`);
+						googleAnalytics.recordEvent('Collections', `Clicked ${key} tab`, `Viewing ${key}`);
+					}}
+					data-testid='collectionPageTabs'>
+					<Tab eventKey='dataset' title={'Datasets (' + datasetCount + ')'}></Tab>
+					<Tab eventKey='tool' title={'Tools (' + toolCount + ')'}></Tab>
+					<Tab eventKey='paper' title={'Papers (' + paperCount + ')'}></Tab>
+					<Tab eventKey='project' title={'Projects (' + projectCount + ')'}></Tab>
+					<Tab eventKey='person' title={'People (' + personCount + ')'}></Tab>
+					<Tab eventKey='course' title={'Course (' + courseCount + ')'}></Tab>
+					<Tab eventKey='discussion' title={`Discussion (${discoursePostCount})`}>
 						<Container className='resource-card'>
 							<Row>
 								<Col sm={1} lg={1} />
@@ -343,11 +650,22 @@ export const CollectionPage = props => {
 						</Col>
 					</Row>
 				)}
+				{key !== 'discussion' && (
+					<CollectionsSearch
+						doCollectionsSearchMethod={doCollectionsSearch}
+						doUpdateCollectionsSearchString={updateCollectionsSearchString}
+						isLoading={isResultsLoading}
+						handleSort={handleSort}
+						isCollectionsSearch={true}
+						dropdownItems={dropdownItems}
+						sort={collectionsPageSort === '' ? (searchCollectionsString === '' ? 'recentlyadded' : 'relevance') : collectionsPageSort}
+					/>
+				)}
 				<Row>
 					<Col sm={1} lg={1} />
 					<Col sm={10} lg={10}>
-						{key === 'Datasets'
-							? objectData.map(object => {
+						{key === 'dataset'
+							? handlePaginatedItems(datasetIndex).map(object => {
 									if (
 										object.activeflag === 'active' ||
 										(object.activeflag === 'archive' && object.type === 'dataset') ||
@@ -364,16 +682,13 @@ export const CollectionPage = props => {
 												);
 											}
 
-											{
-												!_.isEmpty(object.datasetv2) && _.has(object, 'datasetv2.summary.publisher.name')
-													? (datasetPublisher = object.datasetv2.summary.publisher.name)
-													: (datasetPublisher = '');
-											}
-											{
-												!_.isEmpty(object.datasetv2) && _.has(object, 'datasetv2.summary.publisher.logo')
-													? (datasetLogo = object.datasetv2.summary.publisher.logo)
-													: (datasetLogo = '');
-											}
+											!_.isEmpty(object.datasetv2) && _.has(object, 'datasetv2.summary.publisher.name')
+												? (datasetPublisher = object.datasetv2.summary.publisher.name)
+												: (datasetPublisher = '');
+
+											!_.isEmpty(object.datasetv2) && _.has(object, 'datasetv2.summary.publisher.logo')
+												? (datasetLogo = object.datasetv2.summary.publisher.logo)
+												: (datasetLogo = '');
 
 											collectionData.relatedObjects.map(dat => {
 												if (dat.objectId === object.datasetid) {
@@ -401,8 +716,8 @@ export const CollectionPage = props => {
 							  })
 							: ''}
 
-						{key === 'Tools'
-							? objectData.map(object => {
+						{key === 'tool'
+							? handlePaginatedItems(toolIndex).map(object => {
 									if (
 										object.activeflag === 'active' ||
 										(object.type === 'tool' && object.activeflag === 'review' && object.authors.includes(userState[0].id))
@@ -436,8 +751,8 @@ export const CollectionPage = props => {
 							  })
 							: ''}
 
-						{key === 'Projects'
-							? objectData.map(object => {
+						{key === 'project'
+							? handlePaginatedItems(projectIndex).map(object => {
 									if (
 										object.activeflag === 'active' ||
 										(object.type === 'project' && object.activeflag === 'review' && object.authors.includes(userState[0].id))
@@ -457,7 +772,7 @@ export const CollectionPage = props => {
 											});
 											return (
 												<RelatedObject
-													key={object.idd}
+													key={object.id}
 													data={object}
 													activeLink={true}
 													showRelationshipAnswer={showAnswer}
@@ -471,8 +786,8 @@ export const CollectionPage = props => {
 							  })
 							: ''}
 
-						{key === 'Papers'
-							? objectData.map(object => {
+						{key === 'paper'
+							? handlePaginatedItems(paperIndex).map(object => {
 									if (
 										object.activeflag === 'active' ||
 										(object.type === 'paper' && object.activeflag === 'review' && object.authors.includes(userState[0].id))
@@ -507,8 +822,8 @@ export const CollectionPage = props => {
 							  })
 							: ''}
 
-						{key === 'People'
-							? objectData.map(object => {
+						{key === 'person'
+							? handlePaginatedItems(personIndex).map(object => {
 									if (
 										object.activeflag === 'active' ||
 										(object.type === 'person' && object.activeflag === 'review' && object.authors.includes(userState[0].id))
@@ -542,8 +857,8 @@ export const CollectionPage = props => {
 							  })
 							: ''}
 
-						{key === 'Course'
-							? objectData.map(object => {
+						{key === 'course'
+							? handlePaginatedItems(courseIndex).map(object => {
 									if (
 										object.activeflag === 'active' ||
 										(object.type === 'course' && object.activeflag === 'review' && object.creator[0].id === userState[0].id)
@@ -576,6 +891,15 @@ export const CollectionPage = props => {
 									}
 							  })
 							: ''}
+
+						<div className='text-center'>
+							{key === 'dataset' && datasetCount > maxResult ? <Pagination>{datasetPaginationItems}</Pagination> : ''}
+							{key === 'tool' && toolCount > maxResult ? <Pagination>{toolPaginationItems}</Pagination> : ''}
+							{key === 'project' && projectCount > maxResult ? <Pagination>{projectPaginationItems}</Pagination> : ''}
+							{key === 'paper' && paperCount > maxResult ? <Pagination>{paperPaginationItems}</Pagination> : ''}
+							{key === 'person' && personCount > maxResult ? <Pagination>{personPaginationItems}</Pagination> : ''}
+							{key === 'course' && courseCount > maxResult ? <Pagination>{coursePaginationItems}</Pagination> : ''}
+						</div>
 					</Col>
 					<Col sm={1} lg={10} />
 				</Row>

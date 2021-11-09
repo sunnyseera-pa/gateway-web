@@ -12,7 +12,7 @@ const MissingFieldsModal = ({ open, close }) => {
 					<CloseButtonSvg className='missingFieldsModal-header--close' onClick={close} />
 				</div>
 				<div className='missingFieldsModal-body'>
-					You cannot submit this dataset for review until you have completed all the mandatory questions.
+					You cannot submit this application for review until you have completed all the mandatory questions.
 				</div>
 			</Modal>
 		</Fragment>
