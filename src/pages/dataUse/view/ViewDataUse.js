@@ -4,7 +4,6 @@ import queryString from 'query-string';
 import * as Sentry from '@sentry/react';
 import { Row, Col, Tabs, Tab, Container, Alert, Tooltip } from 'react-bootstrap';
 import NotFound from '../../commonComponents/NotFound';
-import Uploader from '../../commonComponents/Uploader';
 import Loading from '../../commonComponents/Loading';
 import RelatedObject from '../../commonComponents/relatedObject/RelatedObject';
 import SearchBar from '../../commonComponents/searchBar/SearchBar';
@@ -19,11 +18,8 @@ import CollectionCard from '../../commonComponents/collectionCard/CollectionCard
 import 'react-tabs/style/react-tabs.css';
 import { baseURL } from '../../../configs/url.config';
 import SVGIcon from '../../../images/SVGIcon';
-import ReactMarkdown from 'react-markdown';
 import _ from 'lodash';
-import { ReactComponent as InfoSVG } from '../../../images/info.svg';
 import '../DataUse.scss';
-import { Fragment } from 'react';
 import About from './About';
 import googleAnalytics from '../../../tracking';
 
@@ -41,7 +37,6 @@ export const DataUseView = props => {
 	const [context, setContext] = useState({});
 	const [collections, setCollections] = useState([]);
 	const [searchBar] = useState(React.createRef());
-	const [isHovering, setIsHovering] = useState(false);
 	const [userState] = useState(
 		props.userState || [
 			{
@@ -202,10 +197,6 @@ export const DataUseView = props => {
 		setShowModal(!showModal);
 		setContext(context);
 		setShowDrawer(showEnquiry);
-	};
-
-	const handleMouseHover = () => {
-		setIsHovering(!isHovering);
 	};
 
 	if (isLoading) {
