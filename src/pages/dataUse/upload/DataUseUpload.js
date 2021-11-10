@@ -154,9 +154,11 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
 		const dataUseCheck = findDataUseCheck(dataUse);
 		const gatewayApplicantsLinks = dataUseCheck.gatewayApplicants.map(gatewayApplicant => {
 			return (
-				<Link className='data-use-link' to={'/person/' + gatewayApplicant.id} target='_blank'>
-					{`${gatewayApplicant.firstname}  ${gatewayApplicant.lastname}`}
-				</Link>
+				<div>
+					<Link className='data-use-link' to={'/person/' + gatewayApplicant.id} target='_blank'>
+						{`${gatewayApplicant.firstname}  ${gatewayApplicant.lastname}`}
+					</Link>
+				</div>
 			);
 		});
 
@@ -171,9 +173,11 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
 		const dataUseCheck = findDataUseCheck(dataUse);
 		const linkedDatasets = dataUseCheck.linkedDatasets.map(linkedDataset => {
 			return (
-				<Link className='data-use-link' to={'/dataset/' + linkedDataset.datasetid} target='_blank'>
-					{linkedDataset.name}{' '}
-				</Link>
+				<div>
+					<Link className='data-use-link' to={'/dataset/' + linkedDataset.datasetid} target='_blank'>
+						{linkedDataset.name}{' '}
+					</Link>
+				</div>
 			);
 		});
 
@@ -191,6 +195,42 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
 		});
 
 		return [...linkedDatasets, ...namedDatasets];
+	};
+
+	const renderOutputs = dataUse => {
+		const dataUseCheck = findDataUseCheck(dataUse);
+
+		const gatewayOutputsTools = dataUseCheck.gatewayOutputsTools.map(gatewayOutputsTool => {
+			return (
+				<div>
+					<Link className='data-use-link' to={'/tool/' + gatewayOutputsTool.id} target='_blank'>
+						{gatewayOutputsTool.name}{' '}
+					</Link>
+				</div>
+			);
+		});
+
+		const gatewayOutputsPapers = dataUseCheck.gatewayOutputsPapers.map(gatewayOutputsPaper => {
+			return (
+				<div>
+					<Link className='data-use-link' to={'/paper/' + gatewayOutputsPaper.id} target='_blank'>
+						{gatewayOutputsPaper.name}{' '}
+					</Link>
+				</div>
+			);
+		});
+
+		const nonGatewayOutputs = dataUseCheck.nonGatewayOutputs.map(nonGatewayOutput => {
+			return (
+				<div>
+					<Link className='data-use-link' to={nonGatewayOutput} target='_blank'>
+						{nonGatewayOutput}{' '}
+					</Link>
+				</div>
+			);
+		});
+
+		return [...gatewayOutputsTools, ...gatewayOutputsPapers, ...nonGatewayOutputs];
 	};
 
 	const findDataUseCheck = dataUse => {
@@ -486,11 +526,7 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
 
 												<div className='gray800-14-bold dataUseDetailsGridSection'>Safe Outputs</div>
 												<div className='dataUseDetailsGridHeader'>Link to research outputs</div>
-												<div className='dataUseDetailsGridItem'>
-													<a className='data-use-link' href={data.researchOutputs} target='_blank'>
-														{data.researchOutputs}
-													</a>
-												</div>
+												<div className='dataUseDetailsGridItem'>{renderOutputs(data)}</div>
 											</div>
 										</SlideDown>
 									</>

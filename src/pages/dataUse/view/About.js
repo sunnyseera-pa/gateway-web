@@ -114,7 +114,10 @@ const About = ({ data, renderTooltip }) => {
 								</button>
 							</OverlayTrigger>
 							<Col md={7}>
-								{data.gatewayApplicants.length > 0 && data.nonGatewayApplicants.length > 0 ? (
+								{data.gatewayApplicants &&
+								data.gatewayApplicants.length > 0 &&
+								data.nonGatewayApplicants &&
+								data.nonGatewayApplicants.length > 0 ? (
 									<>
 										{data &&
 											data.gatewayApplicants.map(gatewayApplicant => (
@@ -499,13 +502,26 @@ const About = ({ data, renderTooltip }) => {
 							</button>
 						</OverlayTrigger>
 						<Col md={7}>
-							{data.datasetTitles && data.datasetTitles.length > 0 ? (
-								data.datasetTitles
+							{data.gatewayDatasetsInfo &&
+							data.gatewayDatasetsInfo.length > 0 &&
+							data.nonGatewayDatasets &&
+							data.nonGatewayDatasets.length > 0 ? (
+								<>
+									{data &&
+										data.gatewayDatasetsInfo.map(gatewayDataset => (
+											<a href={`/dataset/${gatewayDataset.pid}`}>
+												<span className='badge-tag badge-datause-bold'>{gatewayDataset.name}</span>
+											</a>
+										))}
+
+									{data && data.nonGatewayDatasets.map(nonGatewayDataset => <> {nonGatewayDataset}</>)}
+								</>
 							) : (
 								<p className='gray800-14-opacity'>Not specified</p>
 							)}
 						</Col>
 					</Row>
+
 					{!data.dataSensitivityLevel > 0 && hide ? (
 						(() => {
 							count++;
@@ -783,7 +799,13 @@ const About = ({ data, renderTooltip }) => {
 				</Container>
 				<Container className='datause-card datause-safeInfo'>
 					<p className='black-14-bold'>Safe output</p>
-					{data.researchOutputs && data.researchOutputs.length === 0 && hide ? (
+					{data.gatewayOutputsToolsInfo &&
+					data.gatewayOutputsToolsInfo.length === 0 &&
+					data.gatewayOutputsPapers &&
+					data.gatewayOutputsPapers.length === 0 &&
+					data.nonGatewayOutputs &&
+					data.nonGatewayOutputs.length === 0 &&
+					hide ? (
 						(() => {
 							count++;
 						})()
@@ -800,10 +822,33 @@ const About = ({ data, renderTooltip }) => {
 								</button>
 							</OverlayTrigger>
 							<Col md={7}>
-								{data.researchOutputs && data.researchOutputs.length > 0 ? (
-									<a href={data.researchOutputs} className='purple-blue-14'>
-										{data.researchOutputs}
-									</a>
+								{data.gatewayOutputsToolsInfo &&
+								data.gatewayOutputsToolsInfo.length > 0 &&
+								data.gatewayOutputsPapersInfo &&
+								data.gatewayOutputsPapersInfo.length > 0 &&
+								data.nonGatewayOutputs &&
+								data.nonGatewayOutputs.length > 0 ? (
+									<>
+										{data &&
+											data.gatewayOutputsToolsInfo.map(gatewayOutputsTool => (
+												<a href={`/tool/${gatewayOutputsTool.id}`}>
+													<span className='badge-tag badge-datause-bold'>{gatewayOutputsTool.name}</span>
+												</a>
+											))}
+										{data &&
+											data.gatewayOutputsPapersInfo.map(gatewayOutputsPaper => (
+												<a href={`/paper/${gatewayOutputsPaper.id}`}>
+													<span className='badge-tag badge-datause-bold'>{gatewayOutputsPaper.name}</span>
+												</a>
+											))}
+
+										{data &&
+											data.nonGatewayOutputs.map(nonGatewayOutput => (
+												<a href={nonGatewayOutput} className='purple-blue-14'>
+													{nonGatewayOutput}
+												</a>
+											))}
+									</>
 								) : (
 									<p className='gray800-14-opacity'>Not specified</p>
 								)}

@@ -94,7 +94,7 @@ export const DataUseView = props => {
 
 					let counter = !localDataUseData.counter ? 1 : localDataUseData.counter + 1;
 					updateCounter(props.match.params.datauseID, counter);
-					debugger;
+
 					if (!_.isUndefined(localDataUseData.relatedObjects)) {
 						let localAdditionalObjInfo = await getAdditionalObjectInfo(localDataUseData.relatedObjects);
 						await populateRelatedObjects(localDataUseData, localAdditionalObjInfo);
@@ -135,7 +135,7 @@ export const DataUseView = props => {
 	const getAdditionalObjectInfo = async additionalObjInfo => {
 		let tempObjects = [];
 		if (additionalObjInfo) {
-			/* const promises = additionalObjInfo.map(async (object, index) => {
+			const promises = additionalObjInfo.map(async (object, index) => {
 				if (object.objectType === 'course') {
 					await axios.get(baseURL + '/api/v1/relatedobject/course/' + object.objectId).then(res => {
 						tempObjects.push({
@@ -165,13 +165,12 @@ export const DataUseView = props => {
 					});
 				}
 			});
-			await Promise.all(promises); */
+			await Promise.all(promises);
 		}
 		return tempObjects;
 	};
 
 	const populateRelatedObjects = (localDataUseData, localAdditionalObjInfo) => {
-		debugger;
 		let tempRelatedObjects = [];
 
 		if (localDataUseData.relatedObjects && localAdditionalObjInfo) {
