@@ -6,6 +6,7 @@ import { Row, Col } from 'react-bootstrap';
 import PropTypes from 'prop-types';
 import SLA from '../../../commonComponents/sla/SLA';
 import DatasetOnboardingHelper from '../../../../utils/DatasetOnboardingHelper.util';
+import ACTIVITY_LOG_PROP_TYPES from '../../../../services/activitylog/activitylog';
 import { dateFormats } from '../../../../utils/GeneralHelper.util';
 import approved from '../../../../images/Application_approved.svg';
 import rejected from '../../../../images/Application_rejected.svg';
@@ -22,7 +23,7 @@ let eventStatusIcons = {
 
 const ActivityLogCard = props => {
 	const { t } = useTranslation();
-	const { versionNumber, applicationStatus, dateSubmitted, events } = props;
+	const { versionNumber, meta, events } = props;
 	return (
 		<Row>
 			<div className='col-md-12'>
@@ -31,13 +32,13 @@ const ActivityLogCard = props => {
 						<Row css={styles.activityLog()}>
 							<Col sm={6} lg={6} data-testid='version-title'>
 								<h1>{`Version ${versionNumber}`}</h1>
-								<span className='gray800-14'>{`Submitted ${dateFormats(dateSubmitted).dateOnly}`}</span>
+								<span className='gray800-14'>{`Submitted ${dateFormats(meta.dateSubmitted).dateOnly}`}</span>
 							</Col>
 							<Col sm={6} lg={6}>
 								<span css={styles.applicationStatus} data-testid='status'>
 									<SLA
-										classProperty={DatasetOnboardingHelper.datasetStatusColours[applicationStatus]}
-										text={DatasetOnboardingHelper.datasetSLAText[applicationStatus]}
+										classProperty={DatasetOnboardingHelper.datasetStatusColours[meta.applicationStatus]}
+										text={DatasetOnboardingHelper.datasetSLAText[meta.applicationStatus]}
 									/>
 								</span>
 							</Col>
@@ -76,7 +77,7 @@ const ActivityLogCard = props => {
 												<div css={styles.changeLogCard}>
 													<div>
 														<span css={styles.changeLog}>
-															{applicationStatus === 'rejected' ? 'Reason for rejection:' : 'Admin comment:'}
+															{meta.applicationStatus === 'rejected' ? 'Reason for rejection:' : 'Admin comment:'}
 														</span>
 													</div>
 													<div>
@@ -127,11 +128,6 @@ const ActivityLogCard = props => {
 	);
 };
 
-ActivityLogCard.propTypes = {
-	applicationStatus: PropTypes.string.isRequired,
-	versionNumber: PropTypes.number.isRequired,
-	dateSubmitted: PropTypes.string.isRequired,
-	events: PropTypes.arrayOf(PropTypes.object),
-};
+ActivityLogCard.propTypes = ACTIVITY_LOG_PROP_TYPES;
 
 export default ActivityLogCard;
