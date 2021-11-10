@@ -76,7 +76,7 @@ const ActivityLogCard = props => {
 
 														return (
 															<BlockQuote data-testid={`event-detailed-text-${i}`}>
-																<h6 className='mb-3 gray800'>{_.startCase(key.replace(/[^\/]*$/, ''))}</h6>
+																<h6 className='mb-3 gray800'>{_.startCase(key.replace(/[^\/]*$/g, '')).replace(/\s/g, ' | ')}</h6>
 																<ListInfo
 																	data={[
 																		{
