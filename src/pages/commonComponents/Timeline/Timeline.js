@@ -22,4 +22,14 @@ const Timeline = ({ data }) => {
 	);
 };
 
+Timeline.propTypes = {
+	data: PropTypes.arrayOf(
+		PropTypes.shape({
+			icon: PropTypes.oneOfType([PropTypes.element, PropTypes.string]),
+			time: PropTypes.oneOfType([PropTypes.element, PropTypes.string]),
+			content: PropTypes.oneOfType([PropTypes.element, PropTypes.string]),
+		})
+	).isRequired,
+};
+
 export default Timeline;
