@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Row, Col } from 'react-bootstrap';
 import PropTypes from 'prop-types';
 import SLA from '../../../commonComponents/sla/SLA';
+import ListInfo from '../../../commonComponents/ListInfo';
 import DatasetOnboardingHelper from '../../../../utils/DatasetOnboardingHelper.util';
 import { dateFormats } from '../../../../utils/GeneralHelper.util';
 import '../../../../i18n';
@@ -13,6 +14,8 @@ import amber from '../../../../images/attention.svg';
 import rejected from '../../../../images/Application_rejected.svg';
 import * as styles from './ActivityLogCard.styles';
 import Timeline from '../../../commonComponents/Timeline/Timeline';
+import BlockQuote from '../../../commonComponents/Blockquote';
+import _ from 'lodash';
 
 let eventStatusIcons = {
 	newDatasetVersionSubmitted: rejected,
@@ -61,16 +64,38 @@ const ActivityLogCard = props => {
 										time: dateTime.timeOnly,
 										content: (
 											<div>
-												<span
+												<div
 													dangerouslySetInnerHTML={{
 														__html: t(event.eventType, { versionNumber: event.version.replace(/\..*$/, ''), ...event.userDetails }),
 													}}
-												/>{' '}
-												{event.detailedText && (
-													<div className='jumbotron' data-testid={`event-detailed-text-${i}`}>
-														<span>{event.detailedText}</span>
-													</div>
-												)}
+													className='mb-3'
+												/>
+												{event.datasetUpdates &&
+													event.datasetUpdates.map(updates => {
+														const key = Object.keys(updates)[0];
+
+														return (
+															<BlockQuote data-testid={`event-detailed-text-${i}`}>
+																<h6 className='mb-3 gray800'>{_.startCase(key.replace(/\/.*$/, ''))}</h6>
+																<ListInfo
+																	data={[
+																		{
+																			label: 'Question',
+																			value: _.startCase(key.replace(/^.*\//, '')),
+																		},
+																		{
+																			label: 'Previous answer',
+																			value: updates[key].previousAnswer,
+																		},
+																		{
+																			label: 'Updated answer',
+																			value: updates[key].updatedAnswer,
+																		},
+																	]}
+																/>
+															</BlockQuote>
+														);
+													})}
 											</div>
 										),
 									};

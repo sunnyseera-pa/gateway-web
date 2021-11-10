@@ -64,7 +64,12 @@ const AccountDataset = props => {
 			} = dataPublisher.data;
 
 			// const datasets = listOfDatasets.filter(dataset => DataSetHelper.isInReview(dataset));
-			const datasets = listOfDatasets;
+			const datasets = listOfDatasets.filter(dataset => !DataSetHelper.isNotActive(dataset) || DataSetHelper.isInReview(dataset));
+
+			// const datasets = listOfDatasets;
+
+			console.log('listOfDatasets', listOfDatasets);
+			console.log('Datasets', datasets);
 
 			const currentIndex = _.findIndex(datasets, dataset => {
 				return dataset.pid == id;
