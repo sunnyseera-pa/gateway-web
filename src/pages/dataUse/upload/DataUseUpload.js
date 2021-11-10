@@ -78,7 +78,6 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
 	}, [uploadedData]);
 
 	const submitDataUse = () => {
-		debugger;
 		const payload = {
 			teamId: team,
 			dataUses: uploadedData.rows,
