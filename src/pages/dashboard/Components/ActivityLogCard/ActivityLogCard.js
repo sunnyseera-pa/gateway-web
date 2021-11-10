@@ -30,13 +30,13 @@ const ActivityLogCard = props => {
 	const { t } = useTranslation();
 	const {
 		versionNumber,
-		meta: { applicationStatus, dateCreated },
+		meta: { applicationStatus },
 		dateSubmitted,
 		events,
 	} = props;
 
 	return (
-		<Suspense fallback={'loading'}>
+		<Suspense fallback={t('Loading')}>
 			<Row>
 				<div className='col-md-12'>
 					<div className='layoutCard'>
@@ -44,7 +44,7 @@ const ActivityLogCard = props => {
 							<Row css={styles.activityLog}>
 								<Col sm={6} lg={6} data-testid='version-title'>
 									<h1>{`Version ${versionNumber}`}</h1>
-									<span className='gray800-14'>{`Submitted ${dateFormats(dateSubmitted).dateOnly}`}</span>
+									<span className='gray800-14'>{t('datetime.submitted', { datetime: dateFormats(dateSubmitted).dateOnly })}</span>
 								</Col>
 								<Col sm={6} lg={6}>
 									<span css={styles.applicationStatus} data-testid='status'>
@@ -76,19 +76,19 @@ const ActivityLogCard = props => {
 
 														return (
 															<BlockQuote data-testid={`event-detailed-text-${i}`}>
-																<h6 className='mb-3 gray800'>{_.startCase(key.replace(/\/.*$/, ''))}</h6>
+																<h6 className='mb-3 gray800'>{_.startCase(key.replace(/[^\/]*$/, ''))}</h6>
 																<ListInfo
 																	data={[
 																		{
-																			label: 'Question',
+																			label: t('question'),
 																			value: _.startCase(key.replace(/^.*\//, '')),
 																		},
 																		{
-																			label: 'Previous answer',
+																			label: t('previousAnswer'),
 																			value: updates[key].previousAnswer,
 																		},
 																		{
-																			label: 'Updated answer',
+																			label: t('updatedAnswer'),
 																			value: updates[key].updatedAnswer,
 																		},
 																	]}

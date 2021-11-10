@@ -1,24 +1,23 @@
 import _ from 'lodash';
-import React, { useState } from 'react';
-import { Button, Row } from 'react-bootstrap';
+import React, { Suspense, useState } from 'react';
+import { Button } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 import { useAuth } from '../../../../context/AuthContext';
 import serviceActivityLog from '../../../../services/activitylog/activitylog';
 import serviceDatasetOnboarding from '../../../../services/dataset-onboarding/dataset-onboarding';
 import serviceDatasets from '../../../../services/datasets/datasets';
 import { getTeam } from '../../../../utils/auth';
-import utils from '../../../../utils/DataSetHelper.util';
-import DatasetOnboardingHelper from '../../../../utils/DatasetOnboardingHelper.util';
-import DataSetHelper from '../../../../utils/DataSetHelper.util';
+import { default as DataSetHelper, default as utils } from '../../../../utils/DataSetHelper.util';
 import ActionBar from '../../../commonComponents/actionbar/ActionBar';
 import DatasetCard from '../../../commonComponents/DatasetCard';
 import Loading from '../../../commonComponents/Loading';
 import NotFound from '../../../commonComponents/NotFound';
-import SLA from '../../../commonComponents/sla/SLA';
 import AccountContent from '../AccountContent';
 import ActivityLogCard from '../ActivityLogCard';
 
 const AccountDataset = props => {
+	const { t } = useTranslation();
 	const { id } = useParams();
 	const { userState } = useAuth();
 	const [team, setTeam] = useState();
@@ -118,7 +117,11 @@ const AccountDataset = props => {
 	if (statusError) {
 		return (
 			<AccountContent>
-				<NotFound text='The activity log for this dataset cannot be accessed. It must be set to in review.' />
+				<NotFound
+					text={t('dataset.activitylog.notfound', {
+						status: 'in review',
+					})}
+				/>
 			</AccountContent>
 		);
 	}
@@ -136,36 +139,38 @@ const AccountDataset = props => {
 	} = dataDataset.data;
 
 	return (
-		<AccountContent>
-			<DatasetCard
-				id={dataset._id}
-				title={dataset.name}
-				publisher={dataset.datasetv2.summary.publisher.name}
-				version={dataset.datasetVersion}
-				isDraft={true}
-				datasetStatus={dataset.activeflag}
-				timeStamps={dataset.timestamps}
-				completion={dataset.percentageCompleted}
-				listOfVersions={dataset.listOfVersions || []}
-			/>
+		<Suspense fallback={t('Loading')}>
+			<AccountContent>
+				<DatasetCard
+					id={dataset._id}
+					title={dataset.name}
+					publisher={dataset.datasetv2.summary.publisher.name}
+					version={dataset.datasetVersion}
+					isDraft={true}
+					datasetStatus={dataset.activeflag}
+					timeStamps={dataset.timestamps}
+					completion={dataset.percentageCompleted}
+					listOfVersions={dataset.listOfVersions || []}
+				/>
 
-			{dataActivityLog.data && dataActivityLog.data.data.logs.map(version => <ActivityLogCard {...version} />)}
+				{dataActivityLog.data && dataActivityLog.data.data.logs.map(version => <ActivityLogCard {...version} />)}
 
-			<ActionBar userState={userState}>
-				<div className='action-bar-actions'>
-					{showPrevious && !statusError && (
-						<Button variant='light' onClick={() => handlePaginationClick(-1)}>
-							Previous
-						</Button>
-					)}
-					{showNext && !statusError && (
-						<Button variant='light' onClick={() => handlePaginationClick(1)}>
-							Next
-						</Button>
-					)}
-				</div>
-			</ActionBar>
-		</AccountContent>
+				<ActionBar userState={userState}>
+					<div className='action-bar-actions'>
+						{showPrevious && !statusError && (
+							<Button variant='light' onClick={() => handlePaginationClick(-1)}>
+								{t('previous')}
+							</Button>
+						)}
+						{showNext && !statusError && (
+							<Button variant='light' onClick={() => handlePaginationClick(1)}>
+								{t('next')}
+							</Button>
+						)}
+					</div>
+				</ActionBar>
+			</AccountContent>
+		</Suspense>
 	);
 };
 
