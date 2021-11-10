@@ -36,7 +36,7 @@ const ActivityLogCard = props => {
 	} = props;
 
 	return (
-		<Suspense fallback={t('Loading')}>
+		<Suspense fallback={t('loading')}>
 			<Row>
 				<div className='col-md-12'>
 					<div className='layoutCard'>
@@ -112,7 +112,11 @@ const ActivityLogCard = props => {
 ActivityLogCard.propTypes = {
 	applicationStatus: PropTypes.string.isRequired,
 	versionNumber: PropTypes.number.isRequired,
-	dateSubmitted: PropTypes.string.isRequired,
+	meta: {
+		dateSubmitted: PropTypes.string.isRequired,
+		dateCreated: PropTypes.string.isRequired,
+		applicationStatus: PropTypes.string.isRequired,
+	},
 	events: PropTypes.arrayOf(PropTypes.object),
 };
 

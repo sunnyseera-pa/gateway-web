@@ -11,9 +11,9 @@ const _buildUrl = urlType => {
 	let {
 		location: { href, origin },
 	} = window;
-	if (href.includes('appspot.com')) {
+	if (href && href.includes('appspot.com')) {
 		return origin;
-	} else if (!href.includes('localhost')) {
+	} else if (href && !href.includes('localhost')) {
 		let regArray = _getRegexURL(urlType, href);
 		if (regArray) {
 			let url = regArray[2];

@@ -28,6 +28,6 @@
 			"notfound": "The activity log for this dataset cannot be accessed. It must be set to {{status}}."
 		}
 	},
-	"Next": "Next",
-	"Previous": "Previous"
+	"next": "Next",
+	"previous": "Previous"
 }

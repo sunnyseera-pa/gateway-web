@@ -1,5 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/react';
+import PropTypes from 'prop-types';
 import * as styles from './Timeline.styles';
 
 const Timeline = ({ data }) => {

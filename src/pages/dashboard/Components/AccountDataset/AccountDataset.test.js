@@ -1,5 +1,5 @@
 import { render } from '@testing-library/react';
-import React from 'react';
+import React, { Suspense } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import reactRouter from 'react-router';
 import AccountDataset from '.';
@@ -7,19 +7,21 @@ import { waitFor } from '@testing-library/react';
 import { AuthProvider } from '../../../../context/AuthContext';
 import { mockUser } from '../../../../services/auth/mockData';
 import { server } from '../../../../services/mockServer';
-
-const mockDatasetCard = jest.fn();
-
-window.location.assign = jest.fn();
+import { I18nextProvider } from 'react-i18next';
+import i18n from '../../../../i18n';
 
 jest.mock('../../../commonComponents/DatasetCard', () => props => {
 	mockDatasetCard(props);
 	return <div />;
 });
 
-const props = {
-	location: {},
-};
+jest.mock('../ActivityLogCard', () => props => {
+	mockActivityLogCard(props);
+	return <div />;
+});
+
+const mockDatasetCard = jest.fn();
+const mockActivityLogCard = jest.fn();
 
 const queryClient = new QueryClient({
 	defaultOptions: {
@@ -28,6 +30,22 @@ const queryClient = new QueryClient({
 		},
 	},
 });
+
+const providers = ({ children }) => (
+	<I18nextProvider i18n={i18n}>
+		<Suspense fallback='Loading'>
+			<AuthProvider value={{ userState: mockUser.data }}>
+				<QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+			</AuthProvider>
+		</Suspense>
+	</I18nextProvider>
+);
+
+const props = {
+	location: {},
+};
+
+window.location.assign = jest.fn();
 
 describe('Given the AccountDataset component', () => {
 	beforeAll(() => {
@@ -50,46 +68,40 @@ describe('Given the AccountDataset component', () => {
 				id: '0a048419-0796-46fb-ad7d-91e650a6c742',
 			});
 
-			wrapper = render(
-				<AuthProvider value={{ userState: mockUser.data }}>
-					<QueryClientProvider client={queryClient}>
-						<AccountDataset {...props} />
-					</QueryClientProvider>
-				</AuthProvider>
-			);
+			wrapper = render(<AccountDataset {...props} />, { wrapper: providers });
 		});
 
 		afterAll(() => {
 			window.location.assign.mockReset();
 		});
 
+		it('Then matches the previous snapshot', async () => {
+			expect(wrapper.container).toMatchSnapshot();
+		});
+
 		it('Then shows a loader', async () => {
 			await waitFor(() => expect(wrapper.getByText('Loading...')).toBeTruthy());
 		});
 
-		it('Then matches the previous snapshot', async () => {
+		it('Then calls the DatasetCard the correct number of times', async () => {
 			await waitFor(() => expect(mockDatasetCard).toHaveBeenCalledTimes(1));
-
-			expect(wrapper.container).toMatchSnapshot();
 		});
 
-		it('Then has the correct number of versions', async () => {
-			await waitFor(() => expect(wrapper.container.querySelectorAll('.layoutCard')).toHaveLength(4));
-
-			expect(wrapper.container).toMatchSnapshot();
+		it('Then calls the ActivityLogCard the correct number of times', async () => {
+			await waitFor(() => expect(mockActivityLogCard).toHaveBeenCalledTimes(4));
 		});
 
 		describe('And the next button is clicked', () => {
 			beforeAll(async () => {
-				await waitFor(() => expect(wrapper.getByText('Next')).toBeTruthy());
+				await waitFor(() => expect(wrapper.queryAllByText('Next')).toBeTruthy());
 
-				const button = wrapper.getByText('Next');
+				const button = wrapper.queryAllByText('Next')[0];
 
 				await fireEvent.click(button);
 			});
 
 			it('Then loads the new dataset', () => {
-				expect(window.location.assign.mock.calls[0][0]).toEqual('/account/datasets/d5c99a71-c039-4a0b-9171-dba8a1c33154');
+				expect(window.location.assign.mock.calls[0][0]).toEqual('/account/datasets/a9923649-38fe-4b28-90a1-e6de5fa5d405');
 			});
 		});
 	});
@@ -102,13 +114,7 @@ describe('Given the AccountDataset component', () => {
 				id: 'd5c99a71-c039-4a0b-9171-dba8a1c33154',
 			});
 
-			wrapper = render(
-				<AuthProvider value={{ userState: mockUser.data }}>
-					<QueryClientProvider client={queryClient}>
-						<AccountDataset {...props} />
-					</QueryClientProvider>
-				</AuthProvider>
-			);
+			wrapper = render(<AccountDataset {...props} />, { wrapper: providers });
 		});
 
 		afterAll(() => {
@@ -117,7 +123,7 @@ describe('Given the AccountDataset component', () => {
 
 		describe('And the previous button is clicked', () => {
 			beforeAll(async () => {
-				await waitFor(() => expect(wrapper.getByText('Previous')).toBeTruthy());
+				await waitFor(() => expect(wrapper.queryAllByText('Previous')).toBeTruthy());
 
 				const button = wrapper.queryAllByText('Previous')[0];
 
@@ -125,7 +131,7 @@ describe('Given the AccountDataset component', () => {
 			});
 
 			it('Then loads the new dataset', () => {
-				expect(window.location.assign.mock.calls[0][0]).toEqual('/account/datasets/0a048419-0796-46fb-ad7d-91e650a6c742');
+				expect(window.location.assign.mock.calls[0][0]).toEqual('/account/datasets/fd9d9bf3-576b-4efa-89fc-b389d524d667');
 			});
 		});
 	});
@@ -138,13 +144,7 @@ describe('Given the AccountDataset component', () => {
 				id: '1f509fe7-e94f-48fe-af6a-81f2bf8a5270',
 			});
 
-			wrapper = render(
-				<AuthProvider value={{ userState: mockUser.data }}>
-					<QueryClientProvider client={queryClient}>
-						<AccountDataset {...props} />
-					</QueryClientProvider>
-				</AuthProvider>
-			);
+			wrapper = render(<AccountDataset {...props} />, { wrapper: providers });
 		});
 
 		it('Then shows an info message', async () => {
@@ -160,13 +160,7 @@ describe('Given the AccountDataset component', () => {
 				id: 'invalid',
 			});
 
-			wrapper = render(
-				<AuthProvider value={{ userState: mockUser.data }}>
-					<QueryClientProvider client={queryClient}>
-						<AccountDataset {...props} />
-					</QueryClientProvider>
-				</AuthProvider>
-			);
+			wrapper = render(<AccountDataset {...props} />, { wrapper: providers });
 		});
 
 		it('Then shows a no results message', async () => {

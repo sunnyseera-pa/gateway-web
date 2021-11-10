@@ -67,8 +67,8 @@ const AccountDataset = props => {
 
 			// const datasets = listOfDatasets;
 
-			console.log('listOfDatasets', listOfDatasets);
-			console.log('Datasets', datasets);
+			// console.log('listOfDatasets', listOfDatasets);
+			// console.log('Datasets', datasets);
 
 			const currentIndex = _.findIndex(datasets, dataset => {
 				return dataset.pid == id;
@@ -138,8 +138,10 @@ const AccountDataset = props => {
 		data: { data: dataset },
 	} = dataDataset.data;
 
+	// console.log('dataActivityLog.data.data.logs', dataActivityLog.data.data.logs);
+
 	return (
-		<Suspense fallback={t('Loading')}>
+		<Suspense fallback={t('loading')}>
 			<AccountContent>
 				<DatasetCard
 					id={dataset._id}

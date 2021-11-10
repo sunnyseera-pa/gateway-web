@@ -1,9 +1,9 @@
-import React from 'react';
-import Enzyme, { shallow, render, mount } from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
-import { server } from './services/mockServer';
-import * as rtl from '@testing-library/react';
 import '@testing-library/jest-dom';
+import * as rtl from '@testing-library/react';
+import Enzyme, { mount, render, shallow } from 'enzyme';
+import Adapter from 'enzyme-adapter-react-16';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
 import 'regenerator-runtime/runtime';
 
 Enzyme.configure({
