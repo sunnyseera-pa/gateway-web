@@ -2,23 +2,25 @@ import React from 'react';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
 import { Table, Dropdown } from 'react-bootstrap';
-import { isUndefined } from 'lodash';
 
 const DataUseTable = ({ team, data, active, pending, archived, onClickArchive, onClickUnarchive, onClickApprove, onClickReject }) => {
-	const renderDatasets = dataUse => {
-		const datasets = dataUse.datasetTitles.map((datasetTitle, index) => {
-			const datasetId = dataUse.datasetIds[index];
-			if (isUndefined(datasetId)) {
-				return <div className='data-use-namedDataset'>{datasetTitle}</div>;
-			} else {
-				return (
-					<div>
-						<Link className='data-use-link' to={'/dataset/' + datasetId} target='_blank'>
-							{datasetTitle}
-						</Link>
-					</div>
-				);
-			}
+	const renderGatewayDatasets = dataUse => {
+		const datasets = dataUse.gatewayDatasets.map(gatewayDataset => {
+			return (
+				<div>
+					<Link className='data-use-link' to={'/dataset/' + gatewayDataset.pid} target='_blank'>
+						{gatewayDataset.name}
+					</Link>
+				</div>
+			);
+		});
+
+		return datasets;
+	};
+
+	const renderNonGatewayDatasets = dataUse => {
+		const datasets = dataUse.nonGatewayDatasets.map(nonGatewayDataset => {
+			return <div className='data-use-namedDataset'>{nonGatewayDataset}</div>;
 		});
 
 		return datasets;
@@ -43,7 +45,9 @@ const DataUseTable = ({ team, data, active, pending, archived, onClickArchive, o
 							<p>{dataUse.organisationName}</p>
 						</td>
 						<td>
-							<p>{renderDatasets(dataUse)}</p>
+							<p>
+								{renderGatewayDatasets(dataUse)} {renderNonGatewayDatasets(dataUse)}
+							</p>
 						</td>
 						{(active || pending || archived) && (
 							<td>

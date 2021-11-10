@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Container, Row, Col, Button, OverlayTrigger } from 'react-bootstrap';
+import moment from 'moment';
 import SVGIcon from '../../../images/SVGIcon';
 
 const About = ({ data, renderTooltip }) => {
@@ -21,44 +22,58 @@ const About = ({ data, renderTooltip }) => {
 			<>
 				<Container className='datause-card datause-safeInfo'>
 					<p className='black-14-bold'>Safe people</p>
-					{!data.organisationName > 0 && hide ? (
-						''
+
+					<Row className='soft-black-14 datause-view-grid '>
+						<Col md={4}>Organisation name</Col>
+						<OverlayTrigger
+							placement='top'
+							overlay={renderTooltip('The name of the legal entity that signs the contract to access the data.')}>
+							<button className='datause-info-icon-button'>
+								<SVGIcon name='info' width={10} height={10} fill={'#475da7'} className='datause-info-icon' />
+							</button>
+						</OverlayTrigger>
+						<Col md={7}>
+							{data.organisationName.length > 0 ? (
+								<p>
+									<a href={'/search?search=&tab=Datauses&datauseorganisationname=' + data.organisationName}>
+										<span className='badge-tag badge-datause-bold'>{data.organisationName}</span>
+									</a>
+								</p>
+							) : (
+								<p className='gray800-14-opacity'>Not specified</p>
+							)}
+						</Col>
+					</Row>
+
+					{!data.organisationId > 0 && hide ? (
+						(() => {
+							count++;
+						})()
 					) : (
-						<Row className='soft-black-14 datause-view-grid '>
-							<Col md={4}>Organisation name</Col>
+						<Row className='soft-black-14 datause-view-grid'>
+							<Col md={4}>Organisation ID</Col>
 							<OverlayTrigger
 								placement='top'
-								overlay={renderTooltip('The name of the legal entity that signs the contract to access the data.')}>
+								overlay={renderTooltip(
+									'A unique identifier for an organisation that is preferably an industry used standard such as Grid.ac (see https://www.grid.ac/institutes)'
+								)}>
 								<button className='datause-info-icon-button'>
 									<SVGIcon name='info' width={10} height={10} fill={'#475da7'} className='datause-info-icon' />
 								</button>
 							</OverlayTrigger>
-							<Col md={7}>
-								{data.organisationName.length > 0 ? (
-									<span className='badge-tag badge-datause-bold'>{data.organisationName}</span>
+							<Col>
+								{data.organisationId && data.organisationId.length > 0 ? (
+									data.organisationId
 								) : (
 									<p className='gray800-14-opacity'>Not specified</p>
 								)}
 							</Col>
 						</Row>
 					)}
-					{!data.applicantID > 0 && hide ? (
-						''
-					) : (
-						<Row className='soft-black-14 datause-view-grid'>
-							<Col md={4}>Organisation ID</Col>
-							<OverlayTrigger
-								placement='top'
-								overlay={renderTooltip('The name of the legal entity that signs the contract to access the data.')}>
-								<button className='datause-info-icon-button'>
-									<SVGIcon name='info' width={10} height={10} fill={'#475da7'} className='datause-info-icon' />
-								</button>
-							</OverlayTrigger>
-							<Col>{data.applicantID.length > 0 ? data.applicantID : <p className='gray800-14-opacity'>Not specified</p>}</Col>
-						</Row>
-					)}
 					{!data.organisationSector > 0 && hide ? (
-						''
+						(() => {
+							count++;
+						})()
 					) : (
 						<Row className='soft-black-14 datause-view-grid'>
 							<Col md={4}>Organisation sector</Col>
@@ -68,16 +83,24 @@ const About = ({ data, renderTooltip }) => {
 								</button>
 							</OverlayTrigger>
 							<Col md={7}>
-								{data.organisationSector.length > 0 ? (
-									<span className='badge-tag badge-datause-bold'>{data.organisationSector}</span>
+								{data.organisationSector && data.organisationSector.length > 0 ? (
+									<a href={'/search?search=&tab=Datauses&datauserganisationsector=' + data.organisationSector}>
+										<span className='badge-tag badge-datause-bold'>{data.organisationSector}</span>
+									</a>
 								) : (
 									<p className='gray800-14-opacity'>Not specified</p>
 								)}
 							</Col>
 						</Row>
 					)}
-					{!data.gatewayApplicants > 0 && !data.nonGatewayApplicants > 0 && hide ? (
-						''
+					{data.gatewayApplicants &&
+					data.gatewayApplicants.length === 0 &&
+					data.nonGatewayApplicants &&
+					data.nonGatewayApplicants.length === 0 &&
+					hide ? (
+						(() => {
+							count++;
+						})()
 					) : (
 						<Row className='soft-black-14 datause-view-grid'>
 							<Col md={4}>Applicant name(s)</Col>
@@ -91,7 +114,10 @@ const About = ({ data, renderTooltip }) => {
 								</button>
 							</OverlayTrigger>
 							<Col md={7}>
-								{data.gatewayApplicants.length > 0 && data.nonGatewayApplicants.length > 0 ? (
+								{data.gatewayApplicants &&
+								data.gatewayApplicants.length > 0 &&
+								data.nonGatewayApplicants &&
+								data.nonGatewayApplicants.length > 0 ? (
 									<>
 										{data &&
 											data.gatewayApplicants.map(gatewayApplicant => (
@@ -99,8 +125,9 @@ const About = ({ data, renderTooltip }) => {
 													<span className='datatuse-personicon-bg'>
 														<SVGIcon name='personiconwithbg' width={17} height={16} fill={'#3db28c'} />
 													</span>
-													<a href={`/person/${gatewayApplicant}`} className='soft-black-14 badge-datause-bold'>
-														{gatewayApplicant}
+													<a href={`/person/${gatewayApplicant.id}`} className='soft-black-14 badge-datause-bold'>
+														{' '}
+														{gatewayApplicant.firstname} {gatewayApplicant.lastname}
 													</a>
 												</span>
 											))}
@@ -115,25 +142,31 @@ const About = ({ data, renderTooltip }) => {
 							</Col>
 						</Row>
 					)}
-					{!data.applicantID > 0 && hide ? (
-						''
+					{!data.applicantId > 0 && hide ? (
+						(() => {
+							count++;
+						})()
 					) : (
 						<Row className='soft-black-14 datause-view-grid'>
 							<Col md={4}>Applicant ID</Col>
 							<OverlayTrigger
 								placement='top'
 								overlay={renderTooltip(
-									'A unique identifier for the applicant that is preferably an industry used standard such as Grid.ac'
+									'A unique identifier for the applicant that is preferably an industry used standard such as Grid.ac (see https://www.grid.ac/)'
 								)}>
 								<button className='datause-info-icon-button'>
 									<SVGIcon name='info' width={10} height={10} fill={'#475da7'} className='datause-info-icon' />
 								</button>
 							</OverlayTrigger>
-							<Col md={7}>{data.applicantID.length > 0 ? data.applicantID : <p className='gray800-14-opacity'>Not specified</p>}</Col>
+							<Col md={7}>
+								{data.applicantId && data.applicantId.length > 0 ? data.applicantId : <p className='gray800-14-opacity'>Not specified</p>}
+							</Col>
 						</Row>
 					)}
-					{!data.fundersAndSponsors > 0 && hide ? (
-						''
+					{data.fundersAndSponsors && data.fundersAndSponsors.length === 0 && hide ? (
+						(() => {
+							count++;
+						})()
 					) : (
 						<Row className='soft-black-14 datause-view-grid'>
 							<Col md={4}>Funders/Sponsor</Col>
@@ -144,7 +177,11 @@ const About = ({ data, renderTooltip }) => {
 							</OverlayTrigger>
 							<Col md={6}>
 								{data.fundersAndSponsors.length > 0 ? (
-									data.fundersAndSponsors.map(a => <span className='badge-tag badge-datause-bold'>{a}</span>)
+									data.fundersAndSponsors.map(a => (
+										<a href={'/search?search=&tab=Datauses&datausefundersandsponsors=' + a}>
+											<span className='badge-tag badge-datause-bold'>{a}</span>
+										</a>
+									))
 								) : (
 									<p className='gray800-14-opacity'>Not specified</p>
 								)}
@@ -152,21 +189,23 @@ const About = ({ data, renderTooltip }) => {
 						</Row>
 					)}
 					{!data.accreditedResearcherStatus > 0 && hide ? (
-						''
+						(() => {
+							count++;
+						})()
 					) : (
 						<Row className='soft-black-14 datause-view-grid'>
 							<Col md={4}>DEA accredited researcher status</Col>
 							<OverlayTrigger
 								placement='top'
 								overlay={renderTooltip(
-									'The accreditation status of the Principal Investigator/applicant, as defined by the ONS Research Code of Practice and Accreditation criteria.'
+									'The accreditation status of the Principal Investigator/applicant, as defined by the ONS Research Code of Practice and Accreditation criteria. '
 								)}>
 								<button className='datause-info-icon-button'>
 									<SVGIcon name='info' width={10} height={10} fill={'#475da7'} className='datause-info-icon' />
 								</button>
 							</OverlayTrigger>
 							<Col md={7}>
-								{data.accreditedResearcherStatus.length > 0 ? (
+								{data.accreditedResearcherStatus && data.accreditedResearcherStatus.length > 0 ? (
 									data.accreditedResearcherStatus
 								) : (
 									<p className='gray800-14-opacity'>Not specified</p>
@@ -175,7 +214,9 @@ const About = ({ data, renderTooltip }) => {
 						</Row>
 					)}
 					{!data.sublicenceArrangements > 0 && hide ? (
-						''
+						(() => {
+							count++;
+						})()
 					) : (
 						<Row className='soft-black-14 datause-view-grid'>
 							<Col md={4}>Sub-licence arrangements (if any)?</Col>
@@ -189,15 +230,21 @@ const About = ({ data, renderTooltip }) => {
 								</button>
 							</OverlayTrigger>
 							<Col md={7}>
-								{data.sublicenceArrangements.length > 0 ? data.sublicenceArrangements : <p className='gray800-14-opacity'>Not specified</p>}
+								{data.sublicenceArrangements && data.sublicenceArrangements.length > 0 ? (
+									data.sublicenceArrangements
+								) : (
+									<p className='gray800-14-opacity'>Not specified</p>
+								)}
 							</Col>
 						</Row>
 					)}
 				</Container>
 				<Container className='datause-card datause-safeInfo'>
 					<p className='black-14-bold'>Safe projects</p>
-					{!data.projectId > 0 && hide ? (
-						''
+					{!data.projectIdText > 0 && hide ? (
+						(() => {
+							count++;
+						})()
 					) : (
 						<Row className='soft-black-14 datause-view-grid'>
 							<Col md={4}>Project ID</Col>
@@ -210,66 +257,74 @@ const About = ({ data, renderTooltip }) => {
 									<SVGIcon name='info' width={10} height={10} fill={'#475da7'} className='datause-info-icon' />
 								</button>
 							</OverlayTrigger>
-							<Col md={6}>{data.projectId.length > 0 ? data.projectId : <p className='gray800-14-opacity'>Not specified</p>}</Col>
-						</Row>
-					)}
-					{!data.projectTitle > 0 && hide ? (
-						''
-					) : (
-						<Row className='soft-black-14 datause-view-grid'>
-							<Col md={4}>Project title</Col>
-							<OverlayTrigger
-								placement='top'
-								overlay={renderTooltip(
-									'The title of the project/research study/request that the applicant is investigating through the use of health data.'
-								)}>
-								<button className='datause-info-icon-button'>
-									<SVGIcon name='info' width={10} height={10} fill={'#475da7'} className='datause-info-icon' />
-								</button>
-							</OverlayTrigger>
-							<Col md={7}>{data.projectTitle.length > 0 ? data.projectTitle : <p className='gray800-14-opacity'>Not specified</p>}</Col>
-						</Row>
-					)}
-					{!data.laySummary > 0 && hide ? (
-						''
-					) : (
-						<Row className='soft-black-14 datause-view-grid'>
-							<Col md={4}>
-								Lay summary
-								<button
-									className='datause-arrow'
-									onClick={() => (!closedLaySummary ? setClosedLaySummary(true) : setClosedLaySummary(false))}>
-									<SVGIcon width='20px' height='20px' name='chevronbottom' fill={'#475da7'} className={closedLaySummary ? 'flip180' : ''} />
-								</button>
-							</Col>
-							<OverlayTrigger
-								placement='top'
-								overlay={renderTooltip(
-									'A concise and clear description of the project, (e.g. as required by URKI in funding applications). It should outline the problem, objectives and expected outcomes in language that is understandable to the general public and contain a maximum of 300 words.'
-								)}>
-								<button className='datause-info-icon-button'>
-									<SVGIcon name='info' width={10} height={10} fill={'#475da7'} className='datause-info-icon' />
-								</button>
-							</OverlayTrigger>
-							<Col md={7}>
-								{data.laySummary.length > 0 ? (
-									closedLaySummary ? (
-										data.laySummary.substr(0, 250)
-									) : (
-										data.laySummary
-									)
+							<Col md={6}>
+								{data.projectIdText && data.projectIdText.length > 0 ? (
+									data.projectIdText
 								) : (
 									<p className='gray800-14-opacity'>Not specified</p>
 								)}
 							</Col>
 						</Row>
 					)}
-					{!data.publicBenefitStatement > 0 && hide ? (
-						''
-					) : (
-						<Row className='soft-black-14 datause-view-grid'>
-							<Col md={4}>
-								Public benefit statement
+
+					<Row className='soft-black-14 datause-view-grid'>
+						<Col md={4}>Project title</Col>
+						<OverlayTrigger
+							placement='top'
+							overlay={renderTooltip(
+								'The title of the project/research study/request that the applicant is investigating through the use of health data.'
+							)}>
+							<button className='datause-info-icon-button'>
+								<SVGIcon name='info' width={10} height={10} fill={'#475da7'} className='datause-info-icon' />
+							</button>
+						</OverlayTrigger>
+						<Col md={7}>
+							{data.projectTitle && data.projectTitle.length > 0 ? data.projectTitle : <p className='gray800-14-opacity'>Not specified</p>}
+						</Col>
+					</Row>
+
+					<Row className='soft-black-14 datause-view-grid'>
+						<Col md={4}>
+							Lay summary
+							{data.laySummary.length >= 250 ? (
+								<button
+									className='datause-arrow'
+									onClick={() => (!closedLaySummary ? setClosedLaySummary(true) : setClosedLaySummary(false))}>
+									<SVGIcon width='20px' height='20px' name='chevronbottom' fill={'#475da7'} className={closedLaySummary ? '' : 'flip180'} />
+								</button>
+							) : (
+								''
+							)}
+						</Col>
+						<OverlayTrigger
+							placement='top'
+							overlay={renderTooltip(
+								'A concise and clear description of the project, (e.g. as required by URKI in funding applications). It should outline the problem, objectives and expected outcomes in language that is understandable to the general public and contain a maximum of 300 words.'
+							)}>
+							<button className='datause-info-icon-button'>
+								<SVGIcon name='info' width={10} height={10} fill={'#475da7'} className='datause-info-icon' />
+							</button>
+						</OverlayTrigger>
+						<Col md={7}>
+							{data.laySummary.length > 0 ? (
+								closedLaySummary ? (
+									<>
+										{data.laySummary.substr(0, 250)}
+										{data.laySummary.length >= 250 ? '...' : ''}
+									</>
+								) : (
+									data.laySummary
+								)
+							) : (
+								<p className='gray800-14-opacity'>Not specified</p>
+							)}
+						</Col>
+					</Row>
+
+					<Row className='soft-black-14 datause-view-grid'>
+						<Col md={4}>
+							Public benefit statement
+							{data.publicBenefitStatement.length >= 250 ? (
 								<button
 									className='datause-arrow'
 									onClick={() => (!closedPublicBenefit ? setClosedPublicBenefit(true) : setClosedPublicBenefit(false))}>
@@ -278,34 +333,42 @@ const About = ({ data, renderTooltip }) => {
 										height='20px'
 										name='chevronbottom'
 										fill={'#475da7'}
-										className={closedPublicBenefit ? 'flip180' : ''}
+										className={closedPublicBenefit ? '' : 'flip180'}
 									/>
 								</button>
-							</Col>
-							<OverlayTrigger
-								placement='top'
-								overlay={renderTooltip(
-									'A description in plain English of the anticipated outcomes, or impact of project on the general public.'
-								)}>
-								<button className='datause-info-icon-button'>
-									<SVGIcon name='info' width={10} height={10} fill={'#475da7'} className='datause-info-icon' />
-								</button>
-							</OverlayTrigger>
-							<Col md={7}>
-								{data.publicBenefitStatement.length > 0 ? (
-									closedPublicBenefit ? (
-										data.publicBenefitStatement.substr(0, 250)
-									) : (
-										data.publicBenefitStatement
-									)
+							) : (
+								''
+							)}
+						</Col>
+						<OverlayTrigger
+							placement='top'
+							overlay={renderTooltip(
+								'A description in plain English of the anticipated outcomes, or impact of project on the general public.'
+							)}>
+							<button className='datause-info-icon-button'>
+								<SVGIcon name='info' width={10} height={10} fill={'#475da7'} className='datause-info-icon' />
+							</button>
+						</OverlayTrigger>
+						<Col md={7}>
+							{data.publicBenefitStatement && data.publicBenefitStatement.length > 0 ? (
+								closedPublicBenefit ? (
+									<>
+										{data.publicBenefitStatement.substr(0, 250)}
+										{data.publicBenefitStatement.length >= 250 ? '...' : ''}
+									</>
 								) : (
-									<p className='gray800-14-opacity'>Not specified</p>
-								)}
-							</Col>
-						</Row>
-					)}
+									data.publicBenefitStatement
+								)
+							) : (
+								<p className='gray800-14-opacity'>Not specified</p>
+							)}
+						</Col>
+					</Row>
+
 					{!data.requestCategoryType && hide ? (
-						''
+						(() => {
+							count++;
+						})()
 					) : (
 						<Row className='soft-black-14 datause-view-grid'>
 							<Col md={4}>Request category type</Col>
@@ -315,12 +378,18 @@ const About = ({ data, renderTooltip }) => {
 								</button>
 							</OverlayTrigger>
 							<Col md={7}>
-								{data.requestCategoryType.length > 0 ? data.requestCategoryType : <p className='gray800-14-opacity'>Not specified</p>}
+								{data.requestCategoryType && data.requestCategoryType.length > 0 ? (
+									data.requestCategoryType
+								) : (
+									<p className='gray800-14-opacity'>Not specified</p>
+								)}
 							</Col>
 						</Row>
 					)}
 					{!data.technicalSummary && hide ? (
-						''
+						(() => {
+							count++;
+						})()
 					) : (
 						<Row className='soft-black-14 datause-view-grid'>
 							<Col md={4}>Technical summary</Col>
@@ -332,12 +401,18 @@ const About = ({ data, renderTooltip }) => {
 								</button>
 							</OverlayTrigger>
 							<Col md={7}>
-								{data.technicalSummary.length > 0 ? data.technicalSummary : <p className='gray800-14-opacity'>Not specified</p>}
+								{data.technicalSummary && data.technicalSummary.length > 0 ? (
+									data.technicalSummary
+								) : (
+									<p className='gray800-14-opacity'>Not specified</p>
+								)}
 							</Col>
 						</Row>
 					)}
-					{!data.otherApprovalCommittees && hide ? (
-						''
+					{data.otherApprovalCommittees && data.otherApprovalCommittees.length === 0 && hide ? (
+						(() => {
+							count++;
+						})()
 					) : (
 						<Row className='soft-black-14 datause-view-grid'>
 							<Col md={4}>Other approval committees</Col>
@@ -349,7 +424,7 @@ const About = ({ data, renderTooltip }) => {
 								</button>
 							</OverlayTrigger>
 							<Col md={7}>
-								{data.otherApprovalCommittees.length > 0 ? (
+								{data.otherApprovalCommittees && data.otherApprovalCommittees.length > 0 ? (
 									data.otherApprovalCommittees
 								) : (
 									<p className='gray800-14-opacity'>Not specified</p>
@@ -358,7 +433,9 @@ const About = ({ data, renderTooltip }) => {
 						</Row>
 					)}
 					{!data.projectStartDate > 0 && hide ? (
-						''
+						(() => {
+							count++;
+						})()
 					) : (
 						<Row className='soft-black-14 datause-view-grid'>
 							<Col md={4}>Project start date</Col>
@@ -368,12 +445,18 @@ const About = ({ data, renderTooltip }) => {
 								</button>
 							</OverlayTrigger>
 							<Col md={6}>
-								{data.projectStartDate.length > 0 ? data.projectStartDate : <p className='gray800-14-opacity'>Not specified</p>}
+								{data.projectStartDate && data.projectStartDate.length > 0 ? (
+									moment(data.projectStartDate).format('YYYY-MM-DD')
+								) : (
+									<p className='gray800-14-opacity'>Not specified</p>
+								)}
 							</Col>
 						</Row>
 					)}
 					{!data.projectEndDate > 0 && hide ? (
-						''
+						(() => {
+							count++;
+						})()
 					) : (
 						<Row className='soft-black-14 datause-view-grid'>
 							<Col md={4}>Project end date</Col>
@@ -382,44 +465,67 @@ const About = ({ data, renderTooltip }) => {
 									<SVGIcon name='info' width={10} height={10} fill={'#475da7'} className='datause-info-icon' />
 								</button>
 							</OverlayTrigger>
-							<Col md={7}>{data.projectEndDate.length > 0 ? data.projectEndDate : <p className='gray800-14-opacity'>Not specified</p>}</Col>
-						</Row>
-					)}
-					{!data.latestApprovalDate > 0 && hide ? (
-						''
-					) : (
-						<Row className='soft-black-14 datause-view-grid'>
-							<Col md={4}>Latest approval date</Col>
-							<OverlayTrigger
-								placement='top'
-								overlay={renderTooltip('The last date the data access request for this project was approved by a data custodian.')}>
-								<button className='datause-info-icon-button'>
-									<SVGIcon name='info' width={10} height={10} fill={'#475da7'} className='datause-info-icon' />
-								</button>
-							</OverlayTrigger>
 							<Col md={7}>
-								{data.latestApprovalDate.length > 0 ? data.latestApprovalDate : <p className='gray800-14-opacity'>Not specified</p>}
+								{data.projectEndDate && data.projectEndDate.length > 0 ? (
+									moment(data.projectEndDate).format('YYYY-MM-DD')
+								) : (
+									<p className='gray800-14-opacity'>Not specified</p>
+								)}
 							</Col>
 						</Row>
 					)}
+					<Row className='soft-black-14 datause-view-grid'>
+						<Col md={4}>Latest approval date</Col>
+						<OverlayTrigger
+							placement='top'
+							overlay={renderTooltip('The last date the data access request for this project was approved by a data custodian.')}>
+							<button className='datause-info-icon-button'>
+								<SVGIcon name='info' width={10} height={10} fill={'#475da7'} className='datause-info-icon' />
+							</button>
+						</OverlayTrigger>
+						<Col md={7}>
+							{data.latestApprovalDate && data.latestApprovalDate.length > 0 ? (
+								moment(data.latestApprovalDate).format('YYYY-MM-DD')
+							) : (
+								<p className='gray800-14-opacity'>Not specified</p>
+							)}
+						</Col>
+					</Row>
 				</Container>
 				<Container className='datause-card datause-view-grid datause-safeInfo'>
 					<p className='black-14-bold'>Safe data</p>
-					{!data.datasetTitles > 0 && hide ? (
-						''
-					) : (
-						<Row className='soft-black-14 datause-view-grid'>
-							<Col md={4}>Dataset(s) name</Col>
-							<OverlayTrigger placement='top' overlay={renderTooltip('The name of the dataset(s) being accessed.')}>
-								<button className='datause-info-icon-button'>
-									<SVGIcon name='info' width={10} height={10} fill={'#475da7'} className='datause-info-icon' />
-								</button>
-							</OverlayTrigger>
-							<Col md={7}>{data.datasetTitles.length > 0 ? data.datasetTitles : <p className='gray800-14-opacity'>Not specified</p>}</Col>
-						</Row>
-					)}
+					<Row className='soft-black-14 datause-view-grid'>
+						<Col md={4}>Dataset(s) name</Col>
+						<OverlayTrigger placement='top' overlay={renderTooltip('The name of the dataset(s) being accessed.')}>
+							<button className='datause-info-icon-button'>
+								<SVGIcon name='info' width={10} height={10} fill={'#475da7'} className='datause-info-icon' />
+							</button>
+						</OverlayTrigger>
+						<Col md={7}>
+							{data.gatewayDatasetsInfo &&
+							data.gatewayDatasetsInfo.length > 0 &&
+							data.nonGatewayDatasets &&
+							data.nonGatewayDatasets.length > 0 ? (
+								<>
+									{data &&
+										data.gatewayDatasetsInfo.map(gatewayDataset => (
+											<a href={`/dataset/${gatewayDataset.pid}`}>
+												<span className='badge-tag badge-datause-bold'>{gatewayDataset.name}</span>
+											</a>
+										))}
+
+									{data && data.nonGatewayDatasets.map(nonGatewayDataset => <> {nonGatewayDataset}</>)}
+								</>
+							) : (
+								<p className='gray800-14-opacity'>Not specified</p>
+							)}
+						</Col>
+					</Row>
+
 					{!data.dataSensitivityLevel > 0 && hide ? (
-						''
+						(() => {
+							count++;
+						})()
 					) : (
 						<Row className='soft-black-14 datause-view-grid'>
 							<Col md={4}>Data sensitivity level</Col>
@@ -433,15 +539,21 @@ const About = ({ data, renderTooltip }) => {
 								</button>
 							</OverlayTrigger>
 							<Col md={7}>
-								{data.dataSensitivityLevel.length > 0 ? data.dataSensitivityLevel : <p className='gray800-14-opacity'>Not specified</p>}
+								{data.dataSensitivityLevel && data.dataSensitivityLevel.length > 0 ? (
+									data.dataSensitivityLevel
+								) : (
+									<p className='gray800-14-opacity'>Not specified</p>
+								)}
 							</Col>
 						</Row>
 					)}
-					{!data.legalBasisForData > 0 && hide ? (
-						''
+					{!data.legalBasisForDataArticle6 > 0 && hide ? (
+						(() => {
+							count++;
+						})()
 					) : (
 						<Row className='soft-black-14 datause-view-grid'>
-							<Col md={4}>Legal basis for provision of data</Col>
+							<Col md={4}>Legal basis for provision of data under Article 6</Col>
 							<OverlayTrigger
 								placement='top'
 								overlay={renderTooltip(
@@ -452,12 +564,41 @@ const About = ({ data, renderTooltip }) => {
 								</button>
 							</OverlayTrigger>
 							<Col md={7}>
-								{data.legalBasisForData.length > 0 ? data.legalBasisForData : <p className='gray800-14-opacity'>Not specified</p>}
+								{data.legalBasisForDataArticle6 && data.legalBasisForDataArticle6.length > 0 ? (
+									data.legalBasisForDataArticle6
+								) : (
+									<p className='gray800-14-opacity'>Not specified</p>
+								)}
+							</Col>
+						</Row>
+					)}
+					{!data.legalBasisForDataArticle9 > 0 && hide ? (
+						(() => {
+							count++;
+						})()
+					) : (
+						<Row className='soft-black-14 datause-view-grid'>
+							<Col md={4}>Lawful conditions for provision of data under Article 9</Col>
+							<OverlayTrigger
+								placement='top'
+								overlay={renderTooltip('An appropriate Article 9 condition for processing the special category data.')}>
+								<button className='datause-info-icon-button'>
+									<SVGIcon name='info' width={10} height={10} fill={'#475da7'} className='datause-info-icon' />
+								</button>
+							</OverlayTrigger>
+							<Col md={7}>
+								{data.legalBasisForDataArticle9 && data.legalBasisForDataArticle9.length > 0 ? (
+									data.legalBasisForDataArticle9
+								) : (
+									<p className='gray800-14-opacity'>Not specified</p>
+								)}
 							</Col>
 						</Row>
 					)}
 					{!data.dutyOfConfidentiality > 0 && hide ? (
-						''
+						(() => {
+							count++;
+						})()
 					) : (
 						<Row className='soft-black-14 datause-view-grid'>
 							<Col md={4}>Common law of duty of confidentiality</Col>
@@ -471,12 +612,18 @@ const About = ({ data, renderTooltip }) => {
 								</button>
 							</OverlayTrigger>
 							<Col md={7}>
-								{data.dutyOfConfidentiality.length > 0 ? data.dutyOfConfidentiality : <p className='gray800-14-opacity'>Not specified</p>}
+								{data.dutyOfConfidentiality && data.dutyOfConfidentiality.length > 0 ? (
+									data.dutyOfConfidentiality
+								) : (
+									<p className='gray800-14-opacity'>Not specified</p>
+								)}
 							</Col>
 						</Row>
 					)}
 					{!data.nationalDataOptOut > 0 && hide ? (
-						''
+						(() => {
+							count++;
+						})()
 					) : (
 						<Row className='soft-black-14 datause-view-grid'>
 							<Col md={4}>National data opt-out applied?</Col>
@@ -490,12 +637,18 @@ const About = ({ data, renderTooltip }) => {
 								</button>
 							</OverlayTrigger>
 							<Col md={7}>
-								{data.nationalDataOptOut.length > 0 ? data.nationalDataOptOut : <p className='gray800-14-opacity'>Not specified</p>}
+								{data.nationalDataOptOut && data.nationalDataOptOut.length > 0 ? (
+									data.nationalDataOptOut
+								) : (
+									<p className='gray800-14-opacity'>Not specified</p>
+								)}
 							</Col>
 						</Row>
 					)}
 					{!data.requestFrequency > 0 && hide ? (
-						''
+						(() => {
+							count++;
+						})()
 					) : (
 						<Row className='soft-black-14 datause-view-grid'>
 							<Col md={4}>Request frequency</Col>
@@ -509,37 +662,55 @@ const About = ({ data, renderTooltip }) => {
 								</button>
 							</OverlayTrigger>
 							<Col md={7}>
-								{data.requestFrequency.length > 0 ? data.requestFrequency : <p className='gray800-14-opacity'>Not specified</p>}
+								{data.requestFrequency && data.requestFrequency.length > 0 ? (
+									data.requestFrequency
+								) : (
+									<p className='gray800-14-opacity'>Not specified</p>
+								)}
 							</Col>
 						</Row>
 					)}
-					{!data.dataProcessingDescription > 0 && hide ? (
-						''
+					{!data.datasetLinkageDescription > 0 && hide ? (
+						(() => {
+							count++;
+						})()
 					) : (
 						<Row className='soft-black-14 datause-view-grid'>
-							<Col md={4}>
-								Description of how the data will be used
-								<button className='datause-arrow' onClick={() => (!closedDataUse ? setClosedDataUse(true) : setClosedDataUse(false))}>
-									<SVGIcon width='20px' height='20px' name='chevronbottom' fill={'#475da7'} className={closedDataUse ? 'flip180' : ''} />
-								</button>
-							</Col>
+							<Col md={4}>For linked datasets, specify how the linkage will take place</Col>
 							<OverlayTrigger
 								placement='top'
 								overlay={renderTooltip(
-									'Details of how the data requested will be processed (including how the data will be analysed or linked to other datasets).'
+									'The information relevant to data linkage, including organisations undertaking linkages and data flows.'
 								)}>
 								<button className='datause-info-icon-button'>
 									<SVGIcon name='info' width={10} height={10} fill={'#475da7'} className='datause-info-icon' />
 								</button>
 							</OverlayTrigger>
-							<Col md={7}>{closedDataUse ? data.dataProcessingDescription.substr(0, 150) : data.dataProcessingDescription}</Col>
+							<Col md={7}>
+								{data.datasetLinkageDescription && data.datasetLinkageDescription.length > 0 ? (
+									data.datasetLinkageDescription
+								) : (
+									<p className='gray800-14-opacity'>Not specified</p>
+								)}
+							</Col>
 						</Row>
 					)}
 					{!data.confidentialDataDescription > 0 && hide ? (
-						''
+						(() => {
+							count++;
+						})()
 					) : (
 						<Row className='soft-black-14 datause-view-grid'>
-							<Col md={4}>Description of the confidential data being used</Col>
+							<Col md={4}>
+								Description of the confidential data being used
+								{data.confidentialDataDescription && data.confidentialDataDescription.length >= 250 ? (
+									<button className='datause-arrow' onClick={() => (!closedDataUse ? setClosedDataUse(true) : setClosedDataUse(false))}>
+										<SVGIcon width='20px' height='20px' name='chevronbottom' fill={'#475da7'} className={closedDataUse ? '' : 'flip180'} />
+									</button>
+								) : (
+									''
+								)}
+							</Col>
 							<OverlayTrigger
 								placement='top'
 								overlay={renderTooltip(
@@ -550,16 +721,22 @@ const About = ({ data, renderTooltip }) => {
 								</button>
 							</OverlayTrigger>
 							<Col md={7}>
-								{data.confidentialDataDescription.length > 0 ? (
-									data.confidentialDataDescription
+								{closedDataUse ? (
+									data.confidentialDataDescription ? (
+										data.confidentialDataDescription.substr(0, 150)
+									) : (
+										<p className='gray800-14-opacity'>Not specified</p>
+									)
 								) : (
-									<p className='gray800-14-opacity'>Not specified</p>
+									data.confidentialDataDescription
 								)}
 							</Col>
 						</Row>
 					)}
 					{!data.accessDate > 0 && hide ? (
-						''
+						(() => {
+							count++;
+						})()
 					) : (
 						<Row className='soft-black-14 datause-view-grid'>
 							<Col md={4}>Release/Access date</Col>
@@ -568,31 +745,38 @@ const About = ({ data, renderTooltip }) => {
 									<SVGIcon name='info' width={10} height={10} fill={'#475da7'} className='datause-info-icon' />
 								</button>
 							</OverlayTrigger>
-							<Col md={7}>{data.accessDate.length > 0 ? data.accessDate : <p className='gray800-14-opacity'>Not specified</p>}</Col>
+							<Col md={7}>
+								{data.accessDate && data.accessDate.length > 0 ? (
+									moment(data.accessDate).format('YYYY-MM-DD')
+								) : (
+									<p className='gray800-14-opacity'>Not specified</p>
+								)}
+							</Col>
 						</Row>
 					)}
 				</Container>
 				<Container className='datause-card datause-safeInfo'>
 					<p className='black-14-bold'>Safe setting</p>
-					{!data.dataLocation > 0 && hide ? (
-						''
-					) : (
-						<Row className='soft-black-14 datause-view-grid'>
-							<Col md={4}>Trusted research environment or any other specified location</Col>
-							<OverlayTrigger
-								placement='top'
-								overlay={renderTooltip(
-									'These are highly secure spaces for researchers to access sensitive data (also known as Data Safe Havens). ‘Other’ represents any other location that has been used for data access.'
-								)}>
-								<button className='datause-info-icon-button'>
-									<SVGIcon name='info' width={10} height={10} fill={'#475da7'} className='datause-info-icon' />
-								</button>
-							</OverlayTrigger>
-							<Col md={7}>{data.dataLocation.length > 0 ? data.dataLocation : <p className='gray800-14-opacity'>Not specified</p>}</Col>
-						</Row>
-					)}
+					<Row className='soft-black-14 datause-view-grid'>
+						<Col md={4}>Access type</Col>
+						<OverlayTrigger
+							placement='top'
+							overlay={renderTooltip(
+								'An indication of how data is accessed, whether through access to a Data Safe Haven/Trusted Research Environment or through data release in any other local environment.'
+							)}>
+							<button className='datause-info-icon-button'>
+								<SVGIcon name='info' width={10} height={10} fill={'#475da7'} className='datause-info-icon' />
+							</button>
+						</OverlayTrigger>
+						<Col md={7}>
+							{data.accessType && data.accessType.length > 0 ? data.accessType : <p className='gray800-14-opacity'>Not specified</p>}
+						</Col>
+					</Row>
+
 					{!data.privacyEnhancements > 0 && hide ? (
-						''
+						(() => {
+							count++;
+						})()
 					) : (
 						<Row className='soft-black-14 datause-view-grid'>
 							<Col md={4}>How has data been processed to enhance privacy?</Col>
@@ -604,15 +788,27 @@ const About = ({ data, renderTooltip }) => {
 								</button>
 							</OverlayTrigger>
 							<Col md={7}>
-								{data.privacyEnhancements.length > 0 ? data.privacyEnhancements : <p className='gray800-14-opacity'>Not specified</p>}
+								{data.privacyEnhancements && data.privacyEnhancements.length > 0 ? (
+									data.privacyEnhancements
+								) : (
+									<p className='gray800-14-opacity'>Not specified</p>
+								)}
 							</Col>
 						</Row>
 					)}
 				</Container>
 				<Container className='datause-card datause-safeInfo'>
 					<p className='black-14-bold'>Safe output</p>
-					{!data.researchOutputs > 0 && hide ? (
-						''
+					{data.gatewayOutputsToolsInfo &&
+					data.gatewayOutputsToolsInfo.length === 0 &&
+					data.gatewayOutputsPapers &&
+					data.gatewayOutputsPapers.length === 0 &&
+					data.nonGatewayOutputs &&
+					data.nonGatewayOutputs.length === 0 &&
+					hide ? (
+						(() => {
+							count++;
+						})()
 					) : (
 						<Row className='soft-black-14'>
 							<Col md={4}>Link to research outputs</Col>
@@ -626,10 +822,33 @@ const About = ({ data, renderTooltip }) => {
 								</button>
 							</OverlayTrigger>
 							<Col md={7}>
-								{data.researchOutputs.length > 0 ? (
-									<a href={data.researchOutputs} className='purple-blue-14'>
-										{data.researchOutputs}
-									</a>
+								{data.gatewayOutputsToolsInfo &&
+								data.gatewayOutputsToolsInfo.length > 0 &&
+								data.gatewayOutputsPapersInfo &&
+								data.gatewayOutputsPapersInfo.length > 0 &&
+								data.nonGatewayOutputs &&
+								data.nonGatewayOutputs.length > 0 ? (
+									<>
+										{data &&
+											data.gatewayOutputsToolsInfo.map(gatewayOutputsTool => (
+												<a href={`/tool/${gatewayOutputsTool.id}`}>
+													<span className='badge-tag badge-datause-bold'>{gatewayOutputsTool.name}</span>
+												</a>
+											))}
+										{data &&
+											data.gatewayOutputsPapersInfo.map(gatewayOutputsPaper => (
+												<a href={`/paper/${gatewayOutputsPaper.id}`}>
+													<span className='badge-tag badge-datause-bold'>{gatewayOutputsPaper.name}</span>
+												</a>
+											))}
+
+										{data &&
+											data.nonGatewayOutputs.map(nonGatewayOutput => (
+												<a href={nonGatewayOutput} className='purple-blue-14'>
+													{nonGatewayOutput}
+												</a>
+											))}
+									</>
 								) : (
 									<p className='gray800-14-opacity'>Not specified</p>
 								)}
@@ -648,7 +867,7 @@ const About = ({ data, renderTooltip }) => {
 			</Row>
 			<Row className='datause-hidefields-button'>
 				<Button className='datause-button' onClick={() => (hide ? setHide(false) : setHide(true))}>
-					{!hide ? 'Hide all empty fields (' + count + ')' : 'Show all empty fields (' + count + ')'}
+					{!hide ? 'Hide all empty fields' : 'Show all empty fields (' + count + ')'}
 				</Button>
 			</Row>
 		</>

@@ -390,7 +390,7 @@ class SearchPage extends React.Component {
 		if (!_.isEmpty(this.state.filtersV2Datauses)) {
 			const filtersV2Datauses = [...this.state.filtersV2Datauses];
 			const selectedV2Datauses = [...this.state.selectedV2Datauses];
-			this.setSelectedFiltersFromQueryParams(filtersV2Datauses, selectedV2Datauses, queryParams, 'dataUseRegister');
+			this.setSelectedFiltersFromQueryParams(filtersV2Datauses, selectedV2Datauses, queryParams, 'datause');
 		}
 		if (!_.isEmpty(this.state.filtersV2Papers)) {
 			const filtersV2Papers = [...this.state.filtersV2Papers];
@@ -1377,7 +1377,7 @@ class SearchPage extends React.Component {
 				'Dataset Linkage Description': dataUse.datasetLinkageDescription,
 				'Confidential Data Description': dataUse.confidentialDataDescription,
 				'Access Date': moment(dataUse.accessDate).format('DD/MM/YY'),
-				'Access Type': dataUse.dataLocation,
+				'Access Type': dataUse.accessType,
 				'Privacy Enhancements': dataUse.privacyEnhancements,
 				'Research Outputs': dataUse.researchOutputs,
 				Keywords: dataUse.keywords,
@@ -1591,7 +1591,7 @@ class SearchPage extends React.Component {
 				{key === 'Datauses' ? (
 					<SortDropdown
 						handleSort={this.handleSort}
-						sort={toolSort === '' ? (search === '' ? 'latest' : 'relevance') : toolSort}
+						sort={dataUseRegisterSort === '' ? (search === '' ? 'latest' : 'relevance') : dataUseRegisterSort}
 						dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
 					/>
 				) : (
