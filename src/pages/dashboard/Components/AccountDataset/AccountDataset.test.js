@@ -58,7 +58,7 @@ describe('Given the AccountDataset component', () => {
 
 		beforeAll(() => {
 			jest.spyOn(reactRouter, 'useParams').mockReturnValue({
-				id: '0a048419-0796-46fb-ad7d-91e650a6c742',
+				id: 'd5c99a71-c039-4a0b-9171-dba8a1c33154',
 			});
 
 			wrapper = render(<AccountDataset {...props} />, {
@@ -96,26 +96,8 @@ describe('Given the AccountDataset component', () => {
 			});
 
 			it('Then loads the new dataset', () => {
-				expect(mockPush).toHaveBeenCalledWith('/account/datasets/d5c99a71-c039-4a0b-9171-dba8a1c33154');
+				expect(mockPush).toHaveBeenCalledWith('/account/datasets/4932179f-1c9c-40a0-81b5-9b499aff7a64');
 			});
-		});
-	});
-
-	describe('When the next page is rendered', () => {
-		let wrapper;
-
-		beforeAll(() => {
-			jest.spyOn(reactRouter, 'useParams').mockReturnValue({
-				id: 'd5c99a71-c039-4a0b-9171-dba8a1c33154',
-			});
-
-			wrapper = render(<AccountDataset {...props} />, {
-				wrapper: ({ children }) => <Providers queryClient={queryClient}>{children}</Providers>,
-			});
-		});
-
-		afterAll(() => {
-			mockPush.mockReset();
 		});
 
 		describe('And the previous button is clicked', () => {
@@ -125,6 +107,10 @@ describe('Given the AccountDataset component', () => {
 				const button = wrapper.queryAllByText('Previous')[0];
 
 				await fireEvent.click(button);
+			});
+
+			afterAll(() => {
+				mockPush.mockReset();
 			});
 
 			it('Then loads the new dataset', () => {

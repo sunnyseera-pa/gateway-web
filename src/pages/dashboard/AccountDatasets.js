@@ -10,6 +10,8 @@ import SVGIcon from '../../images/SVGIcon';
 import utils from '../../utils/DataSetHelper.util';
 import './Dashboard.scss';
 import AccountContent from './Components/AccountContent';
+import { useHistory } from 'react-router';
+import { ReactComponent as EyeIcon } from '../../images/eye.svg';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -24,6 +26,7 @@ const AccountDatasets = props => {
 	const [alert] = useState(props.alert);
 	const [team, setTeam] = useState(props.team);
 	const [publisherID, setPublisherID] = useState('');
+	const history = useHistory();
 
 	useEffect(() => {
 		setTeam(props.team);
@@ -87,6 +90,14 @@ const AccountDatasets = props => {
 
 	const getDatasetPath = id => {
 		return `/account/datasets/${id}`;
+	};
+
+	const handleActivityLogClick = id => {
+		history.push(getDatasetPath(id));
+	};
+
+	const hasActivityHistory = dataset => {
+		return dataset.listOfVersions.length > 0 && team === 'admin';
 	};
 
 	const generateAlert = () => {
@@ -211,7 +222,14 @@ const AccountDatasets = props => {
 											} else {
 												return (
 													<DatasetCard
-														path={getDatasetPath(dataset.pid)}
+														slaProps={
+															hasActivityHistory(dataset)
+																? {
+																		icon: <EyeIcon role='button' onClick={() => handleActivityLogClick(dataset.pid)} />,
+																  }
+																: {}
+														}
+														path={hasActivityHistory(dataset) ? getDatasetPath(dataset.pid) : ''}
 														id={dataset._id}
 														title={dataset.name}
 														publisher={dataset.datasetv2.summary.publisher.name}

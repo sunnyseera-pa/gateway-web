@@ -138,43 +138,41 @@ const AccountDataset = props => {
 		}
 	}
 
-	return (
-		currentDataset && (
-			<Suspense fallback={t('loading')}>
-				<AccountContent>
-					<DatasetCard
-						id={currentDataset._id}
-						title={currentDataset.name}
-						publisher={currentDataset.datasetv2.summary.publisher.name}
-						version={currentDataset.datasetVersion}
-						isDraft={true}
-						datasetStatus={currentDataset.activeflag}
-						timeStamps={currentDataset.timestamps}
-						completion={currentDataset.percentageCompleted}
-						listOfVersions={currentDataset.listOfVersions}
-					/>
+	return currentDataset ? (
+		<Suspense fallback={t('loading')}>
+			<AccountContent>
+				<DatasetCard
+					id={currentDataset._id}
+					title={currentDataset.name}
+					publisher={currentDataset.datasetv2.summary.publisher.name}
+					version={currentDataset.datasetVersion}
+					isDraft={true}
+					datasetStatus={currentDataset.activeflag}
+					timeStamps={currentDataset.timestamps}
+					completion={currentDataset.percentageCompleted}
+					listOfVersions={currentDataset.listOfVersions}
+				/>
 
-					{dataActivityLog.data &&
-						dataActivityLog.data.data.logs.map(version => <ActivityLogCard key={version.versionNumber} {...version} />)}
+				{dataActivityLog.data &&
+					dataActivityLog.data.data.logs.map(version => <ActivityLogCard key={version.versionNumber} {...version} />)}
 
-					<ActionBar userState={userState}>
-						<div className='action-bar-actions'>
-							{showPrevious && !statusError && (
-								<Button variant='light' onClick={() => handlePaginationClick(-1)}>
-									{t('previous')}
-								</Button>
-							)}
-							{showNext && !statusError && (
-								<Button variant='light' onClick={() => handlePaginationClick(1)}>
-									{t('next')}
-								</Button>
-							)}
-						</div>
-					</ActionBar>
-				</AccountContent>
-			</Suspense>
-		)
-	);
+				<ActionBar userState={userState}>
+					<div className='action-bar-actions'>
+						{showPrevious && !statusError && (
+							<Button variant='light' onClick={() => handlePaginationClick(-1)}>
+								{t('previous')}
+							</Button>
+						)}
+						{showNext && !statusError && (
+							<Button variant='light' onClick={() => handlePaginationClick(1)}>
+								{t('next')}
+							</Button>
+						)}
+					</div>
+				</ActionBar>
+			</AccountContent>
+		</Suspense>
+	) : null;
 };
 
 AccountDataset.defaultProps = {

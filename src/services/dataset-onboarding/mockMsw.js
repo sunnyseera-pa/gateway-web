@@ -447,7 +447,7 @@ export const mswGetPublisher = rest.get(`${apiURL}/dataset-onboarding/publisher/
 								},
 							},
 						},
-						activeflag: 'draft',
+						activeflag: 'inReview',
 						listOfVersions: [],
 					},
 					{
