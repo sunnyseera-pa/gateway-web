@@ -114,10 +114,8 @@ const About = ({ data, renderTooltip }) => {
 								</button>
 							</OverlayTrigger>
 							<Col md={7}>
-								{data.gatewayApplicants &&
-								data.gatewayApplicants.length > 0 &&
-								data.nonGatewayApplicants &&
-								data.nonGatewayApplicants.length > 0 ? (
+								{(!data.gatewayApplicants || data.gatewayApplicants.length > 0) &&
+								(!data.nonGatewayApplicants || data.nonGatewayApplicants.length > 0) ? (
 									<>
 										{data &&
 											data.gatewayApplicants.map(gatewayApplicant => (
@@ -409,7 +407,7 @@ const About = ({ data, renderTooltip }) => {
 							</Col>
 						</Row>
 					)}
-					{data.otherApprovalCommittees && data.otherApprovalCommittees.length === 0 && hide ? (
+					{!data.otherApprovalCommittees && data.otherApprovalCommittees.length === 0 && hide ? (
 						(() => {
 							count++;
 						})()
@@ -799,12 +797,9 @@ const About = ({ data, renderTooltip }) => {
 				</Container>
 				<Container className='datause-card datause-safeInfo'>
 					<p className='black-14-bold'>Safe output</p>
-					{data.gatewayOutputsToolsInfo &&
-					data.gatewayOutputsToolsInfo.length === 0 &&
-					data.gatewayOutputsPapers &&
-					data.gatewayOutputsPapers.length === 0 &&
-					data.nonGatewayOutputs &&
-					data.nonGatewayOutputs.length === 0 &&
+					{(!data.gatewayOutputsToolsInfo || data.gatewayOutputsToolsInfo.length === 0) &&
+					(!data.gatewayOutputsPapers || data.gatewayOutputsPapers.length === 0) &&
+					(!data.nonGatewayOutputs || data.nonGatewayOutputs.length === 0) &&
 					hide ? (
 						(() => {
 							count++;
@@ -822,12 +817,9 @@ const About = ({ data, renderTooltip }) => {
 								</button>
 							</OverlayTrigger>
 							<Col md={7}>
-								{data.gatewayOutputsToolsInfo &&
-								data.gatewayOutputsToolsInfo.length > 0 &&
-								data.gatewayOutputsPapersInfo &&
-								data.gatewayOutputsPapersInfo.length > 0 &&
-								data.nonGatewayOutputs &&
-								data.nonGatewayOutputs.length > 0 ? (
+								{(!data.gatewayOutputsToolsInfo || data.gatewayOutputsToolsInfo.length === 0) &&
+								(!data.gatewayOutputsPapers || data.gatewayOutputsPapers.length === 0) &&
+								(!data.nonGatewayOutputs || data.nonGatewayOutputs.length === 0) ? (
 									<>
 										{data &&
 											data.gatewayOutputsToolsInfo.map(gatewayOutputsTool => (

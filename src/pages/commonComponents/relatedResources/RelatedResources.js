@@ -54,6 +54,7 @@ const RelatedResources = React.forwardRef((props, ref) => {
 				<Modal.Body>
 					<RelatedResourcesModal
 						toolid={props.toolid}
+						datauseid={props.datauseid}
 						paperid={props.paperid}
 						searchString={props.searchString}
 						doSearchMethod={props.doSearchMethod}
@@ -61,6 +62,7 @@ const RelatedResources = React.forwardRef((props, ref) => {
 						userState={props.userState}
 						datasetData={props.datasetData}
 						toolData={props.toolData}
+						datauseData={props.datauseData}
 						personData={props.personData}
 						paperData={props.paperData}
 						courseData={props.courseData}

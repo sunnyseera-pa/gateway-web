@@ -37,7 +37,7 @@ const AddEditCollectionForm = props => {
 			name: Yup.string().required('This cannot be empty'),
 			description: Yup.string().max(5000, 'Maximum of 5,000 characters').required('This cannot be empty'),
 			authors: Yup.lazy(val => (Array.isArray(val) ? Yup.array().of(Yup.number()) : Yup.number())),
-			imageLink: Yup.string().matches(/^(http|https){1}:\/\/[A-Za-z0-9-_~:#@!&',;%=]+$/, {
+			imageLink: Yup.string().matches(/^(http|https){1}:\/\/[A-Za-z0-9-\/._~:?#[\]@!$&'()*+,;%=]+$/, {
 				message: 'Invalid URL: should start with http:// or https://',
 			}),
 		}),
@@ -308,6 +308,7 @@ const AddEditCollectionForm = props => {
 												userState={props.userState}
 												datasetData={props.datasetData}
 												toolData={props.toolData}
+												datauseData={props.datauseData}
 												personData={props.personData}
 												paperData={props.paperData}
 												courseData={props.courseData}

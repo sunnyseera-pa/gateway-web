@@ -10,6 +10,7 @@ class RelatedResourcesModal extends React.Component {
 		key: '',
 		datasetIndex: 0,
 		toolIndex: 0,
+		datauseIndex: 0,
 		paperIndex: 0,
 		personIndex: 0,
 		courseIndex: 0,
@@ -17,6 +18,7 @@ class RelatedResourcesModal extends React.Component {
 		selected: {
 			datasets: 0,
 			tools: 0,
+			datauses: 0,
 			papers: 0,
 			persons: 0,
 			courses: 0,
@@ -37,6 +39,8 @@ class RelatedResourcesModal extends React.Component {
 			await Promise.all([this.setState({ datasetIndex: page })]);
 		} else if (type === 'tool') {
 			await Promise.all([this.setState({ toolIndex: page })]);
+		} else if (type === 'datause') {
+			await Promise.all([this.setState({ datauseIndex: page })]);
 		} else if (type === 'paper') {
 			await Promise.all([this.setState({ paperIndex: page })]);
 		} else if (type === 'person') {
@@ -48,11 +52,12 @@ class RelatedResourcesModal extends React.Component {
 	};
 
 	render() {
-		const { datasetIndex, toolIndex, paperIndex, personIndex, courseIndex, selected } = this.state;
+		const { datasetIndex, toolIndex, datauseIndex, paperIndex, personIndex, courseIndex, selected } = this.state;
 		let { key } = this.state;
 
 		let datasetCount = this.props.summary.datasetCount || 0;
 		let toolCount = this.props.summary.toolCount || 0;
+		let datauseCount = this.props.summary.dataUseRegisterCount || 0;
 		let paperCount = this.props.summary.paperCount || 0;
 		let personCount = this.props.summary.personCount || 0;
 		let courseCount = this.props.summary.courseCount || 0;
@@ -62,6 +67,8 @@ class RelatedResourcesModal extends React.Component {
 				key = 'Datasets';
 			} else if (toolCount > 0) {
 				key = 'Tools';
+			} else if (datauseCount > 0) {
+				key = 'Data Uses';
 			} else if (paperCount > 0) {
 				key = 'Papers';
 			} else if (personCount > 0) {
@@ -75,6 +82,7 @@ class RelatedResourcesModal extends React.Component {
 
 		let datasetPaginationItems = [];
 		let toolPaginationItems = [];
+		let datausePaginationItems = [];
 		let paperPaginationItems = [];
 		let personPaginationItems = [];
 		let coursePaginationItems = [];
@@ -98,6 +106,18 @@ class RelatedResourcesModal extends React.Component {
 					active={i === toolIndex / maxResult + 1}
 					onClick={e => {
 						this.handlePagination('tool', (i - 1) * maxResult, 'click');
+					}}>
+					{i}
+				</Pagination.Item>
+			);
+		}
+		for (let i = 1; i <= Math.ceil(datauseCount / maxResult); i++) {
+			datausePaginationItems.push(
+				<Pagination.Item
+					key={i}
+					active={i === datauseIndex / maxResult + 1}
+					onClick={e => {
+						this.handlePagination('datause', (i - 1) * maxResult, 'click');
 					}}>
 					{i}
 				</Pagination.Item>
@@ -148,6 +168,7 @@ class RelatedResourcesModal extends React.Component {
 
 		selected.datasets = 0;
 		selected.tools = 0;
+		selected.datauses = 0;
 		selected.papers = 0;
 		selected.persons = 0;
 		selected.courses = 0;
@@ -161,6 +182,11 @@ class RelatedResourcesModal extends React.Component {
 					case 'tool':
 						this.props.toolData.map(tool =>
 							object.objectId === tool.id || object.objectId === JSON.stringify(tool.id) ? selected.tools++ : ''
+						);
+						break;
+					case 'datause':
+						this.props.toolData.map(datause =>
+							object.objectId === datause.id || object.objectId === JSON.stringify(datause.id) ? selected.datauses++ : ''
 						);
 						break;
 					case 'paper':
@@ -222,6 +248,16 @@ class RelatedResourcesModal extends React.Component {
 											title={
 												'Tools (' +
 												(!this.props.summary.toolCount ? '0' : this.props.summary.toolCount - selected.tools - editingObjectTool) +
+												')'
+											}
+										/>
+										<Tab
+											eventKey='Datauses'
+											title={
+												'Data Uses (' +
+												(!this.props.summary.dataUseRegisterCount
+													? '0'
+													: this.props.summary.dataUseRegisterCount - selected.datauses - editingObjectTool) +
 												')'
 											}
 										/>
@@ -309,6 +345,30 @@ class RelatedResourcesModal extends React.Component {
 										  })
 									: ''}
 
+								{key === 'Datauses'
+									? !this.props.datauseData
+										? ''
+										: this.props.datauseData.map(datause => {
+												if (
+													this.state.relatedObjectIds.includes(datause.id) ||
+													this.state.relatedObjectIds.includes(JSON.stringify(datause.id)) ||
+													datause.id === this.props.datauseid
+												) {
+													return '';
+												} else {
+													return (
+														<RelatedObject
+															key={datause.id}
+															data={datause}
+															activeLink={false}
+															doAddToTempRelatedObjects={this.props.doAddToTempRelatedObjects}
+															tempRelatedObjectIds={this.props.tempRelatedObjectIds}
+														/>
+													);
+												}
+										  })
+									: ''}
+
 								{key === 'Papers'
 									? !this.props.paperData
 										? ''
@@ -383,6 +443,8 @@ class RelatedResourcesModal extends React.Component {
 									{key === 'Datasets' && datasetCount > maxResult ? <Pagination>{datasetPaginationItems}</Pagination> : ''}
 
 									{key === 'Tools' && toolCount > maxResult ? <Pagination>{toolPaginationItems}</Pagination> : ''}
+
+									{key === 'Datauses' && datauseCount > maxResult ? <Pagination>{datausePaginationItems}</Pagination> : ''}
 
 									{key === 'Papers' && paperCount > maxResult ? <Pagination>{paperPaginationItems}</Pagination> : ''}
 

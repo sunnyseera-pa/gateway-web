@@ -24,8 +24,8 @@ const ConfirmSubmissionModal = ({ open, close, confirm }) => {
 							variant='primary'
 							className='white-14-semibold'
 							onClick={() => {
+								googleAnalytics.recordEvent('Data access request', 'Clicked submit application', 'Submitted application');
 								confirm();
-								googleAnalytics.recordEvent('Data access request', 'Clicked submit application', 'Submitted application')
 							}}>
 							Submit application
 						</Button>

@@ -1,6 +1,7 @@
 import React, { Component, Fragment, useState } from 'react';
 import { OverlayTrigger, Tooltip, Container, Row, Col } from 'react-bootstrap';
 import Winterfell from 'winterfell';
+import * as Sentry from '@sentry/react';
 import _ from 'lodash';
 import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
@@ -43,6 +44,8 @@ import Dropdown from 'react-bootstrap/Dropdown';
 
 import { formSchema } from './formSchema';
 import DatasetOnboardingHelperUtil from '../../utils/DatasetOnboardingHelper.util';
+import ActionBarStatus from '../commonComponents/ActionBarStatus';
+import ErrorModal from '../commonComponents/errorModal';
 
 /* export const DatasetOnboarding = props => {
     const [id] = useState('');
@@ -301,7 +304,9 @@ class DatasetOnboarding extends Component {
 	 * @returns {jsonSchmea} object
 	 */
 	injectObservations(jsonSchema = {}, questionAnswers = {}) {
-		let { questions } = DatasetOnboardingHelperUtil.findQuestionSet('observations', { ...jsonSchema });
+		let { questions } = DatasetOnboardingHelperUtil.findQuestionSet('observations', {
+			...jsonSchema,
+		});
 		let listOfObservationFields = questions.map(x => x.questionId).flat();
 
 		let listOfObservationUniqueIds = [];
@@ -620,7 +625,9 @@ class DatasetOnboarding extends Component {
 	onQuestionClick = async (questionSetId = '', questionId = '') => {
 		let questionSet, jsonSchema, questionAnswers, schema;
 
-		questionSet = DatasetOnboardingHelperUtil.findQuestionSet(questionSetId, { ...this.state.jsonSchema });
+		questionSet = DatasetOnboardingHelperUtil.findQuestionSet(questionSetId, {
+			...this.state.jsonSchema,
+		});
 
 		if (!_.isEmpty(questionSet) && !_.isEmpty(questionId)) {
 			// remove about and files from pages to stop duplicate, about / files added to DAR on init
@@ -774,7 +781,11 @@ class DatasetOnboarding extends Component {
 		let percentageCompleted = DatasetOnboardingHelperUtil.getCompletionPercentages(this);
 		if (!_.isEmpty(structuralMetadata) && _.isEmpty(structuralMetadataErrors)) percentageCompleted.updatedCompletion.structural = 100;
 		else percentageCompleted.updatedCompletion.structural = 0;
-		this.setState({ structuralMetadata, structuralMetadataErrors, completion: percentageCompleted.updatedCompletion });
+		this.setState({
+			structuralMetadata,
+			structuralMetadataErrors,
+			completion: percentageCompleted.updatedCompletion,
+		});
 	};
 
 	toggleCard = (e, eventKey) => {
@@ -825,7 +836,7 @@ class DatasetOnboarding extends Component {
 
 	toggleDuplicateModal = () => {
 		this.toggleActionModal('DUPLICATE');
-	}
+	};
 
 	toggleActionModal = (type = '') => {
 		let actionModalConfig = {};
@@ -1264,11 +1275,12 @@ class DatasetOnboarding extends Component {
 				}
 			},
 			isMultiFieldURLRequired: value => {
-				if (!_.isArray(value)) return !_.isEmpty(value) && !!value.match(/^(?:[a-z][a-z0-9+\-.]*:)(?:\/?\/)?[^\s]*$/i);
+				const isMultiFieldURLRegEx = /^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)|in progress$/i;
+				if (!_.isArray(value)) return !_.isEmpty(value) && !!value.match(isMultiFieldURLRegEx);
 
 				let isNoError = true;
 				value.forEach(url => {
-					if (!url.match(/^(?:[a-z][a-z0-9+\-.]*:)(?:\/?\/)?[^\s]*$/i)) isNoError = false;
+					if (!url.match(isMultiFieldURLRegEx)) isNoError = false;
 				});
 				return isNoError;
 			},
@@ -1302,253 +1314,239 @@ class DatasetOnboarding extends Component {
 		}
 
 		return (
-			<div>
-				<SearchBar
-					ref={this.searchBar}
-					searchString={searchString}
-					doSearchMethod={e => {
-						SearchBarHelperUtil.doSearch(e, this);
-					}}
-					doUpdateSearchString={e => {
-						SearchBarHelperUtil.updateSearchString(e, this);
-					}}
-					doToggleDrawer={e => this.toggleDrawer()}
-					userState={userState}
-				/>
-				<Row className='banner'>
-					<Col sm={12} md={8} className='banner-left'>
-						<span className='white-20-semibold mr-5'>Dataset</span>
-						<span className='white-16-semibold pr-5'>{name}</span>
-						<span className='white-16-semibold pr-5' style={{ display: 'inline-block' }}>
-							<Dropdown>
-								<Dropdown.Toggle as={CustomToggle}>
-									<span className='listOfVersionsButton'>
-										{datasetVersion}
-										{activeflag === 'draft' ? ' (Draft)' : ''}
-										{activeflag === 'active' ? ' (Live)' : ''}
-										{activeflag === 'rejected' ? ' (Rejected)' : ''}
-										{activeflag === 'inReview' ? ' (Pending)' : ''}
-									</span>
-								</Dropdown.Toggle>
-								<Dropdown.Menu as={CustomMenu} className='listOfVersionsDropdown'>
-									{listOfDatasets.map(dat => {
-										return (
-											<Dropdown.Item href={`/dataset-onboarding/${dat._id}`} className='black-14'>
-												{dat.datasetVersion}
-												{dat.activeflag === 'draft' ? ' (Draft)' : ''}
-												{dat.activeflag === 'active' ? ' (Live)' : ''}
-												{dat.activeflag === 'rejected' ? ' (Rejected)' : ''}
-												{dat.activeflag === 'inReview' ? ' (Pending)' : ''}
+			<Sentry.ErrorBoundary fallback={<ErrorModal />}>
+				<div>
+					<SearchBar
+						ref={this.searchBar}
+						searchString={searchString}
+						doSearchMethod={e => {
+							SearchBarHelperUtil.doSearch(e, this);
+						}}
+						doUpdateSearchString={e => {
+							SearchBarHelperUtil.updateSearchString(e, this);
+						}}
+						doToggleDrawer={e => this.toggleDrawer()}
+						userState={userState}
+					/>
+					<Row className='banner'>
+						<Col sm={12} md={8} className='banner-left'>
+							<span className='white-20-semibold mr-5'>Dataset</span>
+							<span className='white-16-semibold pr-5'>{name}</span>
+							<span className='white-16-semibold pr-5' style={{ display: 'inline-block' }}>
+								<Dropdown>
+									<Dropdown.Toggle as={CustomToggle}>
+										<span className='listOfVersionsButton'>
+											{datasetVersion}
+											{activeflag === 'draft' ? ' (Draft)' : ''}
+											{activeflag === 'active' ? ' (Live)' : ''}
+											{activeflag === 'rejected' ? ' (Rejected)' : ''}
+											{activeflag === 'inReview' ? ' (Pending)' : ''}
+										</span>
+									</Dropdown.Toggle>
+									<Dropdown.Menu as={CustomMenu} className='listOfVersionsDropdown'>
+										{listOfDatasets.map(dat => {
+											return (
+												<Dropdown.Item href={`/dataset-onboarding/${dat._id}`} className='black-14'>
+													{dat.datasetVersion}
+													{dat.activeflag === 'draft' ? ' (Draft)' : ''}
+													{dat.activeflag === 'active' ? ' (Live)' : ''}
+													{dat.activeflag === 'rejected' ? ' (Rejected)' : ''}
+													{dat.activeflag === 'inReview' ? ' (Pending)' : ''}
 
-												{this.state._id === dat._id ? (
-													<SVGIcon
-														className='collectionCheckSvg'
-														name='checkicon'
-														width={16}
-														height={16}
-														viewbox='0 0 16 16'
-														fill={'#2c8267'}
-													/>
-												) : (
-													''
-												)}
-											</Dropdown.Item>
-										);
-									})}
-								</Dropdown.Menu>
-							</Dropdown>
-						</span>
-					</Col>
-					<Col sm={12} md={4} className='d-flex justify-content-end align-items-center banner-right'>
-						<span className='white-14-semibold'>{DatasetOnboardingHelper.getSavedAgo(lastSaved)}</span>
-						{
-							<a
-								className={`linkButton white-14-semibold ml-2 ${allowedNavigation ? '' : 'disabled'}`}
-								onClick={this.onClickSave}
-								href='javascript:void(0)'>
-								Save now
-							</a>
-						}
-						<CloseButtonSvg width='16px' height='16px' fill='#fff' onClick={e => this.redirectDashboard(e)} />
-					</Col>
-				</Row>
+													{this.state._id === dat._id ? (
+														<SVGIcon
+															className='collectionCheckSvg'
+															name='checkicon'
+															width={16}
+															height={16}
+															viewbox='0 0 16 16'
+															fill={'#2c8267'}
+														/>
+													) : (
+														''
+													)}
+												</Dropdown.Item>
+											);
+										})}
+									</Dropdown.Menu>
+								</Dropdown>
+							</span>
+						</Col>
+						<Col sm={12} md={4} className='d-flex justify-content-end align-items-center banner-right'>
+							<span className='white-14-semibold'>{DatasetOnboardingHelper.getSavedAgo(lastSaved)}</span>
+							{
+								<a
+									className={`linkButton white-14-semibold ml-2 ${allowedNavigation ? '' : 'disabled'}`}
+									onClick={this.onClickSave}
+									href='javascript:void(0)'>
+									Save now
+								</a>
+							}
+							<CloseButtonSvg width='16px' height='16px' fill='#fff' onClick={e => this.redirectDashboard(e)} />
+						</Col>
+					</Row>
 
-				<div id='darContainer' className='flex-form'>
-					<div id='darLeftCol' className='scrollable-sticky-column'>
-						{[...this.state.jsonSchema.pages].map((item, idx) => (
-							<div key={`navItem-${idx}`} className={`${item.active ? 'active-border' : ''}`}>
-								<div>
-									<span
-										className={`${!this.state.inReviewMode ? 'black-16' : item.inReview ? 'black-16' : 'section-not-inreview'}
+					<div id='darContainer' className='flex-form'>
+						<div id='darLeftCol' className='scrollable-sticky-column'>
+							{[...this.state.jsonSchema.pages].map((item, idx) => (
+								<div key={`navItem-${idx}`} className={`${item.active ? 'active-border' : ''}`}>
+									<div>
+										<span
+											className={`${!this.state.inReviewMode ? 'black-16' : item.inReview ? 'black-16' : 'section-not-inreview'}
 										${item.active ? 'section-header-active' : 'section-header'} 
 										${this.state.allowedNavigation ? '' : 'disabled'}`}
-										onClick={e => this.updateNavigation(item)}>
-										<div>
-											<div className='completionIconHolder'>
-												{item.title === 'Before you begin' ? (
-													<div className='completionIconGap'></div>
-												) : (
-													<OverlayTrigger
-														key={item.title}
-														placement='top'
-														overlay={
-															<Tooltip id={`tooltip-top`}>
-																{item.title}: {completion[item.pageId]}%
-															</Tooltip>
-														}>
-														<div>
-															<StatusDisplay section={item.title} status={completion[item.pageId]} />
-														</div>
-													</OverlayTrigger>
-												)}
+											onClick={e => this.updateNavigation(item)}>
+											<div>
+												<div className='completionIconHolder'>
+													{item.title === 'Before you begin' ? (
+														<div className='completionIconGap'></div>
+													) : (
+														<OverlayTrigger
+															key={item.title}
+															placement='top'
+															overlay={
+																<Tooltip id={`tooltip-top`}>
+																	{item.title}: {completion[item.pageId]}%
+																</Tooltip>
+															}>
+															<div>
+																<StatusDisplay section={item.title} status={completion[item.pageId]} />
+															</div>
+														</OverlayTrigger>
+													)}
+												</div>
+												<div className='titleHolder'>{item.title}</div>
+
+												{(() => {
+													let isSubPanel = false;
+													[...this.state.jsonSchema.questionPanels].map((item2, index) => {
+														if (item.pageId === item2.pageId && item2.navHeader) {
+															console.log(item.pageId + ' === ' + item2.pageId + ' && ' + item2.navHeader);
+															isSubPanel = true;
+														}
+													});
+													if (isSubPanel)
+														return (
+															<SVGIcon
+																name='chevronbottom'
+																width={14}
+																height={14}
+																fill={'#3c4e8c'}
+																className={item.active ? 'padding-left-4' : 'padding-left-4 flip180'}
+															/>
+														);
+												})()}
+
+												<div> {item.flag && <i className={DatasetOnboardingHelper.flagIcons[item.flag]} />}</div>
 											</div>
-											<div className='titleHolder'>{item.title}</div>
+										</span>
+										{item.active && (
+											<ul className='list-unstyled section-subheader'>
+												<NavItem
+													parentForm={item}
+													questionPanels={this.state.jsonSchema.questionPanels}
+													onFormSwitchPanel={this.updateNavigation}
+													activePanelId={this.state.activePanelId}
+													enabled={allowedNavigation}
+													notForReview={!item.inReview && this.state.inReviewMode}
+													completion={completion}
+												/>
+											</ul>
+										)}
+									</div>
+								</div>
+							))}
+						</div>
 
-											{(() => {
-												let isSubPanel = false;
-												[...this.state.jsonSchema.questionPanels].map((item2, index) => {
-													if (item.pageId === item2.pageId && item2.navHeader) {
-														console.log(item.pageId + ' === ' + item2.pageId + ' && ' + item2.navHeader);
-														isSubPanel = true;
-													}
-												});
-												if (isSubPanel)
-													return (
-														<SVGIcon
-															name='chevronbottom'
-															width={14}
-															height={14}
-															fill={'#3c4e8c'}
-															className={item.active ? 'padding-left-4' : 'padding-left-4 flip180'}
-														/>
-													);
-											})()}
-
-											<div> {item.flag && <i className={DatasetOnboardingHelper.flagIcons[item.flag]} />}</div>
-										</div>
-									</span>
-									{item.active && (
-										<ul className='list-unstyled section-subheader'>
-											<NavItem
-												parentForm={item}
-												questionPanels={this.state.jsonSchema.questionPanels}
-												onFormSwitchPanel={this.updateNavigation}
-												activePanelId={this.state.activePanelId}
-												enabled={allowedNavigation}
-												notForReview={!item.inReview && this.state.inReviewMode}
-												completion={completion}
-											/>
-										</ul>
-									)}
+						<div id='darCenterCol' className={isWideForm ? 'extended' : '' || isTableForm ? 'table' : ''}>
+							<div style={{ backgroundColor: '#ffffff' }} className='dar__header'>
+								{this.state.jsonSchema.pages
+									? [...this.state.jsonSchema.pages].map((item, idx) =>
+											item.active ? (
+												<Fragment key={`pageContent-${idx}`}>
+													<p className='black-20-semibold mb-0'>{item.active ? item.title : ''}</p>
+													<ReactMarkdown className='gray800-14' source={item.description} />
+												</Fragment>
+											) : (
+												''
+											)
+									  )
+									: ''}
+							</div>
+							<div
+								className={`dar__questions ${this.state.activePanelId === 'beforeYouBegin' ? 'pad-bottom-0' : ''}
+														${this.state.activePanelId === 'structural' ? 'margin-top-0 noPadding' : ''}`}
+								style={{ backgroundColor: '#ffffff' }}>
+								{this.renderApp()}
+							</div>
+						</div>
+						{isWideForm || isTableForm ? null : (
+							<div id='darRightCol' className='scrollable-sticky-column'>
+								<div className='darTab'>
+									<Guidance activeGuidance={activeGuidance} resetGuidance={this.resetGuidance} />
 								</div>
 							</div>
-						))}
+						)}
 					</div>
 
-					<div id='darCenterCol' className={isWideForm ? 'extended' : '' || isTableForm ? 'table' : ''}>
-						<div style={{ backgroundColor: '#ffffff' }} className='dar__header'>
-							{this.state.jsonSchema.pages
-								? [...this.state.jsonSchema.pages].map((item, idx) =>
-										item.active ? (
-											<Fragment key={`pageContent-${idx}`}>
-												<p className='black-20-semibold mb-0'>{item.active ? item.title : ''}</p>
-												<ReactMarkdown className='gray800-14' source={item.description} />
-											</Fragment>
-										) : (
-											''
-										)
-								  )
-								: ''}
-						</div>
-						<div
-							className={`dar__questions ${this.state.activePanelId === 'beforeYouBegin' ? 'pad-bottom-0' : ''}
-														${this.state.activePanelId === 'structural' ? 'margin-top-0 noPadding' : ''}`}
-							style={{ backgroundColor: '#ffffff' }}>
-							{this.renderApp()}
-						</div>
-					</div>
-					{isWideForm || isTableForm ? null : (
-						<div id='darRightCol' className='scrollable-sticky-column'>
-							<div className='darTab'>
-								<Guidance activeGuidance={activeGuidance} resetGuidance={this.resetGuidance} />
+					<ActionBar userState={userState}>
+						<div className='action-bar'>
+							<div className='action-bar--questions'>
+								<SLA
+									classProperty={DatasetOnboardingHelper.datasetStatusColours[applicationStatus]}
+									text={DatasetOnboardingHelper.datasetSLAText[applicationStatus]}
+								/>
+								<ActionBarStatus status={applicationStatus} totalQuestions={totalQuestions} dataset={dataset} />
+							</div>
+							<div className='action-bar-actions'>
+								<AmendmentCount answeredAmendments={this.state.answeredAmendments} unansweredAmendments={this.state.unansweredAmendments} />
+								{userType.toUpperCase() === 'EDITOR' ? (
+									<ApplicantActionButtons
+										allowedNavigation={allowedNavigation}
+										onNextClick={this.onNextClick}
+										onFormSubmit={this.onFormSubmit}
+										onShowArchiveModal={this.toggleArchiveModal}
+										onShowUnArchiveModal={this.toggleUnArchiveModal}
+										onShowCreateNewVersionModal={this.toggleCreateNewVersionModal}
+										showSubmit={this.state.showSubmit}
+										submitButtonText={this.state.submitButtonText}
+										showCreateNewVersion={this.state.showCreateNewVersion}
+										showArchive={this.state.showArchive}
+										showUnArchive={this.state.showUnArchive}
+										showDeleteDraft={this.state.showDeleteDraft}
+										onShowDeleteDraftModal={this.toggleDeleteDraftModal}
+										onShowDuplicateModal={this.toggleDuplicateModal}
+									/>
+								) : (
+									<CustodianActionButtons
+										allowedNavigation={allowedNavigation}
+										onActionClick={this.onCustodianAction}
+										onNextClick={this.onNextClick}
+										roles={roles}
+									/>
+								)}
 							</div>
 						</div>
-					)}
-				</div>
+					</ActionBar>
 
-				<ActionBar userState={userState}>
-					<div className='action-bar'>
-						<div className='action-bar--questions'>
-							<SLA
-								classProperty={DatasetOnboardingHelper.datasetStatusColours[applicationStatus]}
-								text={DatasetOnboardingHelper.datasetSLAText[applicationStatus]}
-							/>
-							<div className='action-bar-status'>
-								{applicationStatus === 'draft' ? totalQuestions : ''}
-								{applicationStatus === 'active'
-									? `This version was published on ${moment(dataset.timestamps.published).format('D MMMM YYYY')}`
-									: ''}
-								{applicationStatus === 'inReview'
-									? `Submitted for review on ${moment(dataset.timestamps.submitted).format('D MMMM YYYY')}`
-									: ''}
-								{applicationStatus === 'rejected'
-									? `This version was rejected on ${moment(dataset.timestamps.rejected).format('D MMMM YYYY')}`
-									: ''}
-								{applicationStatus === 'archived'
-									? `This version was published on ${moment(dataset.timestamps.published).format('D MMMM YYYY')} and archived on ${moment(
-											dataset.timestamps.archived
-									  ).format('D MMMM YYYY')}`
-									: ''}
-							</div>
-						</div>
-						<div className='action-bar-actions'>
-							<AmendmentCount answeredAmendments={this.state.answeredAmendments} unansweredAmendments={this.state.unansweredAmendments} />
-							{userType.toUpperCase() === 'EDITOR' ? (
-								<ApplicantActionButtons
-									allowedNavigation={allowedNavigation}
-									onNextClick={this.onNextClick}
-									onFormSubmit={this.onFormSubmit}
-									onShowArchiveModal={this.toggleArchiveModal}
-									onShowUnArchiveModal={this.toggleUnArchiveModal}
-									onShowCreateNewVersionModal={this.toggleCreateNewVersionModal}
-									showSubmit={this.state.showSubmit}
-									submitButtonText={this.state.submitButtonText}
-									showCreateNewVersion={this.state.showCreateNewVersion}
-									showArchive={this.state.showArchive}
-									showUnArchive={this.state.showUnArchive}
-									showDeleteDraft={this.state.showDeleteDraft}
-									onShowDeleteDraftModal={this.toggleDeleteDraftModal}
-									onShowDuplicateModal={this.toggleDuplicateModal}
-								/>
-							) : (
-								<CustodianActionButtons
-									allowedNavigation={allowedNavigation}
-									onActionClick={this.onCustodianAction}
-									onNextClick={this.onNextClick}
-									roles={roles}
-								/>
-							)}
-						</div>
-					</div>
-				</ActionBar>
+					<SideDrawer open={showDrawer} closed={e => this.toggleDrawer()}>
+						<UserMessages
+							userState={userState[0]}
+							closed={e => this.toggleDrawer()}
+							toggleModal={this.toggleModal}
+							drawerIsOpen={this.state.showDrawer}
+							topicContext={this.state.topicContext}
+						/>
+					</SideDrawer>
 
-				<SideDrawer open={showDrawer} closed={e => this.toggleDrawer()}>
-					<UserMessages
-						userState={userState[0]}
-						closed={e => this.toggleDrawer()}
-						toggleModal={this.toggleModal}
-						drawerIsOpen={this.state.showDrawer}
-						topicContext={this.state.topicContext}
+					<ActionModal
+						open={showActionModal}
+						context={actionModalConfig}
+						datasetVersionAction={this.datasetVersionAction}
+						close={this.toggleActionModal}
 					/>
-				</SideDrawer>
-
-				<ActionModal
-					open={showActionModal}
-					context={actionModalConfig}
-					datasetVersionAction={this.datasetVersionAction}
-					close={this.toggleActionModal}
-				/>
-			</div>
+				</div>
+			</Sentry.ErrorBoundary>
 		);
 	}
 }

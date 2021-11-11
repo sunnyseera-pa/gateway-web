@@ -34,12 +34,11 @@ const SavedPreferencesModal = ({ show, onHide, viewSaved, activeTab }) => {
 		});
 	};
 
-	const tabs = ['Datasets', 'Tools', 'Data uses', 'Projects', 'Collections', 'Courses', 'Papers', 'People'];
+	const tabs = ['Datasets', 'Tools', 'Datauses', 'Collections', 'Courses', 'Papers', 'People'];
 
 	const datasetsTotal = data.filter(a => a.name).filter(a => a.filterCriteria.tab === 'Datasets').length;
 	const toolsTotal = data.filter(a => a.name).filter(a => a.filterCriteria.tab === 'Tools').length;
 	const datausesTotal = data.filter(a => a.name).filter(a => a.filterCriteria.tab === 'Datauses').length;
-	const projectTotal = data.filter(a => a.name).filter(a => a.filterCriteria.tab === 'Projects').length;
 	const collectionsTotal = data.filter(a => a.name).filter(a => a.filterCriteria.tab === 'Collections').length;
 	const coursesTotal = data.filter(a => a.name).filter(a => a.filterCriteria.tab === 'Courses').length;
 	const papersTotal = data.filter(a => a.name).filter(a => a.filterCriteria.tab === 'Papers').length;
@@ -69,8 +68,7 @@ const SavedPreferencesModal = ({ show, onHide, viewSaved, activeTab }) => {
 							' ' +
 							((tabName === 'Datasets' && '(' + datasetsTotal + ')') ||
 								(tabName === 'Tools' && '(' + toolsTotal + ')') ||
-								(tabName === 'Data uses' && '(' + datausesTotal + ')') ||
-								(tabName === 'Projects' && '(' + projectTotal + ')') ||
+								(tabName === 'Datauses' && '(' + datausesTotal + ')') ||
 								(tabName === 'Collections' && '(' + collectionsTotal + ')') ||
 								(tabName === 'Courses' && '(' + coursesTotal + ')') ||
 								(tabName === 'Papers' && '(' + papersTotal + ')') ||
