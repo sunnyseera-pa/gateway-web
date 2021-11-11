@@ -85,6 +85,10 @@ const AccountDatasets = props => {
 		setKey(key);
 	};
 
+	const getDatasetPath = id => {
+		return `/account/datasets/${id}`;
+	};
+
 	const generateAlert = () => {
 		let { message = '' } = alert;
 
@@ -207,6 +211,7 @@ const AccountDatasets = props => {
 											} else {
 												return (
 													<DatasetCard
+														path={getDatasetPath(dataset.pid)}
 														id={dataset._id}
 														title={dataset.name}
 														publisher={dataset.datasetv2.summary.publisher.name}

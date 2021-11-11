@@ -520,8 +520,6 @@ class Account extends Component {
 			dataaccessrequest,
 		} = this.state;
 
-		console.log('History', team);
-
 		return (
 			<Sentry.ErrorBoundary fallback={<ErrorModal />}>
 				<SearchBar

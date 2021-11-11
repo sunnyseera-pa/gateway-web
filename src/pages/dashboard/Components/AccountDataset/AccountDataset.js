@@ -2,7 +2,8 @@ import _ from 'lodash';
 import React, { Suspense, useState } from 'react';
 import { Button } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
-import { useParams } from 'react-router';
+import { NotificationManager } from 'react-notifications';
+import { Redirect, useHistory, useParams } from 'react-router';
 import { useAuth } from '../../../../context/AuthContext';
 import serviceActivityLog from '../../../../services/activitylog/activitylog';
 import serviceDatasetOnboarding from '../../../../services/dataset-onboarding/dataset-onboarding';
@@ -19,17 +20,22 @@ import ActivityLogCard from '../ActivityLogCard';
 const AccountDataset = props => {
 	const { t } = useTranslation();
 	const { id } = useParams();
+	const history = useHistory();
 	const { userState } = useAuth();
 	const [team, setTeam] = useState();
+	const [currentDataset, setCurrentDataset] = useState();
 	const [state, setState] = useState({
 		showPrevious: true,
 		showDisabled: true,
 		statusError: false,
 	});
 
-	const dataDataset = serviceDatasets.useGetDataset(id);
 	const dataActivityLog = serviceActivityLog.usePostActivityLog();
 	const publisherId = utils.getPublisherID(userState[0], team);
+
+	const filterCurrentDataset = datasets => {
+		return datasets.find(dataset => dataset.pid === id);
+	};
 
 	const dataPublisher = serviceDatasetOnboarding.useGetPublisher(Array.isArray(publisherId) ? publisherId[0] : publisherId, null, {
 		onSuccess: data => {
@@ -39,11 +45,13 @@ const AccountDataset = props => {
 				},
 			} = data;
 
-			const dataset = datasets.find(dataset => dataset.pid === id);
+			const dataset = filterCurrentDataset(datasets);
 
-			if (dataset && dataset.listOfVersions.length > 0) {
+			setCurrentDataset(dataset);
+
+			if (dataset) {
 				dataActivityLog.mutateAsync({
-					versionIds: dataset.listOfVersions.map(version => version._id),
+					versionIds: [...dataset.listOfVersions.map(version => version._id), dataset._id],
 					type: 'dataset',
 				});
 			}
@@ -62,29 +70,29 @@ const AccountDataset = props => {
 				},
 			} = dataPublisher.data;
 
-			// const datasets = listOfDatasets.filter(dataset => DataSetHelper.isInReview(dataset));
-			const datasets = listOfDatasets.filter(dataset => !DataSetHelper.isNotActive(dataset) || DataSetHelper.isInReview(dataset));
-
-			// const datasets = listOfDatasets;
-
-			// console.log('listOfDatasets', listOfDatasets);
-			// console.log('Datasets', datasets);
+			const datasets = listOfDatasets.filter(dataset => DataSetHelper.isInReview(dataset));
 
 			const currentIndex = _.findIndex(datasets, dataset => {
 				return dataset.pid == id;
 			});
 
-			setState({
+			let buttonState = {
 				showNext: currentIndex < datasets.length - 1,
 				showPrevious: currentIndex > 0,
-			});
+			};
 
 			if (currentIndex === -1) {
 				setState({
+					...buttonState,
 					statusError: true,
 				});
 
 				return;
+			} else {
+				setState({
+					...buttonState,
+					statusError: false,
+				});
 			}
 
 			return datasets[currentIndex + i].pid;
@@ -99,34 +107,14 @@ const AccountDataset = props => {
 		i => {
 			const pid = goToDataset(i);
 
-			window.location.assign(`/account/datasets/${pid}`);
+			history.push(`/account/datasets/${pid}`);
 		},
 		[id, dataPublisher.data, team]
 	);
 
 	const { showPrevious, showNext, statusError } = state;
 
-	if (!dataDataset.data && dataDataset.isError && dataDataset.isFetched) {
-		return (
-			<AccountContent>
-				<NotFound word='dataset' />
-			</AccountContent>
-		);
-	}
-
-	if (statusError) {
-		return (
-			<AccountContent>
-				<NotFound
-					text={t('dataset.activitylog.notfound', {
-						status: 'in review',
-					})}
-				/>
-			</AccountContent>
-		);
-	}
-
-	if (dataDataset.isLoading || dataPublisher.isLoading || dataActivityLog.isLoading) {
+	if (dataPublisher.isLoading || dataActivityLog.isLoading) {
 		return (
 			<AccountContent>
 				<Loading />
@@ -134,45 +122,58 @@ const AccountDataset = props => {
 		);
 	}
 
-	const {
-		data: { data: dataset },
-	} = dataDataset.data;
+	if (dataPublisher.isFetched) {
+		if (dataPublisher.data && !filterCurrentDataset(dataPublisher.data.data.data.listOfDatasets)) {
+			NotificationManager.error('The accessed dataset does not exist', 'Page not found', 10000);
 
-	// console.log('dataActivityLog.data.data.logs', dataActivityLog.data.data.logs);
+			history.push('/account?tab=datasets');
+
+			return null;
+		} else if (statusError) {
+			NotificationManager.error('The status of the dataset must be in review', 'Invalid status', 10000);
+
+			history.push('/account?tab=datasets');
+
+			return null;
+		}
+	}
 
 	return (
-		<Suspense fallback={t('loading')}>
-			<AccountContent>
-				<DatasetCard
-					id={dataset._id}
-					title={dataset.name}
-					publisher={dataset.datasetv2.summary.publisher.name}
-					version={dataset.datasetVersion}
-					isDraft={true}
-					datasetStatus={dataset.activeflag}
-					timeStamps={dataset.timestamps}
-					completion={dataset.percentageCompleted}
-					listOfVersions={dataset.listOfVersions || []}
-				/>
+		currentDataset && (
+			<Suspense fallback={t('loading')}>
+				<AccountContent>
+					<DatasetCard
+						id={currentDataset._id}
+						title={currentDataset.name}
+						publisher={currentDataset.datasetv2.summary.publisher.name}
+						version={currentDataset.datasetVersion}
+						isDraft={true}
+						datasetStatus={currentDataset.activeflag}
+						timeStamps={currentDataset.timestamps}
+						completion={currentDataset.percentageCompleted}
+						listOfVersions={currentDataset.listOfVersions}
+					/>
 
-				{dataActivityLog.data && dataActivityLog.data.data.logs.map(version => <ActivityLogCard {...version} />)}
+					{dataActivityLog.data &&
+						dataActivityLog.data.data.logs.map(version => <ActivityLogCard key={version.versionNumber} {...version} />)}
 
-				<ActionBar userState={userState}>
-					<div className='action-bar-actions'>
-						{showPrevious && !statusError && (
-							<Button variant='light' onClick={() => handlePaginationClick(-1)}>
-								{t('previous')}
-							</Button>
-						)}
-						{showNext && !statusError && (
-							<Button variant='light' onClick={() => handlePaginationClick(1)}>
-								{t('next')}
-							</Button>
-						)}
-					</div>
-				</ActionBar>
-			</AccountContent>
-		</Suspense>
+					<ActionBar userState={userState}>
+						<div className='action-bar-actions'>
+							{showPrevious && !statusError && (
+								<Button variant='light' onClick={() => handlePaginationClick(-1)}>
+									{t('previous')}
+								</Button>
+							)}
+							{showNext && !statusError && (
+								<Button variant='light' onClick={() => handlePaginationClick(1)}>
+									{t('next')}
+								</Button>
+							)}
+						</div>
+					</ActionBar>
+				</AccountContent>
+			</Suspense>
+		)
 	);
 };
 

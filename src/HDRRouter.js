@@ -38,6 +38,7 @@ import { ThemeProvider } from '@emotion/react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { AuthProvider } from './context/AuthContext';
 import { theme } from './configs/theme';
+import { NotificationContainer } from 'react-notifications';
 
 const baseURL = require('./pages/commonComponents/BaseURL').getURL();
 const urlEnv = require('./pages/commonComponents/BaseURL').getURLEnv();
@@ -203,6 +204,7 @@ class HDRRouter extends Component {
 					<QueryClientProvider client={queryClient}>
 						<ThemeProvider theme={theme}>
 							<Router>
+								<NotificationContainer />
 								<LoginModal userState={userState} />
 								<div className='navBarGap'></div>
 								<div className='mainWrap' onScroll={this.handleScroll}>

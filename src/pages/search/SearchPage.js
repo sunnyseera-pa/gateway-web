@@ -4,7 +4,6 @@ import _, { upperFirst } from 'lodash';
 import queryString from 'query-string';
 import React from 'react';
 import { Alert, Button, Col, Container, Row, Tab, Tabs } from 'react-bootstrap';
-import { NotificationContainer } from 'react-notifications';
 import SVGIcon from '../../images/SVGIcon';
 import googleAnalytics from '../../tracking';
 import AdvancedSearchModal from '../commonComponents/AdvancedSearchModal/AdvancedSearchModal';
@@ -1723,7 +1722,6 @@ class SearchPage extends React.Component {
 						</Row>
 					</Container>
 
-					<NotificationContainer />
 					<SideDrawer open={showDrawer} closed={this.toggleDrawer}>
 						<UserMessages
 							userState={userState[0]}

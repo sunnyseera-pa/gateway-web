@@ -22,6 +22,11 @@ jest.mock('../ActivityLogCard', () => props => {
 
 const mockDatasetCard = jest.fn();
 const mockActivityLogCard = jest.fn();
+const mockPush = jest.fn();
+
+const props = {
+	location: {},
+};
 
 const queryClient = new QueryClient({
 	defaultOptions: {
@@ -31,25 +36,13 @@ const queryClient = new QueryClient({
 	},
 });
 
-const providers = ({ children }) => (
-	<I18nextProvider i18n={i18n}>
-		<Suspense fallback='Loading'>
-			<AuthProvider value={{ userState: mockUser.data }}>
-				<QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-			</AuthProvider>
-		</Suspense>
-	</I18nextProvider>
-);
-
-const props = {
-	location: {},
-};
-
-window.location.assign = jest.fn();
-
 describe('Given the AccountDataset component', () => {
 	beforeAll(() => {
 		server.listen();
+
+		jest.spyOn(reactRouter, 'useHistory').mockImplementation(() => ({
+			push: mockPush,
+		}));
 	});
 
 	afterEach(() => {
@@ -68,11 +61,9 @@ describe('Given the AccountDataset component', () => {
 				id: '0a048419-0796-46fb-ad7d-91e650a6c742',
 			});
 
-			wrapper = render(<AccountDataset {...props} />, { wrapper: providers });
-		});
-
-		afterAll(() => {
-			window.location.assign.mockReset();
+			wrapper = render(<AccountDataset {...props} />, {
+				wrapper: ({ children }) => <Providers queryClient={queryClient}>{children}</Providers>,
+			});
 		});
 
 		it('Then matches the previous snapshot', async () => {
@@ -100,8 +91,12 @@ describe('Given the AccountDataset component', () => {
 				await fireEvent.click(button);
 			});
 
+			afterAll(() => {
+				mockPush.mockReset();
+			});
+
 			it('Then loads the new dataset', () => {
-				expect(window.location.assign.mock.calls[0][0]).toEqual('/account/datasets/a9923649-38fe-4b28-90a1-e6de5fa5d405');
+				expect(mockPush).toHaveBeenCalledWith('/account/datasets/d5c99a71-c039-4a0b-9171-dba8a1c33154');
 			});
 		});
 	});
@@ -114,11 +109,13 @@ describe('Given the AccountDataset component', () => {
 				id: 'd5c99a71-c039-4a0b-9171-dba8a1c33154',
 			});
 
-			wrapper = render(<AccountDataset {...props} />, { wrapper: providers });
+			wrapper = render(<AccountDataset {...props} />, {
+				wrapper: ({ children }) => <Providers queryClient={queryClient}>{children}</Providers>,
+			});
 		});
 
 		afterAll(() => {
-			window.location.assign.mockReset();
+			mockPush.mockReset();
 		});
 
 		describe('And the previous button is clicked', () => {
@@ -131,7 +128,7 @@ describe('Given the AccountDataset component', () => {
 			});
 
 			it('Then loads the new dataset', () => {
-				expect(window.location.assign.mock.calls[0][0]).toEqual('/account/datasets/fd9d9bf3-576b-4efa-89fc-b389d524d667');
+				expect(mockPush).toHaveBeenCalledWith('/account/datasets/0a048419-0796-46fb-ad7d-91e650a6c742');
 			});
 		});
 	});
@@ -144,11 +141,17 @@ describe('Given the AccountDataset component', () => {
 				id: '1f509fe7-e94f-48fe-af6a-81f2bf8a5270',
 			});
 
-			wrapper = render(<AccountDataset {...props} />, { wrapper: providers });
+			wrapper = render(<AccountDataset {...props} />, {
+				wrapper: ({ children }) => <Providers queryClient={queryClient}>{children}</Providers>,
+			});
 		});
 
-		it('Then shows an info message', async () => {
-			await waitFor(() => expect(wrapper.getByText('The activity log for this dataset cannot be accessed. It must be set to in review.')));
+		afterAll(() => {
+			mockPush.mockReset();
+		});
+
+		it('Then loads the new dataset', () => {
+			expect(mockPush).toHaveBeenCalledWith('/account?tab=datasets');
 		});
 	});
 
@@ -160,11 +163,17 @@ describe('Given the AccountDataset component', () => {
 				id: 'invalid',
 			});
 
-			wrapper = render(<AccountDataset {...props} />, { wrapper: providers });
+			wrapper = render(<AccountDataset {...props} />, {
+				wrapper: ({ children }) => <Providers queryClient={queryClient}>{children}</Providers>,
+			});
 		});
 
-		it('Then shows a no results message', async () => {
-			await waitFor(() => expect(wrapper.getAllByText('No dataset found')).toBeTruthy());
+		afterAll(() => {
+			mockPush.mockReset();
+		});
+
+		it('Then loads the new dataset', () => {
+			expect(mockPush).toHaveBeenCalledWith('/account?tab=datasets');
 		});
 	});
 });

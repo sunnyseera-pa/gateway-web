@@ -111,62 +111,24 @@ export const mswGetPublisher = rest.get(`${apiURL}/dataset-onboarding/publisher/
 						applicationStatusDesc: 'This dataset is pro',
 						listOfVersions: [
 							{
-								_id: '6131ff4191fd6787f314804f',
-								timestamps: {
-									created: '2021-09-03T10:56:01.025Z',
-									updated: '2021-11-03T14:05:07.993Z',
-									submitted: '2021-09-03T10:56:04.875Z',
-									published: '2021-11-03T14:05:07.993Z',
-								},
-								pid: 'adc28a1e-f7e2-41d0-92e6-b9e4c11f9f1a',
-								datasetVersion: '6.0.0',
-								name: 'Test title',
-								datasetv2: {
-									summary: {
-										publisher: {
-											name: 'SAIL',
-										},
-									},
-								},
-								activeflag: 'active',
-								percentageCompleted: {
-									summary: 80,
-									documentation: 0,
-									coverage: 0,
-									origin: 33,
-									temporal: 60,
-									usage: 0,
-									access: 43,
-									formatAndStandards: 100,
-									enrichmentAndLinkage: 0,
-									observations: 80,
-									provenance: 50,
-									accessibility: 44,
-									structural: 0,
-								},
-								applicationStatusDesc: 'qerg134',
-								listOfVersions: [
-									{
-										_id: '6130f09c05936d4236c42de7',
-										datasetVersion: '4.0.0',
-										activeflag: 'rejected',
-									},
-									{
-										_id: '6130efd505936d4236c42de1',
-										datasetVersion: '3.0.0',
-										activeflag: 'archive',
-									},
-									{
-										_id: '6130e33805936d4236c42dd5',
-										datasetVersion: '2.0.0',
-										activeflag: 'rejected',
-									},
-									{
-										_id: '6130d0ed05936d4236c42dcc',
-										datasetVersion: '1.0.0',
-										activeflag: 'archive',
-									},
-								],
+								_id: '6130f09c05936d4236c42de7',
+								datasetVersion: '4.0.0',
+								activeflag: 'rejected',
+							},
+							{
+								_id: '6130efd505936d4236c42de1',
+								datasetVersion: '3.0.0',
+								activeflag: 'archive',
+							},
+							{
+								_id: '6130e33805936d4236c42dd5',
+								datasetVersion: '2.0.0',
+								activeflag: 'rejected',
+							},
+							{
+								_id: '6130d0ed05936d4236c42dcc',
+								datasetVersion: '1.0.0',
+								activeflag: 'archive',
 							},
 						],
 					},
@@ -207,7 +169,28 @@ export const mswGetPublisher = rest.get(`${apiURL}/dataset-onboarding/publisher/
 						},
 						applicationStatusDesc: 'SDg',
 						applicationStatusAuthor: 'Callum Reekie',
-						listOfVersions: [],
+						listOfVersions: [
+							{
+								_id: '6130f09c05936d4236c42de7',
+								datasetVersion: '4.0.0',
+								activeflag: 'rejected',
+							},
+							{
+								_id: '6130efd505936d4236c42de1',
+								datasetVersion: '3.0.0',
+								activeflag: 'archive',
+							},
+							{
+								_id: '6130e33805936d4236c42dd5',
+								datasetVersion: '2.0.0',
+								activeflag: 'rejected',
+							},
+							{
+								_id: '6130d0ed05936d4236c42dcc',
+								datasetVersion: '1.0.0',
+								activeflag: 'archive',
+							},
+						],
 					},
 					{
 						_id: '61829910e4ea0f9763bd3e42',
@@ -246,7 +229,28 @@ export const mswGetPublisher = rest.get(`${apiURL}/dataset-onboarding/publisher/
 						},
 						applicationStatusDesc: 'You have not done something right.',
 						applicationStatusAuthor: 'Callum Reekie',
-						listOfVersions: [],
+						listOfVersions: [
+							{
+								_id: '6130f09c05936d4236c42de7',
+								datasetVersion: '4.0.0',
+								activeflag: 'rejected',
+							},
+							{
+								_id: '6130efd505936d4236c42de1',
+								datasetVersion: '3.0.0',
+								activeflag: 'archive',
+							},
+							{
+								_id: '6130e33805936d4236c42dd5',
+								datasetVersion: '2.0.0',
+								activeflag: 'rejected',
+							},
+							{
+								_id: '6130d0ed05936d4236c42dcc',
+								datasetVersion: '1.0.0',
+								activeflag: 'archive',
+							},
+						],
 					},
 					{
 						_id: '61814af9f5fc00806ec17370',
