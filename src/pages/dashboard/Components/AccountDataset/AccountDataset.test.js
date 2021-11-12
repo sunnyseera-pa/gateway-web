@@ -1,14 +1,9 @@
-import { render } from '@testing-library/react';
-import React, { Suspense } from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { render, waitFor } from '@testing-library/react';
+import React from 'react';
+import { QueryClient } from 'react-query';
 import reactRouter from 'react-router';
 import AccountDataset from '.';
-import { waitFor } from '@testing-library/react';
-import { AuthProvider } from '../../../../context/AuthContext';
-import { mockUser } from '../../../../services/auth/mockData';
 import { server } from '../../../../services/mockServer';
-import { I18nextProvider } from 'react-i18next';
-import i18n from '../../../../i18n';
 
 jest.mock('../../../commonComponents/DatasetCard', () => props => {
 	mockDatasetCard(props);

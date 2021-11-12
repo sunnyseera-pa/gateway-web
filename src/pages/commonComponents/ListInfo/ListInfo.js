@@ -6,8 +6,8 @@ import * as styles from './ListInfo.styles';
 const ListInfo = ({ data, widthCol1 }) => {
 	return (
 		<ul css={styles.root}>
-			{data.map(({ label, value }) => (
-				<li css={styles.listItem}>
+			{data.map(({ label, value }, i) => (
+				<li css={styles.listItem} key={`${i}-${label}`}>
 					<div css={styles.col1(widthCol1)}>{label}</div>
 					<div>{value}</div>
 				</li>

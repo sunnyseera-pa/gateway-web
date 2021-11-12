@@ -42,9 +42,8 @@ export const stripMarkdown = (value = '', truncate = 0) => {
 };
 
 export const dateFormats = timestamp => {
-	console.log('TIMESTAMP', timestamp);
-
 	const date = new Date(timestamp);
+
 	return {
 		dateOnly: format(date, DISPLAY_DATE_STANDARD),
 		timeOnly: format(date, 'HH:mm'),

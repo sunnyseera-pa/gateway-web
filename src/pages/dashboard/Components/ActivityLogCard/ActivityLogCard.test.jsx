@@ -5,6 +5,15 @@ import ActivityLogCard from './ActivityLogCard';
 import DatasetOnboardingHelper from '../../../../utils/DatasetOnboardingHelper.util';
 import { dateFormats } from '../../../../utils/GeneralHelper.util';
 import mockData from './mockData';
+import { QueryClient } from 'react-query';
+
+const queryClient = new QueryClient({
+	defaultOptions: {
+		queries: {
+			retry: false,
+		},
+	},
+});
 
 const props = {
 	...mockData,
@@ -14,7 +23,9 @@ let wrapper;
 describe('Given the ActivityLogCard component', () => {
 	describe('When it is rendered', () => {
 		beforeAll(() => {
-			wrapper = render(<ActivityLogCard {...props} />);
+			wrapper = render(<ActivityLogCard {...props} />, {
+				wrapper: ({ children }) => <Providers queryClient={queryClient}>{children}</Providers>,
+			});
 		});
 
 		it('Then matches the previous snapshot', () => {

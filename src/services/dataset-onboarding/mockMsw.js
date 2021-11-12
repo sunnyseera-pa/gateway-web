@@ -83,7 +83,7 @@ export const mswGetPublisher = rest.get(`${apiURL}/dataset-onboarding/publisher/
 							published: '2021-11-03T14:02:06.377Z',
 						},
 						pid: '0a048419-0796-46fb-ad7d-91e650a6c742',
-						datasetVersion: '1.0.0',
+						datasetVersion: '2',
 						name: 'ActivityLog Test - CR',
 						datasetv2: {
 							summary: {
@@ -404,7 +404,7 @@ export const mswGetPublisher = rest.get(`${apiURL}/dataset-onboarding/publisher/
 							submitted: '2021-11-02T12:13:05.304Z',
 						},
 						pid: 'd5c99a71-c039-4a0b-9171-dba8a1c33154',
-						datasetVersion: '1.0.0',
+						datasetVersion: '2.0.0',
 						name: 'New dataset 2 Nov 2021 12:01',
 						datasetv2: {
 							summary: {
@@ -438,7 +438,7 @@ export const mswGetPublisher = rest.get(`${apiURL}/dataset-onboarding/publisher/
 							updated: '2021-10-20T10:53:28.503Z',
 						},
 						pid: '4932179f-1c9c-40a0-81b5-9b499aff7a64',
-						datasetVersion: '1.0.0',
+						datasetVersion: '2',
 						name: 'New dataset 20 Oct 2021 11:53',
 						datasetv2: {
 							summary: {

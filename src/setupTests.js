@@ -1,3 +1,4 @@
+import { ThemeProvider } from '@emotion/react';
 import '@testing-library/jest-dom';
 import * as rtl from '@testing-library/react';
 import Enzyme, { mount, render, shallow } from 'enzyme';
@@ -9,6 +10,7 @@ import 'regenerator-runtime/runtime';
 import { AuthProvider } from './context/AuthContext';
 import i18n from './i18n';
 import { mockUser } from './services/auth/mockData';
+import { theme } from './configs/theme';
 
 Enzyme.configure({
 	adapter: new Adapter(),
@@ -55,9 +57,11 @@ global.Providers = ({ children, queryClient }) => {
 	return (
 		<I18nextProvider i18n={i18n}>
 			<Suspense fallback='Loading'>
-				<AuthProvider value={{ userState: mockUser.data }}>
-					<QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-				</AuthProvider>
+				<ThemeProvider theme={theme}>
+					<AuthProvider value={{ userState: mockUser.data }}>
+						<QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+					</AuthProvider>
+				</ThemeProvider>
 			</Suspense>
 		</I18nextProvider>
 	);
