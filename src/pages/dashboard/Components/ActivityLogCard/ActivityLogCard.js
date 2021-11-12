@@ -58,6 +58,7 @@ const ActivityLogCard = props => {
 							<Timeline
 								data={events.map((event, i) => {
 									const dateTime = dateFormats(event.timestamp);
+									const commentTitle = event.eventType === 'datasetVersionRejected' ? t('activitylog.rejection') : t('comment');
 
 									return {
 										icon: <img src={eventStatusIcons[event.eventType]} data-testid={`${i}-${event.eventType}`} alt='Icon' />,
@@ -70,6 +71,12 @@ const ActivityLogCard = props => {
 													}}
 													className='mb-3'
 												/>
+												{event.adminComment && (
+													<BlockQuote>
+														<h6 className='mb-3 gray800'>{commentTitle}</h6>
+														<p className='mb-0'>{event.adminComment}</p>
+													</BlockQuote>
+												)}
 												{event.datasetUpdates &&
 													event.datasetUpdates.map(updates => {
 														const key = Object.keys(updates)[0];

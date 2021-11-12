@@ -25,7 +25,8 @@
 	"loading": "Loading",
 	"dataset": {
 		"activitylog": {
-			"notfound": "The activity log for this dataset cannot be accessed. It must be set to {{status}}."
+			"notfound": "The activity log for this dataset cannot be accessed. It must be set to {{status}}.",
+			"rejection": "Reason for rejection"
 		}
 	},
 	"next": "Next",

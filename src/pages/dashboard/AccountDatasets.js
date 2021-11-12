@@ -97,6 +97,7 @@ const AccountDatasets = props => {
 	};
 
 	const hasActivityHistory = dataset => {
+		console.log('asdasdasda', dataset.listOfVersions.length);
 		return dataset.listOfVersions.length > 0 && team === 'admin';
 	};
 
