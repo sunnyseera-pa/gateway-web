@@ -28,12 +28,12 @@ const AccountDatasetRejectModal = ({
 		validationSchema: Yup.object({
 			reason: Yup.string().required('This cannot be empty'),
 		}),
-		onSubmit: values => {
+		onSubmit: async values => {
 			const payload = {
 				id,
 				...values
 			};
-			datasetService.postRejectDatasetRequest(payload);
+			await datasetService.postRejectDatasetRequest(payload);
 		},
 	});
 
@@ -82,8 +82,8 @@ const AccountDatasetRejectModal = ({
 					<Button
 						className='button-secondary'
 						style={{ marginLeft: 'auto' }}
-						onClick={() => {
-							handleSubmit();
+						onClick={async () => {
+							await handleSubmit();
 							onReject();
 							closed();
 						}}>
