@@ -10,15 +10,17 @@ import ACTIVITY_LOG_PROP_TYPES from '../../../../services/activitylog/activitylo
 import { dateFormats } from '../../../../utils/GeneralHelper.util';
 import approved from '../../../../images/Application_approved.svg';
 import rejected from '../../../../images/Application_rejected.svg';
+import updates from '../../../../images/Updates_requested.svg';
+import versionCreated from '../../../../images/Versions_created.svg';
 import * as styles from './ActivityLogCard.styles';
 
 let eventStatusIcons = {
-	newDatasetVersionSubmitted: rejected,
+	newDatasetVersionSubmitted: versionCreated,
 	datasetVersionApproved: approved,
 	datasetVersionRejected: rejected,
-	datasetVersionArchived: rejected,
-	datasetVersionUnarchived: rejected,
-	datasetUpdatesSubmitted: rejected,
+	datasetVersionArchived: updates,
+	datasetVersionUnarchived: updates,
+	datasetUpdatesSubmitted: updates,
 };
 
 const ActivityLogCard = props => {
