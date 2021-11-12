@@ -9,6 +9,9 @@ import NotFound from '../commonComponents/NotFound';
 import SVGIcon from '../../images/SVGIcon';
 import utils from '../../utils/DataSetHelper.util';
 import './Dashboard.scss';
+import AccountContent from './Components/AccountContent';
+import { useHistory } from 'react-router';
+import { ReactComponent as EyeIcon } from '../../images/eye.svg';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -23,6 +26,7 @@ const AccountDatasets = props => {
 	const [alert] = useState(props.alert);
 	const [team, setTeam] = useState(props.team);
 	const [publisherID, setPublisherID] = useState('');
+	const history = useHistory();
 
 	useEffect(() => {
 		setTeam(props.team);
@@ -84,227 +88,228 @@ const AccountDatasets = props => {
 		setKey(key);
 	};
 
-	const generateAlert = () => {
-		let { message = '' } = alert;
-		return (
-			<Row className='mt-3'>
-				<Col xs={1}></Col>
-				<Col xs={10}>
-					<Alert variant={'success'} className='col-sm-12 main-alert'>
-						<SVGIcon name='check' width={18} height={18} fill={'#2C8267'} /> {message}
-					</Alert>
-				</Col>
-				<Col xs={1}></Col>
-			</Row>
-		);
-	};
-
 	const getDatasetPath = id => {
 		return `/account/datasets/${id}`;
 	};
 
+	const handleActivityLogClick = id => {
+		history.push(getDatasetPath(id));
+	};
+
+	const hasActivityHistory = dataset => {
+		console.log('asdasdasda', dataset.listOfVersions.length);
+		return dataset.listOfVersions.length > 0 && team === 'admin';
+	};
+
+	const generateAlert = () => {
+		let { message = '' } = alert;
+
+		return (
+			<AccountContent className='mt-3'>
+				<Alert variant={'success'} className='col-sm-12 main-alert'>
+					<SVGIcon name='check' width={18} height={18} fill={'#2C8267'} /> {message}
+				</Alert>
+			</AccountContent>
+		);
+	};
+
 	if (isLoading) {
 		return (
-			<Row>
-				<Col xs={1}></Col>
-				<Col xs={10}>
-					<Loading />
-				</Col>
-				<Col xs={1}></Col>
-			</Row>
+			<AccountContent>
+				<Loading />
+			</AccountContent>
 		);
 	}
 
 	return (
 		<div>
 			<>{!_.isEmpty(alert) ? generateAlert() : ''}</>
-			<Row>
-				<Col xs={1}></Col>
-				<Col xs={10}>
-					<div className='accountHeader'>
-						<Row>
-							<Col sm={12} md={8}>
-								<div>
-									<span className='black-20'>Datasets</span>
-								</div>
-								<div>
-									<span className='gray700-13 '>
-										{publisherID !== 'admin'
-											? 'View, add, edit, archive and check the status of your datasets.'
-											: 'Approve or reject pending datasets'}
-									</span>
-								</div>
-							</Col>
-							<Col sm={12} md={4} style={{ textAlign: 'right' }}>
-								<Button
-									variant='primary'
-									className='addButton'
-									onClick={
-										(() => googleAnalytics.recordEvent('Datasets', 'Add a new dataset', 'Datasets dashboard button clicked'),
-										createNewDataset)
-									}>
-									+ Add a new dataset
-								</Button>
-							</Col>
-						</Row>
-					</div>
-					<div className='tabsBackground'>
-						<Row>
-							<Col sm={12} lg={12}>
-								{team === 'admin' ? (
-									<Tabs className='dataAccessTabs gray700-13' activeKey={key} onSelect={handleSelect}>
-										<Tab eventKey='inReview' title={'Pending approval (' + reviewCount + ')'}>
-											{' '}
-										</Tab>
-									</Tabs>
-								) : (
-									<Tabs className='dataAccessTabs gray700-13' activeKey={key} onSelect={handleSelect}>
-										<Tab eventKey='active' title={'Active (' + activeCount + ')'}>
-											{' '}
-										</Tab>
-										<Tab eventKey='inReview' title={'Pending approval (' + reviewCount + ')'}>
-											{' '}
-										</Tab>
-										<Tab eventKey='rejected' title={'Rejected (' + rejectedCount + ')'}>
-											{' '}
-										</Tab>
-										<Tab eventKey='archive' title={'Archived (' + archiveCount + ')'}>
-											{' '}
-										</Tab>
-									</Tabs>
-								)}
-							</Col>
-						</Row>
-					</div>
+			<AccountContent>
+				<div className='accountHeader'>
+					<Row>
+						<Col sm={12} md={8}>
+							<div>
+								<span className='black-20'>Datasets</span>
+							</div>
+							<div>
+								<span className='gray700-13 '>
+									{publisherID !== 'admin'
+										? 'View, add, edit, archive and check the status of your datasets.'
+										: 'Approve or reject pending datasets'}
+								</span>
+							</div>
+						</Col>
+						<Col sm={12} md={4} style={{ textAlign: 'right' }}>
+							<Button
+								variant='primary'
+								className='addButton'
+								onClick={
+									(() => googleAnalytics.recordEvent('Datasets', 'Add a new dataset', 'Datasets dashboard button clicked'),
+									createNewDataset)
+								}>
+								+ Add a new dataset
+							</Button>
+						</Col>
+					</Row>
+				</div>
+				<div className='tabsBackground'>
+					<Row>
+						<Col sm={12} lg={12}>
+							{team === 'admin' ? (
+								<Tabs className='dataAccessTabs gray700-13' activeKey={key} onSelect={handleSelect}>
+									<Tab eventKey='inReview' title={'Pending approval (' + reviewCount + ')'}>
+										{' '}
+									</Tab>
+								</Tabs>
+							) : (
+								<Tabs className='dataAccessTabs gray700-13' activeKey={key} onSelect={handleSelect}>
+									<Tab eventKey='active' title={'Active (' + activeCount + ')'}>
+										{' '}
+									</Tab>
+									<Tab eventKey='inReview' title={'Pending approval (' + reviewCount + ')'}>
+										{' '}
+									</Tab>
+									<Tab eventKey='rejected' title={'Rejected (' + rejectedCount + ')'}>
+										{' '}
+									</Tab>
+									<Tab eventKey='archive' title={'Archived (' + archiveCount + ')'}>
+										{' '}
+									</Tab>
+								</Tabs>
+							)}
+						</Col>
+					</Row>
+				</div>
 
-					{(() => {
-						switch (key) {
-							case 'active':
-								return (
-									<div>
-										{activeCount <= 0 ? (
-											<NotFound word='datasets' />
-										) : (
-											datasetList.map(dataset => {
-												if (dataset.activeflag !== 'active' && dataset.activeflag !== 'draft') {
-													return <></>;
-												} else {
-													return (
-														<DatasetCard
-															id={dataset._id}
-															title={dataset.name}
-															publisher={dataset.datasetv2.summary.publisher.name}
-															version={dataset.datasetVersion}
-															isDraft={true}
-															datasetStatus={dataset.activeflag}
-															timeStamps={dataset.timestamps}
-															completion={dataset.percentageCompleted}
-															listOfVersions={dataset.listOfVersions}
-														/>
-													);
-												}
-											})
-										)}
-									</div>
-								);
-							case 'inReview':
-								return (
-									<div>
-										{reviewCount <= 0 ? (
-											<NotFound word='datasets' />
-										) : (
-											datasetList.map(dataset => {
-												if (dataset.activeflag !== 'inReview') {
-													return <></>;
-												} else {
-													console.log('Dataset', dataset);
-													return (
-														<DatasetCard
-															path={getDatasetPath(dataset.pid)}
-															id={dataset._id}
-															title={dataset.name}
-															publisher={dataset.datasetv2.summary.publisher.name}
-															version={dataset.datasetVersion}
-															isDraft={true}
-															datasetStatus={dataset.activeflag}
-															timeStamps={dataset.timestamps}
-															completion={dataset.percentageCompleted}
-															listOfVersions={dataset.listOfVersions}
-														/>
-													);
-												}
-											})
-										)}
-									</div>
-								);
-							case 'rejected':
-								return (
-									<div>
-										{rejectedCount <= 0 ? (
-											<NotFound word='datasets' />
-										) : (
-											datasetList.map(dataset => {
-												if (dataset.activeflag !== 'rejected') {
-													return <></>;
-												} else {
-													console.log('Dataset', dataset);
-													return (
-														<DatasetCard
-															id={dataset._id}
-															title={dataset.name}
-															publisher={dataset.datasetv2.summary.publisher.name}
-															version={dataset.datasetVersion}
-															isDraft={true}
-															datasetStatus={dataset.activeflag}
-															timeStamps={dataset.timestamps}
-															completion={dataset.percentageCompleted}
-															rejectionText={dataset.applicationStatusDesc}
-															rejectionAuthor={dataset.applicationStatusAuthor}
-															listOfVersions={dataset.listOfVersions}
-														/>
-													);
-												}
-											})
-										)}
-									</div>
-								);
-							case 'archive':
-								return (
-									<div>
-										{archiveCount <= 0 ? (
-											<NotFound word='datasets' />
-										) : (
-											datasetList.map(dataset => {
-												if (dataset.activeflag !== 'archive') {
-													return <></>;
-												} else {
-													console.log('Dataset', dataset);
-													return (
-														<DatasetCard
-															path={getDatasetPath(dataset.pid)}
-															id={dataset._id}
-															title={dataset.name}
-															//publisher={dataset.datasetv2.summary.publisher.name}
-															version={dataset.datasetVersion}
-															isDraft={true}
-															datasetStatus={dataset.activeflag}
-															timeStamps={dataset.timestamps}
-															completion={dataset.percentageCompleted}
-															listOfVersions={dataset.listOfVersions}
-														/>
-													);
-												}
-											})
-										)}
-									</div>
-								);
-							default:
-								return key;
-						}
-					})()}
-				</Col>
-				<Col xs={1}></Col>
-			</Row>
+				{(() => {
+					switch (key) {
+						case 'active':
+							return (
+								<div>
+									{activeCount <= 0 ? (
+										<NotFound word='datasets' />
+									) : (
+										datasetList.map(dataset => {
+											if (dataset.activeflag !== 'active' && dataset.activeflag !== 'draft') {
+												return <></>;
+											} else {
+												return (
+													<DatasetCard
+														id={dataset._id}
+														title={dataset.name}
+														publisher={dataset.datasetv2.summary.publisher.name}
+														version={dataset.datasetVersion}
+														isDraft={true}
+														datasetStatus={dataset.activeflag}
+														timeStamps={dataset.timestamps}
+														completion={dataset.percentageCompleted}
+														listOfVersions={dataset.listOfVersions}
+													/>
+												);
+											}
+										})
+									)}
+								</div>
+							);
+						case 'inReview':
+							return (
+								<div>
+									{reviewCount <= 0 ? (
+										<NotFound word='datasets' />
+									) : (
+										datasetList.map(dataset => {
+											if (dataset.activeflag !== 'inReview') {
+												return <></>;
+											} else {
+												return (
+													<DatasetCard
+														slaProps={
+															hasActivityHistory(dataset)
+																? {
+																		icon: <EyeIcon role='button' onClick={() => handleActivityLogClick(dataset.pid)} />,
+																  }
+																: {}
+														}
+														path={hasActivityHistory(dataset) ? getDatasetPath(dataset.pid) : ''}
+														id={dataset._id}
+														title={dataset.name}
+														publisher={dataset.datasetv2.summary.publisher.name}
+														version={dataset.datasetVersion}
+														isDraft={true}
+														datasetStatus={dataset.activeflag}
+														timeStamps={dataset.timestamps}
+														completion={dataset.percentageCompleted}
+														listOfVersions={dataset.listOfVersions}
+													/>
+												);
+											}
+										})
+									)}
+								</div>
+							);
+						case 'rejected':
+							return (
+								<div>
+									{rejectedCount <= 0 ? (
+										<NotFound word='datasets' />
+									) : (
+										datasetList.map(dataset => {
+											if (dataset.activeflag !== 'rejected') {
+												return <></>;
+											} else {
+												return (
+													<DatasetCard
+														id={dataset._id}
+														title={dataset.name}
+														publisher={dataset.datasetv2.summary.publisher.name}
+														version={dataset.datasetVersion}
+														isDraft={true}
+														datasetStatus={dataset.activeflag}
+														timeStamps={dataset.timestamps}
+														completion={dataset.percentageCompleted}
+														rejectionText={dataset.applicationStatusDesc}
+														rejectionAuthor={dataset.applicationStatusAuthor}
+														listOfVersions={dataset.listOfVersions}
+													/>
+												);
+											}
+										})
+									)}
+								</div>
+							);
+						case 'archive':
+							return (
+								<div>
+									{archiveCount <= 0 ? (
+										<NotFound word='datasets' />
+									) : (
+										datasetList.map(dataset => {
+											if (dataset.activeflag !== 'archive') {
+												return <></>;
+											} else {
+												return (
+													<DatasetCard
+														id={dataset._id}
+														title={dataset.name}
+														//publisher={dataset.datasetv2.summary.publisher.name}
+														version={dataset.datasetVersion}
+														isDraft={true}
+														datasetStatus={dataset.activeflag}
+														timeStamps={dataset.timestamps}
+														completion={dataset.percentageCompleted}
+														listOfVersions={dataset.listOfVersions}
+													/>
+												);
+											}
+										})
+									)}
+								</div>
+							);
+						default:
+							return key;
+					}
+				})()}
+			</AccountContent>
 		</div>
 	);
 };

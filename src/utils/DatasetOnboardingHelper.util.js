@@ -976,11 +976,14 @@ const _calculateTimeDifference = startTime => {
 	return end.diff(start, 'days');
 };
 
-const getUpdatesSubmittedLog = obj => {
-	let _temp = Object.entries(obj);
-	const _tmpArray = _temp[0][0].split('/').map(startCase);
-	const question = _tmpArray.pop();
-	return { heading: _tmpArray.join(' | '), question: question, answers: _temp[0][1] };
+const getUpdatesSubmittedLog = updates => {
+	const key = Object.keys(updates)[0];
+
+	return {
+		heading: _.startCase(key.replace(/[^\/]*$/g, '')).replace(/\s/g, ' | '),
+		question: _.startCase(key.replace(/^.*\//, '')),
+		answers: { ...updates[key] },
+	};
 };
 
 export default {

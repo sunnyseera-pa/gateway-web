@@ -37,7 +37,7 @@ import ActivityLog from '../DataAccessRequest/components/ActivityLog/ActivityLog
 import AccountTeams from './AccountTeams';
 import googleAnalytics from '../../tracking';
 import { isRouteMatch } from '../../utils/router';
-import { Route } from 'react-router';
+import { Redirect, Route } from 'react-router';
 import { getTeam } from '../../utils/auth';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
@@ -520,7 +520,7 @@ class Account extends Component {
 			dataaccessrequest,
 		} = this.state;
 
-		console.log('History', team);
+		console.log('TEAM', team, userState);
 
 		return (
 			<Sentry.ErrorBoundary fallback={<ErrorModal />}>
@@ -782,20 +782,14 @@ class Account extends Component {
 										)}
 									</>
 								)}
-
 								{(this.userHasRole(team, ['manager', 'metadata_editor']) || team === 'admin') && (
-									<>
-										{tabId === 'datasets' ? <AccountDatasets userState={userState} team={team} alert={alert} /> : ''}
-										<Route path='/account/datasets/:id' component={AccountDataset} />
-									</>
+									<>{tabId === 'datasets' ? <AccountDatasets userState={userState} team={team} alert={alert} /> : ''}</>
 								)}
-
+								<Route path='/account/datasets/:id' component={AccountDataset} />
 								{team === 'admin' && (
 									<>
-										{tabId === 'teams' ? (
+										{tabId === 'teams' && (
 											<AccountTeams userState={userState} onTeamsTabChange={this.onTeamsTabChange} team={team} alert={alert} />
-										) : (
-											''
 										)}
 									</>
 								)}
@@ -803,7 +797,6 @@ class Account extends Component {
 								{allowWorkflow && this.userHasRole(team, 'manager') && (
 									<>{tabId === 'workflows' ? <WorkflowDashboard userState={userState} team={team} /> : ''}</>
 								)}
-
 								{tabId === 'teamManagement' ? (
 									<AccountTeamManagement
 										userState={userState}
@@ -819,7 +812,6 @@ class Account extends Component {
 								) : (
 									''
 								)}
-
 								{tabId === 'help' ? <TeamHelp /> : ''}
 							</>
 						) : (

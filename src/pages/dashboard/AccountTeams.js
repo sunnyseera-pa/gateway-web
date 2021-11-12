@@ -9,6 +9,7 @@ import './Dashboard.scss';
 import TeamInfo from './Team/TeamInfo';
 import _ from 'lodash';
 import AddEditTeamsPage from './Team/AddEditTeamsPage';
+import AccountContent from './Components/AccountContent';
 
 const maxResult = 40;
 
@@ -113,74 +114,66 @@ const AccountTeams = () => {
 
 	if (isLoading) {
 		return (
-			<Row>
-				<Col xs={1}></Col>
-				<Col xs={10}>
-					<Loading data-testid='isLoading' />
-				</Col>
-				<Col xs={1}></Col>
-			</Row>
+			<AccountContent>
+				<Loading data-testid='isLoading' />
+			</AccountContent>
 		);
 	}
 
 	return (
 		<Fragment>
 			{viewTeams ? (
-				<Row>
-					<Col xs={1}></Col>
-					<div className='col-sm-10'>
-						{!_.isEmpty(alert) && (
-							<Row className='teams-alert'>
-								<Alert variant={'success'} className='main-alert teams-alert'>
-									<SVGIcon name='check' width={24} height={24} fill={'#2C8267'} /> {alert.message}
-								</Alert>
+				<AccountContent>
+					{!_.isEmpty(alert) && (
+						<Row className='teams-alert'>
+							<Alert variant={'success'} className='main-alert teams-alert'>
+								<SVGIcon name='check' width={24} height={24} fill={'#2C8267'} /> {alert.message}
+							</Alert>
+						</Row>
+					)}
+					<Row className='accountHeader'>
+						<Col sm={12} md={8}>
+							<Row>
+								<span className='black-20'>Teams</span>
 							</Row>
-						)}
-						<Row className='accountHeader'>
-							<Col sm={12} md={8}>
-								<Row>
-									<span className='black-20'>Teams</span>
-								</Row>
-								<Row>
-									<span className='gray700-13 '>Organise and manage team members and the teams email notifications.</span>
-								</Row>
-							</Col>
-							<Col sm={12} md={4} style={{ textAlign: 'right' }}>
-								<Button data-test-id='add-team-btn' variant='primary' href='' className='addButton' onClick={() => createTeam()}>
-									+ Add a new team
-								</Button>
-							</Col>
-						</Row>
-						<Row className='subHeader mt-3 gray800-14-bold'>
-							<Col sm={2}>Updated</Col>
-							<Col sm={3}>Data custodian</Col>
-							<Col sm={3}>Team manager(s)</Col>
-							<Col sm={2}>Members</Col>
-							<Col sm={2}></Col>
-						</Row>
-						<Row>
-							<Col sm={12} lg={12}>
-								{teams &&
-									teams.length > 0 &&
-									handlePaginatedItems().map(team => {
-										return (
-											<TeamInfo
-												updatedAt={team.updatedAt}
-												publisher={team.publisher}
-												teamManagers={team.users.filter(user => teamManagersIds.includes(user._id))}
-												membersCount={team.membersCount}
-												editTeam={editTeam}
-											/>
-										);
-									})}
-								<div className='text-center entityDashboardPagination'>
-									{teamsCount > maxResult ? <Pagination>{paginationItems}</Pagination> : ''}
-								</div>
-							</Col>
-						</Row>
-					</div>
-					<Col xs={1}></Col>
-				</Row>
+							<Row>
+								<span className='gray700-13 '>Organise and manage team members and the teams email notifications.</span>
+							</Row>
+						</Col>
+						<Col sm={12} md={4} style={{ textAlign: 'right' }}>
+							<Button data-test-id='add-team-btn' variant='primary' href='' className='addButton' onClick={() => createTeam()}>
+								+ Add a new team
+							</Button>
+						</Col>
+					</Row>
+					<Row className='subHeader mt-3 gray800-14-bold'>
+						<Col sm={2}>Updated</Col>
+						<Col sm={3}>Data custodian</Col>
+						<Col sm={3}>Team manager(s)</Col>
+						<Col sm={2}>Members</Col>
+						<Col sm={2}></Col>
+					</Row>
+					<Row>
+						<Col sm={12} lg={12}>
+							{teams &&
+								teams.length > 0 &&
+								handlePaginatedItems().map(team => {
+									return (
+										<TeamInfo
+											updatedAt={team.updatedAt}
+											publisher={team.publisher}
+											teamManagers={team.users.filter(user => teamManagersIds.includes(user._id))}
+											membersCount={team.membersCount}
+											editTeam={editTeam}
+										/>
+									);
+								})}
+							<div className='text-center entityDashboardPagination'>
+								{teamsCount > maxResult ? <Pagination>{paginationItems}</Pagination> : ''}
+							</div>
+						</Col>
+					</Row>
+				</AccountContent>
 			) : (
 				<AddEditTeamsPage
 					cancelAddEdit={cancelCreateOrEditTeam}

@@ -15,5 +15,18 @@
 	"datasetVersionRejected": "<b>Application rejected</b> by portal admin <b>{{firstName}} {{lastName}}</b>",
 	"datasetVersionArchived": "<b>Version {{versionNumber}}</b> of this dataset been archived by data custodian <b>{{firstName}} {{lastName}}",
 	"datasetVersionUnarchived": "<b>Version {{versionNumber}}</b> of this dataset been unarchived by data custodian <b>{{firstName}} {{lastName}}",
-	"datasetUpdatesSubmitted": "<b>Updates submitted</b> by data custodian <b>{{firstName}} {{lastName}}</b>"
+	"datasetUpdatesSubmitted": "<b>Updates submitted</b> by data custodian <b>{{firstName}} {{lastName}}</b>",
+	"previousAnswer": "Previous answer",
+	"updatedAnswer": "Updated answer",
+	"question": "Question",
+	"datetime": {
+		"submitted": "Submitted {{datetime}}"
+	},
+	"loading": "Loading",
+	"activitylog": {
+		"notfound": "The activity log for this dataset cannot be accessed. It must be set to {{status}}.",
+		"rejection": "Reason for rejection"
+	},
+	"next": "Next",
+	"previous": "Previous"
 }
