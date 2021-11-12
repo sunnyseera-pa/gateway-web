@@ -98,7 +98,9 @@ const AccountDataset = props => {
 		if (page) {
 			if (page.dataset) {
 				const { dataset } = page;
+
 				setCurrentDataset(dataset);
+
 				dataActivityLog.mutateAsync({
 					versionIds: [...dataset.listOfVersions.map(version => version._id), dataset._id],
 					type: 'dataset',
@@ -174,7 +176,7 @@ const AccountDataset = props => {
 							</Button>
 						)}
 						<Button variant='primary' onClick={handleViewForm}>
-							View form
+							{t('viewForm')}
 						</Button>
 					</div>
 				</ActionBar>
