@@ -118,8 +118,6 @@ class HDRRouter extends Component {
 		// register scroll event and bind to handleScroll
 		window.addEventListener('scroll', this.handleScroll);
 
-		let currentComponent = this;
-
 		axios.defaults.withCredentials = true;
 		axios.defaults.timeout = 60000;
 		axios.interceptors.response.use(
