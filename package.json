@@ -66,7 +66,7 @@
 		"test:watchAll": "cross-env NODE_ENV=test jest --watchAll --env=jsdom-sixteen --coverage --config=jest.config.json",
 		"test:watch": "cross-env NODE_ENV=test jest --watch --env=jsdom-sixteen --coverage --config=jest.config.json",
 		"test": "cross-env NODE_ENV=test jest --env=jsdom-sixteen --coverage --config=jest.config.json",
-		"test-rtl": "jest --env=jsdom-sixteen --testPathIgnorePatterns=/test/ --testPathPattern=/src/pages/dashboard/Components/AccountDataset/AccountDataset.test.js",
+		"test-rtl": "jest --env=jsdom-sixteen --testPathIgnorePatterns=/test/",
 		"eject": "react-scripts eject",
 		"snyk-protect": "snyk protect",
 		"prepare": "npm run snyk-protect",

@@ -25,7 +25,7 @@ const AccountDatasetRejectModal = ({
 			applicationStatusDesc: ''
 		},
 		validationSchema: Yup.object({
-			applicationStatusDesc: Yup.string().required('This cannot be empty'),
+			applicationStatusDesc: Yup.string().required('Description cannot be empty'),
 		}),
 		onSubmit: async values => {
 			const payload = {
@@ -80,6 +80,7 @@ const AccountDatasetRejectModal = ({
 						No, nevermind
 					</Button>
 					<Button
+						data-testid="reject-button"
 						className='button-secondary'
 						style={{ marginLeft: 'auto' }}
 						onClick={async () => {
