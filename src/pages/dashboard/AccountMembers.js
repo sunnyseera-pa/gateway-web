@@ -8,8 +8,7 @@ import '../../css/styles.scss';
 import './Dashboard.scss';
 import AccountMembersModal from './AccountMemberModal';
 import AccountContent from './Components/AccountContent';
-
-var baseURL = require('../commonComponents/BaseURL').getURL();
+import { baseURL } from '../../configs/url.config';
 
 export const AccountMembers = props => {
 	const [userState] = useState(props.userState);
