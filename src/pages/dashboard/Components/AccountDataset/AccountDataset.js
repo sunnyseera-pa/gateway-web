@@ -1,15 +1,9 @@
 import _ from 'lodash';
-<<<<<<< HEAD
-import React, { useState } from 'react';
-import { Button, OverlayTrigger, Popover } from 'react-bootstrap';
-import { useParams } from 'react-router';
-=======
 import React, { Suspense, useState } from 'react';
-import { Button } from 'react-bootstrap';
+import { Button, OverlayTrigger, Popover } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { NotificationManager } from 'react-notifications';
 import { useHistory, useParams } from 'react-router';
->>>>>>> 6611bf49748f3da612bb576b25d2ab144416a6de
 import { useAuth } from '../../../../context/AuthContext';
 import serviceActivityLog from '../../../../services/activitylog/activitylog';
 import serviceDatasetOnboarding from '../../../../services/dataset-onboarding/dataset-onboarding';

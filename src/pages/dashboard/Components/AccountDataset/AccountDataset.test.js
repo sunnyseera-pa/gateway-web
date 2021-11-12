@@ -212,4 +212,5 @@ describe('Given the AccountDataset component', () => {
 			expect(mockPush).toHaveBeenCalledWith('/account?tab=datasets');
 		});
 	});
+})
 });
