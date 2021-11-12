@@ -211,13 +211,13 @@ const AccountDataset = props => {
 					</div>
 				</ActionBar>
 				<AccountDatasetApproveModal
-					id={dataset._id}
+					id={currentDataset._id}
 					open={showApproveDatasetModal}
 					closed={() => setState({ showApproveDatasetModal: false })}
 					goToNext={() => goToNext()}
 					showGoToNext={showNext} />
 				<AccountDatasetRejectModal
-					id={dataset._id}
+					id={currentDataset._id}
 					open={showRejectDatasetModal}
 					closed={() => setState({ showRejectDatasetModal: false })}
 					goToNext={() => goToNext()}
