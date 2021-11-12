@@ -1,6 +1,5 @@
 import { render, waitFor } from '@testing-library/react';
 import React from 'react';
-import { QueryClient } from 'react-query';
 import reactRouter from 'react-router';
 import AccountDataset from '.';
 import { server } from '../../../../services/mockServer';
@@ -31,14 +30,6 @@ const mockRedirect = jest.fn();
 const props = {
 	location: {},
 };
-
-const queryClient = new QueryClient({
-	defaultOptions: {
-		queries: {
-			retry: false,
-		},
-	},
-});
 
 let wrapper;
 
