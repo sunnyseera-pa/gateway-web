@@ -68,7 +68,7 @@ describe('Given the AccountDataset component', () => {
 		});
 
 		it('Then matches the previous snapshot', async () => {
-			await waitFor(() => expect(mockDatasetCard).toHaveBeenCalledTimes(1));
+			await waitFor(() => expect(mockDatasetCard).toHaveBeenCalledTimes(2));
 
 			expect(wrapper.container).toMatchSnapshot();
 		});
@@ -91,7 +91,7 @@ describe('Given the AccountDataset component', () => {
 			beforeAll(async () => {
 				await waitFor(() => expect(wrapper.getByText('Make a decision')).toBeTruthy());
 
-				const button = wrapper.queryAllByText('Make a decision')[0];
+				const button = wrapper.getByText('Make a decision');
 
 				await fireEvent.click(button);
 			});
@@ -107,6 +107,13 @@ describe('Given the AccountDataset component', () => {
 					const button = wrapper.queryAllByText('Reject')[0];
 
 					await fireEvent.click(button);
+				});
+
+				afterAll(() => {
+					const closeModalButton = wrapper.queryByTestId('close-modal');
+					if (closeModalButton) {
+						fireEvent.click(closeModalButton);
+					}
 				});
 
 				it('Then loads the Reject dataset modal', () => {
@@ -129,13 +136,21 @@ describe('Given the AccountDataset component', () => {
 					await fireEvent.click(button);
 				});
 
+				afterAll(() => {
+					const closeModalButton = wrapper.queryByTestId('close-modal');
+					if (closeModalButton) {
+						fireEvent.click(closeModalButton);
+					}
+				});
+
 				it('Then loads the Approve dataset modal', () => {
 					const { queryByText } = wrapper;
 					expect(queryByText('Approve this version of this dataset metadata')).toBeTruthy();
 				});
 
 				it('Then does not load the Reject dataset modal', () => {
-					const { queryByText } = wrapper;
+					const { queryByText, debug } = wrapper;
+					debug();
 					expect(queryByText('Reject this version of this dataset metadata')).toBeFalsy();
 				});
 			});

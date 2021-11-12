@@ -1,5 +1,46 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Given the AccountDataset component When it is rendered And the Make a decision button is clicked Then loads the Make a decision overlay 1`] = `
+<div>
+  <div
+    class="row"
+  >
+    <div
+      class="col-1"
+    />
+    <div
+      class="col-10"
+    >
+      <div />
+      <div
+        class="actionBar"
+      >
+        <div
+          class="action-bar-actions"
+        >
+          <button
+            class="btn btn-light"
+            type="button"
+          >
+            Next
+          </button>
+          <button
+            aria-describedby="make-a-decision-popover"
+            class="btn btn-outline-secondary"
+            type="button"
+          >
+            Make a decision
+          </button>
+        </div>
+      </div>
+    </div>
+    <div
+      class="col-1"
+    />
+  </div>
+</div>
+`;
+
 exports[`Given the AccountDataset component When it is rendered Then matches the previous snapshot 1`] = `
 <div>
   <div
@@ -23,6 +64,12 @@ exports[`Given the AccountDataset component When it is rendered Then matches the
             type="button"
           >
             Next
+          </button>
+          <button
+            class="btn btn-outline-secondary"
+            type="button"
+          >
+            Make a decision
           </button>
         </div>
       </div>

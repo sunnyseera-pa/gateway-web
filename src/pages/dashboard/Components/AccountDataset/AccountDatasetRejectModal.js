@@ -46,7 +46,7 @@ const AccountDatasetRejectModal = ({
 			aria-labelledby='contained-modal-title-vcenter'
 			centered>
 			<div className='account-dataset-decision-header'>
-				<CloseButtonSvg className='account-dataset-decision-modal-close' onClick={closed} />
+				<CloseButtonSvg data-testid="close-modal" className='account-dataset-decision-modal-close' onClick={closed} />
 				<div className='account-dataset-decision-header--wrap'>
 					<h4 className='black-20'>Reject this version of this dataset metadata</h4>
 				</div>

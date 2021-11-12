@@ -146,8 +146,8 @@ const AccountDataset = props => {
 						placement='top'
 						overlay={
 							<Popover id='make-a-decision-popover'>
-								<Popover.Title as h3>
-									<span data-testid='make-as-decision-overlay'>Make a decision</span>
+								<Popover.Title>
+									Make a decision
 								</Popover.Title>
 								<Popover.Content>
 									<Button variant="link" onClick={() =>
