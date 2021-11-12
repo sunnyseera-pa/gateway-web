@@ -1,25 +1,23 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/react';
-import React, { Suspense } from 'react';
+import { Suspense } from 'react';
+import { Col, Row } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
-import { Row, Col } from 'react-bootstrap';
 import PropTypes from 'prop-types';
-import SLA from '../../../commonComponents/sla/SLA';
-import ListInfo from '../../../commonComponents/ListInfo';
+import approved from '../../../../images/Application_approved.svg';
+import rejected from '../../../../images/Application_rejected.svg';
+import ACTIVITY_LOG_PROP_TYPES from '../../../../services/activitylog/activitylog';
 import DatasetOnboardingHelper from '../../../../utils/DatasetOnboardingHelper.util';
 import { dateFormats } from '../../../../utils/GeneralHelper.util';
-import '../../../../i18n';
-import tick from '../../../../images/tick.svg';
-import amber from '../../../../images/attention.svg';
-import rejected from '../../../../images/Application_rejected.svg';
-import * as styles from './ActivityLogCard.styles';
-import Timeline from '../../../commonComponents/Timeline/Timeline';
 import BlockQuote from '../../../commonComponents/Blockquote';
-import _ from 'lodash';
+import ListInfo from '../../../commonComponents/ListInfo';
+import SLA from '../../../commonComponents/sla/SLA';
+import Timeline from '../../../commonComponents/Timeline';
+import * as styles from './ActivityLogCard.styles';
 
 let eventStatusIcons = {
 	newDatasetVersionSubmitted: rejected,
-	datasetVersionApproved: tick,
+	datasetVersionApproved: approved,
 	datasetVersionRejected: rejected,
 	datasetVersionArchived: rejected,
 	datasetVersionUnarchived: rejected,
@@ -30,9 +28,9 @@ const ActivityLogCard = props => {
 	const { t } = useTranslation();
 	const {
 		versionNumber,
-		meta: { applicationStatus },
-		dateSubmitted,
+		meta: { applicationStatus, dateSubmitted },
 		events,
+		mb,
 	} = props;
 
 	return (
@@ -41,7 +39,7 @@ const ActivityLogCard = props => {
 				<div className='col-md-12'>
 					<div className='layoutCard'>
 						<div css={styles.activityCard}>
-							<Row css={styles.activityLog}>
+							<Row css={styles.activityLog(mb)}>
 								<Col sm={6} lg={6} data-testid='version-title'>
 									<h1>{`Version ${versionNumber}`}</h1>
 									<span className='gray800-14'>{t('datetime.submitted', { datetime: dateFormats(dateSubmitted).dateOnly })}</span>
@@ -78,25 +76,25 @@ const ActivityLogCard = props => {
 													</BlockQuote>
 												)}
 												{event.datasetUpdates &&
-													event.datasetUpdates.map(updates => {
-														const key = Object.keys(updates)[0];
+													event.datasetUpdates.map(item => {
+														const log = DatasetOnboardingHelper.getUpdatesSubmittedLog(item);
 
 														return (
 															<BlockQuote data-testid={`event-detailed-text-${i}`}>
-																<h6 className='mb-3 gray800'>{_.startCase(key.replace(/[^\/]*$/g, '')).replace(/\s/g, ' | ')}</h6>
+																<h6 className='mb-3 gray800'>{log.heading}</h6>
 																<ListInfo
 																	data={[
 																		{
 																			label: t('question'),
-																			value: _.startCase(key.replace(/^.*\//, '')),
+																			value: log.question,
 																		},
 																		{
 																			label: t('previousAnswer'),
-																			value: updates[key].previousAnswer,
+																			value: log.answers.previousAnswer,
 																		},
 																		{
 																			label: t('updatedAnswer'),
-																			value: updates[key].updatedAnswer,
+																			value: log.answers.updatedAnswer,
 																		},
 																	]}
 																/>
@@ -116,15 +114,13 @@ const ActivityLogCard = props => {
 	);
 };
 
+ActivityLogCard.defaultProps = {
+	mb: 20,
+};
+
 ActivityLogCard.propTypes = {
-	applicationStatus: PropTypes.string.isRequired,
-	versionNumber: PropTypes.number.isRequired,
-	meta: {
-		dateSubmitted: PropTypes.string.isRequired,
-		dateCreated: PropTypes.string.isRequired,
-		applicationStatus: PropTypes.string.isRequired,
-	},
-	events: PropTypes.arrayOf(PropTypes.object),
+	...ACTIVITY_LOG_PROP_TYPES,
+	mb: PropTypes.string,
 };
 
 export default ActivityLogCard;

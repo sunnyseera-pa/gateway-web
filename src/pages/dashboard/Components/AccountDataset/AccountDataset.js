@@ -32,37 +32,46 @@ const AccountDataset = props => {
 
 	const dataActivityLog = serviceActivityLog.usePostActivityLog();
 	const publisherId = utils.getPublisherID(userState[0], team);
-
-	const filterCurrentDataset = datasets => {
-		return datasets.find(dataset => dataset.pid === id);
-	};
-
-	const dataPublisher = serviceDatasetOnboarding.useGetPublisher(Array.isArray(publisherId) ? publisherId[0] : publisherId, null, {
-		onSuccess: data => {
-			const {
-				data: {
-					data: { listOfDatasets: datasets },
-				},
-			} = data;
-
-			const dataset = filterCurrentDataset(datasets);
-
-			setCurrentDataset(dataset);
-
-			if (dataset) {
-				dataActivityLog.mutateAsync({
-					versionIds: [...dataset.listOfVersions.map(version => version._id), dataset._id],
-					type: 'dataset',
-				});
-			}
-		},
-	});
+	const dataPublisher = serviceDatasetOnboarding.useGetPublisher(Array.isArray(publisherId) ? publisherId[0] : publisherId, null);
 
 	React.useEffect(() => {
 		setTeam(getTeam(props));
 	}, [id]);
 
-	const goToDataset = i => {
+	const getValidDatasets = listOfDatasets => {
+		return listOfDatasets.filter(dataset => {
+			return DataSetHelper.isInReview(dataset) && parseFloat(dataset.datasetVersion) > 1;
+		});
+	};
+
+	const getDatasetIndex = datasets => {
+		return _.findIndex(datasets, dataset => {
+			return dataset.pid == id;
+		});
+	};
+
+	const updateButtonStates = ({ currentIndex, total }) => {
+		let buttonState = {
+			showNext: currentIndex < total - 1,
+			showPrevious: currentIndex > 0,
+		};
+
+		if (currentIndex === -1) {
+			setState({
+				...buttonState,
+				statusError: true,
+			});
+
+			return;
+		} else {
+			setState({
+				...buttonState,
+				statusError: false,
+			});
+		}
+	};
+
+	const getNextPage = i => {
 		if (dataPublisher.data) {
 			const {
 				data: {
@@ -70,44 +79,45 @@ const AccountDataset = props => {
 				},
 			} = dataPublisher.data;
 
-			const datasets = listOfDatasets.filter(dataset => DataSetHelper.isInReview(dataset));
+			const datasets = getValidDatasets(listOfDatasets);
+			const currentIndex = getDatasetIndex(datasets);
 
-			const currentIndex = _.findIndex(datasets, dataset => {
-				return dataset.pid == id;
-			});
-
-			let buttonState = {
-				showNext: currentIndex < datasets.length - 1,
-				showPrevious: currentIndex > 0,
+			return {
+				dataset: datasets[currentIndex + i],
+				currentIndex,
+				total: datasets.length,
 			};
-
-			if (currentIndex === -1) {
-				setState({
-					...buttonState,
-					statusError: true,
-				});
-
-				return;
-			} else {
-				setState({
-					...buttonState,
-					statusError: false,
-				});
-			}
-
-			return datasets[currentIndex + i].pid;
 		}
 	};
 
+	const filterCurrentDataset = datasets => {
+		return datasets.find(dataset => dataset.pid === id);
+	};
+
 	React.useEffect(() => {
-		goToDataset(0);
-	}, [dataPublisher.data]);
+		const page = getNextPage(0);
+
+		if (page) {
+			if (page.dataset) {
+				const { dataset } = page;
+
+				setCurrentDataset(dataset);
+
+				dataActivityLog.mutateAsync({
+					versionIds: [...dataset.listOfVersions.map(version => version._id), dataset._id],
+					type: 'dataset',
+				});
+			}
+
+			updateButtonStates(page);
+		}
+	}, [dataPublisher.data, id]);
 
 	const handlePaginationClick = React.useCallback(
 		i => {
-			const pid = goToDataset(i);
+			const { dataset } = getNextPage(i);
 
-			history.push(`/account/datasets/${pid}`);
+			if (dataset) history.push(`/account/datasets/${dataset.pid}`);
 		},
 		[id, dataPublisher.data, team]
 	);
@@ -154,7 +164,7 @@ const AccountDataset = props => {
 				/>
 
 				{dataActivityLog.data &&
-					dataActivityLog.data.data.logs.map(version => <ActivityLogCard key={version.versionNumber} {...version} />)}
+					dataActivityLog.data.data.logs.map(version => <ActivityLogCard key={version.datasetVersion} {...version} />)}
 
 				<ActionBar userState={userState}>
 					<div className='action-bar-actions'>

@@ -2,6 +2,7 @@ import { css } from '@emotion/react';
 
 export const root = css`
 	padding: 0;
+	font-size: 1em;
 `;
 
 export const listItem = css`

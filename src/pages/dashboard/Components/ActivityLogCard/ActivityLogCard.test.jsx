@@ -22,14 +22,14 @@ describe('Given the ActivityLogCard component', () => {
 		});
 
 		it('Then  Title should be rendered with  Submitted Date', () => {
-			const date = dateFormats(props.dateSubmitted).dateOnly;
+			const date = dateFormats(props.meta.dateSubmitted).dateOnly;
 			expect(screen.getByTestId(`version-title`)).toHaveTextContent(`Version ${props.versionNumber}Submitted ${date}`);
 		});
 		it('Then  Status should be rendered', () => {
-			const statusColour = DatasetOnboardingHelper.datasetStatusColours[props.applicationStatus];
-			const statusText = DatasetOnboardingHelper.datasetSLAText[props.applicationStatus];
+			const statusColour = DatasetOnboardingHelper.datasetStatusColours[props.meta.applicationStatus];
+			const statusText = DatasetOnboardingHelper.datasetSLAText[props.meta.applicationStatus];
 
-			const date = dateFormats(props.dateSubmitted).dateOnly;
+			const date = dateFormats(props.meta.dateSubmitted).dateOnly;
 			expect(screen.getByTestId(statusColour)).toHaveTextContent(statusText);
 		});
 
