@@ -89,7 +89,7 @@ const AccountDatasetRejectModal = ({
 						Reject
 					</Button>
 					<Button
-						disabled={showGoToNext}
+						disabled={!showGoToNext}
 						className='button-secondary'
 						style={{ marginLeft: 'auto' }}
 						onClick={() => {
