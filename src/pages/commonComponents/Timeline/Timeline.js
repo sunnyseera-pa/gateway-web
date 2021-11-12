@@ -3,17 +3,17 @@ import { jsx } from '@emotion/react';
 import PropTypes from 'prop-types';
 import * as styles from './Timeline.styles';
 
-const Timeline = ({ data }) => {
+const Timeline = ({ data, className }) => {
 	return (
-		<ul css={styles.root}>
-			{data.map(item => (
-				<li css={styles.listItem}>
+		<ul css={styles.root} className={className}>
+			{data.map((item, i) => (
+				<li css={styles.listItem} key={`${i}-item`}>
 					<div css={styles.timeline}>
 						<div css={styles.icon} className='timeline-icon'>
 							<div>{item.icon}</div>
 						</div>
 						<div css={styles.time}>
-							<time datetime={item.time}>{item.time}</time>
+							<time dateTime={item.time}>{item.time}</time>
 						</div>
 					</div>
 					<div css={styles.content}>{item.content}</div>

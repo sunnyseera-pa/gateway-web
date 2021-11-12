@@ -3,9 +3,9 @@ import { jsx } from '@emotion/react';
 import PropTypes from 'prop-types';
 import * as styles from './ListInfo.styles';
 
-const ListInfo = ({ data, widthCol1 }) => {
+const ListInfo = ({ data, className, widthCol1 }) => {
 	return (
-		<ul css={styles.root}>
+		<ul css={styles.root} className={className}>
 			{data.map(({ label, value }, i) => (
 				<li css={styles.listItem} key={`${i}-${label}`}>
 					<div css={styles.col1(widthCol1)}>{label}</div>

@@ -1,11 +1,11 @@
-import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
-import ActivityLogCard from './ActivityLogCard';
+import { render, screen } from '@testing-library/react';
+import React from 'react';
+import { QueryClient } from 'react-query';
 import DatasetOnboardingHelper from '../../../../utils/DatasetOnboardingHelper.util';
 import { dateFormats } from '../../../../utils/GeneralHelper.util';
+import ActivityLogCard from './ActivityLogCard';
 import mockData from './mockData';
-import { QueryClient } from 'react-query';
 
 const queryClient = new QueryClient({
 	defaultOptions: {
@@ -24,7 +24,7 @@ describe('Given the ActivityLogCard component', () => {
 	describe('When it is rendered', () => {
 		beforeAll(() => {
 			wrapper = render(<ActivityLogCard {...props} />, {
-				wrapper: ({ children }) => <Providers queryClient={queryClient}>{children}</Providers>,
+				wrapper: Providers,
 			});
 		});
 

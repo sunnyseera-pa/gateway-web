@@ -5,7 +5,7 @@ import Enzyme, { mount, render, shallow } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import React, { Suspense } from 'react';
 import { I18nextProvider } from 'react-i18next';
-import { QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from 'react-query';
 import 'regenerator-runtime/runtime';
 import { AuthProvider } from './context/AuthContext';
 import i18n from './i18n';
@@ -53,7 +53,15 @@ global.removePortalContainer = div => {
 	div.parentNode.removeChild(div);
 };
 
-global.Providers = ({ children, queryClient }) => {
+global.Providers = ({ children }) => {
+	const queryClient = new QueryClient({
+		defaultOptions: {
+			queries: {
+				retry: false,
+			},
+		},
+	});
+
 	return (
 		<I18nextProvider i18n={i18n}>
 			<Suspense fallback='Loading'>
