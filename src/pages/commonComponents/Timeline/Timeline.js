@@ -6,14 +6,16 @@ import * as styles from './Timeline.styles';
 const Timeline = ({ data }) => {
 	return (
 		<ul css={styles.root}>
-			{data.map(item => (
+			{data.map((item, i) => (
 				<li css={styles.listItem}>
 					<div css={styles.timeline}>
 						<div css={styles.icon} className='timeline-icon'>
 							<div>{item.icon}</div>
 						</div>
 						<div css={styles.time}>
-							<time datetime={item.time}>{item.time}</time>
+							<time data-testid={`event-time-${i}`} datetime={item.time}>
+								{item.time}
+							</time>
 						</div>
 					</div>
 					<div css={styles.content}>{item.content}</div>
