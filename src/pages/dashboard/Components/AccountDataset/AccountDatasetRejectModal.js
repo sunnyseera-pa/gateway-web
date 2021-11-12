@@ -33,7 +33,7 @@ const AccountDatasetRejectModal = ({
 				id,
 				...values
 			};
-			await datasetService.postRejectDatasetRequest(payload);
+			datasetService.usePostRejectDatasetRequest(payload);
 		},
 	});
 
@@ -83,7 +83,7 @@ const AccountDatasetRejectModal = ({
 						className='button-secondary'
 						style={{ marginLeft: 'auto' }}
 						onClick={async () => {
-							await handleSubmit();
+							handleSubmit();
 							onReject();
 							closed();
 						}}>
