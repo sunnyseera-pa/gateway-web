@@ -12,6 +12,8 @@ import DatasetCard from '../../../commonComponents/DatasetCard';
 import Loading from '../../../commonComponents/Loading';
 import NotFound from '../../../commonComponents/NotFound';
 import AccountContent from '../AccountContent';
+import AccountDatasetApproveModal from './AccountDatasetApproveModal';
+import AccountDatasetRejectModal from './AccountDatasetRejectModal';
 
 const AccountDataset = props => {
 	const { id } = useParams();
@@ -21,6 +23,8 @@ const AccountDataset = props => {
 		showPrevious: true,
 		showDisabled: true,
 		statusError: false,
+		showApproveDatasetModal: false,
+		showRejectDatasetModal: false
 	});
 
 	const dataDataset = serviceDatasets.useGetDataset(id);
@@ -75,7 +79,23 @@ const AccountDataset = props => {
 		[id, dataPublisher.data, team]
 	);
 
-	const { showPrevious, showNext, statusError } = state;
+	const approveDataset = () => {
+
+	};
+
+	const approveDatasetAndGoToNext = () => {
+
+	};
+
+	const rejectDataset = () => {
+
+	};
+
+	const rejectDatasetAndGoToNext = () => {
+
+	};
+
+	const { showPrevious, showNext, statusError, showRejectDatasetModal, showApproveDatasetModal } = state;
 
 	if (!dataDataset.data && dataDataset.isError && dataDataset.isFetched) {
 		return (
@@ -138,8 +158,10 @@ const AccountDataset = props => {
 							<Popover id='make-a-decision-popover'>
 								<Popover.Title as h3>Make a decision</Popover.Title>
 								<Popover.Content>
-									<Button variant="link">Approve</Button>
-									<Button variant="link">Reject</Button>
+									<Button variant="link" onClick={() =>
+											setState({ showApproveDatasetModal: true })}>Approve</Button>
+									<Button variant="link" onClick={() =>
+											setState({ showRejectDatasetModal: true })}>Reject</Button>
 								</Popover.Content>
 							</Popover>
 						}
@@ -150,6 +172,16 @@ const AccountDataset = props => {
 					</OverlayTrigger>
 				</div>
 			</ActionBar>
+			<AccountDatasetApproveModal
+				open={showApproveDatasetModal}
+				closed={() => setState({ showApproveDatasetModal: false })}
+				onApprove={() => approveDataset()}
+				onApproveAndGoToNext={() => approveDatasetAndGoToNext()} />
+			<AccountDatasetRejectModal
+				open={showRejectDatasetModal}
+				closed={() => setState({ showRejectDatasetModal: false })}
+				onReject={() => rejectDataset()}
+				onRejectAndGoToNext={() => rejectDatasetAndGoToNext()} />
 		</AccountContent>
 	);
 };
