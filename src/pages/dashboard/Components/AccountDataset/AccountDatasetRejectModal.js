@@ -3,7 +3,7 @@ import { Modal, Form, Button } from 'react-bootstrap';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { ReactComponent as CloseButtonSvg } from '../../../../images/close-alt.svg';
-import datasetService from '../../../../services/datasets/datasets';
+import datasetOnboardingService from '../../../../services/dataset-onboarding/dataset-onboarding';
 import './AccountDatasetDecisionModal.scss';
 import _ from 'lodash';
 
@@ -23,17 +23,18 @@ const AccountDatasetRejectModal = ({
 			errors
 		} = useFormik({
 		initialValues: {
-			reason: ''
+			applicationStatusDesc: ''
 		},
 		validationSchema: Yup.object({
-			reason: Yup.string().required('This cannot be empty'),
+			applicationStatusDesc: Yup.string().required('This cannot be empty'),
 		}),
 		onSubmit: async values => {
 			const payload = {
+				...values,
 				id,
-				...values
+				applicationStatus: 'rejected'
 			};
-			datasetService.usePostRejectDatasetRequest(payload);
+			datasetOnboardingService.usePutDatasetOnboarding(payload);
 		},
 	});
 
@@ -57,16 +58,16 @@ const AccountDatasetRejectModal = ({
 					<p>Let the editor know why this submission is being rejected. They will be able to create a new version and make a new submission.</p>
 					<label className='black-14'>Description</label>
 					<Form.Control
-						data-test-id='dataset-reject-reason'
-						id='reason'
-						name='reason'
+						data-test-id='dataset-reject-applicationStatusDesc'
+						id='applicationStatusDesc'
+						name='applicationStatusDesc'
 						type='textarea'
-						className={touched.reason && errors.reason && 'save-modal-input'}
+						className={touched.applicationStatusDesc && errors.applicationStatusDesc && 'save-modal-input'}
 						onChange={handleChange}
-						value={values.reason}
+						value={values.applicationStatusDesc}
 						onBlur={handleBlur}
 					/>
-					{touched.reason && errors.reason ? <div className='errorMessages'>{errors.reason}</div> : null}
+					{touched.applicationStatusDesc && errors.applicationStatusDesc ? <div className='errorMessages'>{errors.applicationStatusDesc}</div> : null}
 				</div>
 			</div>
 			<div className='account-dataset-decision-footer'>
