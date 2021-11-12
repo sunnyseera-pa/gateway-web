@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import React, { useState } from 'react';
-import { Button } from 'react-bootstrap';
+import { Button, OverlayTrigger, Popover } from 'react-bootstrap';
 import { useParams } from 'react-router';
 import { useAuth } from '../../../../context/AuthContext';
 import serviceDatasetOnboarding from '../../../../services/dataset-onboarding/dataset-onboarding';
@@ -75,10 +75,6 @@ const AccountDataset = props => {
 		[id, dataPublisher.data, team]
 	);
 
-	const openMakeADecisionModal = () => {
-		
-	};
-
 	const { showPrevious, showNext, statusError } = state;
 
 	if (!dataDataset.data && dataDataset.isError && dataDataset.isFetched) {
@@ -134,9 +130,24 @@ const AccountDataset = props => {
 							Next
 						</Button>
 					)}
-					<Button variant='outline-secondary' onClick={() => openMakeADecisionModal()}>
+					<OverlayTrigger 
+						trigger='click'
+						key='top' 
+						placement='top'
+						overlay={
+							<Popover id='make-a-decision-popover'>
+								<Popover.Title as h3>Make a decision</Popover.Title>
+								<Popover.Content>
+									<Button variant="link">Approve</Button>
+									<Button variant="link">Reject</Button>
+								</Popover.Content>
+							</Popover>
+						}
+					>
+					<Button variant='outline-secondary'>
 						Make a decision
 					</Button>
+					</OverlayTrigger>
 				</div>
 			</ActionBar>
 		</AccountContent>
