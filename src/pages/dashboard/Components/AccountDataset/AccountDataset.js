@@ -3,17 +3,15 @@ import React, { Suspense, useState } from 'react';
 import { Button } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { NotificationManager } from 'react-notifications';
-import { Redirect, useHistory, useParams } from 'react-router';
+import { useHistory, useParams } from 'react-router';
 import { useAuth } from '../../../../context/AuthContext';
 import serviceActivityLog from '../../../../services/activitylog/activitylog';
 import serviceDatasetOnboarding from '../../../../services/dataset-onboarding/dataset-onboarding';
-import serviceDatasets from '../../../../services/datasets/datasets';
 import { getTeam } from '../../../../utils/auth';
 import { default as DataSetHelper, default as utils } from '../../../../utils/DataSetHelper.util';
 import ActionBar from '../../../commonComponents/actionbar/ActionBar';
 import DatasetCard from '../../../commonComponents/DatasetCard';
 import Loading from '../../../commonComponents/Loading';
-import NotFound from '../../../commonComponents/NotFound';
 import AccountContent from '../AccountContent';
 import ActivityLogCard from '../ActivityLogCard';
 

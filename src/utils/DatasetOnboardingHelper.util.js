@@ -1,7 +1,6 @@
 import _ from 'lodash';
-import randomstring from 'randomstring';
 import moment from 'moment';
-import { startCase } from 'lodash';
+import randomstring from 'randomstring';
 
 let autoCompleteLookUps = { fullname: ['orcid', 'email', 'bio'] };
 
