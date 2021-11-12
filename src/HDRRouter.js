@@ -34,9 +34,11 @@ import ErrorModal from './pages/commonComponents/errorModal/ErrorModal';
 import DatasetOnboarding from './pages/DatasetOnboarding/DatasetOnboarding';
 import { GuardedRoute } from './pages/commonComponents/GuardedRoute';
 import AdvancedSearchTAndCs from './pages/dashboard/AdvancedSearchTAndCs';
-import { ThemeProvider } from 'react-bootstrap';
+import { ThemeProvider } from '@emotion/react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { AuthProvider } from './context/AuthContext';
+import { theme } from './configs/theme';
+import { NotificationContainer } from 'react-notifications';
 
 const baseURL = require('./pages/commonComponents/BaseURL').getURL();
 const urlEnv = require('./pages/commonComponents/BaseURL').getURLEnv();
@@ -115,8 +117,6 @@ class HDRRouter extends Component {
 	async componentDidMount() {
 		// register scroll event and bind to handleScroll
 		window.addEventListener('scroll', this.handleScroll);
-
-		let currentComponent = this;
 
 		axios.defaults.withCredentials = true;
 		axios.defaults.timeout = 60000;
@@ -200,8 +200,9 @@ class HDRRouter extends Component {
 			<Suspense fallback={'loading'}>
 				<AuthProvider value={{ userState }}>
 					<QueryClientProvider client={queryClient}>
-						<ThemeProvider>
+						<ThemeProvider theme={theme}>
 							<Router>
+								<NotificationContainer />
 								<LoginModal userState={userState} />
 								<div className='navBarGap'></div>
 								<div className='mainWrap' onScroll={this.handleScroll}>

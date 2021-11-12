@@ -8,6 +8,7 @@ import HDRRouter from './HDRRouter';
 import './css/custom-css-bootstrap-magic-2020-02-10.css';
 import 'react-datepicker/dist/react-datepicker.css';
 import './css/styles.scss';
+import 'react-notifications/lib/notifications.css';
 
 import './i18n';
 

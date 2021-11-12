@@ -15,8 +15,8 @@ let showLoginPanel = (window, title, contactPoint) => {
 	};
 };
 
-const isActive = dataset => {
-	return !(dataset.activeflag !== 'active' && dataset.activeflag !== 'draft');
+const isNotActive = dataset => {
+	return dataset.activeflag !== 'active' && dataset.activeflag !== 'draft';
 };
 
 const isDraft = dataset => {
@@ -53,7 +53,7 @@ const getPublisherID = (userState, team) => {
 
 export default {
 	showLoginPanel: showLoginPanel,
-	isActive,
+	isNotActive,
 	isInReview,
 	isRejected,
 	isArchived,

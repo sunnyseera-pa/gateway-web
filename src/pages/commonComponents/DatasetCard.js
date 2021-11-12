@@ -35,6 +35,7 @@ export const DatasetCard = props => {
 		rejectionAuthor,
 		listOfVersions,
 		path,
+		slaProps,
 	} = props;
 	const [flagClosed, setFlagClosed] = useState(true);
 
@@ -61,9 +62,11 @@ export const DatasetCard = props => {
 							) : (
 								''
 							)}
+
 							<SLA
 								classProperty={DatasetOnboardingHelper.datasetStatusColours[datasetStatus]}
 								text={DatasetOnboardingHelper.datasetSLAText[datasetStatus]}
+								{...slaProps}
 							/>
 
 							{datasetStatus === 'draft' && listOfVersions.find(version => version.activeflag === 'active') ? (
@@ -72,6 +75,7 @@ export const DatasetCard = props => {
 									<SLA
 										classProperty={DatasetOnboardingHelper.datasetStatusColours['active']}
 										text={DatasetOnboardingHelper.datasetSLAText['active']}
+										{...slaProps}
 									/>
 								</>
 							) : (

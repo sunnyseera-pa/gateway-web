@@ -89,12 +89,12 @@ describe('Given the dataset isArchived util', () => {
 	});
 });
 
-describe('Given the dataset isActive util', () => {
-	describe('When it is not isActive', () => {
+describe('Given the dataset isNotActive util', () => {
+	describe('When it is not isNotActive', () => {
 		it('Then returns false', () => {
 			expect(
-				utils.isActive({
-					activeflag: 'inReview',
+				utils.isNotActive({
+					activeflag: 'active',
 				})
 			).toBe(false);
 		});
@@ -103,8 +103,8 @@ describe('Given the dataset isActive util', () => {
 	describe('When it is isActive', () => {
 		it('Then returns true', () => {
 			expect(
-				utils.isActive({
-					activeflag: 'active',
+				utils.isNotActive({
+					activeflag: 'inReview',
 				})
 			).toBe(true);
 		});

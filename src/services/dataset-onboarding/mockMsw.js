@@ -83,7 +83,7 @@ export const mswGetPublisher = rest.get(`${apiURL}/dataset-onboarding/publisher/
 							published: '2021-11-03T14:02:06.377Z',
 						},
 						pid: '0a048419-0796-46fb-ad7d-91e650a6c742',
-						datasetVersion: '1.0.0',
+						datasetVersion: '2',
 						name: 'ActivityLog Test - CR',
 						datasetv2: {
 							summary: {
@@ -109,7 +109,28 @@ export const mswGetPublisher = rest.get(`${apiURL}/dataset-onboarding/publisher/
 							structural: 0,
 						},
 						applicationStatusDesc: 'This dataset is pro',
-						listOfVersions: [],
+						listOfVersions: [
+							{
+								_id: '6130f09c05936d4236c42de7',
+								datasetVersion: '4.0.0',
+								activeflag: 'rejected',
+							},
+							{
+								_id: '6130efd505936d4236c42de1',
+								datasetVersion: '3.0.0',
+								activeflag: 'archive',
+							},
+							{
+								_id: '6130e33805936d4236c42dd5',
+								datasetVersion: '2.0.0',
+								activeflag: 'rejected',
+							},
+							{
+								_id: '6130d0ed05936d4236c42dcc',
+								datasetVersion: '1.0.0',
+								activeflag: 'archive',
+							},
+						],
 					},
 					{
 						_id: '61829ed64bab049816c57b02',
@@ -148,7 +169,28 @@ export const mswGetPublisher = rest.get(`${apiURL}/dataset-onboarding/publisher/
 						},
 						applicationStatusDesc: 'SDg',
 						applicationStatusAuthor: 'Callum Reekie',
-						listOfVersions: [],
+						listOfVersions: [
+							{
+								_id: '6130f09c05936d4236c42de7',
+								datasetVersion: '4.0.0',
+								activeflag: 'rejected',
+							},
+							{
+								_id: '6130efd505936d4236c42de1',
+								datasetVersion: '3.0.0',
+								activeflag: 'archive',
+							},
+							{
+								_id: '6130e33805936d4236c42dd5',
+								datasetVersion: '2.0.0',
+								activeflag: 'rejected',
+							},
+							{
+								_id: '6130d0ed05936d4236c42dcc',
+								datasetVersion: '1.0.0',
+								activeflag: 'archive',
+							},
+						],
 					},
 					{
 						_id: '61829910e4ea0f9763bd3e42',
@@ -187,7 +229,28 @@ export const mswGetPublisher = rest.get(`${apiURL}/dataset-onboarding/publisher/
 						},
 						applicationStatusDesc: 'You have not done something right.',
 						applicationStatusAuthor: 'Callum Reekie',
-						listOfVersions: [],
+						listOfVersions: [
+							{
+								_id: '6130f09c05936d4236c42de7',
+								datasetVersion: '4.0.0',
+								activeflag: 'rejected',
+							},
+							{
+								_id: '6130efd505936d4236c42de1',
+								datasetVersion: '3.0.0',
+								activeflag: 'archive',
+							},
+							{
+								_id: '6130e33805936d4236c42dd5',
+								datasetVersion: '2.0.0',
+								activeflag: 'rejected',
+							},
+							{
+								_id: '6130d0ed05936d4236c42dcc',
+								datasetVersion: '1.0.0',
+								activeflag: 'archive',
+							},
+						],
 					},
 					{
 						_id: '61814af9f5fc00806ec17370',
@@ -341,7 +404,7 @@ export const mswGetPublisher = rest.get(`${apiURL}/dataset-onboarding/publisher/
 							submitted: '2021-11-02T12:13:05.304Z',
 						},
 						pid: 'd5c99a71-c039-4a0b-9171-dba8a1c33154',
-						datasetVersion: '1.0.0',
+						datasetVersion: '2.0.0',
 						name: 'New dataset 2 Nov 2021 12:01',
 						datasetv2: {
 							summary: {
@@ -375,7 +438,7 @@ export const mswGetPublisher = rest.get(`${apiURL}/dataset-onboarding/publisher/
 							updated: '2021-10-20T10:53:28.503Z',
 						},
 						pid: '4932179f-1c9c-40a0-81b5-9b499aff7a64',
-						datasetVersion: '1.0.0',
+						datasetVersion: '2',
 						name: 'New dataset 20 Oct 2021 11:53',
 						datasetv2: {
 							summary: {
@@ -384,7 +447,7 @@ export const mswGetPublisher = rest.get(`${apiURL}/dataset-onboarding/publisher/
 								},
 							},
 						},
-						activeflag: 'draft',
+						activeflag: 'inReview',
 						listOfVersions: [],
 					},
 					{

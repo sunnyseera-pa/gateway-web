@@ -52,16 +52,14 @@ exports[`Given the AccountDataset component When it is rendered Then matches the
     <div
       class="col-10"
     >
-      <div />
       <div
-        class="actionBar"
+        class="mt-2 row"
       >
         <div
-          class="action-bar-actions"
+          class="col"
         >
-          <button
-            class="btn btn-light"
-            type="button"
+          <div
+            class="rectangle"
           >
             Next
           </button>
