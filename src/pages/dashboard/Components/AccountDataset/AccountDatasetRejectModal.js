@@ -1,15 +1,42 @@
 import React from 'react';
-import { Modal } from 'react-bootstrap';
+import { Modal, Form, Button } from 'react-bootstrap';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 import { ReactComponent as CloseButtonSvg } from '../../../../images/close-alt.svg';
+import datasetService from '../../../../services/datasets/datasets';
 import './AccountDatasetDecisionModal.scss';
 import _ from 'lodash';
 
 const AccountDatasetRejectModal = ({
+	id,
 	open,
 	closed,
     onReject,
 	onRejectAndGoToNext
 }) => {
+	const {
+			handleSubmit,
+			handleChange,
+			handleBlur,
+			touched,
+			values,
+			errors
+		} = useFormik({
+		initialValues: {
+			reason: ''
+		},
+		validationSchema: Yup.object({
+			reason: Yup.string().required('This cannot be empty'),
+		}),
+		onSubmit: values => {
+			const payload = {
+				id,
+				...values
+			};
+			datasetService.postRejectDatasetRequest(payload);
+		},
+	});
+
 	return (
 		<Modal
 			show={open}
@@ -26,7 +53,21 @@ const AccountDatasetRejectModal = ({
 			</div>
 
 			<div className='account-dataset-decision-body'>
-				<div className='account-dataset-decision-body--wrap'>Placeholder content for now</div>
+				<div className='account-dataset-decision-body--wrap'>
+					<p>Let the editor know why this submission is being rejected. They will be able to create a new version and make a new submission.</p>
+					<label className='black-14'>Description</label>
+					<Form.Control
+						data-test-id='dataset-reject-reason'
+						id='reason'
+						name='reason'
+						type='textarea'
+						className={touched.reason && errors.reason && 'save-modal-input'}
+						onChange={handleChange}
+						value={values.reason}
+						onBlur={handleBlur}
+					/>
+					{touched.reason && errors.reason ? <div className='errorMessages'>{errors.reason}</div> : null}
+				</div>
 			</div>
 			<div className='account-dataset-decision-footer'>
 				<div className='account-dataset-decision-footer--wrap'>
@@ -38,24 +79,26 @@ const AccountDatasetRejectModal = ({
 						}}>
 						No, nevermind
 					</button>
-					<button
+					<Button
 						className='button-secondary'
 						style={{ marginLeft: 'auto' }}
 						onClick={() => {
+							handleSubmit();
 							onReject();
 							closed();
 						}}>
 						Reject
-					</button>
-					<button
+					</Button>
+					<Button
 						className='button-secondary'
 						style={{ marginLeft: 'auto' }}
 						onClick={() => {
+							handleSubmit();
 							onRejectAndGoToNext();
 							closed();
 						}}>
 						Reject and go to next
-					</button>
+					</Button>
 				</div>
 			</div>
 		</Modal>

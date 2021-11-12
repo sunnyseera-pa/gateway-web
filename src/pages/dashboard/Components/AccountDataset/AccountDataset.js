@@ -173,11 +173,13 @@ const AccountDataset = props => {
 				</div>
 			</ActionBar>
 			<AccountDatasetApproveModal
+				id={dataset._id}
 				open={showApproveDatasetModal}
 				closed={() => setState({ showApproveDatasetModal: false })}
 				onApprove={() => approveDataset()}
 				onApproveAndGoToNext={() => approveDatasetAndGoToNext()} />
 			<AccountDatasetRejectModal
+				id={dataset._id}
 				open={showRejectDatasetModal}
 				closed={() => setState({ showRejectDatasetModal: false })}
 				onReject={() => rejectDataset()}

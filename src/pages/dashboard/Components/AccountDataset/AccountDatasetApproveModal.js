@@ -5,6 +5,7 @@ import './AccountDatasetDecisionModal.scss';
 import _ from 'lodash';
 
 const AccountDatasetApproveModal = ({
+	id,
 	open,
 	closed,
     onApprove,
@@ -26,7 +27,9 @@ const AccountDatasetApproveModal = ({
 			</div>
 
 			<div className='account-dataset-decision-body'>
-				<div className='account-dataset-decision-body--wrap'>Placeholder content for now</div>
+				<div className='account-dataset-decision-body--wrap'>
+					<p></p>
+				</div>
 			</div>
 			<div className='account-dataset-decision-footer'>
 				<div className='account-dataset-decision-footer--wrap'>
