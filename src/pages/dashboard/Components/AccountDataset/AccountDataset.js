@@ -22,7 +22,6 @@ const AccountDataset = props => {
 	const { userState } = useAuth();
 	const [team, setTeam] = useState();
 	const [currentDataset, setCurrentDataset] = useState();
-	const [datasets, setDatasets] = useState();
 	const [state, setState] = useState({
 		showPrevious: true,
 		showDisabled: true,
