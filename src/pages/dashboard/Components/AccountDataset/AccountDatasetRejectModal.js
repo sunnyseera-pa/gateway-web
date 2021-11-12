@@ -12,7 +12,7 @@ const AccountDatasetRejectModal = ({
 	open,
 	closed,
     onReject,
-	onRejectAndGoToNext
+	goToNext
 }) => {
 	const {
 			handleSubmit,
@@ -94,7 +94,7 @@ const AccountDatasetRejectModal = ({
 						style={{ marginLeft: 'auto' }}
 						onClick={() => {
 							handleSubmit();
-							onRejectAndGoToNext();
+							goToNext();
 							closed();
 						}}>
 						Reject and go to next

@@ -9,7 +9,7 @@ const AccountDatasetApproveModal = ({
 	open,
 	closed,
     onApprove,
-	onApproveAndGoToNext
+	goToNext
 }) => {
 	return (
 		<Modal
@@ -54,7 +54,7 @@ const AccountDatasetApproveModal = ({
 						className='button-secondary'
 						style={{ marginLeft: 'auto' }}
 						onClick={() => {
-							onApproveAndGoToNext();
+							goToNext();
 							closed();
 						}}>
 						Approve and go to next
