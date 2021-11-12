@@ -146,7 +146,9 @@ const AccountDataset = props => {
 						placement='top'
 						overlay={
 							<Popover id='make-a-decision-popover'>
-								<Popover.Title as h3>Make a decision</Popover.Title>
+								<Popover.Title as h3>
+									<span data-testid='make-as-decision-overlay'>Make a decision</span>
+								</Popover.Title>
 								<Popover.Content>
 									<Button variant="link" onClick={() =>
 											setState({ showApproveDatasetModal: true })}>Approve</Button>
@@ -156,9 +158,9 @@ const AccountDataset = props => {
 							</Popover>
 						}
 					>
-					<Button variant='outline-secondary'>
-						Make a decision
-					</Button>
+						<Button variant='outline-secondary'>
+							Make a decision
+						</Button>
 					</OverlayTrigger>
 				</div>
 			</ActionBar>

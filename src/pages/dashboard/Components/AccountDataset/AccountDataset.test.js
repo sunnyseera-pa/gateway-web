@@ -86,6 +86,34 @@ describe('Given the AccountDataset component', () => {
 				expect(window.location.assign.mock.calls[0][0]).toEqual('/account/datasets/d5c99a71-c039-4a0b-9171-dba8a1c33154');
 			});
 		});
+
+		describe('And the Make a decision button is clicked', () => {
+			beforeAll(async () => {
+				await waitFor(() => expect(wrapper.getByText('Make a decision')).toBeTruthy());
+
+				const button = wrapper.queryAllByText('Make a decision')[0];
+
+				await fireEvent.click(button);
+			});
+
+			it('Then loads the Make a decision overlay', () => {
+				expect(wrapper.container).toMatchSnapshot();
+			});
+
+			describe('And the Reject button is clicked', () => {
+				beforeAll(async () => {
+					await waitFor(() => expect(wrapper.getByText('Reject')).toBeTruthy());
+
+					const button = wrapper.queryAllByText('Reject')[0];
+
+					await fireEvent.click(button);
+				});
+
+				it('Then loads the Reject dataset modal', () => {
+					expect(wrapper.container).toMatchSnapshot();
+				});
+			});
+		});
 	});
 
 	describe('When the next page is rendered', () => {
