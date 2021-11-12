@@ -75,6 +75,10 @@ const AccountDataset = props => {
 		[id, dataPublisher.data, team]
 	);
 
+	const openMakeADecisionModal = () => {
+		
+	};
+
 	const { showPrevious, showNext, statusError } = state;
 
 	if (!dataDataset.data && dataDataset.isError && dataDataset.isFetched) {
@@ -130,6 +134,9 @@ const AccountDataset = props => {
 							Next
 						</Button>
 					)}
+					<Button variant='outline-secondary' onClick={() => openMakeADecisionModal()}>
+						Make a decision
+					</Button>
 				</div>
 			</ActionBar>
 		</AccountContent>
