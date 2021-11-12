@@ -71,14 +71,14 @@ const AccountDatasetRejectModal = ({
 			</div>
 			<div className='account-dataset-decision-footer'>
 				<div className='account-dataset-decision-footer--wrap'>
-					<button
+					<Button
 						className='button-secondary'
 						style={{ marginLeft: 'auto' }}
 						onClick={() => {
 							closed();
 						}}>
 						No, nevermind
-					</button>
+					</Button>
 					<Button
 						className='button-secondary'
 						style={{ marginLeft: 'auto' }}
