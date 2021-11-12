@@ -110,7 +110,33 @@ describe('Given the AccountDataset component', () => {
 				});
 
 				it('Then loads the Reject dataset modal', () => {
-					expect(wrapper.container).toMatchSnapshot();
+					const { queryByText } = wrapper;
+					expect(queryByText('Reject this version of this dataset metadata')).toBeTruthy();
+				});
+
+				it('Then does not load the Approve dataset modal', () => {
+					const { queryByText } = wrapper;
+					expect(queryByText('Approve this version of this dataset metadata')).toBeFalsy();
+				});
+			});
+
+			describe('And the Approve button is clicked', () => {
+				beforeAll(async () => {
+					await waitFor(() => expect(wrapper.getByText('Approve')).toBeTruthy());
+
+					const button = wrapper.queryAllByText('Approve')[0];
+
+					await fireEvent.click(button);
+				});
+
+				it('Then loads the Approve dataset modal', () => {
+					const { queryByText } = wrapper;
+					expect(queryByText('Approve this version of this dataset metadata')).toBeTruthy();
+				});
+
+				it('Then does not load the Reject dataset modal', () => {
+					const { queryByText } = wrapper;
+					expect(queryByText('Reject this version of this dataset metadata')).toBeFalsy();
 				});
 			});
 		});
