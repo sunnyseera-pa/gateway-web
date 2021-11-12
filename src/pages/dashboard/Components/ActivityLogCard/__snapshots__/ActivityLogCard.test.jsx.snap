@@ -69,6 +69,7 @@ exports[`Given the ActivityLogCard component When it is rendered Then matches th
                   class="css-1pfaqp5"
                 >
                   <time
+                    data-testid="event-time-0"
                     datetime="14:50"
                   >
                     14:50
@@ -122,6 +123,7 @@ exports[`Given the ActivityLogCard component When it is rendered Then matches th
                   class="css-1pfaqp5"
                 >
                   <time
+                    data-testid="event-time-1"
                     datetime="14:50"
                   >
                     14:50
@@ -137,102 +139,110 @@ exports[`Given the ActivityLogCard component When it is rendered Then matches th
                   >
                     datasetUpdatesSubmitted
                   </div>
-                  <blockquote
-                    class="css-1ta6g32-BlockQuote"
+                  <div
+                    data-testid="event-detailed-text-1-0"
                   >
-                    <h6
-                      class="mb-3 gray800"
+                    <blockquote
+                      class="css-1ta6g32-BlockQuote"
                     >
-                      Summary
-                    </h6>
-                    <ul
-                      class="css-1jupbku-ListInfo"
-                    >
-                      <li
-                        class="css-oc8kcp"
+                      <h6
+                        class="mb-3 gray800"
                       >
-                        <div
-                          class="css-112bk1i"
-                        >
-                          question
-                        </div>
-                        <div>
-                          Abstract
-                        </div>
-                      </li>
-                      <li
-                        class="css-oc8kcp"
+                        Summary
+                      </h6>
+                      <ul
+                        class="css-1jupbku-ListInfo"
                       >
-                        <div
-                          class="css-112bk1i"
+                        <li
+                          class="css-oc8kcp"
                         >
-                          previousAnswer
-                        </div>
-                        <div>
-                          test
-                        </div>
-                      </li>
-                      <li
-                        class="css-oc8kcp"
-                      >
-                        <div
-                          class="css-112bk1i"
+                          <div
+                            class="css-112bk1i"
+                          >
+                            question
+                          </div>
+                          <div>
+                            Abstract
+                          </div>
+                        </li>
+                        <li
+                          class="css-oc8kcp"
                         >
-                          updatedAnswer
-                        </div>
-                        <div>
-                          I have changed the abstract!
-                        </div>
-                      </li>
-                    </ul>
-                  </blockquote>
-                  <blockquote
-                    class="css-1ta6g32-BlockQuote"
+                          <div
+                            class="css-112bk1i"
+                          >
+                            previousAnswer
+                          </div>
+                          <div>
+                            test
+                          </div>
+                        </li>
+                        <li
+                          class="css-oc8kcp"
+                        >
+                          <div
+                            class="css-112bk1i"
+                          >
+                            updatedAnswer
+                          </div>
+                          <div>
+                            I have changed the abstract!
+                          </div>
+                        </li>
+                      </ul>
+                    </blockquote>
+                  </div>
+                  <div
+                    data-testid="event-detailed-text-1-1"
                   >
-                    <h6
-                      class="mb-3 gray800"
+                    <blockquote
+                      class="css-1ta6g32-BlockQuote"
                     >
-                      Provenance | Temporal
-                    </h6>
-                    <ul
-                      class="css-1jupbku-ListInfo"
-                    >
-                      <li
-                        class="css-oc8kcp"
+                      <h6
+                        class="mb-3 gray800"
                       >
-                        <div
-                          class="css-112bk1i"
-                        >
-                          question
-                        </div>
-                        <div>
-                          Distribution Release Date
-                        </div>
-                      </li>
-                      <li
-                        class="css-oc8kcp"
+                        Provenance | Temporal
+                      </h6>
+                      <ul
+                        class="css-1jupbku-ListInfo"
                       >
-                        <div
-                          class="css-112bk1i"
+                        <li
+                          class="css-oc8kcp"
                         >
-                          previousAnswer
-                        </div>
-                        <div />
-                      </li>
-                      <li
-                        class="css-oc8kcp"
-                      >
-                        <div
-                          class="css-112bk1i"
+                          <div
+                            class="css-112bk1i"
+                          >
+                            question
+                          </div>
+                          <div>
+                            Distribution Release Date
+                          </div>
+                        </li>
+                        <li
+                          class="css-oc8kcp"
                         >
-                          updatedAnswer
-                        </div>
-                        <div>
-                          02/11/2021
-                        </div>
-                      </li>
-                    </ul>
-                  </blockquote>
+                          <div
+                            class="css-112bk1i"
+                          >
+                            previousAnswer
+                          </div>
+                          <div />
+                        </li>
+                        <li
+                          class="css-oc8kcp"
+                        >
+                          <div
+                            class="css-112bk1i"
+                          >
+                            updatedAnswer
+                          </div>
+                          <div>
+                            02/11/2021
+                          </div>
+                        </li>
+                      </ul>
+                    </blockquote>
+                  </div>
                 </div>
               </div>
             </li>
@@ -257,6 +267,7 @@ exports[`Given the ActivityLogCard component When it is rendered Then matches th
                   class="css-1pfaqp5"
                 >
                   <time
+                    data-testid="event-time-2"
                     datetime="14:49"
                   >
                     14:49

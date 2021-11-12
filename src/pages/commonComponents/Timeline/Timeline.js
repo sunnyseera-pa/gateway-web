@@ -13,7 +13,9 @@ const Timeline = ({ data, className }) => {
 							<div>{item.icon}</div>
 						</div>
 						<div css={styles.time}>
-							<time dateTime={item.time}>{item.time}</time>
+							<time data-testid={`event-time-${i}`} dateTime={item.time}>
+								{item.time}
+							</time>
 						</div>
 					</div>
 					<div css={styles.content}>{item.content}</div>
