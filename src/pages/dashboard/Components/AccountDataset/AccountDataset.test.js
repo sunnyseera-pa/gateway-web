@@ -1,6 +1,5 @@
 import { render, waitFor } from '@testing-library/react';
 import React from 'react';
-import { QueryClient } from 'react-query';
 import reactRouter from 'react-router';
 import AccountDataset from '.';
 import { server } from '../../../../services/mockServer';
@@ -22,14 +21,6 @@ const mockPush = jest.fn();
 const props = {
 	location: {},
 };
-
-const queryClient = new QueryClient({
-	defaultOptions: {
-		queries: {
-			retry: false,
-		},
-	},
-});
 
 describe('Given the AccountDataset component', () => {
 	beforeAll(() => {
@@ -57,7 +48,7 @@ describe('Given the AccountDataset component', () => {
 			});
 
 			wrapper = render(<AccountDataset {...props} />, {
-				wrapper: ({ children }) => <Providers queryClient={queryClient}>{children}</Providers>,
+				wrapper: Providers,
 			});
 		});
 
@@ -115,15 +106,13 @@ describe('Given the AccountDataset component', () => {
 	});
 
 	describe('And the dataset is not in review', () => {
-		let wrapper;
-
 		beforeAll(async () => {
 			jest.spyOn(reactRouter, 'useParams').mockReturnValue({
 				id: '1f509fe7-e94f-48fe-af6a-81f2bf8a5270',
 			});
 
 			wrapper = render(<AccountDataset {...props} />, {
-				wrapper: ({ children }) => <Providers queryClient={queryClient}>{children}</Providers>,
+				wrapper: Providers,
 			});
 		});
 
@@ -137,15 +126,13 @@ describe('Given the AccountDataset component', () => {
 	});
 
 	describe('And the dataset is not valid', () => {
-		let wrapper;
-
 		beforeAll(async () => {
 			jest.spyOn(reactRouter, 'useParams').mockReturnValue({
 				id: 'invalid',
 			});
 
 			wrapper = render(<AccountDataset {...props} />, {
-				wrapper: ({ children }) => <Providers queryClient={queryClient}>{children}</Providers>,
+				wrapper: Providers,
 			});
 		});
 

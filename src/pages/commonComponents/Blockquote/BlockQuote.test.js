@@ -4,7 +4,7 @@ import BlockQuote from '.';
 
 let wrapper;
 
-describe('Given the AlertModal component', () => {
+describe('Given the BlockQuote component', () => {
 	describe('When it is rendered', () => {
 		beforeAll(() => {
 			wrapper = render(<BlockQuote>Content</BlockQuote>);

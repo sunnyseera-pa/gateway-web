@@ -54,12 +54,12 @@ const ActivityLogCard = props => {
 								</Col>
 							</Row>
 							<Timeline
-								data={events.map((event, i) => {
+								data={events.map((event, index) => {
 									const dateTime = dateFormats(event.timestamp);
 									const commentTitle = event.eventType === 'datasetVersionRejected' ? t('activitylog.rejection') : t('comment');
 
 									return {
-										icon: <img src={eventStatusIcons[event.eventType]} data-testid={`${i}-${event.eventType}`} alt='Icon' />,
+										icon: <img src={eventStatusIcons[event.eventType]} data-testid={`${index}-${event.eventType}`} alt='Icon' />,
 										time: dateTime.timeOnly,
 										content: (
 											<div>
@@ -76,29 +76,31 @@ const ActivityLogCard = props => {
 													</BlockQuote>
 												)}
 												{event.datasetUpdates &&
-													event.datasetUpdates.map(item => {
+													event.datasetUpdates.map((item, i) => {
 														const log = DatasetOnboardingHelper.getUpdatesSubmittedLog(item);
 
 														return (
-															<BlockQuote data-testid={`event-detailed-text-${i}`}>
-																<h6 className='mb-3 gray800'>{log.heading}</h6>
-																<ListInfo
-																	data={[
-																		{
-																			label: t('question'),
-																			value: log.question,
-																		},
-																		{
-																			label: t('previousAnswer'),
-																			value: log.answers.previousAnswer,
-																		},
-																		{
-																			label: t('updatedAnswer'),
-																			value: log.answers.updatedAnswer,
-																		},
-																	]}
-																/>
-															</BlockQuote>
+															<div data-testid={`event-detailed-text-${index}-${i}`}>
+																<BlockQuote>
+																	<h6 className='mb-3 gray800'>{log.heading}</h6>
+																	<ListInfo
+																		data={[
+																			{
+																				label: t('question'),
+																				value: log.question,
+																			},
+																			{
+																				label: t('previousAnswer'),
+																				value: log.answers.previousAnswer,
+																			},
+																			{
+																				label: t('updatedAnswer'),
+																				value: log.answers.updatedAnswer,
+																			},
+																		]}
+																	/>
+																</BlockQuote>
+															</div>
 														);
 													})}
 											</div>
