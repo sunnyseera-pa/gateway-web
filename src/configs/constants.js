@@ -1,1 +1,1 @@
-export const DISPLAY_DATE_STANDARD = 'D MMMM YYYY';
+export const DISPLAY_DATE_STANDARD = 'd MMMM yyyy';
