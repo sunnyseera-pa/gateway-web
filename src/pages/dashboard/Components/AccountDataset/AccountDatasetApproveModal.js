@@ -2,14 +2,13 @@ import React from 'react';
 import { Modal } from 'react-bootstrap';
 import { ReactComponent as CloseButtonSvg } from '../../../../images/close-alt.svg';
 import './AccountDatasetDecisionModal.scss';
-import _ from 'lodash';
 
 const AccountDatasetApproveModal = ({
 	id,
 	open,
 	closed,
-    onApprove,
-	goToNext
+	goToNext,
+	showGoToNext
 }) => {
 	return (
 		<Modal
@@ -45,7 +44,6 @@ const AccountDatasetApproveModal = ({
 						className='button-secondary'
 						style={{ marginLeft: 'auto' }}
 						onClick={() => {
-							onApprove();
 							closed();
 						}}>
 						Approve

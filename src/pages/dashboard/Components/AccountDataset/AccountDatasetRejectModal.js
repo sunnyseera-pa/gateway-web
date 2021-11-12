@@ -5,14 +5,13 @@ import * as Yup from 'yup';
 import { ReactComponent as CloseButtonSvg } from '../../../../images/close-alt.svg';
 import datasetOnboardingService from '../../../../services/dataset-onboarding/dataset-onboarding';
 import './AccountDatasetDecisionModal.scss';
-import _ from 'lodash';
 
 const AccountDatasetRejectModal = ({
 	id,
 	open,
 	closed,
-    onReject,
-	goToNext
+	goToNext,
+	showGoToNext
 }) => {
 	const {
 			handleSubmit,
@@ -85,12 +84,12 @@ const AccountDatasetRejectModal = ({
 						style={{ marginLeft: 'auto' }}
 						onClick={async () => {
 							handleSubmit();
-							onReject();
 							closed();
 						}}>
 						Reject
 					</Button>
 					<Button
+						disabled={showGoToNext}
 						className='button-secondary'
 						style={{ marginLeft: 'auto' }}
 						onClick={() => {

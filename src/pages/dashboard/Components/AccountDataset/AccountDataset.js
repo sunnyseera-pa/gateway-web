@@ -79,16 +79,10 @@ const AccountDataset = props => {
 		[id, dataPublisher.data, team]
 	);
 
-	const approveDataset = () => {
-		// not sure what is supposed to happen AFTER approving a dataset.
-	};
-
-	const rejectDataset = () => {
-		// not sure what is supposed to happen AFTER rejecting a dataset.
-	};
-
 	const goToNext = () => {
-		// TODO: implement go to next logic
+		if (showNext) {
+			handlePaginationClick(1);
+		}
 	};
 
 	const { showPrevious, showNext, statusError, showRejectDatasetModal, showApproveDatasetModal } = state;
@@ -172,14 +166,14 @@ const AccountDataset = props => {
 				id={dataset._id}
 				open={showApproveDatasetModal}
 				closed={() => setState({ showApproveDatasetModal: false })}
-				onApprove={() => approveDataset()}
-				goToNext={() => goToNext()} />
+				goToNext={() => goToNext()}
+				showGoToNext={showNext} />
 			<AccountDatasetRejectModal
 				id={dataset._id}
 				open={showRejectDatasetModal}
 				closed={() => setState({ showRejectDatasetModal: false })}
-				onReject={() => rejectDataset()}
-				goToNext={() => goToNext()} />
+				goToNext={() => goToNext()}
+				showGoToNext={showNext} />
 		</AccountContent>
 	);
 };
