@@ -1403,12 +1403,24 @@ class SearchPage extends React.Component {
 		let formattedDataUses = [];
 
 		dataUses.forEach(dataUse => {
+			const gatewayApplicants = dataUse.gatewayApplicants.map(applicant => {
+				return `${applicant.firstname} ${applicant.lastname} `;
+			});
+
+			const gatewayOutputsTools = dataUse.gatewayOutputsToolsInfo.map(tool => {
+				return `${tool.name} `;
+			});
+
+			const gatewayOutputsPapers = dataUse.gatewayOutputsPapersInfo.map(paper => {
+				return `${paper.name} `;
+			});
+
 			formattedDataUses.push({
 				'Project ID': dataUse.projectIdText,
 				'Project Title': dataUse.projectTitle,
 				'Oganisation Name': dataUse.organisationName,
 				'Organisation Sector': dataUse.organisationSector,
-				'Gateway Applicants': dataUse.gatewayApplicants,
+				'Gateway Applicants': gatewayApplicants,
 				Applicants: dataUse.nonGatewayApplicants,
 				'Funders/Sponsors': dataUse.fundersAndSponsors,
 				'DEA Accredited Researcher': dataUse.accreditedResearcherStatus,
@@ -1433,6 +1445,8 @@ class SearchPage extends React.Component {
 				'Access Date': moment(dataUse.accessDate).format('DD/MM/YY'),
 				'Access Type': dataUse.accessType,
 				'Privacy Enhancements': dataUse.privacyEnhancements,
+				'Gateway Research Outputs Tools': gatewayOutputsTools,
+				'Gateway Research Outputs Papers': gatewayOutputsPapers,
 				'Research Outputs': dataUse.researchOutputs,
 				Keywords: dataUse.keywords,
 			});
