@@ -289,6 +289,12 @@ export const DataUseView = props => {
 										<span className='badge-datause badge-tag badge-datause-bold'>
 											<SVGIcon name='datauseicon' width={12} height={12} fill={'#fff'} /> Data use
 										</span>
+										{dataUseData.keywords &&
+											dataUseData.keywords.map(keyword => (
+												<a href={`/search?search=&datausekeywords=${keyword}&tab=Datauses`} className='badge-tag badge-datause-bold'>
+													{keyword}
+												</a>
+											))}
 									</Col>
 								</Row>
 								<Row className='margin-top-16'>

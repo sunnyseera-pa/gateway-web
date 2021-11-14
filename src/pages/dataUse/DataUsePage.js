@@ -10,6 +10,7 @@ import SVGIcon from '../../images/SVGIcon';
 import DataUseApproveModal from './modals/DataUseApproveModal';
 import DataUseRejectModal from './modals/DataUseRejectModal';
 import DarHelperUtil from './../../utils/DarHelper.util';
+
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
 const DataUsePage = React.forwardRef(({ onClickDataUseUpload, team }, ref) => {
@@ -26,6 +27,7 @@ const DataUsePage = React.forwardRef(({ onClickDataUseUpload, team }, ref) => {
 	const [showRejectModal, setShowRejectModal] = useState(false);
 	const [showArchiveModal, setShowArchiveModal] = useState(false);
 	const [showUnarchiveModal, setShowUnarchiveModal] = useState(false);
+	const [showSuccessBanner, setShowSuccessBanner] = useState(false);
 
 	useEffect(() => {
 		axios.get(baseURL + '/api/v2/data-use-registers?team=' + team).then(res => {
@@ -122,6 +124,11 @@ const DataUsePage = React.forwardRef(({ onClickDataUseUpload, team }, ref) => {
 							<SVGIcon name='check' width={24} height={24} fill={'#2C8267'} /> {alert}
 						</Alert>
 					)}
+
+					<Alert variant='success' className='mt-3'>
+						<SVGIcon width='15px' height='15px' name='tick' fill={'#165724'} /> Your edits have been saved and are now visible on the
+						gateway
+					</Alert>
 				</Col>
 			</Row>
 			<Row className='datause-card mt-1'>
