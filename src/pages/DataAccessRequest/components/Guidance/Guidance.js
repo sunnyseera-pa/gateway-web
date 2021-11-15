@@ -18,12 +18,11 @@ const Guidance = ({ activeGuidance }) => {
 		const ast = processor.runSync(processor.parse(val));
 
 		return {
-			ast,
 			contents: processor.stringify(ast),
 		};
 	}
 
-	const { contents, ast } = compile(activeGuidance);
+	const { contents } = compile(activeGuidance);
 
 	return (
 		<Fragment>
