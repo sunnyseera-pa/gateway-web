@@ -36,7 +36,10 @@ describe('Given the LoginSSOButtons component', () => {
 		});
 
 		it('Then Suggest another Indentity Provider link should  be rendered', () => {
-			expect(screen.getByTestId('communityLink')).toHaveAttribute('href', `${props.communityLink}/t/about-the-site-feedback-category/1`);
+			expect(screen.getByTestId('communityLink')).toHaveAttribute(
+				'href',
+				`${props.communityLink}/t/how-to-submit-a-feature-request-or-feedback/1`
+			);
 		});
 	});
 

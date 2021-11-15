@@ -173,7 +173,7 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
 		const linkedDatasets = dataUseCheck.linkedDatasets.map(linkedDataset => {
 			return (
 				<div>
-					<Link className='data-use-link' to={'/dataset/' + linkedDataset.datasetid} target='_blank'>
+					<Link className='data-use-link' to={'/dataset/' + linkedDataset.pid} target='_blank'>
 						{linkedDataset.name}{' '}
 					</Link>
 				</div>
