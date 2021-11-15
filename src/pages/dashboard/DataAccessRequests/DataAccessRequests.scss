@@ -205,3 +205,15 @@
 	@include font-source(13px, $gray-700, 500);
 	margin-right: 15px;
 }
+
+.NDGLogo {
+	height: 43.5px; 
+	width: 178px;
+	margin-top: 16px;
+    margin-left: 26px;
+
+	@include mq('tablet-wide', max) {
+		height: 37px; 
+		width: 152px;
+	}
+}
