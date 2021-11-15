@@ -42,6 +42,17 @@
 				"approve": "Approve",
 				"approveAndGoToNext": "Approve and go to next"
 			}
+		},
+		"rejectModal": {
+			"title": "Reject this version of this dataset metadata",
+			"description": "Let the editor know why this submission is being rejected. They will be able to create a new version and make a new submission.",
+			"applicationStatus": "Description",
+			"applicationStatusRequired": "Description cannot be empty", 
+			"buttons": {
+				"cancel": "No, nevermind",
+				"reject": "Reject",
+				"rejectAndGoToNext": "Reject and go to next"
+			}
 		}
 	}
 }

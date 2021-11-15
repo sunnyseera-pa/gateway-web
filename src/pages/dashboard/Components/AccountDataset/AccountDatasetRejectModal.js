@@ -1,6 +1,7 @@
 import React from 'react';
 import { Modal, Form, Button } from 'react-bootstrap';
 import { useFormik } from 'formik';
+import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
 import { ReactComponent as CloseButtonSvg } from '../../../../images/close-alt.svg';
 import datasetOnboardingService from '../../../../services/dataset-onboarding/dataset-onboarding';
@@ -13,6 +14,8 @@ const AccountDatasetRejectModal = ({
 	goToNext,
 	showGoToNext
 }) => {
+	const { t } = useTranslation();
+
 	const {
 			handleSubmit,
 			handleChange,
@@ -25,9 +28,9 @@ const AccountDatasetRejectModal = ({
 			applicationStatusDesc: ''
 		},
 		validationSchema: Yup.object({
-			applicationStatusDesc: Yup.string().required('Description cannot be empty'),
+			applicationStatusDesc: Yup.string(),
 		}),
-		onSubmit: async values => {
+		onSubmit: values => {
 			const payload = {
 				...values,
 				id,
@@ -48,14 +51,15 @@ const AccountDatasetRejectModal = ({
 			<div className='account-dataset-decision-header'>
 				<CloseButtonSvg data-testid="close-modal" className='account-dataset-decision-modal-close' onClick={closed} />
 				<div className='account-dataset-decision-header--wrap'>
-					<h4 className='black-20'>Reject this version of this dataset metadata</h4>
+					<h4 className='black-20'>{t('dataset.rejectModal.title')}</h4>
 				</div>
 			</div>
 
+			<form onsubmit={handleSubmit}>
 			<div className='account-dataset-decision-body'>
 				<div className='account-dataset-decision-body--wrap'>
-					<p>Let the editor know why this submission is being rejected. They will be able to create a new version and make a new submission.</p>
-					<label forHtml="applicationStatusDesc" className='black-14'>Description</label>
+					<p>{t('dataset.rejectModal.description')}</p>
+					<label forHtml="applicationStatusDesc" className='black-14'>{t('dataset.rejectModal.applicationStatus')}</label>
 					<Form.Control
 						data-testid='dataset-reject-applicationStatusDesc'
 						id='applicationStatusDesc'
@@ -65,6 +69,7 @@ const AccountDatasetRejectModal = ({
 						onChange={handleChange}
 						value={values.applicationStatusDesc}
 						onBlur={handleBlur}
+						role="textarea"
 					/>
 					{touched.applicationStatusDesc && errors.applicationStatusDesc ? <div className='errorMessages'>{errors.applicationStatusDesc}</div> : null}
 				</div>
@@ -78,9 +83,10 @@ const AccountDatasetRejectModal = ({
 						onClick={() => {
 							closed();
 						}}>
-						No, nevermind
+						{t('dataset.rejectModal.buttons.cancel')}
 					</Button>
 					<Button
+						type="submit"
 						data-testid="reject-button"
 						className='button-secondary'
 						style={{ marginLeft: 'auto' }}
@@ -88,7 +94,7 @@ const AccountDatasetRejectModal = ({
 							handleSubmit();
 							closed();
 						}}>
-						Reject
+						{t('dataset.rejectModal.buttons.reject')}
 					</Button>
 					<Button
 						disabled={!showGoToNext}
@@ -99,10 +105,11 @@ const AccountDatasetRejectModal = ({
 							goToNext();
 							closed();
 						}}>
-						Reject and go to next
+						{t('dataset.rejectModal.buttons.rejectAndGoToNext')}
 					</Button>
 				</div>
 			</div>
+			</form>
 		</Modal>
 	);
 };

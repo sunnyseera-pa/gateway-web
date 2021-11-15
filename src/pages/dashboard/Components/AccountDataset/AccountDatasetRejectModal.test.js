@@ -1,19 +1,12 @@
 import { render, waitFor, within } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
+import userEvent from "@testing-library/user-event";
 import React from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
 import AccountDatasetRejectModal from './AccountDatasetRejectModal';
 import datasetOnboardingService from '../../../../services/dataset-onboarding/dataset-onboarding';
+import { server } from '../../../../services/mockServer';
 
 jest.mock('../../../../services/dataset-onboarding/dataset-onboarding');
-
-const queryClient = new QueryClient({
-	defaultOptions: {
-		queries: {
-			retry: false,
-		},
-	},
-});
 
 let containerDiv;
 const goToNext = jest.fn();
@@ -33,15 +26,21 @@ describe('Given the AccountDatasetRejectModal component', () => {
         let wrapper;
 
         beforeAll(() => {
+            server.listen();
             containerDiv = createPortalContainer();
             wrapper = render(
-                <QueryClientProvider client={queryClient}>
-                    <AccountDatasetRejectModal {...props} container={containerDiv} />
-                </QueryClientProvider>
+                <AccountDatasetRejectModal {...props} container={containerDiv} />, {
+                    wrapper: Providers,
+                }
             );
         });
 
+        afterEach(() => {
+            server.resetHandlers();
+        });
+
         afterAll(() => {
+            server.close();
 			removePortalContainer(containerDiv);
 		});
 
@@ -49,7 +48,9 @@ describe('Given the AccountDatasetRejectModal component', () => {
             expect(containerDiv).toMatchSnapshot();
         });
 
-        it('Then the Reject and go to next button should not be disabled', () => {
+        it('Then the Reject and go to next button should not be disabled', async () => {
+            await waitFor(() => expect(wrapper.getByText('Reject and go to next')).toBeTruthy());
+
             const { getByText } = wrapper;
             const rejectAndGoToNextButton = getByText('Reject and go to next');
             expect(rejectAndGoToNextButton).not.toHaveAttribute('disabled');
@@ -64,54 +65,48 @@ describe('Given the AccountDatasetRejectModal component', () => {
                 };
 
                 rerender(
-                    <QueryClientProvider client={queryClient}>
-                        <AccountDatasetRejectModal {...newProps} container={containerDiv} />
-                    </QueryClientProvider>
+                    <AccountDatasetRejectModal {...newProps} container={containerDiv} />, {
+                        wrapper: Providers,
+                    }
                 )
             });
-            it('Then the Reject and go to next button should be disabled', () => {
+            it('Then the Reject and go to next button should be disabled', async () => {
+                await waitFor(() => expect(wrapper.getByText('Reject and go to next')).toBeTruthy());
+
                 const { getByText } = wrapper;
                 const rejectAndGoToNextButton = getByText('Reject and go to next');
                 expect(rejectAndGoToNextButton).toHaveAttribute('disabled');
             });
         });
 
-        describe('And the Reject button is clicked with no description', () => {
-            it('Should render an error message', async () => {
-                const { getByTestId, findByText } = wrapper;
-                const rejectButton = getByTestId('reject-button');
-                fireEvent.click(rejectButton);
-
-                expect(await findByText('Description cannot be empty')).toBeTruthy();
-            });
-        });
-
         describe('And the Reject button is clicked', () => {
             let button;
 
-            beforeAll(() => {
+            beforeAll(async () => {
                 const { rerender } = wrapper;
 
                 rerender(
-                    <QueryClientProvider client={queryClient}>
-                        <AccountDatasetRejectModal {...props} container={containerDiv} />
-                    </QueryClientProvider>
+                    <AccountDatasetRejectModal {...props} container={containerDiv} />, {
+                        wrapper: Providers,
+                    }
                 )
 
-                const { getByTestId } = wrapper;
+                await waitFor(() => expect(wrapper.getByText('Reject and go to next')).toBeTruthy());
 
-                const descriptionTextArea = getByTestId('dataset-reject-applicationStatusDesc');
-                fireEvent.change(descriptionTextArea, { target: { value: 'rejected' } });
+                const { getByTestId, getByRole } = wrapper;
+
+                const descriptionTextArea = getByRole('textarea');
+                userEvent.type(descriptionTextArea, "rejected");
 
                 button = within(getByTestId('button-container')).getAllByText('Reject')[0];
-                fireEvent.click(button);
+                userEvent.click(button);
             });
 
             it('Then submits the dataset rejection request', async () => {
                 await waitFor(() => expect(datasetOnboardingService.usePutDatasetOnboarding).toHaveBeenCalledWith({
                     id: 'id',
                     applicationStatus: 'rejected',
-                    applicationStatusDesc: 'rejected'
+                    applicationStatusDesc: ''
                 }));
             });
 
@@ -123,14 +118,16 @@ describe('Given the AccountDatasetRejectModal component', () => {
         describe('And the Reject and go to next button is clicked', () => {
             let button;
 
-            beforeAll(() => {
+            beforeAll(async () => {
                 const { rerender } = wrapper;
 
                 rerender(
-                    <QueryClientProvider client={queryClient}>
-                        <AccountDatasetRejectModal {...props} container={containerDiv} />
-                    </QueryClientProvider>
+                    <AccountDatasetRejectModal {...props} container={containerDiv} />, {
+                        wrapper: Providers,
+                    }
                 )
+
+                await waitFor(() => expect(wrapper.getByText('Reject and go to next')).toBeTruthy());
                 
                 const { getByText, getByTestId } = wrapper;
 
@@ -145,7 +142,7 @@ describe('Given the AccountDatasetRejectModal component', () => {
                 await waitFor(() => expect(datasetOnboardingService.usePutDatasetOnboarding).toHaveBeenCalledWith({
                     id: 'id',
                     applicationStatus: 'rejected',
-                    applicationStatusDesc: 'rejected'
+                    applicationStatusDesc: ''
                 }));
             });
 
