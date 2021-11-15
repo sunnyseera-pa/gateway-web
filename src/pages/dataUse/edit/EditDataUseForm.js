@@ -217,7 +217,7 @@ const EditFormDataUse = props => {
 																height='20px'
 																name='chevronbottom'
 																fill={'#fff'}
-																className={safePeople ? 'flip180 edit-datause-arrow' : 'edit-datause-arrow'}
+																className={safePeople ? 'edit-datause-arrow' : 'flip180 edit-datause-arrow'}
 															/>
 															Safe People
 														</Card.Header>
@@ -394,7 +394,7 @@ const EditFormDataUse = props => {
 																height='20px'
 																name='chevronbottom'
 																fill={'#fff'}
-																className={safeProject ? 'flip180 edit-datause-arrow' : 'edit-datause-arrow'}
+																className={safeProject ? 'edit-datause-arrow' : 'flip180 edit-datause-arrow'}
 															/>
 															Safe project
 														</Card.Header>
@@ -660,7 +660,7 @@ const EditFormDataUse = props => {
 																height='20px'
 																name='chevronbottom'
 																fill={'#fff'}
-																className={safeData ? 'flip180 edit-datause-arrow' : 'edit-datause-arrow'}
+																className={safeData ? 'edit-datause-arrow' : 'flip180 edit-datause-arrow'}
 															/>
 															Safe data
 														</Card.Header>
@@ -921,7 +921,7 @@ const EditFormDataUse = props => {
 																height='20px'
 																name='chevronbottom'
 																fill={'#fff'}
-																className={safeSettings ? 'flip180 edit-datause-arrow' : 'edit-datause-arrow'}
+																className={safeSettings ? 'edit-datause-arrow' : 'flip180 edit-datause-arrow'}
 															/>
 															Safe settings
 														</Card.Header>
@@ -992,7 +992,7 @@ const EditFormDataUse = props => {
 																height='20px'
 																name='chevronbottom'
 																fill={'#fff'}
-																className={safeOutput ? 'flip180 edit-datause-arrow' : 'edit-datause-arrow'}
+																className={safeOutput ? 'edit-datause-arrow' : 'flip180 edit-datause-arrow'}
 															/>
 															Safe output
 														</Card.Header>
@@ -1041,7 +1041,7 @@ const EditFormDataUse = props => {
 																height='20px'
 																name='chevronbottom'
 																fill={'#fff'}
-																className={keywords ? 'flip180 edit-datause-arrow' : 'edit-datause-arrow'}
+																className={keywords ? 'edit-datause-arrow' : 'flip180 edit-datause-arrow'}
 															/>
 															Keywords
 														</Card.Header>
@@ -1088,7 +1088,7 @@ const EditFormDataUse = props => {
 																height='20px'
 																name='chevronbottom'
 																fill={'#fff'}
-																className={relatedResources ? 'flip180 edit-datause-arrow' : 'edit-datause-arrow'}
+																className={relatedResources ? 'edit-datause-arrow' : 'flip180 edit-datause-arrow'}
 															/>
 															Related resources
 														</Card.Header>
