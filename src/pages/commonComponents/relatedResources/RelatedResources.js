@@ -66,6 +66,7 @@ const RelatedResources = React.forwardRef((props, ref) => {
 						personData={props.personData}
 						paperData={props.paperData}
 						courseData={props.courseData}
+						cohortData={props.cohortData}
 						summary={props.summary}
 						myEntitiesSummary={props.myEntitiesSummary}
 						doAddToTempRelatedObjects={props.doAddToTempRelatedObjects}

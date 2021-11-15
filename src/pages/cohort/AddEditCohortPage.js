@@ -26,6 +26,7 @@ const AddEditCohortPage = props => {
 	const [paperData, setPaperData] = useState([]);
 	const [personData, setPersonData] = useState([]);
 	const [courseData, setCourseData] = useState([]);
+	const [cohortData, setCohortData] = useState([]);
 	const [summary, setSummary] = useState([]);
 	const [myEntitiesSummary, setMyEntitiesSummary] = useState([]);
 	const [tempRelatedObjectIds, setTempRelatedObjectIds] = useState([]);
@@ -164,6 +165,8 @@ const AddEditCohortPage = props => {
 			if (type === 'paper' && page > 0) searchURL += '&paperIndex=' + page;
 			if (type === 'person' && page > 0) searchURL += '&personIndex=' + page;
 			if (type === 'course' && page > 0) searchURL += '&courseIndex=' + page;
+			if (type === 'cohort' && page > 0) searchURL += '&cohortIndex=' + page;
+
 			axios
 				.get(baseURL + '/api/v1/search?search=' + encodeURIComponent(searchString) + searchURL, {
 					params: {
@@ -178,6 +181,7 @@ const AddEditCohortPage = props => {
 					setPaperData(res.data.paperResults || []);
 					setPersonData(res.data.personResults || []);
 					setCourseData(res.data.courseResults || []);
+					setCohortData(res.data.cohortResults || []);
 					setSummary(res.data.summary || []);
 					setMyEntitiesSummary(res.data.myEntitiesSummary || []);
 					setIsLoading(false);
@@ -293,6 +297,7 @@ const AddEditCohortPage = props => {
 				paperData={paperData}
 				personData={personData}
 				courseData={courseData}
+				cohortData={cohortData}
 				summary={summary}
 				myEntitiesSummary={myEntitiesSummary}
 				doAddToTempRelatedObjects={addToTempRelatedObjects}
@@ -305,7 +310,7 @@ const AddEditCohortPage = props => {
 				updateDeleteFlag={updateDeleteFlag}
 				publicFlag={publicFlag}
 				updatePublicFlag={updatePublicFlag}
-				displayTabs={['Tools', 'Projects', 'Courses', 'Papers', 'People']}
+				displayTabs={['Tools', 'Projects', 'Courses', 'Papers', 'Cohorts', 'People']}
 				radioButtonValue={radioButtonValue}
 				selectedCohort={selectedCohort}
 				changeLogValue={changeLogValue}

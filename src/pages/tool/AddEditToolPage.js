@@ -40,6 +40,7 @@ class AddEditToolPage extends React.Component {
 		paperData: [],
 		personData: [],
 		courseData: [],
+		cohortData: [],
 		summary: [],
 		myEntitiesSummary: [],
 		tempRelatedObjectIds: [],
@@ -333,6 +334,7 @@ class AddEditToolPage extends React.Component {
 			if (type === 'paper' && page > 0) searchURL += '&paperIndex=' + page;
 			if (type === 'person' && page > 0) searchURL += '&personIndex=' + page;
 			if (type === 'course' && page > 0) searchURL += '&courseIndex=' + page;
+			if (type === 'cohort' && page > 0) searchURL += '&cohortIndex=' + page;
 
 			axios
 				.get(baseURL + '/api/v1/search?search=' + encodeURIComponent(this.state.searchString) + searchURL, {
@@ -349,6 +351,7 @@ class AddEditToolPage extends React.Component {
 						paperData: res.data.paperResults || [],
 						personData: res.data.personResults || [],
 						courseData: res.data.courseResults || [],
+						cohortData: res.data.cohortResults || [],
 						summary: res.data.summary || [],
 						myEntitiesSummary: res.data.myEntitiesSummary || [],
 						isLoading: false,
@@ -442,6 +445,7 @@ class AddEditToolPage extends React.Component {
 			paperData,
 			personData,
 			courseData,
+			cohortData,
 			summary,
 			myEntitiesSummary,
 			relatedObjects,
@@ -488,6 +492,7 @@ class AddEditToolPage extends React.Component {
 						paperData={paperData}
 						personData={personData}
 						courseData={courseData}
+						cohortData={cohortData}
 						summary={summary}
 						myEntitiesSummary={myEntitiesSummary}
 						doAddToTempRelatedObjects={this.addToTempRelatedObjects}
@@ -498,7 +503,7 @@ class AddEditToolPage extends React.Component {
 						relatedObjects={relatedObjects}
 						didDelete={didDelete}
 						updateDeleteFlag={this.updateDeleteFlag}
-						displayTabs={['Datasets', 'Tools', 'Projects', 'Courses', 'Papers', 'People']}
+						displayTabs={['Datasets', 'Tools', 'Projects', 'Courses', 'Papers', 'Cohorts', 'People']}
 					/>
 					<SideDrawer open={showDrawer} closed={this.toggleDrawer}>
 						<UserMessages

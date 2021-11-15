@@ -33,12 +33,14 @@ class RelatedResourcesModal extends React.Component {
 			papers: 0,
 			persons: 0,
 			courses: 0,
+			cohorts: 0,
 		},
 		mySelected: {
 			tools: 0,
 			projects: 0,
 			papers: 0,
 			courses: 0,
+			cohorts: 0,
 		},
 		displayTabs: [],
 	};
@@ -67,6 +69,8 @@ class RelatedResourcesModal extends React.Component {
 			await Promise.all([this.setState({ personIndex: page })]);
 		} else if (type === 'course') {
 			await Promise.all([this.setState({ courseIndex: page })]);
+		} else if (type === 'cohort') {
+			await Promise.all([this.setState({ cohortIndex: page })]);
 		}
 		this.props.doSearchMethod(e, type, page);
 	};
@@ -80,6 +84,7 @@ class RelatedResourcesModal extends React.Component {
 				paperIndex: 0,
 				personIndex: 0,
 				courseIndex: 0,
+				cohortIndex: 0,
 			});
 		}
 	};
@@ -133,7 +138,19 @@ class RelatedResourcesModal extends React.Component {
 	};
 
 	render() {
-		const { userState, datasetIndex, toolIndex, projectIndex, paperIndex, personIndex, courseIndex, displayTabs, mySelected } = this.state;
+		const {
+			userState,
+			datasetIndex,
+			toolIndex,
+			projectIndex,
+			paperIndex,
+			personIndex,
+			courseIndex,
+			cohortIndex,
+			displayTabs,
+			selected,
+			mySelected,
+		} = this.state;
 		let { key } = this.state;
 
 		let datasetCount = this.props.summary.datasetCount || 0;
@@ -141,6 +158,7 @@ class RelatedResourcesModal extends React.Component {
 		let projectCount = this.props.summary.projectCount || 0;
 		let courseCount = this.props.summary.courseCount || 0;
 		let paperCount = this.props.summary.paperCount || 0;
+		let cohortCount = this.props.summary.cohortCount || 0;
 		let personCount = this.props.summary.personCount || 0;
 
 		const getActiveTabOnLoad = () => {
@@ -151,6 +169,7 @@ class RelatedResourcesModal extends React.Component {
 				{ key: 'Papers', count: paperCount },
 				{ key: 'People', count: personCount },
 				{ key: 'Courses', count: courseCount },
+				{ key: 'Cohorts', count: cohortCount },
 			];
 
 			let tempKey = '';
@@ -180,6 +199,7 @@ class RelatedResourcesModal extends React.Component {
 		let paperPaginationItems = [];
 		let personPaginationItems = [];
 		let coursePaginationItems = [];
+		let cohortPaginationItems = [];
 		let maxResult = 40;
 		for (let i = 1; i <= Math.ceil(datasetCount / maxResult); i++) {
 			datasetPaginationItems.push(
@@ -253,6 +273,18 @@ class RelatedResourcesModal extends React.Component {
 				</Pagination.Item>
 			);
 		}
+		for (let i = 1; i <= Math.ceil(cohortCount / maxResult); i++) {
+			cohortPaginationItems.push(
+				<Pagination.Item
+					key={i}
+					active={i === cohortIndex / maxResult + 1}
+					onClick={e => {
+						this.handlePagination('cohort', (i - 1) * maxResult, 'click');
+					}}>
+					{i}
+				</Pagination.Item>
+			);
+		}
 
 		let editingObjectProject = 0;
 		let editingObjectTool = 0;
@@ -264,17 +296,18 @@ class RelatedResourcesModal extends React.Component {
 			editingObjectTool = 1;
 		}
 
-		this.state.selected.datasets = 0;
-		this.state.selected.tools = 0;
-		this.state.selected.projects = 0;
-		this.state.selected.papers = 0;
-		this.state.selected.persons = 0;
-		this.state.selected.courses = 0;
-
+		selected.datasets = 0;
+		selected.tools = 0;
+		selected.projects = 0;
+		selected.papers = 0;
+		selected.persons = 0;
+		selected.courses = 0;
+		selected.cohorts = 0;
 		mySelected.tools = 0;
 		mySelected.projects = 0;
 		mySelected.papers = 0;
 		mySelected.courses = 0;
+		mySelected.cohorts = 0;
 
 		if (this.props.relatedObjects) {
 			this.props.relatedObjects.map(object => {
@@ -290,7 +323,7 @@ class RelatedResourcesModal extends React.Component {
 							});
 
 							if (object.objectId === tool.id || object.objectId === JSON.stringify(tool.id)) {
-								this.state.selected.tools++;
+								selected.tools++;
 								if (authors.includes(userState[0].id)) {
 									mySelected.tools++;
 								}
@@ -305,7 +338,7 @@ class RelatedResourcesModal extends React.Component {
 							});
 
 							if (object.objectId === project.id || object.objectId === JSON.stringify(project.id)) {
-								this.state.selected.projects++;
+								selected.projects++;
 								if (authors.includes(userState[0].id)) {
 									mySelected.projects++;
 								}
@@ -320,7 +353,7 @@ class RelatedResourcesModal extends React.Component {
 							});
 
 							if (object.objectId === paper.id || object.objectId === JSON.stringify(paper.id)) {
-								this.state.selected.papers++;
+								selected.papers++;
 								if (authors.includes(userState[0].id)) {
 									mySelected.papers++;
 								}
@@ -330,7 +363,7 @@ class RelatedResourcesModal extends React.Component {
 					case 'person':
 						this.props.personData.map(person => {
 							if (object.objectId === person.id || object.objectId === JSON.stringify(person.id)) {
-								this.state.selected.persons++;
+								selected.persons++;
 							}
 						});
 						break;
@@ -342,16 +375,27 @@ class RelatedResourcesModal extends React.Component {
 								object.pid === dataset.pid ||
 								object.pid === JSON.stringify(dataset.pid)
 							) {
-								this.state.selected.datasets++;
+								selected.datasets++;
 							}
 						});
 						break;
 					case 'course':
 						this.props.courseData.map(course => {
 							if (object.objectId === course.id || object.objectId === JSON.stringify(course.id)) {
-								this.state.selected.courses++;
+								selected.courses++;
 								if (course.creator === userState[0].id) {
 									mySelected.courses++;
+								}
+							}
+						});
+						break;
+					case 'cohort':
+						this.props.cohortData.map(cohort => {
+							if (object.objectId === cohort.id || object.objectId === JSON.stringify(cohort.id)) {
+								selected.cohorts++;
+
+								if (cohort.uploaders.includes(userState[0].id)) {
+									mySelected.cohorts++;
 								}
 							}
 						});
@@ -370,6 +414,8 @@ class RelatedResourcesModal extends React.Component {
 		let firstAllPaperIndex = this.props.paperData.map(paper => paper.myEntity).indexOf(false);
 		let firstMyCourseIndex = this.props.courseData.map(course => course.myEntity).indexOf(true);
 		let firstAllCourseIndex = this.props.courseData.map(course => course.myEntity).indexOf(false);
+		let firstMyCohortIndex = this.props.cohortData.map(cohort => cohort.myEntity).indexOf(true);
+		let firstAllCohortIndex = this.props.cohortData.map(cohort => cohort.myEntity).indexOf(false);
 
 		return (
 			<Fragment>
@@ -395,7 +441,7 @@ class RelatedResourcesModal extends React.Component {
 												eventKey='Datasets'
 												title={
 													'Datasets (' +
-													(!this.props.summary.datasetCount ? '0' : this.props.summary.datasetCount - this.state.selected.datasets) +
+													(!this.props.summary.datasetCount ? '0' : this.props.summary.datasetCount - selected.datasets) +
 													')'
 												}
 											/>
@@ -406,9 +452,7 @@ class RelatedResourcesModal extends React.Component {
 												eventKey='Tools'
 												title={
 													'Tools (' +
-													(!this.props.summary.toolCount
-														? '0'
-														: this.props.summary.toolCount - this.state.selected.tools - editingObjectTool) +
+													(!this.props.summary.toolCount ? '0' : this.props.summary.toolCount - selected.tools - editingObjectTool) +
 													')'
 												}
 											/>
@@ -421,7 +465,7 @@ class RelatedResourcesModal extends React.Component {
 													'Projects (' +
 													(!this.props.summary.projectCount
 														? '0'
-														: this.props.summary.projectCount - this.state.selected.projects - editingObjectProject) +
+														: this.props.summary.projectCount - selected.projects - editingObjectProject) +
 													')'
 												}
 											/>
@@ -431,9 +475,7 @@ class RelatedResourcesModal extends React.Component {
 											<Tab
 												eventKey='Courses'
 												title={
-													'Courses (' +
-													(!this.props.summary.courseCount ? '0' : this.props.summary.courseCount - this.state.selected.courses) +
-													')'
+													'Courses (' + (!this.props.summary.courseCount ? '0' : this.props.summary.courseCount - selected.courses) + ')'
 												}
 											/>
 										)}
@@ -442,10 +484,15 @@ class RelatedResourcesModal extends React.Component {
 											<Tab
 												data-test-id='related-papers'
 												eventKey='Papers'
+												title={'Papers (' + (!this.props.summary.paperCount ? '0' : this.props.summary.paperCount - selected.papers) + ')'}
+											/>
+										)}
+
+										{displayTabs.includes('Cohorts') && (
+											<Tab
+												eventKey='Cohorts'
 												title={
-													'Papers (' +
-													(!this.props.summary.paperCount ? '0' : this.props.summary.paperCount - this.state.selected.papers) +
-													')'
+													'Cohorts (' + (!this.props.summary.cohortCount ? '0' : this.props.summary.cohortCount - selected.cohorts) + ')'
 												}
 											/>
 										)}
@@ -454,9 +501,7 @@ class RelatedResourcesModal extends React.Component {
 											<Tab
 												eventKey='People'
 												title={
-													'People (' +
-													(!this.props.summary.personCount ? '0' : this.props.summary.personCount - this.state.selected.persons) +
-													')'
+													'People (' + (!this.props.summary.personCount ? '0' : this.props.summary.personCount - selected.persons) + ')'
 												}
 											/>
 										)}
@@ -681,6 +726,43 @@ class RelatedResourcesModal extends React.Component {
 										  })
 									: ''}
 
+								{key === 'Cohorts'
+									? !this.props.cohortData
+										? ''
+										: this.props.cohortData.map((cohort, index) => {
+												let modalSubHeadings = this.getRelatedResourceModalSubheadings(
+													cohortIndex,
+													index,
+													this.props.myEntitiesSummary.myCohortsCount,
+													this.state.mySelected.cohorts,
+													cohortCount,
+													firstMyCohortIndex,
+													firstAllCohortIndex,
+													key
+												);
+
+												if (
+													this.state.relatedObjectIds.includes(cohort.id) ||
+													this.state.relatedObjectIds.includes(JSON.stringify(cohort.id))
+												) {
+													return <div> {modalSubHeadings} </div>;
+												} else {
+													return (
+														<div>
+															{modalSubHeadings}
+															<RelatedObject
+																key={cohort.id}
+																data={cohort}
+																activeLink={false}
+																doAddToTempRelatedObjects={this.props.doAddToTempRelatedObjects}
+																tempRelatedObjectIds={this.props.tempRelatedObjectIds}
+															/>
+														</div>
+													);
+												}
+										  })
+									: ''}
+
 								<div className='text-center'>
 									{key === 'Datasets' && datasetCount > maxResult ? <Pagination>{datasetPaginationItems}</Pagination> : ''}
 
@@ -693,6 +775,8 @@ class RelatedResourcesModal extends React.Component {
 									{key === 'People' && personCount > maxResult ? <Pagination>{personPaginationItems}</Pagination> : ''}
 
 									{key === 'Courses' && courseCount > maxResult ? <Pagination>{coursePaginationItems}</Pagination> : ''}
+
+									{key === 'Cohorts' && cohortCount > maxResult ? <Pagination>{cohortPaginationItems}</Pagination> : ''}
 								</div>
 							</Col>
 							<Col sm={2} lg={2} />
