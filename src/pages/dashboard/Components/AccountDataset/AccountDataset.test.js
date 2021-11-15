@@ -4,6 +4,14 @@ import reactRouter from 'react-router';
 import AccountDataset from '.';
 import { server } from '../../../../services/mockServer';
 
+jest.mock('react-router', () => ({
+	...jest.requireActual('react-router'),
+	Redirect: props => {
+		mockRedirect(props);
+		return null;
+	},
+}));
+
 jest.mock('../../../commonComponents/DatasetCard', () => props => {
 	mockDatasetCard(props);
 	return <div />;
@@ -17,10 +25,13 @@ jest.mock('../ActivityLogCard', () => props => {
 const mockDatasetCard = jest.fn();
 const mockActivityLogCard = jest.fn();
 const mockPush = jest.fn();
+const mockRedirect = jest.fn();
 
 const props = {
 	location: {},
 };
+
+let wrapper;
 
 describe('Given the AccountDataset component', () => {
 	beforeAll(() => {
@@ -40,8 +51,6 @@ describe('Given the AccountDataset component', () => {
 	});
 
 	describe('When it is rendered', () => {
-		let wrapper;
-
 		beforeAll(() => {
 			jest.spyOn(reactRouter, 'useParams').mockReturnValue({
 				id: 'd5c99a71-c039-4a0b-9171-dba8a1c33154',
@@ -66,6 +75,24 @@ describe('Given the AccountDataset component', () => {
 
 		it('Then calls the ActivityLogCard the correct number of times', async () => {
 			await waitFor(() => expect(mockActivityLogCard).toHaveBeenCalledTimes(4));
+		});
+
+		describe('And the view form is clicked', () => {
+			beforeAll(async () => {
+				await waitFor(() => expect(wrapper.getByText('View form')).toBeTruthy());
+
+				const button = wrapper.getByText('View form');
+
+				await fireEvent.click(button);
+			});
+
+			afterAll(() => {
+				mockPush.mockReset();
+			});
+
+			it('Then loads the new dataset', () => {
+				expect(mockPush).toHaveBeenCalledWith(`/dataset-onboarding/618128a2c312ff5648a20850`);
+			});
 		});
 
 		describe('And the next button is clicked', () => {
@@ -105,7 +132,7 @@ describe('Given the AccountDataset component', () => {
 		});
 	});
 
-	describe('And the dataset is not in review', () => {
+	describe('When the dataset is not in review', () => {
 		beforeAll(async () => {
 			jest.spyOn(reactRouter, 'useParams').mockReturnValue({
 				id: '1f509fe7-e94f-48fe-af6a-81f2bf8a5270',
@@ -120,12 +147,16 @@ describe('Given the AccountDataset component', () => {
 			mockPush.mockReset();
 		});
 
-		it('Then loads the new dataset', () => {
-			expect(mockPush).toHaveBeenCalledWith('/account?tab=datasets');
+		it('Then loads the new dataset', async () => {
+			await waitFor(() => expect(mockRedirect).toHaveBeenCalled());
+
+			expect(mockRedirect).toHaveBeenCalledWith({
+				to: '/account?tab=datasets',
+			});
 		});
 	});
 
-	describe('And the dataset is not valid', () => {
+	describe('When the dataset is not valid', () => {
 		beforeAll(async () => {
 			jest.spyOn(reactRouter, 'useParams').mockReturnValue({
 				id: 'invalid',
@@ -140,8 +171,12 @@ describe('Given the AccountDataset component', () => {
 			mockPush.mockReset();
 		});
 
-		it('Then loads the new dataset', () => {
-			expect(mockPush).toHaveBeenCalledWith('/account?tab=datasets');
+		it('Then loads the new dataset', async () => {
+			await waitFor(() => expect(mockRedirect).toHaveBeenCalled());
+
+			expect(mockRedirect).toHaveBeenCalledWith({
+				to: '/account?tab=datasets',
+			});
 		});
 	});
 });
