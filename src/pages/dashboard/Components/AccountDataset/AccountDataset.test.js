@@ -60,9 +60,6 @@ describe('Given the AccountDataset component', () => {
 			await waitFor(() => expect(wrapper.getByText('Loading...')).toBeTruthy());
 		});
 
-		it('Then matches the previous snapshot', async () => {
-			await waitFor(() => expect(mockDatasetCard).toHaveBeenCalledTimes(2));
-
 		it('Then calls the ActivityLogCard the correct number of times', async () => {
 			await waitFor(() => expect(mockActivityLogCard).toHaveBeenCalledTimes(4));
 		});
@@ -170,46 +167,45 @@ describe('Given the AccountDataset component', () => {
 				expect(mockPush).toHaveBeenCalledWith('/account/datasets/0a048419-0796-46fb-ad7d-91e650a6c742');
 			});
 		});
-	});
 
-	describe('And the dataset is not in review', () => {
-		beforeAll(async () => {
-			jest.spyOn(reactRouter, 'useParams').mockReturnValue({
-				id: '1f509fe7-e94f-48fe-af6a-81f2bf8a5270',
+		describe('And the dataset is not in review', () => {
+			beforeAll(async () => {
+				jest.spyOn(reactRouter, 'useParams').mockReturnValue({
+					id: '1f509fe7-e94f-48fe-af6a-81f2bf8a5270',
+				});
+
+				wrapper = render(<AccountDataset {...props} />, {
+					wrapper: Providers,
+				});
 			});
 
-			wrapper = render(<AccountDataset {...props} />, {
-				wrapper: Providers,
-			});
-		});
-
-		afterAll(() => {
-			mockPush.mockReset();
-		});
-
-		it('Then loads the new dataset', () => {
-			expect(mockPush).toHaveBeenCalledWith('/account?tab=datasets');
-		});
-	});
-
-	describe('And the dataset is not valid', () => {
-		beforeAll(async () => {
-			jest.spyOn(reactRouter, 'useParams').mockReturnValue({
-				id: 'invalid',
+			afterAll(() => {
+				mockPush.mockReset();
 			});
 
-			wrapper = render(<AccountDataset {...props} />, {
-				wrapper: Providers,
+			it('Then loads the new dataset', () => {
+				expect(mockPush).toHaveBeenCalledWith('/account?tab=datasets');
 			});
 		});
 
-		afterAll(() => {
-			mockPush.mockReset();
-		});
+		describe('And the dataset is not valid', () => {
+			beforeAll(async () => {
+				jest.spyOn(reactRouter, 'useParams').mockReturnValue({
+					id: 'invalid',
+				});
 
-		it('Then loads the new dataset', () => {
-			expect(mockPush).toHaveBeenCalledWith('/account?tab=datasets');
+				wrapper = render(<AccountDataset {...props} />, {
+					wrapper: Providers,
+				});
+			});
+
+			afterAll(() => {
+				mockPush.mockReset();
+			});
+
+			it('Then loads the new dataset', () => {
+				expect(mockPush).toHaveBeenCalledWith('/account?tab=datasets');
+			});
 		});
-	});
-	});
+	})
 });

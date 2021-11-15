@@ -28,5 +28,20 @@
 		"rejection": "Reason for rejection"
 	},
 	"next": "Next",
-	"previous": "Previous"
+	"previous": "Previous",
+	"dataset": {
+		"makeADecision": "Make a decision",
+		"approve": "Approve",
+		"reject": "Reject",
+		"approvalModal": {
+			"title": "Approve this version of this dataset metadata",
+			"description": "If you made any amendments to their application, such as fixing a type, please let the editor know using the description below.",
+			"applicationStatus": "Description (optional)",
+			"buttons": {
+				"cancel": "No, nevermind",
+				"approve": "Approve",
+				"approveAndGoToNext": "Approve and go to next"
+			}
+		}
+	}
 }

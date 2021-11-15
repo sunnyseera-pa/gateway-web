@@ -12,12 +12,22 @@ exports[`Given the AccountDataset component When it is rendered And the Make a d
       class="col-10"
     >
       <div />
+      <div />
+      <div />
+      <div />
+      <div />
       <div
         class="actionBar"
       >
         <div
           class="action-bar-actions"
         >
+          <button
+            class="btn btn-light"
+            type="button"
+          >
+            Previous
+          </button>
           <button
             class="btn btn-light"
             type="button"
@@ -61,14 +71,22 @@ exports[`Given the AccountDataset component When it is rendered Then matches the
           <div
             class="rectangle"
           >
-            Next
-          </button>
-          <button
-            class="btn btn-outline-secondary"
-            type="button"
-          >
-            Make a decision
-          </button>
+            <div
+              class="gray800-14"
+              style="text-align: center;"
+            >
+              <img
+                class=""
+                src=""
+              />
+            </div>
+            <div
+              class="gray800-14"
+              style="text-align: center;"
+            >
+              Loading...
+            </div>
+          </div>
         </div>
       </div>
     </div>

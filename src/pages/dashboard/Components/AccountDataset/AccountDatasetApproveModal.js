@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { Modal, Form, Button } from 'react-bootstrap';
 import { useFormik } from 'formik';
+import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
 import { ReactComponent as CloseButtonSvg } from '../../../../images/close-alt.svg';
 import datasetOnboardingService from '../../../../services/dataset-onboarding/dataset-onboarding';
@@ -13,6 +14,8 @@ const AccountDatasetApproveModal = ({
 	goToNext,
 	showGoToNext
 }) => {
+	const { t } = useTranslation();
+	
 	const {
 			handleSubmit,
 			handleChange,
@@ -38,72 +41,74 @@ const AccountDatasetApproveModal = ({
 	});
 
 	return (
-		<Modal
-			show={open}
-			onHide={closed}
-			className='account-dataset-decision-modal'
-			size='lg'
-			aria-labelledby='contained-modal-title-vcenter'
-			centered>
-			<div className='account-dataset-decision-header'>
-				<CloseButtonSvg className='account-dataset-decision-modal-close' onClick={closed} />
-				<div className='account-dataset-decision-header--wrap'>
-					<h4 className='black-20'>Approve this version of this dataset metadata</h4>
+		<Suspense fallback={t('loading')}>
+			<Modal
+				show={open}
+				onHide={closed}
+				className='account-dataset-decision-modal'
+				size='lg'
+				aria-labelledby='contained-modal-title-vcenter'
+				centered>
+				<div className='account-dataset-decision-header'>
+					<CloseButtonSvg className='account-dataset-decision-modal-close' onClick={closed} />
+					<div className='account-dataset-decision-header--wrap'>
+						<h4 className='black-20'>{t('dataset.approvalModal.title')}</h4>
+					</div>
 				</div>
-			</div>
 
-			<div className='account-dataset-decision-body'>
-				<div className='account-dataset-decision-body--wrap'>
-					<p>If you made any amendments to their application, such as fixing a type, please let the editor know using the description below.</p>
-					<label forHtml="applicationStatusDesc" className='black-14'>Description (optional)</label>
-					<Form.Control
-						data-test-id='dataset-approve-applicationStatusDesc'
-						id='applicationStatusDesc'
-						name='applicationStatusDesc'
-						type='textarea'
-						className={touched.applicationStatusDesc && errors.applicationStatusDesc && 'save-modal-input'}
-						onChange={handleChange}
-						value={values.applicationStatusDesc}
-						onBlur={handleBlur}
-					/>
-					{touched.applicationStatusDesc && errors.applicationStatusDesc ? <div className='errorMessages'>{errors.applicationStatusDesc}</div> : null}
+				<div className='account-dataset-decision-body'>
+					<div className='account-dataset-decision-body--wrap'>
+						<p>{t('dataset.approvalModal.description')}</p>
+						<label forHtml="applicationStatusDesc" className='black-14'>{t('dataset.approvalModal.applicationStatus')}</label>
+						<Form.Control
+							data-test-id='dataset-approve-applicationStatusDesc'
+							id='applicationStatusDesc'
+							name='applicationStatusDesc'
+							type='textarea'
+							className={touched.applicationStatusDesc && errors.applicationStatusDesc && 'save-modal-input'}
+							onChange={handleChange}
+							value={values.applicationStatusDesc}
+							onBlur={handleBlur}
+						/>
+						{touched.applicationStatusDesc && errors.applicationStatusDesc ? <div className='errorMessages'>{errors.applicationStatusDesc}</div> : null}
+					</div>
 				</div>
-			</div>
-			<div className='account-dataset-decision-footer'>
-				<div data-testid='button-container'
-					className='account-dataset-decision-footer--wrap'>
-					<Button
-						className='button-secondary'
-						style={{ marginLeft: 'auto' }}
-						onClick={() => {
-							closed();
-						}}>
-						No, nevermind
-					</Button>
-					<Button
-						data-testid='approve-button'
-						className='button-secondary'
-						style={{ marginLeft: 'auto' }}
-						onClick={async () => {
-							handleSubmit();
-							closed();
-						}}>
-						Approve
-					</Button>
-					<Button
-						disabled={!showGoToNext}
-						className='button-secondary'
-						style={{ marginLeft: 'auto' }}
-						onClick={() => {
-							handleSubmit();
-							goToNext();
-							closed();
-						}}>
-						Approve and go to next
-					</Button>
+				<div className='account-dataset-decision-footer'>
+					<div data-testid='button-container'
+						className='account-dataset-decision-footer--wrap'>
+						<Button
+							className='button-secondary'
+							style={{ marginLeft: 'auto' }}
+							onClick={() => {
+								closed();
+							}}>
+							{t('dataset.approvalModal.buttons.cancel')}
+						</Button>
+						<Button
+							data-testid='approve-button'
+							className='button-secondary'
+							style={{ marginLeft: 'auto' }}
+							onClick={async () => {
+								handleSubmit();
+								closed();
+							}}>
+							{t('dataset.approvalModal.buttons.approve')}
+						</Button>
+						<Button
+							disabled={!showGoToNext}
+							className='button-secondary'
+							style={{ marginLeft: 'auto' }}
+							onClick={() => {
+								handleSubmit();
+								goToNext();
+								closed();
+							}}>
+							{t('dataset.approvalModal.buttons.approveAndGoToNext')}
+						</Button>
+					</div>
 				</div>
-			</div>
-		</Modal>
+			</Modal>
+		</Suspense>
 	);
 };
 

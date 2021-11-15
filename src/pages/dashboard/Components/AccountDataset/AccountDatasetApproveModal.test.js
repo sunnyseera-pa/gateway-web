@@ -1,19 +1,10 @@
 import { render, within, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import React from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
 import AccountDatasetApproveModal from './AccountDatasetApproveModal';
 import datasetOnboardingService from '../../../../services/dataset-onboarding/dataset-onboarding';
 
 jest.mock('../../../../services/dataset-onboarding/dataset-onboarding');
-
-const queryClient = new QueryClient({
-	defaultOptions: {
-		queries: {
-			retry: false,
-		},
-	},
-});
 
 let containerDiv;
 const goToNext = jest.fn();
@@ -35,9 +26,9 @@ describe('Given the AccountDatasetApproveModal component', () => {
         beforeAll(() => {
             containerDiv = createPortalContainer();
             wrapper = render(
-                <QueryClientProvider client={queryClient}>
-                    <AccountDatasetApproveModal {...props} container={containerDiv} />
-                </QueryClientProvider>
+                <AccountDatasetApproveModal {...props} container={containerDiv} />, {
+                    wrapper: Providers,
+                }
             );
         });
 
@@ -49,7 +40,9 @@ describe('Given the AccountDatasetApproveModal component', () => {
             expect(containerDiv).toMatchSnapshot();
         });
 
-        it('Then the Approve and go to next button should not be disabled', () => {
+        it('Then the Approve and go to next button should not be disabled', async () => {
+            await waitFor(() => expect(wrapper.getByText('Approve and go to next')).toBeTruthy());
+
             const { getByText } = wrapper;
             const approveAndGoToNextButton = getByText('Approve and go to next');
             expect(approveAndGoToNextButton).not.toHaveAttribute('disabled');
@@ -64,12 +57,14 @@ describe('Given the AccountDatasetApproveModal component', () => {
                 };
 
                 rerender(
-                    <QueryClientProvider client={queryClient}>
-                        <AccountDatasetApproveModal {...newProps} container={containerDiv} />
-                    </QueryClientProvider>
-                )
+                        <AccountDatasetApproveModal {...newProps} container={containerDiv} />, {
+                            wrapper: Providers,
+                        }
+                );
             });
-            it('Then the Approve and go to next button should be disabled', () => {
+            it('Then the Approve and go to next button should be disabled', async () => {
+                await waitFor(() => expect(wrapper.getByText('Approve and go to next')).toBeTruthy());
+
                 const { getByText } = wrapper;
                 const approveAndGoToNextButton = getByText('Approve and go to next');
                 expect(approveAndGoToNextButton).toHaveAttribute('disabled');
@@ -79,14 +74,16 @@ describe('Given the AccountDatasetApproveModal component', () => {
         describe('And the Approve button is clicked', () => {
             let button;
 
-            beforeAll(() => {
+            beforeAll(async () => {
                 const { rerender } = wrapper;
 
                 rerender(
-                    <QueryClientProvider client={queryClient}>
-                        <AccountDatasetApproveModal {...props} container={containerDiv} />
-                    </QueryClientProvider>
-                )
+                    <AccountDatasetApproveModal {...props} container={containerDiv} />, {
+                        wrapper: Providers,
+                    }
+                );
+
+                await waitFor(() => expect(wrapper.getByText('Approve and go to next')).toBeTruthy());
 
                 const { getByTestId } = wrapper;
                 button = within(getByTestId('button-container')).getAllByText('Approve')[0];
@@ -109,14 +106,16 @@ describe('Given the AccountDatasetApproveModal component', () => {
         describe('And the Approve and go to next button is clicked', () => {
             let button;
 
-            beforeAll(() => {
+            beforeAll(async () => {
                 const { rerender } = wrapper;
 
                 rerender(
-                    <QueryClientProvider client={queryClient}>
-                        <AccountDatasetApproveModal {...props} container={containerDiv} />
-                    </QueryClientProvider>
-                )
+                    <AccountDatasetApproveModal {...props} container={containerDiv} />, {
+                        wrapper: Providers,
+                    }
+                );
+
+                await waitFor(() => expect(wrapper.getByText('Approve and go to next')).toBeTruthy());
                 
                 const { getByText } = wrapper;
                 button = getByText('Approve and go to next');

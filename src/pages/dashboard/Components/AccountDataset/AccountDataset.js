@@ -194,19 +194,19 @@ const AccountDataset = props => {
 							overlay={
 								<Popover id='make-a-decision-popover'>
 									<Popover.Title>
-										Make a decision
+										{t('dataset.makeADecision')}
 									</Popover.Title>
 									<Popover.Content>
 										<Button variant="link" onClick={() =>
-												setState({ showApproveDatasetModal: true })}>Approve</Button>
+												setState({ showApproveDatasetModal: true })}>{t('dataset.approve')}</Button>
 										<Button variant="link" onClick={() =>
-												setState({ showRejectDatasetModal: true })}>Reject</Button>
+												setState({ showRejectDatasetModal: true })}>{t('dataset.reject')}</Button>
 									</Popover.Content>
 								</Popover>
 							}
 						>
 							<Button variant='outline-secondary'>
-								Make a decision
+								{t('dataset.makeADecision')}
 							</Button>
 						</OverlayTrigger>
 					</div>
