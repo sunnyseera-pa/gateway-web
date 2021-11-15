@@ -719,7 +719,7 @@ class DatasetDetail extends Component {
 
 	handleSort = async sort => {
 		this.setState({ setRelatedObjectsFiltered: [] });
-		googleAnalytics.recordEvent('Collections', `Sorted related resources by ${sort}`, 'Sort dropdown option changed');
+		googleAnalytics.recordEvent('Datasets', `Sorted related resources by ${sort}`, 'Sort dropdown option changed');
 		let tempFilteredData = [];
 		if (sort === 'showAll') {
 			tempFilteredData = await this.relatedResourcesSort;

@@ -252,7 +252,7 @@ export const ToolDetail = props => {
 
 	const handleSort = async sort => {
 		setRelatedObjectsFiltered([]);
-		googleAnalytics.recordEvent('Collections', `Sorted related resources by ${sort}`, 'Sort dropdown option changed');
+		googleAnalytics.recordEvent('Tools', `Sorted related resources by ${sort}`, 'Sort dropdown option changed');
 		let tempFilteredData = [];
 		if (sort === 'showAll') {
 			tempFilteredData = await relatedResourcesSort;
