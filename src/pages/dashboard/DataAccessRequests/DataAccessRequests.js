@@ -388,8 +388,8 @@ class DataAccessRequestsNew extends React.Component {
 				<Row>
 					<Col xs={1}></Col>
 					<div className='col-sm-10'>
-						<div className='accountHeader dataAccessHeader'>
-							<Col xs={8}>
+						<Row className='accountHeader dataAccessHeader'>
+							<Col xs={6}>
 								<Row>
 									<div className='black-20'>Data access request applications {!_.isEmpty(team) && team !== 'user' ? team : ''}</div>
 									<div className='gray700-13'>Manage forms and applications</div>
@@ -399,10 +399,19 @@ class DataAccessRequestsNew extends React.Component {
 									</div>																		
 								</Row>
 							</Col>
-							<Col xs={4} style={{ textAlign: 'right' }}></Col>
-						</div>
+							<Col xs={6} className="text-right align-text-bottom">
+							{isUserManagerofCurrentTeam(this.state.team, this.state.userState[0].teams) ?
+								<div>
+								<button className={`btn button-primary csv-btn`} onClick={() => this.onClickDownloadCsv(this.state.team)}>
+									Download Requests as CSV
+								</button>
+								<CSVLink data={this.state.csvData} filename='data.csv' className='hidden' ref={this.csvLink} target='_blank' />
+							</div>
+							: ''}
+							</Col>
+						</Row>
 
-						<div className='tabsBackground'>
+						<Row className='tabsBackground'>
 							<Col sm={12} lg={12}>
 								<Tabs className='dataAccessTabs gray700-13' activeKey={this.state.key} onSelect={this.onTabChange}>
 									<Tab eventKey='all' title={'All (' + allCount + ')'}></Tab>
@@ -416,17 +425,9 @@ class DataAccessRequestsNew extends React.Component {
 									<Tab eventKey='approved' title={'Approved (' + approvedCount + ')'}></Tab>
 									<Tab eventKey='rejected' title={'Rejected (' + rejectedCount + ')'}></Tab>
 								</Tabs>
-							</Col>
-							{isUserManagerofCurrentTeam(this.state.team, this.state.userState[0].teams) ?
-			                      <div>
-			                         <button className={`btn button-primary csv-btn`} onClick={() => this.onClickDownloadCsv(this.state.team)}>
-			                           Download applications as CSV
-			                         </button>
-			                       	 <CSVLink data={this.state.csvData} filename='data.csv' className='hidden' ref={this.csvLink} target='_blank' />
-			                      </div>
-			                    : ''}
+							</Col>							
 
-							</div>
+						</Row>
 
 						{team !== 'user' && this.state.key === 'inProgress' ? this.generatePreSubmissionWarning() : ''}
 
