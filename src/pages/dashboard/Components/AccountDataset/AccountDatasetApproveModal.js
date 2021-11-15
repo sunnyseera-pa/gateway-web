@@ -15,7 +15,7 @@ const AccountDatasetApproveModal = ({
 	showGoToNext
 }) => {
 	const { t } = useTranslation();
-	
+
 	const {
 			handleSubmit,
 			handleChange,
@@ -39,6 +39,8 @@ const AccountDatasetApproveModal = ({
 			datasetOnboardingService.usePutDatasetOnboarding(payload);
 		},
 	});
+
+	console.log(t);
 
 	return (
 		<Suspense fallback={t('loading')}>
