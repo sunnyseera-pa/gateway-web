@@ -128,7 +128,6 @@
 		"eslint-plugin-react-hooks": "1.7.0",
 		"jest": "^25.0.0",
 		"jest-cli": "^26.0.1",
-		"jest-environment-jsdom-sixteen": "^2.0.0",
 		"moxios": "^0.4.0",
 		"react-scripts": "3.4.4"
 	},

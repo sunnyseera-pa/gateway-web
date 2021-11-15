@@ -3,6 +3,7 @@ import '@testing-library/jest-dom/extend-expect';
 import React from 'react';
 import AccountDatasetApproveModal from './AccountDatasetApproveModal';
 import datasetOnboardingService from '../../../../services/dataset-onboarding/dataset-onboarding';
+import { server } from '../../../../services/mockServer';
 
 jest.mock('../../../../services/dataset-onboarding/dataset-onboarding');
 
@@ -24,6 +25,7 @@ describe('Given the AccountDatasetApproveModal component', () => {
         let wrapper;
 
         beforeAll(() => {
+            server.listen();
             containerDiv = createPortalContainer();
             wrapper = render(
                 <AccountDatasetApproveModal {...props} container={containerDiv} />, {
@@ -32,7 +34,12 @@ describe('Given the AccountDatasetApproveModal component', () => {
             );
         });
 
+        afterEach(() => {
+            server.resetHandlers();
+        });
+
         afterAll(() => {
+            server.close();
 			removePortalContainer(containerDiv);
 		});
 
