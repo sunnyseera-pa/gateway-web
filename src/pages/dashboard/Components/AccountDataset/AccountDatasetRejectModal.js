@@ -57,7 +57,7 @@ const AccountDatasetRejectModal = ({
 					<p>Let the editor know why this submission is being rejected. They will be able to create a new version and make a new submission.</p>
 					<label forHtml="applicationStatusDesc" className='black-14'>Description</label>
 					<Form.Control
-						data-test-id='dataset-reject-applicationStatusDesc'
+						data-testid='dataset-reject-applicationStatusDesc'
 						id='applicationStatusDesc'
 						name='applicationStatusDesc'
 						type='textarea'
@@ -70,7 +70,8 @@ const AccountDatasetRejectModal = ({
 				</div>
 			</div>
 			<div className='account-dataset-decision-footer'>
-				<div className='account-dataset-decision-footer--wrap'>
+				<div data-testid='button-container'
+					className='account-dataset-decision-footer--wrap'>
 					<Button
 						className='button-secondary'
 						style={{ marginLeft: 'auto' }}
