@@ -57,7 +57,7 @@ const DataUseTable = ({ team, data, active, pending, archived, onClickArchive, o
 											Actions
 										</Dropdown.Toggle>
 										<Dropdown.Menu>
-											<Dropdown.Item href='#/action-1'>Edit</Dropdown.Item>
+											{/* <Dropdown.Item href='#/action-1'>Edit</Dropdown.Item> */}
 											{team !== 'user' && <Dropdown.Item onClick={() => onClickArchive(dataUse.id)}>Archive</Dropdown.Item>}
 										</Dropdown.Menu>
 									</Dropdown>
