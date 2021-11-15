@@ -722,9 +722,9 @@ class DatasetDetail extends Component {
 		googleAnalytics.recordEvent('Datasets', `Sorted related resources by ${sort}`, 'Sort dropdown option changed');
 		let tempFilteredData = [];
 		if (sort === 'showAll') {
-			tempFilteredData = await this.relatedResourcesSort;
+			tempFilteredData = await this.state.relatedResourcesSort;
 		} else {
-			tempFilteredData = await this.relatedResourcesSort.filter(dat => dat.objectType === sort);
+			tempFilteredData = await this.state.relatedResourcesSort.filter(dat => dat.objectType === sort);
 		}
 		this.setState({ sorting: sort, relatedObjectsFiltered: tempFilteredData });
 	};
@@ -1477,9 +1477,9 @@ class DatasetDetail extends Component {
 																	id='collectionsSearchBarInput'
 																	type='text'
 																	placeholder='Search within related resources'
-																	onChange={onRelatedObjectsSearch}
-																	value={relatedObjectsSearchValue}
-																	onKeyDown={doRelatedObjectsSearch}
+																	onChange={this.onRelatedObjectsSearch}
+																	value={this.relatedObjectsSearchValue}
+																	onKeyDown={this.doRelatedObjectsSearch}
 																/>
 															</span>
 														</span>
