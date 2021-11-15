@@ -27,6 +27,7 @@ const AccountDataset = props => {
 	const [state, setState] = useState({
 		showPrevious: true,
 		showDisabled: true,
+		showNext: true,
 		statusError: false,
 		showApproveDatasetModal: false,
 		showRejectDatasetModal: false
