@@ -18,7 +18,7 @@ const props = {
 	count: 656,
 	pageNumber: 3,
 	totalPages: 10,
-	type: 'datasets',
+	type: 'dataset',
 	search: 'search term',
 	updateOnFilterBadge: jest.fn(),
 	onPagination: jest.fn(),
@@ -98,7 +98,7 @@ describe('Given the SearchResults component', () => {
 				});
 
 				it('Then shows a no results message', () => {
-					expect(wrapper.getByText('We couldn’t find any datasets matching the search term ‘search term’')).toBeTruthy();
+					expect(wrapper.getByText('We couldn’t find any dataset matching the search term ‘search term’')).toBeTruthy();
 				});
 			});
 
