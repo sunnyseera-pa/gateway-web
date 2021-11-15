@@ -27,7 +27,7 @@ const AccountDatasetApproveModal = ({
 		validationSchema: Yup.object({
 			applicationStatusDesc: Yup.string(),
 		}),
-		onSubmit: async values => {
+		onSubmit: values => {
 			const payload = {
 				...values,
 				id,
@@ -70,7 +70,8 @@ const AccountDatasetApproveModal = ({
 				</div>
 			</div>
 			<div className='account-dataset-decision-footer'>
-				<div className='account-dataset-decision-footer--wrap'>
+				<div data-testid='button-container'
+					className='account-dataset-decision-footer--wrap'>
 					<Button
 						className='button-secondary'
 						style={{ marginLeft: 'auto' }}
@@ -80,6 +81,7 @@ const AccountDatasetApproveModal = ({
 						No, nevermind
 					</Button>
 					<Button
+						data-testid='approve-button'
 						className='button-secondary'
 						style={{ marginLeft: 'auto' }}
 						onClick={async () => {
