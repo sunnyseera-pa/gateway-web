@@ -55,7 +55,7 @@ const AccountDatasetApproveModal = ({
 			<div className='account-dataset-decision-body'>
 				<div className='account-dataset-decision-body--wrap'>
 					<p>If you made any amendments to their application, such as fixing a type, please let the editor know using the description below.</p>
-					<label className='black-14'>Description (optional)</label>
+					<label forHtml="applicationStatusDesc" className='black-14'>Description (optional)</label>
 					<Form.Control
 						data-test-id='dataset-approve-applicationStatusDesc'
 						id='applicationStatusDesc'

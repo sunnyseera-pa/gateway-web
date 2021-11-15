@@ -55,7 +55,7 @@ const AccountDatasetRejectModal = ({
 			<div className='account-dataset-decision-body'>
 				<div className='account-dataset-decision-body--wrap'>
 					<p>Let the editor know why this submission is being rejected. They will be able to create a new version and make a new submission.</p>
-					<label className='black-14'>Description</label>
+					<label forHtml="applicationStatusDesc" className='black-14'>Description</label>
 					<Form.Control
 						data-test-id='dataset-reject-applicationStatusDesc'
 						id='applicationStatusDesc'

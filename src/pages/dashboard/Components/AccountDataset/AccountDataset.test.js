@@ -147,8 +147,7 @@ describe('Given the AccountDataset component', () => {
 				});
 
 				it('Then does not load the Reject dataset modal', () => {
-					const { queryByText, debug } = wrapper;
-					debug();
+					const { queryByText } = wrapper;
 					expect(queryByText('Reject this version of this dataset metadata')).toBeFalsy();
 				});
 			});

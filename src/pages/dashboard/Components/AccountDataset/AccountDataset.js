@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import React, { Suspense, useState } from 'react';
+import React, { Suspense, useCallback, useState } from 'react';
 import { Button, OverlayTrigger, Popover } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { NotificationManager } from 'react-notifications';
@@ -124,11 +124,11 @@ const AccountDataset = props => {
 		[id, dataPublisher.data, team]
 	);
 
-	const goToNext = () => {
+	const goToNext = useCallback(() => {
 		if (showNext) {
 			handlePaginationClick(1);
 		}
-	};
+	}, []);
 
 	const { showPrevious, showNext, statusError, showRejectDatasetModal, showApproveDatasetModal } = state;
 
@@ -214,13 +214,13 @@ const AccountDataset = props => {
 					id={currentDataset._id}
 					open={showApproveDatasetModal}
 					closed={() => setState({ showApproveDatasetModal: false })}
-					goToNext={() => goToNext()}
+					goToNext={goToNext}
 					showGoToNext={showNext} />
 				<AccountDatasetRejectModal
 					id={currentDataset._id}
 					open={showRejectDatasetModal}
 					closed={() => setState({ showRejectDatasetModal: false })}
-					goToNext={() => goToNext()}
+					goToNext={goToNext}
 					showGoToNext={showNext} />
 			</AccountContent>
 		</Suspense>
