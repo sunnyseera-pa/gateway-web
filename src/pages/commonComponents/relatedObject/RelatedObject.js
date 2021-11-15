@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col, Button, Alert } from 'react-bootstrap';
+import { Row, Col, Alert } from 'react-bootstrap';
 import { has } from 'lodash';
 import Loading from '../Loading';
 import SVGIcon from '../../../images/SVGIcon';
@@ -8,7 +8,6 @@ import Tool from './Tool/Tool';
 import Paper from './Paper/Paper';
 import Course from './Course/Course';
 import Person from './Person/Person';
-import { stripMarkdown } from '../../../utils/GeneralHelper.util';
 import relatedObjectService from '../../../services/related-object';
 import './RelatedObject.scss';
 

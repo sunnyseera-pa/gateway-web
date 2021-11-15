@@ -45,7 +45,7 @@ const About = ({ data, renderTooltip }) => {
 						</Col>
 					</Row>
 
-					{!data.organisationId > 0 && hide ? (
+					{!data.organisationId && hide ? (
 						(() => {
 							count++;
 						})()
@@ -70,7 +70,7 @@ const About = ({ data, renderTooltip }) => {
 							</Col>
 						</Row>
 					)}
-					{!data.organisationSector > 0 && hide ? (
+					{!data.organisationSector && hide ? (
 						(() => {
 							count++;
 						})()
@@ -138,7 +138,7 @@ const About = ({ data, renderTooltip }) => {
 							</Col>
 						</Row>
 					)}
-					{!data.applicantId > 0 && hide ? (
+					{!data.applicantId && hide ? (
 						(() => {
 							count++;
 						})()
@@ -184,7 +184,7 @@ const About = ({ data, renderTooltip }) => {
 							</Col>
 						</Row>
 					)}
-					{!data.accreditedResearcherStatus > 0 && hide ? (
+					{!data.accreditedResearcherStatus && hide ? (
 						(() => {
 							count++;
 						})()
@@ -209,7 +209,7 @@ const About = ({ data, renderTooltip }) => {
 							</Col>
 						</Row>
 					)}
-					{!data.sublicenceArrangements > 0 && hide ? (
+					{!data.sublicenceArrangements && hide ? (
 						(() => {
 							count++;
 						})()
@@ -237,7 +237,7 @@ const About = ({ data, renderTooltip }) => {
 				</Container>
 				<Container className='datause-card datause-safeInfo'>
 					<p className='black-14-bold'>Safe projects</p>
-					{!data.projectIdText > 0 && hide ? (
+					{!data.projectIdText && hide ? (
 						(() => {
 							count++;
 						})()
@@ -405,7 +405,7 @@ const About = ({ data, renderTooltip }) => {
 							</Col>
 						</Row>
 					)}
-					{!data.otherApprovalCommittees && data.otherApprovalCommittees.length === 0 && hide ? (
+					{(!data.otherApprovalCommittees || data.otherApprovalCommittees.length === 0) && hide ? (
 						(() => {
 							count++;
 						})()
@@ -428,7 +428,7 @@ const About = ({ data, renderTooltip }) => {
 							</Col>
 						</Row>
 					)}
-					{!data.projectStartDate > 0 && hide ? (
+					{!data.projectStartDate && hide ? (
 						(() => {
 							count++;
 						})()
@@ -449,7 +449,7 @@ const About = ({ data, renderTooltip }) => {
 							</Col>
 						</Row>
 					)}
-					{!data.projectEndDate > 0 && hide ? (
+					{!data.projectEndDate && hide ? (
 						(() => {
 							count++;
 						})()
@@ -516,7 +516,7 @@ const About = ({ data, renderTooltip }) => {
 						</Col>
 					</Row>
 
-					{!data.dataSensitivityLevel > 0 && hide ? (
+					{!data.dataSensitivityLevel && hide ? (
 						(() => {
 							count++;
 						})()
@@ -541,7 +541,7 @@ const About = ({ data, renderTooltip }) => {
 							</Col>
 						</Row>
 					)}
-					{!data.legalBasisForDataArticle6 > 0 && hide ? (
+					{!data.legalBasisForDataArticle6 && hide ? (
 						(() => {
 							count++;
 						})()
@@ -566,7 +566,7 @@ const About = ({ data, renderTooltip }) => {
 							</Col>
 						</Row>
 					)}
-					{!data.legalBasisForDataArticle9 > 0 && hide ? (
+					{!data.legalBasisForDataArticle9 && hide ? (
 						(() => {
 							count++;
 						})()
@@ -589,7 +589,7 @@ const About = ({ data, renderTooltip }) => {
 							</Col>
 						</Row>
 					)}
-					{!data.dutyOfConfidentiality > 0 && hide ? (
+					{!data.dutyOfConfidentiality && hide ? (
 						(() => {
 							count++;
 						})()
@@ -614,7 +614,7 @@ const About = ({ data, renderTooltip }) => {
 							</Col>
 						</Row>
 					)}
-					{!data.nationalDataOptOut > 0 && hide ? (
+					{!data.nationalDataOptOut && hide ? (
 						(() => {
 							count++;
 						})()
@@ -639,7 +639,7 @@ const About = ({ data, renderTooltip }) => {
 							</Col>
 						</Row>
 					)}
-					{!data.requestFrequency > 0 && hide ? (
+					{!data.requestFrequency && hide ? (
 						(() => {
 							count++;
 						})()
@@ -664,7 +664,7 @@ const About = ({ data, renderTooltip }) => {
 							</Col>
 						</Row>
 					)}
-					{!data.datasetLinkageDescription > 0 && hide ? (
+					{!data.datasetLinkageDescription && hide ? (
 						(() => {
 							count++;
 						})()
@@ -689,7 +689,7 @@ const About = ({ data, renderTooltip }) => {
 							</Col>
 						</Row>
 					)}
-					{!data.confidentialDataDescription > 0 && hide ? (
+					{!data.confidentialDataDescription && hide ? (
 						(() => {
 							count++;
 						})()
@@ -727,7 +727,7 @@ const About = ({ data, renderTooltip }) => {
 							</Col>
 						</Row>
 					)}
-					{!data.accessDate > 0 && hide ? (
+					{!data.accessDate && hide ? (
 						(() => {
 							count++;
 						})()
@@ -767,7 +767,7 @@ const About = ({ data, renderTooltip }) => {
 						</Col>
 					</Row>
 
-					{!data.privacyEnhancements > 0 && hide ? (
+					{!data.privacyEnhancements && hide ? (
 						(() => {
 							count++;
 						})()
