@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Given the Paper component When it is rendered Then matches the previous snapshot 1`] = `
+exports[`Given the Person component When it is rendered Then matches the previous snapshot 1`] = `
 <div>
   <div
     class="noMargin pad-left-24 row"

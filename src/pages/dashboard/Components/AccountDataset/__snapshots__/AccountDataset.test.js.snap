@@ -1,0 +1,47 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Given the AccountDataset component When it is rendered Then matches the previous snapshot 1`] = `
+<div>
+  <div
+    class="row"
+  >
+    <div
+      class="col-1"
+    />
+    <div
+      class="col-10"
+    >
+      <div
+        class="mt-2 row"
+      >
+        <div
+          class="col"
+        >
+          <div
+            class="rectangle"
+          >
+            <div
+              class="gray800-14"
+              style="text-align: center;"
+            >
+              <img
+                class=""
+                src=""
+              />
+            </div>
+            <div
+              class="gray800-14"
+              style="text-align: center;"
+            >
+              Loading...
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="col-1"
+    />
+  </div>
+</div>
+`;

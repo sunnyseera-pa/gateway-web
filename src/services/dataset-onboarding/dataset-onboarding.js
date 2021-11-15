@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from 'react-query';
-import { apiURL } from '../configs/url.config';
-import { deleteRequest, getRequest, patchRequest, postRequest, putRequest } from '../utils/requests';
+import { apiURL } from '../../configs/url.config';
+import { deleteRequest, getRequest, patchRequest, postRequest, putRequest } from '../../utils/requests';
 
 const getDatasetOnboardings = options => {
 	return getRequest(`${apiURL}/dataset-onboarding`, options);
@@ -41,17 +41,18 @@ const useGetDatasetOnboardings = (requestOptions, queryOptions = { queryKey: 'ge
 	});
 };
 
-export const useGetDatasetOnboarding = (requestOptions, queryOptions = { queryKey: 'getDatasetOnboarding' }) => {
+const useGetDatasetOnboarding = (requestOptions, queryOptions = { queryKey: 'getDatasetOnboarding' }) => {
 	return useQuery({
 		...queryOptions,
 		queryFn: _id => getDatasetOnboarding(_id, requestOptions),
 	});
 };
 
-export const useGetPublisher = (requestOptions, queryOptions = { queryKey: 'getPublisher' }) => {
+const useGetPublisher = (_id, requestOptions, queryOptions = { queryKey: 'getPublisher' }) => {
 	return useQuery({
 		...queryOptions,
-		queryFn: _id => getPublisher(_id, requestOptions),
+		queryKey: [queryOptions.queryKey, _id],
+		queryFn: async ({ queryKey }) => getPublisher(queryKey[1], requestOptions),
 	});
 };
 
@@ -79,7 +80,7 @@ const usePatchDatasetOnboarding = (requestOptions, mutateOptions = { queryKey: '
 	});
 };
 
-export const useDeleteDatasetOnboarding = (requestOptions, queryOptions = { queryKey: 'deleteDatasetOnboarding' }) => {
+const useDeleteDatasetOnboarding = (requestOptions, queryOptions = { queryKey: 'deleteDatasetOnboarding' }) => {
 	return useQuery({
 		...queryOptions,
 		queryFn: _id => deleteDatasetOnboarding(_id, requestOptions),
