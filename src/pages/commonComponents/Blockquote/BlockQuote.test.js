@@ -7,7 +7,9 @@ let wrapper;
 describe('Given the BlockQuote component', () => {
 	describe('When it is rendered', () => {
 		beforeAll(() => {
-			wrapper = render(<BlockQuote>Content</BlockQuote>);
+			wrapper = render(<BlockQuote>Content</BlockQuote>, {
+				wrapper: Providers,
+			});
 		});
 
 		it('Then matches the previous snapshot', () => {

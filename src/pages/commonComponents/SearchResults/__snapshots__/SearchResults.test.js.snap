@@ -21,30 +21,10 @@ exports[`Given the SearchResults component When it is rendered And it is no long
         <span>
            
           We couldn’t find any 
-          datasets
+          dataset
            matching the search term ‘
           search term
           ’
-           
-        </span>
-      </div>
-    </div>
-    <div
-      class="mt-3 row"
-    >
-      <div
-        class="gray800-14 text-center col"
-      >
-        <span>
-           
-          Try searching for ‘
-          <a
-            class="purple-14"
-            href="/search?search=COVID-19"
-          >
-            COVID-19
-          </a>
-          ’ if you want to see examples of datasets
            
         </span>
       </div>
