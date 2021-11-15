@@ -3,7 +3,7 @@ import React, { Suspense, useState } from 'react';
 import { Button } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { NotificationManager } from 'react-notifications';
-import { useHistory, useParams } from 'react-router';
+import { Redirect, useHistory, useParams } from 'react-router';
 import { useAuth } from '../../../../context/AuthContext';
 import serviceActivityLog from '../../../../services/activitylog/activitylog';
 import serviceDatasetOnboarding from '../../../../services/dataset-onboarding/dataset-onboarding';
@@ -94,7 +94,6 @@ const AccountDataset = props => {
 
 	React.useEffect(() => {
 		const page = getNextPage(0);
-
 		if (page) {
 			if (page.dataset) {
 				const { dataset } = page;
@@ -106,7 +105,6 @@ const AccountDataset = props => {
 					type: 'dataset',
 				});
 			}
-
 			updateButtonStates(page);
 		}
 	}, [dataPublisher.data, id]);
@@ -119,6 +117,10 @@ const AccountDataset = props => {
 		},
 		[id, dataPublisher.data, team]
 	);
+
+	const handleViewForm = React.useCallback(() => {
+		history.push(`/dataset-onboarding/${currentDataset._id}`);
+	}, [currentDataset]);
 
 	const { showPrevious, showNext, statusError } = state;
 
@@ -134,15 +136,11 @@ const AccountDataset = props => {
 		if (dataPublisher.data && !filterCurrentDataset(dataPublisher.data.data.data.listOfDatasets)) {
 			NotificationManager.error('The accessed dataset does not exist', 'Page not found', 10000);
 
-			history.push('/account?tab=datasets');
-
-			return null;
+			return <Redirect to='/account?tab=datasets' />;
 		} else if (statusError) {
 			NotificationManager.error('The status of the dataset must be in review', 'Invalid status', 10000);
 
-			history.push('/account?tab=datasets');
-
-			return null;
+			return <Redirect to='/account?tab=datasets' />;
 		}
 	}
 
@@ -176,6 +174,9 @@ const AccountDataset = props => {
 								{t('next')}
 							</Button>
 						)}
+						<Button variant='primary' onClick={handleViewForm}>
+							{t('viewForm')}
+						</Button>
 					</div>
 				</ActionBar>
 			</AccountContent>

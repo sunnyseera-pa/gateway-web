@@ -53,15 +53,15 @@ global.removePortalContainer = div => {
 	div.parentNode.removeChild(div);
 };
 
-global.Providers = ({ children }) => {
-	const queryClient = new QueryClient({
-		defaultOptions: {
-			queries: {
-				retry: false,
-			},
+const queryClient = new QueryClient({
+	defaultOptions: {
+		queries: {
+			retry: false,
 		},
-	});
+	},
+});
 
+global.Providers = ({ children }) => {
 	return (
 		<I18nextProvider i18n={i18n}>
 			<Suspense fallback='Loading'>

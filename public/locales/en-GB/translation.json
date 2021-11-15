@@ -28,5 +28,6 @@
 		"rejection": "Reason for rejection"
 	},
 	"next": "Next",
-	"previous": "Previous"
+	"previous": "Previous",
+	"viewForm": "View form"
 }

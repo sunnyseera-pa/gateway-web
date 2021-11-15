@@ -7,14 +7,6 @@ import { dateFormats } from '../../../../utils/GeneralHelper.util';
 import ActivityLogCard from './ActivityLogCard';
 import mockData from './mockData';
 
-const queryClient = new QueryClient({
-	defaultOptions: {
-		queries: {
-			retry: false,
-		},
-	},
-});
-
 const props = {
 	...mockData,
 };
@@ -33,14 +25,11 @@ describe('Given the ActivityLogCard component', () => {
 		});
 
 		it('Then  Title should be rendered with  Submitted Date', () => {
-			const date = dateFormats(props.meta.dateSubmitted).dateOnly;
 			expect(screen.getByTestId(`version-title`)).toHaveTextContent(`Version ${props.versionNumber}`);
 		});
 		it('Then  Status should be rendered', () => {
-			const statusColour = DatasetOnboardingHelper.datasetStatusColours[props.meta.applicationStatus];
 			const statusText = DatasetOnboardingHelper.datasetSLAText[props.meta.applicationStatus];
 
-			const date = dateFormats(props.meta.dateSubmitted).dateOnly;
 			expect(screen.getByTestId('status')).toHaveTextContent(statusText);
 		});
 
