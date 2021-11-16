@@ -111,6 +111,7 @@ const AccountDataset = props => {
 					type: 'dataset',
 				});
 			}
+			console.log(state.showNext);
 			updateButtonStates(page);
 		}
 	}, [dataPublisher.data, id]);
@@ -216,13 +217,13 @@ const AccountDataset = props => {
 					open={showApproveDatasetModal}
 					closed={() => setState({ showApproveDatasetModal: false })}
 					goToNext={goToNext}
-					showGoToNext={showNext} />
+					showGoToNext={showNext && !statusError} />
 				<AccountDatasetRejectModal
 					id={currentDataset._id}
 					open={showRejectDatasetModal}
 					closed={() => setState({ showRejectDatasetModal: false })}
 					goToNext={goToNext}
-					showGoToNext={showNext} />
+					showGoToNext={showNext && !statusError} />
 			</AccountContent>
 		</Suspense>
 	) : null;
