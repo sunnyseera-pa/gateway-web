@@ -15,7 +15,7 @@ const ActionBarMenu = ({ label, options = [], disabled, buttonClass = 'button-se
 			{children}
 		</a>
 	));
-
+			console.log(options);
 	return (
 		<>
 			{options.length > 0 && options.some(option => option.actions.length > 0) && (

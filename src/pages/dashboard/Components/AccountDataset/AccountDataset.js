@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import React, { Suspense, useCallback, useState } from 'react';
-import { Button, OverlayTrigger, Popover } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { NotificationManager } from 'react-notifications';
 import { Redirect, useHistory, useParams } from 'react-router';
@@ -12,6 +12,7 @@ import { default as DataSetHelper, default as utils } from '../../../../utils/Da
 import ActionBar from '../../../commonComponents/actionbar/ActionBar';
 import DatasetCard from '../../../commonComponents/DatasetCard';
 import Loading from '../../../commonComponents/Loading';
+import ActionBarMenu from '../../../commonComponents/ActionBarMenu/ActionBarMenu';
 import AccountContent from '../AccountContent';
 import AccountDatasetApproveModal from './AccountDatasetApproveModal';
 import AccountDatasetRejectModal from './AccountDatasetRejectModal';
@@ -135,6 +136,25 @@ const AccountDataset = props => {
 		history.push(`/dataset-onboarding/${currentDataset._id}`);
 	}, [currentDataset]);
 
+	const makeADecisionActions = [{
+		description: t('dataset.makeADecision'),
+		actions: [
+		{
+			title: t('dataset.approve'),
+			onClick: () => {
+				setState({ showApproveDatasetModal: true })
+			},
+			visible: true
+		},
+		{
+			title: t('dataset.reject'),
+			onClick: () => {
+				setState({ showRejectDatasetModal: true })
+			},
+			visible: true
+		}
+	]}];
+
 	if (dataPublisher.isLoading || dataActivityLog.isLoading) {
 		return (
 			<AccountContent>
@@ -185,28 +205,7 @@ const AccountDataset = props => {
 								{t('next')}
 							</Button>
 						)}
-						<OverlayTrigger 
-							trigger='click'
-							key='top' 
-							placement='top'
-							overlay={
-								<Popover id='make-a-decision-popover'>
-									<Popover.Title>
-										{t('dataset.makeADecision')}
-									</Popover.Title>
-									<Popover.Content>
-										<Button variant="link" onClick={() =>
-												setState({ showApproveDatasetModal: true })}>{t('dataset.approve')}</Button>
-										<Button variant="link" onClick={() =>
-												setState({ showRejectDatasetModal: true })}>{t('dataset.reject')}</Button>
-									</Popover.Content>
-								</Popover>
-							}
-						>
-							<Button variant='outline-secondary'>
-								{t('dataset.makeADecision')}
-							</Button>
-						</OverlayTrigger>
+						<ActionBarMenu label='Make a decision' options={makeADecisionActions} />
 						<Button variant='primary' onClick={handleViewForm}>
 							{t('viewForm')}
 						</Button>
