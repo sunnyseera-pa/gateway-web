@@ -55,7 +55,6 @@ import SelectDatasetModal from './components/SelectDatasetModal/SelectDatasetMod
 import VersionSelector from '../commonComponents/versionSelector/VersionSelector';
 import googleAnalytics from '../../tracking';
 import ErrorModal from '../commonComponents/errorModal';
-import NDGLogo from '../../images/NDG-logo-cropped.png';
 
 class DataAccessRequest extends Component {
 	constructor(props) {
@@ -1998,7 +1997,6 @@ class DataAccessRequest extends Component {
 									</div>
 								</div>
 							))}
-							<img src={NDGLogo} className='NDGLogo' />
 						</div>
 						<div id='darCenterCol' className={isWideForm ? 'extended' : ''}>
 							{this.state.reviewWarning && (
