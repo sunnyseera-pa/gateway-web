@@ -40,8 +40,6 @@ const AccountDatasetApproveModal = ({
 		},
 	});
 
-	console.log(t);
-
 	return (
 		<Suspense fallback={t('loading')}>
 			<Modal
