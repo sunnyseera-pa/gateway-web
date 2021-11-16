@@ -45,19 +45,21 @@ const AccountDatasetApproveModal = ({
 			<Modal
 				show={open}
 				onHide={closed}
-				className='account-dataset-decision-modal'
+				className='decisionModal'
 				size='lg'
 				aria-labelledby='contained-modal-title-vcenter'
 				centered>
-				<div className='account-dataset-decision-header'>
-					<CloseButtonSvg className='account-dataset-decision-modal-close' onClick={closed} />
-					<div className='account-dataset-decision-header--wrap'>
-						<h4 className='black-20'>{t('dataset.approvalModal.title')}</h4>
+				<div className='decisionModal-header'>
+					<div className='decisionModal-header--wrap'>
+						<div className='decisionModal-head'>
+							<h1 className='black-20-semibold'>{t('dataset.approvalModal.title')}</h1>
+							<CloseButtonSvg className='decisionModal-head--close' onClick={closed} />
+						</div>
 					</div>
 				</div>
 
-				<div className='account-dataset-decision-body'>
-					<div className='account-dataset-decision-body--wrap'>
+				<div className='decisionModal-body'>
+					<div className='decisionModal-body--wrap'>
 						<p>{t('dataset.approvalModal.description')}</p>
 						<label forHtml="applicationStatusDesc" className='black-14'>{t('dataset.approvalModal.applicationStatus')}</label>
 						<Form.Control
@@ -65,7 +67,6 @@ const AccountDatasetApproveModal = ({
 							id='applicationStatusDesc'
 							name='applicationStatusDesc'
 							type='textarea'
-							className={touched.applicationStatusDesc && errors.applicationStatusDesc && 'save-modal-input'}
 							onChange={handleChange}
 							value={values.applicationStatusDesc}
 							onBlur={handleBlur}
@@ -73,12 +74,11 @@ const AccountDatasetApproveModal = ({
 						{touched.applicationStatusDesc && errors.applicationStatusDesc ? <div className='errorMessages'>{errors.applicationStatusDesc}</div> : null}
 					</div>
 				</div>
-				<div className='account-dataset-decision-footer'>
+				<div className='decisionModal-footer'>
 					<div data-testid='button-container'
-						className='account-dataset-decision-footer--wrap'>
+						className='decisionModal-footer--wrap'>
 						<Button
 							className='button-secondary'
-							style={{ marginLeft: 'auto' }}
 							onClick={() => {
 								closed();
 							}}>
@@ -87,7 +87,7 @@ const AccountDatasetApproveModal = ({
 						<Button
 							data-testid='approve-button'
 							className='button-secondary'
-							style={{ marginLeft: 'auto' }}
+							style={{ marginLeft: '10px' }}
 							onClick={async () => {
 								handleSubmit();
 								closed();
@@ -97,7 +97,7 @@ const AccountDatasetApproveModal = ({
 						<Button
 							disabled={!showGoToNext}
 							className='button-secondary'
-							style={{ marginLeft: 'auto' }}
+							style={{ marginLeft: '10px' }}
 							onClick={() => {
 								handleSubmit();
 								goToNext();
