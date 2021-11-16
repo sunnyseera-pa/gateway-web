@@ -145,6 +145,7 @@ const buildOneRow = (dar, applicant) => {
 	const row = [
 			dar._id,
 			dar.applicationStatus,
+			dar.applicationStatusDesc,
 			dar.createdAt.substring(0, 10), // YYYY-MM-DD
 			dar.updatedAt.substring(0, 10), // YYYY-MM-DD
 			dar.datasetTitles[0],			
@@ -179,7 +180,8 @@ const buildOneRow = (dar, applicant) => {
 const buildHeaders = () => {
 	return [
 				"ID", 
-				"Status", 
+				"Status",
+				"Stauts Notes",
 				"Created At", 
 				"Updated At", 
 				"Datasets", 
