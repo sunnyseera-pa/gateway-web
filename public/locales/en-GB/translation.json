@@ -54,5 +54,6 @@
 				"rejectAndGoToNext": "Reject and go to next"
 			}
 		}
-	}
+	},
+	"viewForm": "View form"
 }

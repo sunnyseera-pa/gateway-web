@@ -5,6 +5,7 @@ import moment from 'moment';
 import PropTypes from 'prop-types';
 import { DISPLAY_DATE_STANDARD } from '../../../configs/constants';
 import * as styles from './ActionBarStatus.styles';
+import { dateFormats } from '../../../utils/GeneralHelper.util';
 
 const formatDate = date => {
 	return moment(date).format(DISPLAY_DATE_STANDARD);
@@ -23,19 +24,19 @@ const ActionBarStatus = ({ status, dataset, totalQuestions, className, ...outerP
 
 			break;
 		case 'active':
-			content = `This version was published on ${formatDate(published)}`;
+			content = `This version was published on ${dateFormats(published).dateOnly}`;
 
 			break;
 		case 'inReview':
-			content = `Submitted for review on ${formatDate(submitted)}`;
+			content = `Submitted for review on ${dateFormats(submitted).dateOnly}`;
 
 			break;
 		case 'rejected':
-			content = `This version was rejected on ${formatDate(rejected)}`;
+			content = `This version was rejected on ${dateFormats(rejected).dateOnly}`;
 
 			break;
 		case 'archived':
-			content = `This version was published on ${formatDate(published)} and archived on ${formatDate(archived)}`;
+			content = `This version was published on ${dateFormats(published).dateOnly} and archived on ${dateFormats(archived).dateOnly}`;
 
 			break;
 		default:
