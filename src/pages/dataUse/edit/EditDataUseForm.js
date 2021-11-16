@@ -8,7 +8,6 @@ import RelatedObject from '../../commonComponents/relatedObject/RelatedObject';
 import DatePicker from 'react-datepicker';
 import ActionBar from '../../commonComponents/actionbar/ActionBar';
 import googleAnalytics from '../../../tracking';
-import { components } from 'react-select';
 import { Formik, useFormik, FieldArray } from 'formik';
 import * as Yup from 'yup';
 
@@ -51,8 +50,6 @@ const EditFormDataUse = props => {
 	const relatedResourcesComp = () => {
 		setShowRelatedObject(true);
 	};
-
-	const { Option } = components;
 
 	const gatewayApps =
 		props &&
@@ -119,6 +116,7 @@ const EditFormDataUse = props => {
 
 		onSubmit: values => {
 			//values.relatedObjects = props.relatedObjects;
+			values.datasetTitles = props.data.datasetTitles;
 			axios.patch(baseURL + '/api/v2/data-use-registers/' + props.data.id, { ...values }).then(() => {
 				window.location.href = windowUrl + '/datause/' + props.data.id + '/?dataUseEdited=true';
 			});
