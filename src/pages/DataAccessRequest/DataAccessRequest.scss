@@ -827,6 +827,10 @@ input[type='radio']:disabled {
 	margin-bottom: 0;
 }
 
+.dar-form-check-group > input[type='checkbox'] {
+	cursor: pointer;
+}
+
 .dar-form-check-group {
 	display: flex;
 	flex-flow: row;
