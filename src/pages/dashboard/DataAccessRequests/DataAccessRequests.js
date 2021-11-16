@@ -17,6 +17,10 @@ import DarHelperUtil from '../../../utils/DarHelper.util';
 import VersionSelector from '../../commonComponents/versionSelector/VersionSelector';
 import './DataAccessRequests.scss';
 
+import createCSV from './csvUtils';
+import { getDataAccessRequests, isUserManagerofCurrentTeam } from './DataAccessRequestsService';
+import { CSVLink } from 'react-csv';
+
 class DataAccessRequestsNew extends React.Component {
 	durationLookups = ['inProgress', 'submitted', 'inReview'];
 	finalDurationLookups = ['rejected', 'approved', 'approved with conditions'];
@@ -41,6 +45,7 @@ class DataAccessRequestsNew extends React.Component {
 		showWorkflowReviewModal: false,
 		canViewSubmitted: false,
 		flagClosed: true,
+		csvData: []
 	};
 
 	constructor(props) {
@@ -59,6 +64,8 @@ class DataAccessRequestsNew extends React.Component {
 			this.state.alert = props.alert;
 			this.state.team = props.alert.publisher;
 		}
+
+		this.csvLink = React.createRef();
 	}
 
 	componentDidMount() {
@@ -321,6 +328,32 @@ class DataAccessRequestsNew extends React.Component {
 		return (<Clock />)`${this.state.avgDecisionTime} average time from submission to decision`;
 	};
 
+	/**
+	* written by: Sam H. @ PA
+	* 
+	* onClickDownloadCsv gets a team (e.g. 'ICODA') and generate a csv with all the
+	* the dataAccessRequests that are under this team.
+	* 
+	* This function: 
+	*  1. Generate the CSV
+	*  2. set the csv(csvData) in the state.
+	*  3. redirecting the to the hidden <CSVlink> to download the file
+	* 
+	*/
+	 onClickDownloadCsv = async (team) => {
+
+	   const dataAccessRequests = await getDataAccessRequests(team); // call the backend
+	   const csvData = createCSV(dataAccessRequests); // generate csv using the backend response
+
+	   // we pass anonnymous function as 2nd argument, and set a timeout, to ensure that we will get the csv 
+	   // back from the backend before we download the csv
+	   this.setState({ csvData: csvData }, () => {
+	     setTimeout(() => {
+	       this.csvLink.current.link.click();
+	     }, 0);
+	   });
+	 }
+
 	render() {
 		const {
 			isLoading,
@@ -355,21 +388,30 @@ class DataAccessRequestsNew extends React.Component {
 				<Row>
 					<Col xs={1}></Col>
 					<div className='col-sm-10'>
-						<div className='accountHeader dataAccessHeader'>
-							<Col xs={8}>
+						<Row className='accountHeader dataAccessHeader'>
+							<Col xs={6}>
 								<Row>
 									<div className='black-20'>Data access request applications {!_.isEmpty(team) && team !== 'user' ? team : ''}</div>
 									<div className='gray700-13'>Manage forms and applications</div>
 									<div>
 										<Clock /> {`${avgDecisionTime > 0 ? avgDecisionTime : '-'} days`}{' '}
 										<span className='gray700-13'>average time from submission to decision</span>
-									</div>
+									</div>																		
 								</Row>
 							</Col>
-							<Col xs={4} style={{ textAlign: 'right' }}></Col>
-						</div>
+							<Col xs={6} className="text-right align-text-bottom">
+							{isUserManagerofCurrentTeam(this.state.team, this.state.userState[0].teams) ?
+								<div>
+								<button className={`btn button-primary csv-btn`} onClick={() => this.onClickDownloadCsv(this.state.team)}>
+									Download applications as CSV
+								</button>
+								<CSVLink data={this.state.csvData} filename='data.csv' className='hidden' ref={this.csvLink} target='_blank' />
+							</div>
+							: ''}
+							</Col>
+						</Row>
 
-						<div className='tabsBackground'>
+						<Row className='tabsBackground'>
 							<Col sm={12} lg={12}>
 								<Tabs className='dataAccessTabs gray700-13' activeKey={this.state.key} onSelect={this.onTabChange}>
 									<Tab eventKey='all' title={'All (' + allCount + ')'}></Tab>
@@ -383,8 +425,9 @@ class DataAccessRequestsNew extends React.Component {
 									<Tab eventKey='approved' title={'Approved (' + approvedCount + ')'}></Tab>
 									<Tab eventKey='rejected' title={'Rejected (' + rejectedCount + ')'}></Tab>
 								</Tabs>
-							</Col>
-						</div>
+							</Col>							
+
+						</Row>
 
 						{team !== 'user' && this.state.key === 'inProgress' ? this.generatePreSubmissionWarning() : ''}
 
