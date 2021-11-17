@@ -16,5 +16,5 @@ const useGetDataset = (id, requestOptions, queryOptions = { queryKey: 'getDatase
 
 export default {
 	getDataset,
-	useGetDataset,
+	useGetDataset
 };
