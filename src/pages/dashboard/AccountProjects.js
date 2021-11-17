@@ -9,6 +9,7 @@ import './Dashboard.scss';
 import { EntityActionButton } from './EntityActionButton.jsx';
 import googleAnalytics from '../../tracking';
 import { PaginationHelper } from '../commonComponents/PaginationHelper';
+import AccountContent from './Components/AccountContent';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -160,408 +161,400 @@ export const AccountProjects = props => {
 
 	if (isLoading) {
 		return (
-			<Row>
-				<Col xs={1}></Col>
-				<Col xs={10}>
-					<Loading data-testid='isLoading' />
-				</Col>
-				<Col xs={1}></Col>
-			</Row>
+			<AccountContent>
+				<Loading data-testid='isLoading' />
+			</AccountContent>
 		);
 	}
 
 	return (
 		<div>
-			<Row>
-				<Col xs={1}></Col>
-				<Col xs={10}>
-					<Row className='accountHeader'>
-						<Col sm={12} md={8}>
-							<Row>
-								<span className='black-20'>Projects</span>
-							</Row>
-							<Row>
-								<span className='gray700-13 '>Manage your existing projects or add new ones</span>
-							</Row>
-						</Col>
-						<Col sm={12} md={4} style={{ textAlign: 'right' }}>
-							<Button
-								variant='primary'
-								href='/project/add'
-								className='addButton'
-								onClick={() => googleAnalytics.recordEvent('Projects', 'Add a new project', 'Projects dashboard button clicked')}>
-								+ Add a new project
-							</Button>
-						</Col>
-					</Row>
-
-					<Row className='tabsBackground'>
-						<Col sm={12} lg={12}>
-							<Tabs className='dataAccessTabs gray700-13' data-testid='projectTabs' activeKey={key} onSelect={handleSelect}>
-								<Tab eventKey='active' title={'Active (' + activeCount + ')'}>
-									{' '}
-								</Tab>
-								<Tab eventKey='pending' title={'Pending approval (' + reviewCount + ')'}>
-									{' '}
-								</Tab>
-								<Tab eventKey='rejected' title={'Rejected (' + rejectedCount + ')'}>
-									{' '}
-								</Tab>
-								<Tab eventKey='archive' title={'Archive (' + archiveCount + ')'}>
-									{' '}
-								</Tab>
-							</Tabs>
-						</Col>
-					</Row>
-
-					{isResultsLoading && (
-						<Row className='width-100'>
-							<Col xs={12} className='noPadding'>
-								<Loading />
-							</Col>
+			<AccountContent>
+				<Row className='accountHeader'>
+					<Col sm={12} md={8}>
+						<Row>
+							<span className='black-20'>Projects</span>
 						</Row>
-					)}
+						<Row>
+							<span className='gray700-13 '>Manage your existing projects or add new ones</span>
+						</Row>
+					</Col>
+					<Col sm={12} md={4} style={{ textAlign: 'right' }}>
+						<Button
+							variant='primary'
+							href='/project/add'
+							className='addButton'
+							onClick={() => googleAnalytics.recordEvent('Projects', 'Add a new project', 'Projects dashboard button clicked')}>
+							+ Add a new project
+						</Button>
+					</Col>
+				</Row>
 
-					{!isResultsLoading &&
-						(() => {
-							switch (key) {
-								case 'active':
-									return (
-										<div>
-											{activeCount <= 0 ? (
-												''
-											) : (
-												<Row className='subHeader mt-3 gray800-14-bold'>
-													<Col xs={2}>Last activity</Col>
-													<Col xs={5}>Name</Col>
-													<Col xs={2}>Uploader(s)</Col>
-													<Col xs={3}></Col>
-												</Row>
-											)}
+				<Row className='tabsBackground'>
+					<Col sm={12} lg={12}>
+						<Tabs className='dataAccessTabs gray700-13' data-testid='projectTabs' activeKey={key} onSelect={handleSelect}>
+							<Tab eventKey='active' title={'Active (' + activeCount + ')'}>
+								{' '}
+							</Tab>
+							<Tab eventKey='pending' title={'Pending approval (' + reviewCount + ')'}>
+								{' '}
+							</Tab>
+							<Tab eventKey='rejected' title={'Rejected (' + rejectedCount + ')'}>
+								{' '}
+							</Tab>
+							<Tab eventKey='archive' title={'Archive (' + archiveCount + ')'}>
+								{' '}
+							</Tab>
+						</Tabs>
+					</Col>
+				</Row>
 
-											{activeCount <= 0 ? (
-												<Row className='margin-right-15'>
-													<NotFound word='projects' />
-												</Row>
-											) : (
-												projectsList.map(project => {
-													if (project.activeflag !== 'active') {
-														return <></>;
-													} else {
-														return (
-															<Row className='entryBox' data-testid='projectEntryActive'>
-																<Col sm={12} lg={2} className='pt-2 gray800-14'>
-																	{moment(project.updatedAt).format('D MMMM YYYY HH:mm')}
-																</Col>
-																<Col sm={12} lg={5} className='pt-2'>
-																	<a href={'/project/' + project.id} className='black-14'>
-																		{project.name}
-																	</a>
-																</Col>
-																<Col sm={12} lg={2} className='pt-2 gray800-14'>
-																	{project.persons <= 0
-																		? 'Author not listed'
-																		: project.persons.map(person => {
-																				return (
-																					<span>
-																						{person.firstname} {person.lastname} <br />
-																					</span>
-																				);
-																		  })}
-																</Col>
+				{isResultsLoading && (
+					<Row className='width-100'>
+						<Col xs={12} className='noPadding'>
+							<Loading />
+						</Col>
+					</Row>
+				)}
 
-																<Col sm={12} lg={3} style={{ textAlign: 'right' }} className='toolsButtons'>
+				{!isResultsLoading &&
+					(() => {
+						switch (key) {
+							case 'active':
+								return (
+									<div>
+										{activeCount <= 0 ? (
+											''
+										) : (
+											<Row className='subHeader mt-3 gray800-14-bold'>
+												<Col xs={2}>Last activity</Col>
+												<Col xs={5}>Name</Col>
+												<Col xs={2}>Uploader(s)</Col>
+												<Col xs={3}></Col>
+											</Row>
+										)}
+
+										{activeCount <= 0 ? (
+											<Row className='margin-right-15'>
+												<NotFound word='projects' />
+											</Row>
+										) : (
+											projectsList.map(project => {
+												if (project.activeflag !== 'active') {
+													return <></>;
+												} else {
+													return (
+														<Row className='entryBox' data-testid='projectEntryActive'>
+															<Col sm={12} lg={2} className='pt-2 gray800-14'>
+																{moment(project.updatedAt).format('D MMMM YYYY HH:mm')}
+															</Col>
+															<Col sm={12} lg={5} className='pt-2'>
+																<a href={'/project/' + project.id} className='black-14'>
+																	{project.name}
+																</a>
+															</Col>
+															<Col sm={12} lg={2} className='pt-2 gray800-14'>
+																{project.persons <= 0
+																	? 'Author not listed'
+																	: project.persons.map(person => {
+																			return (
+																				<span>
+																					{person.firstname} {person.lastname} <br />
+																				</span>
+																			);
+																	  })}
+															</Col>
+
+															<Col sm={12} lg={3} style={{ textAlign: 'right' }} className='toolsButtons'>
+																<DropdownButton variant='outline-secondary' alignRight title='Actions' className='floatRight'>
+																	<Dropdown.Item href={'/project/edit/' + project.id} className='black-14'>
+																		Edit
+																	</Dropdown.Item>
+																	<EntityActionButton id={project.id} action={archiveProject} entity='project' actionType='archive' />
+																</DropdownButton>
+															</Col>
+														</Row>
+													);
+												}
+											})
+										)}
+									</div>
+								);
+							case 'pending':
+								return (
+									<div>
+										{reviewCount <= 0 ? (
+											''
+										) : (
+											<Row className='subHeader mt-3 gray800-14-bold'>
+												<Col xs={2}>Last activity</Col>
+												<Col xs={5}>Name</Col>
+												<Col xs={2}>Author</Col>
+												<Col xs={3}></Col>
+											</Row>
+										)}
+
+										{reviewCount <= 0 ? (
+											<Row className='margin-right-15'>
+												<NotFound word='projects' />
+											</Row>
+										) : (
+											projectsList.map(project => {
+												if (project.activeflag !== 'review') {
+													return <></>;
+												} else {
+													return (
+														<Row className='entryBox' data-testid='projectEntryPending'>
+															<Col sm={12} lg={2} className='pt-2 gray800-14'>
+																{moment(project.updatedAt).format('D MMMM YYYY HH:mm')}
+															</Col>
+															<Col sm={12} lg={5} className='pt-2'>
+																<a href={'/project/' + project.id} className='black-14'>
+																	{project.name}
+																</a>
+															</Col>
+															<Col sm={12} lg={2} className='pt-2 gray800-14'>
+																{project.persons <= 0
+																	? 'Author not listed'
+																	: project.persons.map(person => {
+																			return (
+																				<span>
+																					{person.firstname} {person.lastname} <br />
+																				</span>
+																			);
+																	  })}
+															</Col>
+
+															<Col sm={12} lg={3} style={{ textAlign: 'right' }} className='toolsButtons'>
+																{userState[0].role === 'Admin' ? (
 																	<DropdownButton variant='outline-secondary' alignRight title='Actions' className='floatRight'>
 																		<Dropdown.Item href={'/project/edit/' + project.id} className='black-14'>
 																			Edit
 																		</Dropdown.Item>
-																		<EntityActionButton id={project.id} action={archiveProject} entity='project' actionType='archive' />
+																		<Dropdown.Item
+																			href='#'
+																			onClick={() => approveProject(project.id, key, pendingIndex, reviewCount)}
+																			className='black-14'>
+																			Approve
+																		</Dropdown.Item>
+																		<Dropdown.Item href='#' onClick={() => toggleActionModal()} className='black-14'>
+																			Reject
+																		</Dropdown.Item>
+																		<ActionModal
+																			id={project.id}
+																			entityKey={'pending'}
+																			entityIndex={pendingIndex}
+																			entityCount={reviewCount}
+																			open={showActionModal}
+																			context={actionModalConfig}
+																			updateApplicationStatus={rejectProject}
+																			close={toggleActionModal}
+																		/>
 																	</DropdownButton>
-																</Col>
-															</Row>
-														);
-													}
-												})
-											)}
-										</div>
-									);
-								case 'pending':
-									return (
-										<div>
-											{reviewCount <= 0 ? (
-												''
-											) : (
-												<Row className='subHeader mt-3 gray800-14-bold'>
-													<Col xs={2}>Last activity</Col>
-													<Col xs={5}>Name</Col>
-													<Col xs={2}>Author</Col>
-													<Col xs={3}></Col>
-												</Row>
-											)}
+																) : (
+																	''
+																)}
+															</Col>
+														</Row>
+													);
+												}
+											})
+										)}
+									</div>
+								);
+							case 'rejected':
+								return (
+									<div>
+										{rejectedCount <= 0 ? (
+											''
+										) : (
+											<Row className='subHeader mt-3 gray800-14-bold'>
+												<Col xs={2}>Last activity</Col>
+												<Col xs={5}>Name</Col>
+												<Col xs={2}>Author</Col>
+												<Col xs={3}></Col>
+											</Row>
+										)}
 
-											{reviewCount <= 0 ? (
-												<Row className='margin-right-15'>
-													<NotFound word='projects' />
-												</Row>
-											) : (
-												projectsList.map(project => {
-													if (project.activeflag !== 'review') {
-														return <></>;
-													} else {
-														return (
-															<Row className='entryBox' data-testid='projectEntryPending'>
-																<Col sm={12} lg={2} className='pt-2 gray800-14'>
-																	{moment(project.updatedAt).format('D MMMM YYYY HH:mm')}
-																</Col>
-																<Col sm={12} lg={5} className='pt-2'>
-																	<a href={'/project/' + project.id} className='black-14'>
-																		{project.name}
-																	</a>
-																</Col>
-																<Col sm={12} lg={2} className='pt-2 gray800-14'>
-																	{project.persons <= 0
-																		? 'Author not listed'
-																		: project.persons.map(person => {
-																				return (
-																					<span>
-																						{person.firstname} {person.lastname} <br />
-																					</span>
-																				);
-																		  })}
-																</Col>
+										{rejectedCount <= 0 ? (
+											<Row className='margin-right-15'>
+												<NotFound word='projects' />
+											</Row>
+										) : (
+											projectsList.map(project => {
+												if (project.activeflag !== 'rejected') {
+													return <></>;
+												} else {
+													return (
+														<Row className='entryBox' data-testid='projectEntryRejected'>
+															<Col sm={12} lg={2} className='pt-2 gray800-14'>
+																{moment(project.updatedAt).format('D MMMM YYYY HH:mm')}
+															</Col>
+															<Col sm={12} lg={5} className='pt-2'>
+																<a href={'/project/' + project.id} className='black-14'>
+																	{project.name}
+																</a>
+															</Col>
+															<Col sm={12} lg={2} className='pt-2 gray800-14'>
+																{project.persons <= 0
+																	? 'Author not listed'
+																	: project.persons.map(person => {
+																			return (
+																				<span>
+																					{person.firstname} {person.lastname} <br />
+																				</span>
+																			);
+																	  })}
+															</Col>
 
-																<Col sm={12} lg={3} style={{ textAlign: 'right' }} className='toolsButtons'>
-																	{userState[0].role === 'Admin' ? (
-																		<DropdownButton variant='outline-secondary' alignRight title='Actions' className='floatRight'>
-																			<Dropdown.Item href={'/project/edit/' + project.id} className='black-14'>
-																				Edit
-																			</Dropdown.Item>
-																			<Dropdown.Item
-																				href='#'
-																				onClick={() => approveProject(project.id, key, pendingIndex, reviewCount)}
-																				className='black-14'>
-																				Approve
-																			</Dropdown.Item>
-																			<Dropdown.Item href='#' onClick={() => toggleActionModal()} className='black-14'>
-																				Reject
-																			</Dropdown.Item>
-																			<ActionModal
-																				id={project.id}
-																				entityKey={'pending'}
-																				entityIndex={pendingIndex}
-																				entityCount={reviewCount}
-																				open={showActionModal}
-																				context={actionModalConfig}
-																				updateApplicationStatus={rejectProject}
-																				close={toggleActionModal}
-																			/>
-																		</DropdownButton>
-																	) : (
-																		''
-																	)}
-																</Col>
-															</Row>
-														);
-													}
-												})
-											)}
-										</div>
-									);
-								case 'rejected':
-									return (
-										<div>
-											{rejectedCount <= 0 ? (
-												''
-											) : (
-												<Row className='subHeader mt-3 gray800-14-bold'>
-													<Col xs={2}>Last activity</Col>
-													<Col xs={5}>Name</Col>
-													<Col xs={2}>Author</Col>
-													<Col xs={3}></Col>
-												</Row>
-											)}
+															<Col sm={12} lg={3} style={{ textAlign: 'right' }} className='toolsButtons'></Col>
+														</Row>
+													);
+												}
+											})
+										)}
+									</div>
+								);
+							case 'archive':
+								return (
+									<div>
+										{archiveCount <= 0 ? (
+											''
+										) : (
+											<Row className='subHeader mt-3 gray800-14-bold'>
+												<Col xs={2}>Last activity</Col>
+												<Col xs={5}>Name</Col>
+												<Col xs={2}>Author</Col>
+												<Col xs={3}></Col>
+											</Row>
+										)}
 
-											{rejectedCount <= 0 ? (
-												<Row className='margin-right-15'>
-													<NotFound word='projects' />
-												</Row>
-											) : (
-												projectsList.map(project => {
-													if (project.activeflag !== 'rejected') {
-														return <></>;
-													} else {
-														return (
-															<Row className='entryBox' data-testid='projectEntryRejected'>
-																<Col sm={12} lg={2} className='pt-2 gray800-14'>
-																	{moment(project.updatedAt).format('D MMMM YYYY HH:mm')}
-																</Col>
-																<Col sm={12} lg={5} className='pt-2'>
-																	<a href={'/project/' + project.id} className='black-14'>
-																		{project.name}
-																	</a>
-																</Col>
-																<Col sm={12} lg={2} className='pt-2 gray800-14'>
-																	{project.persons <= 0
-																		? 'Author not listed'
-																		: project.persons.map(person => {
-																				return (
-																					<span>
-																						{person.firstname} {person.lastname} <br />
-																					</span>
-																				);
-																		  })}
-																</Col>
+										{archiveCount <= 0 ? (
+											<Row className='margin-right-15'>
+												<NotFound word='projects' />
+											</Row>
+										) : (
+											projectsList.map(project => {
+												if (project.activeflag !== 'archive') {
+													return <></>;
+												} else {
+													return (
+														<Row className='entryBox' data-testid='projectEntryArchive'>
+															<Col sm={12} lg={2} className='pt-2 gray800-14'>
+																{moment(project.updatedAt).format('D MMMM YYYY HH:mm')}
+															</Col>
+															<Col sm={12} lg={5} className='pt-2'>
+																<a href={'/project/' + project.id} className='black-14'>
+																	{project.name}
+																</a>
+															</Col>
+															<Col sm={12} lg={2} className='pt-2 gray800-14'>
+																{project.persons <= 0
+																	? 'Author not listed'
+																	: project.persons.map(person => {
+																			return (
+																				<span>
+																					{person.firstname} {person.lastname} <br />
+																				</span>
+																			);
+																	  })}
+															</Col>
 
-																<Col sm={12} lg={3} style={{ textAlign: 'right' }} className='toolsButtons'></Col>
-															</Row>
-														);
-													}
-												})
-											)}
-										</div>
-									);
-								case 'archive':
-									return (
-										<div>
-											{archiveCount <= 0 ? (
-												''
-											) : (
-												<Row className='subHeader mt-3 gray800-14-bold'>
-													<Col xs={2}>Last activity</Col>
-													<Col xs={5}>Name</Col>
-													<Col xs={2}>Author</Col>
-													<Col xs={3}></Col>
-												</Row>
-											)}
+															<Col sm={12} lg={3} style={{ textAlign: 'right' }} className='toolsButtons'>
+																{userState[0].role === 'Admin' ? (
+																	<DropdownButton variant='outline-secondary' alignRight title='Actions' className='floatRight'>
+																		<Dropdown.Item href={'/project/edit/' + project.id} className='black-14'>
+																			Edit
+																		</Dropdown.Item>
+																		<Dropdown.Item
+																			href='#'
+																			onClick={() => approveProject(project.id, key, archiveIndex, archiveCount)}
+																			className='black-14'>
+																			Approve
+																		</Dropdown.Item>
+																		<Dropdown.Item href='#' onClick={() => toggleActionModal()} className='black-14'>
+																			Reject
+																		</Dropdown.Item>
+																		<ActionModal
+																			id={project.id}
+																			entityKey={'archive'}
+																			entityIndex={archiveIndex}
+																			entityCount={archiveCount}
+																			open={showActionModal}
+																			context={actionModalConfig}
+																			updateApplicationStatus={rejectProject}
+																			close={toggleActionModal}
+																		/>
+																	</DropdownButton>
+																) : (
+																	<DropdownButton variant='outline-secondary' alignRight title='Actions' className='floatRight'>
+																		<Dropdown.Item href={'/project/edit/' + project.id} className='black-14'>
+																			Edit
+																		</Dropdown.Item>
+																	</DropdownButton>
+																)}
+															</Col>
+														</Row>
+													);
+												}
+											})
+										)}
+									</div>
+								);
+							default:
+								return key;
+						}
+					})()}
 
-											{archiveCount <= 0 ? (
-												<Row className='margin-right-15'>
-													<NotFound word='projects' />
-												</Row>
-											) : (
-												projectsList.map(project => {
-													if (project.activeflag !== 'archive') {
-														return <></>;
-													} else {
-														return (
-															<Row className='entryBox' data-testid='projectEntryArchive'>
-																<Col sm={12} lg={2} className='pt-2 gray800-14'>
-																	{moment(project.updatedAt).format('D MMMM YYYY HH:mm')}
-																</Col>
-																<Col sm={12} lg={5} className='pt-2'>
-																	<a href={'/project/' + project.id} className='black-14'>
-																		{project.name}
-																	</a>
-																</Col>
-																<Col sm={12} lg={2} className='pt-2 gray800-14'>
-																	{project.persons <= 0
-																		? 'Author not listed'
-																		: project.persons.map(person => {
-																				return (
-																					<span>
-																						{person.firstname} {person.lastname} <br />
-																					</span>
-																				);
-																		  })}
-																</Col>
-
-																<Col sm={12} lg={3} style={{ textAlign: 'right' }} className='toolsButtons'>
-																	{userState[0].role === 'Admin' ? (
-																		<DropdownButton variant='outline-secondary' alignRight title='Actions' className='floatRight'>
-																			<Dropdown.Item href={'/project/edit/' + project.id} className='black-14'>
-																				Edit
-																			</Dropdown.Item>
-																			<Dropdown.Item
-																				href='#'
-																				onClick={() => approveProject(project.id, key, archiveIndex, archiveCount)}
-																				className='black-14'>
-																				Approve
-																			</Dropdown.Item>
-																			<Dropdown.Item href='#' onClick={() => toggleActionModal()} className='black-14'>
-																				Reject
-																			</Dropdown.Item>
-																			<ActionModal
-																				id={project.id}
-																				entityKey={'archive'}
-																				entityIndex={archiveIndex}
-																				entityCount={archiveCount}
-																				open={showActionModal}
-																				context={actionModalConfig}
-																				updateApplicationStatus={rejectProject}
-																				close={toggleActionModal}
-																			/>
-																		</DropdownButton>
-																	) : (
-																		<DropdownButton variant='outline-secondary' alignRight title='Actions' className='floatRight'>
-																			<Dropdown.Item href={'/project/edit/' + project.id} className='black-14'>
-																				Edit
-																			</Dropdown.Item>
-																		</DropdownButton>
-																	)}
-																</Col>
-															</Row>
-														);
-													}
-												})
-											)}
-										</div>
-									);
-								default:
-									return key;
-							}
-						})()}
-
-					{!isResultsLoading && (
-						<div className='text-center entityDashboardPagination'>
-							{key === 'active' && activeCount > maxResult ? (
-								<PaginationHelper
-									doEntitiesCall={doProjectsCall}
-									entityCount={activeCount}
-									statusKey={key}
-									paginationIndex={activeIndex}
-									setPaginationIndex={setActiveIndex}
-									maxResult={maxResult}></PaginationHelper>
-							) : (
-								''
-							)}
-							{key === 'pending' && reviewCount > maxResult ? (
-								<PaginationHelper
-									doEntitiesCall={doProjectsCall}
-									entityCount={reviewCount}
-									statusKey={key}
-									paginationIndex={pendingIndex}
-									setPaginationIndex={setPendingIndex}
-									maxResult={maxResult}></PaginationHelper>
-							) : (
-								''
-							)}
-							{key === 'rejected' && rejectedCount > maxResult ? (
-								<PaginationHelper
-									doEntitiesCall={doProjectsCall}
-									entityCount={rejectedCount}
-									statusKey={key}
-									paginationIndex={rejectedIndex}
-									setPaginationIndex={setRejectedIndex}
-									maxResult={maxResult}></PaginationHelper>
-							) : (
-								''
-							)}
-							{key === 'archive' && archiveCount > maxResult ? (
-								<PaginationHelper
-									doEntitiesCall={doProjectsCall}
-									entityCount={archiveCount}
-									statusKey={key}
-									paginationIndex={archiveIndex}
-									setPaginationIndex={setArchiveIndex}
-									maxResult={maxResult}></PaginationHelper>
-							) : (
-								''
-							)}
-						</div>
-					)}
-				</Col>
-				<Col xs={1}></Col>
-			</Row>
+				{!isResultsLoading && (
+					<div className='text-center entityDashboardPagination'>
+						{key === 'active' && activeCount > maxResult ? (
+							<PaginationHelper
+								doEntitiesCall={doProjectsCall}
+								entityCount={activeCount}
+								statusKey={key}
+								paginationIndex={activeIndex}
+								setPaginationIndex={setActiveIndex}
+								maxResult={maxResult}></PaginationHelper>
+						) : (
+							''
+						)}
+						{key === 'pending' && reviewCount > maxResult ? (
+							<PaginationHelper
+								doEntitiesCall={doProjectsCall}
+								entityCount={reviewCount}
+								statusKey={key}
+								paginationIndex={pendingIndex}
+								setPaginationIndex={setPendingIndex}
+								maxResult={maxResult}></PaginationHelper>
+						) : (
+							''
+						)}
+						{key === 'rejected' && rejectedCount > maxResult ? (
+							<PaginationHelper
+								doEntitiesCall={doProjectsCall}
+								entityCount={rejectedCount}
+								statusKey={key}
+								paginationIndex={rejectedIndex}
+								setPaginationIndex={setRejectedIndex}
+								maxResult={maxResult}></PaginationHelper>
+						) : (
+							''
+						)}
+						{key === 'archive' && archiveCount > maxResult ? (
+							<PaginationHelper
+								doEntitiesCall={doProjectsCall}
+								entityCount={archiveCount}
+								statusKey={key}
+								paginationIndex={archiveIndex}
+								setPaginationIndex={setArchiveIndex}
+								maxResult={maxResult}></PaginationHelper>
+						) : (
+							''
+						)}
+					</div>
+				)}
+			</AccountContent>
 		</div>
 	);
 };
