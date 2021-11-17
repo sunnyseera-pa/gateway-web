@@ -41,6 +41,7 @@ const ActionBarMenu = ({ label, options = [], disabled, buttonClass = 'button-se
 													<div
 														className='pointer option'
 														onClick={e => {
+															e.preventDefault();
 															action.onClick(e);
 														}}>
 														<span className='gray800-14 title' style={{ marginTop: '0px' }}>

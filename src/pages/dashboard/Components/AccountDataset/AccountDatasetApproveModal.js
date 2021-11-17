@@ -61,7 +61,7 @@ const AccountDatasetApproveModal = ({
 				<div className='decisionModal-body'>
 					<div className='decisionModal-body--wrap'>
 						<p>{t('dataset.approvalModal.description')}</p>
-						<label forHtml="applicationStatusDesc" className='black-14'>{t('dataset.approvalModal.applicationStatus')}</label>
+						<label forhtml="applicationStatusDesc" className='black-14'>{t('dataset.approvalModal.applicationStatus')}</label>
 						<Form.Control
 							data-test-id='dataset-approve-applicationStatusDesc'
 							id='applicationStatusDesc'

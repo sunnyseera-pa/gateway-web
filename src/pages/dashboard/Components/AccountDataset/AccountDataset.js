@@ -56,7 +56,7 @@ const AccountDataset = props => {
 
 	const updateButtonStates = ({ currentIndex, total }) => {
 		let buttonState = {
-			showNext: currentIndex < total - 1,
+			showNext: Boolean(currentIndex < total - 1),
 			showPrevious: currentIndex > 0,
 		};
 
@@ -111,7 +111,6 @@ const AccountDataset = props => {
 					type: 'dataset',
 				});
 			}
-			console.log(state.showNext);
 			updateButtonStates(page);
 		}
 	}, [dataPublisher.data, id]);
@@ -128,6 +127,7 @@ const AccountDataset = props => {
 	const { showPrevious, showNext, statusError, showRejectDatasetModal, showApproveDatasetModal } = state;
 
 	const goToNext = useCallback(() => {
+		const { showNext } = state;
 		if (showNext) {
 			handlePaginationClick(1);
 		}
@@ -143,14 +143,14 @@ const AccountDataset = props => {
 		{
 			title: t('dataset.approve'),
 			onClick: () => {
-				setState({ showApproveDatasetModal: true })
+				setState({...state, showApproveDatasetModal: true })
 			},
 			visible: true
 		},
 		{
 			title: t('dataset.reject'),
 			onClick: () => {
-				setState({ showRejectDatasetModal: true })
+				setState({...state, showRejectDatasetModal: true })
 			},
 			visible: true
 		}
@@ -215,15 +215,15 @@ const AccountDataset = props => {
 				<AccountDatasetApproveModal
 					id={currentDataset._id}
 					open={showApproveDatasetModal}
-					closed={() => setState({ showApproveDatasetModal: false })}
+					closed={() => setState({...state, showApproveDatasetModal: false })}
 					goToNext={goToNext}
-					showGoToNext={showNext && !statusError} />
+					showGoToNext={showNext} />
 				<AccountDatasetRejectModal
 					id={currentDataset._id}
 					open={showRejectDatasetModal}
-					closed={() => setState({ showRejectDatasetModal: false })}
+					closed={() => setState({...state, showRejectDatasetModal: false })}
 					goToNext={goToNext}
-					showGoToNext={showNext && !statusError} />
+					showGoToNext={showNext} />
 			</AccountContent>
 		</Suspense>
 	) : null;
