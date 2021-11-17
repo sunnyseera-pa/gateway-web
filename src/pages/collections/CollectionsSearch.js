@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Row, Col } from 'react-bootstrap';
 import SVGIcon from '../../images/SVGIcon';
 import '../commonComponents/searchBar/SearchBar.scss';
-import SortDropdown from '../search/components/SortDropdown';
+import SortDropdown from '../commonComponents/SortDropdown';
 
 const CollectionsSearch = props => {
 	const [searchValue, setSearchValue] = useState('');

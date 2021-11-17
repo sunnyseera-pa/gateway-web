@@ -1,0 +1,15 @@
+import { Meta, Story, Canvas } from '@storybook/addon-docs';
+
+import Icon from './Icon';
+
+<Meta
+	title='Icon'
+	component={Icon}
+	args={{
+		name: 'tick',
+	}}
+/>
+
+<Canvas>
+	<Story name='Basic'>{props => <Icon {...props} />}</Story>
+</Canvas>
