@@ -29,5 +29,31 @@
 	},
 	"next": "Next",
 	"previous": "Previous",
+	"dataset": {
+		"makeADecision": "Make a decision",
+		"approve": "Approve",
+		"reject": "Reject",
+		"approvalModal": {
+			"title": "Approve this version of this dataset metadata",
+			"description": "If you made any amendments to their application, such as fixing a type, please let the editor know using the description below.",
+			"applicationStatus": "Description (optional)",
+			"buttons": {
+				"cancel": "No, nevermind",
+				"approve": "Approve",
+				"approveAndGoToNext": "Approve and go to next"
+			}
+		},
+		"rejectModal": {
+			"title": "Reject this version of this dataset metadata",
+			"description": "Let the editor know why this submission is being rejected. They will be able to create a new version and make a new submission.",
+			"applicationStatus": "Description",
+			"applicationStatusRequired": "Description cannot be empty", 
+			"buttons": {
+				"cancel": "No, nevermind",
+				"reject": "Reject",
+				"rejectAndGoToNext": "Reject and go to next"
+			}
+		}
+	},
 	"viewForm": "View form"
 }

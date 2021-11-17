@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import React, { Suspense, useState } from 'react';
+import React, { Suspense, useCallback, useState } from 'react';
 import { Button } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { NotificationManager } from 'react-notifications';
@@ -12,7 +12,10 @@ import { default as DataSetHelper, default as utils } from '../../../../utils/Da
 import ActionBar from '../../../commonComponents/actionbar/ActionBar';
 import DatasetCard from '../../../commonComponents/DatasetCard';
 import Loading from '../../../commonComponents/Loading';
+import ActionBarMenu from '../../../commonComponents/ActionBarMenu/ActionBarMenu';
 import AccountContent from '../AccountContent';
+import AccountDatasetApproveModal from './AccountDatasetApproveModal';
+import AccountDatasetRejectModal from './AccountDatasetRejectModal';
 import ActivityLogCard from '../ActivityLogCard';
 
 const AccountDataset = props => {
@@ -25,7 +28,10 @@ const AccountDataset = props => {
 	const [state, setState] = useState({
 		showPrevious: true,
 		showDisabled: true,
+		showNext: true,
 		statusError: false,
+		showApproveDatasetModal: false,
+		showRejectDatasetModal: false
 	});
 
 	const dataActivityLog = serviceActivityLog.usePostActivityLog();
@@ -50,7 +56,7 @@ const AccountDataset = props => {
 
 	const updateButtonStates = ({ currentIndex, total }) => {
 		let buttonState = {
-			showNext: currentIndex < total - 1,
+			showNext: Boolean(currentIndex < total - 1),
 			showPrevious: currentIndex > 0,
 		};
 
@@ -118,11 +124,37 @@ const AccountDataset = props => {
 		[id, dataPublisher.data, team]
 	);
 
+	const { showPrevious, showNext, statusError, showRejectDatasetModal, showApproveDatasetModal } = state;
+
+	const goToNext = useCallback(() => {
+		const { showNext } = state;
+		if (showNext) {
+			handlePaginationClick(1);
+		}
+	}, []);
+
 	const handleViewForm = React.useCallback(() => {
 		history.push(`/dataset-onboarding/${currentDataset._id}`);
 	}, [currentDataset]);
 
-	const { showPrevious, showNext, statusError } = state;
+	const makeADecisionActions = [{
+		description: t('dataset.makeADecision'),
+		actions: [
+		{
+			title: t('dataset.approve'),
+			onClick: () => {
+				setState({...state, showApproveDatasetModal: true })
+			},
+			visible: true
+		},
+		{
+			title: t('dataset.reject'),
+			onClick: () => {
+				setState({...state, showRejectDatasetModal: true })
+			},
+			visible: true
+		}
+	]}];
 
 	if (dataPublisher.isLoading || dataActivityLog.isLoading) {
 		return (
@@ -174,11 +206,24 @@ const AccountDataset = props => {
 								{t('next')}
 							</Button>
 						)}
+						<ActionBarMenu label='Make a decision' options={makeADecisionActions} />
 						<Button variant='primary' onClick={handleViewForm}>
 							{t('viewForm')}
 						</Button>
 					</div>
 				</ActionBar>
+				<AccountDatasetApproveModal
+					id={currentDataset._id}
+					open={showApproveDatasetModal}
+					closed={() => setState({...state, showApproveDatasetModal: false })}
+					goToNext={goToNext}
+					showGoToNext={showNext} />
+				<AccountDatasetRejectModal
+					id={currentDataset._id}
+					open={showRejectDatasetModal}
+					closed={() => setState({...state, showRejectDatasetModal: false })}
+					goToNext={goToNext}
+					showGoToNext={showNext} />
 			</AccountContent>
 		</Suspense>
 	) : null;
