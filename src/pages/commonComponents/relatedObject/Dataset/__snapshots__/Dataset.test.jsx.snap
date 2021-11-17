@@ -55,7 +55,7 @@ exports[`Given the Dataset component When it is rendered Then matches the previo
     >
       <div
         class="badge-dataset"
-        data-testid="badge-Datasets"
+        data-testid="badge-Dataset"
       >
         <svg
           class="badgeSvg mr-2"
@@ -72,7 +72,7 @@ exports[`Given the Dataset component When it is rendered Then matches the previo
           />
         </svg>
         <span>
-          Datasets
+          Dataset
         </span>
         <span />
       </div>
