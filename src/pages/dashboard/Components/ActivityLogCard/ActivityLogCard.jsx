@@ -16,6 +16,7 @@ import ListInfo from '../../../commonComponents/ListInfo';
 import SLA from '../../../commonComponents/sla/SLA';
 import Timeline from '../../../commonComponents/Timeline';
 import * as styles from './ActivityLogCard.styles';
+import Icon from '../../../commonComponents/Icon';
 
 let eventStatusIcons = {
 	newDatasetVersionSubmitted: 'Versions_created.svg',
