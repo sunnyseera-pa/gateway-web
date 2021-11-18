@@ -1,29 +1,43 @@
-import { render } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 import React from 'react';
 import Dropdown from '.';
+import { server } from '../../../services/mockServer';
 
 let wrapper;
 
 const props = {
     handleSelect: jest.fn(),
-    defaultValue: 'value',
-    value: 'value',
+    defaultValue: 'recentActivity',
+    value: 'recentlyPublished',
     type: 'sort',
     options: [
-        'value',
-        'another value'
+        'recentActivity',
+        'alphabetically',
+		'recentlyPublished',
+		'metadataQuality',
+		'mostViewed'
     ]
 }
 
 describe('Given the Dropdown component', () => {
 	describe('When it is rendered', () => {
 		beforeAll(() => {
+			server.listen();
 			wrapper = render(<Dropdown {...props} />, {
 				wrapper: Providers,
 			});
 		});
 
-		it('Then matches the previous snapshot', () => {
+		afterEach(() => {
+            server.resetHandlers();
+        });
+
+		afterAll(() => {
+            server.close();
+		});
+
+		it('Then matches the previous snapshot', async () => {
+			await waitFor(() => expect(wrapper.getByText('Test content')).toBeTruthy());
 			expect(wrapper.container).toMatchSnapshot();
 		});
 	});

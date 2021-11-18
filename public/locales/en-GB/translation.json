@@ -55,5 +55,21 @@
 			}
 		}
 	},
-	"viewForm": "View form"
+	"viewForm": "View form",
+	"sort": {
+		"label": {
+			"recentActivity": "Recent activity",
+			"alphabetically": "Alphabetically",
+			"recentlyPublished": "Recently published",
+			"metadataQuality": "Metadata quality",
+			"mostViewed": "Most viewed"
+		},
+		"option": {
+			"recentActivity": "Recent activity",
+			"alphabetically": "Alphabetically",
+			"recentlyPublished": "Recently published",
+			"metadataQuality": "Metadata quality",
+			"mostViewed": "Most viewed"
+		}
+	}
 }
