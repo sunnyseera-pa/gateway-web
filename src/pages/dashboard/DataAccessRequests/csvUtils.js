@@ -142,14 +142,18 @@ const FetchKeyNameBeforeTheUnderScore = (key) => {
  */
 const buildOneRow = (dar, applicant) => {
 
+	console.log("Datasets",dar.datasetTitles);
+
 	const row = [
 			dar._id,
 			dar.applicationStatus,
+			dar.applicationStatusDesc,
 			dar.createdAt.substring(0, 10), // YYYY-MM-DD
 			dar.updatedAt.substring(0, 10), // YYYY-MM-DD
-			dar.datasetTitles[0],			
+			dar.datasetTitles.join(';'),			
 
-			applicant.safeprojectapplicantfullname, //"Project submitted by"
+			dar.aboutApplication.projectName, // Project name
+			applicant.safeprojectapplicantfullname, //"Applicant full name"
 			applicant.safeprojectapplicantjobtitle,
 			applicant.safeprojectapplicanttelephone,		
 			applicant.safeprojectapplicantaffiliation,
@@ -180,9 +184,11 @@ const buildHeaders = () => {
 	return [
 				"ID", 
 				"Status", 
-				"Created At", 
+				"Status Notes", 
+				"Created At",
 				"Updated At", 
-				"Datasets", 
+				"Datasets",
+				"Project name", 
 				"Applicant full name", 
 				"Job title", 
 				"Telephone", 
