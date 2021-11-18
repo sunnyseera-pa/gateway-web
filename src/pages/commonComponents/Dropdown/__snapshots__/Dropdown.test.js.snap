@@ -1,0 +1,18 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Given the Dropdown component When it is rendered Then matches the previous snapshot 1`] = `
+<div>
+  <div
+    class="ui-Dropdown dropdown"
+  >
+    <button
+      aria-expanded="false"
+      aria-haspopup="true"
+      class="dropdown-toggle btn btn-info"
+      type="button"
+    >
+      sort.label.value
+    </button>
+  </div>
+</div>
+`;
