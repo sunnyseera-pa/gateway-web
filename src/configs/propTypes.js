@@ -1,4 +1,4 @@
-import PropTypes from 'propTypes';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
 
 export const COMMON_PROP_TYPES = {

@@ -4,9 +4,10 @@ import SortDropdown from '../../../commonComponents/SortDropdown';
 const ToolsSearchSort = ({ sort, onSort, search, ...outerProps }) => {
 	return (
 		<SortDropdown
-			handleSort={onSort}
-			sort={sort === '' ? (search === '' ? 'latest' : 'relevance') : sort}
-			dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
+			onSort={onSort}
+			defaultValue={search === '' ? 'latest' : 'relevance'}
+			value={sort}
+			options={['relevance', 'popularity', 'latest', 'resources']}
 			{...outerProps}
 		/>
 	);

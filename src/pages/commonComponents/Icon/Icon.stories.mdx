@@ -7,6 +7,16 @@ import Icon from './Icon';
 	component={Icon}
 	args={{
 		name: 'tick',
+		...Icon.defaultProps,
+	}}
+	argTypes={{
+		size: {
+			options: ['x-small', 'small', 'default', 'large', 'x-large', 'xx-large', 'xxx-large'],
+			control: { type: 'radio' },
+		},
+		color: {
+			control: 'text',
+		},
 	}}
 />
 

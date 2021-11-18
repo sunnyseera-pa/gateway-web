@@ -1,10 +1,10 @@
 import React from 'react';
 import { Dropdown } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
 import Icon from '../Icon';
-import '../Search.scss';
 
 const SortDropdown = ({ handleSort, defaultValue, value, options, iconSelected }) => {
-	const t = useTranslation();
+	const { t } = useTranslation();
 	const currentValue = !!value ? defaultValue : value;
 
 	return (

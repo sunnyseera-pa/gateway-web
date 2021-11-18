@@ -4,9 +4,10 @@ import SortDropdown from '../../../commonComponents/SortDropdown';
 const DatasetSearchSort = ({ sort, onSort, search, ...outerProps }) => {
 	return (
 		<SortDropdown
-			handleSort={onSort}
-			sort={sort === '' ? (search === '' ? 'metadata' : 'relevance') : sort}
-			dropdownItems={['relevance', 'popularity', 'metadata', 'latest', 'resources']}
+			onSort={onSort}
+			defaultValue={search === '' ? 'metadata' : 'relevance'}
+			value={sort}
+			options={['relevance', 'popularity', 'metadata', 'latest', 'resources']}
 			{...outerProps}
 		/>
 	);

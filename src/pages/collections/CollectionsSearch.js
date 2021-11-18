@@ -44,10 +44,10 @@ const CollectionsSearch = props => {
 
 				<Col lg={col2Size} className='text-right'>
 					<SortDropdown
-						handleSort={props.handleSort}
+						onSort={props.handleSort}
 						isCollectionsSearch={props.isCollectionsSearch}
-						sort={props.sort}
-						dropdownItems={props.dropdownItems}
+						value={props.sort}
+						options={props.dropdownItems}
 					/>
 				</Col>
 				<Col sm={1} lg={1} />
