@@ -34,13 +34,13 @@ export const theme = {
 	components: {
 		Icon: {
 			sizes: {
-				'x-small': '0.64rem',
-				small: '0.8rem',
+				'x-small': '0.563rem',
+				small: '0.75rem',
 				default: '1rem',
-				large: '1.25rem',
-				'x-large': '1.563rem',
-				'xx-large': '1.953rem',
-				'xxx-large': '2.441rem',
+				large: '1.333rem',
+				'x-large': '1.777rem',
+				'xx-large': '2.369rem',
+				'xxx-large': '3.157rem',
 			},
 		},
 	},
