@@ -18,12 +18,12 @@ import Timeline from '../../../commonComponents/Timeline';
 import * as styles from './ActivityLogCard.styles';
 
 let eventStatusIcons = {
-	newDatasetVersionSubmitted: versionCreated,
-	datasetVersionApproved: approved,
-	datasetVersionRejected: rejected,
-	datasetVersionArchived: updated,
-	datasetVersionUnarchived: updated,
-	datasetUpdatesSubmitted: updated,
+	newDatasetVersionSubmitted: 'Versions_created.svg',
+	datasetVersionApproved: 'Application_approved',
+	datasetVersionRejected: 'Application_rejected',
+	datasetVersionArchived: 'Updates_requested',
+	datasetVersionUnarchived: 'Updates_requested',
+	datasetUpdatesSubmitted: 'Updates_requested',
 };
 
 const ActivityLogCard = props => {
@@ -61,7 +61,7 @@ const ActivityLogCard = props => {
 									const commentTitle = event.eventType === 'datasetVersionRejected' ? t('activitylog.rejection') : t('comment');
 
 									return {
-										icon: <img src={eventStatusIcons[event.eventType]} data-testid={`${index}-${event.eventType}`} alt='Icon' />,
+										icon: <Icon name={eventStatusIcons[event.eventType]} data-testid={`${index}-${event.eventType}`} size='xx-large' />,
 										time: dateTime.timeOnly,
 										content: (
 											<div>
