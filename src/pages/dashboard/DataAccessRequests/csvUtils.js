@@ -142,8 +142,6 @@ const FetchKeyNameBeforeTheUnderScore = (key) => {
  */
 const buildOneRow = (dar, applicant) => {
 
-	console.log("Datasets",dar.datasetTitles);
-
 	const row = [
 			dar._id,
 			dar.applicationStatus,
