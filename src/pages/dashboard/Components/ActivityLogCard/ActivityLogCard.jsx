@@ -62,7 +62,7 @@ const ActivityLogCard = props => {
 									const commentTitle = event.eventType === 'datasetVersionRejected' ? t('activitylog.rejection') : t('comment');
 
 									return {
-										icon: <Icon name={eventStatusIcons[event.eventType]} data-testid={`${index}-${event.eventType}`} size='xx-large' />,
+										icon: <Icon name={eventStatusIcons[event.eventType]} data-testid={`${index}-${event.eventType}`} size='4xl' />,
 										time: dateTime.timeOnly,
 										content: (
 											<div>
