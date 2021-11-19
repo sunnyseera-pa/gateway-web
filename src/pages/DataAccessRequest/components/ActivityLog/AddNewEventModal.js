@@ -7,6 +7,7 @@ import { ReactComponent as Calendar } from '../../../../images/calendaricon.svg'
 import 'react-datepicker/dist/react-datepicker.css';
 import './AddNewEventModal.scss';
 import DatePicker from 'react-datepicker';
+import escape from 'escape-html';
 
 const AddNewEventModal = ({ dataaccessrequest, isOpened, close, onClickAddEvent }) => {
 	const versionTree = Object.values(dataaccessrequest.versionTree);
@@ -27,7 +28,7 @@ const AddNewEventModal = ({ dataaccessrequest, isOpened, close, onClickAddEvent 
 		onSubmit: values => {
 			const selectedVersion = versionTree.find(version => version.detailedTitle === values.selectedVersionTitle);
 			const newEvent = {
-				description: values.description,
+				description: escape(values.description),
 				timestamp: values.timestamp,
 				versionId: selectedVersion.iterationId ? selectedVersion.iterationId : selectedVersion.applicationId,
 			};
