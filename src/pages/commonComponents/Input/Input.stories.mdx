@@ -8,7 +8,16 @@ import Icon from '../Icon';
 <Canvas>
 	<Story name='Basic'>
 		{props => (
-			<Input {...props} iconPrepend={<Icon name='search' />} iconAppend={<Icon name='close-alt' fill='green600' color='green600' />} />
+			<Input
+				{...props}
+				iconPrepend={<Icon name='search' />}
+				iconAppend={
+					<>
+						<Icon name='close-alt' fill='red600' color='red600' size='xs' />
+						<Icon name='tick' fill='green600' color='green600' ml={2} inline size='xs' />
+					</>
+				}
+			/>
 		)}
 	</Story>
 </Canvas>

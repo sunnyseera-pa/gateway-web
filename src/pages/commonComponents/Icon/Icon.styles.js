@@ -16,7 +16,6 @@ export const root = ({ size, color, stroke, fill, ...commonProps }) => theme => 
 		color: ${colors[color]};
 		fill: ${colors[fill]};
 		height: ${sizes[size]};
-		width: ${sizes[size]};
 		justify-content: center;
 		align-items: center;
 
