@@ -2,6 +2,8 @@ import { render, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import React from 'react';
 import SearchResultsInfo from './SearchResultsInfo';
+import { server } from '../../../services/mockServer';
+
 let wrapper;
 const props = {
 	searchTerm: 'covid',
@@ -10,9 +12,14 @@ const props = {
 describe('Given the SearchResultsInfo', () => {
 	describe('When it is rendered', () => {
 		beforeAll(() => {
+			server.listen();
 			wrapper = render(<SearchResultsInfo {...props} />, {
 				wrapper: Providers,
 			});
+		});
+
+		afterAll(() => {
+			server.close();
 		});
 
 		it('Should match the snapshot', () => {
@@ -23,7 +30,7 @@ describe('Given the SearchResultsInfo', () => {
 			await waitFor(() => expect(wrapper.getByText("Showing 60 results for 'covid'")).toBeTruthy());
 		});
 	});
-	describe('And  search term is empty', () => {
+	describe('And when search term is empty', () => {
 		beforeAll(() => {
 			const { rerender } = wrapper;
 			const newProps = {
