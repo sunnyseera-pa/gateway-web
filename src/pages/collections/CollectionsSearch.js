@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import { Row, Col } from 'react-bootstrap';
-import SVGIcon from '../../images/SVGIcon';
-import '../commonComponents/searchBar/SearchBar.scss';
+import { Col, Row } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
+import SearchInput from '../commonComponents/SearchInput';
 import SortDropdown from '../commonComponents/SortDropdown';
+import '../commonComponents/searchBar/SearchBar.scss';
 
 const CollectionsSearch = props => {
+	const t = useTranslation();
 	const [searchValue, setSearchValue] = useState('');
 
 	let col1Size = 7;
@@ -25,21 +27,12 @@ const CollectionsSearch = props => {
 			<Row>
 				<Col sm={1} lg={1} />
 				<Col lg={col1Size}>
-					<span className='collectionsSearchBar form-control'>
-						<span className='collectionsSearchIcon'>
-							<SVGIcon name='searchicon' width={20} height={20} fill={'#2c8267'} stroke='none' type='submit' />
-						</span>
-						<span>
-							<input
-								id='collectionsSearchBarInput'
-								type='text'
-								placeholder='Search within collection'
-								onChange={onSearch}
-								value={searchValue}
-								onKeyDown={props.doCollectionsSearchMethod}
-							/>
-						</span>
-					</span>
+					<SearchInput
+						placeholder={t('search.placeholder', { type: 'collection' })}
+						onChange={onSearch}
+						value={searchValue}
+						onKeyDown={props.doCollectionsSearchMethod}
+					/>
 				</Col>
 
 				<Col lg={col2Size} className='text-right'>

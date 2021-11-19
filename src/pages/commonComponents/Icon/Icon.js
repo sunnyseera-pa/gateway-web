@@ -69,8 +69,6 @@ const Icon = ({ name, size, color, fill, stroke, ml, mr, mb, mt, inline, ...oute
 		if (name) importIcon();
 	}, [name]);
 
-	console.log('IN ICON', { ml, mr, mb, mt });
-
 	const iconProps = {
 		css: styles.root({ size, color, fill, stroke, ml, mr, mb, mt }),
 		className: 'ui-Icon',

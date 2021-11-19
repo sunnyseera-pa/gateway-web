@@ -1,0 +1,20 @@
+import { Meta, Story, Canvas } from '@storybook/addon-docs';
+
+import SearchInput from './SearchInput';
+
+<Meta title='SearchInput' component={SearchInput} />
+
+<Canvas>
+	<Story name='Basic'>
+		{props => {
+			const [value, setValue] = React.useState();
+			const handleReset = React.useCallback(() => {
+				setValue('');
+			}, []);
+			const handleChange = React.useCallback(({ target: { value } }) => {
+				setValue(value);
+			}, []);
+			return <SearchInput placeholder='Search with collection' onReset={handleReset} onChange={handleChange} value={value} />;
+		}}
+	</Story>
+</Canvas>
