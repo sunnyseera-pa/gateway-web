@@ -1,7 +1,8 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/react';
-import { useEffect, useState } from 'react';
+import axios from 'axios';
 import PropTypes from 'prop-types';
+import { useEffect, useState } from 'react';
 import { addCommonPropTypes } from '../../../configs/propTypes';
 import SVGIcon from '../../../images/SVGIcon';
 import * as styles from './Icon.styles.js';
@@ -54,23 +55,37 @@ const svgFragments = {
 };
 
 const Icon = ({ name, size, color, fill, stroke, ml, mr, mb, mt, inline, ...outerProps }) => {
-	const [icon, setIcon] = useState();
+	const [svg, setSvg] = useState();
 
 	useEffect(() => {
-		if (name) {
-			import(`../../../images/${name}.svg`).then(setIcon);
-		}
+		const importIcon = () => {
+			import(`../../../images/${name}.svg`).then(({ default: namedImport }) => {
+				axios.get(namedImport).then(({ data }) => {
+					setSvg(data);
+				});
+			});
+		};
+
+		if (name) importIcon();
 	}, [name]);
 
-	return (
-		<span css={styles.root({ size, color, fill, stroke, ml, mr, mb, mt })} className='ui-Icon' {...outerProps}>
-			{inline ? (
+	const iconProps = {
+		css: styles.root({ size, color, fill, stroke, ml, mr, mb, mt }),
+		className: 'ui-Icon',
+		...outerProps,
+	};
+
+	if (inline) {
+		return (
+			<span {...iconProps}>
 				<SVGIcon name={name} fill='inherit' color='inherit' stroke='inherit' viewBox={svgFragments[name]} />
-			) : (
-				icon && <img src={icon.default} />
-			)}
-		</span>
-	);
+			</span>
+		);
+	} else if (!inline && svg) {
+		return <span {...iconProps} dangerouslySetInnerHTML={{ __html: svg }} />;
+	}
+
+	return null;
 };
 
 Icon.propTypes = addCommonPropTypes({

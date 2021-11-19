@@ -1,0 +1,14 @@
+import { Meta, Story, Canvas } from '@storybook/addon-docs';
+
+import Input from './Input';
+import Icon from '../Icon';
+
+<Meta title='Input' component={Input} />
+
+<Canvas>
+	<Story name='Basic'>
+		{props => (
+			<Input {...props} iconPrepend={<Icon name='search' />} iconAppend={<Icon name='close-alt' fill='green600' color='green600' />} />
+		)}
+	</Story>
+</Canvas>

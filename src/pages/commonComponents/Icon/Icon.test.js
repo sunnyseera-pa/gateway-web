@@ -1,6 +1,9 @@
 import React from 'react';
 import Icon from '.';
 import { render, waitFor } from '@testing-library/react';
+import axios from 'axios';
+
+jest.mock('axios');
 
 jest.mock('../../../images/SVGIcon', () => props => {
 	mockSVGIcon(props);
@@ -8,7 +11,6 @@ jest.mock('../../../images/SVGIcon', () => props => {
 });
 
 const mockSVGIcon = jest.fn();
-const mockSetState = jest.fn();
 
 let wrapper;
 let useStateSpy;
@@ -16,30 +18,17 @@ let useStateSpy;
 describe('Given the Icon component', () => {
 	describe('When it is from a file', () => {
 		beforeAll(async () => {
-			useStateSpy = jest.spyOn(React, 'useState').mockImplementation(() => [
-				{
-					default: 'images/Application_approved.svg',
-				},
-				mockSetState,
-			]);
+			axios.get.mockImplementation(() => Promise.resolve({ data: '<svg />' }));
 
 			wrapper = render(<Icon name='Application_approved' />, {
 				wrapper: Providers,
 			});
 
-			await waitFor(() => expect(wrapper.container.querySelector('img')).toBeTruthy());
+			await waitFor(() => expect(wrapper.container.querySelector('svg')).toBeTruthy());
 		});
 
 		it('Then matches the previous snapshot', () => {
 			expect(wrapper.container).toMatchSnapshot();
-		});
-
-		it('Then calls setState', () => {
-			expect(mockSetState).toHaveBeenCalled();
-		});
-
-		it('Then has the correct className', () => {
-			expect(wrapper.container.querySelector('img[src="images/Application_approved.svg"]')).toBeTruthy();
 		});
 	});
 
