@@ -9,12 +9,12 @@ const SortDropdown = ({ handleSort, defaultValue, value, options, iconSelected }
 		<Dropdown className='ui-SortDropdown' alignRight onSelect={handleSort}>
 			<Dropdown.Toggle variant='info'>
 				{(() => {
-					if (sorting === 'popularity') return 'Sort by number of views';
-					else if (sorting === 'metadata') return 'Sort by metadata quality';
-					else if (sorting === 'resources') return 'Sort by related resources';
-					else if (sorting === 'latest') return 'Sort by latest';
-					else if (sorting === 'recentlyadded') return 'Sort by recently added';
-					else if (sorting === 'sortbyyear') return 'Sort by year';
+					if (value === 'popularity') return 'Sort by number of views';
+					else if (currentValue === 'metadata') return 'Sort by metadata quality';
+					else if (currentValue === 'resources') return 'Sort by related resources';
+					else if (currentValue === 'latest') return 'Sort by latest';
+					else if (currentValue === 'recentlyadded') return 'Sort by recently added';
+					else if (currentValue === 'sortbyyear') return 'Sort by year';
 					else return 'Sort by match to search terms';
 				})()}
 			</Dropdown.Toggle>

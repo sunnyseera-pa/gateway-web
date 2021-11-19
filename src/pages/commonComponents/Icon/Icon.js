@@ -75,7 +75,7 @@ const Icon = ({ name, size, color, fill, stroke, ml, mr, mb, mt, inline, ...oute
 
 Icon.propTypes = addCommonPropTypes({
 	name: PropTypes.string.isRequired,
-	size: PropTypes.oneOf(['x-small', 'small', 'default', 'large', 'x-large', 'xx-large', 'xxx-large']),
+	size: PropTypes.oneOf(['xxs', 'xs', 'sm', 'md', 'default', 'lg', 'xl', '2xl', '3xl', '4xl', '5xl']),
 	color: PropTypes.string,
 	fill: PropTypes.string,
 	stroke: PropTypes.string,

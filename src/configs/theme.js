@@ -25,7 +25,7 @@ export const theme = {
 		unit: 'px',
 	},
 	colors: {
-		green600: 'blah',
+		green600: '#329276',
 		grey: '#F6F7F8',
 		grey700: '#53575A',
 		grey700Alt: '#848E97',
@@ -34,13 +34,17 @@ export const theme = {
 	components: {
 		Icon: {
 			sizes: {
-				'x-small': '0.563rem',
-				small: '0.75rem',
-				default: '1rem',
-				large: '1.333rem',
-				'x-large': '1.777rem',
-				'xx-large': '2.369rem',
-				'xxx-large': '3.157rem',
+				xxs: '10px',
+				xs: '12px',
+				sm: '13px',
+				md: '14px',
+				default: '14px',
+				lg: '16px',
+				xl: '20px',
+				'2xl': '24px',
+				'3xl': '28px',
+				'4xl': '32px',
+				'5xl': '40px',
 			},
 		},
 	},
