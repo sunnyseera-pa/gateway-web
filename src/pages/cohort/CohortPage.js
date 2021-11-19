@@ -96,6 +96,8 @@ export const CohortPage = props => {
 		setIsLoading(false);
 	};
 
+	console.log(cohortData);
+
 	const getDatasets = async newCohortData => {
 		// 1. Get dataset information
 		const datasets = await Promise.all(
@@ -580,9 +582,9 @@ export const CohortPage = props => {
 															id='collectionsSearchBarInput'
 															type='text'
 															placeholder='Search within related resources'
-															onChange
-															value
-															onKeyDown
+															onChange={onRelatedObjectsSearch}
+															value={relatedObjectsSearchValue}
+															onKeyDown={doRelatedObjectsSearch}
 														/>
 													</span>
 												</span>
