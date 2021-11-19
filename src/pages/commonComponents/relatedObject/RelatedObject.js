@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from 'lodash';
 import { Row, Col, Button, Alert } from 'react-bootstrap';
 import Loading from '../Loading';
 import SVGIcon from '../../../images/SVGIcon';
@@ -7,8 +8,10 @@ import Tool from './Tool/Tool';
 import Paper from './Paper/Paper';
 import Course from './Course/Course';
 import Person from './Person/Person';
+import Cohort from './Cohort/Cohort';
 import { stripMarkdown } from '../../../utils/GeneralHelper.util';
 import relatedObjectService from '../../../services/related-object';
+import '../../cohort/Cohorts.scss';
 import './RelatedObject.scss';
 
 var cmsURL = require('../BaseURL').getCMSURL();
@@ -27,12 +30,14 @@ class RelatedObject extends React.Component {
 		inCollection: false,
 		isCohortDiscovery: false,
 		publisherLogoURL: '',
+		isCohortDatasetsTab: false,
 	};
 
 	constructor(props) {
 		super(props);
 		this.state.activeLink = props.activeLink;
 		this.state.onSearchPage = props.onSearchPage;
+		this.state.isCohortDatasetsTab = props.isCohortDatasetsTab;
 		if (props.inCollection) {
 			this.state.inCollection = props.inCollection;
 		}
@@ -83,6 +88,13 @@ class RelatedObject extends React.Component {
 					isLoading: false,
 				});
 			});
+		} else if (type === 'cohort') {
+			relatedObjectService.getRelatedObjectForCohortRequest(id).then(res => {
+				this.setState({
+					data: res.data.data[0],
+					isLoading: false,
+				});
+			});
 		} else {
 			relatedObjectService.getRelatedObjectRequest(id).then(res => {
 				this.setState({
@@ -114,9 +126,8 @@ class RelatedObject extends React.Component {
 			this.props.updateOnFilterBadge(filter, option);
 		}
 	};
-
 	render() {
-		const { data, isLoading, activeLink, onSearchPage, relatedObject, inCollection, publisherLogoURL } = this.state;
+		const { data, isLoading, activeLink, onSearchPage, relatedObject, inCollection, publisherLogoURL, isCohortDatasetsTab } = this.state;
 
 		let publisherLogo;
 
@@ -145,7 +156,7 @@ class RelatedObject extends React.Component {
 		}
 
 		return (
-			<Row className='resource-card-row'>
+			<Row className={isCohortDatasetsTab ? 'cohort-card-row' : 'resource-card-row'}>
 				<Col>
 					<div
 						className={rectangleClassName}
@@ -352,6 +363,17 @@ class RelatedObject extends React.Component {
 										removeButton={this.removeButton}
 									/>
 								);
+							} else if (data.type === 'cohort') {
+								return (
+									<Cohort
+										data={data}
+										activeLink={activeLink ? activeLink : false}
+										onSearchPage={onSearchPage ? onSearchPage : false}
+										showRelationshipQuestion={this.props.showRelationshipQuestion ? this.props.showRelationshipQuestion : false}
+										updateOnFilterBadge={this.updateOnFilterBadge}
+										removeButton={this.removeButton}
+									/>
+								);
 							} else {
 								return (
 									<Dataset
@@ -363,12 +385,18 @@ class RelatedObject extends React.Component {
 										isCohortDiscovery={this.state.isCohortDiscovery}
 										updateOnFilterBadge={this.updateOnFilterBadge}
 										removeButton={this.removeButton}
+										isLocked={this.props.isLocked}
+										entries={this.props.entries}
 									/>
 								);
 							}
 						})()}
 						{(() => {
-							if (this.props.showRelationshipQuestion && !(data.type === 'dataset' && data.activeflag === 'archive')) {
+							if (
+								this.props.showRelationshipQuestion &&
+								!(data.type === 'dataset' && data.activeflag === 'archive') &&
+								this.props.isLocked !== true
+							) {
 								return (
 									<>
 										<Row className='pad-top-24 noMargin'>

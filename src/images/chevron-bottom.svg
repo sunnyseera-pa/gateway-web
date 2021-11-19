@@ -4,11 +4,11 @@
         <path d="M12.41,16.41 C12.178,16.41 11.947,16.33 11.759,16.169 L4,9.519 L5.302,8 L12.41,14.093 L19.518,8 L20.82,9.519 L13.061,16.169 C12.873,16.33 12.642,16.41 12.41,16.41 Z" id="chevron-bottom"></path>
     </defs>
     <g id="icon-/-chevron-bottom" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <mask id="mask-2" fill="white">
+        <mask id="mask-chevron-bottom" fill="white">
             <use xlink:href="#chevron-bottom"></use>
         </mask>
         <use id="Path" fill="#111111" fill-rule="nonzero" xlink:href="#chevron-bottom"></use>
-        <g id="colour/purple" mask="url(#mask-2)" fill="#475DA7">
+        <g id="colour/purple" mask="url(#mask-chevron-bottom)" fill="#475DA7">
             <rect id="Rectangle" x="0" y="0" width="24" height="24"></rect>
         </g>
     </g> 

@@ -669,12 +669,15 @@ const AddEditToolForm = props => {
 															paperData={props.paperData}
 															personData={props.personData}
 															courseData={props.courseData}
+															cohortData={props.cohortData}
 															summary={props.summary}
+															myEntitiesSummary={props.myEntitiesSummary}
 															doAddToTempRelatedObjects={props.doAddToTempRelatedObjects}
 															tempRelatedObjectIds={props.tempRelatedObjectIds}
 															relatedObjects={props.relatedObjects}
 															doClearRelatedObjects={props.doClearRelatedObjects}
 															doAddToRelatedObjects={props.doAddToRelatedObjects}
+															displayTabs={props.displayTabs}
 														/>
 													</Col>
 													<Col sm={1} lg={10} />

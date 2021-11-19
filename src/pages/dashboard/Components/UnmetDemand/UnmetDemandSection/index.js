@@ -37,6 +37,7 @@ const UnmetDemandSection = ({handleSelect, key, data, renderNoResults}) => {
                             <Tab eventKey='Projects' title={'Projects'}></Tab>
                             <Tab eventKey='Papers' title={'Papers'}></Tab>
                             <Tab eventKey='People' title={'People'}></Tab>
+							<Tab eventKey='Cohorts' title={'Cohorts'}></Tab>
                         </Tabs>
                     </Col>
                 </Row>
@@ -151,6 +152,29 @@ const UnmetDemandSection = ({handleSelect, key, data, renderNoResults}) => {
                                                         </Col>
                                                         <Col sm={2} lg={2}>
                                                             People results
+                                                        </Col>
+                                                    </Row>
+                                                    {data.map(dat => {
+                                                        return <UnmetDemand data={dat} />;
+                                                    })}
+                                                </Col>
+                                            </Row>
+                                        </div>
+                                    );
+                                case 'Cohorts':
+                                    return (
+                                        <div>
+                                            <Row>
+                                                <Col sm={12} lg={12}>
+                                                    <Row className='subHeader mt-3 gray800-14-bold'>
+                                                        <Col sm={8} lg={8}>
+                                                            Search term{' '}
+                                                        </Col>
+                                                        <Col sm={2} lg={2}>
+                                                            Searches
+                                                        </Col>
+                                                        <Col sm={2} lg={2}>
+                                                            Cohort results
                                                         </Col>
                                                     </Row>
                                                     {data.map(dat => {

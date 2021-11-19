@@ -119,7 +119,7 @@ const CohortDiscoveryBanner = ({ userProps }) => {
 								</div>
 								<div className='gray800-14'>
 									Find out the count and gender distribution of subjects with the characteristics you’re interested in, such as disease.
-									Queries are made on the actual dataset, not just metadata.
+									Queries are made on the actual dataset, not just metadata.{' '}
 									<a
 										className='textUnderline gray800-14 cursorPointer'
 										href='https://www.healthdatagateway.org/about/cohort-discovery'

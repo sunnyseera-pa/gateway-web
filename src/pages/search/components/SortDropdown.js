@@ -13,13 +13,15 @@ const SortDropdown = ({ handleSort, sort, dropdownItems, isCollectionsSearch }) 
 				variant='info'
 				id='dropdown-menu-align-right'
 				className={isCollectionsSearch ? 'collectionsSorting gray800-14' : 'gray800-14'}>
-				{(() => {
+					{   (() => {
 					if (sorting === 'popularity') return 'Sort by number of views';
 					else if (sorting === 'metadata') return 'Sort by metadata quality';
 					else if (sorting === 'resources') return 'Sort by related resources';
 					else if (sorting === 'latest') return 'Sort by latest';
 					else if (sorting === 'recentlyadded') return 'Sort by recently added';
 					else if (sorting === 'sortbyyear') return 'Sort by year';
+					else if (sorting === 'entries') return 'Number of entries';
+					else if (sorting === 'datasets') return 'Number of datasets';
 					else return 'Sort by match to search terms';
 				})()}
 				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -27,7 +29,8 @@ const SortDropdown = ({ handleSort, sort, dropdownItems, isCollectionsSearch }) 
 			<Dropdown.Menu>
 				{dropdownItems.map((item, index) => {
 					return (
-						<Row key={`ddl-item-${index}`}
+						<Row
+							key={`ddl-item-${index}`}
 							className={
 								sorting === item ? 'sort-dropdown-item sort-dropdown-item-selected sortingDropdown' : 'sort-dropdown-item sortingDropdown'
 							}>
@@ -41,6 +44,8 @@ const SortDropdown = ({ handleSort, sort, dropdownItems, isCollectionsSearch }) 
 										else if (item === 'recentlyadded') return 'Recently added to collection (newest first)';
 										else if (item === 'relevance') return 'Match to search terms (closest first)';
 										else if (item === 'sortbyyear') return 'Sort by year (latest first)';
+										else if (item === 'entries') return 'Number of entries (most first)';
+										else if (item === 'datasets') return 'Number of datasets (most first)';
 									})()}
 								</Dropdown.Item>
 							</Col>

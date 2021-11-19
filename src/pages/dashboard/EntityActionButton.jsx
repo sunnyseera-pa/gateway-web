@@ -1,7 +1,8 @@
 import React, { Fragment, useState } from 'react';
-import { Button, Modal, Dropdown } from 'react-bootstrap';
+import { Dropdown } from 'react-bootstrap';
 import './Dashboard.scss';
 import _ from 'lodash';
+import EntityActionModal from './EntityActionModal';
 
 export const EntityActionButton = props => {
 	const [show, setShow] = useState(false);
@@ -11,21 +12,19 @@ export const EntityActionButton = props => {
 	const performAction = () => props.action(props.id);
 
 	let title;
-	let pastTense;
 
 	switch (props.actionType) {
 		case 'delete':
 			title = 'Delete';
-			pastTense = 'deleted';
 			break;
 		case 'archive':
 			title = 'Archive';
-			pastTense = 'archived';
 			break;
 		case 'unarchive':
 			title = 'Unarchive';
-			pastTense = 'unarchived';
 			break;
+		case 'editCriteria':
+			title = 'New version: edit inclusion/exclusion criteria';
 		default:
 			break;
 	}
@@ -35,25 +34,14 @@ export const EntityActionButton = props => {
 			<Dropdown.Item href='#' onClick={handleShow} className='black-14'>
 				{title}
 			</Dropdown.Item>
-
-			<Modal show={show} onHide={handleClose}>
-				<Modal.Header closeButton>
-					<Modal.Title>
-						{title} this {!_.isEmpty(props.entity) ? props.entity : 'entity'}?
-					</Modal.Title>
-				</Modal.Header>
-				<Modal.Body>
-					This {!_.isEmpty(props.entity) ? props.entity : 'entity'} will be {pastTense} from the directory.
-				</Modal.Body>
-				<Modal.Footer>
-					<Button variant='secondary' onClick={handleClose}>
-						No, nevermind
-					</Button>
-					<Button variant='primary' onClick={performAction}>
-						Yes, {title.toLowerCase()}
-					</Button>
-				</Modal.Footer>
-			</Modal>
+			<EntityActionModal
+				show={show}
+				performAction={performAction}
+				handleClose={handleClose}
+				actionType={props.actionType}
+				entity={props.entity}
+				bcpLink={props.bcpLink}
+			/>
 		</Fragment>
 	);
 };

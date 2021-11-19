@@ -1,0 +1,10 @@
+@import '../../../css/mixins';
+@import '../../../css/variables';
+
+.noResultsModalSearchCard {
+	margin-top: 12px;
+}
+
+.resultsSubHeading {
+	@include font-source(16px, $gray-dark, $font-weight-bold);
+}

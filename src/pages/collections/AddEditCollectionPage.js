@@ -37,6 +37,7 @@ class AddEditCollectionPage extends React.Component {
 		paperData: [],
 		courseData: [],
 		summary: [],
+		myEntitiesSummary: [],
 		tempRelatedObjectIds: [],
 		relatedObjects: [],
 		didDelete: false,
@@ -133,6 +134,7 @@ class AddEditCollectionPage extends React.Component {
 						paperData: res.data.paperResults || [],
 						courseData: res.data.courseResults || [],
 						summary: res.data.summary || [],
+						myEntitiesSummary: res.data.myEntitiesSummary || [],
 						isLoading: false,
 					});
 				});
@@ -221,6 +223,7 @@ class AddEditCollectionPage extends React.Component {
 			paperData,
 			courseData,
 			summary,
+			myEntitiesSummary,
 			relatedObjects,
 			didDelete,
 			showDrawer,
@@ -264,6 +267,7 @@ class AddEditCollectionPage extends React.Component {
 						paperData={paperData}
 						courseData={courseData}
 						summary={summary}
+						myEntitiesSummary={myEntitiesSummary}
 						doAddToTempRelatedObjects={this.addToTempRelatedObjects}
 						tempRelatedObjectIds={this.state.tempRelatedObjectIds}
 						doClearRelatedObjects={this.clearRelatedObjects}
@@ -275,6 +279,7 @@ class AddEditCollectionPage extends React.Component {
 						publicFlag={publicFlag}
 						updatePublicFlag={this.updatePublicFlag}
 						isEdit={isEdit}
+						displayTabs={['Datasets', 'Tools', 'Projects', 'Courses', 'Papers', 'People']}
 					/>
 
 					<SideDrawer open={showDrawer} closed={this.toggleDrawer}>

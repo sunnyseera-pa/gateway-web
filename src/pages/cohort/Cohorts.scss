@@ -1,0 +1,102 @@
+@import '../../css/mixins';
+@import '../../css/variables';
+
+.cohortDropdown:disabled {
+	opacity: 0.5;
+}
+
+.halfOpacity {
+	opacity: 0.5;
+}
+
+.groupAccordianHeader {
+	min-height: 56px;
+	background-color: $indigo;
+	padding: 16px;
+}
+
+.cohortGroupExpanded {
+	border: solid 1px $gray-300;
+	padding: 8px;
+}
+
+.cohortOmopIncludesCard {
+	background-color: $duck-egg-opacity-20percent;
+	padding: 16px 16px 24px 16px;
+}
+
+.cohortOmopExcludesCard {
+	background-color: $yellow-opacity-20percent;
+	padding: 16px 16px 24px 16px;
+}
+
+.andOrBox {
+	width: 30px;
+	height: 16px;
+	padding: 1px 2px;
+	border-radius: 4px;
+	background-color: $white;
+	position: absolute;
+	display: block;
+	z-index: 999;
+	left: 16px;
+	top: -10px;
+	text-align: center;
+}
+
+.omopCard {
+	position: relative;
+}
+
+.collapseWait {
+	transition: transform 0.5s linear 0s;
+}
+
+.subsumedConcepts {
+	border-left: 5px solid #d0d3d4;
+	padding-left: 12px;
+	margin-top: 16px;
+}
+
+.excludesTag {
+	border-radius: 4px;
+	background-color: $yellow;
+	padding: 0px 2px;
+	margin-right: 12px;
+}
+
+.verticalAlignSuper {
+	vertical-align: super;
+}
+
+.alertLink,
+.alertLink:hover {
+	color: #856505;
+	text-decoration: underline;
+}
+
+.versionNumber {
+	color: $purple;
+	margin-right: 5px;
+}
+
+.actionMenuHeader {
+	padding: 0;
+}
+
+.newCohortVersionButton {
+	width: 166px !important;
+}
+
+.cohort-card-row {
+	margin-top: 1px;
+}
+
+.cohortActionMenuDropdown {
+	position: relative;
+	width: max-content !important;
+	max-height: 314px !important;
+	box-shadow: 3px 3px 6px 0 rgba(0, 0, 0, 0.09), -3px -3px 4px 0 rgba(0, 0, 0, 0.03) !important;
+	background-color: $white !important;
+	padding: 5px 20px 16px !important;
+}

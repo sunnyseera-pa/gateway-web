@@ -1,10 +1,9 @@
 import React, { Fragment } from 'react';
 import axios from 'axios';
 import moment from 'moment';
-import UnmetDemand from './DARComponents/UnmetDemand';
 import TopSearches from './TopSearches';
 import TopDatasets from './TopDatasets';
-import { Row, Col, Tabs, Tab, DropdownButton, Dropdown } from 'react-bootstrap';
+import { Row, Col, DropdownButton, Dropdown } from 'react-bootstrap';
 import DashboardKPI from './DARComponents/DashboardKPI';
 import Loading from '../commonComponents/Loading';
 import UnmetDemandSection from './Components/UnmetDemand/UnmetDemandSection';
@@ -438,7 +437,6 @@ class AccountAnalyticsDashboard extends React.Component {
 								</Row>
 							</Fragment>
 						)}
-						
 						<UnmetDemandSection data={data} key={key} handleSelect={this.handleSelect.bind(this)} renderNoResults={this.renderNoResults} />
 					</Col>
 					<Col sm={1} lg={10} />

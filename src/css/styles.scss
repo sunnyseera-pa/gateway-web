@@ -360,6 +360,12 @@ a.nav-item.nav-link.active {
 		font-size: 14px !important;
 		margin: 0px !important;
 	}
+
+	&-cohort {
+		@extend .badge;
+		background-color: $duck-egg;
+		color: $gray-800 !important;
+	}
 }
 
 .iconHolder {
@@ -542,6 +548,10 @@ svg:not(:root) {
 .publishButton {
 	width: 79px;
 	height: 40px;
+}
+
+.publishButton:disabled {
+	opacity: 0.5 !important;
 }
 
 .linkButton {
@@ -761,6 +771,10 @@ textarea:focus {
 	color: $indigo;
 	font-family: museo-sans-rounded;
 	font-size: 14px !important;
+}
+
+.techDetailButton:disabled {
+	opacity: 0.5 !important;
 }
 
 .accountDropDownGap {
@@ -1136,6 +1150,10 @@ iframe#discourse-embed-frame {
 	display: inline-block;
 }
 
+.contents {
+	display: contents;
+}
+
 .pointer,
 .btn {
 	cursor: pointer;
@@ -1256,6 +1274,10 @@ button a {
 
 .margin-top-6 {
 	margin-top: 6px !important;
+}
+
+.margin-top-4 {
+	margin-top: 4px !important;
 }
 
 .margin-top-2 {

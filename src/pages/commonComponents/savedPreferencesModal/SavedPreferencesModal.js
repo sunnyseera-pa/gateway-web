@@ -15,7 +15,7 @@ const SavedPreferencesModal = ({ show, onHide, viewSaved, activeTab }) => {
 	useEffect(() => {
 		axios.get(baseURL + '/api/v1/search-preferences').then(res => {
 			setData(res.data.data);
-		});
+		}); 
 	}, []);
 
 	const viewSavedSearch = () => {
@@ -34,7 +34,7 @@ const SavedPreferencesModal = ({ show, onHide, viewSaved, activeTab }) => {
 		});
 	};
 
-	const tabs = ['Datasets', 'Tools', 'Projects', 'Collections', 'Courses', 'Papers', 'People'];
+	const tabs = ['Datasets', 'Tools', 'Projects', 'Collections', 'Courses', 'Papers', 'Cohorts', 'People'];
 
 	const datasetsTotal = data.filter(a => a.name).filter(a => a.filterCriteria.tab === 'Datasets').length;
 	const toolsTotal = data.filter(a => a.name).filter(a => a.filterCriteria.tab === 'Tools').length;
@@ -42,6 +42,7 @@ const SavedPreferencesModal = ({ show, onHide, viewSaved, activeTab }) => {
 	const collectionsTotal = data.filter(a => a.name).filter(a => a.filterCriteria.tab === 'Collections').length;
 	const coursesTotal = data.filter(a => a.name).filter(a => a.filterCriteria.tab === 'Courses').length;
 	const papersTotal = data.filter(a => a.name).filter(a => a.filterCriteria.tab === 'Papers').length;
+	const cohortsTotal = data.filter(a => a.name).filter(a => a.filterCriteria.tab === 'Cohorts').length;
 	const peopleTotal = data.filter(a => a.name).filter(a => a.filterCriteria.tab === 'People').length;
 
 	return (
@@ -72,6 +73,7 @@ const SavedPreferencesModal = ({ show, onHide, viewSaved, activeTab }) => {
 								(tabName === 'Collections' && '(' + collectionsTotal + ')') ||
 								(tabName === 'Courses' && '(' + coursesTotal + ')') ||
 								(tabName === 'Papers' && '(' + papersTotal + ')') ||
+								(tabName === 'Cohorts' && '(' + cohortsTotal + ')') ||
 								(tabName === 'People' && '(' + peopleTotal + ')'))
 						}>
 						<Modal.Body style={{ 'max-height': 'calc(100vh - 450px)', 'overflow-y': 'auto', 'background-color': '#f6f7f8' }}>
