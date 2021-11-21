@@ -25,6 +25,7 @@ import AddEditPaperPage from './pages/paper/AddEditPaperPage';
 import AddEditCoursePage from './pages/course/AddEditCoursePage';
 import AddEditCollectionPage from './pages/collections/AddEditCollectionPage';
 import DataAccessRequest from './pages/DataAccessRequest/DataAccessRequest';
+import DataAccessRequestCustomiseForm from './pages/dataAccessRequestCustomiseForm/DataAccessRequestCustomiseForm';
 import Loading from './pages/commonComponents/Loading';
 import CompleteRegistration from './pages/registration/CompleteRegistration';
 import LoginModal from './pages/commonComponents/LoginModal';
@@ -228,6 +229,11 @@ class HDRRouter extends Component {
 										<Route path='/dashboard' render={props => <PublicAnalyticsDashboard {...props} userState={userState} />} />
 
 										<GuardedRoute path='/dataset-onboarding/:id' component={DatasetOnboarding} userState={userState} />
+										<GuardedRoute
+											path='/data-access-request/customiseForm'
+											component={DataAccessRequestCustomiseForm}
+											userState={userState}
+										/>
 										<GuardedRoute path='/data-access-request/dataset/:datasetId' component={DataAccessRequest} userState={userState} />
 										<GuardedRoute path='/data-access-request/publisher/:publisherId' component={DataAccessRequest} userState={userState} />
 										<GuardedRoute path='/data-access-request/:accessId' component={DataAccessRequest} userState={userState} />
