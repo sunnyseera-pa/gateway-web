@@ -8,7 +8,7 @@ export const PROP_TYPES_SEARCH_RESULTS = {
 	count: PropTypes.number,
 	search: PropTypes.string,
 	data: PropTypes.array.isRequired,
-	sort: PropTypes.oneOfType([PropTypes.element, PropTypes.string]),
+	sort: PropTypes.node,
 	pageNumber: PropTypes.number,
 	onPagination: PropTypes.func,
 	maxResult: PropTypes.number,

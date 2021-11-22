@@ -6,6 +6,7 @@ export const COMMON_PROP_TYPES = {
 	mr: PropTypes.number,
 	mb: PropTypes.number,
 	mt: PropTypes.number,
+	className: PropTypes.string,
 };
 
 export const omit = (propTypes, exclude) => {

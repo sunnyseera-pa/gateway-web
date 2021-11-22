@@ -1,8 +1,18 @@
-import { Meta, Story, Canvas } from '@storybook/addon-docs';
+import { Meta, Story, Canvas, ArgsTable } from '@storybook/addon-docs';
 
 import SearchInput from './SearchInput';
 
-<Meta title='SearchInput' component={SearchInput} />
+<Meta
+	title='SearchInput'
+	component={SearchInput}
+	parameters={{
+		docs: {
+			source: {
+				type: 'code',
+			},
+		},
+	}}
+/>
 
 <Canvas>
 	<Story name='Basic'>
@@ -18,3 +28,5 @@ import SearchInput from './SearchInput';
 		}}
 	</Story>
 </Canvas>
+
+<ArgsTable of={SearchInput} />
