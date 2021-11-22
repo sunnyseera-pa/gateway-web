@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types';
-import React, { useRef } from 'react';
+import React from 'react';
 import { omit } from '../../../configs/propTypes';
 import Icon from '../Icon';
 import Input, { PROP_TYPES_INPUT } from '../Input';
 
 const SearchInput = ({ value, onReset, ...outerProps }) => {
-	const inputRef = useRef(null);
+	const inputRef = React.useRef(null);
 
 	const handleReset = React.useCallback(
 		e => {

@@ -1,7 +1,7 @@
 import { css } from '@emotion/css';
 import { getCommonStyles } from '../../../configs/theme';
 
-export const inputGroup = ({ prepend, append }) => theme => css`
+export const inputGroup = ({ prepend, append }) => css`
 	input {
 		${prepend.offsetWidth ? `padding-left: calc(${prepend.offsetWidth}px + 1.2em);` : ''}
 		${append.offsetWidth ? `padding-right: calc(${append.offsetWidth}px + 1.2em);` : ''}

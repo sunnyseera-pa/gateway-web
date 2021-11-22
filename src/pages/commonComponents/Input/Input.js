@@ -2,7 +2,7 @@
 import { cx } from '@emotion/css';
 import { jsx } from '@emotion/react';
 import debounce from 'lodash/debounce';
-import React, { useRef } from 'react';
+import React, { useMemo, useRef } from 'react';
 import { Form, InputGroup } from 'react-bootstrap';
 import useCommonStyles from '../../../hooks/useCommonStyles';
 import useDOMChanged from '../../../hooks/useDomChanged';
@@ -32,20 +32,16 @@ const Input = ({
 	const domAppendChanged = useDOMChanged(appendRef);
 	const commonStyles = useCommonStyles({ mt, mb, ml, mr });
 
-	const handleChange = React.useCallback(e => {
-		onChange(e);
+	const handleDebounced = useMemo(() => debounce(onDebounce, debounceDelay), [onDebounce]);
 
-		if (onDebounce) {
-			debounce(() => {
-				onDebounce(e);
-			}, debounceDelay);
-		}
+	const handleChange = React.useCallback(e => {
+		if (onChange) onChange(e);
+		if (onDebounce) handleDebounced(e);
 	}, []);
 
 	return (
 		<InputGroup
-			css={styles.inputGroup({ prepend: domPrependChanged, append: domAppendChanged })}
-			className={cx('ui-Input', className, commonStyles)}>
+			className={cx('ui-Input', className, commonStyles, styles.inputGroup({ prepend: domPrependChanged, append: domAppendChanged }))}>
 			{(iconPrepend || textPrepend) && (
 				<InputGroup.Prepend className={cx([styles.decorators, styles.prepend])} ref={prependRef}>
 					{textPrepend && <InputGroup.Text>{textPrepend}</InputGroup.Text>}
@@ -64,5 +60,10 @@ const Input = ({
 };
 
 Input.propTypes = PROP_TYPES_INPUT;
+
+Input.defaultProps = {
+	debounceDelay: 300,
+	onDebounce: () => {},
+};
 
 export default Input;
