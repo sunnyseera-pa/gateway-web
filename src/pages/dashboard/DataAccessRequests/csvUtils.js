@@ -96,7 +96,7 @@ const extractApplicants = (dar) => {
 			index++;
 		}
 
-		if (userFound === 1 && index === 8) {
+		if (userFound === 1 && index === 7) {
 			userFound = 0;
 			index = 0;
 			applicants.push(applicant);
