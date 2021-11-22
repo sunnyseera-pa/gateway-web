@@ -5,7 +5,7 @@ import ProjectsSearchSort from './ProjectsSearchSort';
 const mockSortDropdown = jest.fn();
 const mockOnSort = jest.fn();
 
-jest.mock('../SortDropdown', () => props => {
+jest.mock('../../../commonComponents/SortDropdown', () => props => {
 	mockSortDropdown(props);
 	return <div />;
 });
