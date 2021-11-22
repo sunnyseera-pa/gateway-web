@@ -131,7 +131,23 @@ const AccountDataset = props => {
 		if (showNext) {
 			handlePaginationClick(1);
 		}
-	}, []);
+	}, [showNext]);
+
+	const closeRejectDatasetModal = () => setState({...state, showRejectDatasetModal: false });
+
+	const closeRejectModalAndRedirectToPendingDatasets = alert => {
+		closeRejectDatasetModal();
+		history.push({
+			pathname: `/account`,
+			search: '?tab=datasets',
+			state: { alert },
+		});
+	};
+
+	const closeRejectModalAndGoToNext = () => {
+		closeRejectDatasetModal();
+		goToNext();
+	};
 
 	const handleViewForm = React.useCallback(() => {
 		history.push(`/dataset-onboarding/${currentDataset._id}`);
@@ -221,8 +237,9 @@ const AccountDataset = props => {
 				<AccountDatasetRejectModal
 					id={currentDataset._id}
 					open={showRejectDatasetModal}
-					closed={() => setState({...state, showRejectDatasetModal: false })}
-					goToNext={goToNext}
+					closed={closeRejectDatasetModal}
+					goToNext={closeRejectModalAndGoToNext}
+					handleReject={closeRejectModalAndRedirectToPendingDatasets}
 					showGoToNext={showNext} />
 			</AccountContent>
 		</Suspense>

@@ -11,6 +11,7 @@ jest.mock('../../../../services/dataset-onboarding/dataset-onboarding');
 let containerDiv;
 const goToNext = jest.fn();
 const closed = jest.fn();
+const handleReject = jest.fn();
 
 describe('Given the AccountDatasetRejectModal component', () => {
 
@@ -19,7 +20,8 @@ describe('Given the AccountDatasetRejectModal component', () => {
         open: true,
         closed,
         goToNext,
-        showGoToNext: true
+        handleReject,
+        showGoToNext: true,
     };
 
     describe('When it is rendered', () => {
@@ -93,12 +95,13 @@ describe('Given the AccountDatasetRejectModal component', () => {
 
                 await waitFor(() => expect(wrapper.getByText('Reject and go to next')).toBeTruthy());
 
-                const { getByTestId, getByRole } = wrapper;
+                const { getByTestId, getByLabelText } = wrapper;
 
-                const descriptionTextArea = getByRole('textarea');
-                userEvent.type(descriptionTextArea, "rejected");
+                const descriptionInput = getByLabelText('Description', { exact: false });
+                await fireEvent.change(descriptionInput, { target: { value: 'rejected' } });
 
                 button = within(getByTestId('button-container')).getAllByText('Reject')[0];
+                
                 userEvent.click(button);
             });
 
@@ -106,12 +109,12 @@ describe('Given the AccountDatasetRejectModal component', () => {
                 await waitFor(() => expect(datasetOnboardingService.usePutDatasetOnboarding).toHaveBeenCalledWith({
                     id: 'id',
                     applicationStatus: 'rejected',
-                    applicationStatusDesc: ''
+                    applicationStatusDesc: 'rejected'
                 }));
             });
 
-            it('Then closes the modal', async () => {
-                await waitFor(() => expect(closed).toHaveBeenCalled());
+            it('Then calls the handleReject prop to close the modal', async () => {
+                await waitFor(() => expect(handleReject).toHaveBeenCalled());
             });
         });
 
@@ -129,10 +132,10 @@ describe('Given the AccountDatasetRejectModal component', () => {
 
                 await waitFor(() => expect(wrapper.getByText('Reject and go to next')).toBeTruthy());
                 
-                const { getByText, getByTestId } = wrapper;
+                const { getByText, getByLabelText } = wrapper;
 
-                const descriptionTextArea = getByTestId('dataset-reject-applicationStatusDesc');
-                fireEvent.change(descriptionTextArea, { target: { value: 'rejected' } });
+                const descriptionInput = getByLabelText('Description', { exact: false });
+                fireEvent.change(descriptionInput, { target: { value: 'rejected' } });
 
                 button = getByText('Reject and go to next');
                 fireEvent.click(button);
@@ -142,16 +145,12 @@ describe('Given the AccountDatasetRejectModal component', () => {
                 await waitFor(() => expect(datasetOnboardingService.usePutDatasetOnboarding).toHaveBeenCalledWith({
                     id: 'id',
                     applicationStatus: 'rejected',
-                    applicationStatusDesc: ''
+                    applicationStatusDesc: 'rejected'
                 }));
             });
 
             it('Then goes to next dataset', async () => {
                 await waitFor(() => expect(goToNext).toHaveBeenCalled());
-            });
-
-            it('Then closes the modal', async () => {
-                await waitFor(() => expect(closed).toHaveBeenCalled());
             });
         });
     });
