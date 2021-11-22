@@ -202,21 +202,17 @@ describe('Given the AccountDataset component', () => {
 				id: '1f509fe7-e94f-48fe-af6a-81f2bf8a5270',
 			});
 
-			afterAll(() => {
-				mockPush.mockReset();
-			});
-
-			it('Then loads the new dataset', () => {
-				expect(mockPush).toHaveBeenCalledWith('/account?tab=datasets');
+			wrapper = render(<AccountDataset {...props} />, {
+				wrapper: Providers,
 			});
 		});
 
 		it('Then loads the new dataset', async () => {
-			await waitFor(() => expect(mockRedirect).toHaveBeenCalled());
-
-			expect(mockRedirect).toHaveBeenCalledWith({
-				to: '/account?tab=datasets',
-			});
+			await waitFor(() =>
+				expect(mockRedirect).toHaveBeenCalledWith({
+					to: '/account?tab=datasets',
+				})
+			);
 		});
 	});
 
@@ -225,6 +221,10 @@ describe('Given the AccountDataset component', () => {
 			jest.spyOn(reactRouter, 'useParams').mockReturnValue({
 				id: 'invalid',
 			});
+
+			wrapper = render(<AccountDataset {...props} />, {
+				wrapper: Providers,
+			});
 		});
 
 		afterAll(() => {
@@ -232,11 +232,11 @@ describe('Given the AccountDataset component', () => {
 		});
 
 		it('Then loads the new dataset', async () => {
-			await waitFor(() => expect(mockRedirect).toHaveBeenCalled());
-
-			expect(mockRedirect).toHaveBeenCalledWith({
-				to: '/account?tab=datasets',
-			});
+			await waitFor(() =>
+				expect(mockRedirect).toHaveBeenCalledWith({
+					to: '/account?tab=datasets',
+				})
+			);
 		});
 	});
 });

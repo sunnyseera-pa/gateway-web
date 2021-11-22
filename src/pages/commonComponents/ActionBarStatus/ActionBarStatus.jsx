@@ -1,15 +1,9 @@
 /** @jsx jsx */
-import { jsx } from '@emotion/react';
 import { cx } from '@emotion/css';
-import moment from 'moment';
+import { jsx } from '@emotion/react';
 import PropTypes from 'prop-types';
-import { DISPLAY_DATE_STANDARD } from '../../../configs/constants';
-import * as styles from './ActionBarStatus.styles';
 import { dateFormats } from '../../../utils/GeneralHelper.util';
-
-const formatDate = date => {
-	return moment(date).format(DISPLAY_DATE_STANDARD);
-};
+import * as styles from './ActionBarStatus.styles';
 
 const ActionBarStatus = ({ status, dataset, totalQuestions, className, ...outerProps }) => {
 	const {

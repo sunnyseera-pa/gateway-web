@@ -31,7 +31,7 @@ const AccountDataset = props => {
 		showNext: true,
 		statusError: false,
 		showApproveDatasetModal: false,
-		showRejectDatasetModal: false
+		showRejectDatasetModal: false,
 	});
 
 	const dataActivityLog = serviceActivityLog.usePostActivityLog();
@@ -137,24 +137,27 @@ const AccountDataset = props => {
 		history.push(`/dataset-onboarding/${currentDataset._id}`);
 	}, [currentDataset]);
 
-	const makeADecisionActions = [{
-		description: t('dataset.makeADecision'),
-		actions: [
+	const makeADecisionActions = [
 		{
-			title: t('dataset.approve'),
-			onClick: () => {
-				setState({...state, showApproveDatasetModal: true })
-			},
-			visible: true
+			description: t('dataset.makeADecision'),
+			actions: [
+				{
+					title: t('dataset.approve'),
+					onClick: () => {
+						setState({ ...state, showApproveDatasetModal: true });
+					},
+					visible: true,
+				},
+				{
+					title: t('dataset.reject'),
+					onClick: () => {
+						setState({ ...state, showRejectDatasetModal: true });
+					},
+					visible: true,
+				},
+			],
 		},
-		{
-			title: t('dataset.reject'),
-			onClick: () => {
-				setState({...state, showRejectDatasetModal: true })
-			},
-			visible: true
-		}
-	]}];
+	];
 
 	if (dataPublisher.isLoading || dataActivityLog.isLoading) {
 		return (
@@ -215,15 +218,17 @@ const AccountDataset = props => {
 				<AccountDatasetApproveModal
 					id={currentDataset._id}
 					open={showApproveDatasetModal}
-					closed={() => setState({...state, showApproveDatasetModal: false })}
+					closed={() => setState({ ...state, showApproveDatasetModal: false })}
 					goToNext={goToNext}
-					showGoToNext={showNext} />
+					showGoToNext={showNext}
+				/>
 				<AccountDatasetRejectModal
 					id={currentDataset._id}
 					open={showRejectDatasetModal}
-					closed={() => setState({...state, showRejectDatasetModal: false })}
+					closed={() => setState({ ...state, showRejectDatasetModal: false })}
 					goToNext={goToNext}
-					showGoToNext={showNext} />
+					showGoToNext={showNext}
+				/>
 			</AccountContent>
 		</Suspense>
 	) : null;

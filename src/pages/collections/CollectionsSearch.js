@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Row, Col } from 'react-bootstrap';
 import SVGIcon from '../../images/SVGIcon';
 import '../commonComponents/searchBar/SearchBar.scss';
-import SortDropdown from '../search/components/SortDropdown';
+import SortDropdown from '../commonComponents/SortDropdown';
 
 const CollectionsSearch = props => {
 	const [searchValue, setSearchValue] = useState('');
@@ -44,10 +44,10 @@ const CollectionsSearch = props => {
 
 				<Col lg={col2Size} className='text-right'>
 					<SortDropdown
-						handleSort={props.handleSort}
+						onSort={props.handleSort}
 						isCollectionsSearch={props.isCollectionsSearch}
-						sort={props.sort}
-						dropdownItems={props.dropdownItems}
+						value={props.sort}
+						options={props.dropdownItems}
 					/>
 				</Col>
 				<Col sm={1} lg={1} />
