@@ -1,6 +1,7 @@
 import { ThemeProvider } from '@emotion/react';
 import '@testing-library/jest-dom';
 import * as rtl from '@testing-library/react';
+import { renderHook } from '@testing-library/react-hooks';
 import Enzyme, { mount, render, shallow } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import React, { Suspense } from 'react';
@@ -74,6 +75,8 @@ global.Providers = ({ children }) => {
 		</I18nextProvider>
 	);
 };
+
+global.renderHook = renderHook;
 
 Object.defineProperty(window, 'location', {
 	writable: true,

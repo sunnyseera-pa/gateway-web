@@ -15,7 +15,7 @@ const useDOMChanged = ref => {
 				};
 			}, {});
 
-			if (!isEqual(values)) setValues(updatedValues);
+			if (!isEqual(values, updatedValues)) setValues(updatedValues);
 		};
 
 		if (ref.current) ref.current.addEventListener('DOMSubtreeModified', initValuesChanged);
