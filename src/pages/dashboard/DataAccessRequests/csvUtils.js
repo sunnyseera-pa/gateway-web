@@ -96,7 +96,7 @@ const extractApplicants = (dar) => {
 			index++;
 		}
 
-		if (userFound === 1 && index === 8) {
+		if (userFound === 1 && index === 7) {
 			userFound = 0;
 			index = 0;
 			applicants.push(applicant);
@@ -145,11 +145,13 @@ const buildOneRow = (dar, applicant) => {
 	const row = [
 			dar._id,
 			dar.applicationStatus,
+			dar.applicationStatusDesc,
 			dar.createdAt.substring(0, 10), // YYYY-MM-DD
 			dar.updatedAt.substring(0, 10), // YYYY-MM-DD
-			dar.datasetTitles[0],			
+			dar.datasetTitles.join(';'),			
 
-			applicant.safeprojectapplicantfullname, //"Project submitted by"
+			dar.aboutApplication.projectName, // Project name
+			applicant.safeprojectapplicantfullname, //"Applicant full name"
 			applicant.safeprojectapplicantjobtitle,
 			applicant.safeprojectapplicanttelephone,		
 			applicant.safeprojectapplicantaffiliation,
@@ -180,9 +182,11 @@ const buildHeaders = () => {
 	return [
 				"ID", 
 				"Status", 
-				"Created At", 
+				"Status Notes", 
+				"Created At",
 				"Updated At", 
-				"Datasets", 
+				"Datasets",
+				"Project name", 
 				"Applicant full name", 
 				"Job title", 
 				"Telephone", 
