@@ -47,7 +47,7 @@
 			"title": "Reject this version of this dataset metadata",
 			"description": "Let the editor know why this submission is being rejected. They will be able to create a new version and make a new submission.",
 			"applicationStatus": "Description",
-			"applicationStatusRequired": "Description cannot be empty", 
+			"applicationStatusRequired": "Description cannot be empty",
 			"buttons": {
 				"cancel": "No, nevermind",
 				"reject": "Reject",
@@ -55,5 +55,8 @@
 			}
 		}
 	},
-	"viewForm": "View form"
+	"viewForm": "View form",
+	"notifications": {
+		"teamEmailText": "Send email notifications to team email address"
+	}
 }
