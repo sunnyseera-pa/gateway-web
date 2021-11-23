@@ -519,8 +519,6 @@ class Account extends Component {
 			dataaccessrequest,
 		} = this.state;
 
-		console.log('TEAM', team, userState);
-
 		return (
 			<Sentry.ErrorBoundary fallback={<ErrorModal />}>
 				<SearchBar

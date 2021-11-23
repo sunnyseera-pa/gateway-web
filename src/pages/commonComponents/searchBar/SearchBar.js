@@ -151,9 +151,17 @@ class SearchBar extends React.Component {
 		});
 	};
 
+	handleSearchReset = () => {
+		this.setState({ textValue: '' });
+
+		if (this.props.doUpdateSearchString) {
+			this.props.doUpdateSearchString('');
+		}
+	};
+
 	onSearch = e => {
-		//onSearch
 		this.setState({ textValue: e.target.value });
+
 		if (this.props.doUpdateSearchString) {
 			this.props.doUpdateSearchString(e.target.value);
 		}
@@ -375,6 +383,7 @@ class SearchBar extends React.Component {
 												<Col>
 													<SearchInput
 														onChange={this.onSearch}
+														onReset={this.handleSearchReset}
 														onKeyDown={this.props.doSearchMethod}
 														value={textValue}
 														onReset={this.props.onClearMethod}

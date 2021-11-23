@@ -230,7 +230,15 @@ class RelatedResourcesModal extends React.Component {
 			<Fragment>
 				<div class='related-search-wrap'>
 					<div className='realted-search-body'>
-						<SearchInput value={searchString} onChange={doUpdateSearchString} onSubmit={doSearchMethod} onKeyDown={doSearchMethod} />
+						<SearchInput
+							value={searchString}
+							onChange={doUpdateSearchString}
+							onReset={() => doUpdateSearchString('')}
+							onSubmit={doSearchMethod}
+							onKeyDown={doSearchMethod}
+							placeholder='Search'
+							variant='secondary'
+						/>
 						{typeof this.props.summary.datasetCount !== 'undefined' ? (
 							<div className='searchTabsHolder'>
 								<div>

@@ -11,8 +11,10 @@ const CollectionsSearch = props => {
 
 	let col1Size = 7;
 	let col2Size = 3;
-	const onSearch = e => {
+
+	const handleSearch = e => {
 		setSearchValue(e.target.value);
+
 		if (props.doUpdateCollectionsSearchString) {
 			props.doUpdateCollectionsSearchString(e.target.value);
 		}
@@ -29,7 +31,8 @@ const CollectionsSearch = props => {
 				<Col lg={col1Size}>
 					<SearchInput
 						placeholder={t('search.placeholder', { type: 'collection' })}
-						onChange={onSearch}
+						onChange={handleSearch}
+						onReset={() => handleSearch('')}
 						value={searchValue}
 						onKeyDown={props.doCollectionsSearchMethod}
 						variant='primary'
