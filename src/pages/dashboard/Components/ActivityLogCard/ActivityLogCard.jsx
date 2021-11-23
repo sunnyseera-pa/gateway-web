@@ -66,6 +66,7 @@ const ActivityLogCard = props => {
 										content: (
 											<div>
 												<div
+													data-testid={`event-status-text-${index}`}
 													dangerouslySetInnerHTML={{
 														__html: t(event.eventType, { versionNumber: event.version.replace(/\..*$/, ''), ...event.userDetails }),
 													}}
