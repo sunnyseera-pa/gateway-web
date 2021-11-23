@@ -30,6 +30,7 @@ import ProjectCollectionResults from './Components/ProjectCollectionResults';
 import PaperCollectionResults from './Components/PaperCollectionResults';
 import PersonCollectionResults from './Components/PersonCollectionResults';
 import CourseCollectionResults from './Components/CourseCollectionResults';
+import SearchBarSimple from '../commonComponents/SearchBarSimple';
 
 export const CollectionPage = props => {
 	const { t } = useTranslation();
@@ -462,7 +463,7 @@ export const CollectionPage = props => {
 					</Row>
 				)}
 				{key !== 'discussion' && (
-					<CollectionsSearch
+					<SearchBarSimple
 						onSubmit={doCollectionsSearch}
 						onChangeInput={setCollectionsSearchString}
 						onResetInput={handleResetInput}
