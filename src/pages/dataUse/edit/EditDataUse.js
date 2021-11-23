@@ -2,6 +2,7 @@ import React, { useState, useEffect, createRef } from 'react';
 import * as Sentry from '@sentry/react';
 import axios from 'axios';
 import { baseURL } from '../../../configs/url.config';
+import { isEmpty } from 'lodash';
 
 import { Container } from 'react-bootstrap';
 import EditFormDataUse from './EditDataUseForm';
@@ -11,6 +12,7 @@ import SideDrawer from '../../commonComponents/sidedrawer/SideDrawer';
 import UserMessages from '../../commonComponents/userMessages/UserMessages';
 import DataSetModal from '../../commonComponents/dataSetModal/DataSetModal';
 import Loading from '../../commonComponents/Loading';
+import moment from 'moment';
 import SaveModal from '../SaveEditModal';
 
 const EditDataUse = props => {
@@ -22,6 +24,17 @@ const EditDataUse = props => {
 	const [context, setContext] = useState({});
 	const [isLoading, setIsLoading] = useState(true);
 	const [keywords, setKeywords] = useState([]);
+	const [datasetData, setDatasetData] = useState([]);
+	const [toolData, setToolData] = useState([]);
+	const [paperData, setPaperData] = useState([]);
+	const [personData, setPersonData] = useState([]);
+	const [courseData, setCourseData] = useState([]);
+	const [summary, setSummary] = useState([]);
+	const [tempRelatedObjectIds, setTempRelatedObjectIds] = useState([]);
+	const [relatedObjects, setRelatedObjects] = useState([]);
+	const [didDelete, setDidDelete] = useState(false);
+	const [safeOuputsArray, setSafeOuputsArray] = useState(['']);
+	const [disableInput, setDisableInput] = useState(false);
 	const [userState] = useState(
 		props.userState || [
 			{
@@ -38,9 +51,33 @@ const EditDataUse = props => {
 		await Promise.all([doGetKeywordsCall()]);
 		axios.get(baseURL + '/api/v2/data-use-registers/' + props.match.params.datauseID).then(res => {
 			setData(res.data);
+			setRelatedObjects(res.data.relatedObjects ? res.data.relatedObjects : []);
+			let safeOutputs = [];
+			res.data.gatewayOutputsPapersInfo.forEach(output => {
+				safeOutputs.push({ key: output.id, value: output.name });
+			});
+			res.data.gatewayOutputsToolsInfo.forEach(output => {
+				safeOutputs.push({ key: output.id, value: output.name });
+			});
+			res.data.nonGatewayOutputs.forEach(output => {
+				safeOutputs.push({ key: 'nonGateway', value: output });
+			});
+
+			setSafeOuputsArray(!isEmpty(safeOutputs) ? safeOutputs : [{ key: '', value: '' }]);
+			setDisableInput(getUserRoles(res.data.publisher));
 			setIsLoading(false);
 		});
 	}, []);
+
+	const getUserRoles = publisher => {
+		let { teams } = userState[0];
+		let foundTeam = teams.filter(team => team._id === publisher);
+		if (isEmpty(teams) || isEmpty(foundTeam)) {
+			return true;
+		}
+
+		return !foundTeam[0].roles.some(role => ['manager', 'reviewer'].includes(role));
+	};
 
 	let showError = false;
 
@@ -59,6 +96,81 @@ const EditDataUse = props => {
 
 	const updateSearchString = searchString => {
 		setSearchString(searchString);
+	};
+
+	const doModalSearch = (e, type = 'dataset', page = 0) => {
+		if (e.key === 'Enter' || e === 'click') {
+			var searchURL = '';
+
+			if (type === 'dataset' && page > 0) searchURL += '&datasetIndex=' + page;
+			if (type === 'tool' && page > 0) searchURL += '&toolIndex=' + page;
+			if (type === 'paper' && page > 0) searchURL += '&paperIndex=' + page;
+			if (type === 'person' && page > 0) searchURL += '&personIndex=' + page;
+			if (type === 'course' && page > 0) searchURL += '&courseIndex=' + page;
+
+			axios
+				.get(baseURL + '/api/v1/search?search=' + encodeURIComponent(searchString) + searchURL, {
+					params: {
+						form: true,
+						userID: userState[0].id,
+					},
+				})
+				.then(res => {
+					setDatasetData(res.data.datasetResults || []);
+					setToolData(res.data.toolResults || []);
+					setPaperData(res.data.paperResults || []);
+					setPersonData(res.data.personResults || []);
+					setCourseData(res.data.courseResults || []);
+					setSummary(res.data.summary || []);
+					setIsLoading(false);
+				});
+		}
+	};
+
+	const addToTempRelatedObjects = (id, type, pid) => {
+		let updatedTempRelatedObjectIds = [...tempRelatedObjectIds];
+		if (tempRelatedObjectIds && tempRelatedObjectIds.some(object => object.objectId === id)) {
+			updatedTempRelatedObjectIds = updatedTempRelatedObjectIds.filter(object => object.objectId !== id);
+		} else {
+			updatedTempRelatedObjectIds.push({ objectId: id, objectType: type, pid: pid });
+		}
+		setTempRelatedObjectIds(updatedTempRelatedObjectIds);
+	};
+
+	const addToRelatedObjects = () => {
+		let relatedObjectIds = [...tempRelatedObjectIds];
+
+		let newRelatedObjects = relatedObjectIds.map(relatedObject => {
+			let newRelatedObject = {
+				...relatedObject,
+				objectId: relatedObject.type === 'dataset' ? relatedObject.pid : relatedObject.objectId,
+				user: userState.name,
+				updated: moment().format('DD MMM YYYY'),
+			};
+			return newRelatedObject;
+		});
+		setRelatedObjects([...relatedObjects, ...newRelatedObjects]);
+		setTempRelatedObjectIds([]);
+	};
+
+	const clearRelatedObjects = () => {
+		setTempRelatedObjectIds([]);
+	};
+
+	const removeObject = (id, type, datasetid) => {
+		let countOfRelatedObjects = relatedObjects.length;
+		let newRelatedObjects = [...relatedObjects].filter(obj => obj.objectId !== id && obj.objectId !== id.toString() && obj.pid !== id);
+
+		//if an item was not removed try removing by datasetid for retro linkages
+		if (countOfRelatedObjects <= newRelatedObjects.length && type === 'dataset') {
+			newRelatedObjects = [...relatedObjects].filter(obj => obj.objectId !== datasetid && obj.objectId !== datasetid.toString());
+		}
+		setRelatedObjects(newRelatedObjects);
+		setDidDelete(true);
+	};
+
+	const updateDeleteFlag = () => {
+		setDidDelete(false);
 	};
 
 	const toggleDrawer = () => {
@@ -167,10 +279,32 @@ const EditDataUse = props => {
 					doSearchMethod={doSearch}
 					doUpdateSearchString={updateSearchString}
 					userState={userState}
-					doToggleDrawer={toggleDrawer}
 				/>
 
-				<EditFormDataUse data={data} userState={userState} keywordsData={keywords} />
+				<EditFormDataUse
+					data={data}
+					userState={userState}
+					keywordsData={keywords}
+					doToggleDrawer={toggleDrawer}
+					doSearchMethod={doModalSearch}
+					doUpdateSearchString={updateSearchString}
+					datasetData={datasetData}
+					toolData={toolData}
+					paperData={paperData}
+					personData={personData}
+					courseData={courseData}
+					summary={summary}
+					doAddToTempRelatedObjects={addToTempRelatedObjects}
+					tempRelatedObjectIds={tempRelatedObjectIds}
+					doClearRelatedObjects={clearRelatedObjects}
+					doAddToRelatedObjects={addToRelatedObjects}
+					doRemoveObject={removeObject}
+					relatedObjects={relatedObjects}
+					didDelete={didDelete}
+					updateDeleteFlag={updateDeleteFlag}
+					safeOuputsArray={safeOuputsArray}
+					disableInput={disableInput}
+				/>
 				<SideDrawer open={showDrawer} closed={toggleDrawer}>
 					<UserMessages userState={userState[0]} closed={toggleDrawer} toggleModal={toggleModal} drawerIsOpen={toggleDrawer} />
 				</SideDrawer>
@@ -180,59 +314,5 @@ const EditDataUse = props => {
 		</Sentry.ErrorBoundary>
 	);
 };
-
-/* 
-
-
-
-<Sentry.ErrorBoundary fallback={<ErrorModal show={showModalHandler} handleClose={hideModalHandler} />}>
-			<SearchBar
-				ref={searchBar}
-				searchString={searchString}
-				doSearchMethod={doSearch}
-				doUpdateSearchString={updateSearchString}
-				userState={userState}
-				doToggleDrawer={toggleDrawer}
-			/>
-			<div className='datause-card datause-edit-card'>
-				<Row>
-					<Col md={10}>
-						<h5 className='black-20-semibold'>Edit a data use</h5>
-					</Col>
-					<Col md={2}>
-						<span className='badge-datause datause-badge-right'>
-							<SVGIcon name='datauseicon' fill={'#fff'} className='badgeSvg mr-2' viewBox='-2 -2 22 22' />
-							<span>Data use</span>
-						</span>
-					</Col>
-				</Row>
-
-				<Row>
-					<Col md={10}>
-						<p className='gray800-14-normal'>
-							A data use register is a public record of data an organisation has shared with other individuals and organisations. Data uses
-							help people understand how data is being used and why. Please edit data uses to ensure that the information is accurate and
-							up-to-date
-						</p>
-					</Col>
-				</Row>
-				<hr className='datause-border' />
-				<Row>
-					<EditFormDataUse data={data} />
-				</Row>
-				{userState[0].loggedIn && (
-					<ActionBar userState={userState}>
-						<Button className='datause-cancel dark-14'>Cancel</Button>
-						<Button onClick={showSaveModal} className='datause-save white-14'>
-							Save
-						</Button>
-					</ActionBar>
-				)}
-				{showModal && <SaveModal savedEdit={true} id={props.match.params.datauseID} show={showSaveModal} hide={hideSaveModal} />}
-			</div>
-		</Sentry.ErrorBoundary>
-
-
-*/
 
 export default EditDataUse;

@@ -257,12 +257,17 @@ class RelatedObject extends React.Component {
 										isCohortDiscovery={this.state.isCohortDiscovery}
 										updateOnFilterBadge={this.updateOnFilterBadge}
 										removeButton={this.removeButton}
+										isLocked={this.props.isLocked}
 									/>
 								);
 							}
 						})()}
 						{(() => {
-							if (this.props.showRelationshipQuestion && !(data.type === 'dataset' && data.activeflag === 'archive')) {
+							if (
+								this.props.showRelationshipQuestion &&
+								!(data.type === 'dataset' && data.activeflag === 'archive') &&
+								this.props.isLocked !== true
+							) {
 								return (
 									<>
 										<Row className='pad-top-24 noMargin'>

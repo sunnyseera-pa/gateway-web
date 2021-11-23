@@ -1,21 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, Fragment, useEffect } from 'react';
 import axios from 'axios';
-import { Accordion, Card, Button, Form, Row, Col, DropdownButton, Dropdown } from 'react-bootstrap';
+import { Accordion, Card, Button, Form, Row, Col } from 'react-bootstrap';
 import SVGIcon from '../../../images/SVGIcon';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import { ReactComponent as Calendar } from '../../../images/calendaricon.svg';
+import RelatedResources from '../../commonComponents/relatedResources/RelatedResources';
 import RelatedObject from '../../commonComponents/relatedObject/RelatedObject';
 import DatePicker from 'react-datepicker';
 import ActionBar from '../../commonComponents/actionbar/ActionBar';
+import moment from 'moment';
 import googleAnalytics from '../../../tracking';
 import { Formik, useFormik, FieldArray } from 'formik';
+import { isEmpty, isNil } from 'lodash';
 import * as Yup from 'yup';
 
 const baseURL = require('../../commonComponents/BaseURL').getURL();
 let windowUrl = window.location.origin;
 
 const EditFormDataUse = props => {
-	console.log(props);
 	const initalLaySummary = props && props.data && props.data.laySummary && props.data.laySummary.length;
 
 	const [laySummaryCounter, setLaySummaryCounter] = useState(initalLaySummary);
@@ -26,29 +28,14 @@ const EditFormDataUse = props => {
 	const [safeOutput, setSafeOutput] = useState(true);
 	const [keywords, setKeywords] = useState(true);
 	const [relatedResources, setRelatedResources] = useState(true);
-	const [valueChange, setValueChange] = useState('');
-	const [showRelatedObject, setShowRelatedObject] = useState(false);
 	const [researchOutputs, setResearchOutputs] = useState([]);
 	const [defaultResearchOutputs, setDefaultResearchOutputs] = useState(true);
-	const [showExtraInput, setShowExtraInput] = useState(false);
-	const laySummaryMaxLength = 300;
+	const [safeOuputsList, setSafeOuputsList] = useState(props.safeOuputsArray);
+	const [safeOuputsArray, setSafeOuputsArray] = useState(props.safeOuputsArray);
+	const [disableInput, setDisableInput] = useState(props.disableInput);
 
-	const handleAddFields = () => {
-		const values = [...researchOutputs];
-		values.push({ input: '' });
-		setResearchOutputs(values);
-		setShowExtraInput(true);
-	};
-
-	const handleRemoveFields = () => {
-		const values = [...researchOutputs];
-		if (values.length > 0) values.pop();
-		setDefaultResearchOutputs(false);
-		setResearchOutputs(values);
-	};
-
-	const relatedResourcesComp = () => {
-		setShowRelatedObject(true);
+	const initialValues = {
+		safeOuputsArray: [{ key: '', value: '' }],
 	};
 
 	const gatewayApps =
@@ -66,6 +53,31 @@ const EditFormDataUse = props => {
 	const laySummaryCount = e => {
 		setLaySummaryCounter(e.target.value.length);
 	};
+
+	function updateReason(id, reason, type, pid) {
+		let inRelatedObject = false;
+		props.relatedObjects.map(object => {
+			if (object.objectId === id) {
+				inRelatedObject = true;
+				object.pid = pid;
+				object.reason = reason;
+				object.objectType = type;
+				object.user = props.userState[0].name;
+				object.updated = moment().format('DD MMM YYYY');
+			}
+		});
+
+		if (!inRelatedObject) {
+			props.relatedObjects.push({
+				objectId: id,
+				pid: pid,
+				reason: reason,
+				objectType: type,
+				user: props.userState[0].name,
+				updated: moment().format('DD MMM YYYY'),
+			});
+		}
+	}
 
 	const validateSchema = Yup.object().shape({});
 
@@ -101,7 +113,7 @@ const EditFormDataUse = props => {
 			accessDate: props.data.accessDate || '',
 			accessType: props.data.accessType || '',
 			privacyEnhancements: props.data.privacyEnhancements || '',
-
+			safeOuputsArray: safeOuputsArray || [{ key: '', value: '' }],
 			keywords: props.data.keywords || [],
 		},
 
@@ -115,7 +127,7 @@ const EditFormDataUse = props => {
 		}),
 
 		onSubmit: values => {
-			//values.relatedObjects = props.relatedObjects;
+			values.relatedObjects = props.relatedObjects;
 			values.datasetTitles = props.data.datasetTitles;
 			axios.patch(baseURL + '/api/v2/data-use-registers/' + props.data.id, { ...values }).then(() => {
 				window.location.href = windowUrl + '/datause/' + props.data.id + '/?dataUseEdited=true';
@@ -172,6 +184,7 @@ const EditFormDataUse = props => {
 		<div>
 			<div className={'container'}>
 				<Formik
+					initialValues={initialValues}
 					validationSchema={validateSchema}
 					render={() => {
 						return (
@@ -229,6 +242,7 @@ const EditFormDataUse = props => {
 																		The name of the legal entity that signs the contract to access the data
 																	</p>
 																	<Form.Control
+																		readOnly={disableInput}
 																		id='organisationName'
 																		name='organisationName'
 																		type='text'
@@ -255,6 +269,7 @@ const EditFormDataUse = props => {
 																		</a>
 																	</p>
 																	<Form.Control
+																		readOnly={disableInput}
 																		id='organisationId'
 																		name='organisationId'
 																		type='text'
@@ -271,21 +286,26 @@ const EditFormDataUse = props => {
 																		The type of organisation that has signed a contract to access the data
 																	</p>
 
-																	<DropdownButton
-																		variant='white'
-																		title={formik.values.organisationSector || <option disabled selected value></option>}
-																		className='gray700-13 custom-dropdown padding-right-0'
-																		style={{ width: '100%' }}
+																	<Form.Control
+																		as='select'
+																		disabled={disableInput}
+																		id='organisationSector'
+																		name='organisationSector'
+																		type='text'
+																		className='addFormInput'
 																		onChange={formik.handleChange}
 																		value={formik.values.organisationSector}
-																		onBlur={formik.handleBlur}
-																		onSelect={selected => (formik.values.organisationSector = selected)}>
-																		{organisationSectorList.map((l, i) => (
-																			<Dropdown.Item className='gray800-14 width-100' key={l} eventKey={l}>
+																		onBlur={formik.handleBlur}>
+																		{organisationSectorList.map(l => (
+																			<option
+																				selected={formik.values.organisationSector === l ? true : false}
+																				value={l}
+																				key={l}
+																				eventKey={l}>
 																				{l}
-																			</Dropdown.Item>
+																			</option>
 																		))}
-																	</DropdownButton>
+																	</Form.Control>
 																</Form.Group>
 
 																<Form.Group>
@@ -294,7 +314,25 @@ const EditFormDataUse = props => {
 																		The name of the Principal Investigator, as well as any other individuals that have been authorised to
 																		use the data. If they are on the Gateway, please provide their profile URL
 																	</p>
-																	{/* Users */}
+																	<Typeahead
+																		disabled={disableInput}
+																		id='keywords'
+																		labelKey='keywords'
+																		allowNew
+																		multiple
+																		defaultSelected={formik.values.keywords}
+																		options={props.keywordsData}
+																		className='addFormInputTypeAhead'
+																		onChange={selected => {
+																			var tempSelected = [];
+																			selected.forEach(selectedItem => {
+																				selectedItem.customOption === true
+																					? tempSelected.push(selectedItem.keywords)
+																					: tempSelected.push(selectedItem);
+																			});
+																			formik.values.keywords = tempSelected;
+																		}}
+																	/>
 																</Form.Group>
 
 																<Form.Group>
@@ -304,6 +342,7 @@ const EditFormDataUse = props => {
 																		distinguishes you from every other researcher. An ORCID profile can be created at https://orcid.org/
 																	</p>
 																	<Form.Control
+																		readOnly={disableInput}
 																		id='applicantId'
 																		name='applicantId'
 																		type='text'
@@ -320,6 +359,7 @@ const EditFormDataUse = props => {
 																		The name of any funders or sponsors involved in the project
 																	</p>
 																	<Form.Control
+																		readOnly={disableInput}
 																		id='fundersAndSponsors'
 																		name='fundersAndSponsors'
 																		type='text'
@@ -338,21 +378,26 @@ const EditFormDataUse = props => {
 																		under the Digital Economy Act 2017 (DEA). This specifies the accreditation status of the principal
 																		applicant/researcher, as defined by the ONS Research Code of Practice and Accreditation criteria
 																	</p>
-																	<DropdownButton
-																		variant='white'
-																		title={formik.values.accreditedResearcherStatus || <option disabled selected value></option>}
-																		className='gray700-13 custom-dropdown padding-right-0'
-																		style={{ width: '100%' }}
+																	<Form.Control
+																		as='select'
+																		disabled={disableInput}
+																		id='accreditedResearcherStatus'
+																		name='accreditedResearcherStatus'
+																		type='text'
+																		className='addFormInput'
 																		onChange={formik.handleChange}
 																		value={formik.values.accreditedResearcherStatus}
-																		onBlur={formik.handleBlur}
-																		onSelect={selected => (formik.values.accreditedResearcherStatus = selected)}>
-																		{yesNoList.map((l, i) => (
-																			<Dropdown.Item className='gray800-14 width-100' key={l} eventKey={l}>
+																		onBlur={formik.handleBlur}>
+																		{yesNoList.map(l => (
+																			<option
+																				selected={formik.values.accreditedResearcherStatus === l ? true : false}
+																				value={l}
+																				key={l}
+																				eventKey={l}>
 																				{l}
-																			</Dropdown.Item>
+																			</option>
 																		))}
-																	</DropdownButton>
+																	</Form.Control>
 																</Form.Group>
 
 																<Form.Group>
@@ -362,21 +407,26 @@ const EditFormDataUse = props => {
 																		parties. e.g., NHS Digital may approve a data release to the ONS, who then makes decisions about access
 																		to accredited researchers undertaking approved projects in their own trusted research environment.
 																	</p>
-																	<DropdownButton
-																		variant='white'
-																		title={formik.values.sublicenceArrangements || <option disabled selected value></option>}
-																		className='gray700-13 custom-dropdown padding-right-0'
-																		style={{ width: '100%' }}
+																	<Form.Control
+																		as='select'
+																		disabled={disableInput}
+																		id='sublicenceArrangements'
+																		name='sublicenceArrangements'
+																		type='text'
+																		className='addFormInput'
 																		onChange={formik.handleChange}
 																		value={formik.values.sublicenceArrangements}
-																		onBlur={formik.handleBlur}
-																		onSelect={selected => (formik.values.sublicenceArrangements = selected)}>
-																		{yesNoList.map((l, i) => (
-																			<Dropdown.Item className='gray800-14 width-100' key={l} eventKey={l}>
+																		onBlur={formik.handleBlur}>
+																		{yesNoList.map(l => (
+																			<option
+																				selected={formik.values.sublicenceArrangements === l ? true : false}
+																				value={l}
+																				key={l}
+																				eventKey={l}>
 																				{l}
-																			</Dropdown.Item>
+																			</option>
 																		))}
-																	</DropdownButton>
+																	</Form.Control>
 																</Form.Group>
 															</Form>
 														</Card.Body>
@@ -408,6 +458,7 @@ const EditFormDataUse = props => {
 																		the application is sufficient
 																	</p>
 																	<Form.Control
+																		readOnly={props.data.manualUpload ? disableInput : true}
 																		id='projectIdText'
 																		name='projectIdText'
 																		type='text'
@@ -415,7 +466,6 @@ const EditFormDataUse = props => {
 																		onChange={formik.handleChange}
 																		value={formik.values.projectIdText}
 																		onBlur={formik.handleBlur}
-																		disabled
 																	/>
 																</Form.Group>
 
@@ -426,6 +476,7 @@ const EditFormDataUse = props => {
 																		health data
 																	</p>
 																	<Form.Control
+																		readOnly={disableInput}
 																		id='projectTitle'
 																		name='projectTitle'
 																		type='text'
@@ -451,6 +502,7 @@ const EditFormDataUse = props => {
 																		</span>
 																	</div>
 																	<Form.Control
+																		readOnly={disableInput}
 																		data-test-id='laySummary'
 																		as='textarea'
 																		id='laySummary'
@@ -479,6 +531,7 @@ const EditFormDataUse = props => {
 																		</p>
 																	</div>
 																	<Form.Control
+																		readOnly={disableInput}
 																		data-test-id='publicBenefitStatement'
 																		as='textarea'
 																		id='publicBenefitStatement'
@@ -503,22 +556,26 @@ const EditFormDataUse = props => {
 																	<p className='gray800-13-opacity datause-edit-p'>
 																		This categorises the 'purpose of the share' (i.e., research, policy development, etc)
 																	</p>
-
-																	<DropdownButton
-																		variant='white'
-																		title={formik.values.requestCategoryType || <option disabled selected value></option>}
-																		className='gray700-13 custom-dropdown padding-right-0'
-																		style={{ width: '100%' }}
+																	<Form.Control
+																		as='select'
+																		disabled={disableInput}
+																		id='requestCategoryType'
+																		name='requestCategoryType'
+																		type='text'
+																		className='addFormInput'
 																		onChange={formik.handleChange}
 																		value={formik.values.requestCategoryType}
-																		onBlur={formik.handleBlur}
-																		onSelect={selected => (formik.values.requestCategoryType = selected)}>
-																		{requestCategoryTypeList.map((l, i) => (
-																			<Dropdown.Item className='gray800-14 width-100' key={l} eventKey={l}>
+																		onBlur={formik.handleBlur}>
+																		{requestCategoryTypeList.map(l => (
+																			<option
+																				selected={formik.values.requestCategoryType === l ? true : false}
+																				value={l}
+																				key={l}
+																				eventKey={l}>
 																				{l}
-																			</Dropdown.Item>
+																			</option>
 																		))}
-																	</DropdownButton>
+																	</Form.Control>
 																</Form.Group>
 
 																<Form.Group>
@@ -529,6 +586,7 @@ const EditFormDataUse = props => {
 																		</p>
 																	</div>
 																	<Form.Control
+																		readOnly={disableInput}
 																		data-test-id='technicalSummary'
 																		as='textarea'
 																		id='technicalSummary'
@@ -547,6 +605,7 @@ const EditFormDataUse = props => {
 																		Reference to other decision-making bodies that the project has already been authorised by
 																	</p>
 																	<Form.Control
+																		readOnly={disableInput}
 																		id='otherApprovalCommittees'
 																		name='otherApprovalCommittees'
 																		type='text'
@@ -567,6 +626,7 @@ const EditFormDataUse = props => {
 																			</p>
 																			<span className='datause-datepicker'>
 																				<DatePicker
+																					disabled={disableInput}
 																					id='projectStartDate'
 																					name='projectStartDate'
 																					dateFormat='dd/MM/yyyy'
@@ -593,6 +653,7 @@ const EditFormDataUse = props => {
 																			</p>
 																			<span className='datause-datepicker'>
 																				<DatePicker
+																					disabled={disableInput}
 																					id='projectEndDate'
 																					name='projectEndDate'
 																					dateFormat='dd/MM/yyyy'
@@ -622,6 +683,7 @@ const EditFormDataUse = props => {
 
 																			<span className='datause-datepicker'>
 																				<DatePicker
+																					disabled={disableInput}
 																					id='latestApprovalDate'
 																					name='latestApprovalDate'
 																					dateFormat='dd/MM/yyyy'
@@ -669,14 +731,6 @@ const EditFormDataUse = props => {
 																<Form.Group>
 																	<Form.Label className='black-14'>Dataset(s) name</Form.Label>
 																	<p className='gray800-13-opacity datause-edit-p'>The name of the dataset(s) being accessed</p>
-																	{/*<fieldset disabled>
-                            <Form.Control
-                                type='text'
-                                placeholder=''
-                                defaultValue={props && data.data && data.data.datasetTitles && data.data.datasetTitles.map(a => a)}
-                                readOnly
-                            />
-        </fieldset>*/}
 																</Form.Group>
 																<Row className='datause-datasettitles'>
 																	{props &&
@@ -690,21 +744,26 @@ const EditFormDataUse = props => {
 																	<p className='gray800-13-opacity datause-edit-p'>
 																		The level of identifiability of the data being accessed, as defined by Understanding Patient Data{' '}
 																	</p>
-																	<DropdownButton
-																		variant='white'
-																		title={formik.values.dataSensitivityLevel || <option disabled selected value></option>}
-																		className='gray700-13 custom-dropdown padding-right-0'
-																		style={{ width: '100%' }}
+																	<Form.Control
+																		as='select'
+																		disabled={disableInput}
+																		id='dataSensitivityLevel'
+																		name='dataSensitivityLevel'
+																		type='text'
+																		className='addFormInput'
 																		onChange={formik.handleChange}
 																		value={formik.values.dataSensitivityLevel}
-																		onBlur={formik.handleBlur}
-																		onSelect={selected => (formik.values.dataSensitivityLevel = selected)}>
-																		{dataSensitivityLevelList.map((l, i) => (
-																			<Dropdown.Item className='gray800-14 width-100' key={l} eventKey={l}>
+																		onBlur={formik.handleBlur}>
+																		{dataSensitivityLevelList.map(l => (
+																			<option
+																				selected={formik.values.dataSensitivityLevel === l ? true : false}
+																				value={l}
+																				key={l}
+																				eventKey={l}>
 																				{l}
-																			</Dropdown.Item>
+																			</option>
 																		))}
-																	</DropdownButton>
+																	</Form.Control>
 																</Form.Group>
 
 																<Form.Group>
@@ -714,21 +773,27 @@ const EditFormDataUse = props => {
 																		apply whenever you process personal data. Please select appropriate Article 6 lawful basis. Processing
 																		shall be lawful only if and to the extent that at least one of the following applies
 																	</p>
-																	<DropdownButton
-																		variant='white'
-																		title={formik.values.legalBasisForDataArticle6 || <option disabled selected value></option>}
-																		className='gray700-13 custom-dropdown padding-right-0'
-																		style={{ width: '100%' }}
+
+																	<Form.Control
+																		as='select'
+																		disabled={disableInput}
+																		id='legalBasisForDataArticle6'
+																		name='legalBasisForDataArticle6'
+																		type='text'
+																		className='addFormInput'
 																		onChange={formik.handleChange}
 																		value={formik.values.legalBasisForDataArticle6}
-																		onBlur={formik.handleBlur}
-																		onSelect={selected => (formik.values.legalBasisForDataArticle6 = selected)}>
-																		{legalBasisForDataArticle6List.map((l, i) => (
-																			<Dropdown.Item className='gray800-14 width-100' key={l} eventKey={l}>
+																		onBlur={formik.handleBlur}>
+																		{legalBasisForDataArticle6List.map(l => (
+																			<option
+																				selected={formik.values.legalBasisForDataArticle6 === l ? true : false}
+																				value={l}
+																				key={l}
+																				eventKey={l}>
 																				{l}
-																			</Dropdown.Item>
+																			</option>
 																		))}
-																	</DropdownButton>
+																	</Form.Control>
 																</Form.Group>
 
 																<Form.Group>
@@ -742,21 +807,26 @@ const EditFormDataUse = props => {
 																		natural person's sex life or sexual orientation shall be prohibited. This does not apply if one of the
 																		following applies
 																	</p>
-																	<DropdownButton
-																		variant='white'
-																		title={formik.values.legalBasisForDataArticle9 || <option disabled selected value></option>}
-																		className='gray700-13 custom-dropdown padding-right-0'
-																		style={{ width: '100%' }}
+																	<Form.Control
+																		as='select'
+																		disabled={disableInput}
+																		id='legalBasisForDataArticle9'
+																		name='legalBasisForDataArticle9'
+																		type='text'
+																		className='addFormInput'
 																		onChange={formik.handleChange}
 																		value={formik.values.legalBasisForDataArticle9}
-																		onBlur={formik.handleBlur}
-																		onSelect={selected => (formik.values.legalBasisForDataArticle9 = selected)}>
-																		{legalBasisForDataArticle9List.map((l, i) => (
-																			<Dropdown.Item className='gray800-14 width-100' key={l} eventKey={l}>
+																		onBlur={formik.handleBlur}>
+																		{legalBasisForDataArticle9List.map(l => (
+																			<option
+																				selected={formik.values.legalBasisForDataArticle9 === l ? true : false}
+																				value={l}
+																				key={l}
+																				eventKey={l}>
 																				{l}
-																			</Dropdown.Item>
+																			</option>
 																		))}
-																	</DropdownButton>
+																	</Form.Control>
 																</Form.Group>
 
 																<Form.Group>
@@ -772,21 +842,26 @@ const EditFormDataUse = props => {
 																		be considered by the Privacy Advisory Committee. If you are using patient consent as the legal basis,
 																		you will need to provide all relevant consent forms and information leaflets.
 																	</p>
-																	<DropdownButton
-																		variant='white'
-																		title={formik.values.dutyOfConfidentiality || <option disabled selected value></option>}
-																		className='gray700-13 custom-dropdown padding-right-0'
-																		style={{ width: '100%' }}
+																	<Form.Control
+																		as='select'
+																		disabled={disableInput}
+																		id='dutyOfConfidentiality'
+																		name='dutyOfConfidentiality'
+																		type='text'
+																		className='addFormInput'
 																		onChange={formik.handleChange}
 																		value={formik.values.dutyOfConfidentiality}
-																		onBlur={formik.handleBlur}
-																		onSelect={selected => (formik.values.dutyOfConfidentiality = selected)}>
-																		{dutyOfConfidentialityList.map((l, i) => (
-																			<Dropdown.Item className='gray800-14 width-100' key={l} eventKey={l}>
+																		onBlur={formik.handleBlur}>
+																		{dutyOfConfidentialityList.map(l => (
+																			<option
+																				selected={formik.values.dutyOfConfidentiality === l ? true : false}
+																				value={l}
+																				key={l}
+																				eventKey={l}>
 																				{l}
-																			</Dropdown.Item>
+																			</option>
 																		))}
-																	</DropdownButton>
+																	</Form.Control>
 																</Form.Group>
 
 																<Form.Group>
@@ -795,21 +870,26 @@ const EditFormDataUse = props => {
 																		Specifies whether the preference for people to opt-out of their confidential patient information being
 																		used for secondary use has been applied to the data prior to release
 																	</p>
-																	<DropdownButton
-																		variant='white'
-																		title={formik.values.nationalDataOptOut || <option disabled selected value></option>}
-																		className='gray700-13 custom-dropdown padding-right-0'
-																		style={{ width: '100%' }}
+																	<Form.Control
+																		as='select'
+																		disabled={disableInput}
+																		id='nationalDataOptOut'
+																		name='nationalDataOptOut'
+																		type='text'
+																		className='addFormInput'
 																		onChange={formik.handleChange}
 																		value={formik.values.nationalDataOptOut}
-																		onBlur={formik.handleBlur}
-																		onSelect={selected => (formik.values.nationalDataOptOut = selected)}>
-																		{yesNoNotList.map((l, i) => (
-																			<Dropdown.Item className='gray800-14 width-100' key={l} eventKey={l}>
+																		onBlur={formik.handleBlur}>
+																		{yesNoNotList.map(l => (
+																			<option
+																				selected={formik.values.nationalDataOptOut === l ? true : false}
+																				value={l}
+																				key={l}
+																				eventKey={l}>
 																				{l}
-																			</Dropdown.Item>
+																			</option>
 																		))}
-																	</DropdownButton>
+																	</Form.Control>
 																</Form.Group>
 
 																<Form.Group>
@@ -818,21 +898,22 @@ const EditFormDataUse = props => {
 																		Determines whether this a 'one-off' request or a recurring dataset to be provided over a specific time
 																		period
 																	</p>
-																	<DropdownButton
-																		variant='white'
-																		title={formik.values.requestFrequency || <option disabled selected value></option>}
-																		className='gray700-13 custom-dropdown padding-right-0'
-																		style={{ width: '100%' }}
+																	<Form.Control
+																		as='select'
+																		disabled={disableInput}
+																		id='requestFrequency'
+																		name='requestFrequency'
+																		type='text'
+																		className='addFormInput'
 																		onChange={formik.handleChange}
 																		value={formik.values.requestFrequency}
-																		onBlur={formik.handleBlur}
-																		onSelect={selected => (formik.values.requestFrequency = selected)}>
-																		{requestFrequencyList.map((l, i) => (
-																			<Dropdown.Item className='gray800-14 width-100' key={l} eventKey={l}>
+																		onBlur={formik.handleBlur}>
+																		{requestFrequencyList.map(l => (
+																			<option selected={formik.values.requestFrequency === l ? true : false} value={l} key={l} eventKey={l}>
 																				{l}
-																			</Dropdown.Item>
+																			</option>
 																		))}
-																	</DropdownButton>
+																	</Form.Control>
 																</Form.Group>
 
 																<Form.Group>
@@ -845,6 +926,7 @@ const EditFormDataUse = props => {
 																		disclosed. As well as, a summary of the risks/mitigations to be considered
 																	</p>
 																	<Form.Control
+																		readOnly={disableInput}
 																		data-test-id='datasetLinkageDescription'
 																		as='textarea'
 																		id='datasetLinkageDescription'
@@ -864,6 +946,7 @@ const EditFormDataUse = props => {
 																		being accessed
 																	</p>
 																	<Form.Control
+																		readOnly={disableInput}
 																		data-test-id='confidentialDataDescription'
 																		as='textarea'
 																		id='confidentialDataDescription'
@@ -886,6 +969,7 @@ const EditFormDataUse = props => {
 																		{' '}
 																		<span className='datause-datepicker datapicker-releaseaccess'>
 																			<DatePicker
+																				disabled={disableInput}
 																				id='accessDate'
 																				name='accessDate'
 																				dateFormat='dd/MM/yyyy'
@@ -934,25 +1018,22 @@ const EditFormDataUse = props => {
 																		traditional data release modelDetermines whether the data will be accessed within a Trusted Research
 																		Environment (TRE) or via the traditional data release model
 																	</p>
-																	<DropdownButton
-																		variant='white'
-																		title={formik.values.accessType || <option disabled selected value></option>}
-																		className={
-																			formik.touched.accessType && formik.errors.accessType
-																				? 'emptyFormInput  gray800-14 custom-dropdown margin-top-8 padding-right-0'
-																				: 'gray700-13 custom-dropdown margin-top-8 padding-right-0'
-																		}
-																		style={{ width: '100%' }}
+																	<Form.Control
+																		as='select'
+																		disabled={disableInput}
+																		id='accessType'
+																		name='accessType'
+																		type='text'
+																		className='addFormInput'
 																		onChange={formik.handleChange}
 																		value={formik.values.accessType}
-																		onBlur={formik.handleBlur}
-																		onSelect={selected => (formik.values.accessType = selected)}>
-																		{accessTypeList.map((l, i) => (
-																			<Dropdown.Item className='gray800-14 width-100' key={l} eventKey={l}>
+																		onBlur={formik.handleBlur}>
+																		{accessTypeList.map(l => (
+																			<option selected={formik.values.accessType === l ? true : false} value={l} key={l} eventKey={l}>
 																				{l}
-																			</Dropdown.Item>
+																			</option>
 																		))}
-																	</DropdownButton>
+																	</Form.Control>
 																	{formik.touched.accessType && formik.errors.accessType ? (
 																		<div className='errorMessages margin-top-8' data-test-id='user-account-sector-validation'>
 																			{formik.errors.accessType}
@@ -966,6 +1047,7 @@ const EditFormDataUse = props => {
 																		Description of the tools or software used to reduce level of identifiable data being shared
 																	</p>
 																	<Form.Control
+																		readOnly={disableInput}
 																		id='privacyEnhancements'
 																		name='privacyEnhancements'
 																		type='text'
@@ -998,32 +1080,73 @@ const EditFormDataUse = props => {
 													<Accordion.Collapse className='datause-accordion-collapse' eventKey='4'>
 														<Card.Body className='datause-card-body'>
 															<Form>
-																<Form.Group>
-																	<Form.Label className='black-14'>Link to research outputs (optional)</Form.Label>
-																	<p className='gray800-13-opacity datause-edit-p'>
-																		A URL link to any academic or non-academic research outputs, as they become available, including code
-																		used. If the link is to a Gateway resource, this will automatically populate in related resources.
-																	</p>
-																	{defaultResearchOutputs && (
-																		<Form.Control type='text' placeholder='' defaultValue={props.data.researchOutputs} />
-																	)}
-																	{researchOutputs.map(i => {
-																		return (
-																			<Form.Group>
-																				<Form.Control type='text' placeholder='' />
-																			</Form.Group>
-																		);
-																	})}
-																	{/*<button className='plusMinusButton'>-</button>
-                        <button className='plusMinusButton'>+</button>*/}
+																<Row className='mt-2'>
+																	<Col sm={12} lg={8}>
+																		<p className='gray800-14 margin-bottom-0 pad-bottom-4'>Link to research outputs (optional)</p>
+																		<p className='gray700-13 margin-bottom-0'>
+																			A URL link to any academic or non-academic research outputs, as they become available, including code
+																			used. If the link is to a Gateway resource, this will automatically populate in related resources.
+																		</p>
+																	</Col>
+																</Row>
 
-																	<Button onClick={handleAddFields} className='plusMinusButton rounded-circle'>
-																		+
-																	</Button>
-																	<Button onClick={handleRemoveFields} className='plusMinusButton rounded-circle'>
-																		-
-																	</Button>
-																</Form.Group>
+																<Row className='mt-2'>
+																	<FieldArray
+																		name='document_links'
+																		render={({ remove, push }) => (
+																			<Fragment>
+																				{formik.values.safeOuputsArray.length > 0 &&
+																					formik.values.safeOuputsArray.map((d, index) => (
+																						<Fragment>
+																							<Col sm={12} lg={10}>
+																								<Form.Group labelKey={`safeOuputsArray`}>
+																									<Typeahead
+																										id={`safeOuputsArray_${index}`}
+																										className='addFormInput'
+																										allowNew
+																										options={safeOuputsList}
+																										onChange={selected => {
+																											if (!isEmpty(selected)) {
+																												formik.values.safeOuputsArray[index] = selected[0];
+																											}
+																										}}
+																										selected={[formik.values.safeOuputsArray[index]]}
+																										labelKey={key => `${key.value}`}
+																									/>
+																								</Form.Group>
+																							</Col>
+
+																							<Col
+																								style={{ paddingRight: '0px' }}
+																								className='col-sm-6 col-md-2 d-flex justify-content-center align-items-center setHeight'>
+																								<button
+																									type='button'
+																									className='plusMinusButton'
+																									disabled={formik.values.safeOuputsArray.length < 2}
+																									onClick={() => {
+																										remove(index);
+																										formik.values.safeOuputsArray.splice(index, 1);
+																									}}>
+																									-
+																								</button>
+																								<button
+																									data-test-id={`add-link-${index}`}
+																									type='button'
+																									disabled={formik.values.safeOuputsArray.length - 1 !== index}
+																									className='plusMinusButton'
+																									onClick={() => {
+																										push('');
+																										formik.values.safeOuputsArray.push({ key: '', value: '' });
+																									}}>
+																									+
+																								</button>
+																							</Col>
+																						</Fragment>
+																					))}
+																			</Fragment>
+																		)}
+																	/>
+																</Row>
 															</Form>
 														</Card.Body>
 													</Accordion.Collapse>
@@ -1103,45 +1226,60 @@ const EditFormDataUse = props => {
 																Gateway first.
 															</p>
 															<hr className='datause-border' />
-															{/*{props.relatedObjects.map(object => {
-                            return (
-                                <div className='relatedObjectRectangle'>
-                                    <RelatedObject
-                                        showRelationshipQuestion={true} 
-                                        objectId={object.objectId}
-                                        pid={object.pid}
-                                        objectType={object.objectType}
-                                        doRemoveObject={props.doRemoveObject}
-                                        doUpdateReason={updateReason}
-                                        reason={object.reason}
-                                        didDelete={props.didDelete}
-                                        updateDeleteFlag={props.updateDeleteFlag}
-                                        inCollection={true}
-                                    />
-                                </div>
-                            );
-                        })} */}
-															{showRelatedObject &&
-																props.data.relatedObjects.map(object => {
-																	return (
-																		<div className='relatedObjectRectangle'>
+															{props.relatedObjects.length === 0 ? (
+																''
+															) : (
+																<div className='rectangle'>
+																	{props.relatedObjects.map(object =>
+																		!isNil(object.objectId) ? (
 																			<RelatedObject
 																				showRelationshipQuestion={true}
 																				objectId={object.objectId}
 																				pid={object.pid}
 																				objectType={object.objectType}
-																				//doRemoveObject={doRemoveObject}
-																				//doUpdateReason={updateReason}
+																				doRemoveObject={props.doRemoveObject}
+																				doUpdateReason={updateReason}
 																				reason={object.reason}
-																				//didDelete={didDelete}
-																				//updateDeleteFlag={updateDeleteFlag}
+																				didDelete={props.didDelete}
+																				updateDeleteFlag={props.updateDeleteFlag}
+																				isLocked={object.isLocked}
 																			/>
-																		</div>
-																	);
-																})}
-															<Button variant='outline-success' className='datatuse-add-resources dark-14' onClick={relatedResourcesComp}>
-																+ Add resources
-															</Button>
+																		) : (
+																			''
+																		)
+																	)}
+																</div>
+															)}
+															{disableInput ? (
+																''
+															) : (
+																<div className='rectangle flexCenter pixelGapTop'>
+																	<Row>
+																		<Col sm={1} lg={1} />
+																		<Col sm={10} lg={10}>
+																			<RelatedResources
+																				ref={relatedResourcesRef}
+																				searchString={props.searchString}
+																				doSearchMethod={props.doSearchMethod}
+																				doUpdateSearchString={props.doUpdateSearchString}
+																				userState={props.userState}
+																				datasetData={props.datasetData}
+																				toolData={props.toolData}
+																				paperData={props.paperData}
+																				personData={props.personData}
+																				courseData={props.courseData}
+																				summary={props.summary}
+																				doAddToTempRelatedObjects={props.doAddToTempRelatedObjects}
+																				tempRelatedObjectIds={props.tempRelatedObjectIds}
+																				relatedObjects={props.relatedObjects}
+																				doClearRelatedObjects={props.doClearRelatedObjects}
+																				doAddToRelatedObjects={props.doAddToRelatedObjects}
+																			/>
+																		</Col>
+																		<Col sm={1} lg={10} />
+																	</Row>
+																</div>
+															)}
 														</Card.Body>
 													</Accordion.Collapse>
 												</Card>

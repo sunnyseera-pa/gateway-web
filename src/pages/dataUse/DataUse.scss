@@ -1,4 +1,6 @@
 @import '../../css/variables';
+@import '../../css/typography';
+@import '../../css/mixins';
 
 .datause-card {
 	margin: 10px 0px 0;
@@ -443,4 +445,7 @@ button.close:focus {
 	box-shadow: none !important;
 }
 
-//css-1s2u09g-control:hover
+.addFormInput {
+	color: $gray-700 !important;
+	font-size: 14px !important;
+}

@@ -508,7 +508,7 @@ const About = ({ data, renderTooltip }) => {
 											</a>
 										))}
 
-									{data && data.nonGatewayDatasets.map(nonGatewayDataset => <> {nonGatewayDataset}</>)}
+									{data && data.nonGatewayDatasets.map(nonGatewayDataset => <> {nonGatewayDataset} </>)}
 								</>
 							) : (
 								<p className='gray800-14-opacity'>Not specified</p>
@@ -822,20 +822,19 @@ const About = ({ data, renderTooltip }) => {
 												<a href={`/tool/${gatewayOutputsTool.id}`}>
 													<span className='badge-tag badge-datause-bold'>{gatewayOutputsTool.name}</span>
 												</a>
-											))}
+											))}{' '}
 										{data &&
 											data.gatewayOutputsPapersInfo.map(gatewayOutputsPaper => (
 												<a href={`/paper/${gatewayOutputsPaper.id}`}>
 													<span className='badge-tag badge-datause-bold'>{gatewayOutputsPaper.name}</span>
 												</a>
-											))}
-
+											))}{' '}
 										{data &&
 											data.nonGatewayOutputs.map(nonGatewayOutput => (
 												<a href={nonGatewayOutput} className='purple-blue-14'>
 													{nonGatewayOutput}
 												</a>
-											))}
+											))}{' '}
 									</>
 								) : (
 									<p className='gray800-14-opacity'>Not specified</p>
