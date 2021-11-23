@@ -13,6 +13,17 @@ const mswGetEnGbTranslations = rest.get(`http://localhost/locales/en-GB/translat
 	return res(ctx.status(200), ctx.json(translations));
 });
 
-const handlers = [...mswDatasets, ...mswDatasetOnboarding, ...mswPostDatasetActivityLog, mswGetEnTranslations, mswGetEnGbTranslations];
+const mswGetIcon = rest.get(`/images/Application_approved.svg`, (req, res, ctx) => {
+	return res(ctx.status(200), ctx.text('<svg />'));
+});
+
+const handlers = [
+	...mswDatasets,
+	...mswDatasetOnboarding,
+	...mswPostDatasetActivityLog,
+	mswGetEnTranslations,
+	mswGetEnGbTranslations,
+	mswGetIcon,
+];
 
 export const server = setupServer(...handlers);

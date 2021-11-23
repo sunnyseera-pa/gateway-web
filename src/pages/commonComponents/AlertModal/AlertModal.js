@@ -26,9 +26,9 @@ AlertModal.propTypes = {
 	onHide: PropTypes.func,
 	show: PropTypes.bool,
 	variant: PropTypes.oneOf(['error', 'success', 'info', 'warning']),
-	header: PropTypes.oneOfType([PropTypes.element, PropTypes.string]),
-	body: PropTypes.oneOfType([PropTypes.element, PropTypes.string]),
-	footer: PropTypes.oneOfType([PropTypes.element, PropTypes.string]),
+	header: PropTypes.node,
+	body: PropTypes.node,
+	footer: PropTypes.node,
 };
 
 AlertModal.defaultProps = {

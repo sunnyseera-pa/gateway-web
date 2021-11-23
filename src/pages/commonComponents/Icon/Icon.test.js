@@ -1,7 +1,7 @@
 import React from 'react';
-import Icon from '.';
 import { render, waitFor } from '@testing-library/react';
 import axios from 'axios';
+import Icon from '.';
 
 jest.mock('axios');
 
@@ -13,7 +13,6 @@ jest.mock('../../../images/SVGIcon', () => props => {
 const mockSVGIcon = jest.fn();
 
 let wrapper;
-let useStateSpy;
 
 describe('Given the Icon component', () => {
 	describe('When it is from a file', () => {

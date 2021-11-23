@@ -2,10 +2,13 @@
 import { cx } from '@emotion/css';
 import { jsx } from '@emotion/react';
 import PropTypes from 'prop-types';
+import { addCommonPropTypes } from '../../../configs/propTypes';
+import useCommonStyles from '../../../hooks/useCommonStyles';
 import { dateFormats } from '../../../utils/GeneralHelper.util';
-import * as styles from './ActionBarStatus.styles';
 
-const ActionBarStatus = ({ status, dataset, totalQuestions, className, ...outerProps }) => {
+const ActionBarStatus = ({ status, dataset, totalQuestions, className, mt, mb, ml, mr, ...outerProps }) => {
+	const commonStyles = useCommonStyles({ mt, mb, ml, mr });
+
 	const {
 		timestamps: { published, submitted, rejected, archived },
 	} = dataset;
@@ -38,13 +41,13 @@ const ActionBarStatus = ({ status, dataset, totalQuestions, className, ...outerP
 	}
 
 	return (
-		<div {...outerProps} className={cx('action-bar-status', className)} css={styles.root}>
+		<div {...outerProps} className={cx('action-bar-status', 'ui-ActionBarStatus', className, commonStyles)}>
 			{content}
 		</div>
 	);
 };
 
-ActionBarStatus.propTypes = {
+ActionBarStatus.propTypes = addCommonPropTypes({
 	dataset: PropTypes.shape({
 		timestamps: PropTypes.shape({
 			published: PropTypes.string,
@@ -55,8 +58,7 @@ ActionBarStatus.propTypes = {
 	}),
 	totalQuestions: PropTypes.string,
 	status: PropTypes.oneOf(['draft', 'active', 'inReview', 'rejected', 'archived']),
-	className: PropTypes.string,
-};
+});
 
 ActionBarStatus.defaultProps = {
 	className: 'padding-md',

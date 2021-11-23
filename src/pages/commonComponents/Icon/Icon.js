@@ -1,9 +1,11 @@
 /** @jsx jsx */
+import { cx } from '@emotion/css';
 import { jsx } from '@emotion/react';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
 import { addCommonPropTypes } from '../../../configs/propTypes';
+import useCommonStyles from '../../../hooks/useCommonStyles';
 import SVGIcon from '../../../images/SVGIcon';
 import * as styles from './Icon.styles.js';
 
@@ -54,8 +56,9 @@ const svgFragments = {
 	tick: '6 6 12 12',
 };
 
-const Icon = ({ name, size, color, fill, stroke, ml, mr, mb, mt, inline, ...outerProps }) => {
+const Icon = ({ name, size, color, fill, stroke, className, ml, mr, mb, mt, inline, ...outerProps }) => {
 	const [svg, setSvg] = useState();
+	const commonStyles = useCommonStyles({ mt, mb, ml, mr });
 
 	useEffect(() => {
 		const importIcon = () => {
@@ -70,8 +73,8 @@ const Icon = ({ name, size, color, fill, stroke, ml, mr, mb, mt, inline, ...oute
 	}, [name]);
 
 	const iconProps = {
-		css: styles.root({ size, color, fill, stroke, ml, mr, mb, mt }),
-		className: 'ui-Icon',
+		css: styles.root({ size, color, fill, stroke }),
+		className: cx('ui-Icon', className, commonStyles),
 		...outerProps,
 	};
 

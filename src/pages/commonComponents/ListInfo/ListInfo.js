@@ -1,11 +1,16 @@
 /** @jsx jsx */
+import { cx } from '@emotion/css';
 import { jsx } from '@emotion/react';
 import PropTypes from 'prop-types';
+import { addCommonPropTypes } from '../../../configs/propTypes';
+import useCommonStyles from '../../../hooks/useCommonStyles';
 import * as styles from './ListInfo.styles';
 
-const ListInfo = ({ data, className, widthCol1 }) => {
+const ListInfo = ({ data, className, widthCol1, mt, mb, ml, mr }) => {
+	const commonStyles = useCommonStyles({ mt, mb, ml, mr });
+
 	return (
-		<ul css={styles.root} className={className}>
+		<ul css={styles.root} className={cx('ui-ListInfo', className, commonStyles)}>
 			{data.map(({ label, value }, i) => (
 				<li css={styles.listItem} key={`${i}-${label}`}>
 					<div css={styles.col1(widthCol1)}>{label}</div>
@@ -16,15 +21,15 @@ const ListInfo = ({ data, className, widthCol1 }) => {
 	);
 };
 
-ListInfo.propTypes = {
+ListInfo.propTypes = addCommonPropTypes({
 	data: PropTypes.arrayOf(
 		PropTypes.shape({
-			label: PropTypes.oneOfType([PropTypes.element, PropTypes.string]),
-			value: PropTypes.oneOfType([PropTypes.element, PropTypes.string]),
+			label: PropTypes.node,
+			value: PropTypes.node,
 		})
 	).isRequired,
 	widthCol1: PropTypes.string,
-};
+});
 
 ListInfo.defaultProps = {
 	widthCol1: '105px',

@@ -3,7 +3,7 @@ export const getSize = (value, { base: { increment, unit } }) => {
 };
 
 export const getSpacingStyle = (prop, value, theme) => {
-	return typeof value === 'number' ? `${prop}${getSize(value, theme)};` : '';
+	return typeof value === 'number' ? `${prop}: ${getSize(value, theme)};` : '';
 };
 
 export const getCommonStyle = (prop, value) => {
@@ -12,10 +12,10 @@ export const getCommonStyle = (prop, value) => {
 
 export const getCommonStyles = ({ ml, mr, mb, mt }, theme) => {
 	return `
-		${getSpacingStyle('margin-left', ml, theme)};
-		${getSpacingStyle('margin-right', mr, theme)};
-		${getSpacingStyle('margin-bottom', mb, theme)};
-		${getSpacingStyle('margin-top', mt, theme)};
+		${getSpacingStyle('margin-left', ml, theme)}
+		${getSpacingStyle('margin-right', mr, theme)}
+		${getSpacingStyle('margin-bottom', mb, theme)}
+		${getSpacingStyle('margin-top', mt, theme)}
 	`;
 };
 
@@ -30,6 +30,7 @@ export const theme = {
 		grey700: '#53575A',
 		grey700Alt: '#848E97',
 		grey800: '#3C3C3B',
+		red600: '#EF3F4B',
 	},
 	components: {
 		Icon: {
