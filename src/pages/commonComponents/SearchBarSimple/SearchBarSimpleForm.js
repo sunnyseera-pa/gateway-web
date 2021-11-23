@@ -46,7 +46,7 @@ const SearchBarSimpleForm = ({ onChangeInput, onResetInput, onChangeSort, sortPr
 			<Col sm={1} />
 			<Col sm={10}>
 				<Row>
-					<Col lg={8}>
+					<Col lg={8} className='mb-2 mb-lg-0'>
 						<SearchInput
 							placeholder={t('search.placeholder', { type })}
 							onChange={handleChange}
