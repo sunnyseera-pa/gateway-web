@@ -32,7 +32,6 @@ import PersonCollectionResults from './Components/PersonCollectionResults';
 import CourseCollectionResults from './Components/CourseCollectionResults';
 
 export const CollectionPage = props => {
-
 	const { t } = useTranslation();
 
 	const [collectionData, setCollectionData] = useState([]);
@@ -82,10 +81,6 @@ export const CollectionPage = props => {
 		}
 		getCollectionDataFromApi();
 	}, []);
-
-	useEffect(() => {
-		handleSort(collectionsPageSort);
-	}, [filteredData]);
 
 	const getCollectionDataFromApi = async () => {
 		setIsLoading(true);
@@ -166,34 +161,41 @@ export const CollectionPage = props => {
 		setShowDrawer(showEnquiry);
 	};
 
-	const handleSort = sort => {
-		googleAnalytics.recordEvent('Collections', `Sorted collection entities by ${sort}`, 'Sort dropdown option changed');
-		setCollectionsPageSort(sort);
+	const getSortedData = (sort, data, value) => {
 		switch (sort) {
 			case 'metadata': {
-				sortByMetadataQuality(filteredData);
-				break;
+				return sortByMetadataQuality(data);
 			}
 			case 'recentlyadded': {
-				sortByRecentlyAdded(filteredData);
-				break;
+				return sortByRecentlyAdded(data);
 			}
 			case 'resources': {
-				sortByResources(filteredData);
-				break;
+				return sortByResources(data);
 			}
 			case 'relevance': {
-				sortByRelevance(filteredData, searchCollectionsString);
-				break;
+				return sortByRelevance(data, value);
 			}
 			case 'popularity': {
-				sortByPopularity(filteredData);
-				break;
+				return sortByPopularity(data);
 			}
 			default:
-				return sort;
+				return data;
 		}
 	};
+
+	const handleSort = React.useCallback(
+		sort => {
+			googleAnalytics.recordEvent('Collections', `Sorted collection entities by ${sort}`, 'Sort dropdown option changed');
+			setCollectionsPageSort(sort);
+
+			let sortedData = getSortedData(sort, filteredData, searchCollectionsString);
+
+			setFilteredData(sortedData);
+
+			handlePagination(key, 0);
+		},
+		[searchCollectionsString, filteredData, key]
+	);
 
 	const handlePaginatedItems = index => {
 		// Returns the related resources that have the same object type as the current active tab and performs a chunk on them to ensure each page returns 24 results
@@ -209,20 +211,28 @@ export const CollectionPage = props => {
 		}
 	};
 
-	const doCollectionsSearch = e => {
-		// Fires on enter on searchbar
-		if (e.key === 'Enter') {
-			const filteredCollectionItems = filterCollectionItems(objectData, searchCollectionsString);
+	const handleResetInput = React.useCallback(
+		values => {
+			doCollectionsSearch(values);
+		},
+		[key, objectData]
+	);
 
-			let tempFilteredData = filteredCollectionItems.filter(dat => {
+	const doCollectionsSearch = React.useCallback(
+		({ search, sort }) => {
+			const filteredCollectionItems = filterCollectionItems(objectData, search);
+
+			const tempFilteredData = filteredCollectionItems.filter(dat => {
 				return dat !== '';
 			});
-			setFilteredData(tempFilteredData);
+
+			setFilteredData(getSortedData(sort, tempFilteredData, search));
 
 			countEntities(filteredCollectionItems);
 			handlePagination(key, 0);
-		}
-	};
+		},
+		[key, objectData]
+	);
 
 	const setIndexByType = page => {
 		return {
@@ -276,11 +286,7 @@ export const CollectionPage = props => {
 								<Col sm={1} lg={1} />
 								<Col sm={10} lg={10} className='pad-left-0'>
 									<Alert data-test-id='collection-added-banner' variant='success' className='mb-3'>
-										{
-											collectionData.publicflag ?
-											`${t('collection.public.live')}` : 
-											`${t('collection.private.live')}`
-										}
+										{collectionData.publicflag ? `${t('collection.public.live')}` : `${t('collection.private.live')}`}
 									</Alert>
 								</Col>
 								<Col sm={1} lg={10} />
@@ -294,11 +300,7 @@ export const CollectionPage = props => {
 								<Col sm={1} lg={1} />
 								<Col sm={10} lg={10}>
 									<Alert data-test-id='collection-added-banner' variant='success' className='mb-3'>
-										{
-											collectionData.publicflag ? 
-												`${t('collection.public.updated')}` : 
-												`${t('collection.private.updated')}`
-										}
+										{collectionData.publicflag ? `${t('collection.public.updated')}` : `${t('collection.private.updated')}`}
 									</Alert>
 								</Col>
 								<Col sm={1} lg={10} />
@@ -461,13 +463,16 @@ export const CollectionPage = props => {
 				)}
 				{key !== 'discussion' && (
 					<CollectionsSearch
-						doCollectionsSearchMethod={doCollectionsSearch}
-						doUpdateCollectionsSearchString={searchCollectionsString => setCollectionsSearchString(searchCollectionsString)}
+						onSubmit={doCollectionsSearch}
+						onChangeInput={setCollectionsSearchString}
+						onResetInput={handleResetInput}
+						onChangeSort={handleSort}
 						isLoading={isResultsLoading}
-						handleSort={handleSort}
-						isCollectionsSearch={true}
-						dropdownItems={dropdownItems}
-						sort={collectionsPageSort === '' ? (searchCollectionsString === '' ? 'recentlyadded' : 'relevance') : collectionsPageSort}
+						sortProps={{
+							options: dropdownItems,
+							defaultValue: 'recentlyadded',
+						}}
+						type='collection'
 					/>
 				)}
 				<Row>

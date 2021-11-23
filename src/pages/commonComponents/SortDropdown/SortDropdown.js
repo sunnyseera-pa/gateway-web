@@ -3,13 +3,13 @@ import { Dropdown } from 'react-bootstrap';
 import Icon from '../Icon';
 
 const SortDropdown = ({ handleSort, defaultValue, value, options, iconSelected }) => {
-	const currentValue = !!value ? defaultValue : value;
+	const currentValue = !value ? defaultValue : value;
 
 	return (
 		<Dropdown className='ui-SortDropdown' alignRight onSelect={handleSort}>
 			<Dropdown.Toggle variant='info'>
 				{(() => {
-					if (value === 'popularity') return 'Sort by number of views';
+					if (currentValue === 'popularity') return 'Sort by number of views';
 					else if (currentValue === 'metadata') return 'Sort by metadata quality';
 					else if (currentValue === 'resources') return 'Sort by related resources';
 					else if (currentValue === 'latest') return 'Sort by latest';

@@ -24,6 +24,7 @@ const SearchInput = ({ value, onReset, onSubmit, ...outerProps }) => {
 
 	return (
 		<Input
+			name='search'
 			inputRef={inputRef}
 			iconPrepend={<Icon name='search' fill='green700' size='lg' role='button' onClick={handleSubmit} />}
 			iconAppend={!!value && <Icon name='clear' color='purple500' size='lg' role='button' onClick={handleReset} />}
