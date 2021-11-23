@@ -1,7 +1,6 @@
 import { css } from '@emotion/react';
-import { getCommonStyles } from '../../../configs/theme';
 
-export const root = ({ size, color, stroke, fill, ...commonProps }) => theme => {
+export const root = ({ size, color, stroke, fill }) => theme => {
 	const {
 		colors,
 		components: {
@@ -10,7 +9,6 @@ export const root = ({ size, color, stroke, fill, ...commonProps }) => theme => 
 	} = theme;
 
 	return css`
-		${getCommonStyles(commonProps, theme)}
 		display: inline-flex;
 		stroke: ${stroke};
 		color: ${colors[color]};

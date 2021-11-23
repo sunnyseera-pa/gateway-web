@@ -15,7 +15,7 @@ import Timeline from '../../../commonComponents/Timeline';
 import * as styles from './ActivityLogCard.styles';
 
 let eventStatusIcons = {
-	newDatasetVersionSubmitted: 'Versions_created.svg',
+	newDatasetVersionSubmitted: 'Versions_created',
 	datasetVersionApproved: 'Application_approved',
 	datasetVersionRejected: 'Application_rejected',
 	datasetVersionArchived: 'Updates_requested',

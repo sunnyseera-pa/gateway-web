@@ -6,7 +6,7 @@ import SortDropdown from '../commonComponents/SortDropdown';
 import '../commonComponents/searchBar/SearchBar.scss';
 
 const CollectionsSearch = props => {
-	const t = useTranslation();
+	const { t } = useTranslation();
 	const [searchValue, setSearchValue] = useState('');
 
 	let col1Size = 7;
@@ -32,6 +32,7 @@ const CollectionsSearch = props => {
 						onChange={onSearch}
 						value={searchValue}
 						onKeyDown={props.doCollectionsSearchMethod}
+						variant='primary'
 					/>
 				</Col>
 

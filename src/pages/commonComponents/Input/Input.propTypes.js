@@ -12,4 +12,5 @@ export const PROP_TYPES_INPUT = addCommonPropTypes({
 	onChange: PropTypes.func,
 	debounceDelay: PropTypes.number,
 	inputRef: PropTypes.shape({ current: PropTypes.instanceOf(Element) }),
+	variant: PropTypes.oneOf(['primary', 'secondary']),
 });

@@ -9,6 +9,7 @@ jest.mock('../Icon', () => {
 const props = {
 	value: '',
 	onReset: jest.fn(),
+	onSubmit: jest.fn(),
 };
 
 let wrapper;
@@ -25,8 +26,24 @@ describe('Given the SearchInput component', () => {
 			expect(wrapper.container).toMatchSnapshot();
 		});
 
+		it('Then has a search icon', () => {
+			expect(wrapper.container.querySelector('[name="search"]')).toBeTruthy();
+		});
+
 		it('Then does not have a reset icon', () => {
-			expect(wrapper.container.querySelector('[role="button"]')).toBeFalsy();
+			expect(wrapper.container.querySelector('[name="clear"]')).toBeFalsy();
+		});
+
+		describe('And it is submitted', () => {
+			beforeAll(() => {
+				const reset = wrapper.container.querySelector('[name="search"]');
+
+				fireEvent.click(reset);
+			});
+
+			it('Then calls onReset', () => {
+				expect(props.onSubmit).toHaveBeenCalled();
+			});
 		});
 
 		describe('And it is reset', () => {
@@ -35,7 +52,7 @@ describe('Given the SearchInput component', () => {
 					wrapper: Providers,
 				});
 
-				const reset = wrapper.container.querySelector('[role="button"]');
+				const reset = wrapper.container.querySelector('[name="clear"]');
 
 				fireEvent.click(reset);
 			});

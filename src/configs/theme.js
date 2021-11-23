@@ -25,8 +25,15 @@ export const theme = {
 		unit: 'px',
 	},
 	colors: {
+		white: '#fff',
+		transparent: 'transparent',
+		inherit: 'inherit',
+		purple500: '#475DA7',
 		green600: '#329276',
+		green700: '#2c8267',
 		grey: '#F6F7F8',
+		grey100: '#F6F7F8',
+		grey200: '#EEE',
 		grey700: '#53575A',
 		grey700Alt: '#848E97',
 		grey800: '#3C3C3B',
@@ -46,6 +53,18 @@ export const theme = {
 				'3xl': '28px',
 				'4xl': '32px',
 				'5xl': '40px',
+			},
+		},
+		Input: {
+			variants: {
+				primary: {
+					background: 'white',
+					borderColor: 'grey200',
+				},
+				secondary: {
+					background: 'grey100',
+					borderColor: 'grey100',
+				},
 			},
 		},
 	},

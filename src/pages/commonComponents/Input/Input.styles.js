@@ -1,12 +1,34 @@
-import { css } from '@emotion/css';
-import { getCommonStyles } from '../../../configs/theme';
+import { css } from '@emotion/react';
 
-export const inputGroup = ({ prepend, append }) => css`
+export const inputGroup = ({ prepend, append, variant }) => theme => {
+	const {
+		colors,
+		components: {
+			Input: { variants },
+		},
+	} = theme;
+
+	console.log(
+		variants[variant].background,
+		`
 	input {
 		${prepend.offsetWidth ? `padding-left: calc(${prepend.offsetWidth}px + 1.2em);` : ''}
 		${append.offsetWidth ? `padding-right: calc(${append.offsetWidth}px + 1.2em);` : ''}
+		background: ${colors[variants[variant].background]};
+		border-color: ${colors[variants[variant].borderColor]};
 	}
-`;
+`
+	);
+
+	return css`
+		input {
+			${prepend.offsetWidth ? `padding-left: calc(${prepend.offsetWidth}px + 1.2em);` : ''}
+			${append.offsetWidth ? `padding-right: calc(${append.offsetWidth}px + 1.2em);` : ''}
+			background: ${colors[variants[variant].background]};
+			border-color: ${colors[variants[variant].borderColor]};
+		}
+	`;
+};
 
 export const prepend = css`
 	left: 1em;

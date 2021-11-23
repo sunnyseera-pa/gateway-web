@@ -378,6 +378,7 @@ class SearchBar extends React.Component {
 														onKeyDown={this.props.doSearchMethod}
 														value={textValue}
 														onReset={this.props.onClearMethod}
+														variant='secondary'
 													/>
 												</Col>
 											</Row>
