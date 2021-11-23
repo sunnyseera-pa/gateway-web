@@ -19,6 +19,7 @@ import ReviewTools from './ReviewTools';
 import YourAccount from './YourAccount';
 import DataAccessRequests from './DataAccessRequests/DataAccessRequests';
 import WorkflowDashboard from './Workflows/WorkflowDashboard';
+import CustomiseDAR from './CustomiseDAR/CustomiseDAR';
 import TeamHelp from './TeamHelp/TeamHelp';
 import 'react-web-tabs/dist/react-web-tabs.css';
 import SVGIcon from '../../images/SVGIcon';
@@ -100,6 +101,7 @@ class Account extends Component {
 		isSubmitting: false,
 		teamManagementInternalTab: 'Notifications',
 		accountUpdated: false,
+		hasPublishedDARContent: false,
 		dataaccessrequest: {},
 	};
 
@@ -160,6 +162,7 @@ class Account extends Component {
 					isReviewApproved: values.reviewApproved,
 					isReviewRejected: values.reviewRejected,
 					accountUpdated: !!values.accountUpdated,
+					hasPublishedDARContent: !!values.publishedDARContent,
 				});
 				this.toggleNav(tab);
 			}
@@ -197,7 +200,8 @@ class Account extends Component {
 					isReviewApproved: values.reviewApproved,
 					isReviewRejected: values.reviewRejected,
 					team,
-					activeAccordion: values.tab === 'dataaccessrequests' || values.tab === 'workflows' ? '0' : -1,
+					activeAccordion:
+						values.tab === 'dataaccessrequests' || values.tab === 'workflows' || values.tab === 'customisedataaccessrequests' ? '0' : -1,
 				});
 
 				if (team !== 'user' && team !== 'admin') {
@@ -399,7 +403,10 @@ class Account extends Component {
 			// 4. check if user has teams and the current nav is dataaccessrequests, keep expanded
 			if (
 				!_.isEmpty(user.teams) &&
-				(tab.tabId === 'dataaccessrequests' || tab.tabId === 'workflows' || tab.tabId === 'addeditworkflow') &&
+				(tab.tabId === 'dataaccessrequests' ||
+					tab.tabId === 'workflows' ||
+					tab.tabId === 'customisedataaccessrequests' ||
+					tab.tabId === 'addeditworkflow') &&
 				activeAccordion !== '0'
 			) {
 				activeAccordion = '0';
@@ -516,9 +523,9 @@ class Account extends Component {
 			isSubmitting,
 			teamManagementTab,
 			accountUpdated,
+			hasPublishedDARContent,
 			dataaccessrequest,
 		} = this.state;
-
 		return (
 			<Sentry.ErrorBoundary fallback={<ErrorModal />}>
 				<SearchBar
@@ -667,7 +674,9 @@ class Account extends Component {
 									{allowAccessRequestManagement && this.userHasRole(team, ['manager', 'reviewer']) && (
 										<div
 											className={`${
-												tabId === 'dataaccessrequests' || tabId === 'workflows' || tabId === 'addeditworkflow' ? 'activeCard' : 'accountNav'
+												['dataaccessrequests', 'workflows', 'customisedataaccessrequests', 'addeditworkflow'].includes(tabId)
+													? 'activeCard'
+													: 'accountNav'
 											}`}>
 											<Accordion activeKey={activeAccordion} onSelect={this.accordionClick}>
 												<Fragment>
@@ -689,6 +698,14 @@ class Account extends Component {
 																	bsPrefix='nav-block'
 																	className={`gray700-13 ${tabId === 'workflows' ? 'nav-item-active' : ''}`}>
 																	<span className='subLinkItem'>Workflows</span>
+																</Nav.Link>
+															)}
+															{this.userHasRole(team, 'manager') && (
+																<Nav.Link
+																	onClick={e => this.toggleNav('customisedataaccessrequests')}
+																	bsPrefix='nav-block'
+																	className={`gray700-13 ${tabId === 'customisedataaccessrequests' ? 'nav-item-active' : ''}`}>
+																	<span className='subLinkItem'>Customise</span>
 																</Nav.Link>
 															)}
 														</div>
@@ -802,6 +819,16 @@ class Account extends Component {
 
 								{allowWorkflow && this.userHasRole(team, 'manager') && (
 									<>{tabId === 'workflows' ? <WorkflowDashboard userState={userState} team={team} /> : ''}</>
+								)}
+
+								{(this.userHasRole(team, ['manager']) || team === 'admin') && (
+									<>
+										{tabId === 'customisedataaccessrequests' ? (
+											<CustomiseDAR userState={userState} hasPublishedDARContent={hasPublishedDARContent} publisherId={team} />
+										) : (
+											''
+										)}
+									</>
 								)}
 
 								{tabId === 'teamManagement' ? (
