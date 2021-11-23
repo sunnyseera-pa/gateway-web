@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import React, { Suspense, useCallback, useState } from 'react';
+import React, { Suspense, useCallback, useState, useEffect } from 'react';
 import { Button } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { NotificationManager } from 'react-notifications';
@@ -26,9 +26,9 @@ const AccountDataset = props => {
 	const [team, setTeam] = useState();
 	const [currentDataset, setCurrentDataset] = useState();
 	const [state, setState] = useState({
-		showPrevious: true,
+		showPrevious: false,
+		showNext: false,
 		showDisabled: true,
-		showNext: true,
 		statusError: false,
 		showApproveDatasetModal: false,
 		showRejectDatasetModal: false
@@ -98,7 +98,7 @@ const AccountDataset = props => {
 		return datasets.find(dataset => dataset.pid === id);
 	};
 
-	React.useEffect(() => {
+	useEffect(() => {
 		const page = getNextPage(0);
 		if (page) {
 			if (page.dataset) {
@@ -115,11 +115,13 @@ const AccountDataset = props => {
 		}
 	}, [dataPublisher.data, id]);
 
-	const handlePaginationClick = React.useCallback(
+	const handlePaginationClick = useCallback(
 		i => {
 			const { dataset } = getNextPage(i);
 
-			if (dataset) history.push(`/account/datasets/${dataset.pid}`);
+			if (dataset) {
+				history.push(`/account/datasets/${dataset.pid}`);
+			} 
 		},
 		[id, dataPublisher.data, team]
 	);
