@@ -1,3 +1,3 @@
-import AccountContent from './AccountContent';
+import LayoutContent from './LayoutContent';
 
-export default AccountContent;
+export default LayoutContent;

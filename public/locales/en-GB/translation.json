@@ -30,6 +30,10 @@
 	"next": "Next",
 	"previous": "Previous",
 	"dataset": {
+		"inReview": "pending approval",
+		"active": "Active",
+		"rejected": "Rejected",
+		"archive": "Archived",
 		"makeADecision": "Make a decision",
 		"approve": "Approve",
 		"reject": "Reject",
@@ -58,5 +62,6 @@
 	"viewForm": "View form",
 	"search": {
 		"placeholder": "Search within {{type}}"
-	}
+	},
+	"": {}
 }

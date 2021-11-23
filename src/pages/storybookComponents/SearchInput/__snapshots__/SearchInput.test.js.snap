@@ -3,13 +3,13 @@
 exports[`Given the SearchInput component When it is rendered Then matches the previous snapshot 1`] = `
 <div>
   <div
-    class="ui-Input ui-SearchInput css-jlq4v1 input-group"
+    class="ui-Input ui-SearchInput css-1ctemxb css-p0y5cd-Input input-group"
   >
     <div
-      class="css-rpufn0 input-group-prepend"
+      class="css-j8o1xl-Input input-group-prepend"
     >
       <button
-        fill="purple500"
+        fill="green700"
         name="search"
         role="button"
       >
@@ -18,6 +18,7 @@ exports[`Given the SearchInput component When it is rendered Then matches the pr
     </div>
     <input
       class="form-control"
+      name="search"
       value=""
     />
   </div>

@@ -9,9 +9,11 @@ import NotFound from '../commonComponents/NotFound';
 import SVGIcon from '../../images/SVGIcon';
 import utils from '../../utils/DataSetHelper.util';
 import './Dashboard.scss';
-import AccountContent from './Components/AccountContent';
+import { LayoutContent } from '../storybookComponents/Layout';
 import { useHistory } from 'react-router';
 import { ReactComponent as EyeIcon } from '../../images/eye.svg';
+import SearchBarContent from '../storybookComponents/SearchBarContent';
+import { useTranslation } from 'react-i18next';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -27,6 +29,7 @@ const AccountDatasets = props => {
 	const [team, setTeam] = useState(props.team);
 	const [publisherID, setPublisherID] = useState('');
 	const history = useHistory();
+	const { t } = useTranslation();
 
 	useEffect(() => {
 		setTeam(props.team);
@@ -105,26 +108,26 @@ const AccountDatasets = props => {
 		let { message = '' } = alert;
 
 		return (
-			<AccountContent className='mt-3'>
+			<LayoutContent className='mt-3'>
 				<Alert variant={'success'} className='col-sm-12 main-alert'>
 					<SVGIcon name='check' width={18} height={18} fill={'#2C8267'} /> {message}
 				</Alert>
-			</AccountContent>
+			</LayoutContent>
 		);
 	};
 
 	if (isLoading) {
 		return (
-			<AccountContent>
+			<LayoutContent>
 				<Loading />
-			</AccountContent>
+			</LayoutContent>
 		);
 	}
 
 	return (
 		<div>
 			<>{!_.isEmpty(alert) ? generateAlert() : ''}</>
-			<AccountContent>
+			<LayoutContent>
 				<div className='accountHeader'>
 					<Row>
 						<Col sm={12} md={8}>
@@ -180,7 +183,7 @@ const AccountDatasets = props => {
 						</Col>
 					</Row>
 				</div>
-
+				<SearchBarContent type={t(`dataset.${key}`)} />
 				{(() => {
 					switch (key) {
 						case 'active':
@@ -309,7 +312,7 @@ const AccountDatasets = props => {
 							return key;
 					}
 				})()}
-			</AccountContent>
+			</LayoutContent>
 		</div>
 	);
 };

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Col, Row } from 'react-bootstrap';
 
-const AccountContent = ({ children, ...outerProps }) => (
+const LayoutContent = ({ children, ...outerProps }) => (
 	<Row {...outerProps}>
 		<Col xs={1}></Col>
 		<Col xs={10}>{children}</Col>
@@ -9,4 +9,4 @@ const AccountContent = ({ children, ...outerProps }) => (
 	</Row>
 );
 
-export default AccountContent;
+export default LayoutContent;

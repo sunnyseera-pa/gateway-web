@@ -44,7 +44,7 @@ import Dropdown from 'react-bootstrap/Dropdown';
 
 import { formSchema } from './formSchema';
 import DatasetOnboardingHelperUtil from '../../utils/DatasetOnboardingHelper.util';
-import ActionBarStatus from '../commonComponents/ActionBarStatus';
+import ActionBarStatus from '../storybookComponents/ActionBarStatus';
 import ErrorModal from '../commonComponents/errorModal';
 
 /* export const DatasetOnboarding = props => {

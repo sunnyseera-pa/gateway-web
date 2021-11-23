@@ -1,6 +1,6 @@
 import React from 'react';
 import { Dropdown } from 'react-bootstrap';
-import Icon from '../Icon';
+import Icon from '../../storybookComponents/Icon';
 
 const SortDropdown = ({ handleSort, defaultValue, value, options, iconSelected }) => {
 	const currentValue = !value ? defaultValue : value;

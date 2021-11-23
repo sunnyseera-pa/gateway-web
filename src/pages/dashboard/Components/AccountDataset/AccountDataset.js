@@ -13,7 +13,7 @@ import ActionBar from '../../../commonComponents/actionbar/ActionBar';
 import DatasetCard from '../../../commonComponents/DatasetCard';
 import Loading from '../../../commonComponents/Loading';
 import ActionBarMenu from '../../../commonComponents/ActionBarMenu/ActionBarMenu';
-import AccountContent from '../AccountContent';
+import { LayoutContent } from '../../../storybookComponents/Layout';
 import AccountDatasetApproveModal from './AccountDatasetApproveModal';
 import AccountDatasetRejectModal from './AccountDatasetRejectModal';
 import ActivityLogCard from '../ActivityLogCard';
@@ -161,9 +161,9 @@ const AccountDataset = props => {
 
 	if (dataPublisher.isLoading || dataActivityLog.isLoading) {
 		return (
-			<AccountContent>
+			<LayoutContent>
 				<Loading />
-			</AccountContent>
+			</LayoutContent>
 		);
 	}
 
@@ -181,7 +181,7 @@ const AccountDataset = props => {
 
 	return currentDataset ? (
 		<Suspense fallback={t('loading')}>
-			<AccountContent>
+			<LayoutContent>
 				<DatasetCard
 					id={currentDataset._id}
 					title={currentDataset.name}
@@ -229,7 +229,7 @@ const AccountDataset = props => {
 					goToNext={goToNext}
 					showGoToNext={showNext}
 				/>
-			</AccountContent>
+			</LayoutContent>
 		</Suspense>
 	) : null;
 };

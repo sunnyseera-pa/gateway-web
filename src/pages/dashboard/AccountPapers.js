@@ -9,7 +9,7 @@ import ActionModal from '../commonComponents/ActionModal/ActionModal';
 import { EntityActionButton } from './EntityActionButton.jsx';
 import googleAnalytics from '../../tracking';
 import { PaginationHelper } from '../commonComponents/PaginationHelper';
-import AccountContent from './Components/AccountContent';
+import { LayoutContent } from '../storybookComponents/Layout';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -162,15 +162,15 @@ export const AccountPapers = props => {
 
 	if (isLoading) {
 		return (
-			<AccountContent>
+			<LayoutContent>
 				<Loading data-testid='isLoading' />
-			</AccountContent>
+			</LayoutContent>
 		);
 	}
 
 	return (
 		<div>
-			<AccountContent>
+			<LayoutContent>
 				<Row className='accountHeader'>
 					<Col sm={12} md={8}>
 						<Row>
@@ -547,7 +547,7 @@ export const AccountPapers = props => {
 						)}
 					</div>
 				)}
-			</AccountContent>
+			</LayoutContent>
 		</div>
 	);
 };

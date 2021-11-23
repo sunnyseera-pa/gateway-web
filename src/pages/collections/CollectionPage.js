@@ -18,7 +18,6 @@ import ErrorModal from '../commonComponents/errorModal';
 import ResourcePageButtons from '../commonComponents/resourcePageButtons/ResourcePageButtons';
 import SVGIcon from '../../images/SVGIcon';
 import './Collections.scss';
-import CollectionsSearch from './CollectionsSearch';
 import googleAnalytics from '../../tracking';
 import { getCollectionRequest, getCollectionRelatedObjectsRequest, postCollectionCounterUpdateRequest } from '../../services/collection';
 import { filterCollectionItems, generatePaginatedItems, generateDropdownItems } from './collection.utils';
@@ -30,7 +29,8 @@ import ProjectCollectionResults from './Components/ProjectCollectionResults';
 import PaperCollectionResults from './Components/PaperCollectionResults';
 import PersonCollectionResults from './Components/PersonCollectionResults';
 import CourseCollectionResults from './Components/CourseCollectionResults';
-import SearchBarSimple from '../commonComponents/SearchBarSimple';
+import SearchBarContent from '../storybookComponents/SearchBarContent';
+import { LayoutContent } from '../storybookComponents/Layout';
 
 export const CollectionPage = props => {
 	const { t } = useTranslation();
@@ -463,18 +463,20 @@ export const CollectionPage = props => {
 					</Row>
 				)}
 				{key !== 'discussion' && (
-					<SearchBarSimple
-						onSubmit={doCollectionsSearch}
-						onChangeInput={setCollectionsSearchString}
-						onResetInput={handleResetInput}
-						onChangeSort={handleSort}
-						isLoading={isResultsLoading}
-						sortProps={{
-							options: dropdownItems,
-							defaultValue: 'recentlyadded',
-						}}
-						type='collection'
-					/>
+					<LayoutContent>
+						<SearchBarContent
+							onSubmit={doCollectionsSearch}
+							onChangeInput={setCollectionsSearchString}
+							onResetInput={handleResetInput}
+							onChangeSort={handleSort}
+							isLoading={isResultsLoading}
+							sortProps={{
+								options: dropdownItems,
+								defaultValue: 'recentlyadded',
+							}}
+							type='collection'
+						/>
+					</LayoutContent>
 				)}
 				<Row>
 					<Col sm={1} lg={1} />
