@@ -23,7 +23,7 @@ import ActivityLogActionButtons from '../DataAccessRequest/components/ActivityLo
 import AccountAnalyticsDashboard from './AccountAnalyticsDashboard';
 import AccountCollections from './AccountCollections';
 import AccountCourses from './AccountCourses';
-import AccountDatasets from './AccountDatasets';
+import AccountDatasets from './Components/AccountDatasets';
 import AccountPapers from './AccountPapers';
 import AccountProjects from './AccountProjects';
 import AccountTeamManagement from './AccountTeamManagement';
