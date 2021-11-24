@@ -1,132 +1,135 @@
-import React from 'react'; 
+import React from 'react';
 import { Dropdown, InputGroup, DropdownButton, FormControl } from 'react-bootstrap';
 import axios from 'axios';
 import _ from 'lodash';
 import './DropdownCustom.scss';
- 
+
 let baseURL = require('../../../commonComponents/BaseURL').getURL();
 
 export const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
-    <a
-        className='noTextDecoration'
-        href='javascript:void(0)'
-        ref={ref}
-        onClick={e => {
-            e.preventDefault();
-                onClick(e);
-        }}>
-        {children}
-    </a>
-)); 
+	<a
+		className='noTextDecoration'
+		href='javascript:void(0)'
+		ref={ref}
+		onClick={e => {
+			e.preventDefault();
+			onClick(e);
+		}}>
+		{children}
+	</a>
+));
 
 class DropdownCustom extends React.Component {
-    constructor(props) {
-        super(props); 
-        this.state = {
-            value: this.props.value,
-            readOnly: props.readOnly || false,
-        };
-        this.handleFocus = this.handleFocus.bind(this);
+	constructor(props) {
+		super(props);
+		this.state = {
+			value: this.props.value,
+			readOnly: props.readOnly || false,
+		};
+		this.handleFocus = this.handleFocus.bind(this);
 		this.handleBlur = this.handleBlur.bind(this);
-    }
+	}
 
-    // initialize our state
+	// initialize our state
 	state = {
 		contributorsInfo: [],
 	};
 
-    async componentDidMount() {
+	async componentDidMount() {
 		await this.getContributorsInfo();
 	}
 
-    async getContributorsInfo() {
-        // TODO - Update here to use id passed following winterfell updated
-        await axios.get(baseURL + '/api/v1/data-access-request/prepopulate-contributors/61814305f42610e4b2d12927').then(res => {
-            this.setState({
-                contributorsInfo: res.data.data
-            });
-        });
-    }
+	async getContributorsInfo() {
+		// TODO - Update here to use id passed following winterfell updated
+		await axios.get(baseURL + '/api/v1/data-access-request/prepopulate-contributors/61814305f42610e4b2d12927').then(res => {
+			this.setState({
+				contributorsInfo: res.data.data,
+			});
+		});
+	}
 
-    setContributorValue(contributor) {
-        let contributorValue = `${contributor.firstname} ${contributor.lastname}`
+	setContributorValue(contributor) {
+		let contributorValue = `${contributor.firstname} ${contributor.lastname}`;
 
-        this.setState(
-            {
-                value: contributorValue,
-            },
-            this.props.onChange.bind(null, contributor)
-        );
+		this.setState(
+			{
+				value: contributorValue,
+			},
+			this.props.onChange.bind(null, contributor)
+		);
+	}
 
-    }
+	handleChange(e) {
+		this.setState(
+			{
+				value: e.target.value,
+			},
+			this.props.onChange.bind(null, e.target.value)
+		);
+	}
 
-    handleChange(e) {
-        this.setState(
-            {
-                value: e.target.value,
-            },
-            this.props.onChange.bind(null, e.target.value)
-        );
-    }
-
-    handleFocus(e) {
+	handleFocus(e) {
 		this.props.onFocus();
 	}
 	handleBlur(e) {
 		this.props.onBlur(this.props.value);
 	}
 
-    render() {
-        const { contributorsInfo } = this.state;
-        
-        return (      
-           <Dropdown >
-					<Dropdown.Toggle as={CustomToggle}> 
-                        <input 
-                            name={this.props.name}
-                            id={this.props.id}
-					        disabled={this.state.readOnly}
-                            aria-labelledby={this.props.labelId}
-					        className={this.props.classes.input}
-					        required={this.props.required ? 'required' : undefined}
-                            type="text" 
-							onChange={e => this.handleChange(e)} 
-                            onBlur={this.handleBlur}
-				            onFocus={this.handleFocus}
-                            value={this.state.value}  
-                            data-test-id='darContributorTextInput'
-                        ></input> 
-					</Dropdown.Toggle>
-					<Dropdown.Menu className='darContributorsDropdown' >
-                    <span className='gray800-14-bold'> Suggestions: </span>
-						{!_.isUndefined(contributorsInfo) && contributorsInfo.map((contributor, index) => { 
+	render() {
+		const { contributorsInfo } = this.state;
+
+		return (
+			<Dropdown>
+				<Dropdown.Toggle as={CustomToggle}>
+					<input
+						name={this.props.name}
+						id={this.props.id}
+						disabled={this.state.readOnly}
+						aria-labelledby={this.props.labelId}
+						className={this.props.classes.input}
+						required={this.props.required ? 'required' : undefined}
+						type='text'
+						onChange={e => this.handleChange(e)}
+						onBlur={this.handleBlur}
+						onFocus={this.handleFocus}
+						value={this.state.value}
+						data-test-id='darContributorTextInput'></input>
+				</Dropdown.Toggle>
+				<Dropdown.Menu className='darContributorsDropdown'>
+					<span className='gray800-14-bold'> Suggestions: </span>
+					{!_.isUndefined(contributorsInfo) &&
+						contributorsInfo.map((contributor, index) => {
 							return (
-                                <div 
-                                    className='margin-top-8 cursorPointer' 
-                                    data-test-id='darContributorDropdownItem' key={index}
-                                    onClick={() => {
-                                        this.setContributorValue(contributor)
-                                    }}
-                                >
-                                    <span className='gray800-14'>{contributor.firstname} {contributor.lastname} {!_.has(contributor, 'user.email') && ' (contributor)'}</span>
-                                    <br />
-                                    <span className='gray-600-14' data-test-id={`darContributorDropdownEmail${index}`}>
-                                        {_.has(contributor, 'user.email') ? contributor.user.email : 'Email address cannot be shared'}
-                                    </span>
-                                    <span className='gray-600-14 floatRight' data-test-id={`darContributorDropdownOrganisation${index}`}>
-                                        {!_.has(contributor, 'user.email') && contributor.showOrganisation === false ? 'Organisation is hidden' : contributor.organisation}
-                                    </span>
-                                </div>
-							); 
+								<div
+									className='margin-top-8 cursorPointer'
+									data-test-id='darContributorDropdownItem'
+									key={index}
+									onClick={() => {
+										this.setContributorValue(contributor);
+									}}>
+									<span className='gray800-14'>
+										{contributor.firstname} {contributor.lastname} {!_.has(contributor, 'user.email') && ' (contributor)'}
+									</span>
+									<br />
+									<span className='gray-600-14' data-test-id={`darContributorDropdownEmail${index}`}>
+										{_.has(contributor, 'user.email') ? contributor.user.email : 'Email address cannot be shared'}
+									</span>
+									<span className='gray-600-14 floatRight' data-test-id={`darContributorDropdownOrganisation${index}`}>
+										{!_.has(contributor, 'user.email') && contributor.showOrganisation === false
+											? 'Organisation is hidden'
+											: contributor.organisation}
+									</span>
+								</div>
+							);
 						})}
-					</Dropdown.Menu>
-				</Dropdown>
-        );
-    }
+				</Dropdown.Menu>
+			</Dropdown>
+		);
+	}
 }
 
 DropdownCustom.defaultProps = {
-    value: '',
+	value: '',
 	onChange: () => {},
 	onFocus: () => {},
 	onBlur: () => {},
