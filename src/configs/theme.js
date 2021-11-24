@@ -1,3 +1,5 @@
+import isNil from 'lodash/isNil';
+
 export const getSize = (value, { base: { increment, unit } }) => {
 	return `${value * increment}${unit}`;
 };
@@ -7,15 +9,16 @@ export const getSpacingStyle = (prop, value, theme) => {
 };
 
 export const getCommonStyle = (prop, value) => {
-	return `${prop}: ${value}`;
+	return !isNil(value) ? `${prop}: ${value};` : '';
 };
 
-export const getCommonStyles = ({ ml, mr, mb, mt }, theme) => {
+export const getCommonStyles = ({ ml, mr, mb, mt, width }, theme) => {
 	return `
 		${getSpacingStyle('margin-left', ml, theme)}
 		${getSpacingStyle('margin-right', mr, theme)}
 		${getSpacingStyle('margin-bottom', mb, theme)}
 		${getSpacingStyle('margin-top', mt, theme)}
+		${getCommonStyle('width', width)}
 	`;
 };
 

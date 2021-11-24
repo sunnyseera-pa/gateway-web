@@ -6,18 +6,24 @@ import Dropdown from './Dropdown';
 	title='Dropdown'
 	component={Dropdown}
 	args={{
-		options: ['Option 1', 'Option 2'],
+		options: [
+			{
+				label: 'Recently updated',
+				value: 'updated',
+			},
+			'Related resources',
+		],
 	}}
 />
 
 <Canvas>
 	<Story name='Basic'>
 		{props => {
-			const [value, setValue] = React.useState('Option 2');
+			const [value, setValue] = React.useState('updated');
 			const handleChange = React.useCallback(value => {
 				setValue(value);
 			}, []);
-			return <Dropdown {...props} onSelect={handleChange} value={value} />;
+			return <Dropdown {...props} onSelect={handleChange} value={value} width='200px' />;
 		}}
 	</Story>
 </Canvas>
