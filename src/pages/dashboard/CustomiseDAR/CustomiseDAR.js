@@ -1,6 +1,5 @@
 import axios from 'axios';
 import React, { Fragment, useState, useEffect } from 'react';
-import queryString from 'query-string';
 import { isEmpty, has } from 'lodash';
 import { Row, Col, Alert } from 'react-bootstrap';
 import moment from 'moment';
@@ -22,6 +21,7 @@ const CustomiseDAR = ({
 	const [howToRequestAccessStatus, setHowToRequestAccessStatus] = useState();
 	const [yourAppFormStatus, setYourAppFormStatus] = useState();
 	const [howToRequestAccessPublisher, setHowToRequestAccessPublisher] = useState();
+	const [yourApplicationFormPublisher, setYourApplicationFormPublisher] = useState();
 
 	const sectionStatuses = {
 		ACTIVE: 'Live',
@@ -36,9 +36,6 @@ const CustomiseDAR = ({
 	};
 
 	useEffect(async () => {
-		if (!!window.location.search) {
-			let values = queryString.parse(window.location.search);
-		}
 		let publisherInfo;
 		await axios.get(`${baseURL}/api/v1/publishers/${publisherId}`).then(res => {
 			publisherInfo = res.data.publisher;
@@ -47,6 +44,7 @@ const CustomiseDAR = ({
 		});
 
 		await getHowToRequestAccessPublisher(publisherInfo);
+		await getYourApplicationFormPublisher(publisherInfo);
 	}, []);
 
 	const setSectionStatuses = (htraContent, applicationContentComplete) => {
@@ -74,6 +72,16 @@ const CustomiseDAR = ({
 				data: { person },
 			} = response;
 			setHowToRequestAccessPublisher(`${person.firstname} ${person.lastname}`);
+		}
+	};
+
+	const getYourApplicationFormPublisher = async publisherInfo => {
+		if (has(publisherInfo, 'applicationFormUpdatedBy')) {
+			const response = await axios.get(`${baseURL}/api/v1/person/${publisherInfo.applicationFormUpdatedBy}`);
+			const {
+				data: { person },
+			} = response;
+			setYourApplicationFormPublisher(`${person.firstname} ${person.lastname}`);
 		}
 	};
 
@@ -176,16 +184,16 @@ const CustomiseDAR = ({
 										<Fragment>
 											<span className='box gray200-14'>Updated by</span>
 											<span className='box gray800-14'>
-												{publisherDetails.applicationFormUpdatedBy
-													? moment(publisherDetails.applicationFormUpdatedBy).format('DD MMM YYYY HH:mm')
-													: 'No customisations made'}
+												{publisherDetails.applicationFormUpdatedBy ? yourApplicationFormPublisher : 'No customisations made'}
 											</span>
 										</Fragment>
 									) : (
 										''
 									)}
 									<span className='box gray200-14'>Last activity</span>
-									<span className='box gray800-14'>{publisherDetails.applicationFormUpdated || 'No customisations made'}</span>
+									<span className='box gray800-14'>
+										{moment(publisherDetails.applicationFormUpdatedOn).format('DD MMM YYYY HH:mm') || 'No customisations made'}
+									</span>
 								</div>
 							</div>
 						</div>
