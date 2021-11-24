@@ -1402,7 +1402,7 @@ class SearchPage extends React.Component {
 		let formattedDataUses = [];
 
 		dataUses.forEach(dataUse => {
-			const gatewayApplicants = dataUse.gatewayApplicants.map(applicant => {
+			const gatewayApplicants = dataUse.gatewayApplicantsDetails.map(applicant => {
 				return `${applicant.firstname} ${applicant.lastname} `;
 			});
 

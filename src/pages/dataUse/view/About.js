@@ -503,8 +503,8 @@ const About = ({ data, renderTooltip }) => {
 								<>
 									{data &&
 										data.gatewayDatasetsInfo.map(gatewayDataset => (
-											<a href={`/dataset/${gatewayDataset.pid}`}>
-												<span className='badge-tag badge-datause-bold'>{gatewayDataset.name}</span>
+											<a href={`/dataset/${gatewayDataset[0].pid}`}>
+												<span className='badge-tag badge-datause-bold'>{gatewayDataset[0].name}</span>
 											</a>
 										))}
 
@@ -551,7 +551,7 @@ const About = ({ data, renderTooltip }) => {
 							<OverlayTrigger
 								placement='top'
 								overlay={renderTooltip(
-									'The legal basis that allows the applicant to lawfully process personally identifiable data, as specified by NHS Digital.'
+									'The lawful basis for processing are set out in Article 6 of the GDPR. At least one legal basis must apply whenever you process personal data. Please select appropriate Article 6 lawful basis. Processing shall be lawful only if and to the extent that at least one of the following applies.'
 								)}>
 								<button className='datause-info-icon-button'>
 									<SVGIcon name='info' width={10} height={10} fill={'#475da7'} className='datause-info-icon' />
@@ -575,7 +575,9 @@ const About = ({ data, renderTooltip }) => {
 							<Col md={4}>Lawful conditions for provision of data under Article 9</Col>
 							<OverlayTrigger
 								placement='top'
-								overlay={renderTooltip('An appropriate Article 9 condition for processing the special category data.')}>
+								overlay={renderTooltip(
+									"Processing of personal data revealing racial or ethnic origin, political opinions, religious or philosophical beliefs, or trade union membership, and the processing of genetic data, biometric data for the purpose of uniquely identifying a natural person, data concerning health or data concerning a natural person's sex life or sexual orientation shall be prohibited. This does not apply if one of the following applies."
+								)}>
 								<button className='datause-info-icon-button'>
 									<SVGIcon name='info' width={10} height={10} fill={'#475da7'} className='datause-info-icon' />
 								</button>
