@@ -31,7 +31,9 @@ const DataUsePage = React.forwardRef(({ onClickDataUseUpload, team }, ref) => {
 
 	useEffect(() => {
 		axios.get(baseURL + '/api/v2/data-use-registers?team=' + team).then(res => {
+			debugger;
 			let dataUses = res.data.data;
+
 			dataUses.sort((dataUseOne, dataUseTwo) => Date.parse(dataUseTwo.lastActivity) - Date.parse(dataUseOne.lastActivity));
 			setRow(dataUses);
 		});
