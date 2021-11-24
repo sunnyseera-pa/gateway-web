@@ -67,5 +67,17 @@ export const theme = {
 				},
 			},
 		},
+		Dropdown: {
+			variants: {
+				primary: {
+					background: 'white',
+					borderColor: 'grey200',
+				},
+				secondary: {
+					background: 'grey100',
+					borderColor: 'grey100',
+				},
+			},
+		},
 	},
 };

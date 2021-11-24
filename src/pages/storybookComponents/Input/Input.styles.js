@@ -14,6 +14,11 @@ export const inputGroup = ({ prepend, append, variant }) => theme => {
 			${append.offsetWidth ? `padding-right: calc(${append.offsetWidth}px + 1.2em);` : ''}
 			background: ${colors[variants[variant].background]};
 			border-color: ${colors[variants[variant].borderColor]};
+			border-radius: 0.25rem;
+
+			&:focus {
+				border-color: ${colors.green700};
+			}
 		}
 	`;
 };
