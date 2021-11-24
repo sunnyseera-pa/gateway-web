@@ -3,18 +3,15 @@ import { convertToRaw } from 'draft-js';
 import { EditorState } from 'draft-js';
 import draftToMarkdown from 'draftjs-to-markdown';
 import { stateFromMarkdown } from 'draft-js-import-markdown';
-import { Button, Modal } from 'react-bootstrap';
-import ActionBar from '../actionbar/ActionBar';
 import { WysiwygEditor } from '../WysiwygEditor/WysiwygEditor';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
-import { ReactComponent as CloseButtonSvg } from '../../../images/close-alt.svg';
 import axios from 'axios';
+import { ConfirmPublishModal } from './ConfirmPublishModal';
 const baseURL = require('../../commonComponents/BaseURL').getURL();
 
-export const EditHowToRequestAccessPage = ({ userState, publisherDetails }) => {
+export const EditHowToRequestAccessPage = ({ publisherDetails, showConfirmPublishModal, setShowConfirmPublishModal }) => {
 	const [contentState] = useState(stateFromMarkdown(publisherDetails.dataRequestModalContent.body));
 	const [editorState, setEditorState] = useState(EditorState.createWithContent(contentState));
-	const [showConfirmPublishModal, setShowConfirmPublishModal] = useState(false);
 
 	const updatePublisherModalContent = async () => {
 		let contentAsMarkdown = draftToMarkdown(convertToRaw(editorState.getCurrentContent()));
@@ -45,59 +42,12 @@ export const EditHowToRequestAccessPage = ({ userState, publisherDetails }) => {
 							setEditorState(editorState);
 						}}
 					/>
-					<Modal
-						show={showConfirmPublishModal}
-						size='lg'
-						aria-labelledby='contained-modal-title-vcenter'
-						centered
-						className='removeUploaderModal'>
-						<div className='removeUploaderModal-header'>
-							<div className='removeUploaderModal-header--wrap'>
-								<div className='removeUploaderModal-head'>
-									<h1 className='black-20-semibold'>Publish ‘How to request access’ information</h1>
-									<CloseButtonSvg className='removeUploaderModal-head--close' onClick={() => setShowConfirmPublishModal(false)} />
-								</div>
-								<div className='gray700-13 new-line'>
-									Are you sure you want to publish your updates to the ‘How to request access’ information?
-								</div>
-							</div>
-						</div>
-						<div className='removeUploaderModal-footer'>
-							<div className='removeUploaderModal-footer--wrap'>
-								<button className='button-secondary' onClick={() => setShowConfirmPublishModal(false)}>
-									No, nevermind
-								</button>
-								<button
-									className='button-primary'
-									onClick={() => {
-										updatePublisherModalContent();
-									}}>
-									Publish
-								</button>
-							</div>
-						</div>
-					</Modal>
+					<ConfirmPublishModal
+						showConfirmPublishModal={showConfirmPublishModal}
+						setShowConfirmPublishModal={setShowConfirmPublishModal}
+						updatePublisherModalContent={updatePublisherModalContent}
+					/>
 				</div>
-				<ActionBar userState={userState}>
-					<div className='floatRight'>
-						<a style={{ cursor: 'pointer' }} href={'/account?tab=customisedataaccessrequests'}>
-							<Button variant='medium' className='cancelButton dark-14 mr-2'>
-								Cancel
-							</Button>
-						</a>
-
-						<Button
-							data-test-id='add-collection-publish'
-							variant='primary'
-							className='publishButton white-14-semibold mr-2'
-							type='submit'
-							onClick={() => {
-								setShowConfirmPublishModal(true);
-							}}>
-							Publish
-						</Button>
-					</div>
-				</ActionBar>
 			</div>
 		</div>
 	);

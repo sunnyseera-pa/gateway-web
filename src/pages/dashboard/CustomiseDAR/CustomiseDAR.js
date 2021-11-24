@@ -9,10 +9,16 @@ import EditHowToRequestAccessPage from '../../commonComponents/EditHowToRequestA
 import './CustomiseDAR.scss';
 const baseURL = require('../../commonComponents/BaseURL').getURL();
 
-const CustomiseDAR = ({ userState, hasPublishedDARContent, publisherId }) => {
-	const [showHowToRequestAccessEditor, setShowHowToRequestAccessEditor] = useState(false);
+const CustomiseDAR = ({
+	userState,
+	hasPublishedDARContent,
+	publisherId,
+	showConfirmPublishModal,
+	setShowConfirmPublishModal,
+	showHowToRequestAccessEditor,
+	setShowHowToRequestAccessEditor,
+}) => {
 	const [publisherDetails, setPublisherDetails] = useState({});
-	const [publishedHowToRequestAccess, setPublishedHowToRequestAccess] = useState(false);
 	const [howToRequestAccessStatus, setHowToRequestAccessStatus] = useState();
 	const [yourAppFormStatus, setYourAppFormStatus] = useState();
 	const [howToRequestAccessPublisher, setHowToRequestAccessPublisher] = useState();
@@ -32,7 +38,6 @@ const CustomiseDAR = ({ userState, hasPublishedDARContent, publisherId }) => {
 	useEffect(async () => {
 		if (!!window.location.search) {
 			let values = queryString.parse(window.location.search);
-			setPublishedHowToRequestAccess(values.publishedContent);
 		}
 		let publisherInfo;
 		await axios.get(`${baseURL}/api/v1/publishers/${publisherId}`).then(res => {
@@ -189,7 +194,12 @@ const CustomiseDAR = ({ userState, hasPublishedDARContent, publisherId }) => {
 			</div>
 		</Fragment>
 	) : (
-		<EditHowToRequestAccessPage userState={userState} publisherDetails={publisherDetails} />
+		<EditHowToRequestAccessPage
+			userState={userState}
+			publisherDetails={publisherDetails}
+			showConfirmPublishModal={showConfirmPublishModal}
+			setShowConfirmPublishModal={setShowConfirmPublishModal}
+		/>
 	);
 };
 export default CustomiseDAR;

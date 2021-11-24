@@ -1,6 +1,6 @@
 import React, { Component, Fragment, useState } from 'react';
 import queryString from 'query-string';
-import { Nav, Accordion, Dropdown } from 'react-bootstrap';
+import { Nav, Accordion, Dropdown, Button } from 'react-bootstrap';
 import * as Sentry from '@sentry/react';
 import _ from 'lodash';
 import axios from 'axios';
@@ -103,6 +103,8 @@ class Account extends Component {
 		accountUpdated: false,
 		hasPublishedDARContent: false,
 		dataaccessrequest: {},
+		showConfirmPublishModal: false,
+		showHowToRequestAccessEditor: false,
 	};
 
 	constructor(props) {
@@ -110,6 +112,8 @@ class Account extends Component {
 		this.state.userState = props.userState;
 		this.searchBar = React.createRef();
 		this.activityLog = React.createRef();
+		// this.setShowConfirmPublishModal = this.setShowConfirmPublishModal.bind(this);
+		// this.setShowHowToRequestAccessEditor = this.setShowHowToRequestAccessEditor.bind(this);
 
 		// 1. used for DAR custodian update status of application
 		if (_.has(props, 'location.state.alert')) {
@@ -525,6 +529,8 @@ class Account extends Component {
 			accountUpdated,
 			hasPublishedDARContent,
 			dataaccessrequest,
+			showConfirmPublishModal,
+			showHowToRequestAccessEditor,
 		} = this.state;
 		return (
 			<Sentry.ErrorBoundary fallback={<ErrorModal />}>
@@ -824,7 +830,15 @@ class Account extends Component {
 								{(this.userHasRole(team, ['manager']) || team === 'admin') && (
 									<>
 										{tabId === 'customisedataaccessrequests' ? (
-											<CustomiseDAR userState={userState} hasPublishedDARContent={hasPublishedDARContent} publisherId={team} />
+											<CustomiseDAR
+												userState={userState}
+												hasPublishedDARContent={hasPublishedDARContent}
+												publisherId={team}
+												showConfirmPublishModal={showConfirmPublishModal}
+												setShowConfirmPublishModal={show => this.setState({ showConfirmPublishModal: show })}
+												showHowToRequestAccessEditor={showHowToRequestAccessEditor}
+												setShowHowToRequestAccessEditor={show => this.setState({ showHowToRequestAccessEditor: show })}
+											/>
 										) : (
 											''
 										)}
@@ -899,6 +913,30 @@ class Account extends Component {
 							</button>
 						</div>
 					</ActionBar>
+				)}
+				{tabId === 'customisedataaccessrequests' && showHowToRequestAccessEditor ? (
+					<ActionBar userState={userState}>
+						<div className='floatRight'>
+							<a style={{ cursor: 'pointer' }} href={'/account?tab=customisedataaccessrequests'}>
+								<Button variant='medium' className='cancelButton dark-14 mr-2'>
+									Cancel
+								</Button>
+							</a>
+
+							<Button
+								data-test-id='add-collection-publish'
+								variant='primary'
+								className='publishButton white-14-semibold mr-2'
+								type='submit'
+								onClick={() => {
+									this.setState({ showConfirmPublishModal: true });
+								}}>
+								Publish
+							</Button>
+						</div>
+					</ActionBar>
+				) : (
+					''
 				)}
 				<DataSetModal open={showModal} context={context} closed={this.toggleModal} userState={userState[0]} />
 			</Sentry.ErrorBoundary>
