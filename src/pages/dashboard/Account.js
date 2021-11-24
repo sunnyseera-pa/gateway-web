@@ -116,8 +116,6 @@ class Account extends Component {
 		this.state.userState = props.userState;
 		this.searchBar = React.createRef();
 		this.activityLog = React.createRef();
-		// this.setShowConfirmPublishModal = this.setShowConfirmPublishModal.bind(this);
-		// this.setShowHowToRequestAccessEditor = this.setShowHowToRequestAccessEditor.bind(this);
 
 		// 1. used for DAR custodian update status of application
 		if (_.has(props, 'location.state.alert')) {
