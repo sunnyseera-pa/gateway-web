@@ -1,6 +1,6 @@
 import _ from 'lodash';
-import randomstring from 'randomstring';
 import moment from 'moment';
+import randomstring from 'randomstring';
 
 let autoCompleteLookUps = { fullname: ['orcid', 'email', 'bio'] };
 
@@ -384,8 +384,7 @@ let configActionModal = (type = '') => {
 			case 'DUPLICATE':
 				config = {
 					title: 'Duplicate this dataset metadata?',
-					subTitle:
-						'Are you sure you want to duplicate this dataset? All team members will be notified of this duplication.',
+					subTitle: 'Are you sure you want to duplicate this dataset? All team members will be notified of this duplication.',
 					description: false,
 					buttons: {
 						cancel: {
@@ -401,7 +400,7 @@ let configActionModal = (type = '') => {
 					},
 				};
 				break;
-       default:
+			default:
 				return type;
 		}
 	}
@@ -976,6 +975,16 @@ const _calculateTimeDifference = startTime => {
 	return end.diff(start, 'days');
 };
 
+const getUpdatesSubmittedLog = updates => {
+	const key = Object.keys(updates)[0];
+
+	return {
+		heading: _.startCase(key.replace(/[^\/]*$/g, '')).replace(/\s/g, ' | '),
+		question: _.startCase(key.replace(/^.*\//, '')),
+		answers: { ...updates[key] },
+	};
+};
+
 export default {
 	questionSetToDuplicate: questionSetToDuplicate,
 	insertSchemaUpdates: insertSchemaUpdates,
@@ -994,12 +1003,10 @@ export default {
 	createModalContext: createModalContext,
 	configActionModal: configActionModal,
 	generateStatusCounts: generateStatusCounts,
-
 	staticContent: staticContent,
 	datasetStatus: datasetStatus,
 	datasetStatusColours: datasetStatusColours,
 	datasetSLAText: datasetSLAText,
-
 	darCommentTitle: darCommentTitle,
 	darStaticPageIds: darStaticPageIds,
 	actionKeys: actionKeys,
@@ -1011,4 +1018,5 @@ export default {
 	removeStaticPages: removeStaticPages,
 	calculateTimeDifference: _calculateTimeDifference,
 	buildCompletionWheels: _buildCompletionWheels,
+	getUpdatesSubmittedLog: getUpdatesSubmittedLog,
 };

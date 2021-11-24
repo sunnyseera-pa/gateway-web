@@ -9,6 +9,7 @@ import ActionModal from '../commonComponents/ActionModal/ActionModal';
 import googleAnalytics from '../../tracking';
 import { EntityActionButton } from './EntityActionButton.jsx';
 import { PaginationHelper } from '../commonComponents/PaginationHelper';
+import AccountContent from './Components/AccountContent';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -158,409 +159,401 @@ export const AccountTools = props => {
 
 	if (isLoading) {
 		return (
-			<Row>
-				<Col xs={1}></Col>
-				<Col xs={10}>
-					<Loading data-testid='isLoading' />
-				</Col>
-				<Col xs={1}></Col>
-			</Row>
+			<AccountContent>
+				<Loading data-testid='isLoading' />
+			</AccountContent>
 		);
 	}
 
 	return (
 		<Fragment>
-			<Row>
-				<Col xs={1}></Col>
-				<Col xs={10}>
-					<Row className='accountHeader'>
-						<Col sm={12} md={8}>
-							<Row>
-								<span className='black-20'>Tools</span>
-							</Row>
-							<Row>
-								<span className='gray700-13 '>Manage your existing tools or add new ones</span>
-							</Row>
-						</Col>
-						<Col sm={12} md={4} style={{ textAlign: 'right' }}>
-							<Button
-								data-test-id='add-tool-btn'
-								variant='primary'
-								href='/tool/add'
-								className='addButton'
-								onClick={() => googleAnalytics.recordEvent('Tools', 'Add a new tool', 'Tools dashboard button clicked')}>
-								+ Add a new tool
-							</Button>
-						</Col>
-					</Row>
-
-					<Row className='tabsBackground'>
-						<Col sm={12} lg={12}>
-							<Tabs className='dataAccessTabs gray700-13' data-testid='toolTabs' activeKey={key} onSelect={handleSelect}>
-								<Tab eventKey='active' data-testid='activeTab' title={'Active (' + activeCount + ')'}>
-									{' '}
-								</Tab>
-								<Tab eventKey='pending' data-testid='pendingTab' title={'Pending approval (' + reviewCount + ')'}>
-									{' '}
-								</Tab>
-								<Tab eventKey='rejected' data-testid='rejectedTab' title={'Rejected (' + rejectedCount + ')'}>
-									{' '}
-								</Tab>
-								<Tab eventKey='archive' data-testid='archiveTab' title={'Archive (' + archiveCount + ')'}>
-									{' '}
-								</Tab>
-							</Tabs>
-						</Col>
-					</Row>
-
-					{isResultsLoading && (
-						<Row className='width-100'>
-							<Col xs={12} className='noPadding'>
-								<Loading />
-							</Col>
+			<AccountContent>
+				<Row className='accountHeader'>
+					<Col sm={12} md={8}>
+						<Row>
+							<span className='black-20'>Tools</span>
 						</Row>
-					)}
+						<Row>
+							<span className='gray700-13 '>Manage your existing tools or add new ones</span>
+						</Row>
+					</Col>
+					<Col sm={12} md={4} style={{ textAlign: 'right' }}>
+						<Button
+							data-test-id='add-tool-btn'
+							variant='primary'
+							href='/tool/add'
+							className='addButton'
+							onClick={() => googleAnalytics.recordEvent('Tools', 'Add a new tool', 'Tools dashboard button clicked')}>
+							+ Add a new tool
+						</Button>
+					</Col>
+				</Row>
 
-					{!isResultsLoading &&
-						(() => {
-							switch (key) {
-								case 'active':
-									return (
-										<div>
-											{activeCount <= 0 ? (
-												''
-											) : (
-												<Row className='subHeader mt-3 gray800-14-bold'>
-													<Col xs={2}>Last activity</Col>
-													<Col xs={5}>Name</Col>
-													<Col xs={2}>Uploader(s)</Col>
-													<Col xs={3}></Col>
-												</Row>
-											)}
+				<Row className='tabsBackground'>
+					<Col sm={12} lg={12}>
+						<Tabs className='dataAccessTabs gray700-13' data-testid='toolTabs' activeKey={key} onSelect={handleSelect}>
+							<Tab eventKey='active' data-testid='activeTab' title={'Active (' + activeCount + ')'}>
+								{' '}
+							</Tab>
+							<Tab eventKey='pending' data-testid='pendingTab' title={'Pending approval (' + reviewCount + ')'}>
+								{' '}
+							</Tab>
+							<Tab eventKey='rejected' data-testid='rejectedTab' title={'Rejected (' + rejectedCount + ')'}>
+								{' '}
+							</Tab>
+							<Tab eventKey='archive' data-testid='archiveTab' title={'Archive (' + archiveCount + ')'}>
+								{' '}
+							</Tab>
+						</Tabs>
+					</Col>
+				</Row>
 
-											{activeCount <= 0 ? (
-												<Row className='margin-right-15'>
-													<NotFound word='tools' />
-												</Row>
-											) : (
-												toolsList.map(tool => {
-													if (tool.activeflag !== 'active') {
-														return <></>;
-													} else {
-														return (
-															<Row className='entryBox' data-testid='toolEntryActive'>
-																<Col sm={12} lg={2} className='pt-2 gray800-14'>
-																	{moment(tool.updatedAt).format('D MMMM YYYY HH:mm')}
-																</Col>
-																<Col sm={12} lg={5} className='pt-2'>
-																	<a href={'/tool/' + tool.id} className='black-14'>
-																		{tool.name}
-																	</a>
-																</Col>
-																<Col sm={12} lg={2} className='pt-2 gray800-14'>
-																	{tool.persons <= 0
-																		? 'Author not listed'
-																		: tool.persons.map(person => {
-																				return (
-																					<span>
-																						{person.firstname} {person.lastname} <br />
-																					</span>
-																				);
-																		  })}
-																</Col>
+				{isResultsLoading && (
+					<Row className='width-100'>
+						<Col xs={12} className='noPadding'>
+							<Loading />
+						</Col>
+					</Row>
+				)}
 
-																<Col sm={12} lg={3} style={{ textAlign: 'right' }} className='toolsButtons'>
+				{!isResultsLoading &&
+					(() => {
+						switch (key) {
+							case 'active':
+								return (
+									<div>
+										{activeCount <= 0 ? (
+											''
+										) : (
+											<Row className='subHeader mt-3 gray800-14-bold'>
+												<Col xs={2}>Last activity</Col>
+												<Col xs={5}>Name</Col>
+												<Col xs={2}>Uploader(s)</Col>
+												<Col xs={3}></Col>
+											</Row>
+										)}
+
+										{activeCount <= 0 ? (
+											<Row className='margin-right-15'>
+												<NotFound word='tools' />
+											</Row>
+										) : (
+											toolsList.map(tool => {
+												if (tool.activeflag !== 'active') {
+													return <></>;
+												} else {
+													return (
+														<Row className='entryBox' data-testid='toolEntryActive'>
+															<Col sm={12} lg={2} className='pt-2 gray800-14'>
+																{moment(tool.updatedAt).format('D MMMM YYYY HH:mm')}
+															</Col>
+															<Col sm={12} lg={5} className='pt-2'>
+																<a href={'/tool/' + tool.id} className='black-14'>
+																	{tool.name}
+																</a>
+															</Col>
+															<Col sm={12} lg={2} className='pt-2 gray800-14'>
+																{tool.persons <= 0
+																	? 'Author not listed'
+																	: tool.persons.map(person => {
+																			return (
+																				<span>
+																					{person.firstname} {person.lastname} <br />
+																				</span>
+																			);
+																	  })}
+															</Col>
+
+															<Col sm={12} lg={3} style={{ textAlign: 'right' }} className='toolsButtons'>
+																<DropdownButton variant='outline-secondary' alignRight title='Actions' className='floatRight'>
+																	<Dropdown.Item href={'/tool/edit/' + tool.id} className='black-14'>
+																		Edit
+																	</Dropdown.Item>
+																	<EntityActionButton id={tool.id} action={archiveTool} entity='tool' actionType='archive' />
+																</DropdownButton>
+															</Col>
+														</Row>
+													);
+												}
+											})
+										)}
+									</div>
+								);
+							case 'pending':
+								return (
+									<div>
+										{reviewCount <= 0 ? (
+											''
+										) : (
+											<Row className='subHeader mt-3 gray800-14-bold'>
+												<Col xs={2}>Last activity</Col>
+												<Col xs={5}>Name</Col>
+												<Col xs={2}>Author</Col>
+												<Col xs={3}></Col>
+											</Row>
+										)}
+
+										{reviewCount <= 0 ? (
+											<Row className='margin-right-15'>
+												<NotFound word='tools' />
+											</Row>
+										) : (
+											toolsList.map(tool => {
+												if (tool.activeflag !== 'review') {
+													return <></>;
+												} else {
+													return (
+														<Row className='entryBox' data-testid='toolEntryPending'>
+															<Col sm={12} lg={2} className='pt-2 gray800-14'>
+																{moment(tool.updatedAt).format('D MMMM YYYY HH:mm')}
+															</Col>
+															<Col sm={12} lg={5} className='pt-2'>
+																<a href={'/tool/' + tool.id} className='black-14'>
+																	{tool.name}
+																</a>
+															</Col>
+															<Col sm={12} lg={2} className='pt-2 gray800-14'>
+																{tool.persons <= 0
+																	? 'Author not listed'
+																	: tool.persons.map(person => {
+																			return (
+																				<span>
+																					{person.firstname} {person.lastname} <br />
+																				</span>
+																			);
+																	  })}
+															</Col>
+
+															<Col sm={12} lg={3} style={{ textAlign: 'right' }} className='toolsButtons'>
+																{userState[0].role === 'Admin' ? (
 																	<DropdownButton variant='outline-secondary' alignRight title='Actions' className='floatRight'>
 																		<Dropdown.Item href={'/tool/edit/' + tool.id} className='black-14'>
 																			Edit
 																		</Dropdown.Item>
-																		<EntityActionButton id={tool.id} action={archiveTool} entity='tool' actionType='archive' />
+																		<Dropdown.Item
+																			href='#'
+																			onClick={() => approveTool(tool.id, key, pendingIndex, reviewCount)}
+																			className='black-14'>
+																			Approve
+																		</Dropdown.Item>
+																		<Dropdown.Item href='#' onClick={() => toggleActionModal()} className='black-14'>
+																			Reject
+																		</Dropdown.Item>
+																		<ActionModal
+																			id={tool.id}
+																			entityKey={'pending'}
+																			entityIndex={pendingIndex}
+																			entityCount={reviewCount}
+																			open={showActionModal}
+																			context={actionModalConfig}
+																			updateApplicationStatus={rejectTool}
+																			close={toggleActionModal}
+																		/>
 																	</DropdownButton>
-																</Col>
-															</Row>
-														);
-													}
-												})
-											)}
-										</div>
-									);
-								case 'pending':
-									return (
-										<div>
-											{reviewCount <= 0 ? (
-												''
-											) : (
-												<Row className='subHeader mt-3 gray800-14-bold'>
-													<Col xs={2}>Last activity</Col>
-													<Col xs={5}>Name</Col>
-													<Col xs={2}>Author</Col>
-													<Col xs={3}></Col>
-												</Row>
-											)}
+																) : (
+																	''
+																)}
+															</Col>
+														</Row>
+													);
+												}
+											})
+										)}
+									</div>
+								);
+							case 'rejected':
+								return (
+									<div>
+										{rejectedCount <= 0 ? (
+											''
+										) : (
+											<Row className='subHeader mt-3 gray800-14-bold'>
+												<Col xs={2}>Last activity</Col>
+												<Col xs={5}>Name</Col>
+												<Col xs={2}>Author</Col>
+												<Col xs={3}></Col>
+											</Row>
+										)}
 
-											{reviewCount <= 0 ? (
-												<Row className='margin-right-15'>
-													<NotFound word='tools' />
-												</Row>
-											) : (
-												toolsList.map(tool => {
-													if (tool.activeflag !== 'review') {
-														return <></>;
-													} else {
-														return (
-															<Row className='entryBox' data-testid='toolEntryPending'>
-																<Col sm={12} lg={2} className='pt-2 gray800-14'>
-																	{moment(tool.updatedAt).format('D MMMM YYYY HH:mm')}
-																</Col>
-																<Col sm={12} lg={5} className='pt-2'>
-																	<a href={'/tool/' + tool.id} className='black-14'>
-																		{tool.name}
-																	</a>
-																</Col>
-																<Col sm={12} lg={2} className='pt-2 gray800-14'>
-																	{tool.persons <= 0
-																		? 'Author not listed'
-																		: tool.persons.map(person => {
-																				return (
-																					<span>
-																						{person.firstname} {person.lastname} <br />
-																					</span>
-																				);
-																		  })}
-																</Col>
+										{rejectedCount <= 0 ? (
+											<Row className='margin-right-15'>
+												<NotFound word='tools' />
+											</Row>
+										) : (
+											toolsList.map(tool => {
+												if (tool.activeflag !== 'rejected') {
+													return <></>;
+												} else {
+													return (
+														<Row className='entryBox' data-testid='toolEntryRejected'>
+															<Col sm={12} lg={2} className='pt-2 gray800-14'>
+																{moment(tool.updatedAt).format('D MMMM YYYY HH:mm')}
+															</Col>
+															<Col sm={12} lg={5} className='pt-2'>
+																<a href={'/tool/' + tool.id} className='black-14'>
+																	{tool.name}
+																</a>
+															</Col>
+															<Col sm={12} lg={2} className='pt-2 gray800-14'>
+																{tool.persons <= 0
+																	? 'Author not listed'
+																	: tool.persons.map(person => {
+																			return (
+																				<span>
+																					{person.firstname} {person.lastname} <br />
+																				</span>
+																			);
+																	  })}
+															</Col>
 
-																<Col sm={12} lg={3} style={{ textAlign: 'right' }} className='toolsButtons'>
-																	{userState[0].role === 'Admin' ? (
-																		<DropdownButton variant='outline-secondary' alignRight title='Actions' className='floatRight'>
-																			<Dropdown.Item href={'/tool/edit/' + tool.id} className='black-14'>
-																				Edit
-																			</Dropdown.Item>
-																			<Dropdown.Item
-																				href='#'
-																				onClick={() => approveTool(tool.id, key, pendingIndex, reviewCount)}
-																				className='black-14'>
-																				Approve
-																			</Dropdown.Item>
-																			<Dropdown.Item href='#' onClick={() => toggleActionModal()} className='black-14'>
-																				Reject
-																			</Dropdown.Item>
-																			<ActionModal
-																				id={tool.id}
-																				entityKey={'pending'}
-																				entityIndex={pendingIndex}
-																				entityCount={reviewCount}
-																				open={showActionModal}
-																				context={actionModalConfig}
-																				updateApplicationStatus={rejectTool}
-																				close={toggleActionModal}
-																			/>
-																		</DropdownButton>
-																	) : (
-																		''
-																	)}
-																</Col>
-															</Row>
-														);
-													}
-												})
-											)}
-										</div>
-									);
-								case 'rejected':
-									return (
-										<div>
-											{rejectedCount <= 0 ? (
-												''
-											) : (
-												<Row className='subHeader mt-3 gray800-14-bold'>
-													<Col xs={2}>Last activity</Col>
-													<Col xs={5}>Name</Col>
-													<Col xs={2}>Author</Col>
-													<Col xs={3}></Col>
-												</Row>
-											)}
+															<Col sm={12} lg={3} style={{ textAlign: 'right' }} className='toolsButtons'></Col>
+														</Row>
+													);
+												}
+											})
+										)}
+									</div>
+								);
+							case 'archive':
+								return (
+									<div>
+										{archiveCount <= 0 ? (
+											''
+										) : (
+											<Row className='subHeader mt-3 gray800-14-bold'>
+												<Col xs={2}>Last activity</Col>
+												<Col xs={5}>Name</Col>
+												<Col xs={2}>Author</Col>
+												<Col xs={3}></Col>
+											</Row>
+										)}
 
-											{rejectedCount <= 0 ? (
-												<Row className='margin-right-15'>
-													<NotFound word='tools' />
-												</Row>
-											) : (
-												toolsList.map(tool => {
-													if (tool.activeflag !== 'rejected') {
-														return <></>;
-													} else {
-														return (
-															<Row className='entryBox' data-testid='toolEntryRejected'>
-																<Col sm={12} lg={2} className='pt-2 gray800-14'>
-																	{moment(tool.updatedAt).format('D MMMM YYYY HH:mm')}
-																</Col>
-																<Col sm={12} lg={5} className='pt-2'>
-																	<a href={'/tool/' + tool.id} className='black-14'>
-																		{tool.name}
-																	</a>
-																</Col>
-																<Col sm={12} lg={2} className='pt-2 gray800-14'>
-																	{tool.persons <= 0
-																		? 'Author not listed'
-																		: tool.persons.map(person => {
-																				return (
-																					<span>
-																						{person.firstname} {person.lastname} <br />
-																					</span>
-																				);
-																		  })}
-																</Col>
+										{archiveCount <= 0 ? (
+											<Row className='margin-right-15'>
+												<NotFound word='tools' />
+											</Row>
+										) : (
+											toolsList.map(tool => {
+												if (tool.activeflag !== 'archive') {
+													return <></>;
+												} else {
+													return (
+														<Row className='entryBox' data-testid='toolEntryArchive'>
+															<Col sm={12} lg={2} className='pt-2 gray800-14'>
+																{moment(tool.updatedAt).format('D MMMM YYYY HH:mm')}
+															</Col>
+															<Col sm={12} lg={5} className='pt-2'>
+																<a href={'/tool/' + tool.id} className='black-14'>
+																	{tool.name}
+																</a>
+															</Col>
+															<Col sm={12} lg={2} className='pt-2 gray800-14'>
+																{tool.persons <= 0
+																	? 'Author not listed'
+																	: tool.persons.map(person => {
+																			return (
+																				<span>
+																					{person.firstname} {person.lastname} <br />
+																				</span>
+																			);
+																	  })}
+															</Col>
 
-																<Col sm={12} lg={3} style={{ textAlign: 'right' }} className='toolsButtons'></Col>
-															</Row>
-														);
-													}
-												})
-											)}
-										</div>
-									);
-								case 'archive':
-									return (
-										<div>
-											{archiveCount <= 0 ? (
-												''
-											) : (
-												<Row className='subHeader mt-3 gray800-14-bold'>
-													<Col xs={2}>Last activity</Col>
-													<Col xs={5}>Name</Col>
-													<Col xs={2}>Author</Col>
-													<Col xs={3}></Col>
-												</Row>
-											)}
+															<Col sm={12} lg={3} style={{ textAlign: 'right' }} className='toolsButtons'>
+																{userState[0].role === 'Admin' ? (
+																	<DropdownButton variant='outline-secondary' alignRight title='Actions' className='floatRight'>
+																		<Dropdown.Item href={'/tool/edit/' + tool.id} className='black-14'>
+																			Edit
+																		</Dropdown.Item>
+																		<Dropdown.Item
+																			href='#'
+																			onClick={() => approveTool(tool.id, key, archiveIndex, archiveCount)}
+																			className='black-14'>
+																			Approve
+																		</Dropdown.Item>
+																		<Dropdown.Item href='#' onClick={() => toggleActionModal()} className='black-14'>
+																			Reject
+																		</Dropdown.Item>
+																		<ActionModal
+																			id={tool.id}
+																			entityKey={'archive'}
+																			entityIndex={archiveIndex}
+																			entityCount={archiveCount}
+																			open={showActionModal}
+																			context={actionModalConfig}
+																			updateApplicationStatus={rejectTool}
+																			close={toggleActionModal}
+																		/>
+																	</DropdownButton>
+																) : (
+																	<DropdownButton variant='outline-secondary' alignRight title='Actions' className='floatRight'>
+																		<Dropdown.Item href={'/tool/edit/' + tool.id} className='black-14'>
+																			Edit
+																		</Dropdown.Item>
+																	</DropdownButton>
+																)}
+															</Col>
+														</Row>
+													);
+												}
+											})
+										)}
+									</div>
+								);
+							default:
+								return key;
+						}
+					})()}
 
-											{archiveCount <= 0 ? (
-												<Row className='margin-right-15'>
-													<NotFound word='tools' />
-												</Row>
-											) : (
-												toolsList.map(tool => {
-													if (tool.activeflag !== 'archive') {
-														return <></>;
-													} else {
-														return (
-															<Row className='entryBox' data-testid='toolEntryArchive'>
-																<Col sm={12} lg={2} className='pt-2 gray800-14'>
-																	{moment(tool.updatedAt).format('D MMMM YYYY HH:mm')}
-																</Col>
-																<Col sm={12} lg={5} className='pt-2'>
-																	<a href={'/tool/' + tool.id} className='black-14'>
-																		{tool.name}
-																	</a>
-																</Col>
-																<Col sm={12} lg={2} className='pt-2 gray800-14'>
-																	{tool.persons <= 0
-																		? 'Author not listed'
-																		: tool.persons.map(person => {
-																				return (
-																					<span>
-																						{person.firstname} {person.lastname} <br />
-																					</span>
-																				);
-																		  })}
-																</Col>
-
-																<Col sm={12} lg={3} style={{ textAlign: 'right' }} className='toolsButtons'>
-																	{userState[0].role === 'Admin' ? (
-																		<DropdownButton variant='outline-secondary' alignRight title='Actions' className='floatRight'>
-																			<Dropdown.Item href={'/tool/edit/' + tool.id} className='black-14'>
-																				Edit
-																			</Dropdown.Item>
-																			<Dropdown.Item
-																				href='#'
-																				onClick={() => approveTool(tool.id, key, archiveIndex, archiveCount)}
-																				className='black-14'>
-																				Approve
-																			</Dropdown.Item>
-																			<Dropdown.Item href='#' onClick={() => toggleActionModal()} className='black-14'>
-																				Reject
-																			</Dropdown.Item>
-																			<ActionModal
-																				id={tool.id}
-																				entityKey={'archive'}
-																				entityIndex={archiveIndex}
-																				entityCount={archiveCount}
-																				open={showActionModal}
-																				context={actionModalConfig}
-																				updateApplicationStatus={rejectTool}
-																				close={toggleActionModal}
-																			/>
-																		</DropdownButton>
-																	) : (
-																		<DropdownButton variant='outline-secondary' alignRight title='Actions' className='floatRight'>
-																			<Dropdown.Item href={'/tool/edit/' + tool.id} className='black-14'>
-																				Edit
-																			</Dropdown.Item>
-																		</DropdownButton>
-																	)}
-																</Col>
-															</Row>
-														);
-													}
-												})
-											)}
-										</div>
-									);
-								default:
-									return key;
-							}
-						})()}
-
-					{!isResultsLoading && (
-						<div className='text-center entityDashboardPagination'>
-							{key === 'active' && activeCount > maxResult ? (
-								<PaginationHelper
-									doEntitiesCall={doToolsCall}
-									entityCount={activeCount}
-									statusKey={key}
-									paginationIndex={activeIndex}
-									setPaginationIndex={setActiveIndex}
-									maxResult={maxResult}></PaginationHelper>
-							) : (
-								''
-							)}
-							{key === 'pending' && reviewCount > maxResult ? (
-								<PaginationHelper
-									doEntitiesCall={doToolsCall}
-									entityCount={reviewCount}
-									statusKey={key}
-									paginationIndex={pendingIndex}
-									setPaginationIndex={setPendingIndex}
-									maxResult={maxResult}></PaginationHelper>
-							) : (
-								''
-							)}
-							{key === 'rejected' && rejectedCount > maxResult ? (
-								<PaginationHelper
-									doEntitiesCall={doToolsCall}
-									entityCount={rejectedCount}
-									statusKey={key}
-									paginationIndex={rejectedIndex}
-									setPaginationIndex={setRejectedIndex}
-									maxResult={maxResult}></PaginationHelper>
-							) : (
-								''
-							)}
-							{key === 'archive' && archiveCount > maxResult ? (
-								<PaginationHelper
-									doEntitiesCall={doToolsCall}
-									entityCount={archiveCount}
-									statusKey={key}
-									paginationIndex={archiveIndex}
-									setPaginationIndex={setArchiveIndex}
-									maxResult={maxResult}></PaginationHelper>
-							) : (
-								''
-							)}
-						</div>
-					)}
-				</Col>
-				<Col xs={1}></Col>
-			</Row>
+				{!isResultsLoading && (
+					<div className='text-center entityDashboardPagination'>
+						{key === 'active' && activeCount > maxResult ? (
+							<PaginationHelper
+								doEntitiesCall={doToolsCall}
+								entityCount={activeCount}
+								statusKey={key}
+								paginationIndex={activeIndex}
+								setPaginationIndex={setActiveIndex}
+								maxResult={maxResult}></PaginationHelper>
+						) : (
+							''
+						)}
+						{key === 'pending' && reviewCount > maxResult ? (
+							<PaginationHelper
+								doEntitiesCall={doToolsCall}
+								entityCount={reviewCount}
+								statusKey={key}
+								paginationIndex={pendingIndex}
+								setPaginationIndex={setPendingIndex}
+								maxResult={maxResult}></PaginationHelper>
+						) : (
+							''
+						)}
+						{key === 'rejected' && rejectedCount > maxResult ? (
+							<PaginationHelper
+								doEntitiesCall={doToolsCall}
+								entityCount={rejectedCount}
+								statusKey={key}
+								paginationIndex={rejectedIndex}
+								setPaginationIndex={setRejectedIndex}
+								maxResult={maxResult}></PaginationHelper>
+						) : (
+							''
+						)}
+						{key === 'archive' && archiveCount > maxResult ? (
+							<PaginationHelper
+								doEntitiesCall={doToolsCall}
+								entityCount={archiveCount}
+								statusKey={key}
+								paginationIndex={archiveIndex}
+								setPaginationIndex={setArchiveIndex}
+								maxResult={maxResult}></PaginationHelper>
+						) : (
+							''
+						)}
+					</div>
+				)}
+			</AccountContent>
 		</Fragment>
 	);
 };

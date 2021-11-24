@@ -1,41 +1,45 @@
-import React, { Component, Fragment, useState } from 'react';
-import queryString from 'query-string';
-import { Nav, Accordion, Dropdown, Button } from 'react-bootstrap';
 import * as Sentry from '@sentry/react';
-import _ from 'lodash';
 import axios from 'axios';
-import SearchBar from '../commonComponents/searchBar/SearchBar';
-import ActionBar from '../commonComponents/actionbar/ActionBar';
-import AccountTools from './AccountTools';
-import AccountProjects from './AccountProjects';
-import AccountDatasets from './AccountDatasets';
-import AccountPapers from './AccountPapers';
-import AccountCourses from './AccountCourses';
-import AccountCollections from './AccountCollections';
-import AccountTeamManagement from './AccountTeamManagement';
-import AccountAnalyticsDashboard from './AccountAnalyticsDashboard';
-import AccountUsers from './AccountUsers';
-import ReviewTools from './ReviewTools';
-import YourAccount from './YourAccount';
-import DataAccessRequests from './DataAccessRequests/DataAccessRequests';
-import WorkflowDashboard from './Workflows/WorkflowDashboard';
-import CustomiseDAR from './CustomiseDAR/CustomiseDAR';
-import TeamHelp from './TeamHelp/TeamHelp';
+import _ from 'lodash';
+import queryString from 'query-string';
+import React, { Component, Fragment, useState } from 'react';
+import { Accordion, Dropdown, Nav, Button } from 'react-bootstrap';
+import { Route } from 'react-router';
 import 'react-web-tabs/dist/react-web-tabs.css';
+import { ReactComponent as CheckSVG } from '../../images/check.svg';
+import { ReactComponent as ChevronRightSvg } from '../../images/chevron-bottom.svg';
 import SVGIcon from '../../images/SVGIcon';
+import googleAnalytics from '../../tracking';
+import { getTeam } from '../../utils/auth';
+import { isRouteMatch } from '../../utils/router';
+import ActionBar from '../commonComponents/actionbar/ActionBar';
+import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
+import ErrorModal from '../commonComponents/errorModal';
+import SearchBar from '../commonComponents/searchBar/SearchBar';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
 import UserMessages from '../commonComponents/userMessages/UserMessages';
-import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
-import { tabTypes } from './Team/teamUtil';
-import ActivityLogActionButtons from '../DataAccessRequest/components/ActivityLog/ActivityLogActionButtons';
-import ErrorModal from '../commonComponents/errorModal';
-
-import { ReactComponent as ChevronRightSvg } from '../../images/chevron-bottom.svg';
-import { ReactComponent as CheckSVG } from '../../images/check.svg';
-import './Dashboard.scss';
 import ActivityLog from '../DataAccessRequest/components/ActivityLog/ActivityLog';
+import ActivityLogActionButtons from '../DataAccessRequest/components/ActivityLog/ActivityLogActionButtons';
+import AccountAnalyticsDashboard from './AccountAnalyticsDashboard';
+import AccountCollections from './AccountCollections';
+import AccountCourses from './AccountCourses';
+import AccountDatasets from './AccountDatasets';
+import AccountPapers from './AccountPapers';
+import AccountProjects from './AccountProjects';
+import AccountTeamManagement from './AccountTeamManagement';
 import AccountTeams from './AccountTeams';
-import googleAnalytics from '../../tracking';
+import AccountTools from './AccountTools';
+import AccountUsers from './AccountUsers';
+import AccountDataset from './Components/AccountDataset';
+import './Dashboard.scss';
+import DataAccessRequests from './DataAccessRequests/DataAccessRequests';
+import CustomiseDAR from './CustomiseDAR/CustomiseDAR';
+import 'react-web-tabs/dist/react-web-tabs.css';
+import ReviewTools from './ReviewTools';
+import { tabTypes } from './Team/teamUtil';
+import TeamHelp from './TeamHelp/TeamHelp';
+import WorkflowDashboard from './Workflows/WorkflowDashboard';
+import YourAccount from './YourAccount';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -120,28 +124,8 @@ class Account extends Component {
 			this.state.alert = props.location.state.alert;
 			this.alertTimeOut = setTimeout(() => this.setState({ alert: {} }), 10000);
 		}
-		let values = queryString.parse(window.location.search);
-		if (values.team === 'user') {
-			this.state.team = 'user';
-			localStorage.setItem('HDR_TEAM', 'user');
-		} else if (values.team === 'admin') {
-			this.state.team = 'admin';
-			localStorage.setItem('HDR_TEAM', 'admin');
-		} else if (!_.isEmpty(values.team)) {
-			this.state.team = values.team;
-			localStorage.setItem('HDR_TEAM', values.team);
-		} else if (
-			(_.has(props, 'location.state.team') && props.location.state.team !== '') ||
-			(_.has(props, 'location.state.publisher') && props.location.state.team !== '')
-		) {
-			this.state.team = props.location.state.team;
-			localStorage.setItem('HDR_TEAM', props.location.state.team);
-		} else if (!_.isEmpty(localStorage.getItem('HDR_TEAM'))) {
-			this.state.team = localStorage.getItem('HDR_TEAM');
-		} else {
-			this.state.team = 'user';
-			localStorage.setItem('HDR_TEAM', 'user');
-		}
+
+		this.state.team = getTeam(props);
 
 		if (_.has(props, 'profileComplete')) {
 			this.state.profileComplete = props.profileComplete;
@@ -389,7 +373,7 @@ class Account extends Component {
 		return renderItem;
 	}
 
-	toggleNav = (tabId = '') => {
+	toggleNav = (tabId = '', path) => {
 		googleAnalytics.recordVirtualPageView(tabId);
 		let {
 			activeAccordion,
@@ -436,7 +420,7 @@ class Account extends Component {
 				dataaccessrequest: {},
 			});
 			// 6. push state
-			this.props.history.push({ pathname: window.location.pathname, search: `?tab=${tab.tabId}`, state: { team: tab.team } });
+			this.props.history.push({ pathname: path || window.location.pathname, search: `?tab=${tab.tabId}`, state: { team: tab.team } });
 		}
 	};
 
@@ -509,6 +493,23 @@ class Account extends Component {
 		this.searchBar.current.doMessagesCall();
 	};
 
+	getNavActiveClass = key => {
+		let isActive = false;
+
+		if (Array.isArray(key)) {
+			for (let i = 0; i < key.length; i++) {
+				if (this.state.tabId === key[i] || isRouteMatch(`/account/${key[i]}`)) {
+					isActive = true;
+					break;
+				}
+			}
+		} else {
+			isActive = this.state.tabId === key || isRouteMatch(`/account/${key}`);
+		}
+
+		return isActive ? 'activeCard' : 'accountNav';
+	};
+
 	render() {
 		const {
 			searchString,
@@ -565,65 +566,63 @@ class Account extends Component {
 
 							{team === 'user' ? (
 								<Fragment>
-									<div className={`${tabId === 'dashboard' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('dashboard')}>
+									<div className={this.getNavActiveClass('dashboard')} onClick={e => this.toggleNav('dashboard')}>
 										<Nav.Link className='verticalNavBar gray700-13'>
 											<SVGIcon name='dashboard' fill={'#b3b8bd'} className='accountSvgs' />
 											<span className='navLinkItem'>Dashboard</span>
 										</Nav.Link>
 									</div>
 
-									<div className={`${tabId === 'youraccount' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('youraccount')}>
+									<div className={this.getNavActiveClass('youraccount')} onClick={e => this.toggleNav('youraccount')}>
 										<Nav.Link className='verticalNavBar gray700-13'>
 											<SVGIcon name='accounticon' fill={'#b3b8bd'} className='accountSvgs' />
 											<span className='navLinkItem'>Account</span>
 										</Nav.Link>
 									</div>
 
-									<div className={`${tabId === 'tools' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('tools')}>
+									<div className={this.getNavActiveClass('tools')} onClick={e => this.toggleNav('tools')}>
 										<Nav.Link className='verticalNavBar gray700-13'>
 											<SVGIcon name='newtoolicon' fill={'#b3b8bd'} className='accountSvgs' />
 											<span className='navLinkItem'>Tools</span>
 										</Nav.Link>
 									</div>
 
-									<div className={`${tabId === 'reviews' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('reviews')}>
+									<div className={this.getNavActiveClass('reviews')} onClick={e => this.toggleNav('reviews')}>
 										<Nav.Link className='verticalNavBar gray700-13'>
 											<SVGIcon name='reviewsicon' fill={'#b3b8bd'} className='accountSvgs' />
 											<span className='navLinkItem'>Reviews</span>
 										</Nav.Link>
 									</div>
 
-									<div className={`${tabId === 'projects' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('projects')}>
+									<div className={this.getNavActiveClass('projects')} onClick={e => this.toggleNav('projects')}>
 										<Nav.Link className='verticalNavBar gray700-13'>
 											<SVGIcon name='newestprojecticon' fill={'#b3b8bd'} className='accountSvgs' />
 											<span className='navLinkItem'>Projects</span>
 										</Nav.Link>
 									</div>
 
-									<div className={`${tabId === 'papers' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('papers')}>
+									<div className={this.getNavActiveClass('papers')} onClick={e => this.toggleNav('papers')}>
 										<Nav.Link eventKey={'papers'} className='verticalNavBar gray700-13'>
 											<SVGIcon name='newprojecticon' fill={'#b3b8bd'} className='accountSvgs' />
 											<span className='navLinkItem'>Papers</span>
 										</Nav.Link>
 									</div>
 
-									<div className={`${tabId === 'courses' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('courses')}>
+									<div className={this.getNavActiveClass('courses')} onClick={e => this.toggleNav('courses')}>
 										<Nav.Link eventKey={'courses'} className='verticalNavBar gray700-13'>
 											<SVGIcon name='educationicon' fill={'#b3b8bd'} className='svg-20' />
 											<span className='navLinkItem'>Courses</span>
 										</Nav.Link>
 									</div>
 
-									<div
-										className={`${tabId === 'dataaccessrequests' ? 'activeCard' : 'accountNav'}`}
-										onClick={e => this.toggleNav('dataaccessrequests')}>
+									<div className={this.getNavActiveClass('dataaccessrequests')} onClick={e => this.toggleNav('dataaccessrequests')}>
 										<Nav.Link eventKey={'dataaccessrequests'} className='verticalNavBar gray700-13'>
 											<SVGIcon name='newprojecticon' fill={'#b3b8bd'} className='accountSvgs' />
 											<span className='navLinkItem'>Data access requests</span>
 										</Nav.Link>
 									</div>
 
-									<div className={`${tabId === 'collections' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('collections')}>
+									<div className={this.getNavActiveClass('collections')} onClick={e => this.toggleNav('collections')}>
 										<Nav.Link eventKey={'collections'} className='verticalNavBar gray700-13'>
 											<SVGIcon name='collections' fill={'#b3b8bd'} className='accountSvgs' />
 											<span className='navLinkItem'>Collections</span>
@@ -631,7 +630,7 @@ class Account extends Component {
 									</div>
 
 									{userState[0].role === 'Admin' ? (
-										<div className={`${tabId === 'usersroles' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('usersroles')}>
+										<div className={this.getNavActiveClass('usersroles')} onClick={e => this.toggleNav('usersroles')}>
 											<Nav.Link eventKey={'usersroles'} className='verticalNavBar gray700-13'>
 												<SVGIcon name='rolesicon' fill={'#b3b8bd'} className='accountSvgs' />
 												<span className='navLinkItem'>Users and roles</span>
@@ -647,13 +646,13 @@ class Account extends Component {
 
 							{team === 'admin' ? (
 								<Fragment>
-									<div className={`${tabId === 'datasets' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('datasets')}>
-										<Nav.Link className='verticalNavBar gray700-13'>
+									<div className={this.getNavActiveClass('datasets')} onClick={e => this.toggleNav('datasets', '/account')}>
+										<Nav.Link className='verticalNavBar gray700-13' activeClassName='is-active' to='/account'>
 											<SVGIcon name='dataseticon' fill={'#b3b8bd'} className='accountSvgs' />
 											<span style={{ 'margin-left': '11px' }}>Datasets</span>
 										</Nav.Link>
 									</div>
-									<div className={`${tabId === 'teams' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('teams')}>
+									<div className={this.getNavActiveClass('teams')} onClick={e => this.toggleNav('teams')}>
 										<Nav.Link className='verticalNavBar gray700-13'>
 											<span className='grey-circle-border'>
 												<SVGIcon name='plusChunky' fill={'#b3b8bd'} viewBox='-1 -1 26 26' className='accountSvgs' />
@@ -668,9 +667,7 @@ class Account extends Component {
 
 							{team !== 'user' && team !== 'admin' ? (
 								<Fragment>
-									<div
-										className={`${tabId === 'teamManagement' ? 'activeCard' : 'accountNav'}`}
-										onClick={e => this.toggleNav('teamManagement')}>
+									<div className={this.getNavActiveClass('teamManagement')} onClick={e => this.toggleNav('teamManagement')}>
 										<Nav.Link className='verticalNavBar gray700-13'>
 											<SVGIcon name='rolesicon' fill={'#b3b8bd'} className='accountSvgs' />
 											<span style={{ marginLeft: '11px' }}>Team Management</span>
@@ -679,11 +676,12 @@ class Account extends Component {
 
 									{allowAccessRequestManagement && this.userHasRole(team, ['manager', 'reviewer']) && (
 										<div
-											className={`${
-												['dataaccessrequests', 'workflows', 'customisedataaccessrequests', 'addeditworkflow'].includes(tabId)
-													? 'activeCard'
-													: 'accountNav'
-											}`}>
+											className={this.getNavActiveClass([
+												'dataaccessrequests',
+												'workflows',
+												'customisedataaccessrequests',
+												'addeditworkflow',
+											])}>
 											<Accordion activeKey={activeAccordion} onSelect={this.accordionClick}>
 												<Fragment>
 													<Accordion.Toggle variant='link' className='verticalNavBar gray700-13 navLinkButton' eventKey='0'>
@@ -721,14 +719,14 @@ class Account extends Component {
 										</div>
 									)}
 									{this.userHasRole(team, ['manager', 'metadata_editor']) && (
-										<div className={`${tabId === 'datasets' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('datasets')}>
-											<Nav.Link className='verticalNavBar gray700-13'>
+										<div className={this.getNavActiveClass('datasets')} onClick={e => this.toggleNav('datasets', '/account')}>
+											<Nav.Link className='verticalNavBar gray700-13' to='/account'>
 												<SVGIcon name='dataseticon' fill={'#b3b8bd'} className='accountSvgs' />
 												<span style={{ 'margin-left': '11px' }}>Datasets</span>
 											</Nav.Link>
 										</div>
 									)}
-									<div className={`${tabId === 'help' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('help')}>
+									<div className={this.getNavActiveClass('help')} onClick={e => this.toggleNav('help')}>
 										<Nav.Link className='verticalNavBar gray700-13'>
 											<SVGIcon name='info' fill={'#b3b8bd'} className='accountSvgs' />
 											<span className='navLinkItem'>Help</span>
@@ -809,16 +807,14 @@ class Account extends Component {
 										)}
 									</>
 								)}
-
 								{(this.userHasRole(team, ['manager', 'metadata_editor']) || team === 'admin') && (
 									<>{tabId === 'datasets' ? <AccountDatasets userState={userState} team={team} alert={alert} /> : ''}</>
 								)}
+								<Route path='/account/datasets/:id' component={AccountDataset} />
 								{team === 'admin' && (
 									<>
-										{tabId === 'teams' ? (
+										{tabId === 'teams' && (
 											<AccountTeams userState={userState} onTeamsTabChange={this.onTeamsTabChange} team={team} alert={alert} />
-										) : (
-											''
 										)}
 									</>
 								)}
@@ -860,7 +856,6 @@ class Account extends Component {
 								) : (
 									''
 								)}
-
 								{tabId === 'help' ? <TeamHelp /> : ''}
 							</>
 						) : (
