@@ -184,19 +184,10 @@ export const CollectionPage = props => {
 		}
 	};
 
-	const handleSort = React.useCallback(
-		sort => {
-			googleAnalytics.recordEvent('Collections', `Sorted collection entities by ${sort}`, 'Sort dropdown option changed');
-			setCollectionsPageSort(sort);
-
-			let sortedData = getSortedData(sort, filteredData, searchCollectionsString);
-
-			setFilteredData(sortedData);
-
-			handlePagination(key, 0);
-		},
-		[searchCollectionsString, filteredData, key]
-	);
+	const handleSort = React.useCallback(sortBy => {
+		googleAnalytics.recordEvent('Collections', `Sorted collection entities by ${sortBy}`, 'Sort dropdown option changed');
+		setCollectionsPageSort(sortBy);
+	}, []);
 
 	const handlePaginatedItems = index => {
 		// Returns the related resources that have the same object type as the current active tab and performs a chunk on them to ensure each page returns 24 results
@@ -220,14 +211,14 @@ export const CollectionPage = props => {
 	);
 
 	const doCollectionsSearch = React.useCallback(
-		({ search, sort }) => {
+		({ search, sortBy }) => {
 			const filteredCollectionItems = filterCollectionItems(objectData, search);
 
 			const tempFilteredData = filteredCollectionItems.filter(dat => {
 				return dat !== '';
 			});
 
-			setFilteredData(getSortedData(sort, tempFilteredData, search));
+			setFilteredData(getSortedData(sortBy, tempFilteredData, search));
 
 			countEntities(filteredCollectionItems);
 			handlePagination(key, 0);

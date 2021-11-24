@@ -10,10 +10,10 @@ const SortDropdown = ({ handleSort, defaultValue, value, options, iconSelected }
 			<Dropdown.Toggle variant='info'>
 				{(() => {
 					if (currentValue === 'popularity') return 'Sort by number of views';
-					else if (currentValue === 'metadata') return 'Sort by metadata quality';
+					else if (currentValue === 'metadata' || currentValue === 'metadataQuality') return 'Sort by metadata quality';
 					else if (currentValue === 'resources') return 'Sort by related resources';
-					else if (currentValue === 'latest') return 'Sort by latest';
-					else if (currentValue === 'recentlyadded') return 'Sort by recently added';
+					else if (currentValue === 'latest' || currentValue === 'recentActivity') return 'Sort by latest';
+					else if (currentValue === 'recentlyadded' || currentValue === 'recentlyPublished') return 'Sort by recently added';
 					else if (currentValue === 'sortbyyear') return 'Sort by year';
 					else return 'Sort by match to search terms';
 				})()}
@@ -24,10 +24,10 @@ const SortDropdown = ({ handleSort, defaultValue, value, options, iconSelected }
 						<Dropdown.Item eventKey={item} className='gray800-14'>
 							{(() => {
 								if (item === 'popularity') return 'Number of views (highest to lowest)';
-								else if (item === 'metadata') return 'Metadata quality (platinum to bronze)';
+								else if (item === 'metadata' || item === 'metadataQuality') return 'Metadata quality (platinum to bronze)';
 								else if (item === 'resources') return 'Related resources (most first)';
-								else if (item === 'latest') return 'Latest (recently updated first)';
-								else if (item === 'recentlyadded') return 'Recently added to collection (newest first)';
+								else if (item === 'latest' || item === 'recentActivity') return 'Latest (recently updated first)';
+								else if (item === 'recentlyadded' || item === 'recentlyPublished') return 'Recently added to collection (newest first)';
 								else if (item === 'relevance') return 'Match to search terms (closest first)';
 								else if (item === 'sortbyyear') return 'Sort by year (latest first)';
 							})()}

@@ -9,7 +9,7 @@ const SearchBarContentForm = ({ onChangeInput, onResetInput, onChangeSort, sortP
 	const { t } = useTranslation();
 	const {
 		submitForm,
-		values: { search, sort },
+		values: { search, sortBy },
 		values,
 		setFieldValue,
 	} = useFormikContext();
@@ -31,8 +31,11 @@ const SearchBarContentForm = ({ onChangeInput, onResetInput, onChangeSort, sortP
 	}, []);
 
 	const handleOnSort = React.useCallback(value => {
-		setFieldValue('sort', value);
+		setFieldValue('sortBy', value);
+
 		if (onChangeSort) onChangeSort(value);
+
+		submitForm();
 	}, []);
 
 	React.useEffect(() => {
@@ -55,7 +58,7 @@ const SearchBarContentForm = ({ onChangeInput, onResetInput, onChangeSort, sortP
 				/>
 			</Col>
 			<Col lg={4} className='d-flex justify-content-end'>
-				<SortDropdown {...sortProps} handleSort={handleOnSort} value={sort} />
+				<SortDropdown {...sortProps} handleSort={handleOnSort} value={sortBy} />
 			</Col>
 		</Row>
 	);

@@ -2,12 +2,12 @@ import React from 'react';
 import { Formik } from 'formik';
 import SearchBarContentForm from './SearchBarContentForm';
 
-const SearchBarContent = ({ onSubmit, isLoading, ...outerProps }) => {
+const SearchBarContent = ({ onSubmit, isLoading, sortProps, ...outerProps }) => {
 	if (isLoading) return null;
 
 	return (
-		<Formik initialValues={{ search: '', sort: '' }} onSubmit={onSubmit}>
-			<SearchBarContentForm {...outerProps} />
+		<Formik initialValues={{ search: '', sortBy: sortProps.value }} onSubmit={onSubmit}>
+			<SearchBarContentForm sortProps={sortProps} {...outerProps} />
 		</Formik>
 	);
 };

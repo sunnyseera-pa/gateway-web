@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { Alert, Button, Col, Row, Tab, Tabs } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router';
-import serviceDatasetOnboarding from '../../../../services/dataset-onboarding/dataset-onboarding';
+import serviceDatasetOnboarding from '../../services/dataset-onboarding/dataset-onboarding';
 import { useAuth } from '../../context/AuthContext';
 import SVGIcon from '../../images/SVGIcon';
 import googleAnalytics from '../../tracking';
@@ -19,87 +19,69 @@ import './Dashboard.scss';
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
 const AccountDatasets = props => {
-	const [key, setKey] = useState(!_.isEmpty(props.alert.tab) ? props.alert.tab : 'active');
-	const [datasetList, setDatasetList] = useState([]);
-	const [isLoading, setIsLoading] = useState(true);
-	const [activeCount, setActiveCount] = useState(0);
-	const [reviewCount, setReviewCount] = useState(0);
-	const [archiveCount, setArchiveCount] = useState(0);
-	const [rejectedCount, setRejectedCount] = useState(0);
+	const [key, setKey] = useState();
 	const [alert] = useState(props.alert);
-	const [team, setTeam] = useState(props.team);
-	const [publisherID, setPublisherID] = useState('');
 	const { userState } = useAuth();
+	const [publisherID, setPublisherId] = useState();
 	const history = useHistory();
+	const [searchValue, setSearchValue] = useState('');
 	const { t } = useTranslation();
 
-	const publisherId = utils.getPublisherID(userState[0], team);
-	const dataPublisher = serviceDatasetOnboarding.useGetPublisher(publisherId);
+	const { team } = props;
+	const dataPublisher = serviceDatasetOnboarding.useGetPublisher(publisherID);
+	const dataPostDatasetOnboarding = serviceDatasetOnboarding.usePostDatasetOnboarding({ publisherID }, null, {
+		enabled: false,
+	});
 
 	useEffect(() => {
-		setTeam(props.team);
-	}, [props]);
+		const initialKey = !_.isEmpty(props.alert.tab) ? props.alert.tab : 'active';
 
-	useEffect(() => {
-		setIsLoading(true);
-		doDatasetsCall();
+		setPublisherId(utils.getPublisherID(userState[0], team));
+		setKey(team === 'admin' ? 'inReview' : initialKey);
 	}, [team]);
+
+	useEffect(() => {
+		if (publisherID && key) {
+			dataPublisher.mutate({
+				status: key,
+			});
+		}
+	}, [publisherID, key]);
+
+	useEffect(() => {
+		if (dataPostDatasetOnboarding.data) {
+			const {
+				data: {
+					data: { id },
+				},
+			} = dataPostDatasetOnboarding;
+
+			if (!_.isUndefined(id)) window.location.href = `/dataset-onboarding/${id}`;
+		}
+	}, [dataPostDatasetOnboarding.data]);
 
 	const handleSubmit = React.useCallback(
 		({ search, sortBy }) => {
-			dataPublisher.mutate({
+			dataPublisher.mutateAsync({
 				search,
-				sortyBy,
+				sortBy,
+				status: key,
 			});
 		},
-		[key]
+		[key, publisherID]
 	);
 
-	const doDatasetsCall = async () => {
-		setIsLoading(true);
-		let isPublisher = utils.getPublisherID(props.userState[0], props.team);
-		setPublisherID(isPublisher);
-
-		await axios.get(baseURL + `/api/v1/dataset-onboarding/publisher/${isPublisher}`).then(res => {
-			if (_.has(res, 'data.data.listOfDatasets')) {
-				setDatasetList(res.data.data.listOfDatasets);
-
-				let activeCount = 0;
-				let reviewCount = 0;
-				let archiveCount = 0;
-				let rejectedCount = 0;
-
-				res.data.data.listOfDatasets.forEach(dataset => {
-					if (dataset.activeflag === 'active' || dataset.activeflag === 'draft') activeCount++;
-					else if (dataset.activeflag === 'inReview') reviewCount++;
-					else if (dataset.activeflag === 'archive') archiveCount++;
-					else if (dataset.activeflag === 'rejected') rejectedCount++;
-				});
-
-				setActiveCount(activeCount);
-				setReviewCount(reviewCount);
-				setArchiveCount(archiveCount);
-				setRejectedCount(rejectedCount);
-			}
-			if (isPublisher === 'admin') setKey('inReview');
-			setIsLoading(false);
-		});
-	};
+	const handleChangeInput = React.useCallback(
+		value => {
+			setSearchValue(value);
+		},
+		[searchValue]
+	);
 
 	const createNewDataset = e => {
 		e.preventDefault();
-		//call to API to create new dataset
-		setIsLoading(true);
-		let isPublisher = utils.getPublisherID(props.userState[0], props.team);
-		axios.post(baseURL + '/api/v1/dataset-onboarding', { publisherID: isPublisher }).then(res => {
-			let { id } = res.data.data;
-			//load dataset onboarding page
-			if (!_.isUndefined(id)) window.location.href = `/dataset-onboarding/${id}`;
-			else {
-				//show error message
-				setIsLoading(false);
-			}
-		});
+
+		dataPostDatasetOnboarding.refetch();
 	};
 
 	const handleSelect = key => {
@@ -114,10 +96,12 @@ const AccountDatasets = props => {
 		history.push(getDatasetPath(id));
 	};
 
-	const hasActivityHistory = dataset => {
-		console.log('asdasdasda', dataset.listOfVersions.length);
-		return dataset.listOfVersions.length > 0 && team === 'admin';
-	};
+	const hasActivityHistory = React.useCallback(
+		dataset => {
+			return dataset.listOfVersions.length > 0 && team === 'admin';
+		},
+		[team]
+	);
 
 	const generateAlert = () => {
 		let { message = '' } = alert;
@@ -131,7 +115,10 @@ const AccountDatasets = props => {
 		);
 	};
 
-	if (isLoading) {
+	const { isLoading, data } = dataPublisher;
+	const { isLoading: isLoadingCreateDataset } = dataPostDatasetOnboarding;
+
+	if (isLoading && isLoadingCreateDataset) {
 		return (
 			<LayoutContent>
 				<Loading />
@@ -158,67 +145,90 @@ const AccountDatasets = props => {
 							</div>
 						</Col>
 						<Col sm={12} md={4} style={{ textAlign: 'right' }}>
-							<Button
-								variant='primary'
-								className='addButton'
-								onClick={
-									(() => googleAnalytics.recordEvent('Datasets', 'Add a new dataset', 'Datasets dashboard button clicked'),
-									createNewDataset)
-								}>
-								+ Add a new dataset
-							</Button>
-						</Col>
-					</Row>
-				</div>
-				<div className='tabsBackground'>
-					<Row>
-						<Col sm={12} lg={12}>
-							{team === 'admin' ? (
-								<Tabs className='dataAccessTabs gray700-13' activeKey={key} onSelect={handleSelect}>
-									<Tab eventKey='inReview' title={'Pending approval (' + reviewCount + ')'}>
-										{' '}
-									</Tab>
-								</Tabs>
-							) : (
-								<Tabs className='dataAccessTabs gray700-13' activeKey={key} onSelect={handleSelect}>
-									<Tab eventKey='active' title={'Active (' + activeCount + ')'}>
-										{' '}
-									</Tab>
-									<Tab eventKey='inReview' title={'Pending approval (' + reviewCount + ')'}>
-										{' '}
-									</Tab>
-									<Tab eventKey='rejected' title={'Rejected (' + rejectedCount + ')'}>
-										{' '}
-									</Tab>
-									<Tab eventKey='archive' title={'Archived (' + archiveCount + ')'}>
-										{' '}
-									</Tab>
-								</Tabs>
+							{team !== 'admin' && (
+								<Button
+									variant='primary'
+									className='addButton'
+									onClick={
+										(() => googleAnalytics.recordEvent('Datasets', 'Add a new dataset', 'Datasets dashboard button clicked'),
+										createNewDataset)
+									}>
+									+ Add a new dataset
+								</Button>
 							)}
 						</Col>
 					</Row>
 				</div>
-				<SearchBarContent type={t(`dataset.${key}`)} onSubmit={handleSubmit} />
-				<SearchResults
-					data={datasetList}
-					results={data =>
-						data.map(dataset => (
-							<DatasetCard
-								id={dataset._id}
-								title={dataset.name}
-								publisher={dataset.datasetv2.summary.publisher.name}
-								version={dataset.datasetVersion}
-								isDraft={true}
-								datasetStatus={dataset.activeflag}
-								timeStamps={dataset.timestamps}
-								completion={dataset.percentageCompleted}
-								listOfVersions={dataset.listOfVersions}
-							/>
-						))
-					}
-					count={datasetList.length}
-					type='dataset'
-				/>
+				{data &&
+					(() => {
+						const {
+							data: {
+								data: { counts, listOfDatasets },
+							},
+						} = data;
+
+						return (
+							<>
+								<div className='tabsBackground'>
+									<Row>
+										<Col sm={12} lg={12}>
+											{team === 'admin' ? (
+												<Tabs className='dataAccessTabs gray700-13' activeKey={key} onSelect={handleSelect}>
+													<Tab eventKey='inReview' title={'Pending approval (' + counts.inReview + ')'}>
+														{' '}
+													</Tab>
+												</Tabs>
+											) : (
+												<Tabs className='dataAccessTabs gray700-13' activeKey={key} onSelect={handleSelect}>
+													<Tab eventKey='active' title={'Active (' + counts.active + ')'}>
+														{' '}
+													</Tab>
+													<Tab eventKey='inReview' title={'Pending approval (' + counts.inReview + ')'}>
+														{' '}
+													</Tab>
+													<Tab eventKey='rejected' title={'Rejected (' + counts.rejected + ')'}>
+														{' '}
+													</Tab>
+													<Tab eventKey='archive' title={'Archived (' + counts.archive + ')'}>
+														{' '}
+													</Tab>
+												</Tabs>
+											)}
+										</Col>
+									</Row>
+								</div>
+								<SearchBarContent
+									type={t(`dataset.${key}`)}
+									onSubmit={handleSubmit}
+									onChangeInput={handleChangeInput}
+									sortProps={{ defaultValue: 'metadataQuality', options: ['recentActivity', 'recentlyPublished', 'metadataQuality'] }}
+								/>
+
+								<SearchResults
+									data={listOfDatasets}
+									results={data =>
+										data.map(dataset => (
+											<DatasetCard
+												id={dataset._id}
+												title={dataset.name}
+												publisher={dataset.datasetv2.summary.publisher.name}
+												version={dataset.datasetVersion}
+												isDraft={true}
+												datasetStatus={dataset.activeflag}
+												timeStamps={dataset.timestamps}
+												completion={dataset.percentageCompleted}
+												listOfVersions={dataset.listOfVersions}
+											/>
+										))
+									}
+									count={listOfDatasets.length}
+									maxResult={5}
+									datasetIndex={0}
+									type='dataset'
+								/>
+							</>
+						);
+					})()}
 				{/* {(() => {
 					switch (key) {
 						case 'inReview':
