@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import queryString from 'query-string';
 import * as Sentry from '@sentry/react';
-import { Row, Col, Tabs, Tab, Container, Alert } from 'react-bootstrap';
+import { Row, Col, Tabs, Tab, Container, Alert, Dropdown } from 'react-bootstrap';
 import NotFound from '../commonComponents/NotFound';
 import Uploader from '../commonComponents/Uploader';
 import Loading from '../commonComponents/Loading';
@@ -34,6 +34,10 @@ export const PaperDetail = props => {
 	const [paperEdited, setPaperEdited] = useState(false);
 	const [searchString, setSearchString] = useState('');
 	const [relatedObjects, setRelatedObjects] = useState([]);
+	const [relatedObjectsFiltered, setRelatedObjectsFiltered] = useState([]);
+	const [relatedResourcesSort, setRelatedResourcesSort] = useState([]);
+	const [relatedObjectsSearchValue, setRelatedObjectsSearchValue] = useState('');
+	const [sorting, setSorting] = useState('showAll');
 	const [discoursePostCount, setDiscoursePostCount] = useState(0);
 	const [showDrawer, setShowDrawer] = useState(false);
 	const [showModal, setShowModal] = useState(false);
@@ -128,6 +132,7 @@ export const PaperDetail = props => {
 				if (object.objectType === 'course') {
 					await axios.get(baseURL + '/api/v1/relatedobject/course/' + object.objectId).then(res => {
 						tempObjects.push({
+							name: res.data.data[0].title,
 							id: object.objectId,
 							activeflag: res.data.data[0].activeflag,
 						});
@@ -146,6 +151,9 @@ export const PaperDetail = props => {
 							: (datasetLogo = '');
 
 						tempObjects.push({
+							name: res.data.data[0].name,
+							firstname: res.data.data[0].firstname || '',
+							lastname: res.data.data[0].lastname || '',
 							id: object.objectId,
 							authors: res.data.data[0].authors,
 							activeflag: res.data.data[0].activeflag,
@@ -169,6 +177,9 @@ export const PaperDetail = props => {
 					if (object.objectId === item.id && item.activeflag === 'active') {
 						object['datasetPublisher'] = item.datasetPublisher;
 						object['datasetLogo'] = item.datasetLogo;
+						object['name'] = item.name || '';
+						object['firstname'] = item.firstname || '';
+						object['lastname'] = item.lastname || '';
 
 						tempRelatedObjects.push(object);
 					}
@@ -179,6 +190,8 @@ export const PaperDetail = props => {
 			);
 		}
 		setRelatedObjects(tempRelatedObjects);
+		setRelatedObjectsFiltered(tempRelatedObjects);
+		setRelatedResourcesSort(tempRelatedObjects);
 	};
 
 	const toggleDrawer = () => {
@@ -196,6 +209,54 @@ export const PaperDetail = props => {
 
 	const handleMouseHover = () => {
 		setIsHovering(!isHovering);
+	};
+
+	const onRelatedObjectsSearch = e => {
+		setRelatedObjectsSearchValue(e.target.value);
+	};
+
+	const doRelatedObjectsSearch = async e => {
+		// Fires on enter on searchbar
+		if (e.key === 'Enter') {
+			setRelatedObjectsFiltered([]);
+			setRelatedResourcesSort([]);
+			setSorting('showAll');
+			const filteredRelatedResourceItems = await filterRelatedResourceItems(relatedObjects, relatedObjectsSearchValue);
+
+			let tempFilteredData = filteredRelatedResourceItems.filter(dat => {
+				return dat !== '';
+			});
+			setRelatedObjectsFiltered(tempFilteredData);
+			setRelatedResourcesSort(tempFilteredData);
+		}
+	};
+
+	const filterRelatedResourceItems = (objectData, relatedObjectsSearchValue) =>
+		objectData.map(object => {
+			// Searching functionality - searches through object data and returns true if there is a match with the search term
+			if (
+				(_.has(object, 'name') ? object.name.toLowerCase().includes(relatedObjectsSearchValue.toLowerCase()) : false) ||
+				(_.has(object, 'title') ? object.title.toLowerCase().includes(relatedObjectsSearchValue.toLowerCase()) : false) ||
+				(_.has(object, 'firstname') ? object.firstname.toLowerCase().includes(relatedObjectsSearchValue.toLowerCase()) : false) ||
+				(_.has(object, 'lastname') ? object.lastname.toLowerCase().includes(relatedObjectsSearchValue.toLowerCase()) : false)
+			) {
+				return object;
+			} else {
+				return '';
+			}
+		});
+
+	const handleSort = async sort => {
+		setRelatedObjectsFiltered([]);
+		googleAnalytics.recordEvent('Courses', `Sorted related resources by ${sort}`, 'Sort dropdown option changed');
+		let tempFilteredData = [];
+		if (sort === 'showAll') {
+			tempFilteredData = await relatedResourcesSort;
+		} else {
+			tempFilteredData = await relatedResourcesSort.filter(dat => dat.objectType === sort);
+		}
+		setSorting(sort);
+		setRelatedObjectsFiltered(tempFilteredData);
 	};
 
 	if (isLoading) {
@@ -541,20 +602,126 @@ export const PaperDetail = props => {
 										/>
 									</Tab>
 									<Tab eventKey='Related resources' title={'Related resources (' + relatedObjects.length + ')'}>
-										{relatedObjects.length <= 0 ? (
-											<NotFound word='related resources' />
-										) : (
-											relatedObjects.map(object => (
-												<RelatedObject
-													relatedObject={object}
-													objectType={object.objectType}
-													activeLink={true}
-													showRelationshipAnswer={true}
-													datasetPublisher={object.datasetPublisher}
-													datasetLogo={object.datasetLogo}
-												/>
-											))
-										)}
+										<>
+											<Row>
+												<Col lg={8}>
+													<span className='collectionsSearchBar form-control'>
+														<span className='collectionsSearchIcon'>
+															<SVGIcon name='searchicon' width={20} height={20} fill={'#2c8267'} stroke='none' type='submit' />
+														</span>
+														<span>
+															<input
+																id='collectionsSearchBarInput'
+																type='text'
+																placeholder='Search within related resources'
+																onChange={onRelatedObjectsSearch}
+																value={relatedObjectsSearchValue}
+																onKeyDown={doRelatedObjectsSearch}
+															/>
+														</span>
+													</span>
+												</Col>
+
+												<Col lg={4} className='text-right'>
+													<Dropdown className='sorting-dropdown' alignRight onSelect={handleSort}>
+														<Dropdown.Toggle variant='info' id='dropdown-menu-align-right' className='gray800-14'>
+															{(() => {
+																if (sorting !== 'showAll')
+																	return `Show ${sorting === 'people' ? sorting : `${sorting}s`} (
+																	${relatedResourcesSort.filter(dat => dat.objectType === sorting).length})`;
+																else return `Show all resources (${relatedResourcesSort.length})`;
+															})()}
+															&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+														</Dropdown.Toggle>
+														<Dropdown.Menu>
+															<Row
+																key={`ddl-item-showall`}
+																className={
+																	sorting === 'showAll'
+																		? 'sort-dropdown-item sort-dropdown-item-selected sortingDropdown'
+																		: 'sort-dropdown-item sortingDropdown'
+																}>
+																<Col xs={12} className='p-0'>
+																	<Dropdown.Item eventKey={'showAll'} className='gray800-14'>
+																		Show all resources ({relatedResourcesSort.length})
+																	</Dropdown.Item>
+																</Col>
+																<div className='p-0 sortingCheckmark'>
+																	{sorting === 'showAll' ? (
+																		<SVGIcon
+																			name='check'
+																			width={20}
+																			height={20}
+																			visble='true'
+																			style={{
+																				float: 'right',
+																				fill: '#3db28c',
+																				marginTop: '5px',
+																			}}
+																			fill={'#3db28c'}
+																			stroke='none'
+																		/>
+																	) : null}
+																</div>
+															</Row>
+															{['dataset', 'tool', 'paper', 'course', 'person'].map(item => {
+																return relatedResourcesSort.filter(dat => dat.objectType === item).length > 0 ? (
+																	<Row
+																		key={`ddl-item-${item}`}
+																		className={
+																			sorting === item
+																				? 'sort-dropdown-item sort-dropdown-item-selected sortingDropdown'
+																				: 'sort-dropdown-item sortingDropdown'
+																		}>
+																		<Col xs={12} className='p-0'>
+																			<Dropdown.Item eventKey={item} className='gray800-14'>
+																				Show {item === 'people' ? item : `${item}s`} (
+																				{relatedResourcesSort.filter(dat => dat.objectType === item).length})
+																			</Dropdown.Item>
+																		</Col>
+																		<div className='p-0 sortingCheckmark'>
+																			{sorting === item ? (
+																				<SVGIcon
+																					name='check'
+																					width={20}
+																					height={20}
+																					visble='true'
+																					style={{
+																						float: 'right',
+																						fill: '#3db28c',
+																						marginTop: '5px',
+																					}}
+																					fill={'#3db28c'}
+																					stroke='none'
+																				/>
+																			) : null}
+																		</div>
+																	</Row>
+																) : (
+																	''
+																);
+															})}
+														</Dropdown.Menu>
+													</Dropdown>
+												</Col>
+											</Row>
+											{relatedObjectsFiltered.length <= 0 ? (
+												<NotFound word='related resources' />
+											) : (
+												relatedObjectsFiltered.map((object, index) => (
+													<span key={index}>
+														<RelatedObject
+															relatedObject={object}
+															objectType={object.objectType}
+															activeLink={true}
+															showRelationshipAnswer={true}
+															datasetPublisher={object.datasetPublisher}
+															datasetLogo={object.datasetLogo}
+														/>
+													</span>
+												))
+											)}
+										</>
 									</Tab>
 									<Tab eventKey='Collections' title={'Collections (' + collections.length + ')'}>
 										{!collections || collections.length <= 0 ? (
