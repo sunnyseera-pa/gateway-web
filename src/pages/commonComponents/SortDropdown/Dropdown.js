@@ -1,9 +1,9 @@
 import React, { Suspense } from 'react';
 import { Dropdown as BootstrapDropdown } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
-// import Icon from '../Icon';
+import Icon from '../Icon';
 
-const Dropdown = ({ handleSelect, defaultValue, value, type, options }) => {
+const Dropdown = ({ handleSelect, defaultValue, value, type, options, iconSelected }) => {
 	const { t } = useTranslation();
 	const currentValue = !value ? defaultValue : value;
     console.log(!value);
@@ -20,7 +20,7 @@ const Dropdown = ({ handleSelect, defaultValue, value, type, options }) => {
                         return (
                             <BootstrapDropdown.Item eventKey={item} className='gray800-14'>
                                 {t(`${type}.option.${item}`)}
-                                {/* {item === currentValue && iconSelected} */}
+                                {item === currentValue && iconSelected}
                             </BootstrapDropdown.Item>
                         );
                     })}
@@ -33,8 +33,8 @@ const Dropdown = ({ handleSelect, defaultValue, value, type, options }) => {
 Dropdown.defaultProps = {
 	options: [],
 	defaultValue: 'relevance',
-    type: 'sort'
-	// iconSelected: <Icon name='check' color='green600' ml={1} />,
+    type: 'sort',
+	iconSelected: <Icon name='check' color='green600' ml={1} />,
 };
 
 export default Dropdown;
