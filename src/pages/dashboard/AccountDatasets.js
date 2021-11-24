@@ -1,19 +1,20 @@
-import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Col, Row, Button, Tabs, Tab, Alert } from 'react-bootstrap';
-import googleAnalytics from '../../tracking';
 import _ from 'lodash';
-import Loading from '../commonComponents/Loading';
-import DatasetCard from '../commonComponents/DatasetCard';
-import NotFound from '../commonComponents/NotFound';
-import SVGIcon from '../../images/SVGIcon';
-import utils from '../../utils/DataSetHelper.util';
-import './Dashboard.scss';
-import { LayoutContent } from '../storybookComponents/Layout';
-import { useHistory } from 'react-router';
-import { ReactComponent as EyeIcon } from '../../images/eye.svg';
-import SearchBarContent from '../storybookComponents/SearchBarContent';
+import React, { useEffect, useState } from 'react';
+import { Alert, Button, Col, Row, Tab, Tabs } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
+import { useHistory } from 'react-router';
+import serviceDatasetOnboarding from '../../../../services/dataset-onboarding/dataset-onboarding';
+import { useAuth } from '../../context/AuthContext';
+import SVGIcon from '../../images/SVGIcon';
+import googleAnalytics from '../../tracking';
+import utils from '../../utils/DataSetHelper.util';
+import DatasetCard from '../commonComponents/DatasetCard';
+import Loading from '../commonComponents/Loading';
+import SearchResults from '../commonComponents/SearchResults';
+import { LayoutContent } from '../storybookComponents/Layout';
+import SearchBarContent from '../storybookComponents/SearchBarContent';
+import './Dashboard.scss';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -28,8 +29,12 @@ const AccountDatasets = props => {
 	const [alert] = useState(props.alert);
 	const [team, setTeam] = useState(props.team);
 	const [publisherID, setPublisherID] = useState('');
+	const { userState } = useAuth();
 	const history = useHistory();
 	const { t } = useTranslation();
+
+	const publisherId = utils.getPublisherID(userState[0], team);
+	const dataPublisher = serviceDatasetOnboarding.useGetPublisher(publisherId);
 
 	useEffect(() => {
 		setTeam(props.team);
@@ -39,6 +44,16 @@ const AccountDatasets = props => {
 		setIsLoading(true);
 		doDatasetsCall();
 	}, [team]);
+
+	const handleSubmit = React.useCallback(
+		({ search, sortBy }) => {
+			dataPublisher.mutate({
+				search,
+				sortyBy,
+			});
+		},
+		[key]
+	);
 
 	const doDatasetsCall = async () => {
 		setIsLoading(true);
@@ -183,37 +198,29 @@ const AccountDatasets = props => {
 						</Col>
 					</Row>
 				</div>
-				<SearchBarContent type={t(`dataset.${key}`)} />
-				{(() => {
+				<SearchBarContent type={t(`dataset.${key}`)} onSubmit={handleSubmit} />
+				<SearchResults
+					data={datasetList}
+					results={data =>
+						data.map(dataset => (
+							<DatasetCard
+								id={dataset._id}
+								title={dataset.name}
+								publisher={dataset.datasetv2.summary.publisher.name}
+								version={dataset.datasetVersion}
+								isDraft={true}
+								datasetStatus={dataset.activeflag}
+								timeStamps={dataset.timestamps}
+								completion={dataset.percentageCompleted}
+								listOfVersions={dataset.listOfVersions}
+							/>
+						))
+					}
+					count={datasetList.length}
+					type='dataset'
+				/>
+				{/* {(() => {
 					switch (key) {
-						case 'active':
-							return (
-								<div>
-									{activeCount <= 0 ? (
-										<NotFound word='datasets' />
-									) : (
-										datasetList.map(dataset => {
-											if (dataset.activeflag !== 'active' && dataset.activeflag !== 'draft') {
-												return <></>;
-											} else {
-												return (
-													<DatasetCard
-														id={dataset._id}
-														title={dataset.name}
-														publisher={dataset.datasetv2.summary.publisher.name}
-														version={dataset.datasetVersion}
-														isDraft={true}
-														datasetStatus={dataset.activeflag}
-														timeStamps={dataset.timestamps}
-														completion={dataset.percentageCompleted}
-														listOfVersions={dataset.listOfVersions}
-													/>
-												);
-											}
-										})
-									)}
-								</div>
-							);
 						case 'inReview':
 							return (
 								<div>
@@ -311,7 +318,7 @@ const AccountDatasets = props => {
 						default:
 							return key;
 					}
-				})()}
+				})()} */}
 			</LayoutContent>
 		</div>
 	);

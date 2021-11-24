@@ -36,11 +36,15 @@ const AccountDataset = props => {
 
 	const dataActivityLog = serviceActivityLog.usePostActivityLog();
 	const publisherId = utils.getPublisherID(userState[0], team);
-	const dataPublisher = serviceDatasetOnboarding.useGetPublisher(Array.isArray(publisherId) ? publisherId[0] : publisherId, null);
+	const dataPublisher = serviceDatasetOnboarding.useGetPublisher(publisherId);
 
 	React.useEffect(() => {
 		setTeam(getTeam(props));
 	}, [id]);
+
+	React.useEffect(() => {
+		dataPublisher.mutate();
+	}, [dataPublisher]);
 
 	const getValidDatasets = listOfDatasets => {
 		return listOfDatasets.filter(dataset => {

@@ -171,11 +171,30 @@ describe('Given the dataset-onboarding service', () => {
 	});
 
 	describe('When useGetPublisher is called', () => {
-		it('Then calls getPublisher with the correct arguments', async () => {
-			const getSpy = jest.spyOn(service, 'getPublisher');
+		let commonMutateArgs;
+		let getSpy;
+
+		beforeAll(async () => {
+			asyncSpy = jest.spyOn(service, 'getPublisher');
+			commonMutateArgs = [
+				getSpy,
+				'1234',
+				{
+					search: 'dataset',
+				},
+			];
+		});
+
+		describe('And the publisher is not an array', () => {
 			const rendered = renderHook(() => service.useGetPublisher('1234', { option1: true }), { wrapper });
 
-			assertServiceRefetchCalled(rendered, getSpy, '1234');
+			assertServiceMutateAsyncCalled(rendered, commonMutateArgs);
+		});
+
+		describe('And the publisher is an array', () => {
+			const rendered = renderHook(() => service.useGetPublisher(['1234'], { option1: true }), { wrapper });
+
+			assertServiceMutateAsyncCalled(rendered, commonMutateArgs);
 		});
 	});
 

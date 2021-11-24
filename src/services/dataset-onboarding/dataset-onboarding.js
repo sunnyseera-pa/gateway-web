@@ -48,11 +48,19 @@ const useGetDatasetOnboarding = (requestOptions, queryOptions = { queryKey: 'get
 	});
 };
 
-const useGetPublisher = (_id, requestOptions, queryOptions = { queryKey: 'getPublisher' }) => {
-	return useQuery({
-		...queryOptions,
-		queryKey: [queryOptions.queryKey, _id],
-		queryFn: async ({ queryKey }) => getPublisher(queryKey[1], requestOptions),
+// const useGetPublisher = (_id, requestOptions, queryOptions = { queryKey: 'getPublisher' }) => {
+// 	return useQuery({
+// 		...queryOptions,
+// 		queryKey: [queryOptions.queryKey, _id],
+// 		queryFn: async ({ queryKey }) => getPublisher(queryKey[1], requestOptions),
+// 	});
+// };
+
+const useGetPublisher = (publisherId, requestOptions, mutateOptions = { queryKey: 'getPublisher' }) => {
+	const _id = Array.isArray(publisherId) ? publisherId[0] : publisherId;
+
+	return useMutation(data => getPublisher(_id, data, requestOptions), {
+		mutateOptions,
 	});
 };
 
