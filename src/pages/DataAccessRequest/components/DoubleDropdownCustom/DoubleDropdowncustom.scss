@@ -3,3 +3,33 @@
 		position: static !important;
 	}
 }
+
+.double-dropdown-input {
+	all: unset !important;
+}
+
+.dropdown-toggle {
+	all: unset !important;
+}
+
+.nested-dropdown:after {
+	display: none !important;
+}
+
+.nested-dropdown {
+	cursor: pointer;
+}
+
+.nest-dropdown-arrow {
+	cursor: pointer;
+	position: static;
+	margin-left: 40px;
+}
+.nested-dropdown-whole {
+	margin-left: 24px;
+}
+
+.nested-dropdown-menu {
+	border: none !important;
+	box-shadow: none !important;
+}
