@@ -6,7 +6,6 @@ import { Table, Dropdown } from 'react-bootstrap';
 const DataUseTable = ({ team, data, active, pending, archived, onClickArchive, onClickUnarchive, onClickApprove, onClickReject }) => {
 	const renderGatewayDatasets = dataUse => {
 		const datasets = dataUse.gatewayDatasetsInfo.map(gatewayDataset => {
-			debugger;
 			return (
 				<div>
 					<Link className='data-use-link' to={'/dataset/' + gatewayDataset.pid} target='_blank'>

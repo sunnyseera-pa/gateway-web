@@ -257,7 +257,7 @@ export const DataUseView = props => {
 						''
 					)}
 
-					{dataUseData.activeflag === 'review' ? (
+					{dataUseData.activeflag === 'inReview' ? (
 						<Row className=''>
 							<Col sm={1} lg={1} />
 							<Col sm={10} lg={10}>

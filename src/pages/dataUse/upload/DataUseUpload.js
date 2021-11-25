@@ -45,7 +45,33 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
 					} else {
 						checkDataUses(rows).then(checks => {
 							const duplicateErrors = searchForDuplicates(checks);
-							const uploadErrors = [...duplicateErrors, ...errors];
+
+							let recommendedErrors = [];
+							rows.forEach((row, index) => {
+								if (isEmpty(row.laySummary)) recommendedErrors.push({ row: index + 1, column: 'Lay summary*', error: 'recommended' });
+								if (isEmpty(row.publicBenefitStatement))
+									recommendedErrors.push({ row: index + 1, column: 'Public benefit statement*', error: 'recommended' });
+								if (isUndefined(row.latestApprovalDate))
+									recommendedErrors.push({ row: index + 1, column: 'Latest approval date*', error: 'recommended' });
+								if (isEmpty(row.accessType)) recommendedErrors.push({ row: index + 1, column: 'Access type*', error: 'recommended' });
+
+								rows.forEach((duplicateRow, duplicateIndex) => {
+									if (index !== duplicateIndex) {
+										if (
+											row.projectIdText === duplicateRow.projectIdText ||
+											(row.projectTitle === duplicateRow.projectTitle &&
+												row.organisationName === duplicateRow.organisationName &&
+												row.datasetTitles === duplicateRow.datasetTitles)
+										) {
+											if (!duplicateErrors.filter(error => error.row === duplicateIndex + 1).length > 0) {
+												duplicateErrors.push({ row: index + 1, duplicateRow: duplicateIndex + 1, error: 'duplicateRow' });
+											}
+										}
+									}
+								});
+							});
+
+							const uploadErrors = [...duplicateErrors, ...errors, ...recommendedErrors];
 							setUploadedData({ rows, uploadErrors, checks });
 							if (isEmpty(uploadErrors)) {
 								showAlert('Your data uses have been successfully uploaded.');
@@ -132,8 +158,22 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
 					</div>
 				);
 			}
+			case 'recommended': {
+				return (
+					<div>
+						Error in row {error.row}: Recommended field “{error.column}” is empty
+					</div>
+				);
+			}
 			case 'duplicate': {
 				return <div>Error in row {error.row} : Suspected data use duplicate</div>;
+			}
+			case 'duplicateRow': {
+				return (
+					<div>
+						Error in row {error.row} : Suspected data use duplicate of row {error.duplicateRow}
+					</div>
+				);
 			}
 			default: {
 				return '';
@@ -253,7 +293,6 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
 						<SVGIcon name='check' width={24} height={24} fill={'#2C8267'} /> {alert}
 					</Alert>
 				)}
-
 				<div className='layoutCard p-4'>
 					<p className='black-20-semibold mb-2'>Download template</p>
 
@@ -313,7 +352,6 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
 						)}
 					</>
 				</div>
-
 				{!isEmpty(uploadedData.rows) ? (
 					<div className='layoutCard p-4'>
 						{isEmpty(uploadedData.uploadErrors) ? (
@@ -541,7 +579,7 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
 					open={isSubmitModalVisible}
 					close={toggleSubmitModal}
 					confirm={submitDataUse}
-					isValid={isEmpty(uploadedData.uploadErrors)}
+					isValid={!uploadedData.uploadErrors.filter(error => error.error === 'required' || error.error === 'duplicate').length > 0}
 					isAdmin={userState[0].teams.some(team => team.type === 'admin')}
 					recommendedFieldsMissing={recommendedFieldsMissing}
 				/>
