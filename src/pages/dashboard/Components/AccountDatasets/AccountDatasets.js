@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Alert, Button, Col, Row } from 'react-bootstrap';
 import { useAuth } from '../../../../context/AuthContext';
 import SVGIcon from '../../../../images/SVGIcon';
@@ -18,14 +18,27 @@ const AccountDatasets = props => {
 	const { userState } = useAuth();
 	const [publisherID, setPublisherId] = useState();
 
-	const { isLoading, data, getResults } = useSearch(serviceDatasetOnboarding.useGetPublisher(publisherID), {
-		params: {
-			maxResults: 0,
-		},
-		count: data => {
-			return data.counts[key];
-		},
-	});
+	const searchOptions = useMemo(
+		() => ({
+			params: {
+				maxResults: 0,
+			},
+			count: (results, { status }) => {
+				if (!!results && !status) {
+					const { data } = results;
+					return data.counts[status];
+				}
+
+				return 0;
+			},
+		}),
+		[key]
+	);
+
+	const { isLoading, isFetched, data, getResults } = useSearch(
+		serviceDatasetOnboarding.useGetPublisher(publisherID, { enabled: false }),
+		searchOptions
+	);
 
 	const dataPostDatasetOnboarding = serviceDatasetOnboarding.usePostDatasetOnboarding({ publisherID }, null, {
 		enabled: false,
@@ -144,9 +157,12 @@ const AccountDatasets = props => {
 						</Col>
 					</Row>
 				</div>
-				<AccountDatasetsTabs counts={statusCounts} onSelectTab={handleSelect} team={team} activeKey={key} />
+
+				{isFetched && <AccountDatasetsTabs counts={statusCounts} onSelectTab={handleSelect} team={team} activeKey={key} />}
+
 				<AccountDatasetsContent
 					isLoading={isLoading || isLoadingCreateDataset}
+					isFetched={isFetched}
 					data={datasets}
 					onSubmit={handleSubmit}
 					team={team}

@@ -1,49 +1,37 @@
 import React from 'react';
-import { Dropdown } from 'react-bootstrap';
-import Icon from '../../../components/Icon';
+import { cx } from '@emotion/css';
+import Dropdown from '../../../components/Dropdown';
+import PropTypes from 'prop-types';
+import { PROP_TYPES_DROPDOWN } from '../../../components/Dropdown/Dropdown.propTypes';
+import { useTranslation } from 'react-i18next';
 
-const SortDropdown = ({ handleSort, defaultValue, value, options, iconSelected }) => {
-	const currentValue = !value ? defaultValue : value;
+const SortDropdown = ({ onSort, className, options, ...outerProps }) => {
+	const { t } = useTranslation();
+	const [selectedOption, setSelectedOption] = React.useState();
+
+	const handleSelect = React.useCallback(value => {
+		setSelectedOption(value);
+
+		onSort(value);
+	}, []);
 
 	return (
-		<Dropdown className='ui-SortDropdown' alignRight onSelect={handleSort}>
-			<Dropdown.Toggle variant='info'>
-				{(() => {
-					if (currentValue === 'popularity') return 'Sort by number of views';
-					else if (currentValue === 'metadata' || currentValue === 'metadataQuality') return 'Sort by metadata quality';
-					else if (currentValue === 'resources') return 'Sort by related resources';
-					else if (currentValue === 'latest' || currentValue === 'recentActivity') return 'Sort by latest';
-					else if (currentValue === 'recentlyadded' || currentValue === 'recentlyPublished') return 'Sort by recently added';
-					else if (currentValue === 'sortbyyear') return 'Sort by year';
-					else return 'Sort by match to search terms';
-				})()}
-			</Dropdown.Toggle>
-			<Dropdown.Menu>
-				{options.map(item => {
-					return (
-						<Dropdown.Item eventKey={item} className='gray800-14'>
-							{(() => {
-								if (item === 'popularity') return 'Number of views (highest to lowest)';
-								else if (item === 'metadata' || item === 'metadataQuality') return 'Metadata quality (platinum to bronze)';
-								else if (item === 'resources') return 'Related resources (most first)';
-								else if (item === 'latest' || item === 'recentActivity') return 'Latest (recently updated first)';
-								else if (item === 'recentlyadded' || item === 'recentlyPublished') return 'Recently added to collection (newest first)';
-								else if (item === 'relevance') return 'Match to search terms (closest first)';
-								else if (item === 'sortbyyear') return 'Sort by year (latest first)';
-							})()}
-							{item === currentValue && iconSelected}
-						</Dropdown.Item>
-					);
-				})}
-			</Dropdown.Menu>
-		</Dropdown>
+		<Dropdown
+			className={cx('ui-SortDropdown', className)}
+			onSelect={handleSelect}
+			options={options.map(value => ({
+				label: t(`sortby.options.${value}`),
+				value: value,
+			}))}
+			value={selectedOption}
+			{...outerProps}
+		/>
 	);
 };
 
-SortDropdown.defaultProps = {
-	options: [],
-	defaultValue: 'relevance',
-	iconSelected: <Icon name='check' color='green600' ml={1} />,
+SortDropdown.propTypes = {
+	...PROP_TYPES_DROPDOWN,
+	onSort: PropTypes.func.isRequired,
 };
 
 export default SortDropdown;

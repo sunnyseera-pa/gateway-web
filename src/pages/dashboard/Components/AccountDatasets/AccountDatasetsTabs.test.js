@@ -21,6 +21,7 @@ describe('Given the AccountDatasetsTabs component', () => {
 			expect(wrapper.queryByText('Active(0)')).toBeNull();
 		});
 	});
+
 	describe('when team is not admin', () => {
 		beforeAll(() => {
 			wrapper.rerender(<AccountDatasetsTabs {...props} team='manager' />);

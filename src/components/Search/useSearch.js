@@ -8,9 +8,13 @@ const useSearch = (mutateHook, options) => {
 		}
 	);
 
-	const [count, setCount] = React.useState(0);
+	const [state, setState] = React.useState({
+		count: 0,
+		isFetched: false,
+	});
 
 	const { isLoading, isError, data } = mutateHook;
+	const { count } = state;
 
 	const hasNext = React.useCallback(() => {
 		const { maxResults, page } = params;
@@ -22,25 +26,46 @@ const useSearch = (mutateHook, options) => {
 		return page > 0;
 	}, [params]);
 
-	const getResults = React.useCallback(async queryParams => {
-		setParams(queryParams);
-	}, []);
+	const getResults = React.useCallback(
+		async queryParams => {
+			console.log(params);
 
-	const query = React.useCallback(async () => {
+			const mergedParams = {
+				...params,
+				...queryParams,
+			};
+
+			setParams(mergedParams);
+			query(mergedParams);
+		},
+		[params]
+	);
+
+	const query = React.useCallback(async queryParams => {
 		try {
-			const data = await mutateHook.mutateAsync(params);
+			const { data } = await mutateHook.mutateAsync(queryParams);
 			const { count } = options;
 
-			setCount(count ? count(data) : data.count);
-		} catch (e) {}
-	}, [params]);
+			console.log('Query params', queryParams);
+
+			setState({
+				count: count ? count(data, queryParams) : data.count,
+				isFetched: true,
+			});
+		} catch (e) {
+			console.log('e', e);
+		}
+	}, []);
 
 	const goToPage = i => {
-		setParams({
+		const queryParams = {
 			...params,
 			page: i,
 			index: (i - 1) * 10,
-		});
+		};
+
+		setParams(queryParams);
+		query(queryParams);
 	};
 
 	const goToNext = React.useCallback(() => {
@@ -57,10 +82,6 @@ const useSearch = (mutateHook, options) => {
 		}
 	}, [params]);
 
-	React.useEffect(() => {
-		query();
-	}, [params]);
-
 	return {
 		goToPage,
 		goToNext,
@@ -70,9 +91,9 @@ const useSearch = (mutateHook, options) => {
 		hasPrevious,
 		data,
 		params,
-		count,
 		isLoading,
 		isError,
+		...state,
 	};
 };
 

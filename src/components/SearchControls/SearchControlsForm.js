@@ -4,9 +4,12 @@ import { Col, Row } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import SearchInput from '../SearchInput';
 import SortDropdown from '../../pages/commonComponents/SortDropdown';
+import useCommonStyles from '../../hooks/useCommonStyles';
 
-const SearchControlsForm = ({ onChangeInput, onResetInput, onChangeSort, sortProps, isLoading, type }) => {
+const SearchControlsForm = ({ onChangeInput, onResetInput, onChangeSort, sortProps, isLoading, type, mt, mb, mr, width }) => {
 	const { t } = useTranslation();
+	const commonStyles = useCommonStyles({ mt, mb, mr, mb, width });
+
 	const {
 		submitForm,
 		values: { search, sortBy },
@@ -49,8 +52,8 @@ const SearchControlsForm = ({ onChangeInput, onResetInput, onChangeSort, sortPro
 	if (isLoading) return null;
 
 	return (
-		<Row>
-			<Col lg={8} className='mb-2 mb-lg-0'>
+		<Row className={commonStyles}>
+			<Col lg={8}>
 				<SearchInput
 					placeholder={t('search.placeholder', { type })}
 					onChange={handleChange}
@@ -63,7 +66,7 @@ const SearchControlsForm = ({ onChangeInput, onResetInput, onChangeSort, sortPro
 			</Col>
 			{sortProps && (
 				<Col lg={4} className='d-flex justify-content-end'>
-					<SortDropdown {...sortProps} handleSort={handleOnSort} value={sortBy} />
+					<SortDropdown {...sortProps} onSort={handleOnSort} value={sortBy} ml={2} />
 				</Col>
 			)}
 		</Row>

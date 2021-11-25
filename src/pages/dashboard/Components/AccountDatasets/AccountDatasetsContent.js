@@ -7,7 +7,7 @@ import Icon from '../../../../components/Icon';
 import SearchControls from '../../../../components/SearchControls';
 import '../../Dashboard.scss';
 
-const AccountDatasetsContent = ({ data = [], onSubmit, isLoading, status, team }) => {
+const AccountDatasetsContent = ({ data = [], onSubmit, isLoading, isFetched, status, team }) => {
 	const [searchValue, setSearchValue] = useState();
 	const history = useHistory();
 
@@ -51,7 +51,19 @@ const AccountDatasetsContent = ({ data = [], onSubmit, isLoading, status, team }
 
 	return (
 		<>
-			<SearchControls type={t(`dataset.${status}`)} onSubmit={onSubmit} onChangeInput={handleChangeInput} onResetInput={onSubmit} />
+			{isFetched && (
+				<SearchControls
+					type={t(`dataset.${status}`)}
+					onSubmit={onSubmit}
+					onChangeInput={handleChangeInput}
+					onResetInput={onSubmit}
+					mt={5}
+					sortProps={{
+						defaultValue: 'metadataQuality',
+						options: ['recentActivity', 'recentlyPublished', 'metadataQuality', 'popularity'],
+					}}
+				/>
+			)}
 
 			<SearchResults
 				data={data}

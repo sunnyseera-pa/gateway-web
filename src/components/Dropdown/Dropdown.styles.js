@@ -13,12 +13,14 @@ export const root = ({ variant }) => theme => {
 			position: relative;
 			text-align: left;
 			width: 100%;
+			padding-right: 1.5rem;
 
 			&:after {
 				position: absolute;
-				right: 0.5rem;
+				right: 0.25rem;
 				top: 50%;
 				transform: translate(-50%, -50%);
+				margin: 0;
 			}
 		}
 

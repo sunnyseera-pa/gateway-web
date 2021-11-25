@@ -4,7 +4,7 @@ import '../../Dashboard.scss';
 
 const AccountDatasetsTabs = ({ counts = { inReview: 0, active: 0, rejected: 0, archive: 0 }, team, onSelectTab, activeKey }) => {
 	return (
-		<div className='tabsBackground'>
+		<div className='tabsBackground mb-0'>
 			<Row>
 				<Col sm={12} lg={12}>
 					{team === 'admin' ? (
