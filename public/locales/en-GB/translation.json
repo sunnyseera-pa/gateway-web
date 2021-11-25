@@ -58,18 +58,22 @@
 	"viewForm": "View form",
 	"sort": {
 		"label": {
-			"recentActivity": "Recent activity",
-			"alphabetically": "Alphabetically",
-			"recentlyPublished": "Recently published",
-			"metadataQuality": "Metadata quality",
-			"mostViewed": "Most viewed"
+			"popularity": "Sort by number of views",
+			"metadata": "Sort by metadata quality",
+			"resources": "Sort by related resources",
+			"latest": "Sort by latest",
+			"recentlyadded": "Sort by recently added",
+			"sortbyyear": "Sort by year",
+			"relevance": "Sort by match to search terms"
 		},
 		"option": {
-			"recentActivity": "Recent activity",
-			"alphabetically": "Alphabetically",
-			"recentlyPublished": "Recently published",
-			"metadataQuality": "Metadata quality",
-			"mostViewed": "Most viewed"
+			"popularity": "Number of views (highest to lowest)",
+			"metadata": "Metadata quality (platinum to bronze)",
+			"resources": "Related resources (most first)",
+			"latest": "Latest (recently updated first)",
+			"recentlyadded": "Recently added to collection (newest first)",
+			"sortbyyear": "Sort by year (latest first)",
+			"relevance": "Match to search terms (closest first)"
 		}
 	}
 }

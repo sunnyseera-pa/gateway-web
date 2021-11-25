@@ -1,6 +1,6 @@
-import { render, waitFor } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import React from 'react';
-import Dropdown from '.';
+import SortDropdown from '.';
 import { server } from '../../../services/mockServer';
 
 let wrapper;
@@ -11,11 +11,13 @@ const props = {
     value: 'recentlyPublished',
     type: 'sort',
     options: [
-        'recentActivity',
-        'alphabetically',
-		'recentlyPublished',
-		'metadataQuality',
-		'mostViewed'
+        'popularity',
+        'metadata',
+		'resources',
+		'latest',
+		'recentlyadded',
+        'sortbyyear',
+        'relevance'
     ]
 }
 
@@ -23,7 +25,7 @@ describe('Given the Dropdown component', () => {
 	describe('When it is rendered', () => {
 		beforeAll(() => {
 			server.listen();
-			wrapper = render(<Dropdown {...props} />, {
+			wrapper = render(<SortDropdown {...props} />, {
 				wrapper: Providers,
 			});
 		});
@@ -36,8 +38,7 @@ describe('Given the Dropdown component', () => {
             server.close();
 		});
 
-		it('Then matches the previous snapshot', async () => {
-			await waitFor(() => expect(wrapper.getByText('Test content')).toBeTruthy());
+		it('Then matches the previous snapshot', () => {
 			expect(wrapper.container).toMatchSnapshot();
 		});
 	});
