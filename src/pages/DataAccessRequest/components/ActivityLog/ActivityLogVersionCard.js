@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import moment from 'moment';
 import { ReactComponent as VersionCreated } from '../../../../images/Versions_created.svg';
 import { ReactComponent as VersionAccepted } from '../../../../images/check.svg';
-import { ReactComponent as ApplicationRejected } from '../../../../images/Application_rejected.svg';
+import { ReactComponent as ApplicationRejected } from '../../../images/Application_rejected.svg';
 import { ReactComponent as Workflow } from '../../../../images/Workflows.svg';
 import { ReactComponent as Collaborators } from '../../../../images/Collaborators.svg';
 import { ReactComponent as UpdateRequested } from '../../../../images/Updates_requested.svg';

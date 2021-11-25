@@ -14,7 +14,7 @@ import TeamNotificationsConfirmationModal from './Team/TeamNotificationsConfirma
 import { userTypes, tabTypes } from './Team/teamUtil';
 import SVGIcon from '../../images/SVGIcon';
 import './Dashboard.scss';
-import { LayoutContent } from '../storybookComponents/Layout';
+import { LayoutContent } from '../../components/Layout';
 
 const AccountTeamManagement = ({
 	userState = [],

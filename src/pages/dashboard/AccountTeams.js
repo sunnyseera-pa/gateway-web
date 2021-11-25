@@ -9,7 +9,7 @@ import './Dashboard.scss';
 import TeamInfo from './Team/TeamInfo';
 import _ from 'lodash';
 import AddEditTeamsPage from './Team/AddEditTeamsPage';
-import { LayoutContent } from '../storybookComponents/Layout';
+import { LayoutContent } from '../../components/Layout';
 
 const maxResult = 40;
 

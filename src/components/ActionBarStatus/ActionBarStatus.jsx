@@ -2,9 +2,9 @@
 import { cx } from '@emotion/css';
 import { jsx } from '@emotion/react';
 import PropTypes from 'prop-types';
-import { addCommonPropTypes } from '../../../configs/propTypes';
-import useCommonStyles from '../../../hooks/useCommonStyles';
-import { dateFormats } from '../../../utils/GeneralHelper.util';
+import { addCommonPropTypes } from '../../configs/propTypes';
+import useCommonStyles from '../../hooks/useCommonStyles';
+import { dateFormats } from '../../utils/GeneralHelper.util';
 
 const ActionBarStatus = ({ status, dataset, totalQuestions, className, mt, mb, ml, mr, ...outerProps }) => {
 	const commonStyles = useCommonStyles({ mt, mb, ml, mr });

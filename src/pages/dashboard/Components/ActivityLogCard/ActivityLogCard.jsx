@@ -7,11 +7,11 @@ import { useTranslation } from 'react-i18next';
 import ACTIVITY_LOG_PROP_TYPES from '../../../../services/activitylog/activitylog';
 import DatasetOnboardingHelper from '../../../../utils/DatasetOnboardingHelper.util';
 import { dateFormats } from '../../../../utils/GeneralHelper.util';
-import BlockQuote from '../../../storybookComponents/BlockQuote';
-import Icon from '../../../storybookComponents/Icon';
-import ListInfo from '../../../storybookComponents/ListInfo';
+import BlockQuote from '../../../../components/BlockQuote';
+import Icon from '../../../../components/Icon';
+import ListInfo from '../../../../components/ListInfo';
 import SLA from '../../../commonComponents/sla/SLA';
-import Timeline from '../../../storybookComponents/Timeline';
+import Timeline from '../../../../components/Timeline';
 import * as styles from './ActivityLogCard.styles';
 
 let eventStatusIcons = {

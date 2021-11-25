@@ -3,7 +3,7 @@ import { useFormikContext } from 'formik';
 import { Col, Row } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import SearchInput from '../SearchInput';
-import SortDropdown from '../../commonComponents/SortDropdown';
+import SortDropdown from '../../pages/commonComponents/SortDropdown';
 
 const SearchControlsForm = ({ onChangeInput, onResetInput, onChangeSort, sortProps, isLoading, type }) => {
 	const { t } = useTranslation();

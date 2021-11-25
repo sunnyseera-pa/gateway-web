@@ -13,7 +13,7 @@ import ActionBar from '../../../commonComponents/actionbar/ActionBar';
 import DatasetCard from '../../../commonComponents/DatasetCard';
 import Loading from '../../../commonComponents/Loading';
 import ActionBarMenu from '../../../commonComponents/ActionBarMenu/ActionBarMenu';
-import { LayoutContent } from '../../../storybookComponents/Layout';
+import { LayoutContent } from '../../../../components/Layout';
 import AccountDatasetApproveModal from './AccountDatasetApproveModal';
 import AccountDatasetRejectModal from './AccountDatasetRejectModal';
 import ActivityLogCard from '../ActivityLogCard';

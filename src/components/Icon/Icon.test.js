@@ -5,7 +5,7 @@ import Icon from '.';
 
 jest.mock('axios');
 
-jest.mock('../../../images/SVGIcon', () => props => {
+jest.mock('../../images/SVGIcon', () => props => {
 	mockSVGIcon(props);
 	return <div />;
 });

@@ -3,7 +3,7 @@ import moment from 'moment';
 import React, { Fragment } from 'react';
 import { Col, Dropdown, DropdownButton, Row } from 'react-bootstrap';
 import Loading from '../commonComponents/Loading';
-import { LayoutContent } from '../storybookComponents/Layout';
+import { LayoutContent } from '../../components/Layout';
 import UnmetDemandSection from './Components/UnmetDemand/UnmetDemandSection';
 import DashboardKPI from './DARComponents/DashboardKPI';
 import './Dashboard.scss';

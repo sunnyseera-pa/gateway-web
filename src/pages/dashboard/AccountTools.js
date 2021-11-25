@@ -9,7 +9,7 @@ import ActionModal from '../commonComponents/ActionModal/ActionModal';
 import googleAnalytics from '../../tracking';
 import { EntityActionButton } from './EntityActionButton.jsx';
 import { PaginationHelper } from '../commonComponents/PaginationHelper';
-import { LayoutContent } from '../storybookComponents/Layout';
+import { LayoutContent } from '../../components/Layout';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 

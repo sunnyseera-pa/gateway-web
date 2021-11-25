@@ -2,8 +2,8 @@
 import { cx } from '@emotion/css';
 import { jsx } from '@emotion/react';
 import PropTypes from 'prop-types';
-import { addCommonPropTypes } from '../../../configs/propTypes';
-import useCommonStyles from '../../../hooks/useCommonStyles';
+import { addCommonPropTypes } from '../../configs/propTypes';
+import useCommonStyles from '../../hooks/useCommonStyles';
 import * as styles from './ListInfo.styles';
 
 const ListInfo = ({ data, className, widthCol1, mt, mb, ml, mr }) => {

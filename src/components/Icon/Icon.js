@@ -4,9 +4,9 @@ import { jsx } from '@emotion/react';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
-import { addCommonPropTypes } from '../../../configs/propTypes';
-import useCommonStyles from '../../../hooks/useCommonStyles';
-import SVGIcon from '../../../images/SVGIcon';
+import { addCommonPropTypes } from '../../configs/propTypes';
+import useCommonStyles from '../../hooks/useCommonStyles';
+import SVGIcon from '../../images/SVGIcon';
 import * as styles from './Icon.styles.js';
 
 const svgFragments = {
@@ -62,7 +62,7 @@ const Icon = ({ name, size, color, fill, stroke, className, ml, mr, mb, mt, inli
 
 	useEffect(() => {
 		const importIcon = () => {
-			import(`../../../images/${name}.svg`).then(({ default: namedImport }) => {
+			import(`../../images/${name}.svg`).then(({ default: namedImport }) => {
 				axios.get(namedImport).then(({ data }) => {
 					setSvg(data);
 				});

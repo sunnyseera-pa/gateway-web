@@ -15,7 +15,7 @@ import { ReactComponent as ColourLogoSvgMobile } from '../../../images/colourMob
 import { ReactComponent as HamBurgerSvg } from '../../../images/hamburger.svg';
 import SVGIcon from '../../../images/SVGIcon';
 import googleAnalytics from '../../../tracking';
-import SearchInput from '../../storybookComponents/SearchInput';
+import SearchInput from '../../../components/SearchInput';
 import UatBanner from '../uatBanner/UatBanner';
 import '../uatBanner/UatBanner.scss';
 import AddNewEntity from './AddNewEntity';

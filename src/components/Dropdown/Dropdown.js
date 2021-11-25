@@ -4,10 +4,10 @@ import { useMemo } from 'react';
 import { Dropdown as BootstrapDropdown } from 'react-bootstrap';
 import PropTypes from 'prop-types';
 import * as styles from './Dropdown.styles';
-import Icon from '../../storybookComponents/Icon';
-import { addCommonPropTypes } from '../../../configs/propTypes';
+import Icon from '../Icon';
+import { addCommonPropTypes } from '../../configs/propTypes';
 import { cx } from '@emotion/css';
-import useCommonStyles from '../../../hooks/useCommonStyles';
+import useCommonStyles from '../../hooks/useCommonStyles';
 
 const Dropdown = ({ defaultValue, value, options, variant, iconSelected, className, mt, mb, ml, mr, width, ...outerProps }) => {
 	const commonStyles = useCommonStyles({ mt, mb, ml, mr, width });

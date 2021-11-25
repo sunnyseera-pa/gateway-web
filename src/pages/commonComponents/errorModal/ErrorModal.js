@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Button } from 'react-bootstrap';
-import AlertModal from '../../storybookComponents/AlertModal';
+import AlertModal from '../../../components/AlertModal';
 
 const cmsURL = require('../../commonComponents/BaseURL').getCMSURL();
 

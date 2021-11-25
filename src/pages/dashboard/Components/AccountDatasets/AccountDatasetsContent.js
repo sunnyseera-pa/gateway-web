@@ -3,8 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router';
 import DatasetCard from '../../../commonComponents/DatasetCard';
 import SearchResults from '../../../commonComponents/SearchResults';
-import Icon from '../../../storybookComponents/Icon';
-import SearchControls from '../../../storybookComponents/SearchControls';
+import Icon from '../../../../components/Icon';
+import SearchControls from '../../../../components/SearchControls';
 import '../../Dashboard.scss';
 
 const AccountDatasetsContent = ({ data = [], onSubmit, isLoading, status, team }) => {

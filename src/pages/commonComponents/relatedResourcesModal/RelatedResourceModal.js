@@ -2,7 +2,7 @@ import React, { Fragment } from 'react';
 import _ from 'lodash';
 import { Col, Container, Pagination, Row, Tab, Tabs } from 'react-bootstrap';
 import RelatedObject from '../relatedObject/RelatedObject';
-import SearchInput from '../../storybookComponents/SearchInput';
+import SearchInput from '../../../components/SearchInput';
 import './RelatedResourcesModal.scss';
 
 class RelatedResourcesModal extends React.Component {

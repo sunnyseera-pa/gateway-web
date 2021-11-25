@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { omit } from '../../../configs/propTypes';
+import { omit } from '../../configs/propTypes';
 import Icon from '../Icon';
 import Input from '../Input';
 import { PROP_TYPES_INPUT } from '../Input/Input.propTypes';

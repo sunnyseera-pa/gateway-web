@@ -4,8 +4,8 @@ import { jsx, css } from '@emotion/react';
 import debounce from 'lodash/debounce';
 import React, { useMemo, useRef } from 'react';
 import { Form, InputGroup } from 'react-bootstrap';
-import useCommonStyles from '../../../hooks/useCommonStyles';
-import useDOMChanged from '../../../hooks/useDomChanged';
+import useCommonStyles from '../../hooks/useCommonStyles';
+import useDOMChanged from '../../hooks/useDOMChanged';
 import { PROP_TYPES_INPUT } from './Input.propTypes';
 import * as styles from './Input.styles';
 

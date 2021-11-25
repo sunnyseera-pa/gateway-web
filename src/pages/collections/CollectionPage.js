@@ -29,8 +29,8 @@ import ProjectCollectionResults from './Components/ProjectCollectionResults';
 import PaperCollectionResults from './Components/PaperCollectionResults';
 import PersonCollectionResults from './Components/PersonCollectionResults';
 import CourseCollectionResults from './Components/CourseCollectionResults';
-import SearchControls from '../storybookComponents/SearchControls';
-import { LayoutContent } from '../storybookComponents/Layout';
+import SearchControls from '../../components/SearchControls';
+import { LayoutContent } from '../../components/Layout';
 
 export const CollectionPage = props => {
 	const { t } = useTranslation();
