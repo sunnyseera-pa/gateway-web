@@ -1921,7 +1921,7 @@ class DataAccessRequest extends Component {
 		Winterfell.addInputType('datePickerCustom', DatePickerCustom);
 		Winterfell.addInputType('typeaheadUser', TypeaheadUser);
 		Winterfell.addInputType('dropdownCustom', DropdownCustom);
-		//Winterfell.addInputType('doubledropdownCustom', DoubleDropdownCustom);
+		Winterfell.addInputType('doubledropdownCustom', DoubleDropdownCustom);
 		Winterfell.validation.default.addValidationMethods({
 			isCustomDate: value => {
 				if (_.isEmpty(value) || _.isNil(value) || moment(value, 'DD/MM/YYYY').isValid()) {
