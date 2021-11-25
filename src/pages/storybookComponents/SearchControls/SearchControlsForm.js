@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import SearchInput from '../SearchInput';
 import SortDropdown from '../../commonComponents/SortDropdown';
 
-const SearchBarContentForm = ({ onChangeInput, onResetInput, onChangeSort, sortProps, isLoading, type }) => {
+const SearchControlsForm = ({ onChangeInput, onResetInput, onChangeSort, sortProps, isLoading, type }) => {
 	const { t } = useTranslation();
 	const {
 		submitForm,
@@ -22,7 +22,11 @@ const SearchBarContentForm = ({ onChangeInput, onResetInput, onChangeSort, sortP
 
 	const handleReset = React.useCallback(() => {
 		setFieldValue('search', '');
-		if (onResetInput) onResetInput(values);
+		if (onResetInput)
+			onResetInput({
+				...values,
+				search: '',
+			});
 	}, [values]);
 
 	const handleChange = React.useCallback(({ target: { name, value } }) => {
@@ -57,11 +61,13 @@ const SearchBarContentForm = ({ onChangeInput, onResetInput, onChangeSort, sortP
 					variant='primary'
 				/>
 			</Col>
-			<Col lg={4} className='d-flex justify-content-end'>
-				<SortDropdown {...sortProps} handleSort={handleOnSort} value={sortBy} />
-			</Col>
+			{sortProps && (
+				<Col lg={4} className='d-flex justify-content-end'>
+					<SortDropdown {...sortProps} handleSort={handleOnSort} value={sortBy} />
+				</Col>
+			)}
 		</Row>
 	);
 };
 
-export default SearchBarContentForm;
+export default SearchControlsForm;
