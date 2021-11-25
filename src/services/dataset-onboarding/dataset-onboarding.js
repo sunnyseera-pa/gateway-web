@@ -11,7 +11,6 @@ const getDatasetOnboarding = (_id, options) => {
 };
 
 const getPublisher = (_id, options) => {
-	console.log(`${apiURL}/dataset-onboarding/publisher/${_id}`, options);
 	return getRequest(`${apiURL}/dataset-onboarding/publisher/${_id}`, options);
 };
 
@@ -58,8 +57,6 @@ const useGetPublisher = (publisherId, requestOptions, mutateOptions = { queryKey
 };
 
 const usePostDatasetOnboarding = (data, requestOptions, queryOptions = { queryKey: 'postDatasetOnboarding' }) => {
-	console.log(data, requestOptions);
-
 	return useQuery({
 		...queryOptions,
 		queryFn: () => postDatasetOnboarding(data, requestOptions),

@@ -1,0 +1,16 @@
+import { Meta, Story, Canvas } from '@storybook/addon-docs';
+import { Documentation } from '../StorybookUtils';
+
+<Meta title='Hooks/Search' />
+
+```js
+const { goToPage, goToNext, gotToPrevious, getResults, hasNext, hasPrevious, data, params, count, isLoading, isError } = useSearch(
+	useSomeReactQuery(),
+	{
+		initialParams: {
+			maxResults: 0,
+		},
+		count: results => results.count, //This is the default
+	}
+);
+```

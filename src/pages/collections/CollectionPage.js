@@ -29,7 +29,7 @@ import ProjectCollectionResults from './Components/ProjectCollectionResults';
 import PaperCollectionResults from './Components/PaperCollectionResults';
 import PersonCollectionResults from './Components/PersonCollectionResults';
 import CourseCollectionResults from './Components/CourseCollectionResults';
-import SearchBarContent from '../storybookComponents/SearchBarContent';
+import SearchControls from '../storybookComponents/SearchControls';
 import { LayoutContent } from '../storybookComponents/Layout';
 
 export const CollectionPage = props => {
@@ -455,7 +455,7 @@ export const CollectionPage = props => {
 				)}
 				{key !== 'discussion' && (
 					<LayoutContent>
-						<SearchBarContent
+						<SearchControls
 							onSubmit={doCollectionsSearch}
 							onChangeInput={setCollectionsSearchString}
 							onResetInput={handleResetInput}

@@ -4,7 +4,7 @@ import { useHistory } from 'react-router';
 import DatasetCard from '../../../commonComponents/DatasetCard';
 import SearchResults from '../../../commonComponents/SearchResults';
 import Icon from '../../../storybookComponents/Icon';
-import SearchBarContent from '../../../storybookComponents/SearchBarContent';
+import SearchControls from '../../../storybookComponents/SearchControls';
 import '../../Dashboard.scss';
 
 const AccountDatasetsContent = ({ data = [], onSubmit, isLoading, status, team }) => {
@@ -51,13 +51,7 @@ const AccountDatasetsContent = ({ data = [], onSubmit, isLoading, status, team }
 
 	return (
 		<>
-			<SearchBarContent
-				type={t(`dataset.${status}`)}
-				onSubmit={onSubmit}
-				onChangeInput={handleChangeInput}
-				onResetInput={onSubmit}
-				sortProps={{ defaultValue: 'metadataQuality', options: ['recentActivity', 'recentlyPublished', 'metadataQuality'] }}
-			/>
+			<SearchControls type={t(`dataset.${status}`)} onSubmit={onSubmit} onChangeInput={handleChangeInput} onResetInput={onSubmit} />
 
 			<SearchResults
 				data={data}

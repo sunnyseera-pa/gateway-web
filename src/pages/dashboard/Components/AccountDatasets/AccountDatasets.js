@@ -1,15 +1,13 @@
 import _ from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { Alert, Button, Col, Row } from 'react-bootstrap';
-import { useTranslation } from 'react-i18next';
-import { useHistory } from 'react-router';
 import { useAuth } from '../../../../context/AuthContext';
 import SVGIcon from '../../../../images/SVGIcon';
 import serviceDatasetOnboarding from '../../../../services/dataset-onboarding/dataset-onboarding';
 import googleAnalytics from '../../../../tracking';
 import utils from '../../../../utils/DataSetHelper.util';
-import Loading from '../../../commonComponents/Loading';
 import { LayoutContent } from '../../../storybookComponents/Layout';
+import useSearch from '../../../storybookComponents/Search/useSearch';
 import '../../Dashboard.scss';
 import AccountDatasetsContent from './AccountDatasetsContent';
 import AccountDatasetsTabs from './AccountDatasetsTabs';
@@ -19,14 +17,21 @@ const AccountDatasets = props => {
 	const [alert] = useState(props.alert);
 	const { userState } = useAuth();
 	const [publisherID, setPublisherId] = useState();
-	const history = useHistory();
-	const { t } = useTranslation();
 
-	const { team } = props;
-	const dataPublisher = serviceDatasetOnboarding.useGetPublisher(publisherID);
+	const { isLoading, data, getResults } = useSearch(serviceDatasetOnboarding.useGetPublisher(publisherID), {
+		params: {
+			maxResults: 0,
+		},
+		count: data => {
+			return data.counts[key];
+		},
+	});
+
 	const dataPostDatasetOnboarding = serviceDatasetOnboarding.usePostDatasetOnboarding({ publisherID }, null, {
 		enabled: false,
 	});
+
+	const { team } = props;
 
 	useEffect(() => {
 		const initialKey = !_.isEmpty(props.alert.tab) ? props.alert.tab : 'active';
@@ -37,8 +42,9 @@ const AccountDatasets = props => {
 
 	useEffect(() => {
 		if (publisherID && key) {
-			dataPublisher.mutate({
+			getResults({
 				status: key,
+				page: 1,
 			});
 		}
 	}, [publisherID, key]);
@@ -57,10 +63,11 @@ const AccountDatasets = props => {
 
 	const handleSubmit = React.useCallback(
 		({ search, sortBy }) => {
-			dataPublisher.mutateAsync({
+			getResults({
 				search,
 				sortBy,
 				status: key,
+				page: 1,
 			});
 		},
 		[key, publisherID]
@@ -88,7 +95,6 @@ const AccountDatasets = props => {
 		);
 	};
 
-	const { isLoading, data } = dataPublisher;
 	const { isLoading: isLoadingCreateDataset } = dataPostDatasetOnboarding;
 
 	let statusCounts;
