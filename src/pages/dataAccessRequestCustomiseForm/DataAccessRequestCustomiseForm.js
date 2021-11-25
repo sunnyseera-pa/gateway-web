@@ -34,7 +34,7 @@ export const DataAccessRequestCustomiseForm = props => {
 	const [searchBar] = useState(React.createRef());
 
 	const [id] = useState('');
-	const [isLoading, setIsLoading] = useState(false /* true */);
+	const [isLoading, setIsLoading] = useState(true);
 	const [searchString, setSearchString] = useState('');
 	const [userState] = useState(
 		props.userState || [
@@ -62,10 +62,16 @@ export const DataAccessRequestCustomiseForm = props => {
 		if (!!window.location.search) {
 			let values = queryString.parse(window.location.search);
 		}
-		getToolDataFromDb();
+		console.log('Here');
+		getMasterSchema();
 	}, []);
 
-	const getToolDataFromDb = () => {};
+	const getMasterSchema = async () => {
+		debugger;
+		let response = await axios.get(`${baseURL}/api/v2/questionbank/6112a0c80c3d4634a85b15bd`);
+
+		setJsonSchema();
+	};
 
 	const onClickSave = e => {
 		e.preventDefault();
@@ -92,6 +98,60 @@ export const DataAccessRequestCustomiseForm = props => {
 		setShowModal(!showModal);
 		setContext(context);
 		setShowDrawer(showEnquiry);
+	};
+
+	const updateNavigation = (newForm, validationErrors = {}) => {
+		/* if (this.state.allowedNavigation) {
+			let reviewWarning = false;
+			// reset scroll to 0, 0
+			window.scrollTo(0, 0);
+			let panelId = '';
+			// copy state pages
+			const pages = [...this.state.jsonSchema.pages];
+			// get the index of new form
+			const newPageindex = pages.findIndex(page => page.pageId === newForm.pageId);
+			reviewWarning = !pages[newPageindex].inReview && this.state.inReviewMode;
+			// reset the current state of active to false for all pages
+			const newFormState = [...this.state.jsonSchema.pages].map(item => {
+				return { ...item, active: false };
+			});
+			// update actual object model with property of active true
+			newFormState[newPageindex] = { ...pages[newPageindex], active: true };
+
+			// get set the active panelId
+			({ panelId } = newForm);
+			if (_.isEmpty(panelId) || typeof panelId == 'undefined') {
+				({ panelId } = [...this.state.jsonSchema.formPanels].find(p => p.pageId === newFormState[newPageindex].pageId) || '');
+			}
+
+			let countedQuestionAnswers = {};
+			let totalQuestions = '';
+			// if in the about panel, retrieve question answers count for entire application
+			if (panelId === 'about' || panelId === 'files') {
+				countedQuestionAnswers = DarHelper.totalQuestionsAnswered(this);
+				totalQuestions = `${countedQuestionAnswers.totalAnsweredQuestions || 0}/${
+					countedQuestionAnswers.totalQuestions || 0
+				}  questions answered`;
+			} else {
+				countedQuestionAnswers = DarHelper.totalQuestionsAnswered(this, panelId);
+				totalQuestions = `${countedQuestionAnswers.totalAnsweredQuestions || 0}/${
+					countedQuestionAnswers.totalQuestions || 0
+				}  questions answered in this section`;
+			}
+
+			// reset guidance - due to on change of panel
+			let jsonSchema = this.state.jsonSchema;
+			this.setState({
+				jsonSchema: { ...jsonSchema, pages: newFormState },
+				activePanelId: panelId,
+				isWideForm: panelId === 'about' || panelId === 'files',
+				totalQuestions: totalQuestions,
+				validationErrors,
+				reviewWarning,
+				activeGuidance: '',
+				actionTabSettings: { key: '', questionSetId: '', questionId: '' },
+			});
+		} */
 	};
 
 	const renderApp = () => {
@@ -253,7 +313,6 @@ export const DataAccessRequestCustomiseForm = props => {
 							<NavDropdown
 								options={{
 									...jsonSchema,
-									allowsMultipleDatasets: allowsMultipleDatasets,
 								}}
 								onFormSwitchPanel={updateNavigation}
 								enabled={true}
@@ -281,7 +340,7 @@ export const DataAccessRequestCustomiseForm = props => {
 						<div id='darRightCol' className='scrollable-sticky-column'>
 							<div className='darTab'>
 								<QuestionActionTabs
-									applicationId={_id}
+								/* applicationId={''}
 									userState={userState}
 									settings={actionTabSettings}
 									activeGuidance={activeGuidance}
@@ -294,7 +353,7 @@ export const DataAccessRequestCustomiseForm = props => {
 									isShared={isShared}
 									updateCount={updateCount}
 									publisher={''}
-									applicationStatus={applicationStatus}
+									applicationStatus={applicationStatus} */
 								/>
 							</div>
 						</div>
