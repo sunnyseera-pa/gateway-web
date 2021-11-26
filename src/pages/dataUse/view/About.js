@@ -517,7 +517,13 @@ const About = ({ data, renderTooltip }) => {
 											</>
 										))}
 
-									{data && data.nonGatewayDatasets.map(nonGatewayDataset => <> {nonGatewayDataset}</>)}
+									{data &&
+										data.nonGatewayDatasets.map(nonGatewayDataset => (
+											<>
+												{' '}
+												<span className='nonhdrdataset badge-datause-bold badge-tag'>{nonGatewayDataset}</span>
+											</>
+										))}
 								</>
 							) : (
 								<p className='gray800-14-opacity'>Not specified</p>
@@ -844,9 +850,11 @@ const About = ({ data, renderTooltip }) => {
 
 										{data &&
 											data.nonGatewayOutputs.map(nonGatewayOutput => (
-												<a href={nonGatewayOutput} className='purple-blue-14'>
-													{nonGatewayOutput}
-												</a>
+												<div>
+													<a href={nonGatewayOutput} className='purple-blue-14'>
+														{nonGatewayOutput}
+													</a>
+												</div>
 											))}
 									</>
 								) : (

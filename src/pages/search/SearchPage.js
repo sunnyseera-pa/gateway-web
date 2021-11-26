@@ -1446,7 +1446,7 @@ class SearchPage extends React.Component {
 				'Privacy Enhancements': dataUse.privacyEnhancements,
 				'Gateway Research Outputs Tools': gatewayOutputsTools,
 				'Gateway Research Outputs Papers': gatewayOutputsPapers,
-				'Research Outputs': dataUse.researchOutputs,
+				'Research Outputs': dataUse.nonGatewayOutputs,
 				Keywords: dataUse.keywords,
 			});
 		});

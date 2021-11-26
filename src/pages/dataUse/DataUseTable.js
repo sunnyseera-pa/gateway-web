@@ -56,10 +56,10 @@ const DataUseTable = ({ team, data, active, pending, archived, onClickArchive, o
 										<Dropdown.Toggle variant='outline-secondary' className='data-use-action'>
 											Actions
 										</Dropdown.Toggle>
-										<Dropdown.Menu>
+										{/* <Dropdown.Menu>
 											<Dropdown.Item href='#/action-1'>Edit</Dropdown.Item>
 											{team !== 'user' && <Dropdown.Item onClick={() => onClickArchive(dataUse.id)}>Archive</Dropdown.Item>}
-										</Dropdown.Menu>
+										</Dropdown.Menu> */}
 									</Dropdown>
 								)}
 								{pending && team === 'admin' && (

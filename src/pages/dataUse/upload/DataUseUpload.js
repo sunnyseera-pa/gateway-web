@@ -46,15 +46,7 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
 						checkDataUses(rows).then(checks => {
 							const duplicateErrors = searchForDuplicates(checks);
 
-							let recommendedErrors = [];
 							rows.forEach((row, index) => {
-								if (isEmpty(row.laySummary)) recommendedErrors.push({ row: index + 1, column: 'Lay summary*', error: 'recommended' });
-								if (isEmpty(row.publicBenefitStatement))
-									recommendedErrors.push({ row: index + 1, column: 'Public benefit statement*', error: 'recommended' });
-								if (isUndefined(row.latestApprovalDate))
-									recommendedErrors.push({ row: index + 1, column: 'Latest approval date*', error: 'recommended' });
-								if (isEmpty(row.accessType)) recommendedErrors.push({ row: index + 1, column: 'Access type*', error: 'recommended' });
-
 								rows.forEach((duplicateRow, duplicateIndex) => {
 									if (index !== duplicateIndex) {
 										if (
@@ -71,7 +63,7 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
 								});
 							});
 
-							const uploadErrors = [...duplicateErrors, ...errors, ...recommendedErrors];
+							const uploadErrors = [...duplicateErrors, ...errors];
 							setUploadedData({ rows, uploadErrors, checks });
 							if (isEmpty(uploadErrors)) {
 								showAlert('Your data uses have been successfully uploaded.');
@@ -155,13 +147,6 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
 				return (
 					<div>
 						Error in row {error.row}: Mandatory field “{error.column}” is empty
-					</div>
-				);
-			}
-			case 'recommended': {
-				return (
-					<div>
-						Error in row {error.row}: Recommended field “{error.column}” is empty
 					</div>
 				);
 			}
@@ -579,7 +564,7 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
 					open={isSubmitModalVisible}
 					close={toggleSubmitModal}
 					confirm={submitDataUse}
-					isValid={!uploadedData.uploadErrors.filter(error => error.error === 'required' || error.error === 'duplicate').length > 0}
+					isValid={isEmpty(uploadedData.uploadErrors)}
 					isAdmin={userState[0].teams.some(team => team.type === 'admin')}
 					recommendedFieldsMissing={recommendedFieldsMissing}
 				/>
