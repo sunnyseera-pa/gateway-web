@@ -29,7 +29,7 @@ const AccountDatasetApproveModal = ({
 			applicationStatusDesc: ''
 		},
 		validationSchema: Yup.object({
-			applicationStatusDesc: Yup.string().max(1500),
+			applicationStatusDesc: Yup.string().max(1500, 'Description must be less than 1500 characters'),
 		}),
 		onSubmit: async values => {
 			const payload = {
@@ -64,7 +64,10 @@ const AccountDatasetApproveModal = ({
 						<div className='decisionModal-body--wrap'>
 							<p data-testid='description'>{t('dataset.approvalModal.description')}</p>
 							<Form.Group>
-								<label for="applicationStatusDesc" className='black-14'>{t('dataset.approvalModal.applicationStatus')}</label>
+								<label for="applicationStatusDesc" className='black-14'>
+									{t('dataset.approvalModal.applicationStatus')}
+									<span>{values.applicationStatusDesc.length}/1500</span>
+								</label>
 								<Form.Control
 									as='textarea'
 									data-testid='dataset-reject-applicationStatusDesc'
