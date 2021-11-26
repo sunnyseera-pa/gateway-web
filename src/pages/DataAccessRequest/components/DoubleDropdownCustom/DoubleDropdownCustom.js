@@ -3,8 +3,23 @@ import { Dropdown, Nav, Navbar } from 'react-bootstrap';
 import SVGIcon from '../../../../images/SVGIcon';
 import './DoubleDropdowncustom.scss';
 
-const DoubleDropdownCustom = ({ name, id, labelId, required, handleBlur, handleFocus, ...props }) => {
+const DoubleDropdownCustom = ({ name, id, onChange, labelId, required, ...props }) => {
 	const [closed, setClosed] = useState(true);
+	const [value, setValue] = useState('');
+
+	const handleFocus = e => {
+		this.props.onFocus();
+	};
+
+	const handleBlur = e => {
+		this.props.onBlur(this.props.value);
+	};
+
+	const handleChange = e => {
+		setValue(e.target.value);
+
+		onChange.bind(null, e.target.value);
+	};
 	return (
 		<Navbar collapseOnSelect expand='lg'>
 			<Nav className='mr-auto'>
@@ -17,8 +32,9 @@ const DoubleDropdownCustom = ({ name, id, labelId, required, handleBlur, handleF
 							//className={props.classes.input}
 							required={required ? 'required' : undefined}
 							type='text'
-							onBlur={handleBlur}
-							onFocus={handleFocus}
+							onChange={e => handleChange(e)}
+							//onBlur={handleBlur}
+							//onFocus={handleFocus}
 							data-test-id='darContributorTextInput'></input>
 					</Dropdown.Toggle>
 

@@ -1993,7 +1993,6 @@ class DataAccessRequest extends Component {
 							<CloseButtonSvg width='16px' height='16px' fill='#fff' onClick={e => this.redirectDashboard(e)} />
 						</Col>
 					</Row>
-					<DoubleDropdownCustom />
 					<div id='darContainer' className='flex-form'>
 						<div id='darLeftCol' className='scrollable-sticky-column'>
 							{[...this.state.jsonSchema.pages].map((item, idx) => (
