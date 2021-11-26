@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import React, { Suspense, useCallback, useState } from 'react';
+import React, { Suspense, useCallback, useState, useEffect } from 'react';
 import { Button } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { NotificationManager } from 'react-notifications';
@@ -26,9 +26,9 @@ const AccountDataset = props => {
 	const [team, setTeam] = useState();
 	const [currentDataset, setCurrentDataset] = useState();
 	const [state, setState] = useState({
-		showPrevious: true,
+		showPrevious: false,
+		showNext: false,
 		showDisabled: true,
-		showNext: true,
 		statusError: false,
 		showApproveDatasetModal: false,
 		showRejectDatasetModal: false
@@ -98,7 +98,7 @@ const AccountDataset = props => {
 		return datasets.find(dataset => dataset.pid === id);
 	};
 
-	React.useEffect(() => {
+	useEffect(() => {
 		const page = getNextPage(0);
 		if (page) {
 			if (page.dataset) {
@@ -115,11 +115,13 @@ const AccountDataset = props => {
 		}
 	}, [dataPublisher.data, id]);
 
-	const handlePaginationClick = React.useCallback(
+	const handlePaginationClick = useCallback(
 		i => {
 			const { dataset } = getNextPage(i);
 
-			if (dataset) history.push(`/account/datasets/${dataset.pid}`);
+			if (dataset) {
+				history.push(`/account/datasets/${dataset.pid}`);
+			} 
 		},
 		[id, dataPublisher.data, team]
 	);
@@ -131,7 +133,39 @@ const AccountDataset = props => {
 		if (showNext) {
 			handlePaginationClick(1);
 		}
-	}, []);
+	}, [showNext]);
+
+	const closeRejectDatasetModal = () => setState({...state, showRejectDatasetModal: false });
+
+	const closeRejectModalAndRedirectToPendingDatasets = alert => {
+		closeRejectDatasetModal();
+		history.push({
+			pathname: `/account`,
+			search: '?tab=datasets',
+			state: { alert },
+		});
+	};
+
+	const closeRejectModalAndGoToNext = () => {
+		closeRejectDatasetModal();
+		goToNext();
+	};
+
+	const closeApproveDatasetModal = () => setState({...state, showApproveDatasetModal: false });
+
+	const closeApproveModalAndRedirectToPendingDatasets = alert => {
+		closeApproveDatasetModal();
+		history.push({
+			pathname: `/account`,
+			search: '?tab=datasets',
+			state: { alert },
+		});
+	};
+
+	const closeApproveModalAndGoToNext = () => {
+		closeApproveDatasetModal();
+		goToNext();
+	};
 
 	const handleViewForm = React.useCallback(() => {
 		history.push(`/dataset-onboarding/${currentDataset._id}`);
@@ -215,14 +249,16 @@ const AccountDataset = props => {
 				<AccountDatasetApproveModal
 					id={currentDataset._id}
 					open={showApproveDatasetModal}
-					closed={() => setState({...state, showApproveDatasetModal: false })}
-					goToNext={goToNext}
+					closed={closeApproveDatasetModal}
+					goToNext={closeApproveModalAndGoToNext}
+					handleApprove={closeApproveModalAndRedirectToPendingDatasets}
 					showGoToNext={showNext} />
 				<AccountDatasetRejectModal
 					id={currentDataset._id}
 					open={showRejectDatasetModal}
-					closed={() => setState({...state, showRejectDatasetModal: false })}
-					goToNext={goToNext}
+					closed={closeRejectDatasetModal}
+					goToNext={closeRejectModalAndGoToNext}
+					handleReject={closeRejectModalAndRedirectToPendingDatasets}
 					showGoToNext={showNext} />
 			</AccountContent>
 		</Suspense>
