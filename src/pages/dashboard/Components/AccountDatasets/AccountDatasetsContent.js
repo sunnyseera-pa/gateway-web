@@ -13,7 +13,7 @@ const AccountDatasetsContent = ({ data = [], onSubmit, isLoading, isFetched, sta
 
 	const { t } = useTranslation();
 
-	const handleChangeInput = React.useCallback(value => {
+	const handleChange = React.useCallback(value => {
 		setSearchValue(value);
 	}, []);
 
@@ -55,9 +55,11 @@ const AccountDatasetsContent = ({ data = [], onSubmit, isLoading, isFetched, sta
 				<SearchControls
 					type={t(`dataset.${status}`)}
 					onSubmit={onSubmit}
-					onChangeInput={handleChangeInput}
-					onResetInput={onSubmit}
 					mt={5}
+					inputProps={{
+						onReset: onSubmit,
+						onChange: handleChange,
+					}}
 					sortProps={{
 						defaultValue: 'metadataQuality',
 						options: ['recentActivity', 'recentlyPublished', 'metadataQuality', 'popularity'],

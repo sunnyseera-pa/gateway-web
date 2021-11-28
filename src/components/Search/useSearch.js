@@ -18,8 +18,6 @@ const useSearch = (mutateHook, options) => {
 
 	const hasNext = React.useCallback(() => {
 		const { maxResults, page } = params;
-
-		console.log('************************** Has next', page, count, page < Math.ceil(count / maxResults));
 		return page < Math.ceil(count / maxResults);
 	}, [params, count]);
 
@@ -71,19 +69,19 @@ const useSearch = (mutateHook, options) => {
 			const { page } = params;
 			goToPage(page + 1);
 		}
-	}, [params]);
+	}, [params, count]);
 
-	const gotToPrevious = React.useCallback(() => {
+	const goToPrevious = React.useCallback(() => {
 		if (hasPrevious()) {
 			const { page } = params;
 			goToPage(page - 1);
 		}
-	}, [params]);
+	}, [params, count]);
 
 	return {
 		goToPage,
 		goToNext,
-		gotToPrevious,
+		goToPrevious,
 		getResults,
 		hasNext,
 		hasPrevious,

@@ -1,5 +1,4 @@
-import { waitFor } from '@testing-library/react';
-import { act } from 'react-test-renderer';
+import { renderHook, act } from '@testing-library/react-hooks';
 import serviceDatasetOnboarding from '../../services/dataset-onboarding/dataset-onboarding';
 import { server } from '../../services/mockServer';
 import useSearch from './useSearch';
@@ -48,20 +47,18 @@ describe('Given the useGetPublisher component', () => {
 		});
 
 		it('Then contains the correct return values', () => {
-			expect(wrapper.result.current).toEqual(
-				expect.objectContaining({
-					count: 0,
-					data: undefined,
-					isError: false,
-					isFetched: false,
-					isLoading: false,
-					params: { maxResults: 10, page: 1 },
-				})
-			);
+			expect(wrapper.result.current).toMatchObject({
+				count: 0,
+				data: undefined,
+				isError: false,
+				isFetched: false,
+				isLoading: false,
+				params: { maxResults: 10, page: 1 },
+			});
 		});
 
 		describe('And getResults is called', () => {
-			beforeAll(() => {
+			beforeAll(async () => {
 				act(() => {
 					wrapper.result.current.getResults({
 						maxResults: 18,
@@ -69,6 +66,10 @@ describe('Given the useGetPublisher component', () => {
 						search: 'dataset',
 					});
 				});
+
+				const { waitForNextUpdate } = wrapper;
+
+				await waitForNextUpdate();
 			});
 
 			it('Then sets the loading flag', async () => {
@@ -82,7 +83,7 @@ describe('Given the useGetPublisher component', () => {
 
 				await waitFor(() => expect(wrapper.result.current.count).toEqual(19));
 
-				expect.objectContaining({
+				expect(wrapper.result.current).toMatchObject({
 					count: 19,
 					data: wrapper.result.current.data,
 					isError: false,
@@ -105,35 +106,37 @@ describe('Given the useGetPublisher component', () => {
 					act(() => {
 						wrapper.result.current.goToNext();
 					});
+
+					const { waitForNextUpdate } = wrapper;
+
+					await waitForNextUpdate();
+				});
+
+				it('Then is page 2', async () => {
+					expect(wrapper.result.current.params.page).toBe(2);
 				});
 
 				it('Then has a previous page', async () => {
-					const { waitFor } = wrapper;
-
-					await waitFor(() => expect(wrapper.result.current.params.page).toBe(1));
-
 					expect(wrapper.result.current.hasPrevious()).toBe(true);
 				});
 
 				it('Then does not have a next page', async () => {
-					const { waitFor } = wrapper;
-
-					await waitFor(() => expect(wrapper.result.current.params.page).toBe(2));
-
 					expect(wrapper.result.current.hasNext()).toBe(false);
 				});
 
 				describe('And previous is clicked', () => {
 					beforeAll(async () => {
 						act(() => {
-							wrapper.result.current.gotToPrevious();
+							wrapper.result.current.goToPrevious();
 						});
+
+						const { waitForNextUpdate } = wrapper;
+
+						await waitForNextUpdate();
 					});
 
 					it('Then goes back to page 1', async () => {
-						const { waitFor } = wrapper;
-
-						await waitFor(() => expect(wrapper.result.current.params.page).toBe(1));
+						expect(wrapper.result.current.params.page).toBe(1);
 					});
 				});
 			});
