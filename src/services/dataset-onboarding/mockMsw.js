@@ -7,6 +7,9 @@ export const mswGetPublisher = rest.get(`${apiURL}/dataset-onboarding/publisher/
 		ctx.json({
 			success: true,
 			data: {
+				counts: {
+					inReview: 19,
+				},
 				listOfDatasets: [
 					{
 						_id: '6183d32d52ef7eafc3c5793e',

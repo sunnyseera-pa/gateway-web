@@ -18,18 +18,18 @@ const useSearch = (mutateHook, options) => {
 
 	const hasNext = React.useCallback(() => {
 		const { maxResults, page } = params;
-		return Math.floor(count / maxResults) <= page;
+
+		console.log('************************** Has next', page, count, page < Math.ceil(count / maxResults));
+		return page < Math.ceil(count / maxResults);
 	}, [params, count]);
 
 	const hasPrevious = React.useCallback(() => {
 		const { page } = params;
-		return page > 0;
+		return page > 1;
 	}, [params]);
 
 	const getResults = React.useCallback(
 		async queryParams => {
-			console.log(params);
-
 			const mergedParams = {
 				...params,
 				...queryParams,
@@ -45,8 +45,6 @@ const useSearch = (mutateHook, options) => {
 		try {
 			const { data } = await mutateHook.mutateAsync(queryParams);
 			const { count } = options;
-
-			console.log('Query params', queryParams);
 
 			setState({
 				count: count ? count(data, queryParams) : data.count,

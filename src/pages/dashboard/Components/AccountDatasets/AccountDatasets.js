@@ -24,7 +24,7 @@ const AccountDatasets = props => {
 				maxResults: 0,
 			},
 			count: (results, { status }) => {
-				if (!!results && !status) {
+				if (!!results && !!status) {
 					const { data } = results;
 					return data.counts[status];
 				}
