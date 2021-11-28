@@ -54,11 +54,12 @@ const AccountDatasetsContent = ({ data = [], onSubmit, isLoading, isFetched, sta
 			{isFetched && (
 				<SearchControls
 					type={t(`dataset.${status}`)}
-					onSubmit={onSubmit}
 					mt={5}
+					onSubmit={onSubmit}
 					inputProps={{
 						onReset: onSubmit,
 						onChange: handleChange,
+						onSubmit,
 					}}
 					sortProps={{
 						defaultValue: 'metadataQuality',
