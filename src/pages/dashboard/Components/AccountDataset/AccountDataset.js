@@ -40,11 +40,9 @@ const AccountDataset = props => {
 
 	React.useEffect(() => {
 		setTeam(getTeam(props));
-	}, [id]);
 
-	React.useEffect(() => {
 		dataPublisher.mutate();
-	}, [dataPublisher]);
+	}, [id]);
 
 	const getValidDatasets = listOfDatasets => {
 		return listOfDatasets.filter(dataset => {

@@ -6,7 +6,7 @@ import SearchInput from '../SearchInput';
 import SortDropdown from '../../pages/commonComponents/SortDropdown';
 import useCommonStyles from '../../hooks/useCommonStyles';
 
-const SearchControlsForm = ({ onChangeInput, onResetInput, onChangeSort, sortProps, isLoading, type, mt, mb, mr, width }) => {
+const SearchControlsForm = ({ sortProps, inputProps, isLoading, type, mt, mb, mr, width }) => {
 	const { t } = useTranslation();
 	const commonStyles = useCommonStyles({ mt, mb, mr, mb, width });
 
@@ -25,48 +25,56 @@ const SearchControlsForm = ({ onChangeInput, onResetInput, onChangeSort, sortPro
 
 	const handleReset = React.useCallback(() => {
 		setFieldValue('search', '');
-		if (onResetInput)
-			onResetInput({
+
+		const { onReset } = inputProps;
+
+		if (onReset) {
+			onReset({
 				...values,
 				search: '',
 			});
+		}
 	}, [values]);
 
 	const handleChange = React.useCallback(({ target: { name, value } }) => {
 		setFieldValue(name, value);
-		if (onChangeInput) onChangeInput(value);
+
+		const { onChange } = inputProps;
+
+		if (onChange) onChange(search);
 	}, []);
 
 	const handleOnSort = React.useCallback(value => {
 		setFieldValue('sortBy', value);
 
-		if (onChangeSort) onChangeSort(value);
+		const { onSort } = sortProps;
+
+		if (onSort) onSort(value);
 
 		submitForm();
 	}, []);
 
-	React.useEffect(() => {
-		if (onChangeInput) onChangeInput(search);
-	}, [search]);
-
 	if (isLoading) return null;
+
+	console.log('search', search);
 
 	return (
 		<Row className={commonStyles}>
-			<Col lg={8}>
+			<Col lg={6}>
 				<SearchInput
 					placeholder={t('search.placeholder', { type })}
-					onChange={handleChange}
-					onReset={handleReset}
-					onSubmit={submitForm}
 					onKeyDown={handleKeyDown}
 					value={search}
 					variant='primary'
+					{...inputProps}
+					onChange={handleChange}
+					onReset={handleReset}
 				/>
 			</Col>
+			<Col lg={2} />
 			{sortProps && (
 				<Col lg={4} className='d-flex justify-content-end'>
-					<SortDropdown {...sortProps} onSort={handleOnSort} value={sortBy} ml={2} />
+					<SortDropdown {...sortProps} onSort={handleOnSort} value={sortBy} />
 				</Col>
 			)}
 		</Row>

@@ -14,6 +14,7 @@ export const root = ({ size, color, stroke, fill }) => theme => {
 		color: ${colors[color]};
 		fill: ${colors[fill]};
 		height: ${sizes[size]};
+		width: ${sizes[size]};
 		justify-content: center;
 		align-items: center;
 

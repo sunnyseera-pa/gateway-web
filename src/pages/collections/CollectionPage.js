@@ -457,15 +457,21 @@ export const CollectionPage = props => {
 					<LayoutContent>
 						<SearchControls
 							onSubmit={doCollectionsSearch}
-							onChangeInput={setCollectionsSearchString}
-							onResetInput={handleResetInput}
-							onChangeSort={handleSort}
 							isLoading={isResultsLoading}
+							inputProps={{
+								onChange: setCollectionsSearchString,
+								onReset: handleResetInput,
+								onSubmit: doCollectionsSearch,
+								mt: 2,
+							}}
 							sortProps={{
 								options: dropdownItems,
 								defaultValue: 'recentlyadded',
+								onSort: handleSort,
+								mt: 2,
 							}}
 							type='collection'
+							mb={2}
 						/>
 					</LayoutContent>
 				)}

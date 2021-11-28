@@ -51,6 +51,8 @@ const useGetDatasetOnboarding = (requestOptions, queryOptions = { queryKey: 'get
 const useGetPublisher = (publisherId, requestOptions, mutateOptions = { queryKey: 'getPublisher' }) => {
 	const _id = Array.isArray(publisherId) ? publisherId[0] : publisherId;
 
+	console.log('_id', _id);
+
 	return useMutation(params => getPublisher(_id, { params }, requestOptions), {
 		mutateOptions,
 	});

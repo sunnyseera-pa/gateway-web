@@ -15,13 +15,15 @@ const SortDropdown = ({ onSort, className, options, ...outerProps }) => {
 		onSort(value);
 	}, []);
 
+	console.log('options', options, selectedOption, outerProps.defaultValue);
+
 	return (
 		<Dropdown
 			className={cx('ui-SortDropdown', className)}
 			onSelect={handleSelect}
 			options={options.map(value => ({
 				label: t(`sortby.options.${value}`),
-				value: value,
+				value,
 			}))}
 			value={selectedOption}
 			{...outerProps}
