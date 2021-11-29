@@ -27,6 +27,11 @@ export const theme = {
 		increment: 4,
 		unit: 'px',
 	},
+	font: {
+		size: {
+			default: '14px',
+		},
+	},
 	colors: {
 		white: '#fff',
 		transparent: 'transparent',

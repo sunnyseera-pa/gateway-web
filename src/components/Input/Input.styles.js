@@ -2,6 +2,9 @@ import { css } from '@emotion/react';
 
 export const inputGroup = ({ prepend, append, variant }) => theme => {
 	const {
+		font: {
+			size: { default: defaultSize },
+		},
 		colors,
 		components: {
 			Input: { variants },
@@ -15,6 +18,7 @@ export const inputGroup = ({ prepend, append, variant }) => theme => {
 			background: ${colors[variants[variant].background]};
 			border-color: ${colors[variants[variant].borderColor]};
 			border-radius: 0.25rem !important;
+			font-size: ${defaultSize};
 
 			&:focus {
 				border-color: ${colors.green700};

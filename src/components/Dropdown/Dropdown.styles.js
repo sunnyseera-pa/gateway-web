@@ -2,6 +2,9 @@ import { css } from '@emotion/react';
 
 export const root = ({ variant }) => theme => {
 	const {
+		font: {
+			size: { default: defaultSize },
+		},
 		colors,
 		components: {
 			Dropdown: { variants },
@@ -14,6 +17,7 @@ export const root = ({ variant }) => theme => {
 			text-align: left;
 			width: 100%;
 			padding-right: 1.5rem;
+			font-size: ${defaultSize};
 
 			&:after {
 				position: absolute;
@@ -39,6 +43,7 @@ export const root = ({ variant }) => theme => {
 		}
 
 		.dropdown-menu {
+			font-size: ${defaultSize};
 			min-width: 100%;
 		}
 	`;
