@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { Dropdown, Nav, Navbar } from 'react-bootstrap';
 import SVGIcon from '../../../../images/SVGIcon';
 import './DoubleDropdowncustom.scss';
+import { Typeahead } from 'react-bootstrap-typeahead';
 
-const DoubleDropdownCustom = ({ name, id, onChange, labelId, required, ...props }) => {
+const DoubleDropdownCustom = ({ name, id, options, onChange, labelId, required, ...props }) => {
 	const [closed, setClosed] = useState(true);
 	const [value, setValue] = useState('');
 
@@ -20,14 +21,17 @@ const DoubleDropdownCustom = ({ name, id, onChange, labelId, required, ...props 
 
 		onChange.bind(null, e.target.value);
 	};
+
+	console.log(options);
 	return (
 		<Navbar collapseOnSelect expand='lg'>
 			<Nav className='mr-auto'>
 				<Dropdown>
 					<Dropdown.Toggle className='double-dropdown-input'>
-						<input
+						<Typeahead
 							name={name}
 							id={id}
+							multiple
 							aria-labelledby={labelId}
 							//className={props.classes.input}
 							required={required ? 'required' : undefined}
@@ -35,7 +39,9 @@ const DoubleDropdownCustom = ({ name, id, onChange, labelId, required, ...props 
 							onChange={e => handleChange(e)}
 							//onBlur={handleBlur}
 							//onFocus={handleFocus}
-							data-test-id='darContributorTextInput'></input>
+							options={options}
+							data-test-id='darContributorTextInput'
+						/>
 					</Dropdown.Toggle>
 
 					<Dropdown.Menu>
