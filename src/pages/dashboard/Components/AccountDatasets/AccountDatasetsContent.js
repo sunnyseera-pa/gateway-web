@@ -59,7 +59,6 @@ const AccountDatasetsContent = ({ data = [], onSubmit, isLoading, isFetched, sta
 					inputProps={{
 						onReset: onSubmit,
 						onChange: handleChange,
-						onSubmit,
 						mt: 2,
 					}}
 					sortProps={{

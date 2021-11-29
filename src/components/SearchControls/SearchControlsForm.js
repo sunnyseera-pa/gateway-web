@@ -58,7 +58,7 @@ const SearchControlsForm = ({ sortProps, inputProps, type, mt, mb, mr, width }) 
 		<Row className={commonStyles}>
 			<Col lg={6}>
 				<SearchInput
-					placeholder={t('search.placeholder', { type })}
+					placeholder={t('search.placeholder', { type: type.toLowerCase() })}
 					variant='primary'
 					{...inputProps}
 					value={search}
