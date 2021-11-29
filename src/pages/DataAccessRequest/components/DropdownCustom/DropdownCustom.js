@@ -20,6 +20,12 @@ export const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
 )); 
 
 class DropdownCustom extends React.Component {
+       // initialize our state
+	state = { 
+        darApplicationId: '', 
+		contributorsInfo: [],
+	};
+
     constructor(props) {
         super(props); 
         this.state = {
@@ -28,20 +34,15 @@ class DropdownCustom extends React.Component {
         };
         this.handleFocus = this.handleFocus.bind(this);
 		this.handleBlur = this.handleBlur.bind(this);
+        this.state.darApplicationId = props.applicationId;
     }
-
-    // initialize our state
-	state = {
-		contributorsInfo: [],
-	};
 
     async componentDidMount() {
 		await this.getContributorsInfo();
 	}
 
     async getContributorsInfo() {
-        // TODO - Update here to use id passed following winterfell updated
-        await axios.get(baseURL + '/api/v1/data-access-request/prepopulate-contributors/61814305f42610e4b2d12927').then(res => {
+        await axios.get(baseURL + `/api/v1/data-access-request/prepopulate-contributors/${this.state.darApplicationId}`).then(res => {
             this.setState({
                 contributorsInfo: res.data.data
             });
