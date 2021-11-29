@@ -14,6 +14,7 @@ import SVGIcon from '../../images/SVGIcon';
 import RemoveUploaderModal from '../commonComponents/RemoveUploaderModal';
 import RemoveUploaderErrorModal from '../commonComponents/RemoveUploaderErrorModal';
 import googleAnalytics from '../../tracking';
+import TextareaAutosize from 'react-textarea-autosize';
 
 const baseURL = require('../commonComponents/BaseURL').getURL();
 let windowUrl = window.location.origin;
@@ -276,16 +277,16 @@ const AddEditProjectForm = props => {
 											(<span id='currentCount'>{formik.values.description.length || 0}</span>/3000)
 										</span>
 									</div>
-									<Form.Control
+									<TextareaAutosize
 										as='textarea'
 										id='description'
-										name='description'
+										name='description' 
 										data-test-id='description'
 										type='text'
 										className={
 											formik.touched.description && formik.errors.description
-												? 'emptyFormInput addFormInput descriptionInput'
-												: 'addFormInput descriptionInput'
+												? 'emptyFormInput addFormInput descriptionInput textarea-addEditForm'
+												: 'addFormInput descriptionInput textarea-addEditForm'
 										}
 										onKeyUp={descriptionCount}
 										onChange={formik.handleChange}
@@ -308,15 +309,15 @@ const AddEditProjectForm = props => {
 											(<span id='resultsInsightsCurrentCount'>{formik.values.resultsInsights.length || 0}</span>/3000)
 										</span>
 									</div>
-									<Form.Control
+									<TextareaAutosize
 										as='textarea'
 										id='resultsInsights'
 										name='resultsInsights'
 										type='text'
 										className={
 											formik.touched.resultsInsights && formik.errors.resultsInsights
-												? 'emptyFormInput addFormInput descriptionInput'
-												: 'addFormInput descriptionInput'
+												? 'emptyFormInput addFormInput descriptionInput textarea-addEditForm'
+												: 'addFormInput descriptionInput textarea-addEditForm'
 										}
 										onKeyUp={resultsInsightsCount}
 										onChange={formik.handleChange}
