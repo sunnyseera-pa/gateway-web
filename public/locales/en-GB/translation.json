@@ -74,7 +74,7 @@
 			"recentlyadded": "Sort by recently added",
 			"recentlyPublished": "Sort by recently added",
 			"sortbyyear": "Sort by year",
-			"terms": "Sort by match to search terms"
+			"relevance": "Sort by match to search terms"
 		},
 		"options": {
 			"popularity": "Number of views (highest to lowest)",
@@ -86,7 +86,7 @@
 			"recentlyadded": "Recently added to collection (newest first)",
 			"recentlyPublished": "Recently added to collection (newest first)",
 			"sortbyyear": "Year (latest first)",
-			"terms": "Search terms"
+			"relevance": "Match to search terms (closest first)"
 		}
 	}
 }

@@ -41,7 +41,7 @@ const SearchControlsForm = ({ sortProps, inputProps, isLoading, type, mt, mb, mr
 
 		const { onChange } = inputProps;
 
-		if (onChange) onChange(search);
+		if (onChange) onChange(value);
 	}, []);
 
 	const handleOnSort = React.useCallback(value => {
@@ -56,17 +56,15 @@ const SearchControlsForm = ({ sortProps, inputProps, isLoading, type, mt, mb, mr
 
 	if (isLoading) return null;
 
-	console.log('search', search);
-
 	return (
 		<Row className={commonStyles}>
 			<Col lg={6}>
 				<SearchInput
 					placeholder={t('search.placeholder', { type })}
-					onKeyDown={handleKeyDown}
-					value={search}
 					variant='primary'
 					{...inputProps}
+					value={search}
+					onKeyDown={handleKeyDown}
 					onChange={handleChange}
 					onReset={handleReset}
 				/>

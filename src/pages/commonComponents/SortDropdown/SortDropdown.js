@@ -15,7 +15,7 @@ const SortDropdown = ({ onSort, className, options, ...outerProps }) => {
 		onSort(value);
 	}, []);
 
-	console.log('options', options, selectedOption, outerProps.defaultValue);
+	console.log('******************** OPTIONS', options);
 
 	return (
 		<Dropdown
