@@ -17,6 +17,7 @@ import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
 import UserMessages from '../commonComponents/userMessages/UserMessages';
 import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
 import { ReactComponent as CloseButtonSvg } from '../../images/close-alt.svg';
+import { classSchema } from './classSchema';
 
 import Winterfell from 'winterfell';
 import TypeaheadCustom from './components/TypeaheadCustom/TypeaheadCustom';
@@ -28,6 +29,10 @@ import QuestionActionTabs from './components/QuestionActionTabs';
 import DarHelper from '../../utils/DarHelper.util'; //Trim the fat
 
 import { Row, Col, Tabs, Tab, Container, Alert } from 'react-bootstrap';
+
+import 'react-tabs/style/react-tabs.css';
+import 'react-bootstrap-typeahead/css/Typeahead.css';
+import './DataAccessRequestCustomiseForm.scss';
 
 export const DataAccessRequestCustomiseForm = props => {
 	let history = useHistory();
@@ -56,21 +61,43 @@ export const DataAccessRequestCustomiseForm = props => {
 	const [applicationStatus, setApplicationStatus] = useState('');
 	const [activePanelId, setActivePanelId] = useState('');
 	const [jsonSchema, setJsonSchema] = useState({});
-	const [questionAnswers, setQuestionAnswers] = useState({});
+	const [questionAnswers] = useState({});
+	const [questionStatus, setQuestionStatus] = useState({});
+	const [newGuidance, setNewGuidance] = useState({});
+	const [countOfChanges, setCountOfChanges] = useState({});
+	const [actionTabSettings, setActionTabSettings] = useState({
+		key: '',
+		questionSetId: '',
+		questionId: '',
+	});
 
 	useEffect(() => {
 		if (!!window.location.search) {
 			let values = queryString.parse(window.location.search);
 		}
-		console.log('Here');
 		getMasterSchema();
 	}, []);
 
 	const getMasterSchema = async () => {
-		debugger;
-		let response = await axios.get(`${baseURL}/api/v2/questionbank/6112a0c80c3d4634a85b15bd`);
+		const {
+			data: {
+				result: { masterSchema, questionStatus, guidance, countOfChanges },
+			},
+		} = await axios.get(`${baseURL}/api/v2/questionbank/6112a0c80c3d4634a85b15bd`);
 
-		setJsonSchema();
+		const questionActions = {
+			questionActions: [
+				{ key: 'guidance', icon: 'far fa-question-circle', color: '#475da7', toolTip: 'Guidance', order: 1 },
+				{ key: 'guidanceLocked', icon: 'far fa-eye', color: '#475da7', toolTip: 'View locked guidance', order: 1 },
+			],
+		};
+
+		setJsonSchema({ ...masterSchema, ...classSchema, ...questionActions });
+		setQuestionStatus(questionStatus);
+		setNewGuidance(guidance);
+		setCountOfChanges(countOfChanges);
+		setActivePanelId(masterSchema.formPanels[0].panelId);
+		setIsLoading(false);
 	};
 
 	const onClickSave = e => {
@@ -100,58 +127,30 @@ export const DataAccessRequestCustomiseForm = props => {
 		setShowDrawer(showEnquiry);
 	};
 
-	const updateNavigation = (newForm, validationErrors = {}) => {
-		/* if (this.state.allowedNavigation) {
-			let reviewWarning = false;
-			// reset scroll to 0, 0
-			window.scrollTo(0, 0);
-			let panelId = '';
-			// copy state pages
-			const pages = [...this.state.jsonSchema.pages];
-			// get the index of new form
-			const newPageindex = pages.findIndex(page => page.pageId === newForm.pageId);
-			reviewWarning = !pages[newPageindex].inReview && this.state.inReviewMode;
-			// reset the current state of active to false for all pages
-			const newFormState = [...this.state.jsonSchema.pages].map(item => {
-				return { ...item, active: false };
-			});
-			// update actual object model with property of active true
-			newFormState[newPageindex] = { ...pages[newPageindex], active: true };
+	const updateNavigation = newForm => {
+		// reset scroll to 0, 0
+		window.scrollTo(0, 0);
+		// copy state pages
+		const pages = [...jsonSchema.pages];
+		// get the index of new form
+		const newPageindex = pages.findIndex(page => page.pageId === newForm.pageId);
+		// reset the current state of active to false for all pages
+		const newFormState = [...jsonSchema.pages].map(item => {
+			return { ...item, active: false };
+		});
+		// update actual object model with property of active true
+		newFormState[newPageindex] = { ...pages[newPageindex], active: true };
+		// get set the active panelId
+		let { panelId } = newForm;
+		if (isEmpty(panelId) || typeof panelId == 'undefined') {
+			({ panelId } = [...jsonSchema.formPanels].find(p => p.pageId === newFormState[newPageindex].pageId) || '');
+		}
 
-			// get set the active panelId
-			({ panelId } = newForm);
-			if (_.isEmpty(panelId) || typeof panelId == 'undefined') {
-				({ panelId } = [...this.state.jsonSchema.formPanels].find(p => p.pageId === newFormState[newPageindex].pageId) || '');
-			}
-
-			let countedQuestionAnswers = {};
-			let totalQuestions = '';
-			// if in the about panel, retrieve question answers count for entire application
-			if (panelId === 'about' || panelId === 'files') {
-				countedQuestionAnswers = DarHelper.totalQuestionsAnswered(this);
-				totalQuestions = `${countedQuestionAnswers.totalAnsweredQuestions || 0}/${
-					countedQuestionAnswers.totalQuestions || 0
-				}  questions answered`;
-			} else {
-				countedQuestionAnswers = DarHelper.totalQuestionsAnswered(this, panelId);
-				totalQuestions = `${countedQuestionAnswers.totalAnsweredQuestions || 0}/${
-					countedQuestionAnswers.totalQuestions || 0
-				}  questions answered in this section`;
-			}
-
-			// reset guidance - due to on change of panel
-			let jsonSchema = this.state.jsonSchema;
-			this.setState({
-				jsonSchema: { ...jsonSchema, pages: newFormState },
-				activePanelId: panelId,
-				isWideForm: panelId === 'about' || panelId === 'files',
-				totalQuestions: totalQuestions,
-				validationErrors,
-				reviewWarning,
-				activeGuidance: '',
-				actionTabSettings: { key: '', questionSetId: '', questionId: '' },
-			});
-		} */
+		setJsonSchema({ ...jsonSchema, pages: newFormState });
+		setActivePanelId(panelId);
+		setIsWideForm(panelId === 'about' || panelId === 'files');
+		setActiveGuidance('');
+		setActionTabSettings({ key: '', questionSetId: '', questionId: '' });
 	};
 
 	const renderApp = () => {
@@ -197,21 +196,23 @@ export const DataAccessRequestCustomiseForm = props => {
 		} else if (activePanelId === 'files') {
 			/* return <Uploads onFilesUpdate={onFilesUpdate} id={_id} files={files} readOnly={readOnly} />; */
 		} else {
-			/* return (
-			<Winterfell
-				schema={jsonSchema}
-				questionAnswers={questionAnswers}
-				panelId={activePanelId}
-				disableSubmit={true}
-				readOnly={readOnly}
-				validationErrors={validationErrors}
-				renderRequiredAsterisk={() => <span>{'*'}</span>}
-				onQuestionClick={onQuestionSetAction}
-				onQuestionAction={onQuestionAction}
-				onUpdate={onFormUpdate}
-				onSubmit={onFormSubmit}
-			/>
-		); */
+			debugger;
+			return (
+				<Winterfell
+					schema={jsonSchema}
+					questionAnswers={questionAnswers}
+					questionStatus={questionStatus}
+					panelId={activePanelId}
+					disableSubmit={true}
+					disableValidation={true}
+					renderRequiredAsterisk={() => <span>{'*'}</span>}
+					//readOnly={true}
+					/* onQuestionClick={onQuestionSetAction}
+					onQuestionAction={onQuestionAction}
+					onUpdate={onFormUpdate}
+					onSubmit={onFormSubmit} */
+				/>
+			);
 		}
 	};
 
@@ -277,9 +278,10 @@ export const DataAccessRequestCustomiseForm = props => {
 						{[...jsonSchema.pages].map((item, idx) => (
 							<div key={`navItem-${idx}`} className={`${item.active ? 'active-border' : ''}`}>
 								<div>
-									<h3 className={'black-16 section-header-active'} onClick={e => updateNavigation(item)}>
+									<h3
+										className={`black-16 ${item.active ? 'section-header-active' : 'section-header'} `}
+										onClick={e => updateNavigation(item)}>
 										<span>{item.title}</span>
-										{/* <span>{item.flag && <i className={DarHelper.flagIcons[item.flag]} />}</span> */}
 									</h3>
 									{item.active && (
 										<ul className='list-unstyled section-subheader'>
@@ -298,12 +300,7 @@ export const DataAccessRequestCustomiseForm = props => {
 						))}
 					</div>
 					<div id='darCenterCol' className={isWideForm ? 'extended' : ''}>
-						{/* {reviewWarning && (
-							<Alert variant='warning' className=''>
-								<SVGIcon name='attention' width={24} height={24} fill={'#f0bb24'} viewBox='2 -9 22 22'></SVGIcon>
-								You are not assigned to this section but can still view the form
-							</Alert>
-						)}
+						{/* 
 						{isEmpty(alert) && (
 							<Alert variant={'success'} className='main-alert'>
 								<SVGIcon name='check' width={24} height={24} fill={'#2C8267'} /> {alert.message}
