@@ -64,6 +64,7 @@ export const theme = {
 			},
 		},
 		Input: {
+			height: '40px',
 			variants: {
 				primary: {
 					background: 'white',
@@ -76,6 +77,7 @@ export const theme = {
 			},
 		},
 		Dropdown: {
+			height: '40px',
 			variants: {
 				primary: {
 					background: 'white',

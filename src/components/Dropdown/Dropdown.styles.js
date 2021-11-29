@@ -7,7 +7,7 @@ export const root = ({ variant }) => theme => {
 		},
 		colors,
 		components: {
-			Dropdown: { variants },
+			Dropdown: { variants, height },
 		},
 	} = theme;
 
@@ -18,6 +18,7 @@ export const root = ({ variant }) => theme => {
 			width: 100%;
 			padding-right: 1.5rem;
 			font-size: ${defaultSize};
+			height: ${height};
 
 			&:after {
 				position: absolute;

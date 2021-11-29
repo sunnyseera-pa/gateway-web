@@ -7,7 +7,7 @@ export const inputGroup = ({ prepend, append, variant }) => theme => {
 		},
 		colors,
 		components: {
-			Input: { variants },
+			Input: { variants, height },
 		},
 	} = theme;
 
@@ -19,6 +19,7 @@ export const inputGroup = ({ prepend, append, variant }) => theme => {
 			border-color: ${colors[variants[variant].borderColor]};
 			border-radius: 0.25rem !important;
 			font-size: ${defaultSize};
+			height: ${height};
 
 			&:focus {
 				border-color: ${colors.green700};
