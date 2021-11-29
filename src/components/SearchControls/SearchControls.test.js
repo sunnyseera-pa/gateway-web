@@ -1,8 +1,5 @@
 import { render, waitFor } from '@testing-library/react';
 import React from 'react';
-import { act } from 'react-dom/test-utils';
-import SearchInput from '../SearchInput';
-import SortDropdown from '../../pages/commonComponents/SortDropdown';
 import SearchControls from '.';
 
 const mockOnSort = jest.fn();

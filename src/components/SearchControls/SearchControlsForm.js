@@ -3,7 +3,7 @@ import { useFormikContext } from 'formik';
 import { Col, Row } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import SearchInput from '../SearchInput';
-import SortDropdown from '../../pages/commonComponents/SortDropdown';
+import SortDropdown from '../SortDropdown';
 import useCommonStyles from '../../hooks/useCommonStyles';
 
 const SearchControlsForm = ({ sortProps, inputProps, isLoading, type, mt, mb, mr, width }) => {

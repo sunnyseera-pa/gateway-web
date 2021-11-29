@@ -1,8 +1,8 @@
 import React from 'react';
 import { cx } from '@emotion/css';
-import Dropdown from '../../../components/Dropdown';
+import Dropdown from '../Dropdown';
 import PropTypes from 'prop-types';
-import { PROP_TYPES_DROPDOWN } from '../../../components/Dropdown/Dropdown.propTypes';
+import { PROP_TYPES_DROPDOWN } from '../Dropdown/Dropdown.propTypes';
 import { useTranslation } from 'react-i18next';
 
 const SortDropdown = ({ onSort, className, options, ...outerProps }) => {
@@ -14,8 +14,6 @@ const SortDropdown = ({ onSort, className, options, ...outerProps }) => {
 
 		onSort(value);
 	}, []);
-
-	console.log('******************** OPTIONS', options);
 
 	return (
 		<Dropdown

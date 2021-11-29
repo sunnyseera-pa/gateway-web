@@ -1,0 +1,23 @@
+import { Meta, Story, Canvas } from '@storybook/addon-docs';
+
+import SortDropdown from './SortDropdown';
+
+<Meta
+	title='Core/SortDropdown'
+	component={SortDropdown}
+	args={{
+		options: ['recentlyadded', 'relevance'],
+	}}
+/>
+
+<Canvas>
+	<Story name='Basic'>
+		{props => {
+			const [value, setValue] = React.useState('relevance');
+			const handleSort = React.useCallback(value => {
+				setValue(value);
+			}, []);
+			return <SortDropdown {...props} onSort={handleSort} value={value} width='350px' />;
+		}}
+	</Story>
+</Canvas>

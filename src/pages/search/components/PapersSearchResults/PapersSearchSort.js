@@ -1,5 +1,5 @@
 import React from 'react';
-import SortDropdown from '../../../commonComponents/SortDropdown';
+import SortDropdown from '../../../../components/SortDropdown';
 
 const PapersSearchSort = ({ sort, onSort, search, ...outerProps }) => {
 	return (
