@@ -99,18 +99,6 @@ const AccountDatasets = props => {
 		}
 	}, [dataPostDatasetOnboarding.data]);
 
-	const handleSubmit = React.useCallback(
-		({ search, sortBy }) => {
-			getResults({
-				search,
-				sortBy,
-				status: key,
-				page: 1,
-			});
-		},
-		[key, publisherID]
-	);
-
 	useEffect(() => {
 		if (data) {
 			const {
@@ -122,6 +110,18 @@ const AccountDatasets = props => {
 			setStatusCounts(counts);
 		}
 	}, [data]);
+
+	const handleSubmit = React.useCallback(
+		({ search, sortBy }) => {
+			getResults({
+				search,
+				sortBy,
+				status: key,
+				page: 1,
+			});
+		},
+		[key, publisherID]
+	);
 
 	const AccountDatasetsResults = useCallback(
 		({ isLoading, isFetched, datasets, team }) => (
