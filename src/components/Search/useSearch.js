@@ -78,6 +78,8 @@ const useSearch = (mutateHook, options) => {
 		}
 	}, [params, count]);
 
+	console.log('useSearch', state);
+
 	return {
 		goToPage,
 		goToNext,

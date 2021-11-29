@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Alert, Button, Col, Row } from 'react-bootstrap';
 import { useAuth } from '../../../../context/AuthContext';
 import SVGIcon from '../../../../images/SVGIcon';
@@ -14,6 +14,7 @@ import AccountDatasetsTabs from './AccountDatasetsTabs';
 
 const AccountDatasets = props => {
 	const [key, setKey] = useState();
+	const [statusCounts, setStatusCounts] = useState({});
 	const [alert] = useState(props.alert);
 	const { userState } = useAuth();
 	const [publisherID, setPublisherId] = useState();
@@ -35,7 +36,7 @@ const AccountDatasets = props => {
 		[key]
 	);
 
-	const { isLoading, isFetched, data, params, getResults } = useSearch(
+	const { isLoading, isFetched, data, getResults } = useSearch(
 		serviceDatasetOnboarding.useGetPublisher(publisherID, { enabled: false }),
 		searchOptions
 	);
@@ -45,6 +46,28 @@ const AccountDatasets = props => {
 	});
 
 	const { team } = props;
+
+	const createNewDataset = e => {
+		e.preventDefault();
+
+		dataPostDatasetOnboarding.refetch();
+	};
+
+	const handleSelect = key => {
+		setKey(key);
+	};
+
+	const generateAlert = () => {
+		let { message = '' } = alert;
+
+		return (
+			<LayoutContent className='mt-3'>
+				<Alert variant={'success'} className='col-sm-12 main-alert'>
+					<SVGIcon name='check' width={18} height={18} fill={'#2C8267'} /> {message}
+				</Alert>
+			</LayoutContent>
+		);
+	};
 
 	useEffect(() => {
 		const initialKey = !_.isEmpty(props.alert.tab) ? props.alert.tab : 'active';
@@ -86,29 +109,19 @@ const AccountDatasets = props => {
 		[key, publisherID]
 	);
 
-	const createNewDataset = e => {
-		e.preventDefault();
+	useEffect(() => {
+		if (data) {
+			const {
+				data: {
+					data: { counts },
+				},
+			} = data;
 
-		dataPostDatasetOnboarding.refetch();
-	};
+			setStatusCounts(counts);
+		}
+	}, [data]);
 
-	const handleSelect = key => {
-		setKey(key);
-	};
-
-	const generateAlert = () => {
-		let { message = '' } = alert;
-
-		return (
-			<LayoutContent className='mt-3'>
-				<Alert variant={'success'} className='col-sm-12 main-alert'>
-					<SVGIcon name='check' width={18} height={18} fill={'#2C8267'} /> {message}
-				</Alert>
-			</LayoutContent>
-		);
-	};
-
-	const AccountDatasetsResults = React.useCallback(
+	const AccountDatasetsResults = useCallback(
 		({ isLoading, isFetched, datasets, team }) => (
 			<AccountDatasetsContent
 				isLoading={isLoading}
@@ -123,20 +136,6 @@ const AccountDatasets = props => {
 	);
 
 	const { isLoading: isLoadingCreateDataset } = dataPostDatasetOnboarding;
-
-	let statusCounts;
-	let datasets;
-
-	if (data) {
-		const {
-			data: {
-				data: { counts, listOfDatasets },
-			},
-		} = data;
-
-		statusCounts = counts;
-		datasets = listOfDatasets;
-	}
 
 	return (
 		<div>
@@ -174,7 +173,12 @@ const AccountDatasets = props => {
 
 				{isFetched && <AccountDatasetsTabs counts={statusCounts} onSelectTab={handleSelect} team={team} activeKey={key} />}
 
-				<AccountDatasetsResults isLoading={isLoading || isLoadingCreateDataset} isFetched={isFetched} datasets={datasets} team={team} />
+				<AccountDatasetsResults
+					isLoading={isLoading || isLoadingCreateDataset}
+					isFetched={isFetched}
+					datasets={data && data.data.data.listOfDatasets}
+					team={team}
+				/>
 			</LayoutContent>
 		</div>
 	);
