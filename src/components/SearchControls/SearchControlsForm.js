@@ -54,8 +54,6 @@ const SearchControlsForm = ({ sortProps, inputProps, isLoading, type, mt, mb, mr
 		submitForm();
 	}, []);
 
-	if (isLoading) return null;
-
 	return (
 		<Row className={commonStyles}>
 			<Col lg={6}>

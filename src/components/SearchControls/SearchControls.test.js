@@ -1,31 +1,35 @@
 import { render, waitFor } from '@testing-library/react';
 import React from 'react';
+import * as formik from 'formik';
 import SearchControls from '.';
+import SearchControlsForm from './SearchControlsForm';
 
-const mockOnSort = jest.fn();
-const mockOnChange = jest.fn();
 const mockOnSubmit = jest.fn();
-const mockOnReset = jest.fn();
+const mockSearchControlsForm = jest.fn();
+
+jest.mock('./SearchControlsForm', () => props => {
+	mockSearchControlsForm(props);
+	return <div />;
+});
 
 const props = {
 	onSubmit: mockOnSubmit,
 	isLoading: true,
 	sortProps: {
-		onSort: mockOnSort,
 		value: 'relevance',
-		options: ['relevance', 'recentlyadded'],
+		options: ['relevance'],
 	},
 	inputProps: {
-		onReset: mockOnReset,
-		onChange: mockOnChange,
 		value: 'dataset',
 	},
 };
 
 let wrapper;
 
+let formikSpy = jest.spyOn(formik, 'Formik');
+
 describe('Given the SearchControls component', () => {
-	describe('When it is rendered', () => {
+	describe('When it is loading', () => {
 		beforeAll(() => {
 			wrapper = render(<SearchControls {...props} />, {
 				wrapper: Providers,
@@ -35,62 +39,51 @@ describe('Given the SearchControls component', () => {
 		it('Then matches the previous snapshot', () => {
 			expect(wrapper.container.textContent).toEqual('');
 		});
+	});
 
-		describe('And it is not loading', () => {
-			beforeAll(() => {
-				wrapper = render(<SearchControls {...props} isLoading={false} />, {
-					wrapper: Providers,
-				});
+	describe('When it is rendered', () => {
+		beforeAll(() => {
+			wrapper = render(<SearchControls {...props} isLoading={false} />, {
+				wrapper: Providers,
 			});
+		});
 
-			it('Then matches the previous snapshot', () => {
-				expect(wrapper.container).toMatchSnapshot();
+		afterAll(() => {
+			jest.clearAllMocks();
+		});
+
+		it('Then calls the form with the correct props', () => {
+			expect(mockSearchControlsForm).toHaveBeenCalledWith({ inputProps: props.inputProps, sortProps: props.sortProps });
+		});
+
+		it('Then calls formik with the correct props', () => {
+			expect(formikSpy.mock.calls[0][0]).toMatchObject({
+				children: expect.any(Object),
+				initialValues: { search: 'dataset', sortBy: 'relevance' },
+				onSubmit: mockOnSubmit,
 			});
+		});
+	});
 
-			describe('And the input is changed', () => {
-				beforeAll(async () => {
-					const input = wrapper.container.querySelector('input');
-
-					fireEvent.change(input, { target: { name: 'search', value: 'collection' } });
-				});
-
-				it('Then calls onChange', async () => {
-					await waitFor(() => expect(mockOnChange).toHaveBeenCalledWith('collection'));
-				});
-
-				describe('And the input is entered on', () => {
-					beforeAll(() => {
-						const input = wrapper.container.querySelector('input');
-
-						fireEvent.keyDown(input, { key: 'Enter' });
-					});
-
-					it('Then calls onSubmit', async () => {
-						await waitFor(() =>
-							expect(mockOnSubmit.mock.calls[0][0]).toMatchObject({
-								search: 'collection',
-								sortBy: 'relevance',
-							})
-						);
-					});
-				});
+	describe('When it is rendered without values', () => {
+		beforeAll(() => {
+			wrapper = render(<SearchControls {...props} isLoading={false} inputProps={{}} sortProps={{}} />, {
+				wrapper: Providers,
 			});
+		});
 
-			describe('And the sort is changed on', () => {
-				beforeAll(() => {
-					const link = wrapper.container.querySelectorAll('.ui-Dropdown')[0];
+		afterAll(() => {
+			jest.clearAllMocks();
+		});
 
-					fireEvent.click(link, 'relevance');
-				});
+		it('Then calls the form with the correct props', () => {
+			expect(mockSearchControlsForm).toHaveBeenCalledWith({ inputProps: {}, sortProps: {} });
+		});
 
-				it('Then calls onSubmit', async () => {
-					await waitFor(() =>
-						expect(mockOnSubmit.mock.calls[0][0]).toMatchObject({
-							search: 'collection',
-							sortBy: 'relevance',
-						})
-					);
-				});
+		it('Then calls formik with the correct props', () => {
+			expect(formikSpy.mock.calls[0][0]).toMatchObject({
+				initialValues: { search: '', sortBy: '' },
+				onSubmit: mockOnSubmit,
 			});
 		});
 	});

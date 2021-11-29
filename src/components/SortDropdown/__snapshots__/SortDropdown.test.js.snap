@@ -1,0 +1,48 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Given the SortDropdown component When it is rendered Then matches the previous snapshot 1`] = `
+<div>
+  <div
+    class="ui-Dropdown ui-SortDropdown css-1xydy7z css-ksttk6-Dropdown show dropdown"
+  >
+    <button
+      aria-expanded="true"
+      aria-haspopup="true"
+      class="dropdown-toggle btn btn-primary"
+      type="button"
+    />
+    <div
+      aria-labelledby=""
+      class="dropdown-menu show"
+      data-popper-escaped="true"
+      data-popper-placement="bottom-start"
+      data-popper-reference-hidden="true"
+      style="position: absolute; top: 0px; left: 0px; margin: 0px; transform: translate(0px, 0px);"
+      x-placement="bottom-start"
+    >
+      <a
+        class="d-flex dropdown-item"
+        href="#"
+        role="button"
+      >
+        <div
+          class="flex-grow"
+        >
+          sortby.options.relevance
+        </div>
+      </a>
+      <a
+        class="d-flex dropdown-item"
+        href="#"
+        role="button"
+      >
+        <div
+          class="flex-grow"
+        >
+          sortby.options.recentlyadded
+        </div>
+      </a>
+    </div>
+  </div>
+</div>
+`;

@@ -16,12 +16,6 @@ const searchOptions = {
 	},
 };
 
-const waitForValue = async (wrapper, key, value) => {
-	const { waitFor } = wrapper;
-
-	await waitFor(() => expect(get(`wrapper.result.current.${key}`)).toEqual(value));
-};
-
 describe('Given the useGetPublisher component', () => {
 	describe('When it is run', () => {
 		beforeAll(() => {

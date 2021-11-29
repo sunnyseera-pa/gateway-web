@@ -179,10 +179,10 @@ describe('Given the dataset-onboarding service', () => {
 	describe('When usePostDatasetOnboarding is called', () => {
 		it('Then calls postDatasetOnboarding with the correct arguments', async () => {
 			const postSpy = jest.spyOn(service, 'postDatasetOnboarding');
-			const commonArgs = [{ publisherID: isPublisher }, { option1: true }];
-			const rendered = renderHook(() => service.usePostDatasetOnboarding(commonArgs), { wrapper });
+			const commonArgs = [{ publisherID: 'admin' }];
+			const rendered = renderHook(() => service.usePostDatasetOnboarding(...commonArgs), { wrapper });
 
-			assertServiceMutateAsyncCalled(rendered, postSpy, ...commonArgs);
+			assertServiceMutateAsyncCalled(rendered, postSpy, ...commonArgs, { option1: true });
 		});
 	});
 

@@ -6,7 +6,12 @@ const SearchControls = ({ onSubmit, isLoading, sortProps, inputProps, ...outerPr
 	if (isLoading) return null;
 
 	return (
-		<Formik initialValues={{ search: inputProps ? inputProps.value : '', sortBy: sortProps ? sortProps.value : '' }} onSubmit={onSubmit}>
+		<Formik
+			initialValues={{
+				search: inputProps && !!inputProps.value ? inputProps.value : '',
+				sortBy: sortProps && !!sortProps.value ? sortProps.value : '',
+			}}
+			onSubmit={onSubmit}>
 			<SearchControlsForm sortProps={sortProps} inputProps={inputProps} {...outerProps} />
 		</Formik>
 	);
