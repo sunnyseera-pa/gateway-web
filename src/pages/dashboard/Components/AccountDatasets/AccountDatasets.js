@@ -79,6 +79,8 @@ const AccountDatasets = props => {
 	useEffect(() => {
 		if (publisherID && key) {
 			getResults({
+				search: '',
+				sortBy: 'metadataQuality',
 				status: key,
 				page: 1,
 			});
