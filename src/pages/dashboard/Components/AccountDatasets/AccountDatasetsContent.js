@@ -63,8 +63,8 @@ const AccountDatasetsContent = ({ data = [], onSubmit, isLoading, isFetched, sta
 						mt: 2,
 					}}
 					sortProps={{
-						defaultValue: 'metadataQuality',
-						options: ['recentActivity', 'recentlyPublished', 'metadataQuality', 'popularity'],
+						value: 'metadataQuality',
+						options: ['recentActivity', 'recentlyPublished', 'metadataQuality'],
 						mt: 2,
 					}}
 				/>
