@@ -2,7 +2,7 @@ import React from 'react';
 import { Formik } from 'formik';
 import SearchControlsForm from './SearchControlsForm';
 
-const SearchControls = ({ onSubmit, isLoading, sortProps, inputProps, ...outerProps }) => {
+const SearchControls = ({ onSubmit, isLoading, sortProps, inputProps, formRef, enableReinitialize, ...outerProps }) => {
 	if (isLoading) return null;
 
 	return (
@@ -11,10 +11,16 @@ const SearchControls = ({ onSubmit, isLoading, sortProps, inputProps, ...outerPr
 				search: inputProps && !!inputProps.value ? inputProps.value : '',
 				sortBy: sortProps && !!sortProps.value ? sortProps.value : '',
 			}}
-			onSubmit={onSubmit}>
+			onSubmit={onSubmit}
+			innerRef={formRef}
+			enableReinitialize={enableReinitialize}>
 			<SearchControlsForm sortProps={sortProps} inputProps={inputProps} {...outerProps} />
 		</Formik>
 	);
+};
+
+SearchControls.defaultProps = {
+	enableReinitialize: true,
 };
 
 export default SearchControls;

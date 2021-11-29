@@ -35,7 +35,7 @@ const AccountDatasets = props => {
 		[key]
 	);
 
-	const { isLoading, isFetched, data, getResults } = useSearch(
+	const { isLoading, isFetched, data, params, getResults } = useSearch(
 		serviceDatasetOnboarding.useGetPublisher(publisherID, { enabled: false }),
 		searchOptions
 	);
@@ -108,6 +108,20 @@ const AccountDatasets = props => {
 		);
 	};
 
+	const AccountDatasetsResults = React.useCallback(
+		({ isLoading, isFetched, datasets, team }) => (
+			<AccountDatasetsContent
+				isLoading={isLoading}
+				isFetched={isFetched}
+				data={datasets}
+				onSubmit={handleSubmit}
+				team={team}
+				status={key}
+			/>
+		),
+		[key]
+	);
+
 	const { isLoading: isLoadingCreateDataset } = dataPostDatasetOnboarding;
 
 	let statusCounts;
@@ -160,14 +174,7 @@ const AccountDatasets = props => {
 
 				{isFetched && <AccountDatasetsTabs counts={statusCounts} onSelectTab={handleSelect} team={team} activeKey={key} />}
 
-				<AccountDatasetsContent
-					isLoading={isLoading || isLoadingCreateDataset}
-					isFetched={isFetched}
-					data={datasets}
-					onSubmit={handleSubmit}
-					team={team}
-					status={key}
-				/>
+				<AccountDatasetsResults isLoading={isLoading || isLoadingCreateDataset} isFetched={isFetched} datasets={datasets} team={team} />
 			</LayoutContent>
 		</div>
 	);

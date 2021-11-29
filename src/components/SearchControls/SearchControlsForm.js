@@ -6,7 +6,7 @@ import SearchInput from '../SearchInput';
 import SortDropdown from '../SortDropdown';
 import useCommonStyles from '../../hooks/useCommonStyles';
 
-const SearchControlsForm = ({ sortProps, inputProps, isLoading, type, mt, mb, mr, width }) => {
+const SearchControlsForm = ({ sortProps, inputProps, type, mt, mb, mr, width }) => {
 	const { t } = useTranslation();
 	const commonStyles = useCommonStyles({ mt, mb, mr, mb, width });
 
