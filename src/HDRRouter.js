@@ -34,7 +34,11 @@ import ErrorModal from './pages/commonComponents/errorModal/ErrorModal';
 import DatasetOnboarding from './pages/DatasetOnboarding/DatasetOnboarding';
 import { GuardedRoute } from './pages/commonComponents/GuardedRoute';
 import AdvancedSearchTAndCs from './pages/dashboard/AdvancedSearchTAndCs';
-import { ThemeProvider } from 'react-bootstrap';
+import { ThemeProvider } from '@emotion/react';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { AuthProvider } from './context/AuthContext';
+import { theme } from './configs/theme';
+import { NotificationContainer } from 'react-notifications';
 
 const baseURL = require('./pages/commonComponents/BaseURL').getURL();
 const urlEnv = require('./pages/commonComponents/BaseURL').getURLEnv();
@@ -42,6 +46,8 @@ const urlEnv = require('./pages/commonComponents/BaseURL').getURLEnv();
 let actionBar, footer;
 
 const history = createBrowserHistory();
+
+const queryClient = new QueryClient();
 
 Sentry.init({
 	dsn: 'https://c7c564a153884dc0a6b676943b172121@o444579.ingest.sentry.io/5419637',
@@ -112,8 +118,6 @@ class HDRRouter extends Component {
 		// register scroll event and bind to handleScroll
 		window.addEventListener('scroll', this.handleScroll);
 
-		let currentComponent = this;
-
 		axios.defaults.withCredentials = true;
 		axios.defaults.timeout = 60000;
 		axios.interceptors.response.use(
@@ -123,12 +127,12 @@ class HDRRouter extends Component {
 			function (error) {
 				// allow 404 errors to be handled by frontend logic
 				if (error.response && error.response.status === 404) {
-					return error;
+					return Promise.reject(error);
 				}
 				// catch all and report any other error type to Sentry
 				console.error(error);
 				Sentry.captureException(error);
-				return Promise.reject(error).then(currentComponent.setState({ showError: true }));
+				return Promise.reject(error);
 			}
 		);
 
@@ -194,56 +198,63 @@ class HDRRouter extends Component {
 
 		return (
 			<Suspense fallback={'loading'}>
-				<ThemeProvider>
-					<Router>
-						<LoginModal userState={userState} />
-						<div className='navBarGap'></div>
-						<div className='mainWrap' onScroll={this.handleScroll}>
-							<Switch>
-								<Route path='/status'>
-									<h2>Application currently up</h2>
-								</Route>
-								{userState[0].loggedIn && !userState[0].profileComplete ? (
-									<Route render={props => <Account {...props} userState={userState} profileComplete={false} />} />
-								) : (
-									''
-								)}
-								<Route path='/search' render={props => <SearchPage {...props} userState={userState} />} />
-								<Route path='/loginerror' render={props => <LoginErrorPage {...props} userState={userState} />} />
-								<Route path='/person/:personID' render={props => <PersonPage {...props} userState={userState} />} />
-								<Route path='/dataset/:datasetID' render={props => <DatasetPage {...props} userState={userState} />} />
-								<Route path='/datause/:datauseID' render={props => <ViewDataUsePage {...props} userState={userState} />} />
-								<GuardedRoute path='/datauseRegister/edit/:datauseID' component={EditDataUsePage} userState={userState} />
+				<AuthProvider value={{ userState }}>
+					<QueryClientProvider client={queryClient}>
+						<ThemeProvider theme={theme}>
+							<Router>
+								<NotificationContainer />
+								<LoginModal userState={userState} />
+								<div className='navBarGap'></div>
+								<div className='mainWrap' onScroll={this.handleScroll}>
+									<Switch>
+										<Route path='/status'>
+											<h2>Application currently up</h2>
+										</Route>
+										{userState[0].loggedIn && !userState[0].profileComplete ? (
+											<Route render={props => <Account {...props} userState={userState} profileComplete={false} />} />
+										) : (
+											''
+										)}
+										<Route path='/search' render={props => <SearchPage {...props} userState={userState} />} />
+										<Route path='/loginerror' render={props => <LoginErrorPage {...props} userState={userState} />} />
+										<Route path='/person/:personID' render={props => <PersonPage {...props} userState={userState} />} />
+										<Route path='/dataset/:datasetID' render={props => <DatasetPage {...props} userState={userState} />} />
+										<Route path='/datause/:datauseID' render={props => <ViewDataUsePage {...props} userState={userState} />} />
+										<GuardedRoute path='/datauseRegister/edit/:datauseID' component={EditDataUsePage} userState={userState} />
+										<Route
+											path='/completeRegistration/:personID'
+											render={props => <CompleteRegistration {...props} userState={userState} />}
+										/>
+										<Route path='/sso' render={props => <SSOPage {...props} userState={userState} />} />
+										<Route path='/account/unsubscribe/:userObjectID' render={props => <Unsubscribe {...props} userState={userState} />} />
+										<Route path='/dashboard' render={props => <PublicAnalyticsDashboard {...props} userState={userState} />} />
 
-								<Route path='/completeRegistration/:personID' render={props => <CompleteRegistration {...props} userState={userState} />} />
-								<Route path='/sso' render={props => <SSOPage {...props} userState={userState} />} />
-								<Route path='/account/unsubscribe/:userObjectID' render={props => <Unsubscribe {...props} userState={userState} />} />
-								<Route path='/dashboard' render={props => <PublicAnalyticsDashboard {...props} userState={userState} />} />
-
-								<GuardedRoute path='/dataset-onboarding/:id' component={DatasetOnboarding} userState={userState} />
-								<GuardedRoute path='/data-access-request/dataset/:datasetId' component={DataAccessRequest} userState={userState} />
-								<GuardedRoute path='/data-access-request/publisher/:publisherId' component={DataAccessRequest} userState={userState} />
-								<GuardedRoute path='/data-access-request/:accessId' component={DataAccessRequest} userState={userState} />
-								<GuardedRoute path='/account' component={Account} userState={userState} />
-								<GuardedRoute path='/collection/add' component={AddEditCollectionPage} userState={userState} />
-								<GuardedRoute path='/collection/edit/:collectionID' component={AddEditCollectionPage} userState={userState} />
-								<Route path='/collection/:collectionID' render={props => <CollectionPage {...props} userState={userState} />} />
-								<GuardedRoute path='/tool/add' component={AddEditToolPage} userState={userState} />
-								<GuardedRoute path='/tool/edit/:toolID' component={AddEditToolPage} userState={userState} />
-								<Route path='/tool/:toolID' render={props => <ToolPage {...props} userState={userState} />} />
-								<GuardedRoute path='/paper/add' component={AddEditPaperPage} userState={userState} />
-								<GuardedRoute path='/paper/edit/:paperID' component={AddEditPaperPage} userState={userState} />
-								<Route path='/paper/:paperID' render={props => <PaperPage {...props} userState={userState} />} />
-								<GuardedRoute path='/course/add' component={AddEditCoursePage} userState={userState} />
-								<GuardedRoute path='/course/edit/:courseID' component={AddEditCoursePage} userState={userState} />
-								<Route path='/course/:courseID' render={props => <CoursePage {...props} userState={userState} />} />
-								<Route path='/advanced-search-terms/' render={props => <AdvancedSearchTAndCs {...props} userState={userState} />} />
-								<Redirect to='/search?search=' />
-							</Switch>
-						</div>
-						<Footer />
-					</Router>
-				</ThemeProvider>
+										<GuardedRoute path='/dataset-onboarding/:id' component={DatasetOnboarding} userState={userState} />
+										<GuardedRoute path='/data-access-request/dataset/:datasetId' component={DataAccessRequest} userState={userState} />
+										<GuardedRoute path='/data-access-request/publisher/:publisherId' component={DataAccessRequest} userState={userState} />
+										<GuardedRoute path='/data-access-request/:accessId' component={DataAccessRequest} userState={userState} />
+										<GuardedRoute path='/account' component={Account} userState={userState} />
+										<GuardedRoute path='/collection/add' component={AddEditCollectionPage} userState={userState} />
+										<GuardedRoute path='/collection/edit/:collectionID' component={AddEditCollectionPage} userState={userState} />
+										<Route path='/collection/:collectionID' render={props => <CollectionPage {...props} userState={userState} />} />
+										<GuardedRoute path='/tool/add' component={AddEditToolPage} userState={userState} />
+										<GuardedRoute path='/tool/edit/:toolID' component={AddEditToolPage} userState={userState} />
+										<Route path='/tool/:toolID' render={props => <ToolPage {...props} userState={userState} />} />
+										<GuardedRoute path='/paper/add' component={AddEditPaperPage} userState={userState} />
+										<GuardedRoute path='/paper/edit/:paperID' component={AddEditPaperPage} userState={userState} />
+										<Route path='/paper/:paperID' render={props => <PaperPage {...props} userState={userState} />} />
+										<GuardedRoute path='/course/add' component={AddEditCoursePage} userState={userState} />
+										<GuardedRoute path='/course/edit/:courseID' component={AddEditCoursePage} userState={userState} />
+										<Route path='/course/:courseID' render={props => <CoursePage {...props} userState={userState} />} />
+										<Route path='/advanced-search-terms/' render={props => <AdvancedSearchTAndCs {...props} userState={userState} />} />
+										<Redirect to='/search?search=' />
+									</Switch>
+								</div>
+								<Footer />
+							</Router>
+						</ThemeProvider>
+					</QueryClientProvider>
+				</AuthProvider>
 			</Suspense>
 		);
 	}

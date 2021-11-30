@@ -45,6 +45,24 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
 					} else {
 						checkDataUses(rows).then(checks => {
 							const duplicateErrors = searchForDuplicates(checks);
+
+							rows.forEach((row, index) => {
+								rows.forEach((duplicateRow, duplicateIndex) => {
+									if (index !== duplicateIndex) {
+										if (
+											row.projectIdText === duplicateRow.projectIdText ||
+											(row.projectTitle === duplicateRow.projectTitle &&
+												row.organisationName === duplicateRow.organisationName &&
+												row.datasetTitles === duplicateRow.datasetTitles)
+										) {
+											if (!duplicateErrors.filter(error => error.row === duplicateIndex + 1).length > 0) {
+												duplicateErrors.push({ row: index + 1, duplicateRow: duplicateIndex + 1, error: 'duplicateRow' });
+											}
+										}
+									}
+								});
+							});
+
 							const uploadErrors = [...duplicateErrors, ...errors];
 							setUploadedData({ rows, uploadErrors, checks });
 							if (isEmpty(uploadErrors)) {
@@ -135,6 +153,13 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
 			case 'duplicate': {
 				return <div>Error in row {error.row} : Suspected data use duplicate</div>;
 			}
+			case 'duplicateRow': {
+				return (
+					<div>
+						Error in row {error.row} : Suspected data use duplicate of row {error.duplicateRow}
+					</div>
+				);
+			}
 			default: {
 				return '';
 			}
@@ -173,7 +198,7 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
 		const linkedDatasets = dataUseCheck.linkedDatasets.map(linkedDataset => {
 			return (
 				<div>
-					<Link className='data-use-link' to={'/dataset/' + linkedDataset.datasetid} target='_blank'>
+					<Link className='data-use-link' to={'/dataset/' + linkedDataset.pid} target='_blank'>
 						{linkedDataset.name}{' '}
 					</Link>
 				</div>
@@ -253,7 +278,6 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
 						<SVGIcon name='check' width={24} height={24} fill={'#2C8267'} /> {alert}
 					</Alert>
 				)}
-
 				<div className='layoutCard p-4'>
 					<p className='black-20-semibold mb-2'>Download template</p>
 
@@ -313,7 +337,6 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
 						)}
 					</>
 				</div>
-
 				{!isEmpty(uploadedData.rows) ? (
 					<div className='layoutCard p-4'>
 						{isEmpty(uploadedData.uploadErrors) ? (

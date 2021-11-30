@@ -9,6 +9,7 @@ import DashboardKPI from './DARComponents/DashboardKPI';
 import Loading from '../commonComponents/Loading';
 import UnmetDemandSection from './Components/UnmetDemand/UnmetDemandSection';
 import './Dashboard.scss';
+import AccountContent from './Components/AccountContent';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 let isMounted = false;
@@ -238,13 +239,9 @@ class AccountAnalyticsDashboard extends React.Component {
 
 		if (isLoading) {
 			return (
-				<Row>
-					<Col xs={1}></Col>
-					<Col xs={10}>
-						<Loading data-testid='isLoading' />
-					</Col>
-					<Col xs={1}></Col>
-				</Row>
+				<AccountContent>
+					<Loading data-testid='isLoading' />
+				</AccountContent>
 			);
 		}
 

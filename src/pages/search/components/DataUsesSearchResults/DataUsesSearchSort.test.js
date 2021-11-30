@@ -1,3 +1,4 @@
+import { render } from '@testing-library/react';
 import React from 'react';
 import DataUsesSearchSort from './DataUsesSearchSort';
 import { render } from '@testing-library/react';
@@ -13,7 +14,7 @@ jest.mock('../SortDropdown', () => props => {
 let wrapper;
 
 const props = {
-	search: 'search term',
+		search: 'search term',
 	sort: 'sort by',
 	onSort: mockOnSort,
 };
