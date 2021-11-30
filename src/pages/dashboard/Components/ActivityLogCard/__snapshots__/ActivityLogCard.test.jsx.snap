@@ -82,6 +82,7 @@ exports[`Given the ActivityLogCard component When it is rendered Then matches th
                 <div>
                   <div
                     class="mb-3"
+                    data-testid="event-status-text-0"
                   >
                     datasetVersionApproved
                   </div>
@@ -136,6 +137,7 @@ exports[`Given the ActivityLogCard component When it is rendered Then matches th
                 <div>
                   <div
                     class="mb-3"
+                    data-testid="event-status-text-1"
                   >
                     datasetUpdatesSubmitted
                   </div>
@@ -280,6 +282,7 @@ exports[`Given the ActivityLogCard component When it is rendered Then matches th
                 <div>
                   <div
                     class="mb-3"
+                    data-testid="event-status-text-2"
                   >
                     newDatasetVersionSubmitted
                   </div>

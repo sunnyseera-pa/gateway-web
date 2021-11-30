@@ -10,17 +10,16 @@ import Container from 'react-bootstrap/Container';
 import SSOPage from './pages/sso/SSOPage';
 import ToolPage from './pages/tool/ToolPage';
 import PersonPage from './pages/person/PersonPage';
-import ProjectPage from './pages/project/ProjectPage';
 import PaperPage from './pages/paper/PaperPage';
 import CoursePage from './pages/course/CoursePage';
 import DatasetPage from './pages/dataset/DatasetPage';
+import ViewDataUsePage from './pages/dataUse/view/ViewDataUse';
 import SearchPage from './pages/search/SearchPage';
 import CollectionPage from './pages/collections/CollectionPage';
 import PublicAnalyticsDashboard from './pages/publicDashboard/PublicAnalyticsDashboard';
 import Account from './pages/dashboard/Account';
 import Unsubscribe from './pages/dashboard/Unsubscribe';
 import AddEditToolPage from './pages/tool/AddEditToolPage';
-import AddEditProjectPage from './pages/project/AddEditProjectPage';
 import AddEditPaperPage from './pages/paper/AddEditPaperPage';
 import AddEditCoursePage from './pages/course/AddEditCoursePage';
 import AddEditCollectionPage from './pages/collections/AddEditCollectionPage';
@@ -219,6 +218,7 @@ class HDRRouter extends Component {
 										<Route path='/loginerror' render={props => <LoginErrorPage {...props} userState={userState} />} />
 										<Route path='/person/:personID' render={props => <PersonPage {...props} userState={userState} />} />
 										<Route path='/dataset/:datasetID' render={props => <DatasetPage {...props} userState={userState} />} />
+										<Route path='/datause/:datauseID' render={props => <ViewDataUsePage {...props} userState={userState} />} />
 										<Route
 											path='/completeRegistration/:personID'
 											render={props => <CompleteRegistration {...props} userState={userState} />}
@@ -238,9 +238,6 @@ class HDRRouter extends Component {
 										<GuardedRoute path='/tool/add' component={AddEditToolPage} userState={userState} />
 										<GuardedRoute path='/tool/edit/:toolID' component={AddEditToolPage} userState={userState} />
 										<Route path='/tool/:toolID' render={props => <ToolPage {...props} userState={userState} />} />
-										<GuardedRoute path='/project/add' component={AddEditProjectPage} userState={userState} />
-										<GuardedRoute path='/project/edit/:projectID' component={AddEditProjectPage} userState={userState} />
-										<Route path='/project/:projectID' render={props => <ProjectPage {...props} userState={userState} />} />
 										<GuardedRoute path='/paper/add' component={AddEditPaperPage} userState={userState} />
 										<GuardedRoute path='/paper/edit/:paperID' component={AddEditPaperPage} userState={userState} />
 										<Route path='/paper/:paperID' render={props => <PaperPage {...props} userState={userState} />} />
