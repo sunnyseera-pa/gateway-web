@@ -60,6 +60,7 @@ const ActivityLogCard = props => {
 									</span>
 								</Col>
 							</Row>
+
 							{Object.keys(groupedEvents).map(key => {
 								return (
 									<div>

@@ -32,6 +32,7 @@ import DataUsesSearchSort from './components/DataUsesSearchResults/DataUsesSearc
 import SearchFilters from './components/SearchFilters';
 import SearchUtilityBanner from './components/SearchUtilityBanner';
 import ToolsSearchSort from './components/ToolsSearchResults/ToolsSearchSort';
+import SearchResultsInfo from '../commonComponents/SearchResultsInfo';
 import './Search.scss';
 
 let baseURL = require('../commonComponents/BaseURL').getURL();
@@ -1690,7 +1691,10 @@ class SearchPage extends React.Component {
 						<Container className={this.state.saveSuccess && !this.state.showSavedModal && 'container-saved-preference-banner'}>
 							<Row className='filters filter-save'>
 								<Col className='title' lg={4}>
-									Showing {this.getCountByKey(key)} results {this.state.search != '' && `for '${this.state.search}'`}
+									{(() => {
+										let { search } = queryString.parse(window.location.search);
+										return <SearchResultsInfo count={this.getCountByKey(key)} searchTerm={search} />;
+									})()}
 								</Col>
 								<Col lg={8} className='saved-buttons'>
 									{this.state.key === 'Datauses' && (
