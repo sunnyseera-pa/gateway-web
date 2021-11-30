@@ -56,6 +56,9 @@
 		}
 	},
 	"viewForm": "View form",
+	"notifications": {
+		"teamEmailText": "Send email notifications to team email address"
+  },
 	"searchResultsInfo": {
 		"withTerm": "Showing {{count}} results for '{{searchTerm}}'",
 		"withOutTerm": "Showing {{count}} results"
