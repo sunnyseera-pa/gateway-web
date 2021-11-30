@@ -47,7 +47,13 @@ let actionBar, footer;
 
 const history = createBrowserHistory();
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+	defaultOptions: {
+	  queries: {
+		refetchOnWindowFocus: false,
+	  },
+	},
+  });
 
 Sentry.init({
 	dsn: 'https://c7c564a153884dc0a6b676943b172121@o444579.ingest.sentry.io/5419637',
