@@ -35,7 +35,7 @@ describe('Given the TeamGatewayNotificationEmails component', () => {
 		});
 
 		it('Opt in Switch Icon should not be rendered', async () => {
-			expect(wrapper.queryByTestId('opt-in-team-email')).toBeNull();
+			expect(wrapper.queryByTestId('notify-team-email')).toBeNull();
 		});
 
 		it('Then the "Send email notifications to team email address" should not be rendered', async () => {
@@ -61,7 +61,7 @@ describe('Given the TeamGatewayNotificationEmails component', () => {
 		});
 
 		it('Opt in Switch Icon should  be rendered', async () => {
-			expect(wrapper.getByTestId('opt-in-team-email')).toBeTruthy();
+			expect(wrapper.getByTestId('notify-team-email')).toBeTruthy();
 		});
 
 		it('Then the "Send email notifications to team email address" should be rendered', async () => {
@@ -69,10 +69,10 @@ describe('Given the TeamGatewayNotificationEmails component', () => {
 		});
 
 		it('toggle Opt in Switch', async () => {
-			fireEvent.click(wrapper.getByTestId('opt-in-team-email'));
+			fireEvent.click(wrapper.getByTestId('notify-team-email'));
 			expect(props.toggleTeamNotifications.mock.calls.length).toBe(1);
 			expect(props.toggleTeamNotifications.mock.calls[0][0]).toBe(false);
-			fireEvent.click(wrapper.getByTestId('opt-in-team-email'));
+			fireEvent.click(wrapper.getByTestId('notify-team-email'));
 			expect(props.toggleTeamNotifications.mock.calls.length).toBe(2);
 		});
 	});

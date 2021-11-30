@@ -27,7 +27,7 @@ const TeamGatewayNotificationEmails = ({ teamId, userHasRole, teamNotification, 
 							width={48}
 							height={24}
 							className='react-switch'
-							data-testid='opt-in-team-email'
+							data-testid='notify-team-email'
 						/>
 					</div>
 					<div className='tm-title'>
