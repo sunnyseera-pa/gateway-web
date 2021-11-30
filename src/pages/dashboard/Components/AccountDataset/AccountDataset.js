@@ -38,7 +38,7 @@ const AccountDataset = props => {
 	const publisherId = utils.getPublisherID(userState[0], team);
 	const dataPublisher = serviceDatasetOnboarding.useGetPublisher(Array.isArray(publisherId) ? publisherId[0] : publisherId, null);
 
-	React.useEffect(() => {
+	useEffect(() => {
 		setTeam(getTeam(props));
 	}, [id]);
 
@@ -113,7 +113,7 @@ const AccountDataset = props => {
 			}
 			updateButtonStates(page);
 		}
-	}, [dataPublisher.data, id]);
+	}, [dataPublisher.data, id, currentDataset]);
 
 	const handlePaginationClick = useCallback(
 		i => {
@@ -167,7 +167,7 @@ const AccountDataset = props => {
 		goToNext();
 	};
 
-	const handleViewForm = React.useCallback(() => {
+	const handleViewForm = useCallback(() => {
 		history.push(`/dataset-onboarding/${currentDataset._id}`);
 	}, [currentDataset]);
 
