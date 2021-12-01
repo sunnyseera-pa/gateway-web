@@ -1403,7 +1403,7 @@ class SearchPage extends React.Component {
 		let formattedDataUses = [];
 
 		dataUses.forEach(dataUse => {
-			const gatewayApplicants = dataUse.gatewayApplicants.map(applicant => {
+			const gatewayApplicants = dataUse.gatewayApplicantsDetails.map(applicant => {
 				return `${applicant.firstname} ${applicant.lastname} `;
 			});
 
@@ -1447,7 +1447,7 @@ class SearchPage extends React.Component {
 				'Privacy Enhancements': dataUse.privacyEnhancements,
 				'Gateway Research Outputs Tools': gatewayOutputsTools,
 				'Gateway Research Outputs Papers': gatewayOutputsPapers,
-				'Research Outputs': dataUse.researchOutputs,
+				'Research Outputs': dataUse.nonGatewayOutputs,
 				Keywords: dataUse.keywords,
 			});
 		});
