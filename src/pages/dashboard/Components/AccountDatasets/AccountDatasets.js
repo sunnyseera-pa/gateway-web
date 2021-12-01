@@ -80,7 +80,7 @@ const AccountDatasets = props => {
 		if (publisherID && key) {
 			getResults({
 				search: '',
-				sortBy: 'metadataQuality',
+				sortBy: '',
 				status: key,
 				page: 1,
 			});

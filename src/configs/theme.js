@@ -22,6 +22,34 @@ export const getCommonStyles = ({ ml, mr, mb, mt, width }, theme) => {
 	`;
 };
 
+export const THEME_INPUT = {
+	height: '40px',
+	variants: {
+		primary: {
+			background: 'white',
+			borderColor: 'grey200',
+		},
+		secondary: {
+			background: 'grey100',
+			borderColor: 'grey100',
+		},
+	},
+};
+
+export const THEME_FONT_SIZES = {
+	xxs: '10px',
+	xs: '12px',
+	sm: '13px',
+	md: '14px',
+	default: '14px',
+	lg: '16px',
+	xl: '20px',
+	'2xl': '24px',
+	'3xl': '28px',
+	'4xl': '32px',
+	'5xl': '40px',
+};
+
 export const theme = {
 	base: {
 		increment: 4,
@@ -49,45 +77,9 @@ export const theme = {
 	},
 	components: {
 		Icon: {
-			sizes: {
-				xxs: '10px',
-				xs: '12px',
-				sm: '13px',
-				md: '14px',
-				default: '14px',
-				lg: '16px',
-				xl: '20px',
-				'2xl': '24px',
-				'3xl': '28px',
-				'4xl': '32px',
-				'5xl': '40px',
-			},
+			sizes: THEME_FONT_SIZES,
 		},
-		Input: {
-			height: '40px',
-			variants: {
-				primary: {
-					background: 'white',
-					borderColor: 'grey200',
-				},
-				secondary: {
-					background: 'grey100',
-					borderColor: 'grey100',
-				},
-			},
-		},
-		Dropdown: {
-			height: '40px',
-			variants: {
-				primary: {
-					background: 'white',
-					borderColor: 'grey200',
-				},
-				secondary: {
-					background: 'grey100',
-					borderColor: 'grey100',
-				},
-			},
-		},
+		Input: THEME_INPUT,
+		Dropdown: THEME_INPUT,
 	},
 };

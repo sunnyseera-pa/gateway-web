@@ -677,6 +677,22 @@ export const mockGetPublisher = {
 };
 
 export const mswGetPublisher = rest.get(`${apiURL}/dataset-onboarding/publisher/applicant`, (req, res, ctx) => {
+	const search = req.url.searchParams.get('search');
+	const sortBy = req.url.searchParams.get('sortBy');
+
+	if (search && sortBy) {
+		return res(
+			ctx.status(200),
+			ctx.json({
+				...mockGetPublisher,
+				data: {
+					...mockGetPublisher.data,
+					listOfDatasets: [mockGetPublisher.data.listOfDatasets[0]],
+				},
+			})
+		);
+	}
+
 	return res(ctx.status(200), ctx.json(mockGetPublisher));
 });
 
