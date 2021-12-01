@@ -46,7 +46,19 @@ const _getRegexURL = (urlType, href) => {
 	}
 };
 
+const _spatialLocationURL = () => {
+	let {
+		location: { href, origin },
+	} = window;
+	if (href && !href.includes('localhost')) {
+		return _buildUrl('http');
+	} else {
+		return 'http://localhost:3002';
+	}
+};
+
 export const baseURL = _buildUrl('http');
 export const cmsURL = _buildUrl('cms');
 export const apiURL = `${baseURL}/api/${process.env.REACT_APP_API_VERSION}`;
 export const apiV2URL = `${baseURL}/api/v2`;
+export const locationAPIURL = `${_spatialLocationURL()}/api/v1`;

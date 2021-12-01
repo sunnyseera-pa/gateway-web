@@ -7,6 +7,7 @@ import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
 import ActionBar from '../commonComponents/actionbar/ActionBar';
 import TypeaheadCustom from './components/TypeaheadCustom/TypeaheadCustom';
+import TypeaheadAsyncCustom from './components/TypeaheadAsyncCustom';
 import TypeaheadCustomKeyValue from './components/TypeaheadCustom/TypeaheadCustomKeyValue';
 import TypeaheadKeywords from './components/TypeaheadKeywords/TypeaheadKeywords';
 import TextareaInputCustom from './components/TextareaInputCustom/TextareaInputCustom';
@@ -472,6 +473,7 @@ class DatasetOnboarding extends Component {
 			this.state.jsonSchema.questionSets,
 			this.state.questionAnswers
 		);
+
 		let validationSectionMessages = DatasetOnboardingValidation.buildInvalidSectionMessages(Winterfell, invalidQuestions);
 		let inValidMessages = DatasetOnboardingValidation.buildInvalidMessages(Winterfell, invalidQuestions);
 		let errors = DatasetOnboardingValidation.formatValidationObj(inValidMessages, [...this.state.jsonSchema.questionPanels]);
@@ -1236,6 +1238,7 @@ class DatasetOnboarding extends Component {
 		const { userState } = this.props;
 
 		Winterfell.addInputType('typeaheadCustom', TypeaheadCustom);
+		Winterfell.addInputType('typeaheadAsyncCustom', TypeaheadAsyncCustom);
 		Winterfell.addInputType('typeaheadCustomKeyValue', TypeaheadCustomKeyValue);
 		Winterfell.addInputType('typeaheadKeywords', TypeaheadKeywords);
 		Winterfell.addInputType('datePickerCustom', DatePickerCustom);
