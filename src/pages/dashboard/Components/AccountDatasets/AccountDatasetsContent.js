@@ -27,6 +27,7 @@ const AccountDatasetsContent = ({ data = [], onSubmit, isLoading, isFetched, sta
 
 	const hasActivityHistory = React.useCallback(
 		dataset => {
+			console.log('asdasdasd', team, dataset.listOfVersions);
 			return dataset.listOfVersions.length > 0 && team === 'admin';
 		},
 		[team]
@@ -34,6 +35,8 @@ const AccountDatasetsContent = ({ data = [], onSubmit, isLoading, isFetched, sta
 
 	const getDatasetCardProps = dataset => {
 		const datasetCardProps = {};
+
+		console.log('dataset', dataset.activeflag === 'inReview', hasActivityHistory(dataset));
 
 		if (dataset.activeflag === 'inReview' && hasActivityHistory(dataset)) {
 			datasetCardProps.slaProps = {

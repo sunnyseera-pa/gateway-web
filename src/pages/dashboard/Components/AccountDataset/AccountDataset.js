@@ -35,13 +35,13 @@ const AccountDataset = props => {
 	});
 
 	const dataActivityLog = serviceActivityLog.usePostActivityLog();
-	const publisherId = utils.getPublisherID(userState[0], team);
+	const publisherId = React.useMemo(() => utils.getPublisherID(userState[0], team), [userState[0], team]);
 	const dataPublisher = serviceDatasetOnboarding.useGetPublisher(publisherId);
 
 	React.useEffect(() => {
 		setTeam(getTeam(props));
 
-		dataPublisher.mutate();
+		if (publisherId && id) dataPublisher.mutate();
 	}, [publisherId, id]);
 
 	const getValidDatasets = listOfDatasets => {
@@ -104,17 +104,16 @@ const AccountDataset = props => {
 
 	React.useEffect(() => {
 		const page = getNextPage(0);
-		if (page) {
-			if (page.dataset) {
-				const { dataset } = page;
+		if (page && page.dataset) {
+			const { dataset } = page;
 
-				setCurrentDataset(dataset);
+			setCurrentDataset(dataset);
 
-				dataActivityLog.mutateAsync({
-					versionIds: [...dataset.listOfVersions.map(version => version._id), dataset._id],
-					type: 'dataset',
-				});
-			}
+			dataActivityLog.mutateAsync({
+				versionIds: [...dataset.listOfVersions.map(version => version._id), dataset._id],
+				type: 'dataset',
+			});
+
 			updateButtonStates(page);
 		}
 	}, [dataPublisher.data, id]);
@@ -171,8 +170,8 @@ const AccountDataset = props => {
 		);
 	}
 
-	if (dataPublisher.isFetched) {
-		if (dataPublisher.data && !filterCurrentDataset(dataPublisher.data.data.data.listOfDatasets)) {
+	if (dataPublisher.isSuccess) {
+		if (dataPublisher.data && !filterCurrentDataset(dataPublisher.data.data.data.results.listOfDatasets)) {
 			NotificationManager.error('The accessed dataset does not exist', 'Page not found', 10000);
 
 			return <Redirect to='/account?tab=datasets' />;

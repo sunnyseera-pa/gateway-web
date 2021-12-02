@@ -22,6 +22,8 @@ jest.mock('../ActivityLogCard', () => props => {
 	return <div />;
 });
 
+jest.mock('../../../../components/Icon', () => 'Icon');
+
 const mockDatasetCard = jest.fn();
 const mockActivityLogCard = jest.fn();
 const mockPush = jest.fn();
