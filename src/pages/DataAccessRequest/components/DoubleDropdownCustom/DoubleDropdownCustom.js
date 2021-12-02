@@ -25,12 +25,49 @@ const DoubleDropdownCustom = ({ name, id, options, onChange, labelId, required, 
 	};
 
 	console.log(options);
+
+	const schema = [
+		{
+			text: 'Age category research',
+			value: 'Age category research',
+		},
+		{
+			text: 'Ancestry research',
+			value: 'Ancestry research',
+		},
+		{
+			text: 'Biomedical research',
+			value: 'Biomedical research',
+			extraOptions: [
+				{ text: 'Disease category research', value: 'Disease category research' },
+				{ text: 'Drug development research', value: 'Drug development research' },
+				{ text: 'Genetic research', value: 'Genetic research' },
+			],
+		},
+		{
+			text: 'Gender category research',
+			value: 'Gender category research',
+		},
+		{
+			text: 'Method development',
+			value: 'Method development',
+		},
+		{
+			text: 'Population research',
+			value: 'Population research',
+		},
+		{
+			text: 'Research control',
+			value: 'Research control',
+		},
+	];
+
 	return (
 		<Navbar collapseOnSelect expand='lg'>
 			<Nav className='mr-auto'>
 				<Dropdown>
 					<Dropdown.Toggle className='double-dropdown-input'>
-						<TypeaheadCustom
+						<Typeahead
 							name={name}
 							id={id}
 							multiple
@@ -41,7 +78,8 @@ const DoubleDropdownCustom = ({ name, id, options, onChange, labelId, required, 
 							onChange={e => handleChange(e)}
 							//onBlur={handleBlur}
 							//onFocus={handleFocus}
-							options={options}
+							options={schema}
+							labelKey='value'
 							//selected={this.props.value}
 							//data-test-id='darContributorTextInput'
 						/>
