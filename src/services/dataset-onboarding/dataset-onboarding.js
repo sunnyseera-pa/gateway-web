@@ -11,6 +11,7 @@ const getDatasetOnboarding = (_id, options) => {
 };
 
 const getPublisher = (_id, options) => {
+	console.log('PUBLISHER', `${apiURL}/dataset-onboarding/publisher/${_id}`);
 	return getRequest(`${apiURL}/dataset-onboarding/publisher/${_id}`, options);
 };
 
@@ -51,9 +52,17 @@ const useGetDatasetOnboarding = (requestOptions, queryOptions = { queryKey: 'get
 const useGetPublisher = (publisherId, requestOptions, mutateOptions = { queryKey: 'getPublisher' }) => {
 	const _id = Array.isArray(publisherId) ? publisherId[0] : publisherId;
 
-	return useMutation(params => getPublisher(_id, { params }, requestOptions), {
-		mutateOptions,
-	});
+	console.log('useGet', _id);
+
+	return useMutation(
+		params => {
+			console.log('_id', _id);
+			return getPublisher(_id, { params }, requestOptions);
+		},
+		{
+			mutateOptions,
+		}
+	);
 };
 
 const usePostDatasetOnboarding = (data, requestOptions, queryOptions = { queryKey: 'postDatasetOnboarding' }) => {

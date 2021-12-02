@@ -40,7 +40,7 @@ jest.mock('./AccountDatasetsContent', () => props => {
 jest.mock('../../../../components/Icon', () => 'Icon');
 
 const props = {
-	alert: {},
+	alert: { message: 'Message goes here' },
 	team: 'applicant',
 };
 
@@ -72,6 +72,10 @@ describe('Given the AccountDatasets component', () => {
 			expect(wrapper.container).toMatchSnapshot();
 		});
 
+		it('Then shows a success message', () => {
+			expect(wrapper.getByText('Message goes here')).toBeTruthy();
+		});
+
 		it('Then calls the tabs with the correct props', async () => {
 			await waitFor(() => {
 				expect(mockAccountDatasetsTabs).toHaveBeenCalledLastWithMatch({
@@ -85,7 +89,7 @@ describe('Given the AccountDatasets component', () => {
 		it('Then calls the results with the correct props', async () => {
 			await waitFor(() => {
 				return expect(mockAccountDatasetsContent).toHaveBeenCalledLastWithMatch({
-					data: mockGetPublisher.data.listOfDatasets,
+					data: mockGetPublisher.data.results.listOfDatasets,
 					isFetched: true,
 					isLoading: false,
 					status: 'active',
@@ -111,7 +115,6 @@ describe('Given the AccountDatasets component', () => {
 			it('Then calls the results with the correct props', async () => {
 				await waitFor(() => {
 					return expect(mockAccountDatasetsContent).toHaveBeenCalledLastWithMatch({
-						data: [mockGetPublisher.data.listOfDatasets[0]],
 						isFetched: true,
 						isLoading: false,
 						status: 'active',
@@ -134,7 +137,7 @@ describe('Given the AccountDatasets component', () => {
 				it('Then calls the results with the correct props', async () => {
 					await waitFor(() => {
 						return expect(mockAccountDatasetsContent).toHaveBeenCalledLastWithMatch({
-							data: mockGetPublisher.data.listOfDatasets,
+							data: mockGetPublisher.data.results.listOfDatasets,
 							isFetched: true,
 							isLoading: false,
 							status: 'inReview',

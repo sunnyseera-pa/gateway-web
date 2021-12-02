@@ -7,7 +7,7 @@ import Icon from '../../../../components/Icon';
 import SearchControls from '../../../../components/SearchControls';
 import '../../Dashboard.scss';
 
-const AccountDatasetsContent = ({ data = [], onSubmit, isLoading, isFetched, status, team }) => {
+const AccountDatasetsContent = ({ data = [], onSubmit, isLoading, isFetched, status, params, team }) => {
 	const [searchValue, setSearchValue] = useState();
 	const history = useHistory();
 
@@ -27,6 +27,7 @@ const AccountDatasetsContent = ({ data = [], onSubmit, isLoading, isFetched, sta
 
 	const hasActivityHistory = React.useCallback(
 		dataset => {
+			console.log('******************** listOfVersions', team, dataset.listOfVersions);
 			return dataset.listOfVersions.length > 0 && team === 'admin';
 		},
 		[team]
@@ -35,19 +36,23 @@ const AccountDatasetsContent = ({ data = [], onSubmit, isLoading, isFetched, sta
 	const getDatasetCardProps = dataset => {
 		const datasetCardProps = {};
 
-		if (status === 'inReview' && hasActivityHistory(dataset)) {
+		if (dataset.activeflag === 'inReview' && hasActivityHistory(dataset)) {
 			datasetCardProps.slaProps = {
 				icon: <Icon name='eye' role='button' onClick={() => handleActivityLogClick(dataset.pid)} mr={1} />,
 			};
 
 			datasetCardProps.path = getDatasetPath(dataset.pid);
-		} else if (status === 'rejected') {
+		} else if (dataset.activeflag === 'rejected') {
 			datasetCardProps.rejectionText = dataset.applicationStatusDesc;
 			datasetCardProps.rejectionAuthor = dataset.applicationStatusAuthor;
 		}
 
+		console.log('******************** datasetCardProps', datasetCardProps);
+
 		return datasetCardProps;
 	};
+
+	const { search, sortBy } = params;
 
 	return (
 		<>
@@ -60,10 +65,12 @@ const AccountDatasetsContent = ({ data = [], onSubmit, isLoading, isFetched, sta
 						onReset: onSubmit,
 						onChange: handleChange,
 						mt: 2,
+						value: search,
 					}}
 					sortProps={{
-						value: 'metadataQuality',
-						options: ['recentActivity', 'recentlyPublished', 'metadataQuality'],
+						value: sortBy,
+						defaultValue: 'metadata',
+						options: ['latest', 'recentlyadded', 'metadata', 'popularity'],
 						mt: 2,
 					}}
 				/>
@@ -94,6 +101,13 @@ const AccountDatasetsContent = ({ data = [], onSubmit, isLoading, isFetched, sta
 			/>
 		</>
 	);
+};
+
+AccountDatasetsContent.defaultProps = {
+	params: {
+		search: '',
+		sortBy: 'metadata',
+	},
 };
 
 export default AccountDatasetsContent;

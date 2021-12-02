@@ -1,4 +1,6 @@
 import React from 'react';
+import pickBy from 'lodash/pickBy';
+import usePersistState from '../../hooks/usePersistState';
 
 const useSearch = (mutateHook, options) => {
 	const [params, setParams] = React.useState(
@@ -8,12 +10,14 @@ const useSearch = (mutateHook, options) => {
 		}
 	);
 
+	const [cache, updateCache] = usePersistState();
+
 	const [state, setState] = React.useState({
 		count: 0,
 		isFetched: false,
 	});
 
-	const { isLoading, isError, data } = mutateHook;
+	const { isLoading, isError, data, isFetching } = mutateHook;
 	const { count } = state;
 
 	const hasNext = React.useCallback(() => {
@@ -26,30 +30,45 @@ const useSearch = (mutateHook, options) => {
 		return page > 1;
 	}, [params]);
 
-	const getResults = React.useCallback(
-		async queryParams => {
-			const mergedParams = {
-				...params,
-				...queryParams,
-			};
+	const getCache = React.useCallback(
+		key => {
+			if (!key) return cache;
 
-			setParams(mergedParams);
-			query(mergedParams);
+			return cache[key];
+		},
+		[cache]
+	);
+
+	const getResults = React.useCallback(
+		async (queryParams, cacheKey) => {
+			const filteredParams = pickBy(queryParams, value => value !== '');
+
+			setParams(filteredParams);
+			query(filteredParams, cacheKey);
 		},
 		[params]
 	);
 
-	const query = React.useCallback(async queryParams => {
+	const query = React.useCallback(async (queryParams, cacheKey) => {
 		try {
 			const { data } = await mutateHook.mutateAsync(queryParams);
-			const { count } = options;
+			const { total, onSuccess } = options;
 
 			setState({
-				count: count ? count(data, queryParams) : data.count,
+				total: (total ? total(data) : data.data.results.total) || 0,
 				isFetched: true,
 			});
+
+			updateCache(cacheKey, {
+				params: queryParams,
+				data,
+			});
+
+			if (onSuccess) onSuccess(data, queryParams);
 		} catch (e) {
-			console.log('e', e);
+			const { onError } = options;
+
+			if (onError) onError(e, queryParams);
 		}
 	}, []);
 
@@ -83,12 +102,14 @@ const useSearch = (mutateHook, options) => {
 		goToNext,
 		goToPrevious,
 		getResults,
+		getCache,
 		hasNext,
 		hasPrevious,
 		data,
 		params,
 		isLoading,
 		isError,
+		isFetching,
 		...state,
 	};
 };

@@ -42,7 +42,7 @@ const AccountDataset = props => {
 		setTeam(getTeam(props));
 
 		dataPublisher.mutate();
-	}, [id]);
+	}, [publisherId, id]);
 
 	const getValidDatasets = listOfDatasets => {
 		return listOfDatasets.filter(dataset => {
@@ -81,7 +81,9 @@ const AccountDataset = props => {
 		if (dataPublisher.data) {
 			const {
 				data: {
-					data: { listOfDatasets },
+					data: {
+						results: { listOfDatasets },
+					},
 				},
 			} = dataPublisher.data;
 
