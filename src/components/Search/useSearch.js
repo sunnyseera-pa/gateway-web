@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import pickBy from 'lodash/pickBy';
 import usePersistState from '../../hooks/usePersistState';
 
@@ -13,19 +13,23 @@ const useSearch = (mutateHook, options) => {
 	const [cache, updateCache] = usePersistState();
 
 	const [state, setState] = React.useState({
-		count: 0,
+		total: 0,
 		isFetched: false,
 	});
 
 	const { isLoading, isError, data, isFetching } = mutateHook;
-	const { count } = state;
+	const { page } = params;
+	const { total } = state;
 
 	const hasNext = React.useCallback(() => {
+		console.log('Next', total, params.maxResults);
+
 		const { maxResults, page } = params;
-		return page < Math.ceil(count / maxResults);
-	}, [params, count]);
+		return page < Math.ceil(total / maxResults);
+	}, [params, total]);
 
 	const hasPrevious = React.useCallback(() => {
+		console.log('Previous', params);
 		const { page } = params;
 		return page > 1;
 	}, [params]);
@@ -43,10 +47,31 @@ const useSearch = (mutateHook, options) => {
 		async (queryParams, cacheKey) => {
 			const filteredParams = pickBy(queryParams, value => value !== '');
 
-			setParams(filteredParams);
+			setParams({
+				page,
+				...filteredParams,
+			});
+
 			query(filteredParams, cacheKey);
 		},
-		[params]
+		[params, page]
+	);
+
+	const getCachedResults = React.useCallback(
+		(queryParams, key) => {
+			const existingParams = getCache(key);
+
+			getResults(
+				existingParams
+					? existingParams.params
+					: {
+							...options.initialParams,
+							...queryParams,
+					  },
+				key
+			);
+		},
+		[cache]
 	);
 
 	const query = React.useCallback(async (queryParams, cacheKey) => {
@@ -58,6 +83,8 @@ const useSearch = (mutateHook, options) => {
 				total: (total ? total(data) : data.data.results.total) || 0,
 				isFetched: true,
 			});
+
+			console.log('Query', queryParams);
 
 			updateCache(cacheKey, {
 				params: queryParams,
@@ -88,14 +115,14 @@ const useSearch = (mutateHook, options) => {
 			const { page } = params;
 			goToPage(page + 1);
 		}
-	}, [params, count]);
+	}, [params, total]);
 
 	const goToPrevious = React.useCallback(() => {
 		if (hasPrevious()) {
 			const { page } = params;
 			goToPage(page - 1);
 		}
-	}, [params, count]);
+	}, [params, total]);
 
 	return {
 		goToPage,
@@ -103,8 +130,10 @@ const useSearch = (mutateHook, options) => {
 		goToPrevious,
 		getResults,
 		getCache,
+		getCachedResults,
 		hasNext,
 		hasPrevious,
+		total,
 		data,
 		params,
 		isLoading,

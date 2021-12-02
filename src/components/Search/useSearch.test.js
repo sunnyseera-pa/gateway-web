@@ -42,7 +42,7 @@ describe('Given the useGetPublisher component', () => {
 
 		it('Then contains the correct return values', () => {
 			expect(wrapper.result.current).toMatchObject({
-				count: 0,
+				total: 0,
 				data: undefined,
 				isError: false,
 				isFetched: false,
@@ -54,11 +54,14 @@ describe('Given the useGetPublisher component', () => {
 		describe('And getResults is called', () => {
 			beforeAll(async () => {
 				act(() => {
-					wrapper.result.current.getResults({
-						maxResults: 18,
-						status: 'inReview',
-						search: 'dataset',
-					});
+					wrapper.result.current.getResults(
+						{
+							maxResults: 18,
+							status: 'inReview',
+							search: 'dataset',
+						},
+						'inReview'
+					);
 				});
 
 				const { waitForNextUpdate } = wrapper;
@@ -72,27 +75,16 @@ describe('Given the useGetPublisher component', () => {
 				await waitFor(() => expect(wrapper.result.current.isLoading).toEqual(true));
 			});
 
-			it('Then returns the correct values', async () => {
+			it('Then has no previous pages', async () => {
 				const { waitFor } = wrapper;
 
-				await waitFor(() => expect(wrapper.result.current.count).toEqual(19));
-
-				expect(wrapper.result.current).toMatchObject({
-					count: 19,
-					data: wrapper.result.current.data,
-					isError: false,
-					isFetched: true,
-					isLoading: false,
-					params: { maxResults: 18, page: 1, status: 'inReview' },
-				});
+				await waitFor(() => expect(wrapper.result.current.hasPrevious()).toBe(false));
 			});
 
-			it('Then has no previous pages', () => {
-				expect(wrapper.result.current.hasPrevious()).toBe(false);
-			});
+			it('Then has a next page', async () => {
+				const { waitFor } = wrapper;
 
-			it('Then does not have a next page', () => {
-				expect(wrapper.result.current.hasNext()).toBe(true);
+				await waitFor(() => expect(wrapper.result.current.hasNext()).toBe(true));
 			});
 
 			describe('And next is clicked', () => {
@@ -131,6 +123,27 @@ describe('Given the useGetPublisher component', () => {
 
 					it('Then goes back to page 1', async () => {
 						expect(wrapper.result.current.params.page).toBe(1);
+					});
+				});
+
+				describe('And getCachedResults is called', () => {
+					beforeAll(async () => {
+						act(() => {
+							wrapper.result.current.getCachedResults(
+								{
+									status: 'inReview',
+								},
+								'inReview'
+							);
+						});
+
+						const { waitForNextUpdate } = wrapper;
+
+						await waitForNextUpdate();
+					});
+
+					it('Then calls with cached results', async () => {
+						expect(wrapper.result.current.params).toEqual({ maxResults: 18, page: 1, search: 'dataset', status: 'inReview' });
 					});
 				});
 			});

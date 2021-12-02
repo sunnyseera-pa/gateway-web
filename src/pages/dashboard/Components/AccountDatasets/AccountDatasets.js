@@ -23,13 +23,15 @@ const AccountDatasets = props => {
 		() => ({
 			params: {
 				maxResults: 0,
+				search: '',
+				sortBy: 'metadata',
+				page: 1,
 			},
-			cachable: true,
 		}),
 		[key]
 	);
 
-	const { isLoading, isFetched, data, params, getResults, getCache } = useSearch(
+	const { isLoading, isFetched, data, params, getResults, getCachedResults, getCache } = useSearch(
 		serviceDatasetOnboarding.useGetPublisher(publisherID),
 		searchOptions
 	);
@@ -60,17 +62,10 @@ const AccountDatasets = props => {
 
 	useEffect(() => {
 		if (publisherID && key) {
-			const existingParams = getCache(key);
-
-			getResults(
-				existingParams
-					? existingParams.params
-					: {
-							search: '',
-							sortBy: 'metadata',
-							status: key,
-							page: 1,
-					  },
+			getCachedResults(
+				{
+					status: key,
+				},
 				key
 			);
 		}
