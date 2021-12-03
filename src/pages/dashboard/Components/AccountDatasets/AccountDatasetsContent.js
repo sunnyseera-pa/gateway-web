@@ -26,7 +26,6 @@ const AccountDatasetsContent = ({ data = [], onSubmit, isLoading, isFetched, sta
 
 	const hasActivityHistory = React.useCallback(
 		dataset => {
-			console.log('asdasdasd', team, dataset.listOfVersions);
 			return dataset.listOfVersions.length > 0 && team === 'admin';
 		},
 		[team]
