@@ -31,6 +31,7 @@ function TypeaheadAsyncCustom(props) {
 		}
 		setIsLoading(false);
 	};
+
 	const handleChange = options => {
 		if (options) {
 			const value = options.map(i => i.hierarchy);
