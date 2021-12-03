@@ -15,6 +15,8 @@ import 'react-bootstrap-typeahead/css/Typeahead.css';
 import SVGIcon from '../../images/SVGIcon';
 import '../paper/Paper.scss';
 import Loading from '../commonComponents/Loading';
+import TextareaAutosize from 'react-textarea-autosize';
+
 const baseURL = require('../commonComponents/BaseURL').getURL();
 
 const AddEditCohortForm = props => {
@@ -266,7 +268,7 @@ const AddEditCohortForm = props => {
 																	/5000)
 																</span>
 															</div>
-															<Form.Control
+															<TextareaAutosize
 																data-test-id='description'
 																as='textarea'
 																id='description'
@@ -274,8 +276,8 @@ const AddEditCohortForm = props => {
 																type='text'
 																className={
 																	formik.touched.description && formik.errors.description
-																		? 'emptyFormInput addFormInput descriptionInput'
-																		: 'addFormInput descriptionInput'
+																		? 'emptyFormInput addFormInput descriptionInput textarea-addEditForm'
+																		: 'addFormInput descriptionInput textarea-addEditForm'
 																}
 																onChange={formik.handleChange}
 																value={formik.values.description}
