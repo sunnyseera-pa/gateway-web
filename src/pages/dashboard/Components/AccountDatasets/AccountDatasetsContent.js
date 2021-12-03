@@ -78,6 +78,7 @@ const AccountDatasetsContent = ({ data = [], onSubmit, isLoading, isFetched, sta
 				results={data =>
 					data.map(dataset => (
 						<DatasetCard
+							key={dataset._id}
 							id={dataset._id}
 							title={dataset.name}
 							publisher={status !== 'archive' && dataset.datasetv2.summary.publisher.name}

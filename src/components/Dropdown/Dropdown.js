@@ -40,7 +40,7 @@ const Dropdown = ({ defaultValue, value, options, variant, iconSelected, classNa
 					const { value: eventKey, label } = parseOption(option);
 
 					return (
-						<BootstrapDropdown.Item eventKey={eventKey} className='d-flex'>
+						<BootstrapDropdown.Item eventKey={eventKey} key={eventKey} className='d-flex'>
 							<div className='flex-grow'>{label}</div>
 							{eventKey === currentValue && iconSelected}
 						</BootstrapDropdown.Item>
