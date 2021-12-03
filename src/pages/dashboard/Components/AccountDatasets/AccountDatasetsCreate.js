@@ -4,6 +4,7 @@ import { Alert, Button, Col, Row } from 'react-bootstrap';
 import SVGIcon from '../../../../images/SVGIcon';
 import serviceDatasetOnboarding from '../../../../services/dataset-onboarding/dataset-onboarding';
 import googleAnalytics from '../../../../tracking';
+import { useTranslation } from 'react-i18next';
 
 const AccountDatasetsCreate = props => {
 	const {
@@ -12,6 +13,7 @@ const AccountDatasetsCreate = props => {
 		alert: { message },
 	} = props;
 
+	const { t } = useTranslation();
 	const dataPostDatasetOnboarding = serviceDatasetOnboarding.usePostDatasetOnboarding({ publisherID }, null, {
 		enabled: false,
 	});
@@ -47,13 +49,11 @@ const AccountDatasetsCreate = props => {
 				<Row>
 					<Col sm={12} md={8}>
 						<div>
-							<span className='black-20'>Datasets</span>
+							<span className='black-20'>{t('datasets')}</span>
 						</div>
 						<div>
 							<span className='gray700-13 '>
-								{publisherID !== 'admin'
-									? 'View, add, edit, archive and check the status of your datasets.'
-									: 'Approve or reject pending datasets'}
+								{publisherID !== 'admin' ? t('dataset.create.description.admin') : t('dataset.create.description.user')}
 							</span>
 						</div>
 					</Col>
@@ -66,7 +66,7 @@ const AccountDatasetsCreate = props => {
 									(() => googleAnalytics.recordEvent('Datasets', 'Add a new dataset', 'Datasets dashboard button clicked'),
 									createNewDataset)
 								}>
-								+ Add a new dataset
+								+ {t('dataset.create.action')}
 							</Button>
 						)}
 					</Col>

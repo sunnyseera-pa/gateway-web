@@ -12,7 +12,6 @@ const AccountDatasetsContent = ({ data = [], onSubmit, isLoading, isFetched, sta
 	const history = useHistory();
 
 	const { t } = useTranslation();
-
 	const handleChange = React.useCallback(value => {
 		setSearchValue(value);
 	}, []);
@@ -35,8 +34,6 @@ const AccountDatasetsContent = ({ data = [], onSubmit, isLoading, isFetched, sta
 
 	const getDatasetCardProps = dataset => {
 		const datasetCardProps = {};
-
-		console.log('dataset', dataset.activeflag === 'inReview', hasActivityHistory(dataset));
 
 		if (dataset.activeflag === 'inReview' && hasActivityHistory(dataset)) {
 			datasetCardProps.slaProps = {

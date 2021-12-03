@@ -57,11 +57,28 @@
 				"reject": "Reject",
 				"rejectAndGoToNext": "Reject and go to next"
 			}
+		},
+		"create": {
+			"description": {
+				"admin": "View, add, edit, archive and check the status of your datasets.",
+				"user": "Approve or reject pending datasets."
+			},
+			"action": "Add a new dataset"
 		}
 	},
+	"datasets": "Datasets",
 	"viewForm": "View form",
 	"search": {
 		"placeholder": "Search within {{type}}"
+	},
+	"tabs": {
+		"counts": {
+			"inReview": "Pending approval ({{count}})",
+			"active": "Active ({{count}})",
+			"rejected": "Rejected ({{count}})",
+			"draft": "Draft ({{count}})",
+			"archive": "Archived ({{count}})"
+		}
 	},
 	"sortby": {
 		"selected": {

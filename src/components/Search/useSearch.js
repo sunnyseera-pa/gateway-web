@@ -22,14 +22,11 @@ const useSearch = (mutateHook, options) => {
 	const { total } = state;
 
 	const hasNext = React.useCallback(() => {
-		console.log('Next', total, params.maxResults);
-
 		const { maxResults, page } = params;
 		return page < Math.ceil(total / maxResults);
 	}, [params, total]);
 
 	const hasPrevious = React.useCallback(() => {
-		console.log('Previous', params);
 		const { page } = params;
 		return page > 1;
 	}, [params]);
@@ -83,8 +80,6 @@ const useSearch = (mutateHook, options) => {
 				total: (total ? total(data) : data.data.results.total) || 0,
 				isFetched: true,
 			});
-
-			console.log('Query', queryParams);
 
 			updateCache(cacheKey, {
 				params: queryParams,
