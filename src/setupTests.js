@@ -78,6 +78,15 @@ global.Providers = ({ children }) => {
 
 global.renderHook = renderHook;
 
+global.document.createRange = () => ({
+	setStart: () => {},
+	setEnd: () => {},
+	commonAncestorContainer: {
+		nodeName: 'BODY',
+		ownerDocument: document,
+	},
+});
+
 Object.defineProperty(window, 'location', {
 	writable: true,
 	value: { assign: jest.fn() },
