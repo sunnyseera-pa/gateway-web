@@ -53,8 +53,6 @@ export const CollectionPage = props => {
 	const [collectionAdded, setCollectionAdded] = useState(false);
 	const [collectionEdited, setCollectionEdited] = useState(false);
 	const [searchString, setSearchString] = useState('');
-	const [searchCollectionsString, setCollectionsSearchString] = useState('');
-	const [collectionsPageSort, setCollectionsPageSort] = useState('recentlyadded');
 	const [discoursePostCount, setDiscoursePostCount] = useState(0);
 	const [key, setKey] = useState('dataset');
 	const [searchBar] = useState(React.createRef());

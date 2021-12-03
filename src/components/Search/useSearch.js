@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
 import pickBy from 'lodash/pickBy';
+import React from 'react';
 import usePersistState from '../../hooks/usePersistState';
 
 const useSearch = (mutateHook, options) => {
