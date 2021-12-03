@@ -13,10 +13,13 @@ function TypeaheadAsyncCustom(props) {
 	const [selected, setSelected] = useState([]);
 
 	useEffect(() => {
+		console.log(props.value);
 		if (props.value) {
-			setSelected(DatasetOnboardingHelperUtil.getLocationsObj(props.value));
+			setSelected(getFormattedValues(props.value));
 		}
 	}, [props.value]);
+
+	const getFormattedValues = values => DatasetOnboardingHelperUtil.getLocationsObj(values);
 
 	const handleSearch = async query => {
 		setIsLoading(true);
@@ -35,6 +38,7 @@ function TypeaheadAsyncCustom(props) {
 	const handleChange = options => {
 		if (options) {
 			const value = options.map(i => i.hierarchy);
+			setSelected(getFormattedValues(value));
 			props.onChange(value);
 		}
 	};
@@ -55,6 +59,7 @@ function TypeaheadAsyncCustom(props) {
 			multiple
 			onChange={handleChange}
 			selected={selected}
+			placeholder='Search for a location...'
 			renderMenuItemChildren={(option, props) => (
 				<>
 					<div>
