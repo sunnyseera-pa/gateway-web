@@ -1,8 +1,8 @@
 import React, { Fragment } from 'react';
-import { Row, Col, Tab, Tabs, Container, Pagination } from 'react-bootstrap';
 import _ from 'lodash';
-import SimpleSearchBar from '../searchBar/SimpleSearchBar';
+import { Col, Container, Pagination, Row, Tab, Tabs } from 'react-bootstrap';
 import RelatedObject from '../relatedObject/RelatedObject';
+import SearchInput from '../../../components/SearchInput';
 import './RelatedResourcesModal.scss';
 
 class RelatedResourcesModal extends React.Component {
@@ -224,15 +224,20 @@ class RelatedResourcesModal extends React.Component {
 			});
 		}
 
+		const { searchString, doSearchMethod, doUpdateSearchString } = this.props;
+
 		return (
 			<Fragment>
 				<div class='related-search-wrap'>
 					<div className='realted-search-body'>
-						<SimpleSearchBar
-							searchString={this.props.searchString}
-							doSearchMethod={this.props.doSearchMethod}
-							doUpdateSearchString={this.props.doUpdateSearchString}
-							userState={this.props.userState}
+						<SearchInput
+							value={searchString}
+							onChange={doUpdateSearchString}
+							onReset={() => doUpdateSearchString('')}
+							onSubmit={doSearchMethod}
+							onKeyDown={doSearchMethod}
+							placeholder='Search'
+							variant='secondary'
 						/>
 						{typeof this.props.summary.datasetCount !== 'undefined' ? (
 							<div className='searchTabsHolder'>

@@ -7,7 +7,7 @@ import Loading from '../commonComponents/Loading';
 import '../../css/styles.scss';
 import './Dashboard.scss';
 import AccountMembersModal from './AccountMemberModal';
-import AccountContent from './Components/AccountContent';
+import { LayoutContent } from '../../components/Layout';
 import { baseURL } from '../../configs/url.config';
 
 export const AccountMembers = props => {
@@ -61,15 +61,15 @@ export const AccountMembers = props => {
 
 	if (isLoading) {
 		return (
-			<AccountContent>
+			<LayoutContent>
 				<Loading />
-			</AccountContent>
+			</LayoutContent>
 		);
 	}
 
 	return (
 		<Fragment>
-			<AccountContent>
+			<LayoutContent>
 				<div className='accountHeader d-flex'>
 					<Col sm={12} md={9}>
 						<Row>
@@ -156,7 +156,7 @@ export const AccountMembers = props => {
 						</div>
 					);
 				})()}
-			</AccountContent>
+			</LayoutContent>
 		</Fragment>
 	);
 };

@@ -9,7 +9,7 @@ import './Dashboard.scss';
 import { EntityActionButton } from './EntityActionButton.jsx';
 import googleAnalytics from '../../tracking';
 import { PaginationHelper } from '../commonComponents/PaginationHelper';
-import AccountContent from './Components/AccountContent';
+import { LayoutContent } from '../../components/Layout';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -161,15 +161,15 @@ export const AccountProjects = props => {
 
 	if (isLoading) {
 		return (
-			<AccountContent>
+			<LayoutContent>
 				<Loading data-testid='isLoading' />
-			</AccountContent>
+			</LayoutContent>
 		);
 	}
 
 	return (
 		<div>
-			<AccountContent>
+			<LayoutContent>
 				<Row className='accountHeader'>
 					<Col sm={12} md={8}>
 						<Row>
@@ -554,7 +554,7 @@ export const AccountProjects = props => {
 						)}
 					</div>
 				)}
-			</AccountContent>
+			</LayoutContent>
 		</div>
 	);
 };

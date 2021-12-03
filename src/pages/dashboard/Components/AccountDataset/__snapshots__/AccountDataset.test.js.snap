@@ -3,13 +3,13 @@
 exports[`Given the AccountDataset component When it is rendered And the Make a decision button is clicked Then loads the Make a decision overlay 1`] = `
 <div>
   <div
-    class="row"
+    class="ui-LayoutContent row"
   >
     <div
-      class="col-1"
+      class="ui-LayoutContent--left col-1"
     />
     <div
-      class="col-10"
+      class="ui-LayoutContent--content col-10"
     >
       <div />
       <div />
@@ -100,7 +100,7 @@ exports[`Given the AccountDataset component When it is rendered And the Make a d
       </div>
     </div>
     <div
-      class="col-1"
+      class="ui-LayoutContent--right col-1"
     />
   </div>
 </div>
@@ -109,13 +109,13 @@ exports[`Given the AccountDataset component When it is rendered And the Make a d
 exports[`Given the AccountDataset component When it is rendered Then matches the previous snapshot 1`] = `
 <div>
   <div
-    class="row"
+    class="ui-LayoutContent row"
   >
     <div
-      class="col-1"
+      class="ui-LayoutContent--left col-1"
     />
     <div
-      class="col-10"
+      class="ui-LayoutContent--content col-10"
     >
       <div
         class="mt-2 row"
@@ -146,7 +146,7 @@ exports[`Given the AccountDataset component When it is rendered Then matches the
       </div>
     </div>
     <div
-      class="col-1"
+      class="ui-LayoutContent--right col-1"
     />
   </div>
 </div>

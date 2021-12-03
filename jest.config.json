@@ -13,7 +13,10 @@
 		"index.js",
 		"configs",
 		"mockMsw.js",
-		"mockServer.js"
+		"mockServer.js",
+		".constants.js",
+		".propTypes.js",
+		"SVGIcon.js"
 	],
 	"collectCoverageFrom": ["src/**/*.{js,jsx}"]
 }

@@ -30,6 +30,10 @@
 	"next": "Next",
 	"previous": "Previous",
 	"dataset": {
+		"inReview": "pending approval",
+		"active": "Active",
+		"rejected": "Rejected",
+		"archive": "Archived",
 		"makeADecision": "Make a decision",
 		"approve": "Approve",
 		"reject": "Reject",
@@ -53,10 +57,53 @@
 				"reject": "Reject",
 				"rejectAndGoToNext": "Reject and go to next"
 			}
+		},
+		"create": {
+			"description": {
+				"admin": "View, add, edit, archive and check the status of your datasets.",
+				"user": "Approve or reject pending datasets."
+			},
+			"action": "Add a new dataset"
 		}
 	},
+	"datasets": "Datasets",
 	"viewForm": "View form",
 	"search": {
 		"placeholder": "Search within {{type}}"
+	},
+	"tabs": {
+		"counts": {
+			"inReview": "Pending approval ({{count}})",
+			"active": "Active ({{count}})",
+			"rejected": "Rejected ({{count}})",
+			"draft": "Draft ({{count}})",
+			"archive": "Archived ({{count}})"
+		}
+	},
+	"sortby": {
+		"selected": {
+			"popularity": "Sort by number of views",
+			"metadata": "Sort by metadata quality",
+			"metadataQuality": "Sort by metadata quality",
+			"resources": "Sort by related resources",
+			"latest": "Sort by latest",
+			"recentActivity": "Sort by recently added",
+			"recentlyadded": "Sort by recently added",
+			"recentlyPublished": "Sort by recently added",
+			"sortbyyear": "Sort by year",
+			"relevance": "Sort by match to search terms"
+		},
+		"options": {
+			"popularity": "Number of views (highest to lowest)",
+			"metadata": "Metadata quality (platinum to bronze)",
+			"metadataQuality": "Metadata quality (platinum to bronze)",
+			"resources": "Related resources (most first)",
+			"latest": "Latest (recently updated first)",
+			"recentActivity": "Latest (recently updated first)",
+			"recentlyadded": "Recently added to collection (newest first)",
+			"recentlyPublished": "Recently added to collection (newest first)",
+			"sortbyyear": "Year (latest first)",
+			"relevance": "Match to search terms (closest first)"
+		}
 	}
 }

@@ -6,6 +6,7 @@ export const COMMON_PROP_TYPES = {
 	mr: PropTypes.number,
 	mb: PropTypes.number,
 	mt: PropTypes.number,
+	width: PropTypes.string,
 	className: PropTypes.string,
 };
 

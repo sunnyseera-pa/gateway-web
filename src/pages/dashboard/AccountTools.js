@@ -9,7 +9,7 @@ import ActionModal from '../commonComponents/ActionModal/ActionModal';
 import googleAnalytics from '../../tracking';
 import { EntityActionButton } from './EntityActionButton.jsx';
 import { PaginationHelper } from '../commonComponents/PaginationHelper';
-import AccountContent from './Components/AccountContent';
+import { LayoutContent } from '../../components/Layout';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -159,15 +159,15 @@ export const AccountTools = props => {
 
 	if (isLoading) {
 		return (
-			<AccountContent>
+			<LayoutContent>
 				<Loading data-testid='isLoading' />
-			</AccountContent>
+			</LayoutContent>
 		);
 	}
 
 	return (
 		<Fragment>
-			<AccountContent>
+			<LayoutContent>
 				<Row className='accountHeader'>
 					<Col sm={12} md={8}>
 						<Row>
@@ -553,7 +553,7 @@ export const AccountTools = props => {
 						)}
 					</div>
 				)}
-			</AccountContent>
+			</LayoutContent>
 		</Fragment>
 	);
 };

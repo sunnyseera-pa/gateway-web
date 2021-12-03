@@ -9,7 +9,7 @@ import './Dashboard.scss';
 import TeamInfo from './Team/TeamInfo';
 import _ from 'lodash';
 import AddEditTeamsPage from './Team/AddEditTeamsPage';
-import AccountContent from './Components/AccountContent';
+import { LayoutContent } from '../../components/Layout';
 
 const maxResult = 40;
 
@@ -114,16 +114,16 @@ const AccountTeams = () => {
 
 	if (isLoading) {
 		return (
-			<AccountContent>
+			<LayoutContent>
 				<Loading data-testid='isLoading' />
-			</AccountContent>
+			</LayoutContent>
 		);
 	}
 
 	return (
 		<Fragment>
 			{viewTeams ? (
-				<AccountContent>
+				<LayoutContent>
 					{!_.isEmpty(alert) && (
 						<Row className='teams-alert'>
 							<Alert variant={'success'} className='main-alert teams-alert'>
@@ -173,7 +173,7 @@ const AccountTeams = () => {
 							</div>
 						</Col>
 					</Row>
-				</AccountContent>
+				</LayoutContent>
 			) : (
 				<AddEditTeamsPage
 					cancelAddEdit={cancelCreateOrEditTeam}

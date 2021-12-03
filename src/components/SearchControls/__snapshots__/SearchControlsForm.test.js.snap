@@ -1,0 +1,49 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Given the SearchControls component When it is rendered And it is not loading Then matches the previous snapshot 1`] = `
+<div>
+  <div
+    class="css-1xydy7z row"
+  >
+    <div
+      class="col-lg-6"
+    >
+      <div
+        class="ui-Input ui-SearchInput css-1xydy7z css-155wa2a-Input input-group"
+      >
+        <div
+          class="css-j8o1xl-Input input-group-prepend"
+        />
+        <input
+          class="form-control"
+          name="search"
+          placeholder="search.placeholder"
+          value="dataset"
+        />
+        <div
+          class="css-41op7f-Input input-group-append"
+        />
+      </div>
+    </div>
+    <div
+      class="col-lg-2"
+    />
+    <div
+      class="d-flex justify-content-end col-lg-4"
+    >
+      <div
+        class="ui-Dropdown ui-SortDropdown css-1xydy7z css-ksttk6-Dropdown dropdown"
+      >
+        <button
+          aria-expanded="false"
+          aria-haspopup="true"
+          class="dropdown-toggle btn btn-primary"
+          type="button"
+        >
+          sortby.options.relevance
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
