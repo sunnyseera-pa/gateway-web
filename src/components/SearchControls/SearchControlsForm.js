@@ -12,7 +12,7 @@ const SearchControlsForm = ({ sortProps, inputProps, type, mt, mb, mr, ml, width
 
 	const {
 		submitForm,
-		values: { search, sortBy },
+		values: { search, sortBy, sortDirection },
 		values,
 		setFieldValue,
 	} = useFormikContext();
@@ -25,15 +25,7 @@ const SearchControlsForm = ({ sortProps, inputProps, type, mt, mb, mr, ml, width
 
 	const handleReset = React.useCallback(() => {
 		setFieldValue('search', '');
-
-		const { onReset } = inputProps;
-
-		if (onReset) {
-			onReset({
-				...values,
-				search: '',
-			});
-		}
+		submitForm();
 	}, [values]);
 
 	const handleChange = React.useCallback(({ target: { name, value } }) => {
@@ -44,15 +36,20 @@ const SearchControlsForm = ({ sortProps, inputProps, type, mt, mb, mr, ml, width
 		if (onChange) onChange(value);
 	}, []);
 
-	const handleOnSort = React.useCallback(value => {
-		setFieldValue('sortBy', value);
+	const handleOnSort = React.useCallback(
+		criteria => {
+			const { value, direction } = criteria;
+			const { onSort } = sortProps;
 
-		const { onSort } = sortProps;
+			setFieldValue('sortBy', value);
+			setFieldValue('sortDirection', direction);
 
-		if (onSort) onSort(value);
+			if (onSort) onSort(criteria);
 
-		submitForm();
-	}, []);
+			submitForm();
+		},
+		[values]
+	);
 
 	return (
 		<Row className={commonStyles}>
@@ -70,7 +67,7 @@ const SearchControlsForm = ({ sortProps, inputProps, type, mt, mb, mr, ml, width
 			<Col lg={2} />
 			{sortProps && (
 				<Col lg={4} className='d-flex justify-content-end'>
-					<SortDropdown {...sortProps} onSort={handleOnSort} value={sortBy} />
+					<SortDropdown {...sortProps} onSort={handleOnSort} value={sortBy} direction={sortDirection} />
 				</Col>
 			)}
 		</Row>

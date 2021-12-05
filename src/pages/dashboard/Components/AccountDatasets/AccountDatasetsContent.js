@@ -48,7 +48,7 @@ const AccountDatasetsContent = ({ data = [], onSubmit, isLoading, isFetched, sta
 		return datasetCardProps;
 	};
 
-	const { search, sortBy } = params;
+	const { search, sortBy, sortDirection } = params;
 
 	return (
 		<>
@@ -58,12 +58,12 @@ const AccountDatasetsContent = ({ data = [], onSubmit, isLoading, isFetched, sta
 					mt={3}
 					onSubmit={onSubmit}
 					inputProps={{
-						onReset: onSubmit,
 						onChange: handleChange,
 						mt: 2,
 						value: search,
 					}}
 					sortProps={{
+						direction: sortDirection,
 						value: sortBy,
 						defaultValue: 'metadata',
 						options: ['latest', 'recentlyadded', 'metadata', 'popularity'],

@@ -25,6 +25,7 @@ const AccountDatasets = props => {
 				maxResults: 0,
 				search: '',
 				sortBy: 'metadata',
+				sortDirection: 'desc',
 				page: 1,
 			},
 		}),
@@ -41,11 +42,12 @@ const AccountDatasets = props => {
 	};
 
 	const handleSubmit = React.useCallback(
-		({ search, sortBy }) => {
+		({ search, sortBy, sortDirection }) => {
 			getResults(
 				{
 					search,
 					sortBy,
+					sortDirection,
 					status: key,
 					page: 1,
 				},

@@ -184,7 +184,6 @@ export const CollectionPage = props => {
 
 	const handleSort = React.useCallback(sortBy => {
 		googleAnalytics.recordEvent('Collections', `Sorted collection entities by ${sortBy}`, 'Sort dropdown option changed');
-		setCollectionsPageSort(sortBy);
 	}, []);
 
 	const handlePaginatedItems = index => {
@@ -200,13 +199,6 @@ export const CollectionPage = props => {
 			return [];
 		}
 	};
-
-	const handleResetInput = React.useCallback(
-		values => {
-			doCollectionsSearch(values);
-		},
-		[key, objectData]
-	);
 
 	const doCollectionsSearch = React.useCallback(
 		({ search, sortBy }) => {
@@ -457,9 +449,6 @@ export const CollectionPage = props => {
 							onSubmit={doCollectionsSearch}
 							isLoading={isResultsLoading}
 							inputProps={{
-								onChange: setCollectionsSearchString,
-								onReset: handleResetInput,
-								onSubmit: doCollectionsSearch,
 								mt: 2,
 							}}
 							sortProps={{
