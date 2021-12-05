@@ -5,12 +5,6 @@ import SearchControlsForm from './SearchControlsForm';
 const SearchControls = ({ onSubmit, isLoading, sortProps, inputProps, formRef, enableReinitialize, ...outerProps }) => {
 	if (isLoading) return null;
 
-	console.log('Init values', {
-		search: inputProps && !!inputProps.value ? inputProps.value : '',
-		sortBy: sortProps && !!sortProps.value ? sortProps.value : '',
-		sortDirection: sortProps && !!sortProps.direction ? sortProps.direction : '',
-	});
-
 	return (
 		<Formik
 			initialValues={{

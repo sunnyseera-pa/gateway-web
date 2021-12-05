@@ -104,6 +104,7 @@ AccountDatasetsContent.defaultProps = {
 	params: {
 		search: '',
 		sortBy: 'metadata',
+		sortDirection: 'desc',
 	},
 };
 
