@@ -6,6 +6,7 @@ import { ReactComponent as CloseButtonSvg } from '../../../images/close-alt.svg'
 export const ConfirmPublishModal = ({ showConfirmPublishModal, setShowConfirmPublishModal, updatePublisherModalContent }) => {
 	return (
 		<Modal
+			data-testid='confirm-publish-modal'
 			show={showConfirmPublishModal}
 			size='lg'
 			aria-labelledby='contained-modal-title-vcenter'
@@ -39,3 +40,5 @@ export const ConfirmPublishModal = ({ showConfirmPublishModal, setShowConfirmPub
 		</Modal>
 	);
 };
+
+export default ConfirmPublishModal;

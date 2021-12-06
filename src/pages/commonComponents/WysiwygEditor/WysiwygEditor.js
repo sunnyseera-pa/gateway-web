@@ -6,6 +6,7 @@ import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 export const WysiwygEditor = ({ editorState, onEditorStateChange }) => {
 	return (
 		<Editor
+			data-testid='wysiwyg-editor-main'
 			wrapperClassName='demo-wrapper'
 			editorClassName='wysiwyg-wrapper'
 			toolbarClassName='rdw-editor-toolbar'

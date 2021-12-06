@@ -37,12 +37,14 @@ export const EditHowToRequestAccessPage = ({ publisherDetails, showConfirmPublis
 
 				<div className='main-card mb-0'>
 					<WysiwygEditor
+						data-testid='wysiwyg-editor'
 						editorState={editorState}
 						onEditorStateChange={editorState => {
 							setEditorState(editorState);
 						}}
 					/>
 					<ConfirmPublishModal
+						data-testid='confirm-publish-modal'
 						showConfirmPublishModal={showConfirmPublishModal}
 						setShowConfirmPublishModal={setShowConfirmPublishModal}
 						updatePublisherModalContent={updatePublisherModalContent}
