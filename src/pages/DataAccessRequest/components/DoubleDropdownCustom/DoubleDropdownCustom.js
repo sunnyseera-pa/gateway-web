@@ -2,13 +2,14 @@ import React, { useState } from 'react';
 import { Dropdown, Nav, Navbar } from 'react-bootstrap';
 import SVGIcon from '../../../../images/SVGIcon';
 import './DoubleDropdowncustom.scss';
-import { Typeahead } from 'react-bootstrap-typeahead';
+import { Typeahead, Menu, MenuItem } from 'react-bootstrap-typeahead';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import TypeaheadCustom from '../TypeaheadCustom/TypeaheadCustom';
 
 const DoubleDropdownCustom = ({ name, id, options, onChange, labelId, required, ...props }) => {
 	const [closed, setClosed] = useState(true);
 	const [value, setValue] = useState('');
+	const [selectdValue, setSelectedValue] = useState(null);
 
 	const handleFocus = e => {
 		this.props.onFocus();
@@ -23,8 +24,6 @@ const DoubleDropdownCustom = ({ name, id, options, onChange, labelId, required, 
 
 		onChange.bind(null, e.target.value);
 	};
-
-	console.log(options);
 
 	const schema = [
 		{
@@ -62,7 +61,85 @@ const DoubleDropdownCustom = ({ name, id, options, onChange, labelId, required, 
 		},
 	];
 
+	const extra = schema
+		.map(a => a.extraOptions)
+		.filter(b => b)
+		.pop([]);
+
+	const changingSelect = eventKey => {
+		//alert(eventKey);
+		setSelectedValue(eventKey);
+	};
 	return (
+		<Navbar collapseOnSelect expand='lg'>
+			<Nav className='mr-auto'>
+				<Dropdown onSelect={changingSelect}>
+					<Dropdown.Toggle className='double-dropdown-input'>
+						<input name={name} id={id} />
+					</Dropdown.Toggle>
+
+					<Dropdown.Menu>
+						{schema.map(a => (
+							<Dropdown.Item eventKey={a.value}>
+								{a.value}
+								{a.value === 'Biomedical research' && (
+									<Dropdown.Toggle className='nested-dropdown'>
+										<SVGIcon
+											onClick={closed ? setClosed(false) : setClosed}
+											width='20px'
+											height='20px'
+											name='chevronbottom'
+											fill={'#475da7'}
+											className={closed ? 'chevron nest-dropdown-arrow' : 'chevron flip180 nest-dropdown-arrow'}
+										/>
+									</Dropdown.Toggle>
+								)}
+								{a.value === 'Biomedical research' && !closed && (
+									<Dropdown.Menu className='nested-dropdown-menu'>
+										{extra.map(a => (
+											<Dropdown.Item>{a.value}</Dropdown.Item>
+										))}
+									</Dropdown.Menu>
+								)}
+							</Dropdown.Item>
+						))}
+					</Dropdown.Menu>
+				</Dropdown>
+			</Nav>
+		</Navbar>
+	);
+};
+
+export default DoubleDropdownCustom;
+
+/*
+<Dropdown.Item>Age category research</Dropdown.Item>
+						<Dropdown.Item>Ancestry research</Dropdown.Item>
+						<Dropdown className='nested-dropdown-whole'>
+							<Dropdown.Toggle className='nested-dropdown'>
+								Biomedical research
+								<SVGIcon
+									width='20px'
+									height='20px'
+									name='chevronbottom'
+									fill={'#475da7'}
+									className={closed ? 'chevron nest-dropdown-arrow' : 'chevron flip180 nest-dropdown-arrow'}
+								/>
+							</Dropdown.Toggle>
+
+							<Dropdown.Menu className='nested-dropdown-menu'>
+								<Dropdown.Item>Disease category research</Dropdown.Item>
+								<Dropdown.Item>Drug development research</Dropdown.Item>
+								<Dropdown.Item>Gentic research</Dropdown.Item>
+							</Dropdown.Menu>
+						</Dropdown>
+						<Dropdown.Item>Gender category research</Dropdown.Item>
+						<Dropdown.Item>Method development</Dropdown.Item>
+						<Dropdown.Item>Population research</Dropdown.Item>
+						<Dropdown.Item>Research control</Dropdown.Item> */
+
+/*
+return (
 		<Navbar collapseOnSelect expand='lg'>
 			<Nav className='mr-auto'>
 				<Dropdown>
@@ -85,7 +162,7 @@ const DoubleDropdownCustom = ({ name, id, options, onChange, labelId, required, 
 						/>
 					</Dropdown.Toggle>
 
-					<Dropdown.Menu>
+					{/*<Dropdown.Menu>
 						<Dropdown.Item>Age category research</Dropdown.Item>
 						<Dropdown.Item>Ancestry research</Dropdown.Item>
 						<Dropdown className='nested-dropdown-whole'>
@@ -109,11 +186,10 @@ const DoubleDropdownCustom = ({ name, id, options, onChange, labelId, required, 
 						<Dropdown.Item>Method development</Dropdown.Item>
 						<Dropdown.Item>Population research</Dropdown.Item>
 						<Dropdown.Item>Research control</Dropdown.Item>
-					</Dropdown.Menu>
-				</Dropdown>
-			</Nav>
-		</Navbar>
-	);
-};
-
-export default DoubleDropdownCustom;
+					</Dropdown.Menu>}
+					</Dropdown>
+					</Nav>
+				</Navbar>
+			);
+		};
+		 */
