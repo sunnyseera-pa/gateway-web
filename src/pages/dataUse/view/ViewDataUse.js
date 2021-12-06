@@ -92,7 +92,7 @@ export const DataUseView = props => {
 					document.title = localDataUseData.projectTitle.trim();
 
 					let counter = !localDataUseData.counter ? 1 : localDataUseData.counter + 1;
-					updateCounter(props.match.params.datauseID, counter);
+					updateCounter(res.data._id, counter);
 
 					if (!_.isUndefined(localDataUseData.relatedObjects)) {
 						let localAdditionalObjInfo = await getAdditionalObjectInfo(localDataUseData.relatedObjects);
@@ -124,7 +124,7 @@ export const DataUseView = props => {
 	};
 
 	const updateCounter = (id, counter) => {
-		axios.post(baseURL + '/api/v1/counter/update', { id, counter });
+		axios.patch(baseURL + '/api/v2/data-use-registers/counter', { id, counter });
 	};
 
 	const updateDiscoursePostCount = count => {
@@ -148,6 +148,7 @@ export const DataUseView = props => {
 						tempObjects.push({
 							id: object.objectId,
 							activeflag: res.data.data[0].activeflag,
+							projectTitle: res.data.data[0].projectTitle,
 						});
 					});
 				} else {
@@ -192,6 +193,7 @@ export const DataUseView = props => {
 						object['name'] = item.name || '';
 						object['firstname'] = item.firstname || '';
 						object['lastname'] = item.lastname || '';
+						object['projectTitle'] = item.projectTitle || '';
 
 						tempRelatedObjects.push(object);
 					}
@@ -246,7 +248,8 @@ export const DataUseView = props => {
 				(_.has(object, 'name') ? object.name.toLowerCase().includes(relatedObjectsSearchValue.toLowerCase()) : false) ||
 				(_.has(object, 'title') ? object.title.toLowerCase().includes(relatedObjectsSearchValue.toLowerCase()) : false) ||
 				(_.has(object, 'firstname') ? object.firstname.toLowerCase().includes(relatedObjectsSearchValue.toLowerCase()) : false) ||
-				(_.has(object, 'lastname') ? object.lastname.toLowerCase().includes(relatedObjectsSearchValue.toLowerCase()) : false)
+				(_.has(object, 'lastname') ? object.lastname.toLowerCase().includes(relatedObjectsSearchValue.toLowerCase()) : false) ||
+				(_.has(object, 'projectTitle') ? object.projectTitle.toLowerCase().includes(relatedObjectsSearchValue.toLowerCase()) : false)
 			) {
 				return object;
 			} else {
@@ -331,6 +334,20 @@ export const DataUseView = props => {
 							<Col sm={10} lg={10}>
 								<Alert data-test-id='datause-pending-banner' variant='warning' className='mt-3'>
 									Your data use is pending review. Only you can see this page.
+								</Alert>
+							</Col>
+							<Col sm={1} lg={10} />
+						</Row>
+					) : (
+						''
+					)}
+
+					{dataUseData.activeflag === 'archived' ? (
+						<Row className=''>
+							<Col sm={1} lg={1} />
+							<Col sm={10} lg={10}>
+								<Alert data-test-id='datause-pending-banner' variant='warning' className='mt-3'>
+									Your data use is archived. Only you can see this page.
 								</Alert>
 							</Col>
 							<Col sm={1} lg={10} />

@@ -11,7 +11,7 @@ import ActionBar from '../../commonComponents/actionbar/ActionBar';
 import moment from 'moment';
 import googleAnalytics from '../../../tracking';
 import { Formik, useFormik, FieldArray } from 'formik';
-import { isEmpty, isNil } from 'lodash';
+import { isEmpty, isNil, isNumber } from 'lodash';
 import * as Yup from 'yup';
 
 const baseURL = require('../../commonComponents/BaseURL').getURL();
@@ -28,14 +28,19 @@ const EditFormDataUse = props => {
 	const [safeOutput, setSafeOutput] = useState(true);
 	const [keywords, setKeywords] = useState(true);
 	const [relatedResources, setRelatedResources] = useState(true);
-	const [researchOutputs, setResearchOutputs] = useState([]);
-	const [defaultResearchOutputs, setDefaultResearchOutputs] = useState(true);
-	const [safeOuputsList, setSafeOuputsList] = useState(props.safeOuputsArray);
-	const [safeOuputsArray, setSafeOuputsArray] = useState(props.safeOuputsArray);
-	const [disableInput, setDisableInput] = useState(props.disableInput);
+	const [safeOuputsList] = useState(props.safeOuputsList);
+	const [safeOuputsArray] = useState(props.safeOuputsArray);
+	const [applicantsList, setApplicantsList] = useState(props.applicantsList);
+	const [applicantsArray] = useState(props.applicantsArray);
+	const [datasetsList] = useState(props.datasetsList);
+	const [datasetsArray] = useState(props.datasetsArray);
+	const [disableInput] = useState(props.disableInput);
+	useEffect(() => {
+		buildListOfUploaders();
+	}, []);
 
 	const initialValues = {
-		safeOuputsArray: [{ key: '', value: '' }],
+		safeOuputsArray: [{ id: '', name: '' }],
 	};
 
 	const gatewayApps =
@@ -79,6 +84,23 @@ const EditFormDataUse = props => {
 		}
 	}
 
+	const buildListOfUploaders = () => {
+		let listOfApplicants = [];
+
+		props.applicantsList.forEach(user => {
+			if (user.id === props.userState[0].id) {
+				listOfApplicants.push({ id: user.id, name: user.name + ' (You)' });
+				if (!user.name.includes('(You)')) {
+					user.name = user.name + ' (You)';
+				}
+			} else {
+				listOfApplicants.push({ id: user.id, name: user.name });
+			}
+		});
+
+		setApplicantsList(listOfApplicants);
+	};
+
 	const validateSchema = Yup.object().shape({});
 
 	const relatedResourcesRef = React.useRef();
@@ -113,7 +135,9 @@ const EditFormDataUse = props => {
 			accessDate: props.data.accessDate || '',
 			accessType: props.data.accessType || '',
 			privacyEnhancements: props.data.privacyEnhancements || '',
-			safeOuputsArray: safeOuputsArray || [{ key: '', value: '' }],
+			safeOutput: safeOuputsArray || [{ id: '', name: '' }],
+			applicants: applicantsArray || [{ id: '', name: '' }],
+			datasets: datasetsArray || [{ pid: '', name: '' }],
 			keywords: props.data.keywords || [],
 		},
 
@@ -127,6 +151,34 @@ const EditFormDataUse = props => {
 		}),
 
 		onSubmit: values => {
+			let gatewayApplicantsArray = [],
+				nonGatewayApplicants = [];
+			values.applicants.forEach(applicant => {
+				if (applicant.id === 'nonGateway') nonGatewayApplicants.push(applicant.name);
+				else gatewayApplicantsArray.push(applicant.id);
+			});
+
+			let gatewayDatasetsArray = [];
+			let nonGatewayDatasets = [];
+			values.datasets.forEach(dataset => {
+				if (dataset.id === 'nonGateway') nonGatewayDatasets.push(dataset.name);
+				else gatewayDatasetsArray.push(dataset.pid);
+			});
+
+			let gatewayOutputsArray = [];
+			let nonGatewayOutputs = [];
+			values.safeOutput.forEach(output => {
+				if (output.id === 'nonGateway') nonGatewayOutputs.push(output.name);
+				else gatewayOutputsArray.push(output.id);
+			});
+
+			values.gatewayApplicants = gatewayApplicantsArray;
+			values.nonGatewayApplicants = nonGatewayApplicants;
+			values.gatewayDatasets = gatewayDatasetsArray;
+			values.nonGatewayDatasets = nonGatewayDatasets;
+			values.gatewayOutputs = gatewayOutputsArray;
+			values.nonGatewayOutputs = nonGatewayOutputs;
+
 			values.relatedObjects = props.relatedObjects;
 			values.datasetTitles = props.data.datasetTitles;
 			axios.patch(baseURL + '/api/v2/data-use-registers/' + props.data.id, { ...values }).then(() => {
@@ -135,9 +187,10 @@ const EditFormDataUse = props => {
 		},
 	});
 
-	const yesNoList = ['Yes', 'No'];
-	const yesNoNotList = ['Yes', 'No', 'Not applicable'];
+	const yesNoList = ['', 'Yes', 'No'];
+	const yesNoNotList = ['', 'Yes', 'No', 'Not applicable'];
 	const organisationSectorList = [
+		'',
 		'Academic Institute',
 		'CQC Registered Health or/and Social Care provider',
 		'Independent Sector Organisation',
@@ -147,14 +200,16 @@ const EditFormDataUse = props => {
 		'Government Agency (Other)',
 	];
 	const requestCategoryTypeList = [
+		'',
 		'Efficacy & Mechanism Evaluation',
 		'Health Services & Delivery',
 		'Health Technology Assessment',
 		'Public Health Research',
 		'Other',
 	];
-	const dataSensitivityLevelList = ['Personally Identifiable', 'De-Personalised', 'Anonymous'];
+	const dataSensitivityLevelList = ['', 'Personally Identifiable', 'De-Personalised', 'Anonymous'];
 	const legalBasisForDataArticle6List = [
+		'',
 		'Not applicable',
 		'(a) the data subject has given consent to the processing of his or her personal data for one or more specific purposes;',
 		'(b) processing is necessary for the performance of a contract to which the data subject is party or in order to take steps at the request of the data subject prior to entering into a contract;',
@@ -164,6 +219,7 @@ const EditFormDataUse = props => {
 		'(f) processing is necessary for the purposes of the legitimate interests pursued by the controller or by a third party, except where such interests are overridden by the interests or fundamental rights and freedoms of the data subject which require protection of personal data, in particular where the data subject is a child.',
 	];
 	const legalBasisForDataArticle9List = [
+		'',
 		'Not applicable',
 		'(a) the data subject has given explicit consent to the processing of those personal data for one or more specified purposes, except where Union or Member State law provide that the prohibition referred to in paragraph 1 may not be lifted by the data subject;',
 		'(b) processing is necessary for the purposes of carrying out the obligations and exercising specific rights of the controller or of the data subject in the field of employment and social security and social protection law in so far as it is authorised by Union or Member State law or a collective agreement pursuant to Member State law providing for appropriate safeguards for the fundamental rights and the interests of the data subject;',
@@ -176,9 +232,9 @@ const EditFormDataUse = props => {
 		'(i) processing is necessary for reasons of public interest in the area of public health, such as protecting against serious cross-border threats to health or ensuring high standards of quality and safety of health care and of medicinal products or medical devices, on the basis of Union or Member State law which provides for suitable and specific measures to safeguard the rights and freedoms of the data subject, in particular professional secrecy;',
 		'(j) processing is necessary for archiving purposes in the public interest, scientific or historical research purposes or statistical purposes in accordance with Article 89(1) based on Union or Member State law which shall be proportionate to the aim pursued, respect the essence of the right to data protection and provide for suitable and specific measures to safeguard the fundamental rights and the interests of the data subject.',
 	];
-	const requestFrequencyList = ['One-off', 'Recurring'];
-	const dutyOfConfidentialityList = ['Not applicable', 'Consent', 'Section 251 NHS Act 2006', 'Other'];
-	const accessTypeList = ['TRE', 'Release'];
+	const requestFrequencyList = ['', 'One-off', 'Recurring'];
+	const dutyOfConfidentialityList = ['', 'Not applicable', 'Consent', 'Section 251 NHS Act 2006', 'Other'];
+	const accessTypeList = ['', 'TRE', 'Release'];
 
 	return (
 		<div>
@@ -316,21 +372,24 @@ const EditFormDataUse = props => {
 																	</p>
 																	<Typeahead
 																		disabled={disableInput}
-																		id='keywords'
-																		labelKey='keywords'
+																		id='applicants'
+																		labelKey={applicant => `${applicant.name}`}
 																		allowNew
 																		multiple
-																		defaultSelected={formik.values.keywords}
-																		options={props.keywordsData}
+																		defaultSelected={formik.values.applicants}
+																		options={applicantsList}
 																		className='addFormInputTypeAhead'
 																		onChange={selected => {
 																			var tempSelected = [];
 																			selected.forEach(selectedItem => {
 																				selectedItem.customOption === true
-																					? tempSelected.push(selectedItem.keywords)
+																					? tempSelected.push({
+																							id: isNumber(selectedItem.id) ? selectedItem.id : 'nonGateway',
+																							name: selectedItem.name || selectedItem.label,
+																					  })
 																					: tempSelected.push(selectedItem);
 																			});
-																			formik.values.keywords = tempSelected;
+																			formik.values.applicants = tempSelected;
 																		}}
 																	/>
 																</Form.Group>
@@ -731,13 +790,29 @@ const EditFormDataUse = props => {
 																<Form.Group>
 																	<Form.Label className='black-14'>Dataset(s) name</Form.Label>
 																	<p className='gray800-13-opacity datause-edit-p'>The name of the dataset(s) being accessed</p>
+																	<Typeahead
+																		disabled={props.data.manualUpload ? disableInput : true}
+																		id='datasets'
+																		labelKey={dataset => `${dataset.name}`}
+																		allowNew
+																		multiple
+																		defaultSelected={formik.values.datasets}
+																		options={datasetsList}
+																		className='addFormInputTypeAhead'
+																		onChange={selected => {
+																			var tempSelected = [];
+																			selected.forEach(selectedItem => {
+																				selectedItem.customOption === true
+																					? tempSelected.push({
+																							id: isNumber(selectedItem.pid) ? selectedItem.pid : 'nonGateway',
+																							name: selectedItem.name || selectedItem.label,
+																					  })
+																					: tempSelected.push(selectedItem);
+																			});
+																			formik.values.datasets = tempSelected;
+																		}}
+																	/>
 																</Form.Group>
-																<Row className='datause-datasettitles'>
-																	{props &&
-																		props.data &&
-																		props.data.datasetTitles &&
-																		props.data.datasetTitles.map(a => <span className='datause-datasettitles-pills'>{a}</span>)}
-																</Row>
 
 																<Form.Group>
 																	<Form.Label className='black-14'>Data sensitivity level (optional)</Form.Label>
@@ -1095,12 +1170,67 @@ const EditFormDataUse = props => {
 																		name='document_links'
 																		render={({ remove, push }) => (
 																			<Fragment>
-																				{formik.values.safeOuputsArray.length > 0 &&
-																					formik.values.safeOuputsArray.map((d, index) => (
+																				{safeOuputsArray.length > 0 &&
+																					safeOuputsArray.map((d, index) => (
 																						<Fragment>
 																							<Col sm={12} lg={10}>
 																								<Form.Group labelKey={`safeOuputsArray`}>
 																									<Typeahead
+																										id={`safeOuputsArray_${index}`}
+																										className='addFormInput'
+																										allowNew
+																										options={safeOuputsList}
+																										/* onChange={selected => {
+																											var tempSelected = [];
+																											selected.forEach(selectedItem => {
+																												selectedItem.customOption === true
+																													? tempSelected.push({
+																															id: isNumber(selectedItem.id) ? selectedItem.id : 'nonGateway',
+																															name: selectedItem.name || selectedItem.label,
+																													  })
+																													: tempSelected.push(selectedItem);
+																											});
+																											formik.values.applicants = tempSelected;
+																										}} */
+
+																										onChange={selected => {
+																											if (!isEmpty(selected)) {
+																												if (selected[0].customOption === true) {
+																													formik.values.safeOutput[index] = {
+																														id: isNumber(selected[0].id) ? selected[0].id : 'nonGateway',
+																														name: selected[0].name || selected[0].label,
+																													};
+																												} else {
+																													formik.values.safeOutput[index] = selected[0];
+																												}
+																											}
+																										}}
+																										selected={[formik.values.safeOutput[index]]}
+																										labelKey={output => `${output.name}`}
+																									/>
+
+																									{/* <Typeahead
+																										id={`safeOuputsArray_${index}`}
+																										labelKey={output => `${output.name}`}
+																										allowNew
+																										defaultSelected={safeOuputsArray[index] ? [safeOuputsArray[index]] : []}
+																										options={safeOuputsList}
+																										className='addFormInputTypeAhead'
+																										onChange={selected => {
+																											var tempSelected = [];
+																											selected.forEach(selectedItem => {
+																												selectedItem.customOption === true
+																													? tempSelected.push({
+																															id: isNumber(selectedItem.pid) ? selectedItem.pid : 'nonGateway',
+																															name: selectedItem.name || selectedItem.label,
+																													  })
+																													: tempSelected.push(selectedItem);
+																											});
+																											formik.values.safeOutput = tempSelected;
+																										}}
+																									/> */}
+
+																									{/* <Typeahead
 																										id={`safeOuputsArray_${index}`}
 																										className='addFormInput'
 																										allowNew
@@ -1112,7 +1242,7 @@ const EditFormDataUse = props => {
 																										}}
 																										selected={[formik.values.safeOuputsArray[index]]}
 																										labelKey={key => `${key.value}`}
-																									/>
+																									/> */}
 																								</Form.Group>
 																							</Col>
 
@@ -1122,21 +1252,21 @@ const EditFormDataUse = props => {
 																								<button
 																									type='button'
 																									className='plusMinusButton'
-																									disabled={formik.values.safeOuputsArray.length < 2}
+																									disabled={safeOuputsArray.length < 2}
 																									onClick={() => {
 																										remove(index);
-																										formik.values.safeOuputsArray.splice(index, 1);
+																										safeOuputsArray.splice(index, 1);
 																									}}>
 																									-
 																								</button>
 																								<button
 																									data-test-id={`add-link-${index}`}
 																									type='button'
-																									disabled={formik.values.safeOuputsArray.length - 1 !== index}
+																									disabled={safeOuputsArray.length - 1 !== index}
 																									className='plusMinusButton'
 																									onClick={() => {
 																										push('');
-																										formik.values.safeOuputsArray.push({ key: '', value: '' });
+																										safeOuputsArray.push({ id: '', name: '' });
 																									}}>
 																									+
 																								</button>

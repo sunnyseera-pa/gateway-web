@@ -168,6 +168,7 @@ class RelatedObject extends React.Component {
 										showRelationshipQuestion={this.props.showRelationshipQuestion ? this.props.showRelationshipQuestion : false}
 										updateOnFilterBadge={this.updateOnFilterBadge}
 										removeButton={this.removeButton}
+										isLocked={this.props.isLocked}
 									/>
 								);
 							} else if (data.type === 'dataUseRegister') {
@@ -235,6 +236,7 @@ class RelatedObject extends React.Component {
 										showRelationshipQuestion={this.props.showRelationshipQuestion ? this.props.showRelationshipQuestion : false}
 										updateOnFilterBadge={this.updateOnFilterBadge}
 										removeButton={this.removeButton}
+										isLocked={this.props.isLocked}
 									/>
 								);
 							} else if (data.type === 'person') {

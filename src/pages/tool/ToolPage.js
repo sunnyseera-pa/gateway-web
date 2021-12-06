@@ -147,6 +147,7 @@ export const ToolDetail = props => {
 						tempObjects.push({
 							id: object.objectId,
 							activeflag: res.data.data[0].activeflag,
+							projectTitle: res.data.data[0].projectTitle,
 						});
 					});
 				} else {
@@ -191,6 +192,7 @@ export const ToolDetail = props => {
 						object['name'] = item.name || '';
 						object['firstname'] = item.firstname || '';
 						object['lastname'] = item.lastname || '';
+						object['projectTitle'] = item.projectTitle || '';
 
 						tempRelatedObjects.push(object);
 					}
@@ -249,7 +251,8 @@ export const ToolDetail = props => {
 				(_.has(object, 'name') ? object.name.toLowerCase().includes(relatedObjectsSearchValue.toLowerCase()) : false) ||
 				(_.has(object, 'title') ? object.title.toLowerCase().includes(relatedObjectsSearchValue.toLowerCase()) : false) ||
 				(_.has(object, 'firstname') ? object.firstname.toLowerCase().includes(relatedObjectsSearchValue.toLowerCase()) : false) ||
-				(_.has(object, 'lastname') ? object.lastname.toLowerCase().includes(relatedObjectsSearchValue.toLowerCase()) : false)
+				(_.has(object, 'lastname') ? object.lastname.toLowerCase().includes(relatedObjectsSearchValue.toLowerCase()) : false) ||
+				(_.has(object, 'projectTitle') ? object.projectTitle.toLowerCase().includes(relatedObjectsSearchValue.toLowerCase()) : false)
 			) {
 				return object;
 			} else {

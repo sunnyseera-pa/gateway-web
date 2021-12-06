@@ -2,7 +2,7 @@ import React, { useState, useEffect, createRef } from 'react';
 import * as Sentry from '@sentry/react';
 import axios from 'axios';
 import { baseURL } from '../../../configs/url.config';
-import { isEmpty } from 'lodash';
+import { isEmpty, isArray } from 'lodash';
 
 import { Container } from 'react-bootstrap';
 import EditFormDataUse from './EditDataUseForm';
@@ -34,6 +34,12 @@ const EditDataUse = props => {
 	const [relatedObjects, setRelatedObjects] = useState([]);
 	const [didDelete, setDidDelete] = useState(false);
 	const [safeOuputsArray, setSafeOuputsArray] = useState(['']);
+	const [safeOuputsToolList, setSafeOuputsToolList] = useState([]);
+	const [safeOuputsPaperList, setSafeOuputsPaperList] = useState([]);
+	const [applicantsArray, setApplicantsArray] = useState(['']);
+	const [applicantsList, setApplicantsList] = useState([]);
+	const [datasetsArray, setDatasetsArray] = useState(['']);
+	const [datasetsList, setDatasetsList] = useState([]);
 	const [disableInput, setDisableInput] = useState(false);
 	const [userState] = useState(
 		props.userState || [
@@ -48,22 +54,51 @@ const EditDataUse = props => {
 
 	useEffect(async () => {
 		setIsLoading(true);
-		await Promise.all([doGetKeywordsCall()]);
-		axios.get(baseURL + '/api/v2/data-use-registers/' + props.match.params.datauseID).then(res => {
+		await Promise.all([
+			doGetKeywordsCall(),
+			doGetUsersCall(),
+			doGetDatasetsCall(),
+			doGetSafeOutputsToolCall(),
+			doGetSafeOutputsPaperCall(),
+		]);
+		axios.get(`${baseURL}/api/v2/data-use-registers/${props.match.params.datauseID}?isEdit=true`).then(res => {
 			setData(res.data);
 			setRelatedObjects(res.data.relatedObjects ? res.data.relatedObjects : []);
 			let safeOutputs = [];
 			res.data.gatewayOutputsPapersInfo.forEach(output => {
-				safeOutputs.push({ key: output.id, value: output.name });
+				safeOutputs.push({ id: output.id, name: output.name });
 			});
 			res.data.gatewayOutputsToolsInfo.forEach(output => {
-				safeOutputs.push({ key: output.id, value: output.name });
+				safeOutputs.push({ id: output.id, name: output.name });
 			});
 			res.data.nonGatewayOutputs.forEach(output => {
-				safeOutputs.push({ key: 'nonGateway', value: output });
+				safeOutputs.push({ id: 'nonGateway', name: output });
 			});
 
-			setSafeOuputsArray(!isEmpty(safeOutputs) ? safeOutputs : [{ key: '', value: '' }]);
+			setSafeOuputsArray(!isEmpty(safeOutputs) ? safeOutputs : [{ id: '', name: '' }]);
+
+			let applicants = [];
+			res.data.gatewayApplicants.forEach(gatewayApplicant => {
+				applicants.push({ id: gatewayApplicant.id, name: `${gatewayApplicant.firstname} ${gatewayApplicant.lastname}` });
+			});
+			res.data.nonGatewayApplicants.forEach(nonGatewayApplicant => {
+				applicants.push({ id: 'nonGateway', name: nonGatewayApplicant });
+			});
+			setApplicantsArray(!isEmpty(applicants) ? applicants : [{ id: '', name: '' }]);
+
+			let datasets = [];
+			res.data.gatewayDatasetsInfo.forEach(gatewayDataset => {
+				if (isArray(gatewayDataset)) {
+					datasets.push({ pid: gatewayDataset[0].pid, name: gatewayDataset[0].name });
+				} else {
+					datasets.push({ pid: gatewayDataset.pid, name: gatewayDataset.name });
+				}
+			});
+			res.data.nonGatewayDatasets.forEach(nonGatewayDataset => {
+				datasets.push({ pid: 'nonGateway', name: nonGatewayDataset });
+			});
+			setDatasetsArray(!isEmpty(datasets) ? datasets : [{ pid: '', name: '' }]);
+
 			setDisableInput(getUserRoles(res.data.publisher));
 			setIsLoading(false);
 		});
@@ -77,6 +112,63 @@ const EditDataUse = props => {
 		}
 
 		return !foundTeam[0].roles.some(role => ['manager', 'reviewer'].includes(role));
+	};
+
+	const doGetUsersCall = () => {
+		return new Promise(resolve => {
+			axios.get(baseURL + '/api/v1/users').then(res => {
+				setApplicantsList(res.data.data);
+				resolve();
+			});
+		});
+	};
+
+	const doGetDatasetsCall = () => {
+		return new Promise(resolve => {
+			axios
+				.get(`${baseURL}/api/v2/datasets`, {
+					params: {
+						activeflag: 'active',
+						fields: 'pid,name,',
+					},
+				})
+				.then(res => {
+					setDatasetsList(res.data.datasets);
+					resolve();
+				});
+		});
+	};
+
+	const doGetSafeOutputsToolCall = () => {
+		return new Promise(resolve => {
+			axios
+				.get(`${baseURL}/api/v2/tools`, {
+					params: {
+						activeflag: 'active',
+						fields: 'id,name,',
+					},
+				})
+				.then(res => {
+					setSafeOuputsToolList(res.data.data);
+					resolve();
+				});
+		});
+	};
+
+	const doGetSafeOutputsPaperCall = () => {
+		return new Promise(resolve => {
+			axios
+				.get(`${baseURL}/api/v2/papers`, {
+					params: {
+						activeflag: 'active',
+						fields: 'id,name,',
+					},
+				})
+				.then(res => {
+					setSafeOuputsPaperList(res.data.data);
+					resolve();
+				});
+		});
 	};
 
 	let showError = false;
@@ -197,68 +289,33 @@ const EditDataUse = props => {
 
 	const doGetKeywordsCall = () => {
 		return new Promise((resolve, reject) => {
-			axios.get(baseURL + '/api/v1/search/filter/feature/tool').then(res => {
-				var tempFeaturesArray = [
-					'Arbitrage',
-					'Association Rules',
-					'Attribution Modeling',
-					'Bayesian Statistics',
-					'Clustering',
-					'Collaborative Filtering',
-					'Confidence Interval',
-					'Cross-Validation',
-					'Decision Trees',
-					'Deep Learning',
-					'Density Estimation',
-					'Ensembles',
-					'Experimental Design',
-					'Feature Selection',
-					'Game Theory',
-					'Geospatial Modeling',
-					'Graphs',
-					'Imputation',
-					'Indexation / Cataloguing',
-					'Jackknife Regression',
-					'Lift Modeling',
-					'Linear Regression',
-					'Linkage Analysis',
-					'Logistic Regression',
-					'Model Fitting',
-					'Monte-Carlo Simulation',
-					'Naive Bayes',
-					'Nearest Neighbors - (k-NN)',
-					'Neural Networks',
-					'Pattern Recognition',
-					'Predictive Modeling',
-					'Principal Component Analysis - (PCA)',
-					'Random Numbers',
-					'Recommendation Engine',
-					'Relevancy Algorithm',
-					'Rule System',
-					'Scoring Engine',
-					'Search Engine',
-					'Segmentation',
-					'Supervised Learning',
-					'Support Vector Machine - (SVM)',
-					'Survival Analysis',
-					'Test of Hypotheses',
-					'Time Series',
-					'Yield Optimization',
-				];
+			axios
+				.get(`${baseURL}/api/v2/data-use-registers`, {
+					params: {
+						activeflag: 'active',
+						fields: 'keywords,',
+					},
+				})
+				.then(res => {
+					var tempKeywordsArray = [];
 
-				res.data.data[0].forEach(fe => {
-					if (!tempFeaturesArray.includes(fe) && fe !== '') {
-						tempFeaturesArray.push(fe);
-					}
+					res.data.data.forEach(keywordsArray => {
+						if (keywordsArray.keywords) {
+							keywordsArray.keywords.forEach(keywords => {
+								if (!tempKeywordsArray.includes(keywords) && keywords !== '') {
+									tempKeywordsArray.push(keywords);
+								}
+							});
+						}
+					});
+
+					setKeywords(
+						tempKeywordsArray.sort(function (a, b) {
+							return a.toUpperCase() < b.toUpperCase() ? -1 : a.toUpperCase() > b.toUpperCase() ? 1 : 0;
+						})
+					);
+					resolve();
 				});
-
-				setKeywords(
-					tempFeaturesArray.sort(function (a, b) {
-						return a.toUpperCase() < b.toUpperCase() ? -1 : a.toUpperCase() > b.toUpperCase() ? 1 : 0;
-					})
-				);
-				resolve();
-			});
 		});
 	};
 
@@ -303,6 +360,11 @@ const EditDataUse = props => {
 					didDelete={didDelete}
 					updateDeleteFlag={updateDeleteFlag}
 					safeOuputsArray={safeOuputsArray}
+					safeOuputsList={[...safeOuputsToolList, ...safeOuputsPaperList]}
+					applicantsArray={applicantsArray}
+					applicantsList={applicantsList}
+					datasetsArray={datasetsArray}
+					datasetsList={datasetsList}
 					disableInput={disableInput}
 				/>
 				<SideDrawer open={showDrawer} closed={toggleDrawer}>

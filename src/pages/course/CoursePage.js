@@ -135,6 +135,7 @@ export const CourseDetail = props => {
 						tempObjects.push({
 							id: object.objectId,
 							activeflag: res.data.data[0].activeflag,
+							projectTitle: res.data.data[0].projectTitle,
 						});
 					});
 				} else {
@@ -179,6 +180,7 @@ export const CourseDetail = props => {
 						relatedObject['name'] = item.name || '';
 						relatedObject['firstname'] = item.firstname || '';
 						relatedObject['lastname'] = item.lastname || '';
+						relatedObject['projectTitle'] = item.projectTitle || '';
 
 						tempRelatedObjects.push(relatedObject);
 					}
@@ -234,7 +236,8 @@ export const CourseDetail = props => {
 				(_.has(object, 'name') ? object.name.toLowerCase().includes(relatedObjectsSearchValue.toLowerCase()) : false) ||
 				(_.has(object, 'title') ? object.title.toLowerCase().includes(relatedObjectsSearchValue.toLowerCase()) : false) ||
 				(_.has(object, 'firstname') ? object.firstname.toLowerCase().includes(relatedObjectsSearchValue.toLowerCase()) : false) ||
-				(_.has(object, 'lastname') ? object.lastname.toLowerCase().includes(relatedObjectsSearchValue.toLowerCase()) : false)
+				(_.has(object, 'lastname') ? object.lastname.toLowerCase().includes(relatedObjectsSearchValue.toLowerCase()) : false) ||
+				(_.has(object, 'projectTitle') ? object.projectTitle.toLowerCase().includes(relatedObjectsSearchValue.toLowerCase()) : false)
 			) {
 				return object;
 			} else {

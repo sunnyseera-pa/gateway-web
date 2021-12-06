@@ -50,7 +50,7 @@ const DataUseTable = ({ team, data, active, pending, archived, onClickArchive, o
 							</p>
 						</td>
 						{(active || pending || archived) && (
-							<td>
+							<td style={{ width: '130px' }}>
 								{active && (
 									<Dropdown>
 										<Dropdown.Toggle variant='outline-secondary' className='data-use-action'>

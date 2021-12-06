@@ -537,6 +537,7 @@ class DatasetDetail extends Component {
 					tempObjects.push({
 						id: object.objectId,
 						activeflag: res.data.data[0].activeflag,
+						projectTitle: res.data.data[0].projectTitle,
 					});
 				});
 			} else {
@@ -566,6 +567,7 @@ class DatasetDetail extends Component {
 					object['name'] = item.name || '';
 					object['firstname'] = item.firstname || '';
 					object['lastname'] = item.lastname || '';
+					object['projectTitle'] = item.projectTitle || '';
 					tempRelatedObjects.push(object);
 				}
 
@@ -711,10 +713,11 @@ class DatasetDetail extends Component {
 		objectData.map(object => {
 			// Searching functionality - searches through object data and returns true if there is a match with the search term
 			if (
-				(_.has(object, 'name') ? object.name.toLowerCase().includes(relatedObjectsSearchValue.toLowerCase()) : false) ||
-				(_.has(object, 'title') ? object.title.toLowerCase().includes(relatedObjectsSearchValue.toLowerCase()) : false) ||
-				(_.has(object, 'firstname') ? object.firstname.toLowerCase().includes(relatedObjectsSearchValue.toLowerCase()) : false) ||
-				(_.has(object, 'lastname') ? object.lastname.toLowerCase().includes(relatedObjectsSearchValue.toLowerCase()) : false)
+				(has(object, 'name') ? object.name.toLowerCase().includes(relatedObjectsSearchValue.toLowerCase()) : false) ||
+				(has(object, 'title') ? object.title.toLowerCase().includes(relatedObjectsSearchValue.toLowerCase()) : false) ||
+				(has(object, 'firstname') ? object.firstname.toLowerCase().includes(relatedObjectsSearchValue.toLowerCase()) : false) ||
+				(has(object, 'lastname') ? object.lastname.toLowerCase().includes(relatedObjectsSearchValue.toLowerCase()) : false) ||
+				(has(object, 'projectTitle') ? object.projectTitle.toLowerCase().includes(relatedObjectsSearchValue.toLowerCase()) : false)
 			) {
 				return object;
 			} else {
@@ -723,13 +726,13 @@ class DatasetDetail extends Component {
 		});
 
 	handleSort = async sort => {
-		this.setState({ setRelatedObjectsFiltered: [] });
+		this.setState({ relatedObjectsFiltered: [] });
 		googleAnalytics.recordEvent('Collections', `Sorted related resources by ${sort}`, 'Sort dropdown option changed');
 		let tempFilteredData = [];
 		if (sort === 'showAll') {
-			tempFilteredData = await this.relatedResourcesSort;
+			tempFilteredData = await this.state.relatedResourcesSort;
 		} else {
-			tempFilteredData = await this.relatedResourcesSort.filter(dat => dat.objectType === sort);
+			tempFilteredData = await this.state.relatedResourcesSort.filter(dat => dat.objectType === sort);
 		}
 		this.setState({ sorting: sort, relatedObjectsFiltered: tempFilteredData });
 	};
@@ -766,10 +769,7 @@ class DatasetDetail extends Component {
 			sorting,
 			relatedResourcesSort,
 			relatedObjectsFiltered,
-			onRelatedObjectsSearch,
-			doRelatedObjectsSearch,
 			relatedObjectsSearchValue,
-			handleSort,
 		} = this.state;
 
 		let publisherLogo = !isEmpty(v2data) && !isEmpty(v2data.summary.publisher.logo) ? v2data.summary.publisher.logo : publisherLogoURL;
@@ -1482,16 +1482,16 @@ class DatasetDetail extends Component {
 																	id='collectionsSearchBarInput'
 																	type='text'
 																	placeholder='Search within related resources'
-																	onChange={onRelatedObjectsSearch}
+																	onChange={this.onRelatedObjectsSearch}
 																	value={relatedObjectsSearchValue}
-																	onKeyDown={doRelatedObjectsSearch}
+																	onKeyDown={this.doRelatedObjectsSearch}
 																/>
 															</span>
 														</span>
 													</Col>
 
 													<Col lg={4} className='text-right'>
-														<Dropdown className='sorting-dropdown' alignRight onSelect={handleSort}>
+														<Dropdown className='sorting-dropdown' alignRight onSelect={this.handleSort}>
 															<Dropdown.Toggle variant='info' id='dropdown-menu-align-right' className='gray800-14'>
 																{(() => {
 																	if (sorting !== 'showAll')
