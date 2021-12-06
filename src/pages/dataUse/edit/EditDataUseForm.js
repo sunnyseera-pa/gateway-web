@@ -9,7 +9,6 @@ import RelatedObject from '../../commonComponents/relatedObject/RelatedObject';
 import DatePicker from 'react-datepicker';
 import ActionBar from '../../commonComponents/actionbar/ActionBar';
 import moment from 'moment';
-import googleAnalytics from '../../../tracking';
 import { Formik, useFormik, FieldArray } from 'formik';
 import { isEmpty, isNil, isNumber } from 'lodash';
 import * as Yup from 'yup';
@@ -1180,19 +1179,6 @@ const EditFormDataUse = props => {
 																										className='addFormInput'
 																										allowNew
 																										options={safeOuputsList}
-																										/* onChange={selected => {
-																											var tempSelected = [];
-																											selected.forEach(selectedItem => {
-																												selectedItem.customOption === true
-																													? tempSelected.push({
-																															id: isNumber(selectedItem.id) ? selectedItem.id : 'nonGateway',
-																															name: selectedItem.name || selectedItem.label,
-																													  })
-																													: tempSelected.push(selectedItem);
-																											});
-																											formik.values.applicants = tempSelected;
-																										}} */
-
 																										onChange={selected => {
 																											if (!isEmpty(selected)) {
 																												if (selected[0].customOption === true) {
@@ -1208,41 +1194,6 @@ const EditFormDataUse = props => {
 																										selected={[formik.values.safeOutput[index]]}
 																										labelKey={output => `${output.name}`}
 																									/>
-
-																									{/* <Typeahead
-																										id={`safeOuputsArray_${index}`}
-																										labelKey={output => `${output.name}`}
-																										allowNew
-																										defaultSelected={safeOuputsArray[index] ? [safeOuputsArray[index]] : []}
-																										options={safeOuputsList}
-																										className='addFormInputTypeAhead'
-																										onChange={selected => {
-																											var tempSelected = [];
-																											selected.forEach(selectedItem => {
-																												selectedItem.customOption === true
-																													? tempSelected.push({
-																															id: isNumber(selectedItem.pid) ? selectedItem.pid : 'nonGateway',
-																															name: selectedItem.name || selectedItem.label,
-																													  })
-																													: tempSelected.push(selectedItem);
-																											});
-																											formik.values.safeOutput = tempSelected;
-																										}}
-																									/> */}
-
-																									{/* <Typeahead
-																										id={`safeOuputsArray_${index}`}
-																										className='addFormInput'
-																										allowNew
-																										options={safeOuputsList}
-																										onChange={selected => {
-																											if (!isEmpty(selected)) {
-																												formik.values.safeOuputsArray[index] = selected[0];
-																											}
-																										}}
-																										selected={[formik.values.safeOuputsArray[index]]}
-																										labelKey={key => `${key.value}`}
-																									/> */}
 																								</Form.Group>
 																							</Col>
 
