@@ -35,7 +35,7 @@ function LoginSSOButtons({ ssoBtnsConfig, communityLink, clickHandler, lastChoic
 					<Row className='mt-2'>
 						<Col sm={0} lg={1} />
 						{arr.map((value, i) => (
-							<Col sm={6} lg={5} key={value.id + i} className='mt-1'>
+							<Col sm={6} lg={12} key={value.id + i} className='mt-1'>
 								<div className='gray800-14'>
 									<button
 										data-testid={value.id}
