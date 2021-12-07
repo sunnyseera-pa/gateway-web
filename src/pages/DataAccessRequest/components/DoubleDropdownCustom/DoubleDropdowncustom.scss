@@ -1,3 +1,5 @@
+@import '../../../../css/variables';
+
 @media (min-width: 992px) {
 	.navbar-expand-lg .navbar-nav .dropdown-menu {
 		position: static !important;
@@ -45,4 +47,8 @@
 .nested-dropdown-menu {
 	border: none !important;
 	box-shadow: none !important;
+}
+
+.dropdown-toggle:empty::after {
+	color: $teal !important;
 }
