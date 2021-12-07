@@ -2,7 +2,7 @@ import React, { useState, useEffect, Fragment } from 'react';
 import axios from 'axios';
 import queryString from 'query-string';
 import * as Sentry from '@sentry/react';
-import { isEmpty, isNil } from 'lodash';
+import { isEmpty, isNil, reduce, isEqual, cloneDeep } from 'lodash';
 import moment from 'moment';
 import ReactMarkdown from 'react-markdown';
 import { useHistory } from 'react-router-dom';
@@ -38,7 +38,7 @@ export const DataAccessRequestCustomiseForm = props => {
 	let history = useHistory();
 	const [searchBar] = useState(React.createRef());
 
-	const [id] = useState('');
+	const [schemaId, setSchemaId] = useState('');
 	const [isLoading, setIsLoading] = useState(true);
 	const [searchString, setSearchString] = useState('');
 	const [userState] = useState(
@@ -63,8 +63,10 @@ export const DataAccessRequestCustomiseForm = props => {
 	const [jsonSchema, setJsonSchema] = useState({});
 	const [questionAnswers] = useState({});
 	const [questionStatus, setQuestionStatus] = useState({});
+	const [existingQuestionStatus, setExistingQuestionStatus] = useState({});
 	const [newGuidance, setNewGuidance] = useState({});
 	const [countOfChanges, setCountOfChanges] = useState({});
+	const [existingCountOfChanges, setExistingCountOfChanges] = useState(0);
 	const [actionTabSettings, setActionTabSettings] = useState({
 		key: '',
 		questionSetId: '',
@@ -81,29 +83,60 @@ export const DataAccessRequestCustomiseForm = props => {
 	const getMasterSchema = async () => {
 		const {
 			data: {
-				result: { masterSchema, questionStatus, guidance, countOfChanges },
+				result: { masterSchema, questionStatus, guidance, countOfChanges, schemaId },
 			},
 		} = await axios.get(`${baseURL}/api/v2/questionbank/6112a0c80c3d4634a85b15bd`);
 
 		const questionActions = {
 			questionActions: [
-				{ key: 'guidance', icon: 'far fa-question-circle', color: '#475da7', toolTip: 'Guidance', order: 1 },
+				{ key: 'guidanceEdit', icon: 'fas fa-pencil-alt', color: '#475da7', toolTip: 'Guidance', order: 1 },
 				{ key: 'guidanceLocked', icon: 'far fa-eye', color: '#475da7', toolTip: 'View locked guidance', order: 1 },
 			],
 		};
 
+		setSchemaId(schemaId);
 		setJsonSchema({ ...masterSchema, ...classSchema, ...questionActions });
 		setQuestionStatus(questionStatus);
+		setExistingQuestionStatus(cloneDeep(questionStatus));
 		setNewGuidance(guidance);
 		setCountOfChanges(countOfChanges);
+		setExistingCountOfChanges(countOfChanges);
 		setActivePanelId(masterSchema.formPanels[0].panelId);
 		setIsLoading(false);
 	};
 
+	const onSwitchChange = (questionId, value) => {
+		questionStatus[questionId] = value ? 1 : 0;
+		setQuestionStatus(questionStatus);
+
+		let numberOfChanges = reduce(
+			questionStatus,
+			function (result, value, key) {
+				return isEqual(value, existingQuestionStatus[key]) ? result : result.concat(key);
+			},
+			[]
+		).length;
+
+		setCountOfChanges(numberOfChanges + existingCountOfChanges);
+		setLastSaved(saveTime);
+
+		let params = {
+			questionStatus,
+			countOfChanges: numberOfChanges + existingCountOfChanges,
+		};
+
+		axios.patch(`${baseURL}/api/v1/data-access-request/schema/${schemaId}`, params);
+	};
+
 	const onClickSave = e => {
 		e.preventDefault();
-		const lastSaved = DarHelper.saveTime();
-		setLastSaved(lastSaved);
+		setLastSaved(saveTime);
+	};
+
+	const saveTime = () => {
+		let currentTime = moment().format('DD MMM YYYY HH:mm');
+		let lastSaved = `Last saved ${currentTime}`;
+		return lastSaved;
 	};
 
 	const redirectDashboard = e => {
@@ -153,6 +186,162 @@ export const DataAccessRequestCustomiseForm = props => {
 		setActionTabSettings({ key: '', questionSetId: '', questionId: '' });
 	};
 
+	const onSubmitClick = () => {};
+
+	const onNextClick = () => {
+		// 1. If in the about panel, we go to the next step.  Otherwise next panel.
+		if (activePanelId === 'about') {
+			// 2. Pass no completed bool value to go to next step without modifying completed status
+			this.onNextStep();
+			// 3. If we have reached the end of the about accordion, reset active accordion so all are closed
+			if (this.state.activeAccordionCard >= 6) {
+				this.setState({
+					activeAccordionCard: -1,
+				});
+				// 4. Move to the next step
+				onNextPanel();
+			}
+		} else {
+			onNextPanel();
+		}
+	};
+
+	const onNextPanel = () => {
+		// 1. Copy formpanels
+		let formPanels = [...jsonSchema.formPanels];
+		// 2. Get activeIdx
+		let activeIdx = formPanels.findIndex(p => p.panelId === activePanelId);
+		// 3. Increment idx
+		let nextIdx = ++activeIdx;
+		// 4. Get activePanel - make sure newIdx doesnt exceed panels length
+		let { panelId, pageId } = formPanels[nextIdx > formPanels.length - 1 ? 0 : nextIdx];
+		// 5. Update the navigationState
+		updateNavigation({ panelId, pageId });
+	};
+
+	const onNextStep = async completed => {
+		// 1. Deconstruct current state
+		/* let { aboutApplication, activeAccordionCard } = this.state;
+		// 2. If a completed flag has been passed, update step during navigation
+		if (!_.isUndefined(completed)) {
+			switch (activeAccordionCard) {
+				case 0:
+					aboutApplication.completedDatasetSelection = completed;
+					break;
+				case 1:
+					// Do nothing, valid state for project name step handled by existence of text
+					break;
+				case 2:
+					aboutApplication.completedInviteCollaborators = completed;
+					break;
+				case 3:
+					aboutApplication.completedReadAdvice = completed;
+					break;
+				case 4:
+					aboutApplication.completedCommunicateAdvice = completed;
+					break;
+				case 5:
+					aboutApplication.completedApprovalsAdvice = completed;
+					break;
+				case 6:
+					aboutApplication.completedSubmitAdvice = completed;
+					break;
+				default:
+					console.error('Invalid step passed');
+					break;
+			}
+		}
+		// 3. Update application
+		let dataObj = { key: 'aboutApplication', data: aboutApplication };
+		await this.updateApplication(dataObj);
+
+		// 4. Set new state
+		this.setState({
+			activeAccordionCard: ++activeAccordionCard,
+			aboutApplication,
+		}); */
+	};
+
+	const onQuestionAction = async (e = '', questionSetId = '', questionId = '', key = '') => {
+		const activeGuidance = getActiveQuestionGuidance(questionId);
+		if (!isEmpty(e)) {
+			removeActiveQuestionClass();
+			addActiveQuestionClass(e);
+		}
+		setActiveGuidance(activeGuidance);
+	};
+
+	const getActiveQuestionGuidance = (questionId = '') => {
+		let questions;
+		if (!isEmpty(questionId)) {
+			let { questionSets } = jsonSchema;
+			// 1. get active question set
+			let questionList = [...questionSets].filter(q => q.questionSetId.includes(activePanelId)) || [];
+			questions = questionList.map(({ questions }) => questions).flat();
+			if (!isEmpty(questions)) {
+				// 2. loop over and find active question
+				let activeQuestion = getActiveQuestion([...questions], questionId);
+				if (!isEmpty(activeQuestion)) {
+					const { guidance } = activeQuestion;
+					return guidance;
+				}
+				return '';
+			}
+		}
+	};
+
+	let getActiveQuestion = (questionsArr, questionId) => {
+		let child;
+
+		if (!questionsArr) return;
+
+		for (const questionObj of questionsArr) {
+			if (questionObj.questionId === questionId) return questionObj;
+
+			if (typeof questionObj.input === 'object' && typeof questionObj.input.options !== 'undefined') {
+				questionObj.input.options
+					.filter(option => {
+						return typeof option.conditionalQuestions !== 'undefined' && option.conditionalQuestions.length > 0;
+					})
+					.forEach(option => {
+						if (!child) {
+							child = getActiveQuestion(option.conditionalQuestions, questionId);
+						}
+					});
+			}
+
+			if (child) return child;
+		}
+	};
+
+	/**
+	 * removeActiveQuestionClass
+	 * @desc Removes active class on a single question
+	 */
+	const removeActiveQuestionClass = () => {
+		let fGroups = document.querySelectorAll('.question-wrap');
+		fGroups.forEach(key => key.classList.remove('active-group'));
+	};
+
+	/**
+	 * addActiveQuestionClass
+	 * @desc Adds active border to question clicked upon
+	 * @param - (e) eventObject
+	 */
+	const addActiveQuestionClass = e => {
+		if (!isEmpty(e)) {
+			let fGroup = e.target.closest('.question-wrap');
+			fGroup.classList.add('active-group');
+		}
+	};
+
+	const resetGuidance = () => {
+		// remove active question class
+		removeActiveQuestionClass();
+		// reset guidance state
+		setActiveGuidance('');
+	};
+
 	const renderApp = () => {
 		if (activePanelId === 'about') {
 			/* return (
@@ -196,7 +385,6 @@ export const DataAccessRequestCustomiseForm = props => {
 		} else if (activePanelId === 'files') {
 			/* return <Uploads onFilesUpdate={onFilesUpdate} id={_id} files={files} readOnly={readOnly} />; */
 		} else {
-			debugger;
 			return (
 				<Winterfell
 					schema={jsonSchema}
@@ -206,6 +394,9 @@ export const DataAccessRequestCustomiseForm = props => {
 					disableSubmit={true}
 					disableValidation={true}
 					renderRequiredAsterisk={() => <span>{'*'}</span>}
+					customiseView={true}
+					onSwitchChange={onSwitchChange}
+					onQuestionAction={onQuestionAction}
 					//readOnly={true}
 					/* onQuestionClick={onQuestionSetAction}
 					onQuestionAction={onQuestionAction}
@@ -263,12 +454,10 @@ export const DataAccessRequestCustomiseForm = props => {
 						)} */}
 					</Col>
 					<Col sm={12} md={4} className='d-flex justify-content-end align-items-center banner-right'>
-						{/* <span className='white-14-semibold'>{DarHelper.getSavedAgo(lastSaved)}</span> */}
-						{
-							<a className={`linkButton white-14-semibold ml-2`} onClick={onClickSave} href='javascript:void(0)'>
-								Save now
-							</a>
-						}
+						<span className='white-14-semibold'>{!isEmpty(lastSaved) ? lastSaved : ''}</span>
+						<a className={`linkButton white-14-semibold ml-2`} onClick={onClickSave} href='javascript:void(0)'>
+							Save now
+						</a>
 						<CloseButtonSvg width='16px' height='16px' fill='#fff' onClick={e => redirectDashboard(e)} />
 					</Col>
 				</Row>
@@ -336,42 +525,61 @@ export const DataAccessRequestCustomiseForm = props => {
 					{isWideForm ? null : (
 						<div id='darRightCol' className='scrollable-sticky-column'>
 							<div className='darTab'>
-								<QuestionActionTabs
-								/* applicationId={''}
-									userState={userState}
-									settings={actionTabSettings}
-									activeGuidance={activeGuidance}
-									onHandleActionTabChange={onHandleActionTabChange}
-									toggleDrawer={toggleDrawer}
-									setMessageDescription={setMessageDescription}
-									userType={userType}
-									messagesCount={messagesCount}
-									notesCount={notesCount}
-									isShared={isShared}
-									updateCount={updateCount}
-									publisher={''}
-									applicationStatus={applicationStatus} */
-								/>
+								{/* <Guidance activeGuidance={activeGuidance} /> */}
+								<Fragment>
+									{activeGuidance ? (
+										<Fragment>
+											<header>
+												<div>
+													<i className='far fa-question-circle mr-2' />
+													<p className='gray800-14-bold'>Guidance</p>
+												</div>
+												<CloseButtonSvg width='16px' height='16px' fill='#475da' onClick={resetGuidance} />
+											</header>
+											<main className='gray800-14'>
+												<ReactMarkdown source={activeGuidance} linkTarget='_blank' />
+											</main>
+										</Fragment>
+									) : (
+										<div className='darTab-guidance'>Hover on a question to edit or view locked guidance</div>
+									)}
+								</Fragment>
 							</div>
 						</div>
 					)}
 				</div>
 
 				<ActionBar userState={userState}>
-					{/* <div className='action-bar'>
+					<div className='action-bar'>
 						<div className='action-bar--questions'>
-							{applicationStatus === 'inProgress' ? (
-								''
-							) : (
-								<SLA classProperty={DarHelper.darStatusColours[applicationStatus]} text={DarHelper.darSLAText[applicationStatus]} />
-							)}
-							<div className='action-bar-status'>
-								{totalQuestions} &nbsp;|&nbsp; {projectId}
-							</div>
+							<button
+								className={'button-tertiary'}
+								onClick={() => {
+									onNextClick();
+								}}>
+								Clear updates
+							</button>
 						</div>
 						<div className='action-bar-actions'>
-							<AmendmentCount answeredAmendments={answeredAmendments} unansweredAmendments={unansweredAmendments} />
-							{userType.toUpperCase() === 'APPLICANT' ? (
+							<div className='amendment-count mr-3'>{countOfChanges} unpublished update</div>
+
+							<button
+								className={'button-secondary'}
+								onClick={() => {
+									onSubmitClick();
+								}}>
+								Publish
+							</button>
+
+							<button
+								className={'button-primary'}
+								onClick={() => {
+									onNextClick();
+								}}>
+								Next
+							</button>
+
+							{/* {userType.toUpperCase() === 'APPLICANT' ? (
 								<ApplicantActionButtons
 									allowedNavigation={allowedNavigation}
 									isCloneable={isCloneable}
@@ -403,9 +611,9 @@ export const DataAccessRequestCustomiseForm = props => {
 									applicationStatus={applicationStatus}
 									roles={roles}
 								/>
-							)}
+							)} */}
 						</div>
-					</div> */}
+					</div>{' '}
 				</ActionBar>
 
 				<SideDrawer open={showDrawer} closed={toggleDrawer}>
