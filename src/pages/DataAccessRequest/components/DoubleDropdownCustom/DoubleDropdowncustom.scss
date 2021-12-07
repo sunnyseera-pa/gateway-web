@@ -5,15 +5,32 @@
 }
 
 .dropdown-toggle {
-	all: unset !important;
+	background: none !important;
+	border: 2px solid rgba(0, 0, 0, 0.15) !important;
+	margin-left: -14px;
+	width: 200px;
+	height: 42px;
+}
+
+.dropdown-toggle:focus,
+.dropdown-toggle:active {
+	border: none !important;
+}
+
+#safeprojecttypeofproject {
+	border: none !important;
+	width: 200px;
+	height: 42px;
 }
 
 .nested-dropdown:after {
 	display: none !important;
+	border: none !important;
 }
 
 .nested-dropdown {
 	cursor: pointer;
+	border: none !important;
 }
 
 .nest-dropdown-arrow {

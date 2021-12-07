@@ -74,9 +74,7 @@ const DoubleDropdownCustom = ({ name, id, options, onChange, labelId, required, 
 		<Navbar collapseOnSelect expand='lg'>
 			<Nav className='mr-auto'>
 				<Dropdown onSelect={changingSelect}>
-					<Dropdown.Toggle className='double-dropdown-input'>
-						<input name={name} id={id} />
-					</Dropdown.Toggle>
+					<Dropdown.Toggle className='double-dropdown-input'></Dropdown.Toggle>
 
 					<Dropdown.Menu>
 						{schema.map(a => (
@@ -97,7 +95,7 @@ const DoubleDropdownCustom = ({ name, id, options, onChange, labelId, required, 
 								{a.value === 'Biomedical research' && !closed && (
 									<Dropdown.Menu className='nested-dropdown-menu'>
 										{extra.map(a => (
-											<Dropdown.Item>{a.value}</Dropdown.Item>
+											<Dropdown.Item eventKey={a.value}>{a.value}</Dropdown.Item>
 										))}
 									</Dropdown.Menu>
 								)}
