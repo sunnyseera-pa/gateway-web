@@ -1,4 +1,5 @@
 @import '../../../../css/variables';
+@import '../../../../css/typography';
 
 @media (min-width: 992px) {
 	.navbar-expand-lg .navbar-nav .dropdown-menu {
@@ -51,4 +52,8 @@
 
 .dropdown-toggle:empty::after {
 	color: $teal !important;
+}
+
+.double-dropdown-input {
+	color: $gray-800 !important;
 }

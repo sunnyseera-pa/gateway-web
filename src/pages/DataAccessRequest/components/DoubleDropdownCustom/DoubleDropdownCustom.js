@@ -2,28 +2,13 @@ import React, { useState } from 'react';
 import { Dropdown, Nav, Navbar } from 'react-bootstrap';
 import SVGIcon from '../../../../images/SVGIcon';
 import './DoubleDropdowncustom.scss';
-import { Typeahead, Menu, MenuItem } from 'react-bootstrap-typeahead';
-import 'react-bootstrap-typeahead/css/Typeahead.css';
-import TypeaheadCustom from '../TypeaheadCustom/TypeaheadCustom';
+//import { Typeahead, Menu, MenuItem } from 'react-bootstrap-typeahead';
+//import 'react-bootstrap-typeahead/css/Typeahead.css';
+//import TypeaheadCustom from '../TypeaheadCustom/TypeaheadCustom';
 
-const DoubleDropdownCustom = ({ name, id, options, onChange, labelId, required, ...props }) => {
+const DoubleDropdownCustom = ({ name, id, options, input, onChange, labelId, required }) => {
 	const [closed, setClosed] = useState(true);
-	const [value, setValue] = useState('');
-	const [selectdValue, setSelectedValue] = useState(null);
-
-	const handleFocus = e => {
-		this.props.onFocus();
-	};
-
-	const handleBlur = e => {
-		this.props.onBlur(this.props.value);
-	};
-
-	const handleChange = e => {
-		setValue(e.target.value);
-
-		onChange.bind(null, e.target.value);
-	};
+	const [selectedValue, setSelectedValue] = useState(null);
 
 	const schema = [
 		{
@@ -67,14 +52,15 @@ const DoubleDropdownCustom = ({ name, id, options, onChange, labelId, required, 
 		.pop([]);
 
 	const changingSelect = eventKey => {
-		//alert(eventKey);
 		setSelectedValue(eventKey);
 	};
+
+	//console.log(input.options);
 	return (
 		<Navbar collapseOnSelect expand='lg'>
 			<Nav className='mr-auto'>
 				<Dropdown onSelect={changingSelect}>
-					<Dropdown.Toggle className='double-dropdown-input'></Dropdown.Toggle>
+					<Dropdown.Toggle className='double-dropdown-input'>{selectedValue}</Dropdown.Toggle>
 
 					<Dropdown.Menu>
 						{schema.map(a => (
