@@ -74,6 +74,7 @@ export const theme = {
 		grey700Alt: '#848E97',
 		grey800: '#3C3C3B',
 		red600: '#EF3F4B',
+		purple: '#475da7',
 	},
 	components: {
 		Icon: {

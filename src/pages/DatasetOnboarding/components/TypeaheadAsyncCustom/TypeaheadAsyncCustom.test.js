@@ -27,19 +27,19 @@ describe('Given the TypeaheadAsyncCustom component', () => {
 		});
 		let input = document.querySelector('.rbt-input-main');
 		it('Then search Icon  should be rendered', () => {
-			expect(wrapper.queryByTestId('searchIcon')).toBeTruthy();
+			expect(wrapper.queryByTestId('searchicon')).toBeTruthy();
 		});
 		it('on Input type search Icon  should not rendered', () => {
 			fireEvent.click(input);
 			fireEvent.change(input, { target: { value: 'test' } });
 			expect(input.value).toBe('test');
-			expect(wrapper.queryByTestId('searchIcon')).toBeNull();
+			expect(wrapper.queryByTestId('searchicon')).toBeNull();
 		});
 		it('on empty Input type search Icon  should be rendered', () => {
 			fireEvent.click(input);
 			fireEvent.change(input, { target: { value: '' } });
 			expect(input.value).toBe('');
-			expect(wrapper.queryByTestId('searchIcon')).toBeTruthy();
+			expect(wrapper.queryByTestId('searchicon')).toBeTruthy();
 		});
 
 		it('Then handleSearch function should return correct results in dropdown ', async () => {
@@ -56,7 +56,7 @@ describe('Given the TypeaheadAsyncCustom component', () => {
 			wrapper: Providers,
 		});
 		it('Then search Icon should not be rendered', () => {
-			expect(wrapper.queryByTestId('searchIcon')).toBeNull();
+			expect(wrapper.queryByTestId('searchicon')).toBeNull();
 		});
 		it('Then default values should be rendered', () => {
 			expect(screen.queryByText('Cambridge')).toBeTruthy();
