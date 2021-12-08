@@ -6,6 +6,7 @@ import useSearch from '../../../../components/Search/useSearch';
 import { useAuth } from '../../../../context/AuthContext';
 import serviceDatasetOnboarding from '../../../../services/dataset-onboarding/dataset-onboarding';
 import utils from '../../../../utils/DataSetHelper.util';
+import googleAnalytics from '../../../../tracking';
 import '../../Dashboard.scss';
 import AccountDatasetsContent from './AccountDatasetsContent';
 import AccountDatasetsCreate from './AccountDatasetsCreate';
@@ -52,6 +53,12 @@ const AccountDatasets = props => {
 					page: 1,
 				},
 				key
+			);
+
+			googleAnalytics.recordEvent(
+				'Datasets',
+				`Searched in account datasets for ${search} ordered by ${sortBy} ${sortDirection}`,
+				'Account datasets search changed'
 			);
 		},
 		[key, publisherID]

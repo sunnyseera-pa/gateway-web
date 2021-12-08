@@ -182,8 +182,8 @@ export const CollectionPage = props => {
 		}
 	};
 
-	const handleSort = React.useCallback(sortBy => {
-		googleAnalytics.recordEvent('Collections', `Sorted collection entities by ${sortBy}`, 'Sort dropdown option changed');
+	const handleSort = React.useCallback(({ value, direction }) => {
+		googleAnalytics.recordEvent('Collections', `Sorted collection entities by ${value} ${direction}`, 'Sort dropdown option changed');
 	}, []);
 
 	const handlePaginatedItems = index => {

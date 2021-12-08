@@ -68,6 +68,7 @@ const AccountDatasetsContent = ({ data = [], onSubmit, isLoading, isFetched, sta
 						defaultValue: 'metadata',
 						options: ['latest', 'recentlyadded', 'metadata', 'popularity'],
 						mt: 2,
+						allowDirection: true,
 					}}
 				/>
 			)}

@@ -6,8 +6,9 @@ import PropTypes from 'prop-types';
 import useCommonStyles from '../../hooks/useCommonStyles';
 import { PROP_TYPES_DROPDOWN } from '../Dropdown/Dropdown.propTypes';
 import { useTranslation } from 'react-i18next';
+import { Button } from 'react-bootstrap';
 
-const SortDropdown = ({ onSort, className, options, mt, mb, ml, mr, width, value, direction, ...outerProps }) => {
+const SortDropdown = ({ onSort, className, options, mt, mb, ml, mr, width, value, direction, allowDirection, ...outerProps }) => {
 	const { t } = useTranslation();
 	const [state, setState] = React.useState({ value, direction });
 	const commonStyles = useCommonStyles({ mt, mb, ml, mr, width });
@@ -37,7 +38,7 @@ const SortDropdown = ({ onSort, className, options, mt, mb, ml, mr, width, value
 	}, [state]);
 
 	return (
-		<div style={{ display: 'flex', alignItems: 'center' }} className={cx('ui-SortDropdown', className, commonStyles)}>
+		<div className={cx('ui-SortDropdown', className, commonStyles, 'd-flex align-items-center')}>
 			<Dropdown
 				onSelect={handleSort}
 				options={options.map(value => ({
@@ -47,7 +48,19 @@ const SortDropdown = ({ onSort, className, options, mt, mb, ml, mr, width, value
 				value={state.value}
 				{...outerProps}
 			/>
-			<Icon name='arrow-down' role='button' onClick={handleOrder} ml={2} />
+			{allowDirection && (
+				<Button onClick={handleOrder} ml={2} variant='link'>
+					{state.direction === 'desc' && <Icon name='arrow-down' />}
+					{state.direction === 'asc' && (
+						<Icon
+							name='arrow-down'
+							style={{
+								transform: 'rotate(180deg)',
+							}}
+						/>
+					)}
+				</Button>
+			)}
 		</div>
 	);
 };
