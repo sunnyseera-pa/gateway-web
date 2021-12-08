@@ -6,9 +6,9 @@ import SearchInput from '../SearchInput';
 import SortDropdown from '../SortDropdown';
 import useCommonStyles from '../../hooks/useCommonStyles';
 
-const SearchControlsForm = ({ sortProps, inputProps, type, mt, mb, mr, ml, width }) => {
+const SearchControlsForm = ({ sortProps, inputProps, type, mt, mb, mr, ml, width, minWidth, maxWidth }) => {
 	const { t } = useTranslation();
-	const commonStyles = useCommonStyles({ mt, mb, mr, ml, width });
+	const commonStyles = useCommonStyles({ mt, mb, mr, ml, width, minWidth, maxWidth });
 
 	const {
 		submitForm,

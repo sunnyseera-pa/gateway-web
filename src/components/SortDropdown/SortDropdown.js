@@ -8,13 +8,28 @@ import { PROP_TYPES_DROPDOWN } from '../Dropdown/Dropdown.propTypes';
 import { useTranslation } from 'react-i18next';
 import { Button } from 'react-bootstrap';
 
-const SortDropdown = ({ onSort, className, options, mt, mb, ml, mr, width, value, direction, allowDirection, ...outerProps }) => {
+const SortDropdown = ({
+	onSort,
+	className,
+	options,
+	mt,
+	mb,
+	ml,
+	mr,
+	width,
+	minWidth,
+	maxWidth,
+	value,
+	direction,
+	allowDirection,
+	...outerProps
+}) => {
 	const { t } = useTranslation();
 	const [state, setState] = React.useState({
 		value,
 		direction,
 	});
-	const commonStyles = useCommonStyles({ mt, mb, ml, mr, width });
+	const commonStyles = useCommonStyles({ mt, mb, ml, mr, width, minWidth, maxWidth, width, minWidth, maxWidth });
 
 	const handleSort = React.useCallback(
 		value => {
@@ -56,6 +71,9 @@ const SortDropdown = ({ onSort, className, options, mt, mb, ml, mr, width, value
 					value,
 				}))}
 				value={state.value}
+				style={{
+					width: '100%',
+				}}
 				{...outerProps}
 			/>
 			{allowDirection && (

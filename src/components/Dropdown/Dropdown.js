@@ -9,8 +9,23 @@ import { addCommonPropTypes } from '../../configs/propTypes';
 import { cx } from '@emotion/css';
 import useCommonStyles from '../../hooks/useCommonStyles';
 
-const Dropdown = ({ defaultValue, value, options, variant, iconSelected, className, mt, mb, ml, mr, width, ...outerProps }) => {
-	const commonStyles = useCommonStyles({ mt, mb, ml, mr, width });
+const Dropdown = ({
+	defaultValue,
+	value,
+	options,
+	variant,
+	iconSelected,
+	className,
+	mt,
+	mb,
+	ml,
+	mr,
+	width,
+	minWidth,
+	maxWidth,
+	...outerProps
+}) => {
+	const commonStyles = useCommonStyles({ mt, mb, ml, mr, width, minWidth, maxWidth });
 	const currentValue = !value ? defaultValue : value;
 
 	const parseOption = option => {
