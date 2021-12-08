@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
 import { Dropdown, Nav, Navbar } from 'react-bootstrap';
 import SVGIcon from '../../../../images/SVGIcon';
+import tickSVG from '../../../../images/tick.svg';
+
 import './DoubleDropdowncustom.scss';
 
 const DoubleDropdownCustom = ({ options, id }) => {
 	const [closed, setClosed] = useState(true);
 	const [selectedValue, setSelectedValue] = useState(null);
+	const [tick, setTick] = useState(false);
+	//add typeahead that can select the options from the dropdown menu?!
 
 	const extra = options
 		.map(a => a.extraOptions)
@@ -14,6 +18,7 @@ const DoubleDropdownCustom = ({ options, id }) => {
 
 	const changingSelect = eventKey => {
 		setSelectedValue(eventKey);
+		setTick(true);
 	};
 
 	return (
@@ -42,12 +47,16 @@ const DoubleDropdownCustom = ({ options, id }) => {
 										{extra.map(a => (
 											<Dropdown.Item eventKey={a.text} onSelect={changingSelect}>
 												{a.value}
+												{a.value === selectedValue && tick && <img src={tickSVG} width='20' style={{ float: 'right', marginTop: '3px' }} />}
 											</Dropdown.Item>
 										))}
 									</Dropdown.Menu>
 								</Dropdown>
 							) : (
-								<Dropdown.Item eventKey={b.value}>{b.value} </Dropdown.Item>
+								<Dropdown.Item eventKey={b.value}>
+									{b.value}
+									{b.value === selectedValue && tick && <img src={tickSVG} width='20' style={{ float: 'right', marginTop: '3px' }} />}
+								</Dropdown.Item>
 							)
 						)}
 					</Dropdown.Menu>
