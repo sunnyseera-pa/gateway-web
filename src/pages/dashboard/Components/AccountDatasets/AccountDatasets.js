@@ -92,7 +92,7 @@ const AccountDatasets = props => {
 			);
 
 			setStatusCounts({
-				...data.data.data.counts,
+				...data.data.data.publisherTotals,
 				...reducedValues,
 				[key]: data.data.data.results.total,
 			});

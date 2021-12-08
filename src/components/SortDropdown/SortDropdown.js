@@ -49,7 +49,7 @@ const SortDropdown = ({ onSort, className, options, mt, mb, ml, mr, width, value
 			<Dropdown
 				onSelect={handleSort}
 				options={options.map(value => ({
-					label: t(`sortby.options.${value}`),
+					label: t(`sortby.options${allowDirection ? 'Sortable' : ''}.${value}`),
 					value,
 				}))}
 				value={state.value}
