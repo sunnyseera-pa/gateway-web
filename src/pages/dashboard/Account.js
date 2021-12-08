@@ -3,7 +3,7 @@ import axios from 'axios';
 import _ from 'lodash';
 import queryString from 'query-string';
 import React, { Component, Fragment, useState } from 'react';
-import { Accordion, Dropdown, Nav } from 'react-bootstrap';
+import { Accordion, Dropdown, Nav, Button } from 'react-bootstrap';
 import { Route } from 'react-router';
 import 'react-web-tabs/dist/react-web-tabs.css';
 import { ReactComponent as CheckSVG } from '../../images/check.svg';
@@ -33,6 +33,8 @@ import AccountUsers from './AccountUsers';
 import AccountDataset from './Components/AccountDataset';
 import './Dashboard.scss';
 import DataAccessRequests from './DataAccessRequests/DataAccessRequests';
+import CustomiseDAR from './CustomiseDAR/CustomiseDAR';
+import 'react-web-tabs/dist/react-web-tabs.css';
 import ReviewTools from './ReviewTools';
 import { tabTypes } from './Team/teamUtil';
 import TeamHelp from './TeamHelp/TeamHelp';
@@ -103,7 +105,10 @@ class Account extends Component {
 		isSubmitting: false,
 		teamManagementInternalTab: 'Notifications',
 		accountUpdated: false,
+		hasPublishedDARContent: false,
 		dataaccessrequest: {},
+		showConfirmPublishModal: false,
+		showHowToRequestAccessEditor: false,
 	};
 
 	constructor(props) {
@@ -143,6 +148,7 @@ class Account extends Component {
 					isReviewApproved: values.reviewApproved,
 					isReviewRejected: values.reviewRejected,
 					accountUpdated: !!values.accountUpdated,
+					hasPublishedDARContent: !!values.publishedDARContent,
 				});
 				this.toggleNav(tab);
 			}
@@ -180,7 +186,8 @@ class Account extends Component {
 					isReviewApproved: values.reviewApproved,
 					isReviewRejected: values.reviewRejected,
 					team,
-					activeAccordion: values.tab === 'dataaccessrequests' || values.tab === 'workflows' ? '0' : -1,
+					activeAccordion:
+						values.tab === 'dataaccessrequests' || values.tab === 'workflows' || values.tab === 'customisedataaccessrequests' ? '0' : -1,
 				});
 
 				if (team !== 'user' && team !== 'admin') {
@@ -382,7 +389,10 @@ class Account extends Component {
 			// 4. check if user has teams and the current nav is dataaccessrequests, keep expanded
 			if (
 				!_.isEmpty(user.teams) &&
-				(tab.tabId === 'dataaccessrequests' || tab.tabId === 'workflows' || tab.tabId === 'addeditworkflow') &&
+				(tab.tabId === 'dataaccessrequests' ||
+					tab.tabId === 'workflows' ||
+					tab.tabId === 'customisedataaccessrequests' ||
+					tab.tabId === 'addeditworkflow') &&
 				activeAccordion !== '0'
 			) {
 				activeAccordion = '0';
@@ -516,11 +526,11 @@ class Account extends Component {
 			isSubmitting,
 			teamManagementTab,
 			accountUpdated,
+			hasPublishedDARContent,
 			dataaccessrequest,
+			showConfirmPublishModal,
+			showHowToRequestAccessEditor,
 		} = this.state;
-
-		console.log('TEAM', team, userState);
-
 		return (
 			<Sentry.ErrorBoundary fallback={<ErrorModal />}>
 				<SearchBar
@@ -663,7 +673,13 @@ class Account extends Component {
 									</div>
 
 									{allowAccessRequestManagement && this.userHasRole(team, ['manager', 'reviewer']) && (
-										<div className={this.getNavActiveClass(['dataaccessrequests', 'workflows', 'addeditworkflow'])}>
+										<div
+											className={this.getNavActiveClass([
+												'dataaccessrequests',
+												'workflows',
+												'customisedataaccessrequests',
+												'addeditworkflow',
+											])}>
 											<Accordion activeKey={activeAccordion} onSelect={this.accordionClick}>
 												<Fragment>
 													<Accordion.Toggle variant='link' className='verticalNavBar gray700-13 navLinkButton' eventKey='0'>
@@ -684,6 +700,14 @@ class Account extends Component {
 																	bsPrefix='nav-block'
 																	className={`gray700-13 ${tabId === 'workflows' ? 'nav-item-active' : ''}`}>
 																	<span className='subLinkItem'>Workflows</span>
+																</Nav.Link>
+															)}
+															{this.userHasRole(team, 'manager') && (
+																<Nav.Link
+																	onClick={e => this.toggleNav('customisedataaccessrequests')}
+																	bsPrefix='nav-block'
+																	className={`gray700-13 ${tabId === 'customisedataaccessrequests' ? 'nav-item-active' : ''}`}>
+																	<span className='subLinkItem'>Customise</span>
 																</Nav.Link>
 															)}
 														</div>
@@ -796,6 +820,25 @@ class Account extends Component {
 								{allowWorkflow && this.userHasRole(team, 'manager') && (
 									<>{tabId === 'workflows' ? <WorkflowDashboard userState={userState} team={team} /> : ''}</>
 								)}
+
+								{(this.userHasRole(team, ['manager']) || team === 'admin') && (
+									<>
+										{tabId === 'customisedataaccessrequests' ? (
+											<CustomiseDAR
+												userState={userState}
+												hasPublishedDARContent={hasPublishedDARContent}
+												publisherId={team}
+												showConfirmPublishModal={showConfirmPublishModal}
+												setShowConfirmPublishModal={show => this.setState({ showConfirmPublishModal: show })}
+												showHowToRequestAccessEditor={showHowToRequestAccessEditor}
+												setShowHowToRequestAccessEditor={show => this.setState({ showHowToRequestAccessEditor: show })}
+											/>
+										) : (
+											''
+										)}
+									</>
+								)}
+
 								{tabId === 'teamManagement' ? (
 									<AccountTeamManagement
 										userState={userState}
@@ -863,6 +906,30 @@ class Account extends Component {
 							</button>
 						</div>
 					</ActionBar>
+				)}
+				{tabId === 'customisedataaccessrequests' && showHowToRequestAccessEditor ? (
+					<ActionBar userState={userState}>
+						<div className='floatRight'>
+							<a style={{ cursor: 'pointer' }} href={'/account?tab=customisedataaccessrequests'}>
+								<Button variant='medium' className='cancelButton dark-14 mr-2'>
+									Cancel
+								</Button>
+							</a>
+
+							<Button
+								data-test-id='add-collection-publish'
+								variant='primary'
+								className='publishButton white-14-semibold mr-2'
+								type='submit'
+								onClick={() => {
+									this.setState({ showConfirmPublishModal: true });
+								}}>
+								Publish
+							</Button>
+						</div>
+					</ActionBar>
+				) : (
+					''
 				)}
 				<DataSetModal open={showModal} context={context} closed={this.toggleModal} userState={userState[0]} />
 			</Sentry.ErrorBoundary>
