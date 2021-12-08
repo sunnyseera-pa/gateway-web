@@ -41,7 +41,7 @@
 .nest-dropdown-arrow {
 	cursor: pointer;
 	position: static;
-	margin-left: 40px;
+	margin-left: 100%;
 }
 .nested-dropdown-whole {
 	margin-left: 24px;
@@ -71,12 +71,12 @@
 }
 
 .double-dropdown-input {
-	width: 100% !important;
+	width: 105% !important;
 	text-align: left !important;
 }
 
-.btn-primary:focus,
-.btn-primary.focus {
+.double-dropdown-input:focus.btn-primary:focus,
+.double-dropdown-input:focus.btn-primary.focus {
 	box-shadow: 0 0 0 2px #3db28c !important;
 }
 
@@ -88,4 +88,15 @@
 
 .nested-dropdown-menu {
 	width: 95% !important;
+}
+
+.nested-dropdown-menu:focus.btn-primary:focus.btn-primary.focus,
+.nested-dropdown-menu:focus.btn-primary.focus.btn-primary.focus,
+.nested-dropdown-menu.btn-primary:focus,
+.nested-dropdown-menu:focus.btn:focus {
+	box-shadow: none !important;
+}
+
+.btn:focus {
+	box-shadow: none !important;
 }
