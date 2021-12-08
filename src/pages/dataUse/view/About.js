@@ -840,14 +840,13 @@ const About = ({ data, renderTooltip }) => {
 												<a href={`/tool/${gatewayOutputsTool.id}`}>
 													<span className='badge-tag badge-datause-bold'>{gatewayOutputsTool.name}</span>
 												</a>
-											))}
+											))}{' '}
 										{data &&
 											data.gatewayOutputsPapersInfo.map(gatewayOutputsPaper => (
 												<a href={`/paper/${gatewayOutputsPaper.id}`}>
 													<span className='badge-tag badge-datause-bold'>{gatewayOutputsPaper.name}</span>
 												</a>
-											))}
-
+											))}{' '}
 										{data &&
 											data.nonGatewayOutputs.map(nonGatewayOutput => (
 												<div>

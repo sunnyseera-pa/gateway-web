@@ -1308,7 +1308,8 @@ class SearchPage extends React.Component {
 		});
 	};
 
-	saveFiltersUpdate = viewSaved => {
+	saveFiltersUpdate = async viewSaved => {
+		await this.getFilters(viewSaved.tab);
 		this.setState({ showSavedPreferencesModal: false });
 		// 1. v2 take copy of data
 		let filtersV2DatasetsData = !_.isNil(this.state.filtersV2Datasets) ? [...this.state.filtersV2Datasets] : [];

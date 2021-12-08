@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col, Alert } from 'react-bootstrap';
+import { Row, Col, Alert, Button } from 'react-bootstrap';
 import { has } from 'lodash';
 import Loading from '../Loading';
 import SVGIcon from '../../../images/SVGIcon';
@@ -168,6 +168,7 @@ class RelatedObject extends React.Component {
 										showRelationshipQuestion={this.props.showRelationshipQuestion ? this.props.showRelationshipQuestion : false}
 										updateOnFilterBadge={this.updateOnFilterBadge}
 										removeButton={this.removeButton}
+										isLocked={this.props.isLocked}
 									/>
 								);
 							} else if (data.type === 'dataUseRegister') {
@@ -182,6 +183,18 @@ class RelatedObject extends React.Component {
 												<p className='black-bold-16 padding-bottom-4'>{data.projectTitle}</p>
 											)}
 											<p className='gray800-14'>{data.organisationName}</p>
+										</Col>
+										<Col sm={2} lg={2} className='pad-right-24'>
+											{this.props.showRelationshipQuestion ? (
+												<Button variant='medium' className='soft-black-14' onClick={this.removeButton}>
+													<SVGIcon name='closeicon' fill={'#979797'} className='buttonSvg mr-2' />
+													Remove
+												</Button>
+											) : (
+												''
+											)}
+										</Col>
+										<Col className='pad-left-24 pad-right-24 pad-top-16'>
 											<span className='badge-datause'>
 												<SVGIcon name='datauseicon' fill={'#fff'} className='badgeSvg mr-2' viewBox='-2 -2 22 22' />
 												<span>Data use</span>
@@ -223,6 +236,7 @@ class RelatedObject extends React.Component {
 										showRelationshipQuestion={this.props.showRelationshipQuestion ? this.props.showRelationshipQuestion : false}
 										updateOnFilterBadge={this.updateOnFilterBadge}
 										removeButton={this.removeButton}
+										isLocked={this.props.isLocked}
 									/>
 								);
 							} else if (data.type === 'person') {
@@ -256,12 +270,17 @@ class RelatedObject extends React.Component {
 										isCohortDiscovery={this.state.isCohortDiscovery}
 										updateOnFilterBadge={this.updateOnFilterBadge}
 										removeButton={this.removeButton}
+										isLocked={this.props.isLocked}
 									/>
 								);
 							}
 						})()}
 						{(() => {
-							if (this.props.showRelationshipQuestion && !(data.type === 'dataset' && data.activeflag === 'archive')) {
+							if (
+								this.props.showRelationshipQuestion &&
+								!(data.type === 'dataset' && data.activeflag === 'archive') &&
+								this.props.isLocked !== true
+							) {
 								return (
 									<>
 										<Row className='pad-top-24 noMargin'>
