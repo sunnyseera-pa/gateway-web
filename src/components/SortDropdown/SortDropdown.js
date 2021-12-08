@@ -10,7 +10,10 @@ import { Button } from 'react-bootstrap';
 
 const SortDropdown = ({ onSort, className, options, mt, mb, ml, mr, width, value, direction, allowDirection, ...outerProps }) => {
 	const { t } = useTranslation();
-	const [state, setState] = React.useState({});
+	const [state, setState] = React.useState({
+		value,
+		direction,
+	});
 	const commonStyles = useCommonStyles({ mt, mb, ml, mr, width });
 
 	const handleSort = React.useCallback(
@@ -57,8 +60,16 @@ const SortDropdown = ({ onSort, className, options, mt, mb, ml, mr, width, value
 			/>
 			{allowDirection && (
 				<Button onClick={handleOrder} ml={2} variant='link'>
-					{state.direction === 'desc' && <Icon name='sort-desc' size='lg' />}
-					{state.direction === 'asc' && <Icon name='sort-asc' size='lg' />}
+					{state.direction === 'desc' && (
+						<span className='ui-SortDropdown__desc'>
+							<Icon name='sort-desc' size='lg' />
+						</span>
+					)}
+					{state.direction === 'asc' && (
+						<span className='ui-SortDropdown__asc'>
+							<Icon name='sort-asc' size='lg' />
+						</span>
+					)}
 				</Button>
 			)}
 		</div>
@@ -74,6 +85,7 @@ SortDropdown.propTypes = {
 SortDropdown.defaultProps = {
 	allowDirection: false,
 	direction: 'asc',
+	value: '',
 };
 
 export default SortDropdown;

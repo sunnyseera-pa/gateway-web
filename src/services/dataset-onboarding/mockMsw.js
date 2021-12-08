@@ -4,7 +4,7 @@ import { apiURL } from '../../configs/url.config';
 export const mockGetPublisher = {
 	success: true,
 	data: {
-		counts: {
+		publisherTotals: {
 			inReview: 19,
 		},
 		results: {
