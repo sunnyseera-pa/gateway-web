@@ -1,3 +1,5 @@
+/** @jsx jsx */
+import { jsx } from '@emotion/react';
 import React from 'react';
 import { cx } from '@emotion/css';
 import Dropdown from '../Dropdown';
@@ -7,6 +9,7 @@ import useCommonStyles from '../../hooks/useCommonStyles';
 import { PROP_TYPES_DROPDOWN } from '../Dropdown/Dropdown.propTypes';
 import { useTranslation } from 'react-i18next';
 import { Button } from 'react-bootstrap';
+import * as styles from './SortDropdown.styles';
 
 const SortDropdown = ({
 	onSort,
@@ -63,21 +66,19 @@ const SortDropdown = ({
 	}, [value, direction]);
 
 	return (
-		<div className={cx('ui-SortDropdown', className, commonStyles, 'd-flex align-items-center')}>
+		<div css={styles.root} className={cx('ui-SortDropdown', className, commonStyles)}>
 			<Dropdown
+				css={styles.dropdown}
 				onSelect={handleSort}
 				options={options.map(value => ({
 					label: t(`sortby.options${allowDirection ? 'Sortable' : ''}.${value}`),
 					value,
 				}))}
 				value={state.value}
-				style={{
-					width: '100%',
-				}}
 				{...outerProps}
 			/>
 			{allowDirection && (
-				<Button onClick={handleOrder} ml={2} variant='link'>
+				<Button css={styles.button} onClick={handleOrder} ml={2} variant='link'>
 					{state.direction === 'desc' && (
 						<span className='ui-SortDropdown__desc'>
 							<Icon name='sort-desc' size='lg' />
