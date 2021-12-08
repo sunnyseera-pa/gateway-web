@@ -751,6 +751,8 @@ class Account extends Component {
 							</>
 						)}
 
+						<Route path='/account/datasets/:id' component={AccountDataset} />
+
 						{team !== 'user' ? (
 							<>
 								{allowAccessRequestManagement && this.userHasRole(team, ['manager', 'reviewer']) && (
@@ -779,10 +781,11 @@ class Account extends Component {
 										)}
 									</>
 								)}
+
 								{(this.userHasRole(team, ['manager', 'metadata_editor']) || team === 'admin') && (
 									<>{tabId === 'datasets' ? <AccountDatasets userState={userState} team={team} alert={alert} /> : ''}</>
 								)}
-								<Route path='/account/datasets/:id' component={AccountDataset} />
+
 								{team === 'admin' && (
 									<>
 										{tabId === 'teams' && (
