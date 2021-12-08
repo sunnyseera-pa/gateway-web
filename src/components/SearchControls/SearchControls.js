@@ -21,7 +21,7 @@ const SearchControls = ({ onSubmit, isLoading, sortProps, inputProps, formRef, e
 };
 
 SearchControls.defaultProps = {
-	enableReinitialize: false,
+	enableReinitialize: true,
 };
 
 export default SearchControls;
