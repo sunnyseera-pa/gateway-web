@@ -13,6 +13,7 @@
 .dropdown-menu.show {
 	border: none !important;
 	margin-left: -14px !important;
+	margin-right: -11px !important;
 }
 
 .dropdown-toggle {
@@ -21,6 +22,10 @@
 	margin-left: -14px;
 	width: 200px;
 	height: 42px;
+}
+
+.dropdown-toggle:after {
+	display: none !important;
 }
 
 .dropdown-toggle:focus,
@@ -43,6 +48,15 @@
 	position: static;
 	margin-left: 100%;
 }
+
+.main-dropdown-arrow {
+	cursor: pointer;
+	position: static;
+	margin-top: -25px;
+	padding-top: -20px;
+	float: right;
+}
+
 .nested-dropdown-whole {
 	margin-left: 24px;
 }
@@ -64,6 +78,7 @@
 
 .flip180 {
 	transform: rotateX(180deg);
+	margin-top: -20px;
 }
 
 .dropdown {
@@ -73,6 +88,9 @@
 .double-dropdown-input {
 	width: 105% !important;
 	text-align: left !important;
+	height: auto;
+	flex-direction: row;
+	flex-wrap: wrap;
 }
 
 .double-dropdown-input:focus.btn-primary:focus,
@@ -80,10 +98,20 @@
 	box-shadow: 0 0 0 2px #3db28c !important;
 }
 
+.selected-options-container {
+	min-height: 22px;
+	display: flex !important;
+	flex-wrap: wrap;
+}
+
 .dropdown-item.active,
 .dropdown-item:active {
-	color: #191919 !important;
-	background-color: #f3f3f3 !important;
+	color: $gray-900 !important;
+	background-color: white !important;
+}
+
+.dropdown-item:hover {
+	background-color: $gray-light !important;
 }
 
 .nested-dropdown-menu {

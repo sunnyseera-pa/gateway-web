@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import { Dropdown, Nav, Navbar } from 'react-bootstrap';
+import SelectedOption from './SelectedOption';
 import SVGIcon from '../../../../images/SVGIcon';
 import tickSVG from '../../../../images/tick.svg';
 
 import './DoubleDropdowncustom.scss';
 
 const DoubleDropdownCustom = ({ options, id }) => {
-	const [closed, setClosed] = useState(true);
-	const [selectedValue, setSelectedValue] = useState(null);
-	const [tick, setTick] = useState(false);
-	//add typeahead that can select the options from the dropdown menu?!
+	const [selectedValues, setSelectedValues] = useState([]);
+	const [dropdownOpen, setDropdownOpen] = useState(false);
+	const [nestedDropdownOpen, setNestedDropdownOpen] = useState(false);
 
 	const extra = options
 		.map(a => a.extraOptions)
@@ -17,21 +17,37 @@ const DoubleDropdownCustom = ({ options, id }) => {
 		.pop([]);
 
 	const changingSelect = eventKey => {
-		setSelectedValue(eventKey);
-		setTick(true);
+		if (selectedValues.indexOf(eventKey) === -1) {
+			setSelectedValues([...selectedValues, eventKey]);
+		}
+	};
+
+	const removeSelectedOption = option => {
+		setSelectedValues(selectedValues.filter(value => value !== option));
 	};
 
 	return (
 		<Navbar collapseOnSelect expand='lg'>
 			<Nav className='mr-auto'>
-				<Dropdown onSelect={changingSelect}>
+				<Dropdown onSelect={changingSelect} onToggle={() => setDropdownOpen(!dropdownOpen)} autoClose={false}>
 					<Dropdown.Toggle className='double-dropdown-input' id={id}>
-						{selectedValue}
+						<div className='selected-options-container'>
+							{selectedValues.map(selectedValue => {
+								return <SelectedOption text={selectedValue} close={() => removeSelectedOption(selectedValue)}></SelectedOption>;
+							})}
+						</div>
+						<SVGIcon
+							width='20px'
+							height='20px'
+							name='chevronbottom'
+							fill={'#475da7'}
+							className={!dropdownOpen ? 'chevron main-dropdown-arrow' : 'chevron flip180 main-dropdown-arrow'}
+						/>
 					</Dropdown.Toggle>
-					<Dropdown.Menu>
+					<Dropdown.Menu className={'dropdown-menu'}>
 						{options.map(b =>
 							b.value === 'Biomedical research' ? (
-								<Dropdown className='nested-dropdown-whole'>
+								<Dropdown className='nested-dropdown-whole' onToggle={() => setNestedDropdownOpen(!nestedDropdownOpen)}>
 									<Dropdown.Toggle className='nested-dropdown'>
 										Biomedical research
 										<SVGIcon
@@ -39,7 +55,7 @@ const DoubleDropdownCustom = ({ options, id }) => {
 											height='20px'
 											name='chevronbottom'
 											fill={'#475da7'}
-											className={closed ? 'chevron nest-dropdown-arrow' : 'chevron flip180 nest-dropdown-arrow'}
+											className={!nestedDropdownOpen ? 'chevron nest-dropdown-arrow' : 'chevron flip180 nest-dropdown-arrow'}
 										/>
 									</Dropdown.Toggle>
 
@@ -47,7 +63,7 @@ const DoubleDropdownCustom = ({ options, id }) => {
 										{extra.map(a => (
 											<Dropdown.Item eventKey={a.text} onSelect={changingSelect}>
 												{a.value}
-												{a.value === selectedValue && tick && <img src={tickSVG} width='20' style={{ float: 'right', marginTop: '3px' }} />}
+												{selectedValues.includes(a.value) && <img src={tickSVG} width='20' style={{ float: 'right', marginTop: '3px' }} />}
 											</Dropdown.Item>
 										))}
 									</Dropdown.Menu>
@@ -55,7 +71,7 @@ const DoubleDropdownCustom = ({ options, id }) => {
 							) : (
 								<Dropdown.Item eventKey={b.value}>
 									{b.value}
-									{b.value === selectedValue && tick && <img src={tickSVG} width='20' style={{ float: 'right', marginTop: '3px' }} />}
+									{selectedValues.includes(b.value) && <img src={tickSVG} width='20' style={{ float: 'right', marginTop: '3px' }} />}
 								</Dropdown.Item>
 							)
 						)}
