@@ -14,28 +14,33 @@ export const postCollectionCounterUpdateRequest = (data, options) => {
 	return postRequest(`${apiURL}/collectioncounter/update`, data, options);
 };
 
-const useGetCollectionRequest = (requestOptions, queryOptions = { queryKey: 'getCollectionRequest' }) => {
+const useGetCollectionRequest = (_id, requestOptions, queryOptions = { queryKey: 'getCollectionRequest' }) => {
 	return useQuery({
 		...queryOptions,
-		queryFn: _id => getCollectionRequest(_id, requestOptions),
+		queryKey: [queryOptions.queryKey, _id],
+		queryFn: async ({ queryKey }) => getCollectionRequest(queryKey[1], requestOptions),
 	});
 };
 
-const useGetCollectionRelatedObjectsRequest = (requestOptions, queryOptions = { queryKey: 'getCollectionRelatedObjectsRequest' }) => {
+const useGetCollectionRelatedObjectsRequest = (_id, requestOptions, queryOptions = { queryKey: 'getCollectionRelatedObjectsRequest' }) => {
 	return useQuery({
 		...queryOptions,
-		queryFn: _id => getCollectionRelatedObjectsRequest(_id, requestOptions),
+		queryKey: [queryOptions.queryKey, _id],
+		queryFn: async ({ queryKey }) => getCollectionRelatedObjectsRequest(queryKey[1], requestOptions),
 	});
 };
 
 const usePostCollectionCounterUpdateRequest = (requestOptions, mutateOptions = { queryKey: 'postCollectionCounterUpdateRequest' }) => {
-	return useMutation((data) => postCollectionCounterUpdateRequest(data, requestOptions), {
+	return useMutation(data => postCollectionCounterUpdateRequest(data, requestOptions), {
 		mutateOptions,
 	});
 };
 
 export default {
-    useGetCollectionRequest,
-    useGetCollectionRelatedObjectsRequest,
-    usePostCollectionCounterUpdateRequest
-}
+	getCollectionRequest,
+	getCollectionRelatedObjectsRequest,
+	postCollectionCounterUpdateRequest,
+	useGetCollectionRequest,
+	useGetCollectionRelatedObjectsRequest,
+	usePostCollectionCounterUpdateRequest,
+};

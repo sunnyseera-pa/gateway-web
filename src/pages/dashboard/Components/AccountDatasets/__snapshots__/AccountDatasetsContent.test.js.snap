@@ -3,13 +3,13 @@
 exports[`Given the AccountDatasetsContent component When it is rendered And has data Then matches the previous snapshot 1`] = `
 <div>
   <div
-    class="css-d2m248 row"
+    class="css-1fe7u86 row"
   >
     <div
       class="col-lg-6"
     >
       <div
-        class="ui-Input ui-SearchInput css-8x5ws2 css-107dhd5-Input input-group"
+        class="ui-Input ui-SearchInput css-nxqzw4 css-107dhd5-Input input-group"
       >
         <div
           class="css-j8o1xl-Input input-group-prepend"
@@ -35,10 +35,10 @@ exports[`Given the AccountDatasetsContent component When it is rendered And has 
       class="d-flex justify-content-end col-lg-4"
     >
       <div
-        class="ui-SortDropdown css-8x5ws2 d-flex align-items-center"
+        class="ui-SortDropdown css-qy5j8w css-16k9oib-SortDropdown"
       >
         <div
-          class="ui-Dropdown css-1xydy7z css-57mu23-Dropdown dropdown"
+          class="ui-Dropdown css-1sivg29 css-1quv89l-SortDropdown dropdown"
         >
           <button
             aria-expanded="false"
@@ -50,14 +50,18 @@ exports[`Given the AccountDatasetsContent component When it is rendered And has 
           </button>
         </div>
         <button
-          class="btn btn-link"
+          class="css-11u46hl-SortDropdown btn btn-link"
           ml="2"
           type="button"
         >
           <span
-            class="icon-mock"
+            class="ui-SortDropdown__desc"
           >
-            Icon
+            <span
+              class="icon-mock"
+            >
+              Icon
+            </span>
           </span>
         </button>
       </div>
@@ -1760,7 +1764,7 @@ exports[`Given the AccountDatasetsContent component When it is rendered And has 
                 class="time"
               >
                 <iconmock />
-                56 days since start
+                57 days since start
               </div>
               
               <div
@@ -1839,7 +1843,7 @@ exports[`Given the AccountDatasetsContent component When it is rendered And has 
                 class="time"
               >
                 <iconmock />
-                62 days since start
+                63 days since start
               </div>
               
               <div
@@ -1998,7 +2002,7 @@ exports[`Given the AccountDatasetsContent component When it is rendered And has 
                 class="time"
               >
                 <iconmock />
-                96 days since submission
+                97 days since submission
               </div>
               <div
                 class="sla sla-amber"
@@ -2133,7 +2137,7 @@ exports[`Given the AccountDatasetsContent component When it is rendered And has 
                 class="time"
               >
                 <iconmock />
-                70 days since start
+                71 days since start
               </div>
               
               <div
@@ -2212,7 +2216,7 @@ exports[`Given the AccountDatasetsContent component When it is rendered And has 
                 class="time"
               >
                 <iconmock />
-                70 days since start
+                71 days since start
               </div>
               
               <div
@@ -2292,7 +2296,7 @@ exports[`Given the AccountDatasetsContent component When it is rendered And has 
                 class="time"
               >
                 <iconmock />
-                76 days since submission
+                77 days since submission
               </div>
               <div
                 class="sla sla-amber"
@@ -2427,7 +2431,7 @@ exports[`Given the AccountDatasetsContent component When it is rendered And has 
                 class="time"
               >
                 <iconmock />
-                75 days since start
+                76 days since start
               </div>
               
               <div

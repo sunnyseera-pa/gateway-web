@@ -74,7 +74,7 @@ const useSearch = (mutateHook, options) => {
 
 	const query = React.useCallback(async (searchParams, cacheKey) => {
 		try {
-			const { data } = await mutateHook.mutateAsync(searchParams);
+			const { data, status } = await mutateHook.mutateAsync(searchParams);
 			const { total, onSuccess } = options;
 
 			setState({
