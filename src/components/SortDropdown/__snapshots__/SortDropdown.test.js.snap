@@ -3,10 +3,10 @@
 exports[`Given the SortDropdown component When it is rendered Then matches the previous snapshot 1`] = `
 <div>
   <div
-    class="ui-SortDropdown css-1xydy7z d-flex align-items-center"
+    class="ui-SortDropdown css-1sivg29 css-16k9oib-SortDropdown"
   >
     <div
-      class="ui-Dropdown css-1xydy7z css-57mu23-Dropdown show dropdown"
+      class="ui-Dropdown css-1sivg29 css-1quv89l-SortDropdown show dropdown"
     >
       <button
         aria-expanded="true"
@@ -54,10 +54,10 @@ exports[`Given the SortDropdown component When it is rendered Then matches the p
 exports[`Given the SortDropdown component When it is rendered When it allows sort direction Then matches the previous snapshot 1`] = `
 <div>
   <div
-    class="ui-SortDropdown css-1xydy7z d-flex align-items-center"
+    class="ui-SortDropdown css-1sivg29 css-16k9oib-SortDropdown"
   >
     <div
-      class="ui-Dropdown css-1xydy7z css-57mu23-Dropdown dropdown"
+      class="ui-Dropdown css-1sivg29 css-1quv89l-SortDropdown dropdown"
     >
       <button
         aria-expanded="false"
@@ -67,7 +67,7 @@ exports[`Given the SortDropdown component When it is rendered When it allows sor
       />
     </div>
     <button
-      class="btn btn-link"
+      class="css-11u46hl-SortDropdown btn btn-link"
       ml="2"
       type="button"
     >

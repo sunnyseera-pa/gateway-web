@@ -79,16 +79,9 @@ const SortDropdown = ({
 			/>
 			{allowDirection && (
 				<Button css={styles.button} onClick={handleOrder} ml={2} variant='link'>
-					{state.direction === 'desc' && (
-						<span className='ui-SortDropdown__desc'>
-							<Icon name='sort-desc' size='lg' />
-						</span>
-					)}
-					{state.direction === 'asc' && (
-						<span className='ui-SortDropdown__asc'>
-							<Icon name='sort-asc' size='lg' />
-						</span>
-					)}
+					<span className={`ui-SortDropdown__${state.direction}`}>
+						<Icon name={`sort-${state.direction}`} size='lg' />
+					</span>
 				</Button>
 			)}
 		</div>
