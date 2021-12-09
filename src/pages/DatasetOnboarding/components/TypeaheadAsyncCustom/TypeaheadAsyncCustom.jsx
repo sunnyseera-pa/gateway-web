@@ -1,20 +1,11 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/react';
 import React, { useState, useEffect } from 'react';
-<<<<<<< HEAD
 import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 import serviceLocations from '../../../../services/locations/locations';
 import DatasetOnboardingHelperUtil from '../../../../utils/DatasetOnboardingHelper.util';
 import Icon from '../../../../components/Icon';
 import * as styles from './TypeaheadAsyncCustom.styles';
-=======
-import { AsyncTypeahead, ClearButton } from 'react-bootstrap-typeahead';
-import { Spinner } from 'react-bootstrap';
-import serviceLocations from '../../../../services/locations/locations';
-import DatasetOnboardingHelperUtil from '../../../../utils/DatasetOnboardingHelper.util';
-import * as styles from './TypeaheadAsyncCustom.styles';
-import searchIcon from '../../../../images/search.svg';
->>>>>>> b01b0edc3d2f6a99c95c27216d91655d111277d8
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 
 function TypeaheadAsyncCustom(props) {
@@ -87,7 +78,7 @@ function TypeaheadAsyncCustom(props) {
 				<div className='icons'>
 					{showIcon && !selected.length && (
 						<span data-testid='searchicon'>
-							<Icon name='search' size='xl' fill='purple' />
+							<Icon name='search' size='xl' mt={2} fill='purple' />
 						</span>
 					)}
 				</div>
