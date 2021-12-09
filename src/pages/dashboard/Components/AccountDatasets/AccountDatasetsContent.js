@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router';
+import pluralize from 'pluralize';
 import DatasetCard from '../../../commonComponents/DatasetCard';
 import SearchResults from '../../../commonComponents/SearchResults';
 import Icon from '../../../../components/Icon';
 import SearchControls from '../../../../components/SearchControls';
 import '../../Dashboard.scss';
+import NotFound from '../../../commonComponents/NotFound';
 
 const AccountDatasetsContent = ({ data = [], onSubmit, isLoading, isFetched, status, params, team }) => {
 	const [searchValue, setSearchValue] = useState();
@@ -76,6 +78,7 @@ const AccountDatasetsContent = ({ data = [], onSubmit, isLoading, isFetched, sta
 
 			<SearchResults
 				data={data}
+				errorMessage={({ type }) => <NotFound word={pluralize(type)} />}
 				results={data =>
 					data.map(dataset => (
 						<DatasetCard

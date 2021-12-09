@@ -69,7 +69,10 @@
 	"datasets": "Datasets",
 	"viewForm": "View form",
 	"search": {
-		"placeholder": "Search within {{type}}"
+		"placeholder": "Search within {{type}}",
+		"results": {
+			"notFound": "Could not find any {{type}} matching {{search}}"
+		}
 	},
 	"tabs": {
 		"counts": {

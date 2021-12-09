@@ -18,6 +18,7 @@ const SearchResults = ({
 	updateOnFilterBadge,
 	isLoading,
 	totalPages,
+	errorMessage,
 }) => (
 	<>
 		<div style={{ marginTop: '8px' }}>
@@ -28,7 +29,8 @@ const SearchResults = ({
 							<div className='text-right save-dropdown'>{sort}</div>
 						</Row>
 					)}
-					{count <= 0 && <NoResults type={type} searchString={search} />}
+					{count <= 0 && !errorMessage && <NoResults type={type} searchString={search} />}
+					{count <= 0 && errorMessage && errorMessage({ search, type })}
 					{!results &&
 						count > 0 &&
 						data.map(item => {
