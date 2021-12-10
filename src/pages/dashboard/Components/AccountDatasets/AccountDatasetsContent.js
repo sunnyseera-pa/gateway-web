@@ -50,7 +50,7 @@ const AccountDatasetsContent = ({ data = [], onSubmit, isLoading, isFetched, sta
 		return datasetCardProps;
 	};
 
-	const { search, sortBy, sortDirection, maxResults } = params;
+	const { search, sortBy, sortDirection, limit } = params;
 
 	return (
 		<>
@@ -96,7 +96,7 @@ const AccountDatasetsContent = ({ data = [], onSubmit, isLoading, isFetched, sta
 					))
 				}
 				count={count}
-				maxResults={maxResults}
+				maxResults={limit}
 				type='dataset'
 				isLoading={isLoading}
 				search={searchValue}

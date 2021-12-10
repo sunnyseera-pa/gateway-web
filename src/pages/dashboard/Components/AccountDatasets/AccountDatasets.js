@@ -24,7 +24,7 @@ const AccountDatasets = props => {
 	const searchOptions = useMemo(
 		() => ({
 			initialParams: {
-				maxResults: MAXRESULTS,
+				limit: MAXRESULTS,
 				search: '',
 				sortBy: 'latest',
 				sortDirection: 'desc',

@@ -5,7 +5,7 @@ import usePersistState from '../../hooks/usePersistState';
 const useSearch = (mutateHook, options) => {
 	const [params, setParams] = React.useState(
 		options.initialParams || {
-			maxResults: 10,
+			limit: 10,
 			page: 1,
 		}
 	);
@@ -22,8 +22,8 @@ const useSearch = (mutateHook, options) => {
 	const { total } = state;
 
 	const hasNext = React.useCallback(() => {
-		const { maxResults, page } = params;
-		return page < Math.ceil(total / maxResults);
+		const { limit, page } = params;
+		return page < Math.ceil(total / limit);
 	}, [params, total]);
 
 	const hasPrevious = React.useCallback(() => {
@@ -44,7 +44,7 @@ const useSearch = (mutateHook, options) => {
 		async (searchParams, cacheKey) => {
 			const filteredParams = pickBy(searchParams, value => value !== '');
 			const queryParams = {
-				maxResults: params.maxResults,
+				limit: params.limit,
 				page,
 				...filteredParams,
 			};
@@ -74,7 +74,7 @@ const useSearch = (mutateHook, options) => {
 
 	const query = React.useCallback(async (searchParams, cacheKey) => {
 		try {
-			const { data, status } = await mutateHook.mutateAsync(searchParams);
+			const { data } = await mutateHook.mutateAsync(searchParams);
 			const { total, onSuccess } = options;
 
 			setState({
