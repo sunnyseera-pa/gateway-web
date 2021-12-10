@@ -24,7 +24,7 @@ import SearchInput from './SearchInput';
 			const handleChange = React.useCallback(({ target: { value } }) => {
 				setValue(value);
 			}, []);
-			return <SearchInput placeholder='Search with collection' onReset={handleReset} onChange={handleChange} value={value} />;
+			return <SearchInput placeholder='Search with collection' onReset={handleReset} onChange={handleChange} value={value} width='350px' />;
 		}}
 	</Story>
 </Canvas>
