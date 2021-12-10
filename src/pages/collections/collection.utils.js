@@ -45,9 +45,9 @@ export const filterCollectionItems = (objectData, searchCollectionsString) => {
 
 export const generatePaginatedItems = (key, count, index, paginate) => {
 	const items = [];
-	const maxResult = 24;
+	const maxResults = 24;
 
-	for (let i = 1; i <= Math.ceil(count / maxResult); i++) {
+	for (let i = 1; i <= Math.ceil(count / maxResults); i++) {
 		items.push(
 			<Pagination.Item
 				key={i}

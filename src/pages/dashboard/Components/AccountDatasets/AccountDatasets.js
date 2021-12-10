@@ -11,6 +11,7 @@ import '../../Dashboard.scss';
 import AccountDatasetsContent from './AccountDatasetsContent';
 import AccountDatasetsCreate from './AccountDatasetsCreate';
 import AccountDatasetsTabs from './AccountDatasetsTabs';
+import { MAXRESULTS } from '../../../collections/constants';
 
 const AccountDatasets = props => {
 	const [key, setKey] = useState();
@@ -23,7 +24,7 @@ const AccountDatasets = props => {
 	const searchOptions = useMemo(
 		() => ({
 			initialParams: {
-				maxResults: 1000,
+				maxResults: MAXRESULTS,
 				search: '',
 				sortBy: 'latest',
 				sortDirection: 'desc',
@@ -100,7 +101,7 @@ const AccountDatasets = props => {
 	}, [data]);
 
 	const AccountDatasetsResults = useCallback(
-		({ isLoading, isFetched, datasets, params, team }) => (
+		({ isLoading, isFetched, datasets, params, team, count }) => (
 			<AccountDatasetsContent
 				isLoading={isLoading}
 				isFetched={isFetched}
@@ -109,6 +110,7 @@ const AccountDatasets = props => {
 				team={team}
 				params={params}
 				status={key}
+				count={count}
 			/>
 		),
 		[key]
@@ -127,6 +129,7 @@ const AccountDatasets = props => {
 					datasets={data && data.data.data.results.listOfDatasets}
 					params={params}
 					team={team}
+					count={statusCounts[key]}
 				/>
 			</LayoutContent>
 		</div>

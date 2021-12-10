@@ -9,7 +9,7 @@ import SearchControls from '../../../../components/SearchControls';
 import '../../Dashboard.scss';
 import MessageNotFound from '../../../commonComponents/MessageNotFound';
 
-const AccountDatasetsContent = ({ data = [], onSubmit, isLoading, isFetched, status, params, team }) => {
+const AccountDatasetsContent = ({ data = [], onSubmit, isLoading, isFetched, status, params, team, count }) => {
 	const [searchValue, setSearchValue] = useState();
 	const history = useHistory();
 
@@ -50,7 +50,7 @@ const AccountDatasetsContent = ({ data = [], onSubmit, isLoading, isFetched, sta
 		return datasetCardProps;
 	};
 
-	const { search, sortBy, sortDirection } = params;
+	const { search, sortBy, sortDirection, maxResults } = params;
 
 	return (
 		<>
@@ -95,7 +95,8 @@ const AccountDatasetsContent = ({ data = [], onSubmit, isLoading, isFetched, sta
 						/>
 					))
 				}
-				count={data.length}
+				count={count}
+				maxResults={maxResults}
 				type='dataset'
 				isLoading={isLoading}
 				search={searchValue}

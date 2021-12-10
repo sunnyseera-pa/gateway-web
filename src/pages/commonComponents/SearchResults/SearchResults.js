@@ -14,7 +14,7 @@ const SearchResults = ({
 	sort,
 	pageNumber,
 	onPagination,
-	maxResult,
+	maxResults,
 	updateOnFilterBadge,
 	isLoading,
 	totalPages,
@@ -29,8 +29,7 @@ const SearchResults = ({
 							<div className='text-right save-dropdown'>{sort}</div>
 						</Row>
 					)}
-					{count <= 0 && !errorMessage && <NoResults type={type} searchString={search} />}
-					{count <= 0 && errorMessage && errorMessage({ search, type })}
+					{count <= 0 && (!errorMessage ? <NoResults type={type} searchString={search} /> : errorMessage({ search, type }))}
 					{!results &&
 						count > 0 &&
 						data.map(item => {
@@ -39,10 +38,10 @@ const SearchResults = ({
 							);
 						})}
 					{results && count > 0 && results(data)}
-					{count > maxResult && (
+					{count > maxResults && (
 						<Pagination>
 							{new Array(Math.ceil(totalPages)).fill().map((value, i) => (
-								<Pagination.Item key={i} active={i === pageNumber} onClick={() => onPagination(type, i * maxResult)}>
+								<Pagination.Item key={i} active={i === pageNumber} onClick={() => onPagination(type, i * maxResults)}>
 									{i + 1}
 								</Pagination.Item>
 							))}

@@ -31,7 +31,7 @@ export const AccountPapers = props => {
 	const actionModalConfig = {
 		title: 'Reject this Paper?',
 	};
-	const maxResult = 40;
+	const maxResults = 40;
 
 	useEffect(() => {
 		doPapersCall('active', true, 0, true);
@@ -68,7 +68,7 @@ export const AccountPapers = props => {
 		if (typeof index === 'undefined') {
 			apiUrl = baseURL + `/api/v1/papers/getList?status=${key}`;
 		} else {
-			apiUrl = baseURL + `/api/v1/papers/getList?status=${key}&offset=${index}&limit=${maxResult}`;
+			apiUrl = baseURL + `/api/v1/papers/getList?status=${key}&offset=${index}&limit=${maxResults}`;
 		}
 
 		axios.get(apiUrl).then(res => {
@@ -98,13 +98,13 @@ export const AccountPapers = props => {
 				if (shouldChangeTab()) {
 					setKey('active');
 					doPapersCall('active', true);
-				} else if (!shouldChangeTab() && count - (index + maxResult) <= 0 && count % maxResult === 1) {
+				} else if (!shouldChangeTab() && count - (index + maxResults) <= 0 && count % maxResults === 1) {
 					if (key === 'pending') {
-						setPendingIndex(index - maxResult);
+						setPendingIndex(index - maxResults);
 					} else if (key === 'archive') {
-						setArchiveIndex(index - maxResult);
+						setArchiveIndex(index - maxResults);
 					}
-					doPapersCall(key, true, index - maxResult);
+					doPapersCall(key, true, index - maxResults);
 				} else if (!shouldChangeTab()) {
 					doPapersCall(key, true, index);
 				}
@@ -122,13 +122,13 @@ export const AccountPapers = props => {
 				if (shouldChangeTab()) {
 					setKey('active');
 					doPapersCall('active', true);
-				} else if (!shouldChangeTab() && count - (index + maxResult) <= 0 && count % maxResult === 1) {
+				} else if (!shouldChangeTab() && count - (index + maxResults) <= 0 && count % maxResults === 1) {
 					if (key === 'pending') {
-						setPendingIndex(index - maxResult);
+						setPendingIndex(index - maxResults);
 					} else if (key === 'archive') {
-						setArchiveIndex(index - maxResult);
+						setArchiveIndex(index - maxResults);
 					}
-					doPapersCall(key, true, index - maxResult);
+					doPapersCall(key, true, index - maxResults);
 				} else if (!shouldChangeTab()) {
 					doPapersCall(key, true, index);
 				}
@@ -143,9 +143,9 @@ export const AccountPapers = props => {
 			})
 			.then(res => {
 				setKey('active');
-				if (activeCount - (activeIndex + maxResult) <= 0 && activeCount % maxResult === 1) {
-					setActiveIndex(activeIndex - maxResult);
-					doPapersCall(key, true, activeIndex - maxResult);
+				if (activeCount - (activeIndex + maxResults) <= 0 && activeCount % maxResults === 1) {
+					setActiveIndex(activeIndex - maxResults);
+					doPapersCall(key, true, activeIndex - maxResults);
 				} else {
 					doPapersCall('active', true, activeIndex);
 				}
@@ -501,47 +501,47 @@ export const AccountPapers = props => {
 
 				{!isResultsLoading && (
 					<div className='text-center entityDashboardPagination'>
-						{key === 'active' && activeCount > maxResult ? (
+						{key === 'active' && activeCount > maxResults ? (
 							<PaginationHelper
 								doEntitiesCall={doPapersCall}
 								entityCount={activeCount}
 								statusKey={key}
 								paginationIndex={activeIndex}
 								setPaginationIndex={setActiveIndex}
-								maxResult={maxResult}></PaginationHelper>
+								maxResults={maxResults}></PaginationHelper>
 						) : (
 							''
 						)}
-						{key === 'pending' && reviewCount > maxResult ? (
+						{key === 'pending' && reviewCount > maxResults ? (
 							<PaginationHelper
 								doEntitiesCall={doPapersCall}
 								entityCount={reviewCount}
 								statusKey={key}
 								paginationIndex={pendingIndex}
 								setPaginationIndex={setPendingIndex}
-								maxResult={maxResult}></PaginationHelper>
+								maxResults={maxResults}></PaginationHelper>
 						) : (
 							''
 						)}
-						{key === 'rejected' && rejectedCount > maxResult ? (
+						{key === 'rejected' && rejectedCount > maxResults ? (
 							<PaginationHelper
 								doEntitiesCall={doPapersCall}
 								entityCount={rejectedCount}
 								statusKey={key}
 								paginationIndex={rejectedIndex}
 								setPaginationIndex={setRejectedIndex}
-								maxResult={maxResult}></PaginationHelper>
+								maxResults={maxResults}></PaginationHelper>
 						) : (
 							''
 						)}
-						{key === 'archive' && archiveCount > maxResult ? (
+						{key === 'archive' && archiveCount > maxResults ? (
 							<PaginationHelper
 								doEntitiesCall={doPapersCall}
 								entityCount={archiveCount}
 								statusKey={key}
 								paginationIndex={archiveIndex}
 								setPaginationIndex={setArchiveIndex}
-								maxResult={maxResult}></PaginationHelper>
+								maxResults={maxResults}></PaginationHelper>
 						) : (
 							''
 						)}
