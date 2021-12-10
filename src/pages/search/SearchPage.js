@@ -705,10 +705,10 @@ class SearchPage extends React.Component {
 		});
 	};
 
-	handleSort = sort => {
+	handleSort = ({ value }) => {
 		const entityType = typeMapper[`${this.state.key}`];
-		googleAnalytics.recordEvent(`${entityType}s`, `Sorted search results by ${sort}`, 'Sort dropdown option changed');
-		this.setState({ [`${entityType}Sort`]: sort, isResultsLoading: true }, () => {
+		googleAnalytics.recordEvent(`${entityType}s`, `Sorted search results by ${value}`, 'Sort dropdown option changed');
+		this.setState({ [`${entityType}Sort`]: value, isResultsLoading: true }, () => {
 			this.doSearchCall();
 		});
 	};
