@@ -611,6 +611,12 @@ class DataAccessRequest extends Component {
 			questionAnswers[organisation] = contributor.organisation;
 		}
 
+		if (id === 'safeprojecttypeofresearch' && typeof questionAnswers.safeprojecttypeofresearch === 'object') {
+			let typeOfResearch = questionAnswers.safeprojecttypeofresearch;
+
+			questionAnswers.safeprojecttypeofresearch = `${typeOfResearch.options}`;
+		}
+
 		if (!_.isEmpty(id) && !_.isEmpty(questionAnswers)) {
 			let { lookup, activePanelId } = this.state;
 			// 1. check for auto complete
