@@ -6,7 +6,7 @@ import tickSVG from '../../../../images/tick.svg';
 
 import './DoubleDropdowncustom.scss';
 
-const DoubleDropdownCustom = ({ options, id }) => {
+const DoubleDropdownCustom = ({ options, id, onFocus, onBlur, value }) => {
 	const [selectedValues, setSelectedValues] = useState([]);
 	const [dropdownOpen, setDropdownOpen] = useState(false);
 	const [nestedDropdownOpen, setNestedDropdownOpen] = useState(false);
@@ -26,10 +26,19 @@ const DoubleDropdownCustom = ({ options, id }) => {
 		setSelectedValues(selectedValues.filter(value => value !== option));
 	};
 
+	const handleFocus = e => {
+		onFocus();
+	};
+
 	return (
 		<Navbar collapseOnSelect expand='lg'>
 			<Nav className='mr-auto'>
-				<Dropdown onSelect={changingSelect} onToggle={() => setDropdownOpen(!dropdownOpen)} autoClose={false}>
+				<Dropdown
+					onSelect={changingSelect}
+					onChange={changingSelect}
+					onFocus={handleFocus}
+					onToggle={() => setDropdownOpen(!dropdownOpen)}
+					autoClose={false}>
 					<Dropdown.Toggle className='double-dropdown-input' id={id}>
 						<div className='selected-options-container'>
 							{selectedValues.map(selectedValue => {
