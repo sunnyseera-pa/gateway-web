@@ -974,7 +974,7 @@ class SearchPage extends React.Component {
 	 * @return new tree
 	 */
 	resetTreeChecked = tree => {
-		if (_.isEmpty(tree)) return;
+		if (_.isEmpty(tree)) return [];
 
 		tree.forEach(node => {
 			if (typeof node.selectedCount !== 'undefined') node.selectedCount = 0;

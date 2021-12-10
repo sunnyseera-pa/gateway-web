@@ -180,6 +180,10 @@ const AccountDataset = props => {
 
 			return <Redirect to='/account?tab=datasets' />;
 		}
+	} else if (dataPublisher.isError) {
+		NotificationManager.error('You do not have permission to access this resource', 'Unauthorised', 10000);
+
+		return <Redirect to='/account?tab=youraccount' />;
 	}
 
 	return currentDataset ? (
