@@ -10,7 +10,6 @@ const DoubleDropdownCustom = ({ options, id, onFocus, onChange }) => {
 	const [selectedValues, setSelectedValues] = useState([]);
 	const [dropdownOpen, setDropdownOpen] = useState(false);
 	const [nestedDropdownOpen, setNestedDropdownOpen] = useState(false);
-	const [value, setValue] = useState(selectedValues);
 
 	const extra = options
 		.map(a => a.extraOptions)
@@ -23,9 +22,11 @@ const DoubleDropdownCustom = ({ options, id, onFocus, onChange }) => {
 		}
 	};
 
-	const handlechange = e => {
-		setValue(selectedValues);
-		this.props.onChange.bind(null, selectedValues);
+	const handlechange = eventKey => {
+		if (selectedValues.indexOf(eventKey) === -1) {
+			setSelectedValues([...selectedValues, eventKey]);
+		}
+		onChange.bind(null, selectedValues);
 	};
 
 	const removeSelectedOption = option => {
