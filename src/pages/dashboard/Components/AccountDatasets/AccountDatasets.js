@@ -25,7 +25,7 @@ const AccountDatasets = props => {
 			initialParams: {
 				maxResults: 1000,
 				search: '',
-				sortBy: 'metadata',
+				sortBy: 'latest',
 				sortDirection: 'desc',
 				page: 1,
 			},

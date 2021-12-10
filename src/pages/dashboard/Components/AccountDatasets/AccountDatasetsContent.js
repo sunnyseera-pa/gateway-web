@@ -67,7 +67,6 @@ const AccountDatasetsContent = ({ data = [], onSubmit, isLoading, isFetched, sta
 					sortProps={{
 						direction: sortDirection,
 						value: sortBy,
-						defaultValue: 'latest',
 						options: ['alphabetic', 'latest', 'recentlyadded', 'metadata', 'popularity'],
 						mt: 2,
 						allowDirection: true,
@@ -108,7 +107,7 @@ const AccountDatasetsContent = ({ data = [], onSubmit, isLoading, isFetched, sta
 AccountDatasetsContent.defaultProps = {
 	params: {
 		search: '',
-		sortBy: 'metadata',
+		sortBy: 'latest',
 		sortDirection: 'desc',
 	},
 };
