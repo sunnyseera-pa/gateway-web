@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import moment from 'moment';
 import { Row, Col, Button, Tabs, Tab, DropdownButton, Dropdown } from 'react-bootstrap';
-import NotFound from '../commonComponents/NotFound';
+import MessageNotFound from '../commonComponents/MessageNotFound';
 import Loading from '../commonComponents/Loading';
 import ActionModal from '../commonComponents/ActionModal/ActionModal';
 import './Dashboard.scss';
@@ -236,7 +236,7 @@ export const AccountProjects = props => {
 
 										{activeCount <= 0 ? (
 											<Row className='margin-right-15'>
-												<NotFound word='projects' />
+												<MessageNotFound word='projects' />
 											</Row>
 										) : (
 											projectsList.map(project => {
@@ -296,7 +296,7 @@ export const AccountProjects = props => {
 
 										{reviewCount <= 0 ? (
 											<Row className='margin-right-15'>
-												<NotFound word='projects' />
+												<MessageNotFound word='projects' />
 											</Row>
 										) : (
 											projectsList.map(project => {
@@ -378,7 +378,7 @@ export const AccountProjects = props => {
 
 										{rejectedCount <= 0 ? (
 											<Row className='margin-right-15'>
-												<NotFound word='projects' />
+												<MessageNotFound word='projects' />
 											</Row>
 										) : (
 											projectsList.map(project => {
@@ -431,7 +431,7 @@ export const AccountProjects = props => {
 
 										{archiveCount <= 0 ? (
 											<Row className='margin-right-15'>
-												<NotFound word='projects' />
+												<MessageNotFound word='projects' />
 											</Row>
 										) : (
 											projectsList.map(project => {

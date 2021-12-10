@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import moment from 'moment';
 import { Row, Col, Button, Tabs, Tab, DropdownButton, Dropdown } from 'react-bootstrap';
-import NotFound from '../commonComponents/NotFound';
+import MessageNotFound from '../commonComponents/MessageNotFound';
 import Loading from '../commonComponents/Loading';
 import './Dashboard.scss';
 import ActionModal from '../commonComponents/ActionModal/ActionModal';
@@ -236,7 +236,7 @@ export const AccountPapers = props => {
 										)}
 										{activeCount <= 0 ? (
 											<Row className='margin-right-15'>
-												<NotFound word='papers' />
+												<MessageNotFound word='papers' />
 											</Row>
 										) : (
 											papersList.map((paper, i) => {
@@ -294,7 +294,7 @@ export const AccountPapers = props => {
 										)}
 										{reviewCount <= 0 ? (
 											<Row className='margin-right-15'>
-												<NotFound word='papers' />
+												<MessageNotFound word='papers' />
 											</Row>
 										) : (
 											papersList.map(paper => {
@@ -374,7 +374,7 @@ export const AccountPapers = props => {
 										)}
 										{rejectedCount <= 0 ? (
 											<Row className='margin-right-15'>
-												<NotFound word='papers' />
+												<MessageNotFound word='papers' />
 											</Row>
 										) : (
 											papersList.map(paper => {
@@ -425,7 +425,7 @@ export const AccountPapers = props => {
 										)}
 										{archiveCount <= 0 ? (
 											<Row className='margin-right-15'>
-												<NotFound word='papers' />
+												<MessageNotFound word='papers' />
 											</Row>
 										) : (
 											papersList.map(paper => {

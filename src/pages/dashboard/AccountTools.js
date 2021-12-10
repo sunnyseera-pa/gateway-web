@@ -2,7 +2,7 @@ import React, { Fragment, useState, useEffect } from 'react';
 import axios from 'axios';
 import moment from 'moment';
 import { Row, Col, Button, Tabs, Tab, DropdownButton, Dropdown } from 'react-bootstrap';
-import NotFound from '../commonComponents/NotFound';
+import MessageNotFound from '../commonComponents/MessageNotFound';
 import Loading from '../commonComponents/Loading';
 import './Dashboard.scss';
 import ActionModal from '../commonComponents/ActionModal/ActionModal';
@@ -235,7 +235,7 @@ export const AccountTools = props => {
 
 										{activeCount <= 0 ? (
 											<Row className='margin-right-15'>
-												<NotFound word='tools' />
+												<MessageNotFound word='tools' />
 											</Row>
 										) : (
 											toolsList.map(tool => {
@@ -295,7 +295,7 @@ export const AccountTools = props => {
 
 										{reviewCount <= 0 ? (
 											<Row className='margin-right-15'>
-												<NotFound word='tools' />
+												<MessageNotFound word='tools' />
 											</Row>
 										) : (
 											toolsList.map(tool => {
@@ -377,7 +377,7 @@ export const AccountTools = props => {
 
 										{rejectedCount <= 0 ? (
 											<Row className='margin-right-15'>
-												<NotFound word='tools' />
+												<MessageNotFound word='tools' />
 											</Row>
 										) : (
 											toolsList.map(tool => {
@@ -430,7 +430,7 @@ export const AccountTools = props => {
 
 										{archiveCount <= 0 ? (
 											<Row className='margin-right-15'>
-												<NotFound word='tools' />
+												<MessageNotFound word='tools' />
 											</Row>
 										) : (
 											toolsList.map(tool => {

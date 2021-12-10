@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import moment from 'moment';
 import { Row, Col, Button, Tabs, Tab, DropdownButton, Dropdown } from 'react-bootstrap';
-import NotFound from '../commonComponents/NotFound';
+import MessageNotFound from '../commonComponents/MessageNotFound';
 import Loading from '../commonComponents/Loading';
 import './Dashboard.scss';
 import ActionModal from '../commonComponents/ActionModal/ActionModal';
@@ -237,7 +237,7 @@ export const AccountCourses = props => {
 
 										{activeCount <= 0 ? (
 											<Row className='margin-right-15'>
-												<NotFound word='courses' />
+												<MessageNotFound word='courses' />
 											</Row>
 										) : (
 											coursesList.map((course, i) => {
@@ -300,7 +300,7 @@ export const AccountCourses = props => {
 
 										{reviewCount <= 0 ? (
 											<Row className='margin-right-15'>
-												<NotFound word='courses' />
+												<MessageNotFound word='courses' />
 											</Row>
 										) : (
 											coursesList.map(course => {
@@ -382,7 +382,7 @@ export const AccountCourses = props => {
 
 										{rejectedCount <= 0 ? (
 											<Row className='margin-right-15'>
-												<NotFound word='courses' />
+												<MessageNotFound word='courses' />
 											</Row>
 										) : (
 											coursesList.map(course => {
@@ -435,7 +435,7 @@ export const AccountCourses = props => {
 
 										{archiveCount <= 0 ? (
 											<Row className='margin-right-15'>
-												<NotFound word='courses' />
+												<MessageNotFound word='courses' />
 											</Row>
 										) : (
 											coursesList.map(course => {

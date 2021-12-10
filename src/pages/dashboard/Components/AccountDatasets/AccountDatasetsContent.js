@@ -7,7 +7,7 @@ import SearchResults from '../../../commonComponents/SearchResults';
 import Icon from '../../../../components/Icon';
 import SearchControls from '../../../../components/SearchControls';
 import '../../Dashboard.scss';
-import NotFound from '../../../commonComponents/NotFound';
+import MessageNotFound from '../../../commonComponents/MessageNotFound';
 
 const AccountDatasetsContent = ({ data = [], onSubmit, isLoading, isFetched, status, params, team }) => {
 	const [searchValue, setSearchValue] = useState();
@@ -77,7 +77,7 @@ const AccountDatasetsContent = ({ data = [], onSubmit, isLoading, isFetched, sta
 
 			<SearchResults
 				data={data}
-				errorMessage={({ type }) => <NotFound word={pluralize(type)} />}
+				errorMessage={({ type }) => <MessageNotFound word={pluralize(type)} />}
 				results={data =>
 					data.map(dataset => (
 						<DatasetCard

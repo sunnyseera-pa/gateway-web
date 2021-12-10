@@ -4,7 +4,7 @@ import { has, isNil, isEmpty, isUndefined } from 'lodash';
 import axios from 'axios';
 import * as Sentry from '@sentry/react';
 import { Row, Col, Container, Tabs, Tab, Alert, Tooltip, Button, OverlayTrigger } from 'react-bootstrap/';
-import NotFound from '../commonComponents/NotFound';
+import MessageNotFound from '../commonComponents/MessageNotFound';
 import Loading from '../commonComponents/Loading';
 import RelatedObject from '../commonComponents/relatedObject/RelatedObject';
 import CollectionCard from '../commonComponents/collectionCard/CollectionCard';
@@ -1326,7 +1326,7 @@ class DatasetDetail extends Component {
 																	/>
 																))
 															) : (
-																<NotFound word='technical details' />
+																<MessageNotFound word='technical details' />
 															)}
 														</Col>
 													</Row>
@@ -1394,7 +1394,7 @@ class DatasetDetail extends Component {
 
 										<Tab eventKey='Related resources' title={'Related resources (' + relatedObjects.length + ')'}>
 											{data.relatedObjects && data.relatedObjects.length <= 0 ? (
-												<NotFound word='related resources' />
+												<MessageNotFound word='related resources' />
 											) : (
 												relatedObjects.map((object, index) => (
 													<div key={`object-${index}`}>
@@ -1406,10 +1406,10 @@ class DatasetDetail extends Component {
 
 										<Tab eventKey='Collections' title={'Collections (' + collections.length + ')'}>
 											{!collections || collections.length <= 0 ? (
-												<NotFound text='This dataset has not been featured on any collections yet.' />
+												<MessageNotFound text='This dataset has not been featured on any collections yet.' />
 											) : (
 												<>
-													<NotFound text='This dataset appears on the collections below. A collection can be a group of resources on the same theme or a Trusted Research Environment where this dataset can be accessed.' />
+													<MessageNotFound text='This dataset appears on the collections below. A collection can be a group of resources on the same theme or a Trusted Research Environment where this dataset can be accessed.' />
 
 													<Row>
 														{collections.map(collection => (
