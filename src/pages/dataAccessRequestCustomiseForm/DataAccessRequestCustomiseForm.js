@@ -109,7 +109,7 @@ export const DataAccessRequestCustomiseForm = props => {
 		questionStatus[questionId] = value ? 1 : 0;
 		setQuestionStatus(questionStatus);
 
-		let numberOfChanges = reduce(
+		let numberOfChangesQuestions = reduce(
 			questionStatus,
 			function (result, value, key) {
 				return isEqual(value, existingQuestionStatus[key]) ? result : result.concat(key);
@@ -117,12 +117,20 @@ export const DataAccessRequestCustomiseForm = props => {
 			[]
 		).length;
 
-		setCountOfChanges(numberOfChanges + existingCountOfChanges);
+		let numberOfChangesGuidance = reduce(
+			newGuidance,
+			function (result, value, key) {
+				return isEqual(value, existingGuidance[key]) ? result : result.concat(key);
+			},
+			[]
+		).length;
+
+		setCountOfChanges(numberOfChangesQuestions + numberOfChangesGuidance + existingCountOfChanges);
 		setLastSaved(saveTime);
 
 		let params = {
 			questionStatus,
-			countOfChanges: numberOfChanges + existingCountOfChanges,
+			countOfChanges: numberOfChangesQuestions + numberOfChangesGuidance + existingCountOfChanges,
 		};
 
 		axios.patch(`${baseURL}/api/v1/data-access-request/schema/${schemaId}`, params);
@@ -360,7 +368,15 @@ export const DataAccessRequestCustomiseForm = props => {
 		}
 		setNewGuidance(newGuidance);
 
-		let numberOfChanges = reduce(
+		let numberOfChangesQuestions = reduce(
+			questionStatus,
+			function (result, value, key) {
+				return isEqual(value, existingQuestionStatus[key]) ? result : result.concat(key);
+			},
+			[]
+		).length;
+
+		let numberOfChangesGuidance = reduce(
 			newGuidance,
 			function (result, value, key) {
 				return isEqual(value, existingGuidance[key]) ? result : result.concat(key);
@@ -368,12 +384,12 @@ export const DataAccessRequestCustomiseForm = props => {
 			[]
 		).length;
 
-		setCountOfChanges(numberOfChanges + existingCountOfChanges);
+		setCountOfChanges(numberOfChangesGuidance + numberOfChangesQuestions + existingCountOfChanges);
 		setLastSaved(saveTime);
 
 		let params = {
 			guidance: newGuidance,
-			countOfChanges: numberOfChanges + existingCountOfChanges,
+			countOfChanges: numberOfChangesGuidance + numberOfChangesQuestions + existingCountOfChanges,
 		};
 
 		axios.patch(`${baseURL}/api/v1/data-access-request/schema/${schemaId}`, params);
