@@ -14,6 +14,10 @@ export const omit = (propTypes, exclude) => {
 	return _.omit(propTypes, exclude);
 };
 
+export const pick = (propTypes, include) => {
+	return _.pick(propTypes, include);
+};
+
 export const addCommonPropTypes = propTypes => {
 	return {
 		...propTypes,

@@ -82,5 +82,6 @@ export const theme = {
 		},
 		Input: THEME_INPUT,
 		Dropdown: THEME_INPUT,
+		Typeahead: THEME_INPUT,
 	},
 };

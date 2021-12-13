@@ -1,0 +1,16 @@
+import { Meta, Story, Canvas } from '@storybook/addon-docs';
+import Typeahead from './Typeahead';
+
+<Meta title='Typeahead' component={Typeahead} />
+
+<Canvas>
+	<Story name='Basic'>
+		{() => {
+			const [selected, setSelected] = React.useState();
+			const handleChange = values => {
+				setSelected(values);
+			};
+			return <Typeahead options={['United Kingdon,Cambridge', 'United States']} selected={selected} onChange={handleChange} multiple />;
+		}}
+	</Story>
+</Canvas>
