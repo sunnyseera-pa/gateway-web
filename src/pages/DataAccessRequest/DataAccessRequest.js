@@ -56,7 +56,7 @@ import VersionSelector from '../commonComponents/versionSelector/VersionSelector
 import googleAnalytics from '../../tracking';
 import ErrorModal from '../commonComponents/errorModal';
 import DropdownCustom from './components/DropdownCustom/DropdownCustom';
-import DoubleDropdownCustom from './components/DoubleDropdownCustom/DoubleDropdownCustom';
+import DoubleDropdownCustom from './components/DoubleDropdownCustom/DoubleDropdownCustom2';
 
 class DataAccessRequest extends Component {
 	constructor(props) {
@@ -610,12 +610,6 @@ class DataAccessRequest extends Component {
 			questionAnswers[id] = `${contributor.firstname} ${contributor.lastname}`;
 			questionAnswers[organisation] = contributor.organisation;
 		}
-
-		/*if (id === 'safeprojecttypeofresearch' && typeof questionAnswers.safeprojecttypeofresearch === 'object') {
-			let typeOfResearch = questionAnswers.safeprojecttypeofresearch;
-
-			questionAnswers.safeprojecttypeofresearch = typeOfResearch.options;
-		}*/
 
 		if (!_.isEmpty(id) && !_.isEmpty(questionAnswers)) {
 			let { lookup, activePanelId } = this.state;
