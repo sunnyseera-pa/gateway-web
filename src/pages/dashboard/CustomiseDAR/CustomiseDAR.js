@@ -40,7 +40,8 @@ const CustomiseDAR = ({
 		await axios.get(`${baseURL}/api/v1/publishers/${publisherId}`).then(res => {
 			publisherInfo = res.data.publisher;
 			setPublisherDetails(publisherInfo);
-			setSectionStatuses(publisherInfo.dataRequestModalContent.body, publisherInfo.uses5Safes);
+			const body = has(publisherInfo, 'dataRequestModalContent.body') ? publisherInfo.dataRequestModalContent.body : '';
+			setSectionStatuses(body, publisherInfo.uses5Safes);
 		});
 
 		await getHowToRequestAccessPublisher(publisherInfo);
@@ -83,6 +84,10 @@ const CustomiseDAR = ({
 			} = response;
 			setYourApplicationFormPublisher(`${person.firstname} ${person.lastname}`);
 		}
+	};
+
+	const loadCustomiseForm = () => {
+		window.location.href = `/data-access-request/customiseForm/${publisherId}`;
 	};
 
 	return !showHowToRequestAccessEditor ? (
@@ -163,7 +168,7 @@ const CustomiseDAR = ({
 							</div>
 						</div>
 					</div>
-					<div className='main-card cursorPointer'>
+					<div className='main-card cursorPointer' onClick={() => loadCustomiseForm()}>
 						<div className='super-header'>
 							<h1 className='black-20-semibold mb-3'>
 								<SVGIcon name='dataaccessicon' fill={'#475da7'} className='accountSvgs mr-2' />

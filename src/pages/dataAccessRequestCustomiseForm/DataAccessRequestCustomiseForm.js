@@ -25,8 +25,8 @@ import TypeaheadUser from './components/TypeaheadUser/TypeaheadUser';
 import DatePickerCustom from './components/DatePickerCustom/DatepickerCustom';
 import NavItem from './components/NavItem/NavItem';
 import NavDropdown from './components/NavDropdown/NavDropdown';
-import QuestionActionTabs from './components/QuestionActionTabs';
 import DarHelper from '../../utils/DarHelper.util'; //Trim the fat
+import CustomiseGuidance from './components/CustomiseGuidance/CustomiseGuidance';
 
 import { Row, Col, Tabs, Tab, Container, Alert } from 'react-bootstrap';
 
@@ -39,6 +39,7 @@ export const DataAccessRequestCustomiseForm = props => {
 	const [searchBar] = useState(React.createRef());
 
 	const [schemaId, setSchemaId] = useState('');
+	const [publisherDetails, setPublisherDetails] = useState('');
 	const [isLoading, setIsLoading] = useState(true);
 	const [searchString, setSearchString] = useState('');
 	const [userState] = useState(
@@ -57,6 +58,7 @@ export const DataAccessRequestCustomiseForm = props => {
 	const [showModal, setShowModal] = useState(false);
 	const [userType, setUserType] = useState('');
 	const [activeGuidance, setActiveGuidance] = useState('');
+	const [activeQuestion, setActiveQuestion] = useState('');
 	const [context, setContext] = useState({});
 	const [applicationStatus, setApplicationStatus] = useState('');
 	const [activePanelId, setActivePanelId] = useState('');
@@ -65,6 +67,7 @@ export const DataAccessRequestCustomiseForm = props => {
 	const [questionStatus, setQuestionStatus] = useState({});
 	const [existingQuestionStatus, setExistingQuestionStatus] = useState({});
 	const [newGuidance, setNewGuidance] = useState({});
+	const [existingGuidance, setExistingGuidance] = useState({});
 	const [countOfChanges, setCountOfChanges] = useState({});
 	const [existingCountOfChanges, setExistingCountOfChanges] = useState(0);
 	const [actionTabSettings, setActionTabSettings] = useState({
@@ -81,11 +84,14 @@ export const DataAccessRequestCustomiseForm = props => {
 	}, []);
 
 	const getMasterSchema = async () => {
+		await axios.get(`${baseURL}/api/v1/publishers/${props.match.params.publisherID}`).then(res => {
+			setPublisherDetails(res.data.publisher);
+		});
 		const {
 			data: {
 				result: { masterSchema, questionStatus, guidance, countOfChanges, schemaId },
 			},
-		} = await axios.get(`${baseURL}/api/v2/questionbank/6112a0c80c3d4634a85b15bd`);
+		} = await axios.get(`${baseURL}/api/v2/questionbank/${props.match.params.publisherID}`);
 
 		const questionActions = {
 			questionActions: [
@@ -99,6 +105,7 @@ export const DataAccessRequestCustomiseForm = props => {
 		setQuestionStatus(questionStatus);
 		setExistingQuestionStatus(cloneDeep(questionStatus));
 		setNewGuidance(guidance);
+		setExistingGuidance(cloneDeep(guidance));
 		setCountOfChanges(countOfChanges);
 		setExistingCountOfChanges(countOfChanges);
 		setActivePanelId(masterSchema.formPanels[0].panelId);
@@ -143,7 +150,7 @@ export const DataAccessRequestCustomiseForm = props => {
 		e.preventDefault();
 		history.push({
 			pathname: `/account`,
-			search: '?tab=dataaccessrequests',
+			search: '?tab=customisedataaccessrequests',
 		});
 	};
 
@@ -186,7 +193,9 @@ export const DataAccessRequestCustomiseForm = props => {
 		setActionTabSettings({ key: '', questionSetId: '', questionId: '' });
 	};
 
-	const onSubmitClick = () => {};
+	const onSubmitClick = () => {
+		axios.post(`${baseURL}/api/v2/questionbank/${schemaId}`);
+	};
 
 	const onNextClick = () => {
 		// 1. If in the about panel, we go to the next step.  Otherwise next panel.
@@ -269,6 +278,7 @@ export const DataAccessRequestCustomiseForm = props => {
 			addActiveQuestionClass(e);
 		}
 		setActiveGuidance(activeGuidance);
+		setActiveQuestion(questionId);
 	};
 
 	const getActiveQuestionGuidance = (questionId = '') => {
@@ -340,6 +350,33 @@ export const DataAccessRequestCustomiseForm = props => {
 		removeActiveQuestionClass();
 		// reset guidance state
 		setActiveGuidance('');
+	};
+
+	const onGuidanceChange = (questionId, changedGuidance) => {
+		if (typeof newGuidance[questionId] !== 'undefined') {
+			newGuidance[questionId] = changedGuidance;
+		} else {
+			newGuidance[questionId] = changedGuidance;
+		}
+		setNewGuidance(newGuidance);
+
+		let numberOfChanges = reduce(
+			newGuidance,
+			function (result, value, key) {
+				return isEqual(value, existingGuidance[key]) ? result : result.concat(key);
+			},
+			[]
+		).length;
+
+		setCountOfChanges(numberOfChanges + existingCountOfChanges);
+		setLastSaved(saveTime);
+
+		let params = {
+			guidance: newGuidance,
+			countOfChanges: numberOfChanges + existingCountOfChanges,
+		};
+
+		axios.patch(`${baseURL}/api/v1/data-access-request/schema/${schemaId}`, params);
 	};
 
 	const renderApp = () => {
@@ -444,14 +481,9 @@ export const DataAccessRequestCustomiseForm = props => {
 				/>
 				<Row className='banner'>
 					<Col sm={12} md={8} className='banner-left'>
-						<span className='white-20-semibold mr-5'>Customise Data Access Request Form</span>
-						{/* {allowsMultipleDatasets ? (
-							<span className='white-16-semibold pr-5'>{datasets[0].datasetfields.publisher}</span>
-						) : (
-							<span className='white-16-semibold pr-5'>
-								{datasets[0].name} | {datasets[0].datasetfields.publisher}
-							</span>
-						)} */}
+						<span className='white-20-semibold mr-3'>Customise Data Access Request Form</span>
+
+						<span className='white-16-semibold pr-5'>{publisherDetails.publisherDetails.name}</span>
 					</Col>
 					<Col sm={12} md={4} className='d-flex justify-content-end align-items-center banner-right'>
 						<span className='white-14-semibold'>{!isEmpty(lastSaved) ? lastSaved : ''}</span>
@@ -525,7 +557,6 @@ export const DataAccessRequestCustomiseForm = props => {
 					{isWideForm ? null : (
 						<div id='darRightCol' className='scrollable-sticky-column'>
 							<div className='darTab'>
-								{/* <Guidance activeGuidance={activeGuidance} /> */}
 								<Fragment>
 									{activeGuidance ? (
 										<Fragment>
@@ -537,7 +568,18 @@ export const DataAccessRequestCustomiseForm = props => {
 												<CloseButtonSvg width='16px' height='16px' fill='#475da' onClick={resetGuidance} />
 											</header>
 											<main className='gray800-14'>
-												<ReactMarkdown source={activeGuidance} linkTarget='_blank' />
+												<CustomiseGuidance
+													activeGuidance={typeof newGuidance[activeQuestion] !== 'undefined' ? newGuidance[activeQuestion] : activeGuidance}
+													isLocked={
+														typeof questionStatus[activeQuestion] !== 'undefined'
+															? questionStatus[activeQuestion] === 2
+																? true
+																: false
+															: false
+													}
+													onGuidanceChange={onGuidanceChange}
+													activeQuestion={activeQuestion}
+												/>
 											</main>
 										</Fragment>
 									) : (
@@ -578,40 +620,6 @@ export const DataAccessRequestCustomiseForm = props => {
 								}}>
 								Next
 							</button>
-
-							{/* {userType.toUpperCase() === 'APPLICANT' ? (
-								<ApplicantActionButtons
-									allowedNavigation={allowedNavigation}
-									isCloneable={isCloneable}
-									onNextClick={onNextClick}
-									onSubmitClick={onSubmitClick}
-									onShowContributorModal={toggleContributorModal}
-									onEditForm={onEditForm}
-									showSubmit={showSubmit}
-									submitButtonText={submitButtonText}
-									onDeleteDraftClick={toggleDeleteDraftModal}
-									applicationStatus={applicationStatus}
-									onDuplicateClick={toggleDuplicateApplicationModal}
-									onShowAmendApplicationModal={toggleAmendApplicationModal}
-								/>
-							) : (
-								<CustodianActionButtons
-									activeParty={activeParty}
-									allowedNavigation={allowedNavigation}
-									unansweredAmendments={unansweredAmendments}
-									onUpdateRequest={onUpdateRequest}
-									onActionClick={onCustodianAction}
-									onWorkflowReview={toggleWorkflowReviewModal}
-									onWorkflowReviewDecisionClick={toggleWorkflowReviewDecisionModal}
-									onNextClick={onNextClick}
-									workflowEnabled={workflowEnabled}
-									workflowAssigned={workflowAssigned}
-									inReviewMode={inReviewMode}
-									hasRecommended={hasRecommended}
-									applicationStatus={applicationStatus}
-									roles={roles}
-								/>
-							)} */}
 						</div>
 					</div>{' '}
 				</ActionBar>
@@ -621,10 +629,6 @@ export const DataAccessRequestCustomiseForm = props => {
 				</SideDrawer>
 
 				<DataSetModal open={showModal} context={context} closed={toggleModal} userState={userState[0]} />
-
-				{/* <ActionBar userState={userState}>
-					<ResourcePageButtons data={toolData} userState={userState} />
-				</ActionBar> */}
 
 				{/* <ActionModal
 					open={showActionModal}

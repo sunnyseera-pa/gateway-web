@@ -672,7 +672,7 @@ class Account extends Component {
 										</Nav.Link>
 									</div>
 
-									{allowAccessRequestManagement && this.userHasRole(team, ['manager', 'reviewer']) && (
+									{this.userHasRole(team, ['manager', 'reviewer']) && (
 										<div
 											className={this.getNavActiveClass([
 												'dataaccessrequests',
@@ -688,12 +688,14 @@ class Account extends Component {
 													</Accordion.Toggle>
 													<Accordion.Collapse eventKey='0'>
 														<div>
-															<Nav.Link
-																onClick={e => this.toggleNav('dataaccessrequests')}
-																bsPrefix='nav-block'
-																className={`gray700-13 ${tabId === 'dataaccessrequests' ? 'nav-item-active' : ''}`}>
-																<span className='subLinkItem'>Applications</span>
-															</Nav.Link>
+															{allowAccessRequestManagement && (
+																<Nav.Link
+																	onClick={e => this.toggleNav('dataaccessrequests')}
+																	bsPrefix='nav-block'
+																	className={`gray700-13 ${tabId === 'dataaccessrequests' ? 'nav-item-active' : ''}`}>
+																	<span className='subLinkItem'>Applications</span>
+																</Nav.Link>
+															)}
 															{allowWorkflow && this.userHasRole(team, 'manager') && (
 																<Nav.Link
 																	onClick={e => this.toggleNav(`workflows`)}

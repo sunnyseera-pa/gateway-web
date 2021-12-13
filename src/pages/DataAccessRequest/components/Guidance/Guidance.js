@@ -1,4 +1,5 @@
 import React, { Fragment } from 'react';
+import ReactMarkdown from 'react-markdown';
 
 const Guidance = ({ activeGuidance }) => {
 	return (
@@ -6,7 +7,7 @@ const Guidance = ({ activeGuidance }) => {
 			{activeGuidance ? (
 				<Fragment>
 					<main className='gray800-14'>
-						<span>{activeGuidance}</span>
+						<ReactMarkdown source={activeGuidance} linkTarget='_blank' />
 					</main>
 				</Fragment>
 			) : (

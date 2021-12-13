@@ -7,10 +7,12 @@ import { WysiwygEditor } from '../WysiwygEditor/WysiwygEditor';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import axios from 'axios';
 import { ConfirmPublishModal } from './ConfirmPublishModal';
+import { has } from 'lodash';
 const baseURL = require('../../commonComponents/BaseURL').getURL();
 
 export const EditHowToRequestAccessPage = ({ publisherDetails, showConfirmPublishModal, setShowConfirmPublishModal }) => {
-	const [contentState] = useState(stateFromMarkdown(publisherDetails.dataRequestModalContent.body));
+	const body = has(publisherDetails, 'dataRequestModalContent.body') ? publisherDetails.dataRequestModalContent.body : '';
+	const [contentState] = useState(stateFromMarkdown(body));
 	const [editorState, setEditorState] = useState(EditorState.createWithContent(contentState));
 
 	const updatePublisherModalContent = async () => {

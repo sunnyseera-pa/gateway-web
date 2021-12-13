@@ -230,7 +230,7 @@ class HDRRouter extends Component {
 
 										<GuardedRoute path='/dataset-onboarding/:id' component={DatasetOnboarding} userState={userState} />
 										<GuardedRoute
-											path='/data-access-request/customiseForm'
+											path='/data-access-request/customiseForm/:publisherID'
 											component={DataAccessRequestCustomiseForm}
 											userState={userState}
 										/>
