@@ -2,7 +2,7 @@
 import { cx } from '@emotion/css';
 import { jsx } from '@emotion/react';
 import PropTypes from 'prop-types';
-import { Typeahead as BootstrapTypeahead } from 'react-bootstrap-typeahead';
+import { Typeahead as BootstrapTypeahead, TypeaheadAsync as BootstrapTypeaheadAsync } from 'react-bootstrap-typeahead';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import { addCommonPropTypes, pick } from '../../configs/propTypes';
 import Input from '../Input';
@@ -23,6 +23,7 @@ const Typeahead = ({
 	minWidth,
 	maxWidth,
 	width,
+	async,
 	...outerProps
 }) => {
 	return (
@@ -40,7 +41,8 @@ const Typeahead = ({
 			width={width}
 			maxWidth={maxWidth}
 			minWidth={minWidth}>
-			<BootstrapTypeahead {...outerProps} />
+			{!async && <BootstrapTypeahead {...outerProps} />}
+			{async && <BootstrapTypeaheadAsync {...outerProps} />}
 		</Input>
 	);
 };
@@ -48,11 +50,13 @@ const Typeahead = ({
 Typeahead.propTypes = {
 	...pick(PROP_TYPES_INPUT, ['className', 'selected', 'variant', 'textPrepend', 'iconPrepend', 'textAppend', 'iconAppend']),
 	selected: PropTypes.array,
+	async: PropTypes.bool,
 };
 
 Typeahead.defaultProps = addCommonPropTypes({
 	selected: [],
 	variant: 'primary',
+	async: false,
 });
 
 export default Typeahead;

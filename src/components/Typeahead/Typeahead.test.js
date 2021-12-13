@@ -7,6 +7,7 @@ import { omit, pick } from '../../configs/propTypes';
 const mockInput = jest.fn();
 const mockOnChange = jest.fn();
 const mockBootstrapTypeahead = jest.fn();
+const mockBootstrapTypeaheadAsync = jest.fn();
 
 jest.mock('../Input', () => props => {
 	mockInput(props);
@@ -18,6 +19,10 @@ jest.mock('react-bootstrap-typeahead', () => {
 		...jest.requireActual('react-bootstrap-typeahead'),
 		Typeahead: props => {
 			mockBootstrapTypeahead(props);
+			return <div />;
+		},
+		TypeaheadAsync: props => {
+			mockBootstrapTypeaheadAsync(props);
 			return <div />;
 		},
 	};
@@ -44,7 +49,7 @@ let input;
 let wrapper;
 
 describe('Given the Typeahead component', () => {
-	describe('When it is rendered without default value', () => {
+	describe('When it is rendered', () => {
 		beforeAll(() => {
 			wrapper = render(<Typeahead {...props} />, {
 				wrapper: Providers,
@@ -65,8 +70,18 @@ describe('Given the Typeahead component', () => {
 			});
 		});
 
-		it('Then should call the typeahead with the correct parameters', () => {
+		it('Then should call typeahead with the correct parameters', () => {
 			expect(mockBootstrapTypeahead).toHaveBeenCalledWith(pick(props, ['onChange', 'options']));
+		});
+
+		describe('And it is async', () => {
+			it('Then should call the typeahead ASYNC with the correct parameters', () => {
+				wrapper = render(<Typeahead {...props} async />, {
+					wrapper: Providers,
+				});
+
+				expect(mockBootstrapTypeaheadAsync).toHaveBeenCalledWith(pick(props, ['onChange', 'options']));
+			});
 		});
 	});
 });
