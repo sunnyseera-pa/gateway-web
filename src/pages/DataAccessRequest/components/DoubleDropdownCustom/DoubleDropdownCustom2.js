@@ -8,7 +8,7 @@ class DoubleDropdownCustom extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			selectedValues: this.props.selectedValues || [],
+			selectedValues: this.props.selectedValues,
 			dropdownMenu: false,
 			nestedDropdownMenu: false,
 		};
@@ -17,35 +17,35 @@ class DoubleDropdownCustom extends React.Component {
 		this.openDropDown = this.openDropDown.bind(this);
 		this.openNestedDropDown = this.openNestedDropDown.bind(this);
 		this.changingSelect = this.changingSelect.bind(this);
-		this.changingSelect = this.changingSelect.bind(this);
 		this.removeSelectedOption = this.removeSelectedOption.bind(this);
 	}
+
 	changingSelect(eventKey) {
 		if (this.state.selectedValues.indexOf(eventKey) === -1) {
 			this.setState({ selectedValues: [...this.state.selectedValues, eventKey] });
 		}
 	}
-	handlechange(eventKey) {
-		if (this.state.selectedValues.indexOf(eventKey) === -1) {
-			this.setState({ selectedValues: [...this.state.selectedValues, eventKey] });
-		}
-		this.props.onChange.bind(null, this.state.selectedValues);
-	}
+
 	removeSelectedOption(option) {
 		this.setState({ selectedValues: this.state.selectedValues.filter(value => value !== option) });
 	}
+
 	handleFocus(e) {
 		this.props.onFocus();
 	}
+
 	handleBlur(e) {
 		this.props.onBlur(this.props.value);
 	}
+
 	openDropDown() {
 		this.setState({ dropdownMenu: true });
 	}
+
 	openNestedDropDown() {
 		this.setState({ nestedDropdownMenu: true });
 	}
+
 	render() {
 		const extra = this.props.options
 			.map(a => a.extraOptions)
@@ -54,12 +54,7 @@ class DoubleDropdownCustom extends React.Component {
 		return (
 			<Navbar collapseOnSelect expand='lg'>
 				<Nav className='mr-auto'>
-					<Dropdown
-						onSelect={this.changingSelect}
-						onChange={this.handlechange}
-						onFocus={this.handleFocus}
-						onToggle={this.openDropDown}
-						autoClose={false}>
+					<Dropdown onSelect={this.changingSelect} onFocus={this.handleFocus} onToggle={this.openDropDown} autoClose={false}>
 						<Dropdown.Toggle className='double-dropdown-input' id={this.props.id}>
 							<div className='selected-options-container'>
 								{this.state.selectedValues.map(selectedValue => {
@@ -115,9 +110,10 @@ class DoubleDropdownCustom extends React.Component {
 		);
 	}
 }
+
 DoubleDropdownCustom.defaultProps = {
 	selectedValues: [],
-	onChange: () => {},
+	onSelect: () => {},
 	onFocus: () => {},
 	onBlur: () => {},
 };
