@@ -26,7 +26,7 @@ const DoubleDropdownCustom = ({ options, id, onFocus, onChange }) => {
 		if (selectedValues.indexOf(eventKey) === -1) {
 			setSelectedValues([...selectedValues, eventKey]);
 		}
-		onChange.bind(null, selectedValues);
+		//onChange.bind(null, selectedValues);
 	};
 
 	const removeSelectedOption = option => {
