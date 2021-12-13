@@ -1,10 +1,13 @@
 /** @jsx jsx */
 import { cx } from '@emotion/css';
 import { jsx } from '@emotion/react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import { Typeahead as BootstrapTypeahead, TypeaheadAsync as BootstrapTypeaheadAsync } from 'react-bootstrap-typeahead';
+import { Spinner } from 'react-bootstrap';
+import { Typeahead as BootstrapTypeahead, AsyncTypeahead as BootstrapTypeaheadAsync } from 'react-bootstrap-typeahead';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import { addCommonPropTypes, pick } from '../../configs/propTypes';
+import Icon from '../Icon';
 import Input from '../Input';
 import { PROP_TYPES_INPUT } from '../Input/Input.propTypes';
 
@@ -24,8 +27,17 @@ const Typeahead = ({
 	maxWidth,
 	width,
 	async,
+	isLoading,
 	...outerProps
 }) => {
+	const iconsAppend =
+		isLoading || iconAppend ? (
+			<>
+				{isLoading && <div class='rbt-loader'></div>}
+				{iconAppend}
+			</>
+		) : null;
+
 	return (
 		<Input
 			className={cx(className, 'ui-Typeahead')}
@@ -33,7 +45,7 @@ const Typeahead = ({
 			textPrepend={textPrepend}
 			iconPrepend={iconPrepend}
 			textAppend={textAppend}
-			iconAppend={iconAppend}
+			iconAppend={iconsAppend}
 			mt={mt}
 			mb={mb}
 			mr={mr}
