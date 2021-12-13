@@ -56,7 +56,7 @@ import VersionSelector from '../commonComponents/versionSelector/VersionSelector
 import googleAnalytics from '../../tracking';
 import ErrorModal from '../commonComponents/errorModal';
 import DropdownCustom from './components/DropdownCustom/DropdownCustom';
-import DoubleDropdownCustom from './components/DoubleDropdownCustom/DoubleDropdownCustom2';
+import DoubleDropdownCustom from './components/DoubleDropdownCustom/DoubleDropdownCustom';
 
 class DataAccessRequest extends Component {
 	constructor(props) {
