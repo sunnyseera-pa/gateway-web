@@ -25,10 +25,9 @@ import TypeaheadUser from './components/TypeaheadUser/TypeaheadUser';
 import DatePickerCustom from './components/DatePickerCustom/DatepickerCustom';
 import NavItem from './components/NavItem/NavItem';
 import NavDropdown from './components/NavDropdown/NavDropdown';
-import DarHelper from '../../utils/DarHelper.util'; //Trim the fat
 import CustomiseGuidance from './components/CustomiseGuidance/CustomiseGuidance';
 
-import { Row, Col, Tabs, Tab, Container, Alert } from 'react-bootstrap';
+import { Row, Col, Container, Modal } from 'react-bootstrap';
 
 import 'react-tabs/style/react-tabs.css';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
@@ -56,11 +55,9 @@ export const DataAccessRequestCustomiseForm = props => {
 	const [lastSaved, setLastSaved] = useState('');
 	const [isWideForm, setIsWideForm] = useState(false);
 	const [showModal, setShowModal] = useState(false);
-	const [userType, setUserType] = useState('');
 	const [activeGuidance, setActiveGuidance] = useState('');
 	const [activeQuestion, setActiveQuestion] = useState('');
 	const [context, setContext] = useState({});
-	const [applicationStatus, setApplicationStatus] = useState('');
 	const [activePanelId, setActivePanelId] = useState('');
 	const [jsonSchema, setJsonSchema] = useState({});
 	const [questionAnswers] = useState({});
@@ -70,11 +67,7 @@ export const DataAccessRequestCustomiseForm = props => {
 	const [existingGuidance, setExistingGuidance] = useState({});
 	const [countOfChanges, setCountOfChanges] = useState({});
 	const [existingCountOfChanges, setExistingCountOfChanges] = useState(0);
-	const [actionTabSettings, setActionTabSettings] = useState({
-		key: '',
-		questionSetId: '',
-		questionId: '',
-	});
+	const [showConfirmPublishModal, setShowConfirmPublishModal] = useState(false);
 
 	useEffect(() => {
 		if (!!window.location.search) {
@@ -190,11 +183,18 @@ export const DataAccessRequestCustomiseForm = props => {
 		setActivePanelId(panelId);
 		setIsWideForm(panelId === 'about' || panelId === 'files');
 		setActiveGuidance('');
-		setActionTabSettings({ key: '', questionSetId: '', questionId: '' });
 	};
 
-	const onSubmitClick = () => {
-		axios.post(`${baseURL}/api/v2/questionbank/${schemaId}`);
+	const onSubmitClick = async () => {
+		await axios.post(`${baseURL}/api/v2/questionbank/${schemaId}`);
+
+		let alert = {
+			message: `You have successfully published the data access application form for ${publisherDetails.publisherDetails.name} applications`,
+		};
+		history.push({
+			pathname: `/account`,
+			search: '?tab=customisedataaccessrequests',
+		});
 	};
 
 	const onNextClick = () => {
@@ -470,13 +470,9 @@ export const DataAccessRequestCustomiseForm = props => {
 				<SearchBar
 					ref={searchBar}
 					searchString={searchString}
-					doSearchMethod={e => {
-						SearchBarHelperUtil.doSearch(e, this);
-					}}
-					doUpdateSearchString={e => {
-						SearchBarHelperUtil.updateSearchString(e, this);
-					}}
-					doToggleDrawer={e => toggleDrawer()}
+					doSearchMethod={e => (e.key === 'Enter' ? (window.location.href = `/search?search=${encodeURIComponent(searchString)}`) : null)}
+					doUpdateSearchString={searchString => setSearchString(searchString)}
+					doToggleDrawer={toggleDrawer}
 					userState={userState}
 				/>
 				<Row className='banner'>
@@ -608,7 +604,7 @@ export const DataAccessRequestCustomiseForm = props => {
 							<button
 								className={'button-secondary'}
 								onClick={() => {
-									onSubmitClick();
+									setShowConfirmPublishModal(true);
 								}}>
 								Publish
 							</button>
@@ -630,12 +626,50 @@ export const DataAccessRequestCustomiseForm = props => {
 
 				<DataSetModal open={showModal} context={context} closed={toggleModal} userState={userState[0]} />
 
-				{/* <ActionModal
-					open={showActionModal}
-					context={actionModalConfig}
-					updateApplicationStatus={updateApplicationStatus}
-					close={toggleActionModal}
-				/> */}
+				<Modal
+					data-testid='confirm-publish-modal'
+					show={showConfirmPublishModal}
+					size='lg'
+					aria-labelledby='contained-modal-title-vcenter'
+					centered>
+					<div className='removeUploaderModal-header'>
+						<div className='removeUploaderModal-header--wrap'>
+							<div className='removeUploaderModal-head'>
+								<h1 className='black-20-semibold'>
+									{countOfChanges > 0 ? 'Publish application form' : 'You must make an update before publishing'}
+								</h1>
+								<CloseButtonSvg className='removeUploaderModal-head--close' onClick={() => setShowConfirmPublishModal(false)} />
+							</div>
+							<div className='gray700-13 new-line'>
+								{countOfChanges > 0
+									? 'Are you sure you want to publish your updates to this application form? Any applications which are already in process will not be updated.'
+									: 'No changes have been made to your application form so it cannot be published.'}
+							</div>
+						</div>
+					</div>
+					<div className='removeUploaderModal-footer'>
+						{countOfChanges > 0 ? (
+							<div className='removeUploaderModal-footer--wrap'>
+								<button className='button-secondary' onClick={() => setShowConfirmPublishModal(false)}>
+									No, nevermind
+								</button>
+								<button
+									className='button-primary'
+									onClick={() => {
+										onSubmitClick();
+									}}>
+									Publish
+								</button>
+							</div>
+						) : (
+							<div className='removeUploaderModal-footer--wrap'>
+								<button className='button-primary' onClick={() => setShowConfirmPublishModal(false)}>
+									Close
+								</button>
+							</div>
+						)}
+					</div>
+				</Modal>
 			</div>
 		</Sentry.ErrorBoundary>
 	);

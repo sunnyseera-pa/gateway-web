@@ -63,7 +63,9 @@ const DataSetModal = ({ open, closed, context, userState, is5Safes, showLoginMod
 							<h1 className='black-20-semibold'>Data access requests</h1>
 							<CloseButtonSvg className='appModal-head--close' onClick={() => onCloseModal('CLOSE')} />
 						</div>
-						{!_.isEmpty(screenData.dataRequestModalContent) && typeof screenData.dataRequestModalContent.header !== 'undefined' ? (
+						{!_.isEmpty(screenData.dataRequestModalContent) &&
+						is5Safes &&
+						typeof screenData.dataRequestModalContent.header !== 'undefined' ? (
 							<ReactMarkdown source={screenData.dataRequestModalContent.header} />
 						) : (
 							''
@@ -72,7 +74,7 @@ const DataSetModal = ({ open, closed, context, userState, is5Safes, showLoginMod
 				</div>
 
 				<div className={is5Safes ? 'appModal-body' : 'appModal-non-5safes-body'}>
-					{!_.isEmpty(screenData.dataRequestModalContent) && typeof screenData.dataRequestModalContent.body !== 'undefined' ? (
+					{!_.isEmpty(screenData.dataRequestModalContent) && is5Safes && typeof screenData.dataRequestModalContent.body !== 'undefined' ? (
 						<ReactMarkdown source={screenData.dataRequestModalContent.body} />
 					) : (
 						showNon5SafesData()

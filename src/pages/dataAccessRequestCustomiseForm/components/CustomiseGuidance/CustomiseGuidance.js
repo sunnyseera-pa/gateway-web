@@ -1,19 +1,17 @@
 import React, { Fragment, useState, useCallback } from 'react';
 import { WysiwygEditor } from '../../../commonComponents/WysiwygEditor/WysiwygEditor';
-import { convertToRaw } from 'draft-js';
-import { EditorState } from 'draft-js';
-import { stateFromMarkdown } from 'draft-js-import-markdown';
-import draftToMarkdown from 'draftjs-to-markdown';
+import { convertToRaw, convertFromRaw, EditorState } from 'draft-js';
+import { draftToMarkdown, markdownToDraft } from 'markdown-draft-js';
+
 import ReactMarkdown from 'react-markdown';
 import { debounce } from 'lodash';
 
 const CustomiseGuidance = ({ activeGuidance, isLocked, onGuidanceChange, activeQuestion }) => {
-	const [contentState] = useState(stateFromMarkdown(activeGuidance));
+	const [contentState] = useState(convertFromRaw(markdownToDraft(activeGuidance)));
 	const [editorState, setEditorState] = useState(EditorState.createWithContent(contentState));
 
-	//const debounceChange = useCallback(debounce(console.log, 1000), []);
 	const debounceChange = useCallback(
-		debounce(guidanceAsMarkdown => onGuidanceChange(activeQuestion, guidanceAsMarkdown), 3000),
+		debounce(guidanceAsMarkdown => onGuidanceChange(activeQuestion, guidanceAsMarkdown), 1500),
 		[]
 	);
 

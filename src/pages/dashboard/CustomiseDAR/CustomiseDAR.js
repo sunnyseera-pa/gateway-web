@@ -131,7 +131,8 @@ const CustomiseDAR = ({
 						<div className='main-header-desc'>
 							<h1 className='black-20-semibold'>Customise data access requests</h1>
 							<div className='soft-black-14'>
-								Manage and edit your ‘how to request access’ information and your teams data access request form.
+								Manage and edit the guidance you provide to data applicants, your data access request form, and the workflows you use to
+								manage the data access requests you receive.
 							</div>
 						</div>
 					</div>
@@ -140,14 +141,14 @@ const CustomiseDAR = ({
 						<div className='super-header'>
 							<h1 className='black-20-semibold mb-3'>
 								<SVGIcon name='info' fill={'#475da7'} className='accountSvgs mr-2' />
-								<span className='ml-3'>'How to request access’ information</span>
+								<span className='ml-3'>Applicant guidance for requesting access to data</span>
 								<div className={`status-chip sla-${sectionStatusColours[howToRequestAccessStatus]}`}>{howToRequestAccessStatus}</div>
 							</h1>
 							<div className='main-header-desc'>
 								<div className='soft-black-14'>
-									The ‘How to request access’ information will be displayed to all users at the beginning of their access journey. To ensure
-									that they are prepared for the process, include all necessary information such as; what to do before they submit an
-									application, when data can be released, the cost and other useful resources.
+									This guidance will be displayed to all data applicants. To ensure that applicants are prepared for the process, include
+									all necessary information such as; what to do before they submit an application, when data can be released, the cost of
+									accessing data, and any other resources that data applicants would find useful.
 								</div>
 								<div className='customise-dar-body'>
 									{publisherDetails.dataRequestModalContentUpdatedBy ? (
@@ -172,17 +173,25 @@ const CustomiseDAR = ({
 						<div className='super-header'>
 							<h1 className='black-20-semibold mb-3'>
 								<SVGIcon name='dataaccessicon' fill={'#475da7'} className='accountSvgs mr-2' />
-								<span className='ml-3'>Your application form</span>
+								<span className='ml-3'>
+									{has(publisherDetails, 'publisherDetails.name') ? publisherDetails.publisherDetails.name : ''} data access application
+									form
+								</span>
 								<div className={`status-chip sla-${sectionStatusColours[yourAppFormStatus]}`}>{yourAppFormStatus}</div>
 							</h1>
 							<div className='main-header-desc'>
 								<div className='soft-black-14'>
 									<p>
-										You are able to customise the form that users are required to fill in when requesting access to your datasets. You can
-										remove certain questions from the form and edit guidance, however some questions and guidance are mandoratory and cannot
-										be edited. To find out why, read here.
+										You are able to customise the form that users need to complete to request access to your datasets. You can remove
+										certain questions from your form and edit the guidance. However some questions and guidance are mandatory as they are
+										based on National Data Guardian practices.
 									</p>
-									<p>If you want an additional question added to the form that is not visable, please email/raise a support ticket xxx.</p>
+									<p>
+										If you would like to add any additional questions to the form, please raise a support ticket at the following link:{' '}
+										<a href='https://hdruk.atlassian.net/servicedesk/customer/portal/1' rel='noopener noreferrer' target='_blank'>
+											https://hdruk.atlassian.net/servicedesk/customer/portal/1
+										</a>
+									</p>
 								</div>
 								<div className='customise-dar-body'>
 									{publisherDetails.applicationFormUpdatedBy ? (
@@ -197,7 +206,9 @@ const CustomiseDAR = ({
 									)}
 									<span className='box gray200-14'>Last activity</span>
 									<span className='box gray800-14'>
-										{moment(publisherDetails.applicationFormUpdatedOn).format('DD MMM YYYY HH:mm') || 'No customisations made'}
+										{publisherDetails.applicationFormUpdatedOn
+											? moment(publisherDetails.applicationFormUpdatedOn).format('DD MMM YYYY HH:mm')
+											: 'No customisations made'}
 									</span>
 								</div>
 							</div>

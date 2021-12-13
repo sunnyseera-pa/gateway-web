@@ -16,7 +16,7 @@ export const WysiwygEditor = ({ editorState, onEditorStateChange }) => {
 				options: ['inline', 'blockType', 'list', 'link', 'history'],
 				inline: {
 					inDropdown: false,
-					options: ['bold', 'italic', 'underline'],
+					options: ['bold', 'italic'],
 				},
 				blockType: {
 					inDropdown: false,
