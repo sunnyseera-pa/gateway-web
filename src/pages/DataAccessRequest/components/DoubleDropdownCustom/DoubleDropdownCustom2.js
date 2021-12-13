@@ -17,6 +17,7 @@ class DoubleDropdownCustom extends React.Component {
 		this.openDropDown = this.openDropDown.bind(this);
 		this.openNestedDropDown = this.openNestedDropDown.bind(this);
 		this.changingSelect = this.changingSelect.bind(this);
+		this.handlechange = this.handlechange.bind(this);
 		this.removeSelectedOption = this.removeSelectedOption.bind(this);
 	}
 
@@ -38,6 +39,12 @@ class DoubleDropdownCustom extends React.Component {
 		this.props.onBlur(this.props.value);
 	}
 
+	handlechange(eventKey) {
+		if (this.state.selectedValues.indexOf(eventKey) === -1) {
+			this.setState({ selectedValues: [...this.state.selectedValues, eventKey] }, this.props.onChange(null, this.state.selectedValues));
+		}
+	}
+
 	openDropDown() {
 		this.setState({ dropdownMenu: true });
 	}
@@ -54,7 +61,12 @@ class DoubleDropdownCustom extends React.Component {
 		return (
 			<Navbar collapseOnSelect expand='lg'>
 				<Nav className='mr-auto'>
-					<Dropdown onSelect={this.changingSelect} onFocus={this.handleFocus} onToggle={this.openDropDown} autoClose={false}>
+					<Dropdown
+						onSelect={this.changingSelect}
+						onFocus={this.handleFocus}
+						handleChange={this.handlechange}
+						onToggle={this.openDropDown}
+						autoClose={false}>
 						<Dropdown.Toggle className='double-dropdown-input' id={this.props.id}>
 							<div className='selected-options-container'>
 								{this.state.selectedValues.map(selectedValue => {
