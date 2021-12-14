@@ -407,15 +407,8 @@ class Account extends Component {
 				activeAccordion,
 				dataaccessrequest: {},
 			});
-
-			const searchParams = new URLSearchParams(window.location.search);
-
 			// 6. push state
-			this.props.history.push({
-				pathname: path || window.location.pathname,
-				search: searchParams.toString() ? `?${searchParams}` : `?tab=${tab.tabId}`,
-				state: { team: tab.team },
-			});
+			this.props.history.push({ pathname: path || window.location.pathname, search: `?tab=${tab.tabId}`, state: { team: tab.team } });
 		}
 	};
 
