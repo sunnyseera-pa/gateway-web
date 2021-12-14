@@ -12,8 +12,13 @@ import AccountDatasetsContent from './AccountDatasetsContent';
 import AccountDatasetsCreate from './AccountDatasetsCreate';
 import AccountDatasetsTabs from './AccountDatasetsTabs';
 import { MAXRESULTS } from '../../../collections/constants';
+import { useHistory } from 'react-router';
+import { getParams } from '../../../../utils/GeneralHelper.util';
+import { omit } from '../../../../configs/propTypes';
 
 const AccountDatasets = props => {
+	const history = useHistory();
+	const [historyParams, setHistoryParams] = useState(omit(getParams(history.location.search), ['tab']));
 	const [key, setKey] = useState();
 	const [statusCounts, setStatusCounts] = useState({});
 	const { userState } = useAuth();
@@ -29,6 +34,12 @@ const AccountDatasets = props => {
 				sortBy: 'latest',
 				sortDirection: 'desc',
 				page: 1,
+			},
+			onSuccess: (data, params) => {
+				setHistoryParams(null);
+
+				const searchParams = new URLSearchParams(params);
+				history.push(`/account?tab=datasets&${searchParams}`);
 			},
 		}),
 		[key]
@@ -66,12 +77,27 @@ const AccountDatasets = props => {
 	);
 
 	useEffect(() => {
+		if (!_.isEmpty(historyParams)) {
+			setHistoryParams(historyParams);
+		}
+	}, [historyParams]);
+
+	useEffect(() => {
 		setPublisherId(utils.getPublisherID(userState[0], team));
-		setKey(team === 'admin' ? 'inReview' : !_.isEmpty(props.alert.tab) || 'active');
+
+		if (team === 'admin') {
+			setKey('inReview');
+		} else if (historyParams.status) {
+			setKey(historyParams.status);
+		} else if (!_.isEmpty(props.alert.tab)) {
+			setKey(props.alert.tab);
+		} else {
+			setKey('active');
+		}
 	}, [team]);
 
 	useEffect(() => {
-		if (publisherID && key) {
+		if (publisherID && key && !historyParams) {
 			getCachedResults(
 				{
 					status: key,
@@ -79,7 +105,13 @@ const AccountDatasets = props => {
 				key
 			);
 		}
-	}, [publisherID, key]);
+	}, [publisherID, key, historyParams]);
+
+	useEffect(() => {
+		if (historyParams && key) {
+			getCachedResults(historyParams, key);
+		}
+	}, [key, historyParams]);
 
 	useEffect(() => {
 		if (data) {
