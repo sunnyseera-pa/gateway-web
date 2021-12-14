@@ -26,7 +26,7 @@ export const inputGroup = ({ prepend, append, variant }) => theme => {
 
 			&:focus,
 			&.focus {
-				border-color: ${colors.green700} !important;
+				border-color: ${colors.teal} !important;
 			}
 		}
 	`;

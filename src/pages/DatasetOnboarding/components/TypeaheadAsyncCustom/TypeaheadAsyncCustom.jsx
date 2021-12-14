@@ -1,6 +1,7 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/react';
 import React, { useState, useEffect } from 'react';
+import Typeahead from '../../../../components/Typeahead/Typeahead';
 import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 import serviceLocations from '../../../../services/locations/locations';
 import DatasetOnboardingHelperUtil from '../../../../utils/DatasetOnboardingHelper.util';
@@ -53,37 +54,29 @@ function TypeaheadAsyncCustom(props) {
 	const filterBy = () => true;
 
 	return (
-		<AsyncTypeahead
+		<Typeahead
 			css={styles.root(showIcon)}
 			filterBy={filterBy}
-			className={'addFormInputTypeAhead'}
 			data-testid='async-location'
 			id='async-location'
 			isLoading={isLoading}
 			labelKey='location'
 			minLength={3}
 			onSearch={handleSearch}
-			options={options}
-			multiple
 			onChange={handleChange}
 			onInputChange={handleInputChange}
+			options={options}
 			selected={selected}
-			renderMenuItemChildren={(option, props) => (
+			iconPrepend={showIcon && !selected.length && <Icon name='search' size='xl' fill='purple' />}
+			renderMenuItemChildren={({ location, hierarchy }) => (
 				<div>
-					<span className='location'>{option.location}</span>
-					<span className='hierarchy'>{option.hierarchy}</span>
-				</div>
-			)}>
-			{({ selected }) => (
-				<div className='icons'>
-					{showIcon && !selected.length && (
-						<span data-testid='searchicon'>
-							<Icon name='search' size='xl' mt={2} fill='purple' />
-						</span>
-					)}
+					<span className='location'>{location}</span>
+					<span className='hierarchy'>{hierarchy}</span>
 				</div>
 			)}
-		</AsyncTypeahead>
+			multiple
+			async
+		/>
 	);
 }
 

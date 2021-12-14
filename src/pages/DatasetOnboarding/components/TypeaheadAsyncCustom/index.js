@@ -1,3 +1,3 @@
-import Typeahead from './Typeahead';
+import TypeaheadAsyncCustom from './TypeaheadAsyncCustom';
 
-export default Typeahead;
+export default TypeaheadAsyncCustom;
