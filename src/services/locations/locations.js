@@ -3,7 +3,6 @@ import { locationAPIURL } from '../../configs/url.config';
 import { getRequest } from '../../utils/requests';
 
 const getLocations = (term, options) => {
-	console.log('***************** TERM', term, options);
 	return getRequest(`${locationAPIURL}/locations/${term}`, options);
 };
 

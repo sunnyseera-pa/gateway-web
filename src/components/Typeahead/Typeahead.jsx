@@ -53,8 +53,8 @@ const Typeahead = ({
 			width={width}
 			maxWidth={maxWidth}
 			minWidth={minWidth}>
-			{!async && <BootstrapTypeahead {...outerProps} />}
-			{async && <BootstrapTypeaheadAsync {...outerProps} />}
+			{!async && <BootstrapTypeahead {...outerProps} selected={selected} />}
+			{async && <BootstrapTypeaheadAsync {...outerProps} selected={selected} />}
 		</Input>
 	);
 };

@@ -16,13 +16,6 @@ const props = {
 	value: ['United Kingdon,Cambridge', 'United States'],
 };
 
-const iconProps = {
-	name: 'search',
-	size: 'xl',
-	mt: 2,
-	fill: 'purple',
-};
-
 let input;
 let wrapper;
 
@@ -50,10 +43,6 @@ describe('Given the TypeaheadAsyncCustom component', () => {
 
 		it('Then should match the snapshot', () => {
 			expect(wrapper.container).toMatchSnapshot();
-		});
-
-		it('Then should call the icon with the correct parameters', () => {
-			expect(mockIcon).toHaveBeenCalledWith(iconProps);
 		});
 
 		describe('And the input is empty', () => {
