@@ -1,9 +1,9 @@
 import React, { Component, Fragment } from 'react';
 import ReactMarkdown from 'react-markdown';
-import { has, isNil, isEmpty, isUndefined } from 'lodash';
+import { has, isNil, isEmpty, isUndefined, _ } from 'lodash';
 import axios from 'axios';
 import * as Sentry from '@sentry/react';
-import { Row, Col, Container, Tabs, Tab, Alert, Tooltip, Button, OverlayTrigger } from 'react-bootstrap/';
+import { Row, Col, Container, Tabs, Tab, Alert, Tooltip, Button, OverlayTrigger, Dropdown } from 'react-bootstrap/';
 import NotFound from '../commonComponents/NotFound';
 import Loading from '../commonComponents/Loading';
 import RelatedObject from '../commonComponents/relatedObject/RelatedObject';
@@ -78,10 +78,10 @@ class DatasetDetail extends Component {
 		showDrawer: false,
 		showModal: false,
 		showCustodianModal: false,
-		showError: false,
 		showAllPhenotype: false,
 		showAllLinkedDatasets: false,
 		showEmpty: false,
+		showCitationSuccess: false,
 		emptyFlagDetails: false,
 		emptyFlagCoverage: false,
 		emptyFlagFormats: false,
@@ -97,6 +97,10 @@ class DatasetDetail extends Component {
 		cohortProfiling: [],
 		datasetHasCohortProfiling: false,
 		isCohortDiscovery: false,
+		relatedObjectsFiltered: [],
+		relatedResourcesSort: [],
+		relatedObjectsSearchValue: '',
+		sorting: 'showAll',
 	};
 
 	topicContext = {};
@@ -109,14 +113,6 @@ class DatasetDetail extends Component {
 		this.handleMouseHoverShield = this.handleMouseHoverShield.bind(this);
 		this.searchBar = React.createRef();
 	}
-
-	showModal = () => {
-		this.setState({ showError: true });
-	};
-
-	hideModal = () => {
-		this.setState({ showError: false });
-	};
 
 	// on loading of tool detail page
 	async componentDidMount() {
@@ -531,13 +527,25 @@ class DatasetDetail extends Component {
 			if (object.objectType === 'course') {
 				await axios.get(baseURL + '/api/v1/relatedobject/course/' + object.objectId).then(res => {
 					tempObjects.push({
+						name: res.data.data[0].title,
 						id: object.objectId,
 						activeflag: res.data.data[0].activeflag,
+					});
+				});
+			} else if (object.objectType === 'dataUseRegister') {
+				await axios.get(baseURL + '/api/v1/relatedobject/dataUseRegister/' + object.objectId).then(res => {
+					tempObjects.push({
+						id: object.objectId,
+						activeflag: res.data.data[0].activeflag,
+						projectTitle: res.data.data[0].projectTitle,
 					});
 				});
 			} else {
 				await axios.get(baseURL + '/api/v1/relatedobject/' + object.objectId).then(res => {
 					tempObjects.push({
+						name: res.data.data[0].name,
+						firstname: res.data.data[0].firstname || '',
+						lastname: res.data.data[0].lastname || '',
 						id: object.objectId,
 						authors: res.data.data[0].authors,
 						activeflag: res.data.data[0].activeflag,
@@ -556,6 +564,10 @@ class DatasetDetail extends Component {
 		this.state.data.relatedObjects.map(object =>
 			this.state.objects.forEach(item => {
 				if (object.objectId === item.id && item.activeflag === 'active') {
+					object['name'] = item.name || '';
+					object['firstname'] = item.firstname || '';
+					object['lastname'] = item.lastname || '';
+					object['projectTitle'] = item.projectTitle || '';
 					tempRelatedObjects.push(object);
 				}
 
@@ -564,7 +576,11 @@ class DatasetDetail extends Component {
 				}
 			})
 		);
-		this.setState({ relatedObjects: tempRelatedObjects });
+		this.setState({
+			relatedObjects: tempRelatedObjects,
+			relatedObjectsFiltered: tempRelatedObjects,
+			relatedResourcesSort: tempRelatedObjects,
+		});
 	};
 
 	updateDiscoursePostCount = count => {
@@ -653,6 +669,74 @@ class DatasetDetail extends Component {
 		this.setState({ showAllLinkedDatasets: true });
 	};
 
+	exportCitation = () => {
+		const data = this.state.data;
+		const year = new Date(data.datasetv2.provenance.temporal.distributionReleaseDate).getFullYear();
+		navigator.clipboard.writeText(
+			data.datasetv2.summary.publisher.name +
+				'(' +
+				year +
+				').' +
+				data.name +
+				'.' +
+				data.datasetVersion +
+				'.' +
+				data.type +
+				'.' +
+				data.datasetv2.summary.doiName
+		);
+		this.setState({ showCitationSuccess: true });
+	};
+
+	onRelatedObjectsSearch = e => {
+		this.setState({ relatedObjectsSearchValue: e.target.value });
+	};
+
+	doRelatedObjectsSearch = async e => {
+		// Fires on enter on searchbar
+		if (e.key === 'Enter') {
+			this.setState({ relatedObjectsFiltered: [], relatedResourcesSort: [], sorting: 'showAll' });
+
+			const filteredRelatedResourceItems = await this.filterRelatedResourceItems(
+				this.state.relatedObjects,
+				this.state.relatedObjectsSearchValue
+			);
+
+			let tempFilteredData = filteredRelatedResourceItems.filter(dat => {
+				return dat !== '';
+			});
+			this.setState({ relatedObjectsFiltered: tempFilteredData, relatedResourcesSort: tempFilteredData });
+		}
+	};
+
+	filterRelatedResourceItems = (objectData, relatedObjectsSearchValue) =>
+		objectData.map(object => {
+			// Searching functionality - searches through object data and returns true if there is a match with the search term
+			if (
+				(has(object, 'name') ? object.name.toLowerCase().includes(relatedObjectsSearchValue.toLowerCase()) : false) ||
+				(has(object, 'title') ? object.title.toLowerCase().includes(relatedObjectsSearchValue.toLowerCase()) : false) ||
+				(has(object, 'firstname') ? object.firstname.toLowerCase().includes(relatedObjectsSearchValue.toLowerCase()) : false) ||
+				(has(object, 'lastname') ? object.lastname.toLowerCase().includes(relatedObjectsSearchValue.toLowerCase()) : false) ||
+				(has(object, 'projectTitle') ? object.projectTitle.toLowerCase().includes(relatedObjectsSearchValue.toLowerCase()) : false)
+			) {
+				return object;
+			} else {
+				return '';
+			}
+		});
+
+	handleSort = async sort => {
+		this.setState({ relatedObjectsFiltered: [] });
+		googleAnalytics.recordEvent('Collections', `Sorted related resources by ${sort}`, 'Sort dropdown option changed');
+		let tempFilteredData = [];
+		if (sort === 'showAll') {
+			tempFilteredData = await this.state.relatedResourcesSort;
+		} else {
+			tempFilteredData = await this.state.relatedResourcesSort.filter(dat => dat.objectType === sort);
+		}
+		this.setState({ sorting: sort, relatedObjectsFiltered: tempFilteredData });
+	};
+
 	render() {
 		const {
 			searchString,
@@ -682,6 +766,10 @@ class DatasetDetail extends Component {
 			emptyFieldsCount,
 			linkedDatasets,
 			publisherLogoURL,
+			sorting,
+			relatedResourcesSort,
+			relatedObjectsFiltered,
+			relatedObjectsSearchValue,
 		} = this.state;
 
 		let publisherLogo = !isEmpty(v2data) && !isEmpty(v2data.summary.publisher.logo) ? v2data.summary.publisher.logo : publisherLogoURL;
@@ -779,7 +867,7 @@ class DatasetDetail extends Component {
 		}
 
 		return (
-			<Sentry.ErrorBoundary fallback={<ErrorModal show={this.showModal} handleClose={this.hideModal} />}>
+			<Sentry.ErrorBoundary fallback={<ErrorModal />}>
 				<Fragment>
 					<DatasetSchema data={data} />
 
@@ -795,6 +883,13 @@ class DatasetDetail extends Component {
 						<Row className='mt-4'>
 							<Col sm={1} />
 							<Col sm={10}>
+								{this.state.showCitationSuccess && (
+									<Alert variant='success' className='citation-banner green-banner'>
+										<Row>
+											<Col>Citation has been copied to clipboard.</Col>
+										</Row>
+									</Alert>
+								)}
 								{alert ? <Alert variant={alert.type}>{alert.message}</Alert> : null}
 								<div className='rectangle'>
 									<Row>
@@ -1375,15 +1470,128 @@ class DatasetDetail extends Component {
 										</Tab>
 
 										<Tab eventKey='Related resources' title={'Related resources (' + relatedObjects.length + ')'}>
-											{data.relatedObjects && data.relatedObjects.length <= 0 ? (
-												<NotFound word='related resources' />
-											) : (
-												relatedObjects.map((object, index) => (
-													<div key={`object-${index}`}>
-														<RelatedObject relatedObject={object} activeLink={true} showRelationshipAnswer={true} />
-													</div>
-												))
-											)}
+											<>
+												<Row>
+													<Col lg={8}>
+														<span className='collectionsSearchBar form-control'>
+															<span className='collectionsSearchIcon'>
+																<SVGIcon name='searchicon' width={20} height={20} fill={'#2c8267'} stroke='none' type='submit' />
+															</span>
+															<span>
+																<input
+																	id='collectionsSearchBarInput'
+																	type='text'
+																	placeholder='Search within related resources'
+																	onChange={this.onRelatedObjectsSearch}
+																	value={relatedObjectsSearchValue}
+																	onKeyDown={this.doRelatedObjectsSearch}
+																/>
+															</span>
+														</span>
+													</Col>
+
+													<Col lg={4} className='text-right'>
+														<Dropdown className='sorting-dropdown' alignRight onSelect={this.handleSort}>
+															<Dropdown.Toggle variant='info' id='dropdown-menu-align-right' className='gray800-14'>
+																{(() => {
+																	if (sorting !== 'showAll')
+																		return `Show ${
+																			sorting === 'dataUseRegister' ? `data uses` : sorting === 'people' ? sorting : `${sorting}s`
+																		} (
+																	${relatedResourcesSort.filter(dat => dat.objectType === sorting).length})`;
+																	else return `Show all resources (${relatedResourcesSort.length})`;
+																})()}
+																&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+															</Dropdown.Toggle>
+															<Dropdown.Menu>
+																<Row
+																	key={`ddl-item-showall`}
+																	className={
+																		sorting === 'showAll'
+																			? 'sort-dropdown-item sort-dropdown-item-selected sortingDropdown'
+																			: 'sort-dropdown-item sortingDropdown'
+																	}>
+																	<Col xs={12} className='p-0'>
+																		<Dropdown.Item eventKey={'showAll'} className='gray800-14'>
+																			Show all resources ({relatedResourcesSort.length})
+																		</Dropdown.Item>
+																	</Col>
+																	<div className='p-0 sortingCheckmark'>
+																		{sorting === 'showAll' ? (
+																			<SVGIcon
+																				name='check'
+																				width={20}
+																				height={20}
+																				visble='true'
+																				style={{
+																					float: 'right',
+																					fill: '#3db28c',
+																					marginTop: '5px',
+																				}}
+																				fill={'#3db28c'}
+																				stroke='none'
+																			/>
+																		) : null}
+																	</div>
+																</Row>
+																{['dataset', 'tool', 'dataUseRegister', 'paper', 'course', 'person'].map(item => {
+																	return relatedResourcesSort.filter(dat => dat.objectType === item).length > 0 ? (
+																		<Row
+																			key={`ddl-item-${item}`}
+																			className={
+																				sorting === item
+																					? 'sort-dropdown-item sort-dropdown-item-selected sortingDropdown'
+																					: 'sort-dropdown-item sortingDropdown'
+																			}>
+																			<Col xs={12} className='p-0'>
+																				<Dropdown.Item eventKey={item} className='gray800-14'>
+																					Show {item === 'dataUseRegister' ? `data uses` : item === 'people' ? item : `${item}s`} (
+																					{relatedResourcesSort.filter(dat => dat.objectType === item).length})
+																				</Dropdown.Item>
+																			</Col>
+																			<div className='p-0 sortingCheckmark'>
+																				{sorting === item ? (
+																					<SVGIcon
+																						name='check'
+																						width={20}
+																						height={20}
+																						visble='true'
+																						style={{
+																							float: 'right',
+																							fill: '#3db28c',
+																							marginTop: '5px',
+																						}}
+																						fill={'#3db28c'}
+																						stroke='none'
+																					/>
+																				) : null}
+																			</div>
+																		</Row>
+																	) : (
+																		''
+																	);
+																})}
+															</Dropdown.Menu>
+														</Dropdown>
+													</Col>
+												</Row>
+												{relatedObjectsFiltered.length <= 0 ? (
+													<NotFound word='related resources' />
+												) : (
+													relatedObjectsFiltered.map((object, index) => (
+														<span key={index}>
+															<RelatedObject
+																relatedObject={object}
+																objectType={object.objectType}
+																activeLink={true}
+																showRelationshipAnswer={true}
+																datasetPublisher={object.datasetPublisher}
+																datasetLogo={object.datasetLogo}
+															/>
+														</span>
+													))
+												)}
+											</>
 										</Tab>
 
 										<Tab eventKey='Collections' title={'Collections (' + collections.length + ')'}>
@@ -1422,7 +1630,7 @@ class DatasetDetail extends Component {
 					</SideDrawer>
 
 					<ActionBar userState={userState} showOverride={true}>
-						<ResourcePageButtons data={data} userState={userState} />
+						<ResourcePageButtons data={data} userState={userState} exportCitation={this.exportCitation} />
 					</ActionBar>
 
 					<DataSetModal

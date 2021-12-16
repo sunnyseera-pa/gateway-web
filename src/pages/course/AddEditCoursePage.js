@@ -1,6 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import moment from 'moment';
+import * as Sentry from '@sentry/react';
 import { Container } from 'react-bootstrap';
 import SearchBar from '../commonComponents/searchBar/SearchBar';
 import Loading from '../commonComponents/Loading';
@@ -8,6 +9,7 @@ import AddEditCourseForm from './AddEditCourseForm';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
 import UserMessages from '../commonComponents/userMessages/UserMessages';
 import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
+import ErrorModal from '../commonComponents/errorModal';
 import { isEditMode } from '../../utils/GeneralHelper.util';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 
@@ -31,7 +33,7 @@ class AddEditCoursePage extends React.Component {
 		searchString: '',
 		datasetData: [],
 		toolData: [],
-		projectData: [],
+		datauseData: [],
 		paperData: [],
 		personData: [],
 		courseData: [],
@@ -144,7 +146,7 @@ class AddEditCoursePage extends React.Component {
 
 			if (type === 'dataset' && page > 0) searchURL += '&datasetIndex=' + page;
 			if (type === 'tool' && page > 0) searchURL += '&toolIndex=' + page;
-			if (type === 'project' && page > 0) searchURL += '&projectIndex=' + page;
+			if (type === 'datauseData' && page > 0) searchURL += '&datauseDataIndex=' + page;
 			if (type === 'paper' && page > 0) searchURL += '&paperIndex=' + page;
 			if (type === 'person' && page > 0) searchURL += '&personIndex=' + page;
 			if (type === 'course' && page > 0) searchURL += '&courseIndex=' + page;
@@ -160,7 +162,7 @@ class AddEditCoursePage extends React.Component {
 					this.setState({
 						datasetData: res.data.datasetResults || [],
 						toolData: res.data.toolResults || [],
-						projectData: res.data.projectResults || [],
+						datauseData: res.data.dataUseRegisterResults || [],
 						paperData: res.data.paperResults || [],
 						personData: res.data.personResults || [],
 						courseData: res.data.courseResults || [],
@@ -249,7 +251,7 @@ class AddEditCoursePage extends React.Component {
 			searchString,
 			datasetData,
 			toolData,
-			projectData,
+			datauseData,
 			paperData,
 			personData,
 			courseData,
@@ -270,53 +272,55 @@ class AddEditCoursePage extends React.Component {
 		}
 
 		return (
-			<div>
-				<SearchBar
-					ref={this.searchBar}
-					doSearchMethod={this.doSearch}
-					doUpdateSearchString={this.updateSearchString}
-					doToggleDrawer={this.toggleDrawer}
-					userState={userState}
-				/>
-
-				<AddEditCourseForm
-					data={data}
-					isEdit={isEdit}
-					combinedDomains={combinedDomains}
-					combinedKeywords={combinedKeywords}
-					combinedAwards={combinedAwards}
-					userState={userState}
-					searchString={searchString}
-					doSearchMethod={this.doModalSearch}
-					doUpdateSearchString={this.updateSearchString}
-					datasetData={datasetData}
-					toolData={toolData}
-					projectData={projectData}
-					paperData={paperData}
-					personData={personData}
-					courseData={courseData}
-					summary={summary}
-					doAddToTempRelatedObjects={this.addToTempRelatedObjects}
-					tempRelatedObjectIds={this.state.tempRelatedObjectIds}
-					doClearRelatedObjects={this.clearRelatedObjects}
-					doAddToRelatedObjects={this.addToRelatedObjects}
-					doRemoveObject={this.removeObject}
-					relatedObjects={relatedObjects}
-					didDelete={didDelete}
-					updateDeleteFlag={this.updateDeleteFlag}
-				/>
-
-				<SideDrawer open={showDrawer} closed={this.toggleDrawer}>
-					<UserMessages
-						userState={userState[0]}
-						closed={this.toggleDrawer}
-						toggleModal={this.toggleModal}
-						drawerIsOpen={this.state.showDrawer}
+			<Sentry.ErrorBoundary fallback={<ErrorModal />}>
+				<div>
+					<SearchBar
+						ref={this.searchBar}
+						doSearchMethod={this.doSearch}
+						doUpdateSearchString={this.updateSearchString}
+						doToggleDrawer={this.toggleDrawer}
+						userState={userState}
 					/>
-				</SideDrawer>
 
-				<DataSetModal open={showModal} context={context} closed={this.toggleModal} userState={userState[0]} />
-			</div>
+					<AddEditCourseForm
+						data={data}
+						isEdit={isEdit}
+						combinedDomains={combinedDomains}
+						combinedKeywords={combinedKeywords}
+						combinedAwards={combinedAwards}
+						userState={userState}
+						searchString={searchString}
+						doSearchMethod={this.doModalSearch}
+						doUpdateSearchString={this.updateSearchString}
+						datasetData={datasetData}
+						toolData={toolData}
+						datauseData={datauseData}
+						paperData={paperData}
+						personData={personData}
+						courseData={courseData}
+						summary={summary}
+						doAddToTempRelatedObjects={this.addToTempRelatedObjects}
+						tempRelatedObjectIds={this.state.tempRelatedObjectIds}
+						doClearRelatedObjects={this.clearRelatedObjects}
+						doAddToRelatedObjects={this.addToRelatedObjects}
+						doRemoveObject={this.removeObject}
+						relatedObjects={relatedObjects}
+						didDelete={didDelete}
+						updateDeleteFlag={this.updateDeleteFlag}
+					/>
+
+					<SideDrawer open={showDrawer} closed={this.toggleDrawer}>
+						<UserMessages
+							userState={userState[0]}
+							closed={this.toggleDrawer}
+							toggleModal={this.toggleModal}
+							drawerIsOpen={this.state.showDrawer}
+						/>
+					</SideDrawer>
+
+					<DataSetModal open={showModal} context={context} closed={this.toggleModal} userState={userState[0]} />
+				</div>
+			</Sentry.ErrorBoundary>
 		);
 	}
 }

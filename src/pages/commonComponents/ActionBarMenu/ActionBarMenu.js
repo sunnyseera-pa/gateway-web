@@ -15,7 +15,7 @@ const ActionBarMenu = ({ label, options = [], disabled, buttonClass = 'button-se
 			{children}
 		</a>
 	));
-
+			console.log(options);
 	return (
 		<>
 			{options.length > 0 && options.some(option => option.actions.length > 0) && (
@@ -41,9 +41,12 @@ const ActionBarMenu = ({ label, options = [], disabled, buttonClass = 'button-se
 													<div
 														className='pointer option'
 														onClick={e => {
+															e.preventDefault();
 															action.onClick(e);
 														}}>
-														<span className='gray800-14 title'>{action.title}</span>
+														<span className='gray800-14 title' style={{ marginTop: '0px' }}>
+															{action.title}
+														</span>
 														{action.description && <span className='gray700-13 description'>{action.description}</span>}
 													</div>
 												);

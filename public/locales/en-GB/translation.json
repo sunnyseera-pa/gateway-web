@@ -1,0 +1,66 @@
+{
+	"collection": {
+		"private": {
+			"live": "This private collection is now live. Only those who you share the collection link with will be able to view this page.",
+			"updated": "Done! Your private collection has been updated. Only those who you share the collection link with will be able to view this page."
+		},
+		"public": {
+			"live": "This public collection is now live. This collection is searchable on the Gateway and can be viewed by all users.",
+			"updated": "Done! Your public collection has been updated. This collection is searchable on the Gateway and can be viewed by all users."
+		},
+		"created": "created"
+	},
+	"newDatasetVersionSubmitted": "<b>Version {{versionNumber}}</b> of this dataset been submitted by data custodian <b>{{firstName}} {{lastName}}</b>",
+	"datasetVersionApproved": "<b>Version {{versionNumber}}</b> of this dataset been approved by admin <b>{{firstName}} {{lastName}}</b>",
+	"datasetVersionRejected": "<b>Application rejected</b> by portal admin <b>{{firstName}} {{lastName}}</b>",
+	"datasetVersionArchived": "<b>Version {{versionNumber}}</b> of this dataset been archived by data custodian <b>{{firstName}} {{lastName}}",
+	"datasetVersionUnarchived": "<b>Version {{versionNumber}}</b> of this dataset been unarchived by data custodian <b>{{firstName}} {{lastName}}",
+	"datasetUpdatesSubmitted": "<b>Updates submitted</b> by data custodian <b>{{firstName}} {{lastName}}</b>",
+	"previousAnswer": "Previous answer",
+	"updatedAnswer": "Updated answer",
+	"question": "Question",
+	"datetime": {
+		"submitted": "Submitted {{datetime}}"
+	},
+	"loading": "Loading",
+	"activitylog": {
+		"notfound": "The activity log for this dataset cannot be accessed. It must be set to {{status}}.",
+		"rejection": "Reason for rejection"
+	},
+	"next": "Next",
+	"previous": "Previous",
+	"dataset": {
+		"makeADecision": "Make a decision",
+		"approve": "Approve",
+		"reject": "Reject",
+		"approvalModal": {
+			"title": "Approve this version of this dataset metadata",
+			"description": "If you made any amendments to their application, such as fixing a type, please let the editor know using the description below.",
+			"applicationStatus": "Description (optional)",
+			"buttons": {
+				"cancel": "No, nevermind",
+				"approve": "Approve",
+				"approveAndGoToNext": "Approve and go to next"
+			}
+		},
+		"rejectModal": {
+			"title": "Reject this version of this dataset metadata",
+			"description": "Let the editor know why this submission is being rejected. They will be able to create a new version and make a new submission.",
+			"applicationStatus": "Description",
+			"applicationStatusRequired": "Description cannot be empty",
+			"buttons": {
+				"cancel": "No, nevermind",
+				"reject": "Reject",
+				"rejectAndGoToNext": "Reject and go to next"
+			}
+		}
+	},
+	"viewForm": "View form",
+	"notifications": {
+		"teamEmailText": "Send email notifications to team email address"
+  },
+	"searchResultsInfo": {
+		"withTerm": "Showing {{count}} results for '{{searchTerm}}'",
+		"withOutTerm": "Showing {{count}} results"
+	}
+}

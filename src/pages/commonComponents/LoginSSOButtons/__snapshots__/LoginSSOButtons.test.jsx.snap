@@ -1,0 +1,122 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Given the LoginSSOButtons component When it is rendered Then matches the previous snapshot 1`] = `
+<div>
+  <div>
+    <br />
+    <div
+      class="mt-2 row"
+    >
+      <div
+        class="col-lg-1"
+      />
+      <div
+        class="mt-1 col-lg-5 col-sm-6"
+      >
+        <div
+          class="gray800-14"
+        >
+          <button
+            class="btn btn-outline-secondary btn-block css-117p4px"
+            data-testid="google"
+          >
+            <img
+              alt="google"
+              class="css-1o49y5s"
+              src="googleIcon"
+            />
+              
+            Sign in with Google
+          </button>
+        </div>
+      </div>
+      <div
+        class="mt-1 col-lg-5 col-sm-6"
+      >
+        <div
+          class="gray800-14"
+        >
+          <button
+            class="btn btn-outline-secondary btn-block css-117p4px"
+            data-testid="openAthens"
+          >
+            <img
+              alt="openAthens"
+              class="css-1o49y5s"
+              src="instIcon"
+            />
+              
+            Sign in with institution
+          </button>
+        </div>
+      </div>
+      <div
+        class="col-lg-1"
+      />
+    </div>
+    <br />
+    <div
+      class="mt-2 row"
+    >
+      <div
+        class="col-lg-1"
+      />
+      <div
+        class="mt-1 col-lg-5 col-sm-6"
+      >
+        <div
+          class="gray800-14"
+        >
+          <button
+            class="btn btn-outline-secondary btn-block css-117p4px"
+            data-testid="azure"
+          >
+            <img
+              alt="azure"
+              class="css-1o49y5s"
+              src="microsoftIcon"
+            />
+              
+            Sign in with Microsoft
+          </button>
+        </div>
+      </div>
+      <div
+        class="col-lg-1"
+      />
+    </div>
+    <div
+      class="css-k2m949-LoginSSOButtons"
+    >
+      <div
+        class="mt-5  row"
+      >
+        <div
+          class="col-lg-1"
+        />
+        <div
+          class="col-lg-5 col-sm-6"
+        >
+          <span>
+             
+            <a
+              data-testid="communityLink"
+              href="https://test/t/how-to-submit-a-feature-request-or-feedback/1"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              Suggest another Indentity Provider
+            </a>
+          </span>
+        </div>
+        <div
+          class="col-lg-5 col-sm-6"
+        />
+        <div
+          class="col-lg-1"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+`;
