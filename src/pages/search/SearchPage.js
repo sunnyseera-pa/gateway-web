@@ -34,6 +34,7 @@ import SearchUtilityBanner from './components/SearchUtilityBanner';
 import ToolsSearchSort from './components/ToolsSearchResults/ToolsSearchSort';
 import SearchResultsInfo from '../commonComponents/SearchResultsInfo';
 import './Search.scss';
+import { hotjar } from 'react-hotjar';
 
 let baseURL = require('../commonComponents/BaseURL').getURL();
 const typeMapper = {
@@ -214,6 +215,10 @@ class SearchPage extends React.Component {
 		};
 	};
 	async componentDidMount() {
+		//hot jar
+		if (process.env.REACT_APP_HOTJAR_CODE && process.env.REACT_APP_HOTJAR_CODE_VERSION) {
+			hotjar.initialize(process.env.REACT_APP_HOTJAR_CODE, process.env.REACT_APP_HOTJAR_CODE_VERSION);
+		}
 		// 1. fires on first time in or page is refreshed/url loaded / has search location
 		if (!!window.location.search) {
 			const urlParams = new URLSearchParams(window.location.search);
