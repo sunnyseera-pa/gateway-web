@@ -17,6 +17,7 @@ const ResourcePageButtons = props => {
 		<div className='floatRight row'>
 			{props.userState[0].loggedIn &&
 			props.data.type !== 'dataset' &&
+			props.data.type !== 'dataUseRegister' &&
 			((props.data.authors && props.data.authors.includes(props.userState[0].id)) ||
 				(props.data.creator && props.data.creator[0].id === props.userState[0].id) ||
 				props.userState[0].role === 'Admin') ? (

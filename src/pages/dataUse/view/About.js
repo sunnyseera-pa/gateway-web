@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Container, Row, Col, Button, OverlayTrigger } from 'react-bootstrap';
+import { isArray } from 'lodash';
 import moment from 'moment';
 import SVGIcon from '../../../images/SVGIcon';
 
@@ -282,7 +283,7 @@ const About = ({ data, renderTooltip }) => {
 					<Row className='soft-black-14 datause-view-grid'>
 						<Col md={4}>
 							Lay summary
-							{data.laySummary.length >= 250 ? (
+							{data.laySummary && data.laySummary.length >= 250 ? (
 								<button
 									className='datause-arrow'
 									onClick={() => (!closedLaySummary ? setClosedLaySummary(true) : setClosedLaySummary(false))}>
@@ -302,7 +303,7 @@ const About = ({ data, renderTooltip }) => {
 							</button>
 						</OverlayTrigger>
 						<Col md={7}>
-							{data.laySummary.length > 0 ? (
+							{data.laySummary && data.laySummary.length > 0 ? (
 								closedLaySummary ? (
 									<>
 										{data.laySummary.substr(0, 250)}
@@ -320,7 +321,7 @@ const About = ({ data, renderTooltip }) => {
 					<Row className='soft-black-14 datause-view-grid'>
 						<Col md={4}>
 							Public benefit statement
-							{data.publicBenefitStatement.length >= 250 ? (
+							{data.publicBenefitStatement && data.publicBenefitStatement.length >= 250 ? (
 								<button
 									className='datause-arrow'
 									onClick={() => (!closedPublicBenefit ? setClosedPublicBenefit(true) : setClosedPublicBenefit(false))}>
@@ -503,12 +504,26 @@ const About = ({ data, renderTooltip }) => {
 								<>
 									{data &&
 										data.gatewayDatasetsInfo.map(gatewayDataset => (
-											<a href={`/dataset/${gatewayDataset.pid}`}>
-												<span className='badge-tag badge-datause-bold'>{gatewayDataset.name}</span>
-											</a>
+											<>
+												{isArray(gatewayDataset) ? (
+													<a href={`/dataset/${gatewayDataset[0].pid}`}>
+														<span className='badge-tag badge-datause-bold'>{gatewayDataset[0].name}</span>
+													</a>
+												) : (
+													<a href={`/dataset/${gatewayDataset.pid}`}>
+														<span className='badge-tag badge-datause-bold'>{gatewayDataset.name}</span>
+													</a>
+												)}
+											</>
 										))}
 
-									{data && data.nonGatewayDatasets.map(nonGatewayDataset => <> {nonGatewayDataset}</>)}
+									{data &&
+										data.nonGatewayDatasets.map(nonGatewayDataset => (
+											<>
+												{' '}
+												<span className='nonhdrdataset badge-datause-bold badge-tag'>{nonGatewayDataset}</span>
+											</>
+										))}
 								</>
 							) : (
 								<p className='gray800-14-opacity'>Not specified</p>
@@ -551,7 +566,7 @@ const About = ({ data, renderTooltip }) => {
 							<OverlayTrigger
 								placement='top'
 								overlay={renderTooltip(
-									'The legal basis that allows the applicant to lawfully process personally identifiable data, as specified by NHS Digital.'
+									'The lawful basis for processing are set out in Article 6 of the GDPR. At least one legal basis must apply whenever you process personal data. Please select appropriate Article 6 lawful basis. Processing shall be lawful only if and to the extent that at least one of the following applies.'
 								)}>
 								<button className='datause-info-icon-button'>
 									<SVGIcon name='info' width={10} height={10} fill={'#475da7'} className='datause-info-icon' />
@@ -575,7 +590,9 @@ const About = ({ data, renderTooltip }) => {
 							<Col md={4}>Lawful conditions for provision of data under Article 9</Col>
 							<OverlayTrigger
 								placement='top'
-								overlay={renderTooltip('An appropriate Article 9 condition for processing the special category data.')}>
+								overlay={renderTooltip(
+									"Processing of personal data revealing racial or ethnic origin, political opinions, religious or philosophical beliefs, or trade union membership, and the processing of genetic data, biometric data for the purpose of uniquely identifying a natural person, data concerning health or data concerning a natural person's sex life or sexual orientation shall be prohibited. This does not apply if one of the following applies."
+								)}>
 								<button className='datause-info-icon-button'>
 									<SVGIcon name='info' width={10} height={10} fill={'#475da7'} className='datause-info-icon' />
 								</button>
@@ -791,16 +808,17 @@ const About = ({ data, renderTooltip }) => {
 						</Row>
 					)}
 				</Container>
-				<Container className='datause-card datause-safeInfo'>
-					<p className='black-14-bold'>Safe output</p>
-					{(!data.gatewayOutputsToolsInfo || data.gatewayOutputsToolsInfo.length === 0) &&
-					(!data.gatewayOutputsPapers || data.gatewayOutputsPapers.length === 0) &&
-					(!data.nonGatewayOutputs || data.nonGatewayOutputs.length === 0) &&
-					hide ? (
-						(() => {
-							count++;
-						})()
-					) : (
+
+				{(!data.gatewayOutputsToolsInfo || data.gatewayOutputsToolsInfo.length === 0) &&
+				(!data.gatewayOutputsPapers || data.gatewayOutputsPapers.length === 0) &&
+				(!data.nonGatewayOutputs || data.nonGatewayOutputs.length === 0) &&
+				hide ? (
+					(() => {
+						count++;
+					})()
+				) : (
+					<Container className='datause-card datause-safeInfo'>
+						<p className='black-14-bold'>Safe output</p>
 						<Row className='soft-black-14'>
 							<Col md={4}>Link to research outputs</Col>
 							<OverlayTrigger
@@ -822,19 +840,20 @@ const About = ({ data, renderTooltip }) => {
 												<a href={`/tool/${gatewayOutputsTool.id}`}>
 													<span className='badge-tag badge-datause-bold'>{gatewayOutputsTool.name}</span>
 												</a>
-											))}
+											))}{' '}
 										{data &&
 											data.gatewayOutputsPapersInfo.map(gatewayOutputsPaper => (
 												<a href={`/paper/${gatewayOutputsPaper.id}`}>
 													<span className='badge-tag badge-datause-bold'>{gatewayOutputsPaper.name}</span>
 												</a>
-											))}
-
+											))}{' '}
 										{data &&
 											data.nonGatewayOutputs.map(nonGatewayOutput => (
-												<a href={nonGatewayOutput} className='purple-blue-14'>
-													{nonGatewayOutput}
-												</a>
+												<div>
+													<a href={nonGatewayOutput} className='purple-blue-14'>
+														{nonGatewayOutput}
+													</a>
+												</div>
 											))}
 									</>
 								) : (
@@ -842,8 +861,8 @@ const About = ({ data, renderTooltip }) => {
 								)}
 							</Col>
 						</Row>
-					)}
-				</Container>
+					</Container>
+				)}
 			</>
 			<Row>
 				<Col className='datause-about-info'>

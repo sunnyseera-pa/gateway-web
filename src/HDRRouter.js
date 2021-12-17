@@ -14,6 +14,7 @@ import PaperPage from './pages/paper/PaperPage';
 import CoursePage from './pages/course/CoursePage';
 import DatasetPage from './pages/dataset/DatasetPage';
 import ViewDataUsePage from './pages/dataUse/view/ViewDataUse';
+import EditDataUsePage from './pages/dataUse/edit/EditDataUse';
 import SearchPage from './pages/search/SearchPage';
 import CollectionPage from './pages/collections/CollectionPage';
 import PublicAnalyticsDashboard from './pages/publicDashboard/PublicAnalyticsDashboard';
@@ -46,7 +47,13 @@ let actionBar, footer;
 
 const history = createBrowserHistory();
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+	defaultOptions: {
+	  queries: {
+		refetchOnWindowFocus: false,
+	  },
+	},
+  });
 
 Sentry.init({
 	dsn: 'https://c7c564a153884dc0a6b676943b172121@o444579.ingest.sentry.io/5419637',
@@ -219,6 +226,7 @@ class HDRRouter extends Component {
 										<Route path='/person/:personID' render={props => <PersonPage {...props} userState={userState} />} />
 										<Route path='/dataset/:datasetID' render={props => <DatasetPage {...props} userState={userState} />} />
 										<Route path='/datause/:datauseID' render={props => <ViewDataUsePage {...props} userState={userState} />} />
+										<GuardedRoute path='/datauseRegister/edit/:datauseID' component={EditDataUsePage} userState={userState} />
 										<Route
 											path='/completeRegistration/:personID'
 											render={props => <CompleteRegistration {...props} userState={userState} />}

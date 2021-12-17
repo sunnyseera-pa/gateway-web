@@ -1003,6 +1003,7 @@ const AddEditCourseForm = props => {
 															userState={props.userState}
 															datasetData={props.datasetData}
 															toolData={props.toolData}
+															datauseData={props.datauseData}
 															paperData={props.paperData}
 															personData={props.personData}
 															courseData={props.courseData}

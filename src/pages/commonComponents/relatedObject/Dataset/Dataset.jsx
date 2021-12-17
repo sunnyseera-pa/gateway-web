@@ -12,6 +12,7 @@ import RemoveButton from '../RemoveButton/RemoveButton';
 import Title from '../Title/Title';
 import Description from '../Description/Description';
 import Tag from '../Tag/Tag';
+import { ReactComponent as LockSVG } from '../../../../images/icon-security.svg';
 import { dataset } from './constants';
 import * as styles from './Dataset.styles';
 import '../../CommonComponents.scss';
@@ -26,6 +27,7 @@ const Dataset = ({
 	isCohortDiscovery,
 	updateOnFilterBadge,
 	removeButton,
+	isLocked,
 }) => {
 	const [publisherDetails, setPublisherDetails] = useState({ name: '', label: '' });
 
@@ -112,11 +114,11 @@ const Dataset = ({
 						{publisherDetails.name}{' '}
 					</span>
 				</Col>
-				<Col sm={2} lg={2} className='pad-right-24'>
+				<Col sm={2} lg={2} className={isLocked ? 'lockSVG pad-right-24' : 'pad-right-24'}>
 					{!isEmpty(publisherLogo) && (
 						<div className='datasetLogoCircle floatRight' css={styles.publisherLogoCSS(publisherLogo)} data-testid='publisher-logo' />
 					)}
-					{showRelationshipQuestion && <RemoveButton removeButtonHandler={removeButton} />}
+					{showRelationshipQuestion ? isLocked ? <LockSVG /> : <RemoveButton removeButtonHandler={removeButton} /> : ''}
 				</Col>
 				<Col sm={12} lg={12} className='pad-left-24 pad-right-24 pad-top-16'>
 					<Tag tagName={dataset.TAB} tagType={data.type} updateOnFilterBadgeHandler={updateOnFilterBadge}>
