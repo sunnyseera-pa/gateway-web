@@ -4,7 +4,7 @@ import _ from 'lodash';
 import queryString from 'query-string';
 import React, { Component, Fragment, useState } from 'react';
 import { Accordion, Dropdown, Nav } from 'react-bootstrap';
-import { Route } from 'react-router';
+import { Route, withRouter } from 'react-router';
 import 'react-web-tabs/dist/react-web-tabs.css';
 import { ReactComponent as CheckSVG } from '../../images/check.svg';
 import { ReactComponent as ChevronRightSvg } from '../../images/chevron-bottom.svg';
@@ -123,6 +123,19 @@ class Account extends Component {
 		if (_.has(props, 'profileComplete')) {
 			this.state.profileComplete = props.profileComplete;
 		}
+
+		this.historyListener = props.history.listen(location => {
+			console.log('location.state', location.state);
+			if (location.state) {
+				this.setState({
+					alert: location.state.alert || {},
+				});
+			}
+		});
+	}
+
+	componentWillUnmount() {
+		if (this.historyListener) this.historyListener();
 	}
 
 	async componentDidMount() {
@@ -498,6 +511,10 @@ class Account extends Component {
 		return isActive ? 'activeCard' : 'accountNav';
 	};
 
+	onRouteChange(x, y, z) {
+		console.log('ROUTE CHANGED', x, y, z);
+	}
+
 	render() {
 		const {
 			searchString,
@@ -519,7 +536,7 @@ class Account extends Component {
 			dataaccessrequest,
 		} = this.state;
 
-		console.log('TEAM', team, userState);
+		console.log('/account', team, userState, alert);
 
 		return (
 			<Sentry.ErrorBoundary fallback={<ErrorModal />}>
@@ -870,4 +887,4 @@ class Account extends Component {
 	}
 }
 
-export default Account;
+export default withRouter(Account);

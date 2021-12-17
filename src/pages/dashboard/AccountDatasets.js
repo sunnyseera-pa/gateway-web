@@ -16,6 +16,7 @@ import { ReactComponent as EyeIcon } from '../../images/eye.svg';
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
 const AccountDatasets = props => {
+	console.log('Start of AccountDatasets props.alert', props.alert);
 	const [key, setKey] = useState(!_.isEmpty(props.alert.tab) ? props.alert.tab : 'active');
 	const [datasetList, setDatasetList] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
@@ -35,7 +36,7 @@ const AccountDatasets = props => {
 	useEffect(() => {
 		setIsLoading(true);
 		doDatasetsCall();
-	}, [team]);
+	}, [team, alert]);
 
 	const doDatasetsCall = async () => {
 		setIsLoading(true);
@@ -97,20 +98,7 @@ const AccountDatasets = props => {
 	};
 
 	const hasActivityHistory = dataset => {
-		console.log('asdasdasda', dataset.listOfVersions.length);
 		return dataset.listOfVersions.length > 0 && team === 'admin';
-	};
-
-	const generateAlert = () => {
-		let { message = '' } = alert;
-
-		return (
-			<AccountContent className='mt-3'>
-				<Alert variant={'success'} className='col-sm-12 main-alert'>
-					<SVGIcon name='check' width={18} height={18} fill={'#2C8267'} /> {message}
-				</Alert>
-			</AccountContent>
-		);
 	};
 
 	if (isLoading) {
@@ -123,7 +111,13 @@ const AccountDatasets = props => {
 
 	return (
 		<div>
-			<>{!_.isEmpty(alert) ? generateAlert() : ''}</>
+			{!_.isEmpty(props.alert) && (
+				<AccountContent className='mt-3'>
+					<Alert variant={'success'} className='col-sm-12 main-alert'>
+						<SVGIcon name='check' width={18} height={18} fill={'#2C8267'} /> {props.alert.message}
+					</Alert>
+				</AccountContent>
+			)}
 			<AccountContent>
 				<div className='accountHeader'>
 					<Row>

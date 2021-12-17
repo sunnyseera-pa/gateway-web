@@ -31,7 +31,7 @@ const AccountDataset = props => {
 		showDisabled: true,
 		statusError: false,
 		showApproveDatasetModal: false,
-		showRejectDatasetModal: false
+		showRejectDatasetModal: false,
 	});
 
 	const dataActivityLog = serviceActivityLog.usePostActivityLog();
@@ -121,7 +121,7 @@ const AccountDataset = props => {
 
 			if (dataset) {
 				history.push(`/account/datasets/${dataset.pid}`);
-			} 
+			}
 		},
 		[id, dataPublisher.data, team]
 	);
@@ -135,7 +135,7 @@ const AccountDataset = props => {
 		}
 	}, [showNext]);
 
-	const closeRejectDatasetModal = () => setState({...state, showRejectDatasetModal: false });
+	const closeRejectDatasetModal = () => setState({ ...state, showRejectDatasetModal: false });
 
 	const closeRejectModalAndRedirectToPendingDatasets = alert => {
 		history.push({
@@ -150,10 +150,11 @@ const AccountDataset = props => {
 		goToNext();
 	};
 
-	const closeApproveDatasetModal = () => setState({...state, showApproveDatasetModal: false });
+	const closeApproveDatasetModal = () => setState({ ...state, showApproveDatasetModal: false });
 
 	const closeApproveModalAndRedirectToPendingDatasets = alert => {
 		closeApproveDatasetModal();
+
 		history.push({
 			pathname: `/account`,
 			search: '?tab=datasets',
@@ -170,24 +171,27 @@ const AccountDataset = props => {
 		history.push(`/dataset-onboarding/${currentDataset._id}`);
 	}, [currentDataset]);
 
-	const makeADecisionActions = [{
-		description: t('dataset.makeADecision'),
-		actions: [
+	const makeADecisionActions = [
 		{
-			title: t('dataset.approve'),
-			onClick: () => {
-				setState({...state, showApproveDatasetModal: true })
-			},
-			visible: true
+			description: t('dataset.makeADecision'),
+			actions: [
+				{
+					title: t('dataset.approve'),
+					onClick: () => {
+						setState({ ...state, showApproveDatasetModal: true });
+					},
+					visible: true,
+				},
+				{
+					title: t('dataset.reject'),
+					onClick: () => {
+						setState({ ...state, showRejectDatasetModal: true });
+					},
+					visible: true,
+				},
+			],
 		},
-		{
-			title: t('dataset.reject'),
-			onClick: () => {
-				setState({...state, showRejectDatasetModal: true })
-			},
-			visible: true
-		}
-	]}];
+	];
 
 	if (dataPublisher.isLoading || dataActivityLog.isLoading) {
 		return (
@@ -251,14 +255,16 @@ const AccountDataset = props => {
 					closed={closeApproveDatasetModal}
 					goToNext={closeApproveModalAndGoToNext}
 					handleApprove={closeApproveModalAndRedirectToPendingDatasets}
-					showGoToNext={showNext} />
+					showGoToNext={showNext}
+				/>
 				<AccountDatasetRejectModal
 					id={currentDataset._id}
 					open={showRejectDatasetModal}
 					closed={closeRejectDatasetModal}
 					goToNext={closeRejectModalAndGoToNext}
 					handleReject={closeRejectModalAndRedirectToPendingDatasets}
-					showGoToNext={showNext} />
+					showGoToNext={showNext}
+				/>
 			</AccountContent>
 		</Suspense>
 	) : null;

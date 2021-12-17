@@ -8,25 +8,12 @@ import datasetOnboardingService from '../../../../services/dataset-onboarding/da
 import { TEXTAREA_ROWS } from '../../../../configs/constants';
 import './AccountDatasetDecisionModal.scss';
 
-const AccountDatasetApproveModal = ({
-	id,
-	open,
-	closed,
-	goToNext,
-	showGoToNext,
-	handleApprove
-}) => {
+const AccountDatasetApproveModal = ({ id, open, closed, goToNext, showGoToNext, handleApprove }) => {
 	const { t } = useTranslation();
 
-	const {
-			handleSubmit,
-			handleChange,
-			handleBlur,
-			values,
-			errors
-		} = useFormik({
+	const { handleSubmit, handleChange, handleBlur, values, errors } = useFormik({
 		initialValues: {
-			applicationStatusDesc: ''
+			applicationStatusDesc: '',
 		},
 		validationSchema: Yup.object({
 			applicationStatusDesc: Yup.string().max(1500, 'Description must be less than 1500 characters'),
@@ -35,21 +22,22 @@ const AccountDatasetApproveModal = ({
 			const payload = {
 				...values,
 				id,
-				applicationStatus: 'approved'
+				applicationStatus: 'approved',
 			};
-			datasetOnboardingService.putDatasetOnboarding(id, payload);
+
+			await datasetOnboardingService.putDatasetOnboarding(id, payload);
+
+			handleApprove({
+				publisher: '',
+				tab: 'inReview',
+				message: `You have approved the dataset`,
+			});
 		},
 	});
 
 	return (
 		<Suspense fallback={t('loading')}>
-			<Modal
-				show={open}
-				onHide={closed}
-				className='decisionModal'
-				size='lg'
-				aria-labelledby='contained-modal-title-vcenter'
-				centered>
+			<Modal show={open} onHide={closed} className='decisionModal' size='lg' aria-labelledby='contained-modal-title-vcenter' centered>
 				<div className='decisionModal-header'>
 					<div className='decisionModal-header--wrap'>
 						<div className='decisionModal-head'>
@@ -64,7 +52,7 @@ const AccountDatasetApproveModal = ({
 						<div className='decisionModal-body--wrap'>
 							<p data-testid='description'>{t('dataset.approvalModal.description')}</p>
 							<Form.Group>
-								<label for="applicationStatusDesc" className='black-14'>
+								<label for='applicationStatusDesc' className='black-14'>
 									{t('dataset.approvalModal.applicationStatus')}
 									<span>{values.applicationStatusDesc.length}/1500</span>
 								</label>
@@ -84,8 +72,7 @@ const AccountDatasetApproveModal = ({
 						</div>
 					</div>
 					<div className='decisionModal-footer'>
-						<div data-testid='button-container'
-							className='decisionModal-footer--wrap'>
+						<div data-testid='button-container' className='decisionModal-footer--wrap'>
 							<Button
 								className='button-secondary'
 								onClick={() => {
@@ -98,14 +85,7 @@ const AccountDatasetApproveModal = ({
 								data-testid='approve-button'
 								className='button-secondary'
 								style={{ marginLeft: '10px' }}
-								onClick={async () => {
-									handleSubmit();
-									handleApprove({
-										publisher: '',
-										tab: 'inReview',
-										message: `You have approved the dataset`
-									});
-								}}>
+								onClick={handleSubmit}>
 								{t('dataset.approvalModal.buttons.approve')}
 							</Button>
 							<Button
