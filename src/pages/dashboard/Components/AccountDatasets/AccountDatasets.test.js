@@ -30,6 +30,7 @@ jest.mock('./AccountDatasetsContent', () => props => {
 				props.onSubmit({
 					search: 'dataset',
 					sortBy: 'metadataQuality',
+					sortDirection: 'desc',
 				});
 			}}>
 			Submit
@@ -108,6 +109,7 @@ describe('Given the AccountDatasets component', () => {
 					await fireEvent.click(submit, {
 						search: 'dataset',
 						sortBy: 'metadataQuality',
+						sortDirection: 'desc',
 					});
 				});
 			});

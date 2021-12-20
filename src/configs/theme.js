@@ -12,13 +12,15 @@ export const getCommonStyle = (prop, value) => {
 	return !isNil(value) ? `${prop}: ${value};` : '';
 };
 
-export const getCommonStyles = ({ ml, mr, mb, mt, width }, theme) => {
+export const getCommonStyles = ({ ml, mr, mb, mt, width, maxWidth, minWidth }, theme) => {
 	return `
 		${getSpacingStyle('margin-left', ml, theme)}
 		${getSpacingStyle('margin-right', mr, theme)}
 		${getSpacingStyle('margin-bottom', mb, theme)}
 		${getSpacingStyle('margin-top', mt, theme)}
 		${getCommonStyle('width', width)}
+		${getCommonStyle('max-width', maxWidth)}
+		${getCommonStyle('min-width', minWidth)}
 	`;
 };
 

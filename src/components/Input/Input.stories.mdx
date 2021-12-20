@@ -6,5 +6,7 @@ import Icon from '../Icon';
 <Meta title='Core/Input' component={Input} />
 
 <Canvas>
-	<Story name='Basic'>{props => <Input {...props} iconPrepend={<Icon name='star' />} iconAppend={<Icon name='tick' inline />} />}</Story>
+	<Story name='Basic'>
+		{props => <Input {...props} iconPrepend={<Icon name='star' />} iconAppend={<Icon name='tick' inline />} width='350px' />}
+	</Story>
 </Canvas>

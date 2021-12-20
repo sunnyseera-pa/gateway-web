@@ -5,7 +5,7 @@ import usePersistState from '../../hooks/usePersistState';
 const useSearch = (mutateHook, options) => {
 	const [params, setParams] = React.useState(
 		options.initialParams || {
-			maxResults: 10,
+			limit: 10,
 			page: 1,
 		}
 	);
@@ -22,8 +22,8 @@ const useSearch = (mutateHook, options) => {
 	const { total } = state;
 
 	const hasNext = React.useCallback(() => {
-		const { maxResults, page } = params;
-		return page < Math.ceil(total / maxResults);
+		const { limit, page } = params;
+		return page < Math.ceil(total / limit);
 	}, [params, total]);
 
 	const hasPrevious = React.useCallback(() => {
@@ -41,21 +41,22 @@ const useSearch = (mutateHook, options) => {
 	);
 
 	const getResults = React.useCallback(
-		async (queryParams, cacheKey) => {
-			const filteredParams = pickBy(queryParams, value => value !== '');
-
-			setParams({
+		async (searchParams, cacheKey) => {
+			const filteredParams = pickBy(searchParams, value => value !== '');
+			const queryParams = {
+				limit: params.limit,
 				page,
 				...filteredParams,
-			});
+			};
 
-			query(filteredParams, cacheKey);
+			setParams(queryParams);
+			query(queryParams, cacheKey);
 		},
 		[params, page]
 	);
 
 	const getCachedResults = React.useCallback(
-		(queryParams, key) => {
+		(searchParams, key) => {
 			const existingParams = getCache(key);
 
 			getResults(
@@ -63,7 +64,7 @@ const useSearch = (mutateHook, options) => {
 					? existingParams.params
 					: {
 							...options.initialParams,
-							...queryParams,
+							...searchParams,
 					  },
 				key
 			);
@@ -71,9 +72,9 @@ const useSearch = (mutateHook, options) => {
 		[cache]
 	);
 
-	const query = React.useCallback(async (queryParams, cacheKey) => {
+	const query = React.useCallback(async (searchParams, cacheKey) => {
 		try {
-			const { data } = await mutateHook.mutateAsync(queryParams);
+			const { data } = await mutateHook.mutateAsync(searchParams);
 			const { total, onSuccess } = options;
 
 			setState({
@@ -82,27 +83,27 @@ const useSearch = (mutateHook, options) => {
 			});
 
 			updateCache(cacheKey, {
-				params: queryParams,
+				params: searchParams,
 				data,
 			});
 
-			if (onSuccess) onSuccess(data, queryParams);
+			if (onSuccess) onSuccess(data, searchParams);
 		} catch (e) {
 			const { onError } = options;
 
-			if (onError) onError(e, queryParams);
+			if (onError) onError(e, searchParams);
 		}
 	}, []);
 
 	const goToPage = i => {
-		const queryParams = {
+		const searchParams = {
 			...params,
 			page: i,
 			index: (i - 1) * 10,
 		};
 
-		setParams(queryParams);
-		query(queryParams);
+		setParams(searchParams);
+		query(searchParams);
 	};
 
 	const goToNext = React.useCallback(() => {

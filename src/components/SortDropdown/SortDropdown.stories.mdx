@@ -7,17 +7,22 @@ import SortDropdown from './SortDropdown';
 	component={SortDropdown}
 	args={{
 		options: ['recentlyadded', 'relevance'],
+		allowDirection: false,
+		direction: 'asc',
+		value: 'relevance',
+	}}
+	argTypes={{
+		direction: {
+			options: ['asc', 'desc'],
+			control: { type: 'radio' },
+		},
 	}}
 />
 
 <Canvas>
 	<Story name='Basic'>
 		{props => {
-			const [value, setValue] = React.useState('relevance');
-			const handleSort = React.useCallback(value => {
-				setValue(value);
-			}, []);
-			return <SortDropdown {...props} onSort={handleSort} value={value} width='350px' />;
+			return <SortDropdown {...props} width='350px' />;
 		}}
 	</Story>
 </Canvas>

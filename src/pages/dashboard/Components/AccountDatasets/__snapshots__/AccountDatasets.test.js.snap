@@ -46,14 +46,14 @@ exports[`Given the AccountDatasets component When it is rendered Then matches th
                 <span
                   class="black-20"
                 >
-                  Datasets
+                  datasets
                 </span>
               </div>
               <div>
                 <span
                   class="gray700-13 "
                 >
-                  View, add, edit, archive and check the status of your datasets.
+                  dataset.create.description.admin
                 </span>
               </div>
             </div>
@@ -65,7 +65,8 @@ exports[`Given the AccountDatasets component When it is rendered Then matches th
                 class="addButton btn btn-primary"
                 type="button"
               >
-                + Add a new dataset
+                + 
+                dataset.create.action
               </button>
             </div>
           </div>

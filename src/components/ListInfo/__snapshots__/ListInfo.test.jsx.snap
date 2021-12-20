@@ -3,7 +3,7 @@
 exports[`Given the ListInfo component When it is rendered Then matches the previous snapshot 1`] = `
 <div>
   <ul
-    class="ui-ListInfo additional-classname css-1ctemxb css-1jupbku-ListInfo"
+    class="ui-ListInfo additional-classname css-1sivg29 css-1jupbku-ListInfo"
   >
     <li
       class="css-oc8kcp"

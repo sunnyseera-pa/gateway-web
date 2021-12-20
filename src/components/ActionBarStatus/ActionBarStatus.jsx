@@ -6,8 +6,8 @@ import { addCommonPropTypes } from '../../configs/propTypes';
 import useCommonStyles from '../../hooks/useCommonStyles';
 import { dateFormats } from '../../utils/GeneralHelper.util';
 
-const ActionBarStatus = ({ status, dataset, totalQuestions, className, mt, mb, ml, mr, ...outerProps }) => {
-	const commonStyles = useCommonStyles({ mt, mb, ml, mr });
+const ActionBarStatus = ({ status, dataset, totalQuestions, className, mt, mb, ml, mr, width, minWidth, maxWidth, ...outerProps }) => {
+	const commonStyles = useCommonStyles({ mt, mb, ml, mr, width, minWidth, maxWidth });
 
 	const {
 		timestamps: { published, submitted, rejected, archived },

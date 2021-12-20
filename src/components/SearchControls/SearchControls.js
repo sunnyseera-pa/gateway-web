@@ -10,6 +10,7 @@ const SearchControls = ({ onSubmit, isLoading, sortProps, inputProps, formRef, e
 			initialValues={{
 				search: inputProps && !!inputProps.value ? inputProps.value : '',
 				sortBy: sortProps && !!sortProps.value ? sortProps.value : '',
+				sortDirection: sortProps && !!sortProps.direction ? sortProps.direction : '',
 			}}
 			onSubmit={onSubmit}
 			innerRef={formRef}

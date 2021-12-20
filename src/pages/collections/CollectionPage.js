@@ -22,7 +22,7 @@ import googleAnalytics from '../../tracking';
 import { getCollectionRequest, getCollectionRelatedObjectsRequest, postCollectionCounterUpdateRequest } from '../../services/collection';
 import { filterCollectionItems, generatePaginatedItems, generateDropdownItems } from './collection.utils';
 import { sortByMetadataQuality, sortByRecentlyAdded, sortByResources, sortByRelevance, sortByPopularity } from './collection.utils.sort';
-import { MAXRESULT } from './constants';
+import { MAXRESULTS } from './constants';
 import DatasetCollectionResults from './Components/DatasetCollectionResults';
 import ToolCollectionResults from './Components/ToolCollectionResults';
 import ProjectCollectionResults from './Components/ProjectCollectionResults';
@@ -182,8 +182,8 @@ export const CollectionPage = props => {
 		}
 	};
 
-	const handleSort = React.useCallback(sortBy => {
-		googleAnalytics.recordEvent('Collections', `Sorted collection entities by ${sortBy}`, 'Sort dropdown option changed');
+	const handleSort = React.useCallback(({ value, direction }) => {
+		googleAnalytics.recordEvent('Collections', `Sorted collection entities by ${value} ${direction}`, 'Sort dropdown option changed');
 	}, []);
 
 	const handlePaginatedItems = index => {
@@ -199,13 +199,6 @@ export const CollectionPage = props => {
 			return [];
 		}
 	};
-
-	const handleResetInput = React.useCallback(
-		values => {
-			doCollectionsSearch(values);
-		},
-		[key, objectData]
-	);
 
 	const doCollectionsSearch = React.useCallback(
 		({ search, sortBy }) => {
@@ -456,8 +449,6 @@ export const CollectionPage = props => {
 							onSubmit={doCollectionsSearch}
 							isLoading={isResultsLoading}
 							inputProps={{
-								onReset: handleResetInput,
-								onSubmit: doCollectionsSearch,
 								mt: 2,
 							}}
 							sortProps={{
@@ -502,12 +493,12 @@ export const CollectionPage = props => {
 						) : null}
 
 						<div className='text-center'>
-							{key === 'dataset' && datasetCount > MAXRESULT ? <Pagination>{datasetPaginationItems}</Pagination> : ''}
-							{key === 'tool' && toolCount > MAXRESULT ? <Pagination>{toolPaginationItems}</Pagination> : ''}
-							{key === 'project' && projectCount > MAXRESULT ? <Pagination>{projectPaginationItems}</Pagination> : ''}
-							{key === 'paper' && paperCount > MAXRESULT ? <Pagination>{paperPaginationItems}</Pagination> : ''}
-							{key === 'person' && personCount > MAXRESULT ? <Pagination>{personPaginationItems}</Pagination> : ''}
-							{key === 'course' && courseCount > MAXRESULT ? <Pagination>{coursePaginationItems}</Pagination> : ''}
+							{key === 'dataset' && datasetCount > MAXRESULTS ? <Pagination>{datasetPaginationItems}</Pagination> : ''}
+							{key === 'tool' && toolCount > MAXRESULTS ? <Pagination>{toolPaginationItems}</Pagination> : ''}
+							{key === 'project' && projectCount > MAXRESULTS ? <Pagination>{projectPaginationItems}</Pagination> : ''}
+							{key === 'paper' && paperCount > MAXRESULTS ? <Pagination>{paperPaginationItems}</Pagination> : ''}
+							{key === 'person' && personCount > MAXRESULTS ? <Pagination>{personPaginationItems}</Pagination> : ''}
+							{key === 'course' && courseCount > MAXRESULTS ? <Pagination>{coursePaginationItems}</Pagination> : ''}
 						</div>
 					</Col>
 					<Col sm={1} lg={10} />

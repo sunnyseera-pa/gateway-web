@@ -11,7 +11,7 @@ export const PROP_TYPES_SEARCH_RESULTS = {
 	sort: PropTypes.node,
 	pageNumber: PropTypes.number,
 	onPagination: PropTypes.func,
-	maxResult: PropTypes.number,
+	maxResults: PropTypes.number,
 	updateOnFilterBadge: PropTypes.func,
 	isLoading: PropTypes.bool,
 	totalPages: PropTypes.number,
@@ -21,6 +21,6 @@ export const DEFAULT_PROPS_SEARCH_RESULTS = {
 	count: 0,
 	search: '',
 	pageNumber: 1,
-	maxResult: 40,
+	maxResults: 40,
 	totalPages: 0,
 };

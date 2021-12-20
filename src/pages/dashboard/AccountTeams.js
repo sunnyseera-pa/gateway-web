@@ -11,7 +11,7 @@ import _ from 'lodash';
 import AddEditTeamsPage from './Team/AddEditTeamsPage';
 import { LayoutContent } from '../../components/Layout';
 
-const maxResult = 40;
+const maxResults = 40;
 
 const AccountTeams = () => {
 	// state
@@ -31,7 +31,7 @@ const AccountTeams = () => {
 
 	const handlePaginatedItems = () => {
 		// Returns the related resources that have the same object type as the current active tab and performs a chunk on them to ensure each page returns 24 results
-		let paginatedItems = _.chunk(teams, maxResult);
+		let paginatedItems = _.chunk(teams, maxResults);
 		// If there are items to show based on search results, display them on the currently active page
 		if (paginatedItems.length > 0) {
 			return paginatedItems[activeIndex];
@@ -94,7 +94,7 @@ const AccountTeams = () => {
 		setViewTeams(true);
 	};
 	let paginationItems = [];
-	for (let i = 1; i <= Math.ceil(teamsCount / maxResult); i++) {
+	for (let i = 1; i <= Math.ceil(teamsCount / maxResults); i++) {
 		paginationItems.push(
 			<Pagination.Item
 				key={i}
@@ -169,7 +169,7 @@ const AccountTeams = () => {
 									);
 								})}
 							<div className='text-center entityDashboardPagination'>
-								{teamsCount > maxResult ? <Pagination>{paginationItems}</Pagination> : ''}
+								{teamsCount > maxResults ? <Pagination>{paginationItems}</Pagination> : ''}
 							</div>
 						</Col>
 					</Row>

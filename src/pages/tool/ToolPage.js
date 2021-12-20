@@ -3,7 +3,7 @@ import axios from 'axios';
 import queryString from 'query-string';
 import * as Sentry from '@sentry/react';
 import { Row, Col, Tabs, Tab, Container, Alert } from 'react-bootstrap';
-import NotFound from '../commonComponents/NotFound';
+import MessageNotFound from '../commonComponents/MessageNotFound';
 import Uploader from '../commonComponents/Uploader';
 import Loading from '../commonComponents/Loading';
 import Reviews from '../commonComponents/reviews/Reviews';
@@ -565,7 +565,7 @@ export const ToolDetail = props => {
 									</Tab>
 									<Tab eventKey='Related resources' title={'Related resources (' + relatedObjects.length + ')'}>
 										{relatedObjects.length <= 0 ? (
-											<NotFound word='related resources' />
+											<MessageNotFound word='related resources' />
 										) : (
 											relatedObjects.map(object => (
 												<RelatedObject
@@ -581,10 +581,10 @@ export const ToolDetail = props => {
 									</Tab>
 									<Tab eventKey='Collections' title={'Collections (' + collections.length + ')'}>
 										{!collections || collections.length <= 0 ? (
-											<NotFound text='This tool has not been featured on any collections yet.' />
+											<MessageNotFound text='This tool has not been featured on any collections yet.' />
 										) : (
 											<>
-												<NotFound text='This tool appears on the collections below. A collection is a group of resources on the same theme.' />
+												<MessageNotFound text='This tool appears on the collections below. A collection is a group of resources on the same theme.' />
 
 												<Row>
 													{collections.map(collection => (

@@ -1,5 +1,5 @@
 import { ThemeProvider } from '@emotion/react';
-import * as themeConfig from '../configs/theme';
+import * as themeConfig from '../../configs/theme';
 import useCommonStyles from './useCommonStyles';
 
 jest.mock('@emotion/css', () => ({

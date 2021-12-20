@@ -86,74 +86,74 @@ class RelatedResourcesModal extends React.Component {
 		let paperPaginationItems = [];
 		let personPaginationItems = [];
 		let coursePaginationItems = [];
-		let maxResult = 40;
-		for (let i = 1; i <= Math.ceil(datasetCount / maxResult); i++) {
+		let maxResults = 40;
+		for (let i = 1; i <= Math.ceil(datasetCount / maxResults); i++) {
 			datasetPaginationItems.push(
 				<Pagination.Item
 					key={i}
-					active={i === datasetIndex / maxResult + 1}
+					active={i === datasetIndex / maxResults + 1}
 					onClick={e => {
-						this.handlePagination('dataset', (i - 1) * maxResult, 'click');
+						this.handlePagination('dataset', (i - 1) * maxResults, 'click');
 					}}>
 					{i}
 				</Pagination.Item>
 			);
 		}
-		for (let i = 1; i <= Math.ceil(toolCount / maxResult); i++) {
+		for (let i = 1; i <= Math.ceil(toolCount / maxResults); i++) {
 			toolPaginationItems.push(
 				<Pagination.Item
 					key={i}
-					active={i === toolIndex / maxResult + 1}
+					active={i === toolIndex / maxResults + 1}
 					onClick={e => {
-						this.handlePagination('tool', (i - 1) * maxResult, 'click');
+						this.handlePagination('tool', (i - 1) * maxResults, 'click');
 					}}>
 					{i}
 				</Pagination.Item>
 			);
 		}
-		for (let i = 1; i <= Math.ceil(projectCount / maxResult); i++) {
+		for (let i = 1; i <= Math.ceil(projectCount / maxResults); i++) {
 			projectPaginationItems.push(
 				<Pagination.Item
 					key={i}
-					active={i === projectIndex / maxResult + 1}
+					active={i === projectIndex / maxResults + 1}
 					onClick={e => {
-						this.handlePagination('project', (i - 1) * maxResult, 'click');
+						this.handlePagination('project', (i - 1) * maxResults, 'click');
 					}}>
 					{i}
 				</Pagination.Item>
 			);
 		}
-		for (let i = 1; i <= Math.ceil(paperCount / maxResult); i++) {
+		for (let i = 1; i <= Math.ceil(paperCount / maxResults); i++) {
 			paperPaginationItems.push(
 				<Pagination.Item
 					key={i}
-					active={i === paperIndex / maxResult + 1}
+					active={i === paperIndex / maxResults + 1}
 					onClick={e => {
-						this.handlePagination('paper', (i - 1) * maxResult, 'click');
+						this.handlePagination('paper', (i - 1) * maxResults, 'click');
 					}}>
 					{i}
 				</Pagination.Item>
 			);
 		}
-		for (let i = 1; i <= Math.ceil(personCount / maxResult); i++) {
+		for (let i = 1; i <= Math.ceil(personCount / maxResults); i++) {
 			personPaginationItems.push(
 				<Pagination.Item
 					key={i}
-					active={i === personIndex / maxResult + 1}
+					active={i === personIndex / maxResults + 1}
 					onClick={e => {
-						this.handlePagination('person', (i - 1) * maxResult, 'click');
+						this.handlePagination('person', (i - 1) * maxResults, 'click');
 					}}>
 					{i}
 				</Pagination.Item>
 			);
 		}
-		for (let i = 1; i <= Math.ceil(courseCount / maxResult); i++) {
+		for (let i = 1; i <= Math.ceil(courseCount / maxResults); i++) {
 			coursePaginationItems.push(
 				<Pagination.Item
 					key={i}
-					active={i === courseIndex / maxResult + 1}
+					active={i === courseIndex / maxResults + 1}
 					onClick={e => {
-						this.handlePagination('course', (i - 1) * maxResult, 'click');
+						this.handlePagination('course', (i - 1) * maxResults, 'click');
 					}}>
 					{i}
 				</Pagination.Item>
@@ -450,17 +450,17 @@ class RelatedResourcesModal extends React.Component {
 									: ''}
 
 								<div className='text-center'>
-									{key === 'Datasets' && datasetCount > maxResult ? <Pagination>{datasetPaginationItems}</Pagination> : ''}
+									{key === 'Datasets' && datasetCount > maxResults ? <Pagination>{datasetPaginationItems}</Pagination> : ''}
 
-									{key === 'Tools' && toolCount > maxResult ? <Pagination>{toolPaginationItems}</Pagination> : ''}
+									{key === 'Tools' && toolCount > maxResults ? <Pagination>{toolPaginationItems}</Pagination> : ''}
 
-									{key === 'Projects' && projectCount > maxResult ? <Pagination>{projectPaginationItems}</Pagination> : ''}
+									{key === 'Projects' && projectCount > maxResults ? <Pagination>{projectPaginationItems}</Pagination> : ''}
 
-									{key === 'Papers' && paperCount > maxResult ? <Pagination>{paperPaginationItems}</Pagination> : ''}
+									{key === 'Papers' && paperCount > maxResults ? <Pagination>{paperPaginationItems}</Pagination> : ''}
 
-									{key === 'People' && personCount > maxResult ? <Pagination>{personPaginationItems}</Pagination> : ''}
+									{key === 'People' && personCount > maxResults ? <Pagination>{personPaginationItems}</Pagination> : ''}
 
-									{key === 'Course' && courseCount > maxResult ? <Pagination>{coursePaginationItems}</Pagination> : ''}
+									{key === 'Course' && courseCount > maxResults ? <Pagination>{coursePaginationItems}</Pagination> : ''}
 								</div>
 							</Col>
 							<Col sm={2} lg={2} />

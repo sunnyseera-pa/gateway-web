@@ -7,7 +7,7 @@ import queryString from 'query-string';
 import { Container, Row, Col, Tabs, Tab, Alert } from 'react-bootstrap';
 import moment from 'moment';
 import RelatedObject from '../commonComponents/relatedObject/RelatedObject';
-import NotFound from '../commonComponents/NotFound';
+import MessageNotFound from '../commonComponents/MessageNotFound';
 import SearchBar from '../commonComponents/searchBar/SearchBar';
 import Loading from '../commonComponents/Loading';
 import Uploader from '../commonComponents/Uploader';
@@ -460,7 +460,7 @@ export const ProjectDetail = props => {
 									</Tab>
 									<Tab eventKey='Related resources' title={'Related resources (' + relatedObjects.length + ')'}>
 										{relatedObjects.length <= 0 ? (
-											<NotFound word='related resources' />
+											<MessageNotFound word='related resources' />
 										) : (
 											relatedObjects.map(object => (
 												<RelatedObject
@@ -476,10 +476,10 @@ export const ProjectDetail = props => {
 									</Tab>
 									<Tab eventKey='Collections' title={'Collections (' + collections.length + ')'}>
 										{!collections || collections.length <= 0 ? (
-											<NotFound text='This project has not been featured on any collections yet.' />
+											<MessageNotFound text='This project has not been featured on any collections yet.' />
 										) : (
 											<>
-												<NotFound text='This project appears on the collections below. A collection is a group of resources on the same theme.' />
+												<MessageNotFound text='This project appears on the collections below. A collection is a group of resources on the same theme.' />
 
 												<Row>
 													{collections.map(collection => (
