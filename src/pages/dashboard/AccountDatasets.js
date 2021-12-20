@@ -16,7 +16,6 @@ import { ReactComponent as EyeIcon } from '../../images/eye.svg';
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
 const AccountDatasets = props => {
-	console.log('Start of AccountDatasets props.alert', props.alert);
 	const [key, setKey] = useState(!_.isEmpty(props.alert.tab) ? props.alert.tab : 'active');
 	const [datasetList, setDatasetList] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);

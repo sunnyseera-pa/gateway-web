@@ -125,7 +125,6 @@ class Account extends Component {
 		}
 
 		this.historyListener = props.history.listen(location => {
-			console.log('location.state', location.state);
 			if (location.state) {
 				this.setState({
 					alert: location.state.alert || {},
@@ -467,8 +466,6 @@ class Account extends Component {
 
 		let [id] = e.currentTarget.id.split('_');
 
-		console.log(applicationId);
-
 		switch (id) {
 			case 'startReview':
 				this.startWorkflowReview(applicationId);
@@ -511,10 +508,6 @@ class Account extends Component {
 		return isActive ? 'activeCard' : 'accountNav';
 	};
 
-	onRouteChange(x, y, z) {
-		console.log('ROUTE CHANGED', x, y, z);
-	}
-
 	render() {
 		const {
 			searchString,
@@ -535,8 +528,6 @@ class Account extends Component {
 			accountUpdated,
 			dataaccessrequest,
 		} = this.state;
-
-		console.log('/account', team, userState, alert);
 
 		return (
 			<Sentry.ErrorBoundary fallback={<ErrorModal />}>
