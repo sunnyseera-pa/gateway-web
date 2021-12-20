@@ -1192,6 +1192,7 @@ class DatasetOnboarding extends Component {
 				/>
 			);
 		} else {
+			console.log('this.state.jsonSchema', this.state.jsonSchema);
 			return (
 				<Winterfell
 					schema={this.state.jsonSchema}
