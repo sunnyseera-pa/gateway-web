@@ -41,9 +41,7 @@ const AccountDatasetApproveModal = ({ id, open, closed, goToNext, showGoToNext, 
 						applicationStatusDesc: '',
 					}}
 					validationSchema={Yup.object({
-						applicationStatusDesc: Yup.string()
-							.max(1500, 'Description must be less than 1500 characters')
-							.required('Description should not be empty'),
+						applicationStatusDesc: Yup.string().max(1500, 'Description must be less than 1500 characters'),
 					})}
 					onSubmit={async values => {
 						await approveDataset(values);
@@ -89,7 +87,7 @@ const AccountDatasetApproveModal = ({ id, open, closed, goToNext, showGoToNext, 
 										{t('dataset.approvalModal.buttons.cancel')}
 									</Button>
 									<Button
-										disabled={!isValid || !dirty}
+										disabled={!isValid}
 										type='submit'
 										data-testid='approve-button'
 										className='button-secondary'
@@ -97,11 +95,12 @@ const AccountDatasetApproveModal = ({ id, open, closed, goToNext, showGoToNext, 
 										{t('dataset.approvalModal.buttons.approve')}
 									</Button>
 									<Button
-										disabled={!showGoToNext || !isValid || !dirty}
+										disabled={!showGoToNext || !isValid}
 										className='button-secondary'
 										style={{ marginLeft: '10px' }}
 										onClick={async () => {
 											await approveDataset(values);
+
 											goToNext();
 										}}>
 										{t('dataset.approvalModal.buttons.approveAndGoToNext')}
