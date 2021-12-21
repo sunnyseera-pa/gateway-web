@@ -54,7 +54,7 @@ const AccountDatasetApproveModal = ({ id, open, closed, goToNext, showGoToNext, 
 							message: `You have approved the dataset`,
 						});
 					}}>
-					{({ values, errors, validateForm, handleChange, handleBlur, handleSubmit }) => (
+					{({ values, errors, isValid, dirty, handleChange, handleBlur, handleSubmit }) => (
 						<Form onSubmit={handleSubmit} onBlur={handleBlur}>
 							<div className='decisionModal-body'>
 								<div className='decisionModal-body--wrap'>
@@ -89,7 +89,7 @@ const AccountDatasetApproveModal = ({ id, open, closed, goToNext, showGoToNext, 
 										{t('dataset.approvalModal.buttons.cancel')}
 									</Button>
 									<Button
-										disabled={errors.applicationStatusDesc}
+										disabled={!isValid || !dirty}
 										type='submit'
 										data-testid='approve-button'
 										className='button-secondary'
@@ -97,16 +97,12 @@ const AccountDatasetApproveModal = ({ id, open, closed, goToNext, showGoToNext, 
 										{t('dataset.approvalModal.buttons.approve')}
 									</Button>
 									<Button
-										disabled={!showGoToNext || errors.applicationStatusDesc}
+										disabled={!showGoToNext || !isValid || !dirty}
 										className='button-secondary'
 										style={{ marginLeft: '10px' }}
 										onClick={async () => {
-											validateForm().then(async errors => {
-												if (_.isEmpty(errors)) {
-													await approveDataset(values);
-													goToNext();
-												}
-											});
+											await approveDataset(values);
+											goToNext();
 										}}>
 										{t('dataset.approvalModal.buttons.approveAndGoToNext')}
 									</Button>

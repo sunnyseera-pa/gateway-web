@@ -50,7 +50,7 @@ const AccountDatasetRejectModal = ({ id, open, closed, goToNext, handleReject, s
 						message: `You have rejected the dataset`,
 					});
 				}}>
-				{({ values, errors, validateForm, handleChange, handleBlur, handleSubmit }) => (
+				{({ values, errors, isValid, dirty, handleChange, handleBlur, handleSubmit }) => (
 					<Form onSubmit={handleSubmit} onBlur={handleBlur}>
 						<div className='decisionModal-body'>
 							<div className='decisionModal-body--wrap'>
@@ -85,7 +85,7 @@ const AccountDatasetRejectModal = ({ id, open, closed, goToNext, handleReject, s
 									{t('dataset.rejectModal.buttons.cancel')}
 								</Button>
 								<Button
-									disabled={errors.applicationStatusDesc}
+									disabled={!isValid || !dirty}
 									type='submit'
 									data-testid='reject-button'
 									className='button-secondary'
@@ -93,16 +93,12 @@ const AccountDatasetRejectModal = ({ id, open, closed, goToNext, handleReject, s
 									{t('dataset.rejectModal.buttons.reject')}
 								</Button>
 								<Button
-									disabled={!showGoToNext || errors.applicationStatusDesc}
+									disabled={!showGoToNext || !isValid || !dirty}
 									className='button-secondary'
 									style={{ marginLeft: '10px' }}
-									onClick={() => {
-										validateForm().then(async errors => {
-											if (_.isEmpty(errors)) {
-												await rejectDataset(values);
-												goToNext();
-											}
-										});
+									onClick={async () => {
+										await rejectDataset(values);
+										goToNext();
 									}}>
 									{t('dataset.rejectModal.buttons.rejectAndGoToNext')}
 								</Button>
