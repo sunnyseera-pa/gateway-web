@@ -130,10 +130,11 @@ const AccountDataset = props => {
 
 	const goToNext = useCallback(() => {
 		const { showNext } = state;
+
 		if (showNext) {
 			handlePaginationClick(1);
 		}
-	}, [showNext]);
+	}, [id, showNext]);
 
 	const closeRejectDatasetModal = () => setState({ ...state, showRejectDatasetModal: false });
 
@@ -143,14 +144,14 @@ const AccountDataset = props => {
 		history.push({
 			pathname: `/account`,
 			search: '?tab=datasets',
-			state: { alert },
+			state: { alert, team, userState },
 		});
 	};
 
-	const closeRejectModalAndGoToNext = () => {
+	const closeRejectModalAndGoToNext = React.useCallback(() => {
 		closeRejectDatasetModal();
 		goToNext();
-	};
+	}, [id, showNext]);
 
 	const closeApproveDatasetModal = () => setState({ ...state, showApproveDatasetModal: false });
 
@@ -160,14 +161,14 @@ const AccountDataset = props => {
 		history.push({
 			pathname: `/account`,
 			search: '?tab=datasets',
-			state: { alert },
+			state: { alert, team },
 		});
 	};
 
-	const closeApproveModalAndGoToNext = () => {
+	const closeApproveModalAndGoToNext = React.useCallback(() => {
 		closeApproveDatasetModal();
 		goToNext();
-	};
+	}, [id, showNext]);
 
 	const handleViewForm = useCallback(() => {
 		history.push(`/dataset-onboarding/${currentDataset._id}`);

@@ -1,5 +1,4 @@
 import { Formik } from 'formik';
-import _ from 'lodash';
 import React, { Suspense } from 'react';
 import { Button, Form, Modal } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
@@ -25,6 +24,19 @@ const AccountDatasetApproveModal = ({ id, open, closed, goToNext, showGoToNext, 
 		[id]
 	);
 
+	const handleSubmit = React.useCallback(
+		async values => {
+			await approveDataset(values);
+
+			handleApprove({
+				publisher: '',
+				tab: 'inReview',
+				message: `You have approved the dataset`,
+			});
+		},
+		[id]
+	);
+
 	return (
 		<Suspense fallback={t('loading')}>
 			<Modal show={open} onHide={closed} className='decisionModal' size='lg' aria-labelledby='contained-modal-title-vcenter' centered>
@@ -43,16 +55,8 @@ const AccountDatasetApproveModal = ({ id, open, closed, goToNext, showGoToNext, 
 					validationSchema={Yup.object({
 						applicationStatusDesc: Yup.string().max(1500, 'Description must be less than 1500 characters'),
 					})}
-					onSubmit={async values => {
-						await approveDataset(values);
-
-						handleApprove({
-							publisher: '',
-							tab: 'inReview',
-							message: `You have approved the dataset`,
-						});
-					}}>
-					{({ values, errors, isValid, dirty, handleChange, handleBlur, handleSubmit }) => (
+					onSubmit={handleSubmit}>
+					{({ values, errors, isValid, handleChange, handleBlur, handleSubmit }) => (
 						<Form onSubmit={handleSubmit} onBlur={handleBlur}>
 							<div className='decisionModal-body'>
 								<div className='decisionModal-body--wrap'>
