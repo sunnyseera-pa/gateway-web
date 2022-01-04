@@ -15,6 +15,7 @@ const props = {
 	value: 'collection',
 	onDebounce: jest.fn(),
 	onChange: jest.fn(),
+	label: 'Sample label',
 };
 
 let wrapper;
@@ -29,6 +30,10 @@ describe('Given the Input component', () => {
 
 		it('Then matches the previous snapshot', () => {
 			expect(wrapper.container).toMatchSnapshot();
+		});
+
+		it('Then has a label', () => {
+			expect(wrapper.getByText('Sample label')).toBeTruthy();
 		});
 
 		it('Then has the prepended content', () => {

@@ -12,7 +12,9 @@ export const inputGroup = ({ prepend, append, variant }) => theme => {
 	} = theme;
 
 	return css`
-		input {
+		width: 100%;
+
+		.form-control {
 			${prepend.offsetWidth ? `padding-left: calc(${prepend.offsetWidth}px + 1.2em);` : ''}
 			${append.offsetWidth ? `padding-right: calc(${append.offsetWidth}px + 1.2em);` : ''}
 			background: ${colors[variants[variant].background]};
@@ -20,6 +22,7 @@ export const inputGroup = ({ prepend, append, variant }) => theme => {
 			border-radius: 0.25rem !important;
 			font-size: ${defaultSize};
 			height: ${height};
+			width: 100%;
 
 			&:focus {
 				border-color: ${colors.green700};
@@ -43,4 +46,9 @@ export const decorators = css`
 	transform: translateY(-50%);
 	display: inline-flex;
 	align-items: center;
+`;
+
+export const formGroup = css`
+	display: flex;
+	flex-direction: column;
 `;

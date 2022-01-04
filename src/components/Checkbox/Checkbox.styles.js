@@ -52,7 +52,7 @@ export const root = ({ variant }) => theme => {
 		}
 
 		input:checked + .ui-Checkbox__label::after {
-			background: ${colors.green700};
+			background: ${colors[variants[variant].checkedBackground]};
 		}
 
 		input:disabled + .ui-Checkbox__label::after {

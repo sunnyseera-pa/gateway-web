@@ -5,22 +5,40 @@ import Checkbox from './Checkbox';
 <Meta title='Core/Checkbox' component={Checkbox} />
 
 <Canvas>
-	<Story name='Basic'>
+	<Story name='Variants'>
 		{props => (
-			<>
-				<div>
-					<Checkbox {...props} label='Unchecked' mb={4} />
+			<div style={{ display: 'flex' }}>
+				<div className='mr-5'>
+					<h3 className='mb-3'>Primary</h3>
+					<div>
+						<Checkbox {...props} label='Unchecked' mb={4} />
+					</div>
+					<div>
+						<Checkbox {...props} label='Checked' checked mb={4} />
+					</div>
+					<div>
+						<Checkbox {...props} label='Disabled' disabled mb={4} />
+					</div>
+					<div>
+						<Checkbox {...props} label='Checked + disabled' checked disabled />
+					</div>
 				</div>
 				<div>
-					<Checkbox {...props} label='Checked' checked mb={4} />
+					<h3 className='mb-3'>Secondary</h3>
+					<div>
+						<Checkbox {...props} variant='secondary' label='Unchecked' mb={4} />
+					</div>
+					<div>
+						<Checkbox {...props} variant='secondary' label='Checked' checked mb={4} />
+					</div>
+					<div>
+						<Checkbox {...props} variant='secondary' label='Disabled' disabled mb={4} />
+					</div>
+					<div>
+						<Checkbox {...props} variant='secondary' label='Checked + disabled' checked disabled />
+					</div>
 				</div>
-				<div>
-					<Checkbox {...props} label='Disabled' disabled mb={4} />
-				</div>
-				<div>
-					<Checkbox {...props} label='Checked + disabled' checked disabled />
-				</div>
-			</>
+			</div>
 		)}
 	</Story>
 </Canvas>

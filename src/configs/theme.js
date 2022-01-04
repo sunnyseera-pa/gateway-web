@@ -83,5 +83,21 @@ export const theme = {
 		},
 		Input: THEME_INPUT,
 		Dropdown: THEME_INPUT,
+		Checkbox: {
+			height: '24px',
+			width: '24px',
+			variants: {
+				primary: {
+					borderColor: 'grey200',
+					backgroundDisabled: 'grey100',
+					checkedBackground: 'green700',
+				},
+				secondary: {
+					borderColor: 'grey200',
+					backgroundDisabled: 'grey100',
+					checkedBackground: 'grey700',
+				},
+			},
+		},
 	},
 };
