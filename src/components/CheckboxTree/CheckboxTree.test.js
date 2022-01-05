@@ -20,12 +20,9 @@ const props = {
 
 let wrapper;
 
-jest.mock('react-checkbox-tree', () => props => {
-	mockReactCheckboxTree(props);
-	return <div />;
-});
+jest.mock('react-checkbox-tree', () => props => mockReactCheckboxTree(props));
 
-describe('Given the Checkbox component', () => {
+describe('Given the CheckboxTree component', () => {
 	describe('When it is rendered', () => {
 		beforeAll(() => {
 			wrapper = render(<CheckboxTree {...props} />, {
