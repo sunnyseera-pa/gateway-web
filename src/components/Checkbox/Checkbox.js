@@ -17,10 +17,11 @@ const Checkbox = ({ className, mt, mb, ml, mr, width, minWidth, maxWidth, varian
 	);
 };
 
-export const PROP_TYPES_INPUT = addCommonPropTypes({
+Checkbox.propTypes = addCommonPropTypes({
 	label: PropTypes.node,
 	onChange: PropTypes.func,
 	variant: PropTypes.oneOf(['primary', 'secondary']),
+	id: PropTypes.string,
 });
 
 Checkbox.defaultProps = {
