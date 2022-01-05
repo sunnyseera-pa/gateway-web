@@ -22,7 +22,7 @@ const CheckboxTree = ({ className, mt, mb, ml, mr, width, minWidth, maxWidth, ic
 };
 
 CheckboxTree.propTypes = addCommonPropTypes({
-	nodes: PropTypes.object,
+	nodes: PropTypes.array,
 	icons: PropTypes.shape({
 		expandClose: PropTypes.node,
 		expandOpen: PropTypes.node,

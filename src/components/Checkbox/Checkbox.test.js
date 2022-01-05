@@ -5,6 +5,7 @@ import Checkbox from '.';
 let wrapper;
 
 const props = {
+	className: 'additional-classname',
 	label: 'Sample label',
 	id: 'sampleLabel',
 	value: 'sampelValue',
@@ -25,6 +26,10 @@ describe('Given the Checkbox component', () => {
 
 		it('Then has the correct label', () => {
 			expect(wrapper.getByText('Sample label')).toBeTruthy();
+		});
+
+		it('Then has the correct className', () => {
+			expect(wrapper.container.querySelector('.additional-classname')).toBeTruthy();
 		});
 
 		describe('And the label is clicked', () => {
