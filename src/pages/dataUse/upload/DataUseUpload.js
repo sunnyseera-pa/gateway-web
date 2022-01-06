@@ -166,6 +166,12 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
 		}
 	};
 
+	const hasDuplicates = () => {
+		return !!uploadedData.uploadErrors.find(({ error }) => {
+			return error === 'duplicate' || error === 'duplicateRow';
+		});
+	};
+
 	const toggleDataUseSection = dataUseIndex => {
 		const newArray = dataUseIndexes.includes(dataUseIndex)
 			? dataUseIndexes.filter(index => index !== dataUseIndex)
@@ -565,6 +571,7 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
 					close={toggleSubmitModal}
 					confirm={submitDataUse}
 					isValid={isEmpty(uploadedData.uploadErrors)}
+					hasDuplicates={hasDuplicates()}
 					isAdmin={userState[0].teams.some(team => team.type === 'admin')}
 					recommendedFieldsMissing={recommendedFieldsMissing}
 				/>
