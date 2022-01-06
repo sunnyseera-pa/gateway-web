@@ -1,5 +1,5 @@
+import { render } from '@testing-library/react';
 import React from 'react';
-import { render, waitFor, getByRole } from '@testing-library/react';
 import CheckboxTree from '.';
 
 const mockReactCheckboxTree = jest.fn(() => null);
