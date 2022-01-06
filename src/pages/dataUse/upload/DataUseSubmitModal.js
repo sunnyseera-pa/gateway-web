@@ -39,13 +39,7 @@ const DataUseSubmitModal = ({ open, close, confirm, isValid, isAdmin, recommende
 								</ul>
 							</>
 						)}
-						{!isValid && isAdmin && (
-							<>
-								<p>There are errors on the file that you have uploaded. Are you sure that you want to submit these data uses for review?</p>
-								<p>You cannot edit these whilst it is pending.</p>
-							</>
-						)}
-						{!isValid && !isAdmin && (
+						{!isValid && (
 							<>
 								<p>You cannot submit these data uses for review with the following required fields missing:</p>
 								<ul>
@@ -64,7 +58,7 @@ const DataUseSubmitModal = ({ open, close, confirm, isValid, isAdmin, recommende
 					</div>
 				</div>
 				<div className='dataUseSubmitModal-body'>
-					{(isValid || isAdmin) && (
+					{isValid && (
 						<div className='dataUseSubmitModal-footer'>
 							<div className='dataUseSubmitModal-footer--wrap'>
 								<Button variant='white' className='techDetailButton mr-2' onClick={close}>
