@@ -1,7 +1,7 @@
 import { css } from '@emotion/react';
 import { mixins } from '../Checkbox/Checkbox.styles';
 
-export const root = ({ variant = 'primary', hasLeafIcon, hasParentIcon }) => theme => {
+export const root = ({ hasLeafIcon, hasParentIcon, checkboxVariant: variant }) => theme => {
 	const {
 		colors,
 		base: { increment },

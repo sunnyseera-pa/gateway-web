@@ -9,12 +9,29 @@ import useCommonStyles from '../../hooks/useCommonStyles';
 import Icon from '../Icon';
 import * as styles from './CheckboxTree.styles';
 
-const CheckboxTree = ({ className, mt, mb, ml, mr, width, minWidth, maxWidth, icons, ...outerProps }) => {
+const CheckboxTree = ({
+	className,
+	mt,
+	mb,
+	ml,
+	mr,
+	width,
+	minWidth,
+	maxWidth,
+	icons,
+	checkboxProps: { variant: checkboxVariant },
+	...outerProps
+}) => {
 	const commonStyles = useCommonStyles({ mt, mb, ml, mr, width, minWidth, maxWidth });
 
 	return (
 		<div
-			css={styles.root({ variant: 'primary', hasLeafIcon: !!icons.leaf, hasParentIcon: !!icons.parentClose || !!icons.parentOpen })}
+			css={styles.root({
+				variant: 'primary',
+				hasLeafIcon: !!icons.leaf,
+				hasParentIcon: !!icons.parentClose || !!icons.parentOpen,
+				checkboxVariant,
+			})}
 			className={cx(className, commonStyles, 'ui-CheckboxTree')}>
 			<ReactCheckboxTree icons={icons} {...outerProps} />
 		</div>
@@ -30,6 +47,9 @@ CheckboxTree.propTypes = addCommonPropTypes({
 		parentOpen: PropTypes.node,
 		leaf: PropTypes.node,
 	}),
+	checkboxProps: PropTypes.shape({
+		variant: PropTypes.oneOf(['primary', 'secondary']).isRequired,
+	}),
 });
 
 CheckboxTree.defaultProps = {
@@ -39,6 +59,9 @@ CheckboxTree.defaultProps = {
 		parentOpen: null,
 		parentClose: null,
 		leaf: null,
+	},
+	checkboxProps: {
+		variant: 'primary',
 	},
 };
 

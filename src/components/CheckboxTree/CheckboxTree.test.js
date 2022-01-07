@@ -16,6 +16,9 @@ const props = {
 			label: 'Malaysia',
 		},
 	],
+	checkboxProps: {
+		variant: 'secondary',
+	},
 };
 
 let wrapper;

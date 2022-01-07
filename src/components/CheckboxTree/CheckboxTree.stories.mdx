@@ -7,134 +7,161 @@ import CheckboxTree from './CheckboxTree';
 <Canvas>
 	<Story name='Basic'>
 		{props => {
-			const [state, setState] = React.useState({ checked: [], expanded: ['project', 'activity', 'task'] });
-			return (
-				<CheckboxTree
-					onCheck={checked => setState({ ...state, checked })}
-					onExpand={expanded => setState({ ...state, expanded })}
-					nodes={[
+			const nodes = [
+				{
+					value: 'India',
+					label: 'India',
+				},
+				{
+					value: 'Malaysia',
+					label: 'Malaysia',
+				},
+				{
+					value: 'Pakistan',
+					label: 'Pakistan',
+				},
+				{
+					value: 'United Kingdom',
+					label: 'United Kingdom',
+					children: [
 						{
-							value: 'India',
-							label: 'India',
-						},
-						{
-							value: 'Malaysia',
-							label: 'Malaysia',
-						},
-						{
-							value: 'Pakistan',
-							label: 'Pakistan',
-						},
-						{
-							value: 'United Kingdom',
-							label: 'United Kingdom',
+							value: 'England',
+							label: 'England',
+							disabled: true,
 							children: [
 								{
-									value: 'England',
-									label: 'England',
+									value: 'Eastern',
+									label: 'Eastern',
 									children: [
 										{
-											value: 'Eastern',
-											label: 'Eastern',
-											children: [
-												{
-													value: 'East Cambridgeshire',
-													label: 'East Cambridgeshire',
-												},
-												{
-													value: 'South Cambridgeshire',
-													label: 'South Cambridgeshire',
-												},
-											],
+											value: 'East Cambridgeshire',
+											label: 'East Cambridgeshire',
 										},
 										{
-											value: 'London',
-											label: 'London',
-											children: [
-												{
-													value: 'Lambeth',
-													label: 'Lambeth',
-												},
-												{
-													value: 'Lewisham',
-													label: 'Lewisham',
-												},
-											],
-										},
-										{
-											value: 'Midlands',
-											label: 'Midlands',
-										},
-										{
-											value: 'North West',
-											label: 'North West',
-											children: [
-												{
-													value: 'Salford',
-													label: 'Salford',
-												},
-											],
-										},
-										{
-											value: 'Nottinghamshire',
-											label: 'Nottinghamshire',
-										},
-										{
-											value: 'Oxfordshire',
-											label: 'Oxfordshire',
-										},
-										{
-											value: 'South East',
-											label: 'South East',
-											children: [
-												{
-													value: 'Manchester',
-													label: 'Manchester',
-												},
-											],
-										},
-										{
-											value: 'West Midlands',
-											label: 'West Midlands',
-											children: [
-												{
-													value: 'Leeds',
-													label: 'Leeds',
-												},
-											],
-										},
-										{
-											value: 'West Yorkshire',
-											label: 'West Yorkshire',
-										},
-										{
-											value: 'Yorkshire and The Humber',
-											label: 'Yorkshire and The Humber',
+											value: 'South Cambridgeshire',
+											label: 'South Cambridgeshire',
 										},
 									],
 								},
 								{
-									value: 'Northern Ireland',
-									label: 'Northern Ireland',
+									value: 'London',
+									label: 'London',
+									children: [
+										{
+											value: 'Lambeth',
+											label: 'Lambeth',
+										},
+										{
+											value: 'Lewisham',
+											label: 'Lewisham',
+										},
+									],
 								},
 								{
-									value: 'Scotland',
-									label: 'Scotland',
+									value: 'Midlands',
+									label: 'Midlands',
 								},
 								{
-									value: 'Wales',
-									label: 'Wales',
+									value: 'North West',
+									label: 'North West',
+									children: [
+										{
+											value: 'Salford',
+											label: 'Salford',
+										},
+									],
+								},
+								{
+									value: 'Nottinghamshire',
+									label: 'Nottinghamshire',
+								},
+								{
+									value: 'Oxfordshire',
+									label: 'Oxfordshire',
+								},
+								{
+									value: 'South East',
+									label: 'South East',
+									children: [
+										{
+											value: 'Manchester',
+											label: 'Manchester',
+										},
+									],
+								},
+								{
+									value: 'West Midlands',
+									label: 'West Midlands',
+									children: [
+										{
+											value: 'Leeds',
+											label: 'Leeds',
+										},
+									],
+								},
+								{
+									value: 'West Yorkshire',
+									label: 'West Yorkshire',
+								},
+								{
+									value: 'Yorkshire and The Humber',
+									label: 'Yorkshire and The Humber',
 								},
 							],
 						},
 						{
-							value: 'Worldwide',
-							label: 'Worldwide',
+							value: 'Northern Ireland',
+							label: 'Northern Ireland',
 						},
-					]}
-					noCascade={true}
-					{...state}
-				/>
+						{
+							value: 'Scotland',
+							label: 'Scotland',
+						},
+						{
+							value: 'Wales',
+							label: 'Wales',
+						},
+					],
+				},
+				{
+					value: 'Worldwide',
+					label: 'Worldwide',
+				},
+			];
+			const [primaryState, setPrimaryState] = React.useState({
+				checked: ['Northern Ireland'],
+				expanded: ['United Kingdom'],
+			});
+			const [secondaryState, setSecondaryState] = React.useState({
+				checked: ['Northern Ireland'],
+				expanded: ['United Kingdom'],
+			});
+			return (
+				<div style={{ display: 'flex' }}>
+					<div className='mr-5'>
+						<h3 className='mb-3'>Primary</h3>
+						<CheckboxTree
+							onCheck={checked => setPrimaryState({ ...primaryState, checked })}
+							onExpand={expanded => setPrimaryState({ ...primaryState, expanded })}
+							nodes={nodes}
+							noCascade={true}
+							{...primaryState}
+						/>
+					</div>
+					<div>
+						<h3 className='mb-3'>Secondary</h3>
+						<CheckboxTree
+							onCheck={checked => setSecondaryState({ ...secondaryState, checked })}
+							onExpand={expanded => setSecondaryState({ ...secondaryState, expanded })}
+							nodes={nodes}
+							noCascade={true}
+							checkboxProps={{
+								variant: 'secondary',
+							}}
+							{...secondaryState}
+						/>
+					</div>
+				</div>
 			);
 		}}
 	</Story>
