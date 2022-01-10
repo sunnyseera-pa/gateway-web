@@ -231,7 +231,7 @@ class RelatedResourcesModal extends React.Component {
 						/>
 						{typeof this.props.summary.datasetCount !== 'undefined' ? (
 							<div className='searchTabsHolder'>
-								<div>
+								<div style={{ width: '90%' }}>
 									<Tabs
 										data-test-id='related-resource-tabs'
 										className='tabsBackground-shadow-bottom gray700-13'

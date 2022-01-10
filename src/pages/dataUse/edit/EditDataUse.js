@@ -26,6 +26,7 @@ const EditDataUse = props => {
 	const [keywords, setKeywords] = useState([]);
 	const [datasetData, setDatasetData] = useState([]);
 	const [toolData, setToolData] = useState([]);
+	const [datauseData, setDatauseData] = useState([]);
 	const [paperData, setPaperData] = useState([]);
 	const [personData, setPersonData] = useState([]);
 	const [courseData, setCourseData] = useState([]);
@@ -210,6 +211,7 @@ const EditDataUse = props => {
 				.then(res => {
 					setDatasetData(res.data.datasetResults || []);
 					setToolData(res.data.toolResults || []);
+					setDatauseData(res.data.dataUseRegisterResults || []);
 					setPaperData(res.data.paperResults || []);
 					setPersonData(res.data.personResults || []);
 					setCourseData(res.data.courseResults || []);
@@ -347,6 +349,7 @@ const EditDataUse = props => {
 					doUpdateSearchString={updateSearchString}
 					datasetData={datasetData}
 					toolData={toolData}
+					datauseData={datauseData}
 					paperData={paperData}
 					personData={personData}
 					courseData={courseData}

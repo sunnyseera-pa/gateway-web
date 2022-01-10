@@ -146,7 +146,6 @@ const EditFormDataUse = props => {
 			laySummary: Yup.string().max(300, 'Maximum of 300 characters').required('This cannot be empty'),
 			publicBenefitStatement: Yup.string().required('This cannot be empty'),
 			latestApprovalDate: Yup.string().required('This cannot be empty'),
-			accessType: Yup.string().required('This cannot be empty'),
 		}),
 
 		onSubmit: values => {
@@ -180,6 +179,7 @@ const EditFormDataUse = props => {
 
 			values.relatedObjects = props.relatedObjects;
 			values.datasetTitles = props.data.datasetTitles;
+
 			axios.patch(baseURL + '/api/v2/data-use-registers/' + props.data.id, { ...values }).then(() => {
 				window.location.href = windowUrl + '/datause/' + props.data.id + '/?dataUseEdited=true';
 			});
@@ -1346,6 +1346,7 @@ const EditFormDataUse = props => {
 																				userState={props.userState}
 																				datasetData={props.datasetData}
 																				toolData={props.toolData}
+																				datauseData={props.datauseData}
 																				paperData={props.paperData}
 																				personData={props.personData}
 																				courseData={props.courseData}
