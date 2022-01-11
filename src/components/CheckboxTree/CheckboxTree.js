@@ -1,7 +1,9 @@
 /** @jsx jsx */
 import { cx } from '@emotion/css';
 import { jsx } from '@emotion/react';
+import isEmpty from 'lodash/isEmpty';
 import PropTypes from 'prop-types';
+import React from 'react';
 import ReactCheckboxTree from 'react-checkbox-tree';
 import 'react-checkbox-tree/lib/react-checkbox-tree.css';
 import { addCommonPropTypes } from '../../configs/propTypes';
@@ -19,10 +21,39 @@ const CheckboxTree = ({
 	minWidth,
 	maxWidth,
 	icons,
+	nodes,
 	checkboxProps: { variant: checkboxVariant },
 	...outerProps
 }) => {
 	const commonStyles = useCommonStyles({ mt, mb, ml, mr, width, minWidth, maxWidth });
+
+	const formatNode = node => {
+		if (isEmpty(node.children)) {
+			const { children, ...rest } = node;
+			return rest;
+		} else if (node.children) {
+			return {
+				...node,
+				children: node.children.map(childNodes => {
+					return formatNode(childNodes);
+				}),
+			};
+		} else {
+			return node;
+		}
+	};
+
+	const formattedNodes = React.useMemo(() => {
+		console.log(
+			'Children removed',
+			nodes.map(node => {
+				return formatNode(node);
+			})
+		);
+		return nodes.map(node => {
+			return formatNode(node);
+		});
+	}, [nodes]);
 
 	return (
 		<div
@@ -33,7 +64,7 @@ const CheckboxTree = ({
 				checkboxVariant,
 			})}
 			className={cx(className, commonStyles, 'ui-CheckboxTree')}>
-			<ReactCheckboxTree icons={icons} {...outerProps} />
+			<ReactCheckboxTree nodes={formattedNodes} icons={icons} {...outerProps} />
 		</div>
 	);
 };

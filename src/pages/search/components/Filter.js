@@ -1,11 +1,15 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import _ from 'lodash';
-import { OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { Accordion, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { SlideDown } from 'react-slidedown';
 import { FilterCount } from './FilterCount';
 import { FilterSearch } from './FilterSearch';
 import SVGIcon from '../../../images/SVGIcon';
 import { FilterClearSection } from './FilterClearSection';
+import CheckboxTree from '../../../components/CheckboxTree';
+import FilterTree from './FilterTree';
+import TreeSubHeader from './TreeSubHeader';
+import { flattenObject, replaceKey } from '../../../utils/GeneralHelper.util';
 
 const Checkbox = ({ node = {}, highlighted = [], parentKey = '', onHandleInputChange }) => {
 	let highlight = false;
@@ -22,25 +26,6 @@ const Checkbox = ({ node = {}, highlighted = [], parentKey = '', onHandleInputCh
 			<input type='checkbox' checked={node.checked} onChange={e => onHandleChange(e)} />
 			<span className='checkmark'></span>
 		</div>
-	);
-};
-
-const TreeSubHeader = ({ node }) => {
-	let { label, tooltip, closed } = node;
-	return (
-		<Fragment>
-			<SVGIcon width='12px' height='12px' className={closed ? '' : 'flip180'} name='chevronbottom' fill={'#475da7'} />
-			<div className='node-subTitle'>
-				<span className={closed ? '' : 'selected'}>{label}</span>
-				{tooltip !== null && (
-					<OverlayTrigger placement='bottom' overlay={<Tooltip>{tooltip}</Tooltip>}>
-						<div>
-							<SVGIcon width='8px' height='8px' name='info' fill={'#475da7'} />
-						</div>
-					</OverlayTrigger>
-				)}
-			</div>
-		</Fragment>
 	);
 };
 
@@ -106,7 +91,7 @@ const TreeItem = ({ node, highlighted, parentKey, hasChildren, onHandleInputChan
 	return <Checkbox node={node} highlighted={highlighted} parentKey={parentKey} onHandleInputChange={onHandleInputChange} />;
 };
 
-const TreeComponent = ({ node, parentKey, hasChildren, onHandleInputChange, onHandleClearSection, onHandleToggle }) => {
+const TreeComponent = ({ node, parentKey, hasChildren, onHandleInputChange, onHandleClearSection, onHandleToggle, children, selected }) => {
 	const [searchValue, setSearchValue] = useState('');
 	const [highlighted, setHighlight] = useState([]);
 
@@ -146,16 +131,11 @@ const TreeComponent = ({ node, parentKey, hasChildren, onHandleInputChange, onHa
 				onHandleInputChange={onHandleInputChange}
 				onHandleToggle={onHandleToggle}
 			/>
-			<SlideDown closed={node.closed} className={hasChildren ? 'node-check-group' : 'node-single-group'}>
-				{typeof node.filters !== 'undefined' && !node.closed && node.filters.length > 7 && (
-					<Fragment>
-						<FilterSearch onSearchChange={onSearchChange} />
-						<FilterClearSection onClearSection={onClearSection} />
-					</Fragment>
-				)}
+			<SlideDown closed={false} className={hasChildren ? 'node-check-group' : 'node-single-group'}>
 				<div className={getSubClass()}>
-					{typeof node.filters !== 'undefined' && node.filters.length > 0 && !node.closed && (
+					{!children && typeof node.filters !== 'undefined' && node.filters.length > 0 && !node.closed && (
 						<Filter
+							selected={selected}
 							data={node.filters}
 							parentKey={node.key}
 							highlighted={node.highlighted}
@@ -173,6 +153,7 @@ const TreeComponent = ({ node, parentKey, hasChildren, onHandleInputChange, onHa
 };
 
 const Filter = ({
+	selected,
 	data = [],
 	parentKey = null,
 	highlighted = [],
@@ -182,13 +163,15 @@ const Filter = ({
 	onHandleClearSection,
 	onHandleToggle,
 }) => {
-	let generateClasName = node => {
+	let generateClassName = node => {
 		let { key = '' } = node;
 		let treeClass = 'node';
 		if (hasChildren && !_.isEmpty(key)) return `${treeClass}-group`;
 		else if (hasChildren) return `${treeClass}-subItem`;
 		else return `${treeClass}-wrapper`;
 	};
+
+	console.log('Selected map', selected);
 
 	return (
 		<Fragment>
@@ -201,24 +184,34 @@ const Filter = ({
 
 						return false;
 					})
-					.map(node => (
-						<div key={node.label} className={generateClasName(node)}>
-							{generateClasName(node) !== 'node-subItem' ? (
-								<TreeComponent
-									key={node.id}
-									node={node}
-									parentKey={parentKey}
-									highlighted={node.highlighted}
-									hasChildren={hasChildren}
-									onHandleInputChange={onHandleInputChange}
-									onHandleClearSection={onHandleClearSection}
-									onHandleToggle={onHandleToggle}
-								/>
-							) : (
-								<Checkbox node={node} highlighted={highlighted} parentKey={parentKey} onHandleInputChange={onHandleInputChange} />
-							)}
-						</div>
-					))}
+					.map(node => {
+						const selectedValues = selected ? selected.map(({ value }) => value) : [];
+
+						return (
+							<div key={node.label} className={generateClassName(node)}>
+								{!!node.filtersv2 && <FilterTree node={node} checked={selectedValues} onCheck={onHandleInputChange} />}
+								{!node.filtersv2 && (
+									<>
+										{generateClassName(node) !== 'node-subItem' ? (
+											<TreeComponent
+												selected={selected}
+												key={node.id}
+												node={node}
+												parentKey={parentKey}
+												highlighted={node.highlighted}
+												hasChildren={hasChildren}
+												onHandleInputChange={onHandleInputChange}
+												onHandleClearSection={onHandleClearSection}
+												onHandleToggle={onHandleToggle}
+											/>
+										) : (
+											<Checkbox node={node} highlighted={highlighted} parentKey={parentKey} onHandleInputChange={onHandleInputChange} />
+										)}
+									</>
+								)}
+							</div>
+						);
+					})}
 		</Fragment>
 	);
 };

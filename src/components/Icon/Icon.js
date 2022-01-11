@@ -69,7 +69,7 @@ const Icon = ({ name, size, color, fill, stroke, className, ml, mr, mb, mt, widt
 			});
 		};
 
-		if (name) importIcon();
+		if (name && !inline) importIcon();
 	}, [name]);
 
 	const iconProps = {

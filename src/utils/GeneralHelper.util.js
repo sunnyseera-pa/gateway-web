@@ -64,3 +64,29 @@ export const getParams = querystring => {
 
 	return obj;
 };
+
+export const flattenObject = (data, key) => {
+	const flattened = [];
+
+	if (data[key]) {
+		data[key].forEach(item => {
+			flattened.push(flattenObject(item, key));
+		});
+	}
+
+	return flattened;
+};
+
+export const replaceKey = (data, iteratee) => {
+	if (data) {
+		const clonedData = [...data];
+
+		data.forEach(item => {
+			return replaceKey(iteratee(item), iteratee);
+		});
+
+		return clonedData;
+	}
+
+	return data;
+};

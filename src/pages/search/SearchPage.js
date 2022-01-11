@@ -314,17 +314,21 @@ class SearchPage extends React.Component {
 			for (const key of Object.keys(queryParams)) {
 				if (!_.isNil(queryParams[key])) {
 					// 4. convert queryString into array of values
-					let queryValues = queryParams[key].split('::');
+					const queryValues = queryParams[key].split('::');
 					// 5. check if key exists in our tree, return {} or undefined
-					let parentNode = this.findParentNode(filtersV2, key);
+					const parentNode = this.findParentNode(filtersV2, key);
+
 					if (!_.isNil(parentNode)) {
-						let { filters } = parentNode;
+						const { filters, filtersv2 } = parentNode;
+
 						// 6. Determine whether to perform regular filter selection or implied filter selection
-						const isImpliedFilter = filters.some(filter => _.has(filter, 'impliedValues'));
-						let nodes = [];
+						const isImpliedFilter = (filtersv2 || filters).some(filter => _.has(filter, 'impliedValues'));
+						const nodes = [];
+
 						if (isImpliedFilter) {
 							// find node by implied values
-							let foundNode = this.findImpliedFilterNode(filters, queryParams[key]);
+							const foundNode = this.findImpliedFilterNode(filters, queryParams[key]);
+
 							if (!_.isEmpty(foundNode)) {
 								nodes.push(foundNode);
 							}
@@ -332,19 +336,21 @@ class SearchPage extends React.Component {
 							// loop over query values
 							queryValues.forEach(node => {
 								// get the selected values
-								let foundNode = this.findNode(filters, node);
+								const foundNode = this.findNode(filters, node);
+
 								if (!_.isEmpty(foundNode)) {
 									nodes.push(foundNode);
 								}
 							});
 						}
+
 						nodes.forEach(node => {
 							// 7. set check value
 							node.checked = !node.checked;
 							// 8. increment highest parent count
 							parentNode.selectedCount += 1;
 							// 9. prep new selected Item for selected showing
-							let selectedNode = {
+							const selectedNode = {
 								parentKey: key,
 								id: node.id,
 								label: node.label,
@@ -352,6 +358,7 @@ class SearchPage extends React.Component {
 							};
 							// 10. fn for handling the *selected showing* returns new state
 							let selected = this.handleSelected(selectedNode, node.checked, tab);
+
 							// 11. update selectedV2 array with our new returned value
 							selectedV2 = [...new Set([...selectedV2, ...selected])];
 						});
@@ -554,6 +561,9 @@ class SearchPage extends React.Component {
 		};
 		// 2. dynamically build the searchUrl v2 only
 		searchURL = this.buildSearchUrl(searchObj);
+
+		console.log('searchURL', searchObj);
+
 		if (datasetIndex > 0) searchURL += '&datasetIndex=' + encodeURIComponent(datasetIndex);
 		if (toolIndex > 0) searchURL += '&toolIndex=' + encodeURIComponent(toolIndex);
 		if (projectIndex > 0) searchURL += '&projectIndex=' + encodeURIComponent(projectIndex);
@@ -896,9 +906,15 @@ class SearchPage extends React.Component {
 		let searchUrl = '';
 		if (searchObj) {
 			for (let key of Object.keys(searchObj)) {
-				const values = searchObj[key].toString().split(',');
-				const uniqueValues = [...new Set(values)];
-				searchUrl += `&${key}=${encodeURIComponent(uniqueValues.join('::'))}`;
+				const value = searchObj[key];
+				const values = value.toString().split(',');
+				const uniqueValues = [...new Set(values)].join('::');
+
+				if (value !== decodeURIComponent(value)) {
+					searchUrl += `&${key}=${uniqueValues}`;
+				} else {
+					searchUrl += `&${key}=${encodeURIComponent(uniqueValues)}`;
+				}
 			}
 		}
 		return searchUrl;
@@ -1071,7 +1087,11 @@ class SearchPage extends React.Component {
 	 */
 	findNode = (filters = [], label) => {
 		if (!_.isEmpty(filters)) {
-			return [...filters].find(node => node.label.toUpperCase() === label.toUpperCase()) || {};
+			return (
+				[...filters].find(node => {
+					return node.label.toUpperCase() === label.toUpperCase();
+				}) || {}
+			);
 		}
 		return {};
 	};
@@ -1191,25 +1211,24 @@ class SearchPage extends React.Component {
 		}
 	};
 
-	/**
-	 * Handle Filter event bubble for option click
-	 * within the filter panel
-	 *
-	 * @param {object} node
-	 * @param {string} parentKey
-	 * @param {boolean} checkValue
-	 */
-	handleInputChange = (node, parentKey, checkValue) => {
-		// 1. copy state - stop mutation
-		let filtersV2 = this.getFilterStateByKey(this.state.key);
+	filterTreeByCheckbox = (node, parentKey, checkValue) => {
+		this.filterByCheckbox(node.value, parentKey, checkValue, node.encodedValue);
+	};
 
-		// 2. find parent obj - recursive
-		let parentNode = this.findParentNode(filtersV2, parentKey);
+	filterShallowByCheckbox = (node, parentKey, checkValue) => {
+		this.filterByCheckbox(node.label, parentKey, checkValue, node.value);
+	};
+
+	filterByCheckbox = (value, parentKey, checkValue, encodedValue) => {
+		const filtersV2 = this.getFilterStateByKey(this.state.key);
+		const parentNode = this.findParentNode(filtersV2, parentKey);
+
 		if (!_.isEmpty(parentNode)) {
 			// deconstruct important to take alias incase key needs overwritten for query string
-			let { filters, key, alias } = parentNode;
+			const { filters, key, alias } = parentNode;
 			// 3. find checkbox obj
-			let foundNode = this.findNode(filters, node.label);
+			const foundNode = this.findNode(filters, value);
+
 			if (!_.isEmpty(foundNode)) {
 				// find if the node already exists in the selectedV2 - if so we are unchecking / removing
 				const exists = this.getSelectedFiltersStateByKey(this.state.key).some(selected => selected.id === foundNode.id);
@@ -1223,28 +1242,59 @@ class SearchPage extends React.Component {
 						parentKey: alias || key,
 						id: foundNode.id,
 						label: foundNode.label,
-						value: foundNode.value,
+						value: encodedValue,
 					};
+
+					console.log('HELLO', {
+						parentKey: alias || key,
+						id: foundNode.id,
+						label: foundNode.label,
+						value: encodedValue,
+					});
+
 					// 7. fn for handling the *selected showing* returns new state
 					const selectedV2 = this.handleSelected(selectedNode, checkValue);
 					// 8. set state
 					const filtersV2Entity = `filtersV2${this.state.key}`;
 					const selectedV2Entity = `selectedV2${this.state.key}`;
 					const entityIndex = `${typeMapper[this.state.key]}Index`;
-
 					this.setState({ [filtersV2Entity]: filtersV2, [selectedV2Entity]: selectedV2, [entityIndex]: 0, isResultsLoading: true }, () => {
 						this.doSearchCall();
 					});
-
-					googleAnalytics.recordEvent(
-						'Datasets',
-						`${checkValue ? 'Applied' : 'Removed'} ${parentNode.label} filter ${
-							this.state.showDataUtilityBanner ? 'after utility wizard search' : ''
-						}`,
-						`Filter value: ${selectedNode.label}`
-					);
 				}
 			}
+		}
+	};
+
+	/**
+	 * Handle Filter event bubble for option click
+	 * within the filter panel
+	 *
+	 * @param {object} node
+	 * @param {string} parentKey
+	 * @param {boolean} checkValue
+	 */
+	handleInputChange = (nodes, parentKey, checkValue) => {
+		if (Array.isArray(nodes)) {
+			nodes.forEach(filter => {
+				this.filterTreeByCheckbox(filter, parentKey, checkValue);
+			});
+
+			googleAnalytics.recordEvent(
+				'Datasets',
+				`Changed ${parentKey} filters ${this.state.showDataUtilityBanner ? 'after utility wizard search' : ''}`,
+				`Filter values: "${nodes.map(filter => filter.value).join('" & ')}"`
+			);
+		} else {
+			this.filterShallowByCheckbox(nodes, parentKey, checkValue);
+
+			googleAnalytics.recordEvent(
+				'Datasets',
+				`${checkValue ? 'Applied' : 'Removed'} ${parentKey} filter ${
+					this.state.showDataUtilityBanner ? 'after utility wizard search' : ''
+				}`,
+				`Filter value: ${nodes.label}`
+			);
 		}
 	};
 
@@ -1257,11 +1307,11 @@ class SearchPage extends React.Component {
 	handleToggle = node => {
 		let parentNode;
 		if (!_.isEmpty(node)) {
-			// 1. copy state - stop mutation
+			// // 1. copy state - stop mutation
 			let filtersV2 = this.getFilterStateByKey(this.state.key);
-			// 2. find parent obj - recursive
+			// // 2. find parent obj - recursive
 			let { key } = node;
-			// 3. return parent node of toggled
+			// // 3. return parent node of toggled
 			parentNode = this.findParentNode(filtersV2, key);
 			if (!_.isEmpty(parentNode)) {
 				parentNode.closed = !parentNode.closed;
@@ -1403,6 +1453,7 @@ class SearchPage extends React.Component {
 
 	getFilterProps(key) {
 		return {
+			selected: this.state[`selectedV2${key}`],
 			data: this.getFilterStateByKey(key),
 			onHandleInputChange: this.handleInputChange,
 			onHandleClearSection: this.handleClearSection,
@@ -1529,6 +1580,9 @@ class SearchPage extends React.Component {
 		const filtersSelectionProps = this.getFiltersSelectionProps(preferenceFilters);
 		const searchProps = this.getSearchProps(showSort, sortMenu, maxResults);
 
+		console.log('STATE', key, this.state[`selectedV2${key}`]);
+		console.log('Filter props', filterProps);
+
 		return (
 			<Sentry.ErrorBoundary fallback={<ErrorModal />}>
 				<div>
@@ -1641,7 +1695,9 @@ class SearchPage extends React.Component {
 						<Row>
 							<Col sm={12} md={12} lg={3} className='mt-1 mb-5'>
 								{key !== 'People' && (
-									<SearchFilters filters={<Filter {...filterProps} />} onAdvancedSearchClick={this.toggleAdvancedSearchModal} />
+									<SearchFilters onAdvancedSearchClick={this.toggleAdvancedSearchModal}>
+										<Filter {...filterProps} />
+									</SearchFilters>
 								)}
 							</Col>
 							<Col sm={12} md={12} lg={9} className='mt-1 mb-5'>

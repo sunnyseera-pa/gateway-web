@@ -11,7 +11,16 @@ export const root = ({ hasLeafIcon, hasParentIcon, checkboxVariant: variant }) =
 	} = theme;
 
 	return css`
-		${mixins.root({ width })}
+		.react-checkbox-tree {
+			font-size: 1rem;
+		}
+		.react-checkbox-tree > ol {
+			width: 100%;
+		}
+
+		.rct-node {
+			word-wrap: break-word;
+		}
 
 		${!hasParentIcon &&
 		`.rct-node-parent > .rct-text .rct-node-icon {
@@ -27,11 +36,15 @@ export const root = ({ hasLeafIcon, hasParentIcon, checkboxVariant: variant }) =
 			display: flex;
 		}
 
+		label:hover {
+			background: none;
+		}
+
 		.rct-collapse {
 			display: flex;
 			justify-content: center;
 			align-items: center;
-			width: ${4 * increment}px;
+			width: ${width};
 		}
 
 		.rct-collapse:focus {
@@ -43,6 +56,10 @@ export const root = ({ hasLeafIcon, hasParentIcon, checkboxVariant: variant }) =
 		.rct-node-icon {
 			margin: 0 ${increment}px 0 0;
 			padding: 0;
+		}
+
+		.rct-checkbox .rct-icon {
+			width: ${width};
 		}
 
 		.rct-title {
@@ -57,6 +74,10 @@ export const root = ({ hasLeafIcon, hasParentIcon, checkboxVariant: variant }) =
 			position: relative;
 			width: ${width};
 			height: ${height};
+		}
+
+		label:hover .rct-icon-uncheck::before {
+			background: ${colors[variants[variant].hoverBackground]};
 		}
 
 		input + .rct-checkbox .rct-icon::before {
