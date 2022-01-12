@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { locationAPIURL } from '../../configs/url.config';
+import { apiURL } from '../../configs/url.config';
 import { getRequest } from '../../utils/requests';
 import service from './locations';
 
@@ -30,7 +30,7 @@ describe('Given the datasets service', () => {
 				withCredentials: false,
 			});
 
-			expect(getRequest).toHaveBeenCalledWith(`${locationAPIURL}/locations/lond`, {
+			expect(getRequest).toHaveBeenCalledWith(`${apiURL}/locations/lond`, {
 				withCredentials: false,
 			});
 		});
