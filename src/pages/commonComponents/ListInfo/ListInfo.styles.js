@@ -8,7 +8,7 @@ export const root = css`
 
 export const listItem = css`
 	display: flex;
-	margin-bottom: 12px;
+	margin-bottom: 4px;
 
 	&:last-child {
 		margin: 0;
