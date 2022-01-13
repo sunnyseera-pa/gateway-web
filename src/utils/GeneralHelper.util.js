@@ -90,3 +90,29 @@ export const replaceKey = (data, iteratee) => {
 
 	return data;
 };
+
+export const findAllByKey = (data, iteratee) => {
+	const found = [];
+
+	const findDeep = obj => {
+		if (Array.isArray(obj)) {
+			obj.forEach(item => {
+				findDeep(item);
+			});
+		} else {
+			Object.keys(obj).forEach(key => {
+				if (iteratee(key, obj[key])) {
+					console.log('ITEM', obj);
+
+					found.push(obj);
+				} else if (typeof obj[key] === 'object') {
+					findDeep(obj[key]);
+				}
+			});
+		}
+	};
+
+	findDeep(data);
+
+	return found;
+};

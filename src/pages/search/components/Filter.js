@@ -171,8 +171,6 @@ const Filter = ({
 		else return `${treeClass}-wrapper`;
 	};
 
-	console.log('Selected map', selected);
-
 	return (
 		<Fragment>
 			{data &&
@@ -189,7 +187,9 @@ const Filter = ({
 
 						return (
 							<div key={node.label} className={generateClassName(node)}>
-								{!!node.filtersv2 && <FilterTree node={node} checked={selectedValues} onCheck={onHandleInputChange} />}
+								{!!node.filtersv2 && (
+									<FilterTree node={node} filters={node.filtersv2} checked={selectedValues} onCheck={onHandleInputChange} />
+								)}
 								{!node.filtersv2 && (
 									<>
 										{generateClassName(node) !== 'node-subItem' ? (
