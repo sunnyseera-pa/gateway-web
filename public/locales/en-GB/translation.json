@@ -83,6 +83,7 @@
 			"archive": "Archived ({{count}})"
 		}
 	},
+<<<<<<< HEAD
 	"sortby": {
 		"selected": {
 			"popularity": "Sort by number of views",
@@ -123,5 +124,14 @@
 			"relevance": "Match to search terms",
 			"alphabetic": "Alphabetically"
 		}
+=======
+	"viewForm": "View form",
+	"notifications": {
+		"teamEmailText": "Send email notifications to team email address"
+  },
+	"searchResultsInfo": {
+		"withTerm": "Showing {{count}} results for '{{searchTerm}}'",
+		"withOutTerm": "Showing {{count}} results"
+>>>>>>> 79df9234079faa8cd6265928b31b24872fa418a2
 	}
 }

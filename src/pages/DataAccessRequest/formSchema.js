@@ -598,8 +598,21 @@ export const formSchema = {
 								value: 'Main applicant',
 							},
 							{
-								text: 'Investigator/collaborator',
-								value: 'Investigator/collaborator',
+								text: 'Ancestry research',
+								value: 'Ancestry research',
+							},
+							{
+								text: 'Biomedical research',
+								extraOptions: [
+									{
+										text: 'Disease category research',
+										value: 'Disease category research',
+									},
+									{
+										text: 'Drug development research',
+										value: 'Drug development research',
+									},
+								],
 							},
 							{
 								text: 'Other',

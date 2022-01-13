@@ -1,31 +1,43 @@
+import { Formik } from 'formik';
 import React from 'react';
-import { Modal, Form, Button } from 'react-bootstrap';
-import { useFormik } from 'formik';
+import { Button, Form, Modal } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
+import { TEXTAREA_ROWS } from '../../../../configs/constants';
 import { ReactComponent as CloseButtonSvg } from '../../../../images/close-alt.svg';
 import datasetOnboardingService from '../../../../services/dataset-onboarding/dataset-onboarding';
 import './AccountDatasetDecisionModal.scss';
 
-const AccountDatasetRejectModal = ({ id, open, closed, goToNext, showGoToNext }) => {
+const AccountDatasetRejectModal = ({ id, open, closed, goToNext, handleReject, showGoToNext }) => {
 	const { t } = useTranslation();
 
-	const { handleSubmit, handleChange, handleBlur, touched, values, errors } = useFormik({
-		initialValues: {
-			applicationStatusDesc: '',
-		},
-		validationSchema: Yup.object({
-			applicationStatusDesc: Yup.string(),
-		}),
-		onSubmit: values => {
+	const rejectDataset = async values => {
+		const payload = {
+			...values,
+			id,
+			applicationStatus: 'rejected',
+		};
+
+		await datasetOnboardingService.putDatasetOnboarding(id, payload);
+	};
+
+	const handleSubmit = React.useCallback(
+		async values => {
 			const payload = {
 				...values,
 				id,
 				applicationStatus: 'rejected',
 			};
-			datasetOnboardingService.usePutDatasetOnboarding(payload);
+
+			await datasetOnboardingService.putDatasetOnboarding(id, payload);
+
+			handleReject({
+				tab: 'inReview',
+				message: `You have rejected the dataset`,
+			});
 		},
-	});
+		[id]
+	);
 
 	return (
 		<Modal show={open} onHide={closed} className='decisionModal' size='lg' aria-labelledby='contained-modal-title-vcenter' centered>
@@ -37,63 +49,74 @@ const AccountDatasetRejectModal = ({ id, open, closed, goToNext, showGoToNext })
 					</div>
 				</div>
 			</div>
+			<Formik
+				initialValues={{
+					applicationStatusDesc: '',
+				}}
+				validationSchema={Yup.object({
+					applicationStatusDesc: Yup.string()
+						.max(1500, 'Description must be less than 1500 characters')
+						.required('Description should not be empty'),
+				})}
+				onSubmit={handleSubmit}>
+				{({ values, errors, handleChange, isValid, dirty, handleBlur, handleSubmit }) => (
+					<Form onSubmit={handleSubmit} onBlur={handleBlur}>
+						<div className='decisionModal-body'>
+							<div className='decisionModal-body--wrap'>
+								<p data-testid='description'>{t('dataset.rejectModal.description')}</p>
+								<Form.Group>
+									<label for='applicationStatusDesc' className='black-14'>
+										{t('dataset.rejectModal.applicationStatus')}
+										<span>{values.applicationStatusDesc.length}/1500</span>
+									</label>
+									<Form.Control
+										as='textarea'
+										data-testid='dataset-reject-applicationStatusDesc'
+										id='applicationStatusDesc'
+										name='applicationStatusDesc'
+										type='text'
+										onChange={handleChange}
+										value={values.applicationStatusDesc}
+										onBlur={handleBlur}
+										rows={TEXTAREA_ROWS}
+									/>
+									{errors.applicationStatusDesc ? <div className='errorMessages'>{errors.applicationStatusDesc}</div> : null}
+								</Form.Group>
+							</div>
+						</div>
+						<div className='decisionModal-footer'>
+							<div data-testid='button-container' className='decisionModal-footer--wrap'>
+								<Button
+									className='button-secondary'
+									onClick={() => {
+										closed();
+									}}>
+									{t('dataset.rejectModal.buttons.cancel')}
+								</Button>
+								<Button
+									disabled={!isValid || !dirty}
+									type='submit'
+									data-testid='reject-button'
+									className='button-secondary'
+									style={{ marginLeft: '10px' }}>
+									{t('dataset.rejectModal.buttons.reject')}
+								</Button>
+								<Button
+									disabled={!showGoToNext || !isValid || !dirty}
+									className='button-secondary'
+									style={{ marginLeft: '10px' }}
+									onClick={async () => {
+										await rejectDataset(values);
 
-			<form onSubmit={handleSubmit}>
-				<div className='decisionModal-body'>
-					<div className='decisionModal-body--wrap'>
-						<p>{t('dataset.rejectModal.description')}</p>
-						<label htmlFor='applicationStatusDesc' className='black-14'>
-							{t('dataset.rejectModal.applicationStatus')}
-						</label>
-						<Form.Control
-							data-testid='dataset-reject-applicationStatusDesc'
-							id='applicationStatusDesc'
-							name='applicationStatusDesc'
-							type='textarea'
-							onChange={handleChange}
-							value={values.applicationStatusDesc}
-							onBlur={handleBlur}
-							role='textarea'
-						/>
-						{touched.applicationStatusDesc && errors.applicationStatusDesc ? (
-							<div className='errorMessages'>{errors.applicationStatusDesc}</div>
-						) : null}
-					</div>
-				</div>
-				<div className='decisionModal-footer'>
-					<div data-testid='button-container' className='decisionModal-footer--wrap'>
-						<Button
-							className='button-secondary'
-							onClick={() => {
-								closed();
-							}}>
-							{t('dataset.rejectModal.buttons.cancel')}
-						</Button>
-						<Button
-							type='submit'
-							data-testid='reject-button'
-							className='button-secondary'
-							style={{ marginLeft: '10px' }}
-							onClick={async () => {
-								handleSubmit();
-								closed();
-							}}>
-							{t('dataset.rejectModal.buttons.reject')}
-						</Button>
-						<Button
-							disabled={!showGoToNext}
-							className='button-secondary'
-							style={{ marginLeft: '10px' }}
-							onClick={() => {
-								handleSubmit();
-								goToNext();
-								closed();
-							}}>
-							{t('dataset.rejectModal.buttons.rejectAndGoToNext')}
-						</Button>
-					</div>
-				</div>
-			</form>
+										goToNext();
+									}}>
+									{t('dataset.rejectModal.buttons.rejectAndGoToNext')}
+								</Button>
+							</div>
+						</div>
+					</Form>
+				)}
+			</Formik>
 		</Modal>
 	);
 };
