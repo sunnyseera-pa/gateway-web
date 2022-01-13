@@ -138,10 +138,12 @@ const AccountDataset = props => {
 	const closeRejectDatasetModal = () => setState({ ...state, showRejectDatasetModal: false });
 
 	const closeRejectModalAndRedirectToPendingDatasets = alert => {
+		closeRejectDatasetModal();
+
 		history.push({
 			pathname: `/account`,
 			search: '?tab=datasets',
-			state: { alert, team, userState },
+			state: { alert },
 		});
 	};
 
@@ -158,7 +160,7 @@ const AccountDataset = props => {
 		history.push({
 			pathname: `/account`,
 			search: '?tab=datasets',
-			state: { alert, team },
+			state: { alert },
 		});
 	};
 

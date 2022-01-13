@@ -1,15 +1,26 @@
-import React from 'react';
-import { Modal, Form, Button } from 'react-bootstrap';
 import { Formik } from 'formik';
+import _ from 'lodash';
+import React from 'react';
+import { Button, Form, Modal } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
+import { TEXTAREA_ROWS } from '../../../../configs/constants';
 import { ReactComponent as CloseButtonSvg } from '../../../../images/close-alt.svg';
 import datasetOnboardingService from '../../../../services/dataset-onboarding/dataset-onboarding';
-import { TEXTAREA_ROWS } from '../../../../configs/constants';
 import './AccountDatasetDecisionModal.scss';
 
 const AccountDatasetRejectModal = ({ id, open, closed, goToNext, handleReject, showGoToNext }) => {
 	const { t } = useTranslation();
+
+	const rejectDataset = async values => {
+		const payload = {
+			...values,
+			id,
+			applicationStatus: 'rejected',
+		};
+
+		await datasetOnboardingService.putDatasetOnboarding(id, payload);
+	};
 
 	return (
 		<Modal show={open} onHide={closed} className='decisionModal' size='lg' aria-labelledby='contained-modal-title-vcenter' centered>
@@ -21,7 +32,6 @@ const AccountDatasetRejectModal = ({ id, open, closed, goToNext, handleReject, s
 					</div>
 				</div>
 			</div>
-
 			<Formik
 				initialValues={{
 					applicationStatusDesc: '',
@@ -32,21 +42,16 @@ const AccountDatasetRejectModal = ({ id, open, closed, goToNext, handleReject, s
 						.required('Description should not be empty'),
 				})}
 				onSubmit={async values => {
-					const payload = {
-						...values,
-						id,
-						applicationStatus: 'rejected',
-					};
-
-					await datasetOnboardingService.putDatasetOnboarding(id, payload);
+					await rejectDataset(values);
 
 					handleReject({
+						publisher: '',
 						tab: 'inReview',
 						message: `You have rejected the dataset`,
 					});
 				}}>
-				{({ values, errors, handleChange, handleBlur, handleSubmit }) => (
-					<Form onSubmit={handleSubmit}>
+				{({ values, errors, isValid, dirty, handleChange, handleBlur, handleSubmit }) => (
+					<Form onSubmit={handleSubmit} onBlur={handleBlur}>
 						<div className='decisionModal-body'>
 							<div className='decisionModal-body--wrap'>
 								<p data-testid='description'>{t('dataset.rejectModal.description')}</p>
@@ -80,7 +85,7 @@ const AccountDatasetRejectModal = ({ id, open, closed, goToNext, handleReject, s
 									{t('dataset.rejectModal.buttons.cancel')}
 								</Button>
 								<Button
-									disabled={errors.applicationStatusDesc}
+									disabled={!isValid || !dirty}
 									type='submit'
 									data-testid='reject-button'
 									className='button-secondary'
@@ -88,11 +93,11 @@ const AccountDatasetRejectModal = ({ id, open, closed, goToNext, handleReject, s
 									{t('dataset.rejectModal.buttons.reject')}
 								</Button>
 								<Button
-									disabled={!showGoToNext || errors.applicationStatusDesc}
+									disabled={!showGoToNext || !isValid || !dirty}
 									className='button-secondary'
 									style={{ marginLeft: '10px' }}
 									onClick={async () => {
-										handleSubmit();
+										await rejectDataset(values);
 										goToNext();
 									}}>
 									{t('dataset.rejectModal.buttons.rejectAndGoToNext')}
