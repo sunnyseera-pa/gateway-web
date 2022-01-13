@@ -1,5 +1,4 @@
 import { Formik } from 'formik';
-import _ from 'lodash';
 import React from 'react';
 import { Button, Form, Modal } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
@@ -22,6 +21,24 @@ const AccountDatasetRejectModal = ({ id, open, closed, goToNext, handleReject, s
 		await datasetOnboardingService.putDatasetOnboarding(id, payload);
 	};
 
+	const handleSubmit = React.useCallback(
+		async values => {
+			const payload = {
+				...values,
+				id,
+				applicationStatus: 'rejected',
+			};
+
+			await datasetOnboardingService.putDatasetOnboarding(id, payload);
+
+			handleReject({
+				tab: 'inReview',
+				message: `You have rejected the dataset`,
+			});
+		},
+		[id]
+	);
+
 	return (
 		<Modal show={open} onHide={closed} className='decisionModal' size='lg' aria-labelledby='contained-modal-title-vcenter' centered>
 			<div className='decisionModal-header'>
@@ -41,16 +58,8 @@ const AccountDatasetRejectModal = ({ id, open, closed, goToNext, handleReject, s
 						.max(1500, 'Description must be less than 1500 characters')
 						.required('Description should not be empty'),
 				})}
-				onSubmit={async values => {
-					await rejectDataset(values);
-
-					handleReject({
-						publisher: '',
-						tab: 'inReview',
-						message: `You have rejected the dataset`,
-					});
-				}}>
-				{({ values, errors, isValid, dirty, handleChange, handleBlur, handleSubmit }) => (
+				onSubmit={handleSubmit}>
+				{({ values, errors, handleChange, isValid, dirty, handleBlur, handleSubmit }) => (
 					<Form onSubmit={handleSubmit} onBlur={handleBlur}>
 						<div className='decisionModal-body'>
 							<div className='decisionModal-body--wrap'>
@@ -98,6 +107,7 @@ const AccountDatasetRejectModal = ({ id, open, closed, goToNext, handleReject, s
 									style={{ marginLeft: '10px' }}
 									onClick={async () => {
 										await rejectDataset(values);
+
 										goToNext();
 									}}>
 									{t('dataset.rejectModal.buttons.rejectAndGoToNext')}
