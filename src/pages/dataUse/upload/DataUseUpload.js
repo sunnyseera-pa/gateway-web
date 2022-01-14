@@ -60,6 +60,7 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
 											}
 										}
 									}
+									row.latestApprovalDate = row.latestApprovalDate || new Date();
 								});
 							});
 
@@ -100,7 +101,6 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
 			teamId: team,
 			dataUses: uploadedData.rows,
 		};
-
 		axios.post(baseURL + '/api/v2/data-use-registers/upload', payload).then(res => {
 			setIsSubmitModalVisible(false);
 			onSubmit();
