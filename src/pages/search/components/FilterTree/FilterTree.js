@@ -7,11 +7,13 @@ import CheckboxTree from '../../../../components/CheckboxTree';
 import TreeSubHeader from '../TreeSubHeader';
 import * as styles from './FilterTree.styles';
 
-const FilterTree = ({ node, filters, checked, onCheck }) => {
-	const [state, setState] = React.useState({
-		checked,
-		expanded: [],
-	});
+const FilterTree = ({ node, filters, checked, expanded, onCheck }) => {
+	const [nodesChecked, setNodesChecked] = React.useState(checked);
+	const [nodesExpanded, setNodesExpanded] = React.useState(expanded);
+
+	React.useEffect(() => {
+		setNodesChecked(checked);
+	}, [checked]);
 
 	const flattenObject = (filters, nodes = []) => {
 		filters.forEach(filter => {
@@ -25,10 +27,7 @@ const FilterTree = ({ node, filters, checked, onCheck }) => {
 
 	const handleChecked = React.useCallback(
 		checked => {
-			setState({
-				...state,
-				checked,
-			});
+			setNodesChecked(checked);
 
 			const nodes = flattenObject(filters).filter(filter => {
 				return checked.includes(filter.value);
@@ -36,8 +35,10 @@ const FilterTree = ({ node, filters, checked, onCheck }) => {
 
 			if (onCheck) onCheck(nodes, node.key, true);
 		},
-		[state, node]
+		[node]
 	);
+
+	console.log('CHECKED', nodesChecked, node, filters);
 
 	return (
 		<Accordion css={styles.root}>
@@ -45,13 +46,7 @@ const FilterTree = ({ node, filters, checked, onCheck }) => {
 				<TreeSubHeader node={node} />
 			</Accordion.Toggle>
 			<Accordion.Collapse eventKey='0'>
-				<CheckboxTree
-					nodes={filters}
-					checked={state.checked}
-					expanded={state.expanded}
-					onCheck={handleChecked}
-					onExpand={expanded => setState({ ...state, expanded })}
-				/>
+				<CheckboxTree nodes={filters} checked={nodesChecked} expanded={nodesExpanded} onCheck={handleChecked} onExpand={setNodesExpanded} />
 			</Accordion.Collapse>
 		</Accordion>
 	);

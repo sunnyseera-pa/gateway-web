@@ -456,12 +456,12 @@ class SearchPage extends React.Component {
 		let filtersV2PapersData = !_.isNil(this.state.filtersV2Papers) ? [...this.state.filtersV2Papers] : [];
 
 		// 2. v2 resets the filters UI tree back to default
-		let filtersV2Datasets = this.resetTreeChecked(filtersV2DatasetsData);
-		let filtersV2Tools = this.resetTreeChecked(filtersV2ToolsData);
-		let filtersV2Projects = this.resetTreeChecked(filtersV2ProjectsData);
-		let filtersV2Collections = this.resetTreeChecked(filtersV2CollectionsData);
-		let filtersV2Courses = this.resetTreeChecked(filtersV2CoursesData);
-		let filtersV2Papers = this.resetTreeChecked(filtersV2PapersData);
+		let filtersV2Datasets = this.resetChecked(filtersV2DatasetsData);
+		let filtersV2Tools = this.resetChecked(filtersV2ToolsData);
+		let filtersV2Projects = this.resetChecked(filtersV2ProjectsData);
+		let filtersV2Collections = this.resetChecked(filtersV2CollectionsData);
+		let filtersV2Courses = this.resetChecked(filtersV2CoursesData);
+		let filtersV2Papers = this.resetChecked(filtersV2PapersData);
 
 		this.setState(
 			prevState => ({
@@ -1029,7 +1029,7 @@ class SearchPage extends React.Component {
 	 * @param {object | array} tree
 	 * @return new tree
 	 */
-	resetTreeChecked = tree => {
+	resetChecked = tree => {
 		if (_.isEmpty(tree)) return [];
 
 		tree.forEach(node => {
@@ -1038,8 +1038,7 @@ class SearchPage extends React.Component {
 			if (typeof node.checked !== 'undefined') {
 				node.checked = false;
 			} else {
-				let child = this.resetTreeChecked(node.filters);
-				return child;
+				return this.resetChecked(node.filtersv2 || node.filters || node.children);
 			}
 		});
 		return tree;
@@ -1053,8 +1052,10 @@ class SearchPage extends React.Component {
 	handleClearAll = () => {
 		// 1. take copy of data
 		let filtersV2Data = this.getFilterStateByKey(this.state.key);
+
 		// 2. resets the filters UI tree back to default
-		let filtersV2 = this.resetTreeChecked(filtersV2Data);
+		let filtersV2 = this.resetChecked(filtersV2Data);
+
 		// 3. set state and call search
 		const filtersV2Entity = `filtersV2${this.state.key}`;
 		const selectedV2Entity = `selectedV2${this.state.key}`;
@@ -1121,7 +1122,7 @@ class SearchPage extends React.Component {
 		const selectedV2 = this.getSelectedFiltersStateByKey(this.state.key);
 
 		this.setState({ [`selectedV2${this.state.key}`]: selectedV2.filter(({ parentKey }) => parentKey !== key) }, () => {
-			fn();
+			if (fn) fn();
 		});
 	};
 
@@ -1136,13 +1137,20 @@ class SearchPage extends React.Component {
 	findNode = (filters = [], label) => {
 		if (!_.isEmpty(filters)) {
 			return (
-				[...filters].find(node => {
+				filters.find(node => {
 					return node.label.toUpperCase() === label.toUpperCase();
 				}) || {}
 			);
 		}
 		return {};
 	};
+
+	// findTreeNode = nodes => {
+	// 	replaceKey(nodes, (node) => {
+	// 		node.checked
+	// 		return node.children;
+	// 	});
+	// };
 
 	/**
 	 * HandleSelection
@@ -1260,11 +1268,11 @@ class SearchPage extends React.Component {
 	};
 
 	filterTreeByCheckbox = (node, parentKey, checkValue) => {
-		return this.filterByCheckbox(node.value, parentKey, checkValue, node.encodedValue);
+		return this.filterByCheckbox(node.value, parentKey, checkValue);
 	};
 
 	filterShallowByCheckbox = (node, parentKey, checkValue) => {
-		return this.filterByCheckbox(node.label, parentKey, checkValue, node.value);
+		return this.filterByCheckbox(node.label, parentKey, checkValue);
 	};
 
 	filterByCheckbox = (nodeKey, parentKey, checkValue, value) => {
@@ -1279,7 +1287,11 @@ class SearchPage extends React.Component {
 
 			if (!_.isEmpty(foundNode)) {
 				// find if the node already exists in the selectedV2 - if so we are unchecking / removing
-				const exists = this.getSelectedFiltersStateByKey(this.state.key).some(selected => selected.id === foundNode.id);
+				const exists = this.getSelectedFiltersStateByKey(this.state.key).find(selected => {
+					return selected.id === foundNode.id;
+				});
+
+				//Find in tree
 
 				if (!exists || (exists && foundNode.checked != checkValue)) {
 					// 4. set check value
@@ -1288,15 +1300,19 @@ class SearchPage extends React.Component {
 					checkValue ? ++parentNode.selectedCount : --parentNode.selectedCount;
 					// 6. set new object for handle selected *showing*
 
+					const { id, label, value, encodedValue } = foundNode;
+
 					let selectedNode = {
 						parentKey: alias || key,
-						id: foundNode.id,
-						label: foundNode.label,
+						id,
+						label,
 						value,
+						encodedValue,
 					};
 
 					// 7. fn for handling the *selected showing* returns new state
 					const selectedV2 = this.handleSelected(selectedNode, checkValue);
+
 					// 8. set state
 					const filtersV2Entity = `filtersV2${this.state.key}`;
 					const selectedV2Entity = `selectedV2${this.state.key}`;
@@ -1327,15 +1343,10 @@ class SearchPage extends React.Component {
 							return b.concat(a);
 						}
 					});
+				});
 
-					this.setState(filteredState, () => {
-						setTimeout(() => {
-							console.log('STATE', filteredState);
-							console.log('SEARCHING', this.state);
-						}, 5000);
-
-						// this.doSearchCall();
-					});
+				this.setState(filteredState, () => {
+					this.doSearchCall();
 				});
 			});
 
@@ -1347,6 +1358,10 @@ class SearchPage extends React.Component {
 		} else {
 			filteredState = this.filterShallowByCheckbox(nodes, parentKey, checkValue);
 
+			this.setState(filteredState, () => {
+				this.doSearchCall();
+			});
+
 			googleAnalytics.recordEvent(
 				'Datasets',
 				`${checkValue ? 'Applied' : 'Removed'} ${parentKey} filter ${
@@ -1355,17 +1370,6 @@ class SearchPage extends React.Component {
 				`Filter value: ${nodes.label}`
 			);
 		}
-
-		console.log('State selected', filteredState);
-
-		this.setState(filteredState, () => {
-			setTimeout(() => {
-				console.log('STATE', filteredState);
-				console.log('SEARCHING', this.state);
-			}, 5000);
-
-			// this.doSearchCall();
-		});
 	};
 
 	/**
@@ -1433,12 +1437,12 @@ class SearchPage extends React.Component {
 		let filtersV2PapersData = !_.isNil(this.state.filtersV2Papers) ? [...this.state.filtersV2Papers] : [];
 
 		// 2. v2 resets the filters UI tree back to default
-		let filtersV2Datasets = this.resetTreeChecked(filtersV2DatasetsData);
-		let filtersV2Tools = this.resetTreeChecked(filtersV2ToolsData);
-		let filtersV2Projects = this.resetTreeChecked(filtersV2ProjectsData);
-		let filtersV2Collections = this.resetTreeChecked(filtersV2CollectionsData);
-		let filtersV2Courses = this.resetTreeChecked(filtersV2CoursesData);
-		let filtersV2Papers = this.resetTreeChecked(filtersV2PapersData);
+		let filtersV2Datasets = this.resetChecked(filtersV2DatasetsData);
+		let filtersV2Tools = this.resetChecked(filtersV2ToolsData);
+		let filtersV2Projects = this.resetChecked(filtersV2ProjectsData);
+		let filtersV2Collections = this.resetChecked(filtersV2CollectionsData);
+		let filtersV2Courses = this.resetChecked(filtersV2CoursesData);
+		let filtersV2Papers = this.resetChecked(filtersV2PapersData);
 
 		this.setState(
 			prevState => ({

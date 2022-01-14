@@ -44,16 +44,12 @@ const CheckboxTree = ({
 	};
 
 	const formattedNodes = React.useMemo(() => {
-		console.log(
-			'Children removed',
-			nodes.map(node => {
-				return formatNode(node);
-			})
-		);
 		return nodes.map(node => {
 			return formatNode(node);
 		});
 	}, [nodes]);
+
+	console.log('outerProps', formattedNodes);
 
 	return (
 		<div
