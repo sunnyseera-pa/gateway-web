@@ -8,6 +8,10 @@ import { useTranslation } from 'react-i18next';
 import BlockQuote from '../../../../components/BlockQuote';
 import ListInfo from '../../../../components/ListInfo';
 import Timeline from '../../../../components/Timeline';
+import approved from '../../../../images/Application_approved.svg';
+import rejected from '../../../../images/Application_rejected.svg';
+import updated from '../../../../images/Updates_requested.svg';
+import versionCreated from '../../../../images/Versions_created.svg';
 import ACTIVITY_LOG_PROP_TYPES from '../../../../services/activitylog/activitylog';
 import DatasetOnboardingHelper from '../../../../utils/DatasetOnboardingHelper.util';
 import { dateFormats } from '../../../../utils/GeneralHelper.util';
@@ -15,12 +19,12 @@ import SLA from '../../../commonComponents/sla/SLA';
 import * as styles from './ActivityLogCard.styles';
 
 let eventStatusIcons = {
-	newDatasetVersionSubmitted: 'Versions_created',
-	datasetVersionApproved: 'Application_approved',
-	datasetVersionRejected: 'Application_rejected',
-	datasetVersionArchived: 'Updates_requested',
-	datasetVersionUnarchived: 'Updates_requested',
-	datasetUpdatesSubmitted: 'Updates_requested',
+	newDatasetVersionSubmitted: versionCreated,
+	datasetVersionApproved: approved,
+	datasetVersionRejected: rejected,
+	datasetVersionArchived: updated,
+	datasetVersionUnarchived: updated,
+	datasetUpdatesSubmitted: updated,
 };
 
 const ActivityLogCard = props => {

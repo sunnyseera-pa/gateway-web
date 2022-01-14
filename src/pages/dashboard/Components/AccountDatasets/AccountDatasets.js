@@ -14,7 +14,7 @@ import AccountDatasetsTabs from './AccountDatasetsTabs';
 import { MAXRESULTS } from '../../../collections/constants';
 
 const AccountDatasets = props => {
-	const [key, setKey] = useState();
+	const [key, setKey] = useState(props.alert ? props.alert.tab : '');
 	const [statusCounts, setStatusCounts] = useState({});
 	const { userState } = useAuth();
 	const [publisherID, setPublisherId] = useState();
@@ -67,7 +67,7 @@ const AccountDatasets = props => {
 
 	useEffect(() => {
 		setPublisherId(utils.getPublisherID(userState[0], team));
-		setKey(team === 'admin' ? 'inReview' : !_.isEmpty(props.alert.tab) || 'active');
+		setKey(team === 'admin' ? 'inReview' : props.alert.tab || 'active');
 	}, [team]);
 
 	useEffect(() => {
