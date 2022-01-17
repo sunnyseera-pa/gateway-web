@@ -9,6 +9,9 @@ import SearchControls from '../../../../components/SearchControls';
 import '../../Dashboard.scss';
 import MessageNotFound from '../../../commonComponents/MessageNotFound';
 
+const options = ['alphabetic', 'latest', 'recentlyadded', 'metadata', 'popularity'];
+const inReviewOptions = ['alphabetic', 'latest', 'recentlyadded', 'metadata'];
+
 const AccountDatasetsContent = ({ data = [], onSubmit, isLoading, isFetched, status, params, team, count }) => {
 	const [searchValue, setSearchValue] = useState();
 	const history = useHistory();
@@ -67,7 +70,7 @@ const AccountDatasetsContent = ({ data = [], onSubmit, isLoading, isFetched, sta
 					sortProps={{
 						direction: sortDirection,
 						value: sortBy,
-						options: ['alphabetic', 'latest', 'recentlyadded', 'metadata', 'popularity'],
+						options: status === 'inReview' ? inReviewOptions : options,
 						mt: 2,
 						allowDirection: true,
 						minWidth: '300px',
