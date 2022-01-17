@@ -49,8 +49,6 @@ const CheckboxTree = ({
 		});
 	}, [nodes]);
 
-	console.log('outerProps', formattedNodes);
-
 	return (
 		<div
 			css={styles.root({

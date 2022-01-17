@@ -341,9 +341,6 @@ class SearchPage extends React.Component {
 								let foundNode;
 								if (filtersv2) {
 									foundNode = findAllByKey(filtersv2, (key, value) => {
-										if (key === 'value') {
-											// console.log('FINDING', queryValue, value === queryValue && key === 'value');
-										}
 										return value === queryValue && key === 'value';
 									});
 
@@ -565,8 +562,6 @@ class SearchPage extends React.Component {
 		} = this.state;
 
 		this.toggleDataUtilityBanner(false);
-
-		console.log('Building search object', this.state.selectedV2Datasets);
 
 		// 1. build search object from list of selected fitlers v2 only
 		let searchObj = {
@@ -991,6 +986,7 @@ class SearchPage extends React.Component {
 	 * @param {string | object} selectedNode
 	 */
 	handleClearSelection = selectedNode => {
+		console.log('this.state', this.state);
 		let selectedV2, filtersV2, parentNode;
 		if (!_.isEmpty(selectedNode)) {
 			// 1. take label and parentId values from the node
@@ -1003,20 +999,28 @@ class SearchPage extends React.Component {
 				// 4. decrement the count on the parent
 				--parentNode.selectedCount;
 				// 5. get the filters
-				let { filters } = parentNode;
+				let { filters, filtersv2 } = parentNode;
 				if (!_.isEmpty(filters)) {
 					// 6. get child node
 					let foundNode = this.findNode(filters, label);
-					// 7. set checked value
-					foundNode.checked = false;
-					// 8. remove from selectedV2 array
-					selectedV2 = this.handleSelected(selectedNode, false);
-					// 9. set state
-					const filtersV2Entity = `filtersV2${this.state.key}`;
-					const selectedV2Entity = `selectedV2${this.state.key}`;
-					this.setState({ [filtersV2Entity]: filtersV2, [selectedV2Entity]: selectedV2, isResultsLoading: true }, () => {
-						this.doSearchCall();
-					});
+
+					if (filtersv2) {
+						foundNode = findAllByKey(filtersv2, (key, value) => {
+							return value === selectedNode.value && key === 'value';
+						});
+
+						console.log('FOUND NODE', foundNode);
+					}
+					// // 7. set checked value
+					// foundNode.checked = false;
+					// // 8. remove from selectedV2 array
+					// selectedV2 = this.handleSelected(selectedNode, false);
+					// // 9. set state
+					// const filtersV2Entity = `filtersV2${this.state.key}`;
+					// const selectedV2Entity = `selectedV2${this.state.key}`;
+					// this.setState({ [filtersV2Entity]: filtersV2, [selectedV2Entity]: selectedV2, isResultsLoading: true }, () => {
+					// 	this.doSearchCall();
+					// });
 				}
 			}
 		}
@@ -1037,9 +1041,9 @@ class SearchPage extends React.Component {
 
 			if (typeof node.checked !== 'undefined') {
 				node.checked = false;
-			} else {
-				return this.resetChecked(node.filtersv2 || node.filters || node.children);
 			}
+
+			return this.resetChecked(node.filtersv2 || node.filters || node.children);
 		});
 		return tree;
 	};
@@ -1267,61 +1271,57 @@ class SearchPage extends React.Component {
 		}
 	};
 
-	filterTreeByCheckbox = (node, parentKey, checkValue) => {
-		return this.filterByCheckbox(node.value, parentKey, checkValue);
+	filterTreeByCheckbox = (node, parentKey, checked) => {
+		return this.filterByCheckbox(node, node.value, parentKey, checked);
 	};
 
-	filterShallowByCheckbox = (node, parentKey, checkValue) => {
-		return this.filterByCheckbox(node.label, parentKey, checkValue);
+	filterShallowByCheckbox = (node, parentKey, checked) => {
+		return this.filterByCheckbox(node, node.label, parentKey, checked);
 	};
 
-	filterByCheckbox = (nodeKey, parentKey, checkValue, value) => {
+	filterByCheckbox = (node, displayLabel, parentKey, checked) => {
 		const filtersV2 = this.getFilterStateByKey(this.state.key);
 		const parentNode = this.findParentNode(filtersV2, parentKey);
 
-		if (!_.isEmpty(parentNode)) {
-			// deconstruct important to take alias incase key needs overwritten for query string
-			const { filters, key, alias } = parentNode;
-			// 3. find checkbox obj
-			const foundNode = this.findNode(filters, nodeKey);
+		const { alias, key, filtersv2, filters } = parentNode;
 
-			if (!_.isEmpty(foundNode)) {
-				// find if the node already exists in the selectedV2 - if so we are unchecking / removing
-				const exists = this.getSelectedFiltersStateByKey(this.state.key).find(selected => {
-					return selected.id === foundNode.id;
-				});
+		let selectedCount = 0;
 
-				//Find in tree
+		parentNode[filtersv2 ? 'filtersv2' : 'filters'] = replaceKey(filtersv2 || filters, filter => {
+			filter.checked = false;
 
-				if (!exists || (exists && foundNode.checked != checkValue)) {
-					// 4. set check value
-					foundNode.checked = checkValue;
-					// 5. increment highest parent count
-					checkValue ? ++parentNode.selectedCount : --parentNode.selectedCount;
-					// 6. set new object for handle selected *showing*
-
-					const { id, label, value, encodedValue } = foundNode;
-
-					let selectedNode = {
-						parentKey: alias || key,
-						id,
-						label,
-						value,
-						encodedValue,
-					};
-
-					// 7. fn for handling the *selected showing* returns new state
-					const selectedV2 = this.handleSelected(selectedNode, checkValue);
-
-					// 8. set state
-					const filtersV2Entity = `filtersV2${this.state.key}`;
-					const selectedV2Entity = `selectedV2${this.state.key}`;
-					const entityIndex = `${typeMapper[this.state.key]}Index`;
-
-					return { [filtersV2Entity]: filtersV2, [selectedV2Entity]: selectedV2, [entityIndex]: 0, isResultsLoading: true };
-				}
+			if (filter.value === node.value) {
+				filter.checked = checked;
 			}
-		}
+
+			if (filter.checked) selectedCount++;
+
+			return filter.children;
+		});
+
+		console.log('Parent node', parentNode[filtersv2 ? 'filtersv2' : 'filters']);
+
+		parentNode.selectedCount = selectedCount;
+
+		const { id, value, encodedValue } = node;
+
+		const selectedV2 = this.handleSelected(
+			{
+				parentKey: alias || key,
+				id,
+				label: displayLabel,
+				value,
+				encodedValue,
+			},
+			checked
+		);
+
+		return {
+			[`filtersV2${this.state.key}`]: filtersV2,
+			[`selectedV2${this.state.key}`]: selectedV2,
+			[`${typeMapper[this.state.key]}Index`]: 0,
+			isResultsLoading: true,
+		};
 	};
 
 	/**
@@ -1336,19 +1336,33 @@ class SearchPage extends React.Component {
 		let filteredState;
 
 		if (Array.isArray(nodes)) {
-			this.removeSelectedNodes(parentKey, () => {
-				nodes.forEach(filter => {
-					filteredState = _.mergeWith({}, this.filterTreeByCheckbox(filter, parentKey, checkValue), filteredState, function (a, b) {
-						if (_.isArray(a)) {
-							return b.concat(a);
-						}
-					});
-				});
+			const filtersV2 = this.getFilterStateByKey(this.state.key);
+			const parentNode = this.findParentNode(filtersV2, parentKey);
 
-				this.setState(filteredState, () => {
-					this.doSearchCall();
-				});
-			});
+			parentNode.filtersv2 = this.resetChecked(parentNode.filtersv2);
+
+			this.setState(
+				{
+					[`filtersV2${this.state.key}`]: filtersV2,
+				},
+				() => {
+					nodes.forEach(filter => {
+						filteredState = _.mergeWith({}, this.filterTreeByCheckbox(filter, parentKey, checkValue), filteredState, function (a, b) {
+							if (_.isArray(a)) {
+								return b.concat(a);
+							}
+						});
+					});
+
+					if (filteredState) {
+						this.setState(filteredState, () => {
+							this.doSearchCall();
+						});
+					} else {
+						this.doSearchCall();
+					}
+				}
+			);
 
 			googleAnalytics.recordEvent(
 				'Datasets',

@@ -102,8 +102,6 @@ export const findAllByKey = (data, iteratee) => {
 		} else {
 			Object.keys(obj).forEach(key => {
 				if (iteratee(key, obj[key])) {
-					console.log('ITEM', obj);
-
 					found.push(obj);
 				} else if (typeof obj[key] === 'object') {
 					findDeep(obj[key]);

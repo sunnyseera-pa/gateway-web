@@ -37,9 +37,6 @@ const FilterTree = ({ node, filters, checked, expanded, onCheck }) => {
 		},
 		[node]
 	);
-
-	console.log('CHECKED', nodesChecked, node, filters);
-
 	return (
 		<Accordion css={styles.root}>
 			<Accordion.Toggle eventKey='0' css={styles.toggle}>
