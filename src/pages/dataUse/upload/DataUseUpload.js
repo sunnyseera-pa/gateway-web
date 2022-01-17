@@ -52,7 +52,6 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
 										if (
 											row.projectIdText === duplicateRow.projectIdText ||
 											(row.projectTitle === duplicateRow.projectTitle &&
-												row.organisationName === duplicateRow.organisationName &&
 												row.datasetTitles === duplicateRow.datasetTitles &&
 												Date.parse(row.latestApprovalDate) === Date.parse(duplicateRow.latestApprovalDate))
 										) {
