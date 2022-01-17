@@ -1,15 +1,10 @@
-import React, { Fragment, useState, useEffect } from 'react';
 import _ from 'lodash';
-import { Accordion, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import React, { Fragment, useEffect, useState } from 'react';
 import { SlideDown } from 'react-slidedown';
-import { FilterCount } from './FilterCount';
-import { FilterSearch } from './FilterSearch';
 import SVGIcon from '../../../images/SVGIcon';
-import { FilterClearSection } from './FilterClearSection';
-import CheckboxTree from '../../../components/CheckboxTree';
+import { FilterCount } from './FilterCount';
 import FilterTree from './FilterTree';
 import TreeSubHeader from './TreeSubHeader';
-import { flattenObject, replaceKey } from '../../../utils/GeneralHelper.util';
 
 const Checkbox = ({ node = {}, highlighted = [], parentKey = '', onHandleInputChange }) => {
 	let highlight = false;
@@ -95,13 +90,6 @@ const TreeComponent = ({ node, parentKey, hasChildren, onHandleInputChange, onHa
 	const [searchValue, setSearchValue] = useState('');
 	const [highlighted, setHighlight] = useState([]);
 
-	const onSearchChange = value => {
-		setSearchValue(value);
-	};
-	const onClearSection = () => {
-		onHandleClearSection(node);
-	};
-
 	const getSubClass = () => {
 		if (typeof node.filters !== 'undefined' && node.filters.length > 0) {
 			const hasFilterGroups = [...node.filters].filter(i => i.hasOwnProperty('key')).length > 0;
@@ -142,7 +130,6 @@ const TreeComponent = ({ node, parentKey, hasChildren, onHandleInputChange, onHa
 							hasChildren={true}
 							searchValue={searchValue}
 							onHandleInputChange={onHandleInputChange}
-							onHandleClearSection={onHandleClearSection}
 							onHandleToggle={onHandleToggle}
 						/>
 					)}
@@ -160,7 +147,6 @@ const Filter = ({
 	hasChildren = false,
 	searchValue = '',
 	onHandleInputChange,
-	onHandleClearSection,
 	onHandleToggle,
 }) => {
 	let generateClassName = node => {
@@ -185,6 +171,8 @@ const Filter = ({
 					.map(node => {
 						const selectedValues = selected ? selected.map(({ value }) => value) : [];
 
+						console.log('SELECTED values', selectedValues);
+
 						return (
 							<div key={node.label} className={generateClassName(node)}>
 								{!!node.filtersv2 && (
@@ -201,7 +189,6 @@ const Filter = ({
 												highlighted={node.highlighted}
 												hasChildren={hasChildren}
 												onHandleInputChange={onHandleInputChange}
-												onHandleClearSection={onHandleClearSection}
 												onHandleToggle={onHandleToggle}
 											/>
 										) : (

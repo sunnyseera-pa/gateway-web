@@ -759,6 +759,7 @@ class SearchPage extends React.Component {
 					},
 				},
 			} = response;
+
 			if (!_.isEmpty(dataUtilityFilters)) {
 				const dataUtilityWizardSteps = dataUtilityFilters.filter(item => item.includeInWizard);
 				this.setState({ dataUtilityFilters, dataUtilityWizardSteps });
@@ -793,72 +794,19 @@ class SearchPage extends React.Component {
 
 	getFilters = async key => {
 		try {
-			switch (key) {
-				case 'Datasets':
-					const response = await axios.get(`${baseURL}/api/v2/filters/dataset`);
-					const {
-						data: { data: filterDataDatasets },
-					} = response;
-					if (!_.isEmpty(filterDataDatasets) && _.isEmpty(this.state.filtersV2Datasets)) {
-						const filtersV2Datasets = this.formatFilters(this.mapFiltersToDictionary(filterDataDatasets, this.state.dataUtilityFilters));
-						this.setState({ filtersV2Datasets });
-					}
-					break;
-				case 'Tools':
-					const responseTools = await axios.get(`${baseURL}/api/v2/filters/tool`);
-					const {
-						data: { data: filterDataTools },
-					} = responseTools;
-					if (!_.isEmpty(filterDataTools) && _.isEmpty(this.state.filtersV2Tools)) {
-						const filtersV2Tools = this.formatFilters(this.mapFiltersToDictionary(filterDataTools, this.state.dataUtilityFilters));
-						this.setState({ filtersV2Tools });
-					}
-					break;
-				case 'Projects':
-					const responseProjects = await axios.get(`${baseURL}/api/v2/filters/project`);
-					const {
-						data: { data: filterDataProjects },
-					} = responseProjects;
-					if (!_.isEmpty(filterDataProjects) && _.isEmpty(this.state.filtersV2Projects)) {
-						const filtersV2Projects = this.formatFilters(this.mapFiltersToDictionary(filterDataProjects, this.state.dataUtilityFilters));
-						this.setState({ filtersV2Projects });
-					}
-					break;
-				case 'Papers':
-					const responsePapers = await axios.get(`${baseURL}/api/v2/filters/paper`);
-					const {
-						data: { data: filterDataPapers },
-					} = responsePapers;
-					if (!_.isEmpty(filterDataPapers) && _.isEmpty(this.state.filtersV2Papers)) {
-						const filtersV2Papers = this.formatFilters(this.mapFiltersToDictionary(filterDataPapers, this.state.dataUtilityFilters));
-						this.setState({ filtersV2Papers });
-					}
-					break;
-				case 'Courses':
-					const responseCourses = await axios.get(`${baseURL}/api/v2/filters/course`);
-					const {
-						data: { data: filterDataCourses },
-					} = responseCourses;
-					if (!_.isEmpty(filterDataCourses) && _.isEmpty(this.state.filtersV2Courses)) {
-						const filtersV2Courses = this.formatFilters(this.mapFiltersToDictionary(filterDataCourses, this.state.dataUtilityFilters));
-						this.setState({ filtersV2Courses });
-					}
-					break;
-				case 'Collections':
-					const responseCollections = await axios.get(`${baseURL}/api/v2/filters/collection`);
-					const {
-						data: { data: filterDataCollections },
-					} = responseCollections;
-					if (!_.isEmpty(filterDataCollections) && _.isEmpty(this.state.filtersV2Collections)) {
-						const filtersV2Collections = this.formatFilters(
-							this.mapFiltersToDictionary(filterDataCollections, this.state.dataUtilityFilters)
-						);
-						this.setState({ filtersV2Collections });
-					}
-				default:
+			const entityType = typeMapper[key];
+			const filtersV2Entity = `filtersV2${key}`;
+			const response = await axios.get(`${baseURL}/api/v2/filters/${entityType}`);
+			const {
+				data: { data },
+			} = response;
+
+			if (!_.isEmpty(data) && _.isEmpty(this.state[filtersV2Entity])) {
+				const filtersV2 = this.formatFilters(this.mapFiltersToDictionary(data, this.state.dataUtilityFilters));
+				this.setState({ [filtersV2Entity]: filtersV2 });
 			}
-		} catch (error) {
-			console.error(error.message);
+		} catch (err) {
+			console.error(err.message);
 		}
 	};
 
@@ -979,60 +927,29 @@ class SearchPage extends React.Component {
 		}, {});
 	};
 
-	/**
-	 * HandleClearFilters
-	 *
-	 * @desc function to handle filters applied functionality
-	 * @param {string | object} selectedNode
-	 */
+	isTree = key => {
+		return ['spatial'].includes(key);
+	};
+
 	handleClearSelection = selectedNode => {
-		console.log('this.state', this.state);
-		let selectedV2, filtersV2, parentNode;
-		if (!_.isEmpty(selectedNode)) {
-			// 1. take label and parentId values from the node
-			let { parentKey, label } = selectedNode;
-			// 2. copy state data *avoid mutation*
-			filtersV2 = this.getFilterStateByKey(this.state.key);
-			// 3. find parentNode in the tree
-			parentNode = this.findParentNode(filtersV2, parentKey);
-			if (!_.isEmpty(parentNode)) {
-				// 4. decrement the count on the parent
-				--parentNode.selectedCount;
-				// 5. get the filters
-				let { filters, filtersv2 } = parentNode;
-				if (!_.isEmpty(filters)) {
-					// 6. get child node
-					let foundNode = this.findNode(filters, label);
+		const { parentKey, value } = selectedNode;
 
-					if (filtersv2) {
-						foundNode = findAllByKey(filtersv2, (key, value) => {
-							return value === selectedNode.value && key === 'value';
-						});
+		if (this.isTree(parentKey)) {
+			const selectedV2 = this.getSelectedFiltersStateByKey(this.state.key);
+			const selectedV2Filtered = selectedV2.filter(filter => {
+				return filter.value !== value;
+			});
 
-						console.log('FOUND NODE', foundNode);
-					}
-					// // 7. set checked value
-					// foundNode.checked = false;
-					// // 8. remove from selectedV2 array
-					// selectedV2 = this.handleSelected(selectedNode, false);
-					// // 9. set state
-					// const filtersV2Entity = `filtersV2${this.state.key}`;
-					// const selectedV2Entity = `selectedV2${this.state.key}`;
-					// this.setState({ [filtersV2Entity]: filtersV2, [selectedV2Entity]: selectedV2, isResultsLoading: true }, () => {
-					// 	this.doSearchCall();
-					// });
-				}
-			}
+			this.setState(this.filterTreeByCheckbox(selectedV2Filtered, parentKey, true), () => {
+				this.doSearchCall();
+			});
+		} else {
+			this.setState(this.filterShallowByCheckbox(selectedNode, parentKey, false), () => {
+				this.doSearchCall();
+			});
 		}
 	};
 
-	/**
-	 * ResetTreeChecked
-	 *
-	 * @desc Resets the selected filter options back in the tree for checked and selected counts
-	 * @param {object | array} tree
-	 * @return new tree
-	 */
 	resetChecked = tree => {
 		if (_.isEmpty(tree)) return [];
 
@@ -1048,21 +965,12 @@ class SearchPage extends React.Component {
 		return tree;
 	};
 
-	/**
-	 * HandleClearAll
-	 *
-	 * @desc User clicks clear all in the filters all section it will reset the tree
-	 */
 	handleClearAll = () => {
-		// 1. take copy of data
-		let filtersV2Data = this.getFilterStateByKey(this.state.key);
-
-		// 2. resets the filters UI tree back to default
-		let filtersV2 = this.resetChecked(filtersV2Data);
-
-		// 3. set state and call search
+		const filtersV2Data = this.getFilterStateByKey(this.state.key);
+		const filtersV2 = this.resetChecked(filtersV2Data);
 		const filtersV2Entity = `filtersV2${this.state.key}`;
 		const selectedV2Entity = `selectedV2${this.state.key}`;
+
 		this.setState({ [filtersV2Entity]: filtersV2, [selectedV2Entity]: [], isResultsLoading: true }, () => {
 			this.doSearchCall();
 		});
@@ -1122,12 +1030,17 @@ class SearchPage extends React.Component {
 		return found;
 	};
 
-	removeSelectedNodes = (key, fn) => {
+	resetNodesByParent = key => {
+		const filtersV2 = this.getFilterStateByKey(this.state.key);
 		const selectedV2 = this.getSelectedFiltersStateByKey(this.state.key);
+		const parentNode = this.findParentNode(filtersV2, key);
 
-		this.setState({ [`selectedV2${this.state.key}`]: selectedV2.filter(({ parentKey }) => parentKey !== key) }, () => {
-			if (fn) fn();
-		});
+		parentNode.filtersv2 = this.resetChecked(parentNode.filtersv2);
+
+		return {
+			[`filtersV2${this.state.key}`]: filtersV2,
+			[`selectedV2${this.state.key}`]: selectedV2.filter(({ parentKey }) => parentKey !== key),
+		};
 	};
 
 	/**
@@ -1147,59 +1060,6 @@ class SearchPage extends React.Component {
 			);
 		}
 		return {};
-	};
-
-	// findTreeNode = nodes => {
-	// 	replaceKey(nodes, (node) => {
-	// 		node.checked
-	// 		return node.children;
-	// 	});
-	// };
-
-	/**
-	 * HandleSelection
-	 *
-	 * @desc remove item from filters applied and update tree
-	 * @param {object} node
-	 */
-	handleClearSection = node => {
-		let selectedV2, filtersV2, parentNode, selectedNodeFilters;
-		let { key, filters } = node;
-		selectedV2 = this.getSelectedFiltersStateByKey(this.state.key);
-		// 1. find the filters
-		if (!_.isEmpty(filters)) {
-			selectedNodeFilters = filters
-				.filter(nodeItem => nodeItem.checked)
-				.map(node => {
-					return { ...node, checked: false };
-				});
-			// 1. copy state - stop mutation
-			filtersV2 = this.getFilterStateByKey(this.state.key);
-			// 2. find parent obj - recursive
-			parentNode = this.findParentNode(filtersV2, key);
-			if (!_.isEmpty(parentNode)) {
-				let { filters } = parentNode;
-				// 3. loop over selected nodes
-				selectedNodeFilters.forEach(node => {
-					let foundNode = this.findNode(filters, node.label);
-					if (!_.isEmpty(foundNode)) {
-						// 4. set check value
-						foundNode.checked = false;
-						// 5. increment highest parent count
-						--parentNode.selectedCount;
-						// 7. fn for handling the *selected showing* returns new state
-						selectedV2 = [...selectedV2].filter(node => node.id !== foundNode.id);
-						// searchObj = this.buildSearchObj(selectedV2);
-					}
-				});
-				// 9. set state
-				const filtersV2Entity = `filtersV2${this.state.key}`;
-				const selectedV2Entity = `selectedV2${this.state.key}`;
-				this.setState({ [filtersV2Entity]: filtersV2, [selectedV2Entity]: [], isResultsLoading: true }, () => {
-					this.doSearchCall();
-				});
-			}
-		}
 	};
 
 	/**
@@ -1271,8 +1131,43 @@ class SearchPage extends React.Component {
 		}
 	};
 
-	filterTreeByCheckbox = (node, parentKey, checked) => {
-		return this.filterByCheckbox(node, node.value, parentKey, checked);
+	filterTreeByCheckbox = (nodes, parentKey, checked) => {
+		const state = this.resetNodesByParent(parentKey);
+		const parentNode = this.findParentNode(state[`filtersV2${this.state.key}`], parentKey);
+
+		const { alias, key, filtersv2 } = parentNode;
+
+		let selectedCount = 0;
+
+		parentNode[filtersv2] = replaceKey(filtersv2, filter => {
+			filter.checked = false;
+
+			if (nodes.find(node => node.value === filter.value)) {
+				const { id, value, encodedValue } = filter;
+
+				filter.checked = checked;
+
+				state[`selectedV2${this.state.key}`].push({
+					parentKey: alias || key,
+					id,
+					label: value,
+					value,
+					encodedValue,
+				});
+			}
+
+			if (filter.checked) selectedCount++;
+
+			return filter.children;
+		});
+
+		parentNode.selectedCount = selectedCount;
+
+		return {
+			...state,
+			[`${typeMapper[this.state.key]}Index`]: 0,
+			isResultsLoading: true,
+		};
 	};
 
 	filterShallowByCheckbox = (node, parentKey, checked) => {
@@ -1283,25 +1178,15 @@ class SearchPage extends React.Component {
 		const filtersV2 = this.getFilterStateByKey(this.state.key);
 		const parentNode = this.findParentNode(filtersV2, parentKey);
 
-		const { alias, key, filtersv2, filters } = parentNode;
+		const { alias, key, filters } = parentNode;
 
-		let selectedCount = 0;
+		parentNode[filters] = filters.map(filter => {
+			if (node.label === filter.label) {
+				checked ? parentNode.selectedCount++ : parentNode.selectedCount--;
 
-		parentNode[filtersv2 ? 'filtersv2' : 'filters'] = replaceKey(filtersv2 || filters, filter => {
-			filter.checked = false;
-
-			if (filter.value === node.value) {
 				filter.checked = checked;
 			}
-
-			if (filter.checked) selectedCount++;
-
-			return filter.children;
 		});
-
-		console.log('Parent node', parentNode[filtersv2 ? 'filtersv2' : 'filters']);
-
-		parentNode.selectedCount = selectedCount;
 
 		const { id, value, encodedValue } = node;
 
@@ -1333,46 +1218,18 @@ class SearchPage extends React.Component {
 	 * @param {boolean} checkValue
 	 */
 	handleInputChange = (nodes, parentKey, checkValue) => {
-		let filteredState;
-
-		if (Array.isArray(nodes)) {
-			const filtersV2 = this.getFilterStateByKey(this.state.key);
-			const parentNode = this.findParentNode(filtersV2, parentKey);
-
-			parentNode.filtersv2 = this.resetChecked(parentNode.filtersv2);
-
-			this.setState(
-				{
-					[`filtersV2${this.state.key}`]: filtersV2,
-				},
-				() => {
-					nodes.forEach(filter => {
-						filteredState = _.mergeWith({}, this.filterTreeByCheckbox(filter, parentKey, checkValue), filteredState, function (a, b) {
-							if (_.isArray(a)) {
-								return b.concat(a);
-							}
-						});
-					});
-
-					if (filteredState) {
-						this.setState(filteredState, () => {
-							this.doSearchCall();
-						});
-					} else {
-						this.doSearchCall();
-					}
-				}
-			);
+		if (this.isTree(parentKey)) {
+			this.setState(this.filterTreeByCheckbox(nodes, parentKey, checkValue), () => {
+				this.doSearchCall();
+			});
 
 			googleAnalytics.recordEvent(
 				'Datasets',
 				`Changed ${parentKey} filters ${this.state.showDataUtilityBanner ? 'after utility wizard search' : ''}`,
-				`Filter values: "${nodes.map(filter => filter.value).join('" & ')}"`
+				`Filter values: "${nodes.map(filter => filter.value).join('" & ') || 'All'}"`
 			);
 		} else {
-			filteredState = this.filterShallowByCheckbox(nodes, parentKey, checkValue);
-
-			this.setState(filteredState, () => {
+			this.setState(this.filterShallowByCheckbox(nodes, parentKey, checkValue), () => {
 				this.doSearchCall();
 			});
 
@@ -1560,7 +1417,6 @@ class SearchPage extends React.Component {
 			selected: this.state[`selectedV2${key}`],
 			data: this.getFilterStateByKey(key),
 			onHandleInputChange: this.handleInputChange,
-			onHandleClearSection: this.handleClearSection,
 			onHandleToggle: this.handleToggle,
 			onTreeFormatted: this.handleTreeFormatted,
 		};

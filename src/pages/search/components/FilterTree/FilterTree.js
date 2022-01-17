@@ -11,6 +11,8 @@ const FilterTree = ({ node, filters, checked, expanded, onCheck }) => {
 	const [nodesChecked, setNodesChecked] = React.useState(checked);
 	const [nodesExpanded, setNodesExpanded] = React.useState(expanded);
 
+	console.log('Node', node);
+
 	React.useEffect(() => {
 		setNodesChecked(checked);
 	}, [checked]);
