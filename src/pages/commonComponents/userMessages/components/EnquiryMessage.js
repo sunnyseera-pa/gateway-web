@@ -270,7 +270,10 @@ export const EnquiryMessage = ({ topic, onDatasetsRequested, onFirstMessageSubmi
 							<div className='form-group gray800-14'>
 								<label htmlFor={`safeprojectprojectdetailsaimsobjectivesrationale`} className='form-label'>
 									Research aim or question *
-									<span className='gray700-13'>Please briefly explain the purpose of your research and why you require this dataset</span>
+									<span className='gray700-13'>
+										Please briefly explain the purpose of your research, why you require this dataset and when you intend to begin the
+										project
+									</span>
 								</label>
 								<Field
 									as='textarea'

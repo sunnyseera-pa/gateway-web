@@ -1,12 +1,14 @@
 import { render, waitFor } from '@testing-library/react';
-import { act } from '@testing-library/react-hooks';
 import React from 'react';
 import SearchControls from '.';
 
 const mockOnSort = jest.fn();
 const mockOnChange = jest.fn();
 const mockOnSubmit = jest.fn();
-const mockOnReset = jest.fn();
+
+jest.mock('../Icon', () => {
+	return props => <button {...props}>Icon</button>;
+});
 
 const props = {
 	onSubmit: mockOnSubmit,
@@ -15,12 +17,13 @@ const props = {
 		onSort: mockOnSort,
 		value: 'relevance',
 		options: ['relevance', 'recentlyadded'],
+		direction: 'desc',
 	},
 	inputProps: {
-		onReset: mockOnReset,
 		onChange: mockOnChange,
 		value: 'dataset',
 	},
+	type: 'dataset',
 };
 
 let wrapper;
@@ -59,41 +62,101 @@ describe('Given the SearchControls component', () => {
 					await waitFor(() => expect(mockOnChange).toHaveBeenCalledWith('collection'));
 				});
 
-				describe('And the input is entered on', () => {
-					beforeAll(() => {
-						const input = wrapper.container.querySelector('input');
-
-						fireEvent.keyDown(input, { key: 'Enter' });
+				describe('And the input receives keyDown', () => {
+					beforeEach(() => {
+						jest.clearAllMocks();
 					});
 
 					it('Then calls onSubmit', async () => {
+						const input = wrapper.container.querySelector('input');
+
+						fireEvent.keyDown(input, { key: 'Enter' });
+
 						await waitFor(() =>
 							expect(mockOnSubmit.mock.calls[0][0]).toMatchObject({
 								search: 'collection',
 								sortBy: 'relevance',
+								sortDirection: 'desc',
+							})
+						);
+					});
+
+					it('Then does not call onSubmit', async () => {
+						const input = wrapper.container.querySelector('input');
+
+						fireEvent.keyDown(input, { key: '13' });
+
+						expect(mockOnSubmit).not.toHaveBeenCalled();
+					});
+				});
+
+				describe('And the sort is changed', () => {
+					beforeAll(() => {
+						jest.clearAllMocks();
+
+						const button = wrapper.container.querySelector('.ui-Dropdown button');
+
+						fireEvent.click(button);
+
+						const link = wrapper.container.querySelectorAll('a')[1];
+
+						fireEvent.click(link);
+					});
+
+					it('Then calls onSort', async () => {
+						await waitFor(() =>
+							expect(mockOnSort).toHaveBeenCalledWith({
+								value: 'recentlyadded',
+								direction: 'desc',
+							})
+						);
+					});
+
+					it('Then calls onSubmit', async () => {
+						await waitFor(() =>
+							expect(mockOnSubmit.mock.calls[0][0]).toEqual({
+								search: 'collection',
+								sortBy: 'recentlyadded',
+								sortDirection: 'desc',
+							})
+						);
+					});
+				});
+
+				describe('And the field is reset', () => {
+					beforeAll(() => {
+						jest.clearAllMocks();
+
+						const reset = wrapper.container.querySelector('[name="clear"]');
+
+						fireEvent.click(reset);
+					});
+
+					it('Then has the correct value', () => {
+						const input = wrapper.container.querySelector('input');
+
+						expect(input.value).toEqual('');
+					});
+
+					it('Then calls onSubmit', async () => {
+						await waitFor(() =>
+							expect(mockOnSubmit.mock.calls[0][0]).toEqual({
+								search: '',
+								sortBy: 'recentlyadded',
+								sortDirection: 'desc',
 							})
 						);
 					});
 				});
 			});
 
-			describe('And the sort is changed on', () => {
-				beforeAll(() => {
-					const button = wrapper.container.querySelector('.ui-Dropdown button');
+			describe('And it does not have sort props', () => {
+				it('Then should not show the sort', () => {
+					wrapper = render(<SearchControls {...props} sortProps={null} />, {
+						wrapper: Providers,
+					});
 
-					fireEvent.click(button);
-
-					const link = wrapper.container.querySelectorAll('a')[1];
-
-					fireEvent.click(link);
-				});
-
-				it('Then calls onSort', async () => {
-					await waitFor(() => expect(mockOnSort.mock.calls[0][0]).toEqual('recentlyadded'));
-				});
-
-				it('Then calls onSubmit', async () => {
-					await waitFor(() => expect(mockOnSubmit).toHaveBeenCalled());
+					expect(wrapper.container.querySelector('.ui-SortDropdown')).toBeFalsy();
 				});
 			});
 		});

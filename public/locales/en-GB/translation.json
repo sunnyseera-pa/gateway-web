@@ -69,7 +69,10 @@
 	"datasets": "Datasets",
 	"viewForm": "View form",
 	"search": {
-		"placeholder": "Search within {{type}}"
+		"placeholder": "Search within {{type}}",
+		"results": {
+			"notFound": "Could not find any {{type}} matching {{search}}"
+		}
 	},
 	"tabs": {
 		"counts": {
@@ -87,11 +90,12 @@
 			"metadataQuality": "Sort by metadata quality",
 			"resources": "Sort by related resources",
 			"latest": "Sort by latest",
-			"recentActivity": "Sort by recently added",
+			"recentActivity": "Sort by recent activity",
 			"recentlyadded": "Sort by recently added",
-			"recentlyPublished": "Sort by recently added",
+			"recentlyPublished": "Sort by recently published",
 			"sortbyyear": "Sort by year",
-			"relevance": "Sort by match to search terms"
+			"relevance": "Sort by match to search terms",
+			"alphabetic": "Sort alphabetically"
 		},
 		"options": {
 			"popularity": "Number of views (highest to lowest)",
@@ -99,11 +103,32 @@
 			"metadataQuality": "Metadata quality (platinum to bronze)",
 			"resources": "Related resources (most first)",
 			"latest": "Latest (recently updated first)",
-			"recentActivity": "Latest (recently updated first)",
+			"recentActivity": "Recent activity (newest first)",
 			"recentlyadded": "Recently added to collection (newest first)",
-			"recentlyPublished": "Recently added to collection (newest first)",
+			"recentlyPublished": "Recently published (newest first)",
 			"sortbyyear": "Year (latest first)",
 			"relevance": "Match to search terms (closest first)"
+		},
+		"optionsSortable": {
+			"popularity": "Number of views",
+			"mostViewed": "Most viewed",
+			"metadata": "Metadata quality",
+			"metadataQuality": "Metadata quality",
+			"resources": "Related resources",
+			"latest": "Latest",
+			"recentActivity": "Recent activity",
+			"recentlyadded": "Recently added",
+			"recentlyPublished": "Recently published",
+			"sortbyyear": "Year",
+			"relevance": "Match to search terms",
+			"alphabetic": "Alphabetically"
 		}
+	},
+	"notifications": {
+		"teamEmailText": "Send email notifications to team email address"
+	},
+	"searchResultsInfo": {
+		"withTerm": "Showing {{count}} results for '{{searchTerm}}'",
+		"withOutTerm": "Showing {{count}} results"
 	}
 }

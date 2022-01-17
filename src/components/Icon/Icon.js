@@ -56,9 +56,9 @@ const svgFragments = {
 	tick: '6 6 12 12',
 };
 
-const Icon = ({ name, size, color, fill, stroke, className, ml, mr, mb, mt, inline, ...outerProps }) => {
+const Icon = ({ name, size, color, fill, stroke, className, ml, mr, mb, mt, width, minWidth, maxWidth, inline, ...outerProps }) => {
 	const [svg, setSvg] = useState();
-	const commonStyles = useCommonStyles({ mt, mb, ml, mr });
+	const commonStyles = useCommonStyles({ mt, mb, ml, mr, width, minWidth, maxWidth });
 
 	useEffect(() => {
 		const importIcon = () => {

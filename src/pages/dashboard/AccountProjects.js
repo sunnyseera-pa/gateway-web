@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import moment from 'moment';
 import { Row, Col, Button, Tabs, Tab, DropdownButton, Dropdown } from 'react-bootstrap';
-import NotFound from '../commonComponents/NotFound';
+import MessageNotFound from '../commonComponents/MessageNotFound';
 import Loading from '../commonComponents/Loading';
 import ActionModal from '../commonComponents/ActionModal/ActionModal';
 import './Dashboard.scss';
@@ -31,7 +31,7 @@ export const AccountProjects = props => {
 	const actionModalConfig = {
 		title: 'Reject this Project?',
 	};
-	const maxResult = 40;
+	const maxResults = 40;
 
 	useEffect(() => {
 		doProjectsCall('active', true, 0, true);
@@ -67,7 +67,7 @@ export const AccountProjects = props => {
 		if (typeof index === 'undefined') {
 			apiUrl = baseURL + `/api/v1/projects/getList?status=${key}`;
 		} else {
-			apiUrl = baseURL + `/api/v1/projects/getList?status=${key}&offset=${index}&limit=${maxResult}`;
+			apiUrl = baseURL + `/api/v1/projects/getList?status=${key}&offset=${index}&limit=${maxResults}`;
 		}
 
 		axios.get(apiUrl).then(res => {
@@ -97,13 +97,13 @@ export const AccountProjects = props => {
 				if (shouldChangeTab()) {
 					setKey('active');
 					doProjectsCall('active', true);
-				} else if (!shouldChangeTab() && count - (index + maxResult) <= 0 && count % maxResult === 1) {
+				} else if (!shouldChangeTab() && count - (index + maxResults) <= 0 && count % maxResults === 1) {
 					if (key === 'pending') {
-						setPendingIndex(index - maxResult);
+						setPendingIndex(index - maxResults);
 					} else if (key === 'archive') {
-						setArchiveIndex(index - maxResult);
+						setArchiveIndex(index - maxResults);
 					}
-					doProjectsCall(key, true, index - maxResult);
+					doProjectsCall(key, true, index - maxResults);
 				} else if (!shouldChangeTab()) {
 					doProjectsCall(key, true, index);
 				}
@@ -121,13 +121,13 @@ export const AccountProjects = props => {
 				if (shouldChangeTab()) {
 					setKey('active');
 					doProjectsCall('active', true);
-				} else if (!shouldChangeTab() && count - (index + maxResult) <= 0 && count % maxResult === 1) {
+				} else if (!shouldChangeTab() && count - (index + maxResults) <= 0 && count % maxResults === 1) {
 					if (key === 'pending') {
-						setPendingIndex(index - maxResult);
+						setPendingIndex(index - maxResults);
 					} else if (key === 'archive') {
-						setArchiveIndex(index - maxResult);
+						setArchiveIndex(index - maxResults);
 					}
-					doProjectsCall(key, true, index - maxResult);
+					doProjectsCall(key, true, index - maxResults);
 				} else if (!shouldChangeTab()) {
 					doProjectsCall(key, true, index);
 				}
@@ -142,9 +142,9 @@ export const AccountProjects = props => {
 			})
 			.then(res => {
 				setKey('active');
-				if (activeCount - (activeIndex + maxResult) <= 0 && activeCount % maxResult === 1) {
-					setActiveIndex(activeIndex - maxResult);
-					doProjectsCall(key, true, activeIndex - maxResult);
+				if (activeCount - (activeIndex + maxResults) <= 0 && activeCount % maxResults === 1) {
+					setActiveIndex(activeIndex - maxResults);
+					doProjectsCall(key, true, activeIndex - maxResults);
 				} else {
 					doProjectsCall('active', true, activeIndex);
 				}
@@ -236,7 +236,7 @@ export const AccountProjects = props => {
 
 										{activeCount <= 0 ? (
 											<Row className='margin-right-15'>
-												<NotFound word='projects' />
+												<MessageNotFound word='projects' />
 											</Row>
 										) : (
 											projectsList.map(project => {
@@ -296,7 +296,7 @@ export const AccountProjects = props => {
 
 										{reviewCount <= 0 ? (
 											<Row className='margin-right-15'>
-												<NotFound word='projects' />
+												<MessageNotFound word='projects' />
 											</Row>
 										) : (
 											projectsList.map(project => {
@@ -378,7 +378,7 @@ export const AccountProjects = props => {
 
 										{rejectedCount <= 0 ? (
 											<Row className='margin-right-15'>
-												<NotFound word='projects' />
+												<MessageNotFound word='projects' />
 											</Row>
 										) : (
 											projectsList.map(project => {
@@ -431,7 +431,7 @@ export const AccountProjects = props => {
 
 										{archiveCount <= 0 ? (
 											<Row className='margin-right-15'>
-												<NotFound word='projects' />
+												<MessageNotFound word='projects' />
 											</Row>
 										) : (
 											projectsList.map(project => {
@@ -508,47 +508,47 @@ export const AccountProjects = props => {
 
 				{!isResultsLoading && (
 					<div className='text-center entityDashboardPagination'>
-						{key === 'active' && activeCount > maxResult ? (
+						{key === 'active' && activeCount > maxResults ? (
 							<PaginationHelper
 								doEntitiesCall={doProjectsCall}
 								entityCount={activeCount}
 								statusKey={key}
 								paginationIndex={activeIndex}
 								setPaginationIndex={setActiveIndex}
-								maxResult={maxResult}></PaginationHelper>
+								maxResults={maxResults}></PaginationHelper>
 						) : (
 							''
 						)}
-						{key === 'pending' && reviewCount > maxResult ? (
+						{key === 'pending' && reviewCount > maxResults ? (
 							<PaginationHelper
 								doEntitiesCall={doProjectsCall}
 								entityCount={reviewCount}
 								statusKey={key}
 								paginationIndex={pendingIndex}
 								setPaginationIndex={setPendingIndex}
-								maxResult={maxResult}></PaginationHelper>
+								maxResults={maxResults}></PaginationHelper>
 						) : (
 							''
 						)}
-						{key === 'rejected' && rejectedCount > maxResult ? (
+						{key === 'rejected' && rejectedCount > maxResults ? (
 							<PaginationHelper
 								doEntitiesCall={doProjectsCall}
 								entityCount={rejectedCount}
 								statusKey={key}
 								paginationIndex={rejectedIndex}
 								setPaginationIndex={setRejectedIndex}
-								maxResult={maxResult}></PaginationHelper>
+								maxResults={maxResults}></PaginationHelper>
 						) : (
 							''
 						)}
-						{key === 'archive' && archiveCount > maxResult ? (
+						{key === 'archive' && archiveCount > maxResults ? (
 							<PaginationHelper
 								doEntitiesCall={doProjectsCall}
 								entityCount={archiveCount}
 								statusKey={key}
 								paginationIndex={archiveIndex}
 								setPaginationIndex={setArchiveIndex}
-								maxResult={maxResult}></PaginationHelper>
+								maxResults={maxResults}></PaginationHelper>
 						) : (
 							''
 						)}

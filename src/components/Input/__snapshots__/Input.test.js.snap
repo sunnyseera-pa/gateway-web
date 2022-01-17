@@ -3,7 +3,7 @@
 exports[`Given the Input component When it is rendered Then matches the previous snapshot 1`] = `
 <div>
   <div
-    class="ui-Input css-1ctemxb css-p0y5cd-Input input-group"
+    class="ui-Input css-1sivg29 css-107dhd5-Input input-group"
   >
     <div
       class="css-j8o1xl-Input input-group-prepend"
@@ -14,7 +14,7 @@ exports[`Given the Input component When it is rendered Then matches the previous
         Prepend text
       </span>
       <span
-        class="ui-Icon css-1ctemxb css-xnik4m-Icon"
+        class="ui-Icon css-1sivg29 css-1cj4fgi-Icon"
       >
         <svg
           class=""
@@ -40,7 +40,7 @@ exports[`Given the Input component When it is rendered Then matches the previous
       class="css-41op7f-Input input-group-append"
     >
       <span
-        class="ui-Icon css-1ctemxb css-xnik4m-Icon"
+        class="ui-Icon css-1sivg29 css-1cj4fgi-Icon"
       >
         <svg
           class=""

@@ -4,7 +4,7 @@ import { apiURL } from '../../configs/url.config';
 export const mockGetPublisher = {
 	success: true,
 	data: {
-		counts: {
+		publisherTotals: {
 			inReview: 19,
 		},
 		results: {
@@ -699,4 +699,8 @@ export const mswGetPublisher = rest.get(`${apiURL}/dataset-onboarding/publisher/
 	return res(ctx.status(200), ctx.json(mockGetPublisher));
 });
 
-export default [mswGetPublisher];
+export const mswGetPublisher404 = rest.get(`${apiURL}/dataset-onboarding/publisher/unknown`, (req, res, ctx) => {
+	return res(ctx.status(404));
+});
+
+export default [mswGetPublisher, mswGetPublisher404];

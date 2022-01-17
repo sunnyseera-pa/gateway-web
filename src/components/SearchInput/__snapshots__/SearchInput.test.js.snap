@@ -3,7 +3,7 @@
 exports[`Given the SearchInput component When it is rendered Then matches the previous snapshot 1`] = `
 <div>
   <div
-    class="ui-Input ui-SearchInput css-1ctemxb css-p0y5cd-Input input-group"
+    class="ui-Input ui-SearchInput css-1sivg29 css-107dhd5-Input input-group"
   >
     <div
       class="css-j8o1xl-Input input-group-prepend"
@@ -11,7 +11,6 @@ exports[`Given the SearchInput component When it is rendered Then matches the pr
       <button
         fill="green700"
         name="search"
-        role="button"
       >
         Icon
       </button>

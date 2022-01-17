@@ -1,23 +1,37 @@
-import React from 'react';
-import { render, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
+import { act, render, waitFor } from '@testing-library/react';
+import React from 'react';
+import * as SearchControls from '../../../../components/SearchControls';
+import { mockGetPublisher } from '../../../../services/dataset-onboarding/mockMsw';
+import * as DatasetCard from '../../../commonComponents/DatasetCard';
 import * as SearchResults from '../../../commonComponents/SearchResults';
 import AccountDatasetsContent from './AccountDatasetsContent';
-import { mockGetPublisher } from '../../../../services/dataset-onboarding/mockMsw';
-import * as SearchControls from '../../../../components/SearchControls';
-import * as DatasetCard from '../../../commonComponents/DatasetCard';
 
-const mockSubmit = jest.fn();
+const mockOnSubmit = jest.fn();
+const mockHistoryPush = jest.fn();
 
 const searchResultsSpy = jest.spyOn(SearchResults, 'default');
 const searchControlsSpy = jest.spyOn(SearchControls, 'default');
 const datasetCardSpy = jest.spyOn(DatasetCard, 'default');
 
+jest.mock('../../../../components/Icon', () => ({ onClick }) => (
+	<span onClick={onClick} className='icon-mock'>
+		Icon
+	</span>
+));
+
 jest.mock('../../../commonComponents/relatedObject/RelatedObject', () => <div />);
+
+jest.mock('react-router', () => ({
+	...jest.requireActual('react-router'),
+	useHistory: () => ({
+		push: mockHistoryPush,
+	}),
+}));
 
 const props = {
 	data: [],
-	onSubmit: mockSubmit,
+	onSubmit: mockOnSubmit,
 	isLoading: true,
 	isFetched: false,
 	status: 'inReview',
@@ -43,51 +57,146 @@ describe('Given the AccountDatasetsContent component', () => {
 		});
 
 		it('The should not call SearchControls with the correct arguments', () => {
-			expect(searchControlsSpy.mock.calls).toHaveLength(0);
+			expect(searchControlsSpy).not.toHaveBeenCalled();
 		});
 
 		describe('And has data', () => {
 			beforeAll(() => {
-				searchResultsSpy.mockClear();
+				jest.clearAllMocks();
 
 				wrapper = render(
-					<AccountDatasetsContent {...props} data={mockGetPublisher.data.listOfDatasets} isFetched={true} isLoading={false} />,
+					<AccountDatasetsContent {...props} data={mockGetPublisher.data.results.listOfDatasets} isFetched={true} isLoading={false} />,
 					{
 						wrapper: Providers,
 					}
 				);
 			});
 
+			it('Then matches the previous snapshot', () => {
+				expect(wrapper.container).toMatchSnapshot();
+			});
+
+			it('Then handles input change', async () => {
+				const input = wrapper.container.querySelector('input[name="search"]');
+
+				await fireEvent.change(input, {
+					target: {
+						value: 'dataset',
+					},
+				});
+
+				await waitFor(() => expect(input.value).toEqual('dataset'));
+			});
+
 			it('The should call SearchResults with the correct arguments', () => {
-				expect(searchResultsSpy.mock.calls[0][0]).toMatchObject({
+				expect(searchResultsSpy.mock.calls[0][0]).toEqual({
 					count: 19,
-					data: mockGetPublisher.data.listOfDatasets,
+					data: mockGetPublisher.data.results.listOfDatasets,
 					isLoading: false,
-					results: expect.any(Function),
 					search: undefined,
+					results: expect.any(Function),
 					type: 'dataset',
 				});
 			});
 
-			it('The should call SearchControls with the correct arguments', () => {
-				expect(searchControlsSpy.mock.calls[0][0]).toEqual({
-					onSubmit: expect.any(Function),
-					inputProps: { onChange: expect.any(Function), onReset: expect.any(Function), onSubmit: expect.any(Function) },
-					mt: 5,
-					sortProps: { defaultValue: 'metadataQuality', options: ['recentActivity', 'recentlyPublished', 'metadataQuality', 'popularity'] },
-					type: 'dataset.inReview',
+			it('The should call Datasetcard with the correct arguments', () => {
+				const {
+					_id: id,
+					name: title,
+					datasetv2: {
+						summary: {
+							publisher: { name: publisher },
+						},
+					},
+					datasetVersion: version,
+					activeflag: datasetStatus,
+					timestamps: timeStamps,
+					percentageCompleted: completion,
+					listOfVersions,
+				} = mockGetPublisher.data.results.listOfDatasets[0];
+
+				expect(datasetCardSpy.mock.calls[0][0]).toEqual({
+					id,
+					title,
+					publisher,
+					version,
+					datasetStatus,
+					timeStamps,
+					completion,
+					isDraft: true,
+					listOfVersions,
 				});
 			});
 
-			describe('And status is archive', () => {
+			describe('And status is inReview', () => {
 				beforeAll(() => {
+					jest.clearAllMocks();
+
 					wrapper = render(
 						<AccountDatasetsContent
 							{...props}
-							data={mockGetPublisher.data.listOfDatasets}
+							data={mockGetPublisher.data.results.listOfDatasets}
 							isFetched={true}
 							isLoading={false}
-							status='archive'
+							status='inReview'
+						/>,
+						{
+							wrapper: Providers,
+						}
+					);
+				});
+
+				it('Then should change history onClick', async () => {
+					const sla = wrapper.container.querySelectorAll('.sla-icons .icon-mock')[0];
+
+					await fireEvent.click(sla, '1234');
+
+					await waitFor(() => expect(mockHistoryPush).toHaveBeenCalled());
+				});
+
+				it('Then should call Datasetcard with the correct arguments', () => {
+					const {
+						_id: id,
+						name: title,
+						datasetv2: {
+							summary: {
+								publisher: { name: publisher },
+							},
+						},
+						datasetVersion: version,
+						activeflag: datasetStatus,
+						timestamps: timeStamps,
+						percentageCompleted: completion,
+						listOfVersions,
+					} = mockGetPublisher.data.results.listOfDatasets[1];
+
+					expect(datasetCardSpy.mock.calls[1][0]).toEqual({
+						id,
+						title,
+						publisher,
+						version,
+						datasetStatus,
+						timeStamps,
+						completion,
+						isDraft: true,
+						listOfVersions,
+						path: '/account/datasets/0a048419-0796-46fb-ad7d-91e650a6c742',
+						slaProps: expect.any(Object),
+					});
+				});
+			});
+
+			describe('And status is rejected', () => {
+				beforeAll(() => {
+					jest.clearAllMocks();
+
+					wrapper = render(
+						<AccountDatasetsContent
+							{...props}
+							data={mockGetPublisher.data.results.listOfDatasets}
+							isFetched={true}
+							isLoading={false}
+							status='rejected'
 						/>,
 						{
 							wrapper: Providers,
@@ -109,9 +218,9 @@ describe('Given the AccountDatasetsContent component', () => {
 						timestamps: timeStamps,
 						percentageCompleted: completion,
 						listOfVersions,
-					} = mockGetPublisher.data.listOfDatasets[0];
+					} = mockGetPublisher.data.results.listOfDatasets[2];
 
-					expect(datasetCardSpy.mock.calls[0][0]).toEqual({
+					expect(datasetCardSpy.mock.calls[2][0]).toEqual({
 						id,
 						title,
 						publisher,
@@ -121,59 +230,33 @@ describe('Given the AccountDatasetsContent component', () => {
 						completion,
 						isDraft: true,
 						listOfVersions,
-						path: '/account/datasets/adc28a1e-f7e2-41d0-92e6-b9e4c11f9f1a',
-						slaProps: expect.any(Object),
+						rejectionAuthor: 'Callum Reekie',
+						rejectionText: 'SDg',
 					});
 				});
+			});
 
-				describe('And status is rejected', () => {
-					beforeAll(() => {
-						datasetCardSpy.mockClear();
+			describe('And results are sorted', () => {
+				beforeAll(() => {
+					const input = wrapper.container.querySelector('button');
 
-						wrapper = render(
-							<AccountDatasetsContent
-								{...props}
-								data={mockGetPublisher.data.listOfDatasets}
-								isFetched={true}
-								isLoading={false}
-								status='rejected'
-							/>,
-							{
-								wrapper: Providers,
-							}
-						);
-					});
+					fireEvent.click(input);
+				});
 
-					it('The should call Datasetcard with the correct arguments', () => {
-						const {
-							_id: id,
-							name: title,
-							datasetv2: {
-								summary: {
-									publisher: { name: publisher },
-								},
-							},
-							datasetVersion: version,
-							activeflag: datasetStatus,
-							timestamps: timeStamps,
-							percentageCompleted: completion,
-							listOfVersions,
-						} = mockGetPublisher.data.listOfDatasets[0];
+				it('Then submits with the correct values', async () => {
+					const link = wrapper.container.querySelectorAll('a')[1];
 
-						expect(datasetCardSpy.mock.calls[0][0]).toEqual({
-							id,
-							title,
-							publisher,
-							version,
-							datasetStatus,
-							timeStamps,
-							completion,
-							isDraft: true,
-							listOfVersions,
-							rejectionAuthor: undefined,
-							rejectionText: undefined,
-						});
-					});
+					fireEvent.click(link);
+
+					await waitFor(() => expect(mockOnSubmit.mock.calls[0][0]).toEqual({ search: '', sortBy: 'latest', sortDirection: 'desc' }));
+				});
+
+				it('Then submits with the correct sort direction', async () => {
+					const link = wrapper.container.querySelector('.btn-link');
+
+					fireEvent.click(link);
+
+					await waitFor(() => expect(mockOnSubmit.mock.calls[1][0]).toEqual({ search: '', sortBy: 'latest', sortDirection: 'asc' }));
 				});
 			});
 		});

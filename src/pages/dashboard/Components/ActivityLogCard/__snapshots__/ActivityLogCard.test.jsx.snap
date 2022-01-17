@@ -46,7 +46,7 @@ exports[`Given the ActivityLogCard component When it is rendered Then matches th
             </div>
           </div>
           <ul
-            class="css-1rag44v-Timeline"
+            class="ui-Timeline css-1sivg29 css-1rag44v-Timeline"
           >
             <li
               class="css-f5erw7"
@@ -57,13 +57,7 @@ exports[`Given the ActivityLogCard component When it is rendered Then matches th
                 <div
                   class="timeline-icon css-1vyp46c"
                 >
-                  <div>
-                    <img
-                      alt="Icon"
-                      data-testid="0-datasetVersionApproved"
-                      src="[object Object]"
-                    />
-                  </div>
+                  <div />
                 </div>
                 <div
                   class="css-1pfaqp5"
@@ -82,11 +76,12 @@ exports[`Given the ActivityLogCard component When it is rendered Then matches th
                 <div>
                   <div
                     class="mb-3"
+                    data-testid="event-status-text-0"
                   >
                     datasetVersionApproved
                   </div>
                   <blockquote
-                    class="css-1ta6g32-BlockQuote"
+                    class="ui-Blockquote css-1sivg29 css-1ta6g32-BlockQuote"
                   >
                     <h6
                       class="mb-3 gray800"
@@ -111,13 +106,7 @@ exports[`Given the ActivityLogCard component When it is rendered Then matches th
                 <div
                   class="timeline-icon css-1vyp46c"
                 >
-                  <div>
-                    <img
-                      alt="Icon"
-                      data-testid="1-datasetUpdatesSubmitted"
-                      src="[object Object]"
-                    />
-                  </div>
+                  <div />
                 </div>
                 <div
                   class="css-1pfaqp5"
@@ -136,6 +125,7 @@ exports[`Given the ActivityLogCard component When it is rendered Then matches th
                 <div>
                   <div
                     class="mb-3"
+                    data-testid="event-status-text-1"
                   >
                     datasetUpdatesSubmitted
                   </div>
@@ -143,7 +133,7 @@ exports[`Given the ActivityLogCard component When it is rendered Then matches th
                     data-testid="event-detailed-text-1-0"
                   >
                     <blockquote
-                      class="css-1ta6g32-BlockQuote"
+                      class="ui-Blockquote css-1sivg29 css-1ta6g32-BlockQuote"
                     >
                       <h6
                         class="mb-3 gray800"
@@ -151,7 +141,7 @@ exports[`Given the ActivityLogCard component When it is rendered Then matches th
                         Summary
                       </h6>
                       <ul
-                        class="css-1jupbku-ListInfo"
+                        class="ui-ListInfo css-1sivg29 css-1jupbku-ListInfo"
                       >
                         <li
                           class="css-oc8kcp"
@@ -196,7 +186,7 @@ exports[`Given the ActivityLogCard component When it is rendered Then matches th
                     data-testid="event-detailed-text-1-1"
                   >
                     <blockquote
-                      class="css-1ta6g32-BlockQuote"
+                      class="ui-Blockquote css-1sivg29 css-1ta6g32-BlockQuote"
                     >
                       <h6
                         class="mb-3 gray800"
@@ -204,7 +194,7 @@ exports[`Given the ActivityLogCard component When it is rendered Then matches th
                         Provenance | Temporal
                       </h6>
                       <ul
-                        class="css-1jupbku-ListInfo"
+                        class="ui-ListInfo css-1sivg29 css-1jupbku-ListInfo"
                       >
                         <li
                           class="css-oc8kcp"
@@ -255,13 +245,7 @@ exports[`Given the ActivityLogCard component When it is rendered Then matches th
                 <div
                   class="timeline-icon css-1vyp46c"
                 >
-                  <div>
-                    <img
-                      alt="Icon"
-                      data-testid="2-newDatasetVersionSubmitted"
-                      src="[object Object]"
-                    />
-                  </div>
+                  <div />
                 </div>
                 <div
                   class="css-1pfaqp5"
@@ -280,6 +264,7 @@ exports[`Given the ActivityLogCard component When it is rendered Then matches th
                 <div>
                   <div
                     class="mb-3"
+                    data-testid="event-status-text-2"
                   >
                     newDatasetVersionSubmitted
                   </div>

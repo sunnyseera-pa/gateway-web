@@ -87,6 +87,15 @@ global.document.createRange = () => ({
 	},
 });
 
+// global.console = {
+// 	log: console.log,
+// 	error: jest.fn(),
+// 	warn: jest.fn(),
+// 	info: console.info,
+// 	debug: console.debug,
+// };
+
+
 Object.defineProperty(window, 'location', {
 	writable: true,
 	value: { assign: jest.fn() },

@@ -25,6 +25,8 @@ const Input = ({
 	mb,
 	mt,
 	width,
+	minWidth,
+	maxWidth,
 	variant,
 	...outerProps
 }) => {
@@ -33,7 +35,7 @@ const Input = ({
 
 	const domPrependChanged = useDOMChanged(prependRef);
 	const domAppendChanged = useDOMChanged(appendRef);
-	const commonStyles = useCommonStyles({ mt, mb, ml, mr, width });
+	const commonStyles = useCommonStyles({ mt, mb, ml, mr, width, width, minWidth, maxWidth });
 
 	const handleDebounced = useMemo(() => debounce(onDebounce, debounceDelay), [onDebounce]);
 

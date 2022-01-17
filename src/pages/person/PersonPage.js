@@ -6,10 +6,9 @@ import { Container, Row, Col, Tabs, Tab } from 'react-bootstrap';
 import SearchBar from '../commonComponents/searchBar/SearchBar';
 import DataSet from '../commonComponents/DataSet';
 import Tool from '../commonComponents/Tool';
-import NotFound from '../commonComponents/NotFound';
+import MessageNotFound from '../commonComponents/MessageNotFound';
 import ReviewsTitle from '../commonComponents/ReviewTitle';
 import Loading from '../commonComponents/Loading';
-import Project from '../commonComponents/Project';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
 import UserMessages from '../commonComponents/userMessages/UserMessages';
 import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
@@ -90,7 +89,6 @@ const PersonDetail = props => {
 	}
 
 	let tools = [];
-	let projects = [];
 	let reviews = [];
 
 	if (data.tools.length > 0) {
@@ -100,11 +98,6 @@ const PersonDetail = props => {
 				(object.type === 'tool' && object.activeflag === 'review' && object.authors.includes(userState[0].id))
 			) {
 				tools.push(object);
-			} else if (
-				(object.type === 'project' && object.activeflag === 'active') ||
-				(object.type === 'project' && object.activeflag === 'review' && object.authors.includes(userState[0].id))
-			) {
-				projects.push(object);
 			}
 		});
 	}
@@ -137,7 +130,7 @@ const PersonDetail = props => {
 								<Tabs className='tabsBackground gray700-13'>
 									<Tab eventKey='Tools' title={'Tools (' + tools.length + ')'}>
 										{tools.length <= 0 ? (
-											<NotFound word='tools' />
+											<MessageNotFound word='tools' />
 										) : (
 											tools.map(tool => {
 												return <Tool id={tool.id} activeLink={true} />;
@@ -146,7 +139,7 @@ const PersonDetail = props => {
 									</Tab>
 									<Tab eventKey='Reviews' title={'Reviews (' + reviews.length + ')'}>
 										{reviews.length <= 0 ? (
-											<NotFound word='reviews' />
+											<MessageNotFound word='reviews' />
 										) : (
 											reviews.map(review => {
 												return <ReviewsTitle id={review.reviewID} />;
@@ -155,18 +148,9 @@ const PersonDetail = props => {
 									</Tab>
 									<Tab eventKey='Data sets' title={'Data sets (' + data.datasetids.length + ')'}>
 										{data.datasetids.length <= 0 ? (
-											<NotFound word='data sets' />
+											<MessageNotFound word='data sets' />
 										) : (
 											data.datasetids.map(id => <DataSet id={id} activeLink={true} />)
-										)}
-									</Tab>
-									<Tab eventKey='Projects' title={'Projects (' + projects.length + ')'}>
-										{projects.length <= 0 ? (
-											<NotFound word='projects' />
-										) : (
-											projects.map(project => {
-												return <Project id={project.id} activeLink={true} />;
-											})
 										)}
 									</Tab>
 								</Tabs>

@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from 'react-query';
-import { apiURL } from '../configs/url.config';
+import { apiURL } from '../../configs/url.config';
 import { getRequest, postRequest } from '../utils/requests';
 
 const getLogout = options => {

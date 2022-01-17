@@ -1,7 +1,11 @@
 import { renderHook, act } from '@testing-library/react-hooks';
 import serviceDatasetOnboarding from '../../services/dataset-onboarding/dataset-onboarding';
+import { mockGetPublisher } from '../../services/dataset-onboarding/mockMsw';
 import { server } from '../../services/mockServer';
 import useSearch from './useSearch';
+
+const mockOnSuccess = jest.fn();
+const mockOnError = jest.fn();
 
 let wrapper;
 
@@ -14,6 +18,8 @@ const searchOptions = {
 
 		return 0;
 	},
+	onSuccess: mockOnSuccess,
+	onError: mockOnError,
 };
 
 describe('Given the useGetPublisher component', () => {
@@ -56,7 +62,7 @@ describe('Given the useGetPublisher component', () => {
 				act(() => {
 					wrapper.result.current.getResults(
 						{
-							maxResults: 18,
+							maxResults: 10,
 							status: 'inReview',
 							search: 'dataset',
 						},
@@ -85,6 +91,15 @@ describe('Given the useGetPublisher component', () => {
 				const { waitFor } = wrapper;
 
 				await waitFor(() => expect(wrapper.result.current.hasNext()).toBe(true));
+			});
+
+			it('Then calls onSuccess', () => {
+				expect(mockOnSuccess).toHaveBeenCalledWith(mockGetPublisher, {
+					maxResults: 10,
+					page: 1,
+					status: 'inReview',
+					search: 'dataset',
+				});
 			});
 
 			describe('And next is clicked', () => {
@@ -126,6 +141,27 @@ describe('Given the useGetPublisher component', () => {
 					});
 				});
 
+				describe('And there is an error', () => {
+					it('Then calls onError', async () => {
+						wrapper = renderHook(() => useSearch(serviceDatasetOnboarding.useGetPublisher('unknown', { enabled: false }), searchOptions), {
+							wrapper: Providers,
+						});
+
+						act(() => {
+							wrapper.result.current.getResults(
+								{
+									maxResults: 10,
+									status: 'inReview',
+									search: 'dataset',
+								},
+								'inReview'
+							);
+						});
+
+						await wrapper.waitFor(() => expect(mockOnError).toHaveBeenCalled());
+					});
+				});
+
 				describe('And getCachedResults is called', () => {
 					beforeAll(async () => {
 						act(() => {
@@ -143,7 +179,7 @@ describe('Given the useGetPublisher component', () => {
 					});
 
 					it('Then calls with cached results', async () => {
-						expect(wrapper.result.current.params).toEqual({ maxResults: 18, page: 1, search: 'dataset', status: 'inReview' });
+						expect(wrapper.result.current.params).toEqual({ maxResults: 10, page: 1, status: 'inReview' });
 					});
 				});
 			});

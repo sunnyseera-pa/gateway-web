@@ -1,13 +1,18 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router';
+import pluralize from 'pluralize';
 import DatasetCard from '../../../commonComponents/DatasetCard';
 import SearchResults from '../../../commonComponents/SearchResults';
 import Icon from '../../../../components/Icon';
 import SearchControls from '../../../../components/SearchControls';
 import '../../Dashboard.scss';
+import MessageNotFound from '../../../commonComponents/MessageNotFound';
 
-const AccountDatasetsContent = ({ data = [], onSubmit, isLoading, isFetched, status, params, team }) => {
+const options = ['alphabetic', 'latest', 'recentlyadded', 'metadata', 'popularity'];
+const inReviewOptions = ['alphabetic', 'latest', 'recentlyadded', 'metadata'];
+
+const AccountDatasetsContent = ({ data = [], onSubmit, isLoading, isFetched, status, params, team, count }) => {
 	const [searchValue, setSearchValue] = useState();
 	const history = useHistory();
 
@@ -48,7 +53,7 @@ const AccountDatasetsContent = ({ data = [], onSubmit, isLoading, isFetched, sta
 		return datasetCardProps;
 	};
 
-	const { search, sortBy } = params;
+	const { search, sortBy, sortDirection, maxResults } = params;
 
 	return (
 		<>
@@ -58,22 +63,24 @@ const AccountDatasetsContent = ({ data = [], onSubmit, isLoading, isFetched, sta
 					mt={3}
 					onSubmit={onSubmit}
 					inputProps={{
-						onReset: onSubmit,
 						onChange: handleChange,
 						mt: 2,
 						value: search,
 					}}
 					sortProps={{
+						direction: sortDirection,
 						value: sortBy,
-						defaultValue: 'metadata',
-						options: ['latest', 'recentlyadded', 'metadata', 'popularity'],
+						options: status === 'inReview' ? inReviewOptions : options,
 						mt: 2,
+						allowDirection: true,
+						minWidth: '300px',
 					}}
 				/>
 			)}
 
 			<SearchResults
 				data={data}
+				errorMessage={({ type }) => <MessageNotFound word={pluralize(type)} />}
 				results={data =>
 					data.map(dataset => (
 						<DatasetCard
@@ -91,7 +98,8 @@ const AccountDatasetsContent = ({ data = [], onSubmit, isLoading, isFetched, sta
 						/>
 					))
 				}
-				count={data.length}
+				count={count}
+				maxResults={maxResults}
 				type='dataset'
 				isLoading={isLoading}
 				search={searchValue}
@@ -103,7 +111,8 @@ const AccountDatasetsContent = ({ data = [], onSubmit, isLoading, isFetched, sta
 AccountDatasetsContent.defaultProps = {
 	params: {
 		search: '',
-		sortBy: 'metadata',
+		sortBy: 'latest',
+		sortDirection: 'desc',
 	},
 };
 

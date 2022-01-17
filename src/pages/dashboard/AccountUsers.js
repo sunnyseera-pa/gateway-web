@@ -4,7 +4,7 @@ import moment from 'moment';
 
 import { Row, Col, Button, Modal, Tabs, Tab, DropdownButton, Dropdown } from 'react-bootstrap';
 
-import NotFound from '../commonComponents/NotFound';
+import MessageNotFound from '../commonComponents/MessageNotFound';
 import Loading from '../commonComponents/Loading';
 import './Dashboard.scss';
 import { LayoutContent } from '../../components/Layout';
@@ -119,7 +119,7 @@ class AccountUsers extends React.Component {
 
 										{userCount <= 0 ? (
 											<Row className='margin-right-15'>
-												<NotFound word='users' />
+												<MessageNotFound word='users' />
 											</Row>
 										) : (
 											data.map(dat => {

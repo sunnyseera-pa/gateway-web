@@ -1,7 +1,7 @@
 import React from 'react';
 import SortDropdown from '../../../../components/SortDropdown';
 
-const ProjectsSearchSort = ({ sort, onSort, search, ...outerProps }) => {
+const DataUsesSearchSort = ({ sort, onSort, search, ...outerProps }) => {
 	return (
 		<SortDropdown
 			onSort={onSort}
@@ -13,4 +13,4 @@ const ProjectsSearchSort = ({ sort, onSort, search, ...outerProps }) => {
 	);
 };
 
-export default ProjectsSearchSort;
+export default DataUsesSearchSort;

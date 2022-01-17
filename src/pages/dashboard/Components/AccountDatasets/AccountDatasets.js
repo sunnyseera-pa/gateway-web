@@ -6,13 +6,15 @@ import useSearch from '../../../../components/Search/useSearch';
 import { useAuth } from '../../../../context/AuthContext';
 import serviceDatasetOnboarding from '../../../../services/dataset-onboarding/dataset-onboarding';
 import utils from '../../../../utils/DataSetHelper.util';
+import googleAnalytics from '../../../../tracking';
 import '../../Dashboard.scss';
 import AccountDatasetsContent from './AccountDatasetsContent';
 import AccountDatasetsCreate from './AccountDatasetsCreate';
 import AccountDatasetsTabs from './AccountDatasetsTabs';
+import { MAXRESULTS } from '../../../collections/constants';
 
 const AccountDatasets = props => {
-	const [key, setKey] = useState();
+	const [key, setKey] = useState(props.alert ? props.alert.tab : '');
 	const [statusCounts, setStatusCounts] = useState({});
 	const { userState } = useAuth();
 	const [publisherID, setPublisherId] = useState();
@@ -21,10 +23,11 @@ const AccountDatasets = props => {
 
 	const searchOptions = useMemo(
 		() => ({
-			params: {
-				maxResults: 0,
+			initialParams: {
+				limit: MAXRESULTS,
 				search: '',
-				sortBy: 'metadata',
+				sortBy: 'latest',
+				sortDirection: 'desc',
 				page: 1,
 			},
 		}),
@@ -41,15 +44,22 @@ const AccountDatasets = props => {
 	};
 
 	const handleSubmit = React.useCallback(
-		({ search, sortBy }) => {
+		({ search, sortBy, sortDirection }) => {
 			getResults(
 				{
 					search,
 					sortBy,
+					sortDirection,
 					status: key,
 					page: 1,
 				},
 				key
+			);
+
+			googleAnalytics.recordEvent(
+				'Datasets',
+				`Searched in account datasets for ${search} ordered by ${sortBy} ${sortDirection}`,
+				'Account datasets search changed'
 			);
 		},
 		[key, publisherID]
@@ -57,7 +67,7 @@ const AccountDatasets = props => {
 
 	useEffect(() => {
 		setPublisherId(utils.getPublisherID(userState[0], team));
-		setKey(team === 'admin' ? 'inReview' : !_.isEmpty(props.alert.tab) || 'active');
+		setKey(team === 'admin' ? 'inReview' : props.alert.tab || 'active');
 	}, [team]);
 
 	useEffect(() => {
@@ -83,7 +93,7 @@ const AccountDatasets = props => {
 			);
 
 			setStatusCounts({
-				...data.data.data.counts,
+				...data.data.data.publisherTotals,
 				...reducedValues,
 				[key]: data.data.data.results.total,
 			});
@@ -91,7 +101,7 @@ const AccountDatasets = props => {
 	}, [data]);
 
 	const AccountDatasetsResults = useCallback(
-		({ isLoading, isFetched, datasets, params, team }) => (
+		({ isLoading, isFetched, datasets, params, team, count }) => (
 			<AccountDatasetsContent
 				isLoading={isLoading}
 				isFetched={isFetched}
@@ -100,6 +110,7 @@ const AccountDatasets = props => {
 				team={team}
 				params={params}
 				status={key}
+				count={count}
 			/>
 		),
 		[key]
@@ -118,6 +129,7 @@ const AccountDatasets = props => {
 					datasets={data && data.data.data.results.listOfDatasets}
 					params={params}
 					team={team}
+					count={statusCounts[key]}
 				/>
 			</LayoutContent>
 		</div>

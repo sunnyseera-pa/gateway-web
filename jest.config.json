@@ -15,8 +15,7 @@
 		"mockMsw.js",
 		"mockServer.js",
 		".constants.js",
-		".propTypes.js",
-		"SVGIcon.js"
+		".propTypes.js"
 	],
 	"collectCoverageFrom": ["src/**/*.{js,jsx}"]
 }
