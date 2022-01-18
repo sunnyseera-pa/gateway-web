@@ -1,22 +1,22 @@
 import _ from 'lodash';
-import React, { Suspense, useCallback, useState, useEffect } from 'react';
+import React, { Suspense, useCallback, useEffect, useState } from 'react';
 import { Button } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { NotificationManager } from 'react-notifications';
 import { Redirect, useHistory, useParams } from 'react-router';
+import { LayoutContent } from '../../../../components/Layout';
 import { useAuth } from '../../../../context/AuthContext';
 import serviceActivityLog from '../../../../services/activitylog/activitylog';
 import serviceDatasetOnboarding from '../../../../services/dataset-onboarding/dataset-onboarding';
 import { getTeam } from '../../../../utils/auth';
 import { default as DataSetHelper, default as utils } from '../../../../utils/DataSetHelper.util';
 import ActionBar from '../../../commonComponents/actionbar/ActionBar';
+import ActionBarMenu from '../../../commonComponents/ActionBarMenu/ActionBarMenu';
 import DatasetCard from '../../../commonComponents/DatasetCard';
 import Loading from '../../../commonComponents/Loading';
-import ActionBarMenu from '../../../commonComponents/ActionBarMenu/ActionBarMenu';
-import AccountContent from '../AccountContent';
+import ActivityLogCard from '../ActivityLogCard';
 import AccountDatasetApproveModal from './AccountDatasetApproveModal';
 import AccountDatasetRejectModal from './AccountDatasetRejectModal';
-import ActivityLogCard from '../ActivityLogCard';
 
 const AccountDataset = props => {
 	const { t } = useTranslation();
@@ -35,12 +35,14 @@ const AccountDataset = props => {
 	});
 
 	const dataActivityLog = serviceActivityLog.usePostActivityLog();
-	const publisherId = utils.getPublisherID(userState[0], team);
-	const dataPublisher = serviceDatasetOnboarding.useGetPublisher(Array.isArray(publisherId) ? publisherId[0] : publisherId, null);
+	const publisherId = React.useMemo(() => utils.getPublisherID(userState[0], team), [userState[0], team]);
+	const dataPublisher = serviceDatasetOnboarding.useGetPublisher(publisherId);
 
 	useEffect(() => {
 		setTeam(getTeam(props));
-	}, [id]);
+
+		if (publisherId && id) dataPublisher.mutate();
+	}, [publisherId, id]);
 
 	const getValidDatasets = listOfDatasets => {
 		return listOfDatasets.filter(dataset => {
@@ -79,7 +81,9 @@ const AccountDataset = props => {
 		if (dataPublisher.data) {
 			const {
 				data: {
-					data: { listOfDatasets },
+					data: {
+						results: { listOfDatasets },
+					},
 				},
 			} = dataPublisher.data;
 
@@ -100,17 +104,16 @@ const AccountDataset = props => {
 
 	useEffect(() => {
 		const page = getNextPage(0);
-		if (page) {
-			if (page.dataset) {
-				const { dataset } = page;
+		if (page && page.dataset) {
+			const { dataset } = page;
 
-				setCurrentDataset(dataset);
+			setCurrentDataset(dataset);
 
-				dataActivityLog.mutateAsync({
-					versionIds: [...dataset.listOfVersions.map(version => version._id), dataset._id],
-					type: 'dataset',
-				});
-			}
+			dataActivityLog.mutateAsync({
+				versionIds: [...dataset.listOfVersions.map(version => version._id), dataset._id],
+				type: 'dataset',
+			});
+
 			updateButtonStates(page);
 		}
 	}, [dataPublisher.data, id, currentDataset]);
@@ -198,14 +201,14 @@ const AccountDataset = props => {
 
 	if (dataPublisher.isLoading || dataActivityLog.isLoading) {
 		return (
-			<AccountContent>
+			<LayoutContent>
 				<Loading />
-			</AccountContent>
+			</LayoutContent>
 		);
 	}
 
-	if (dataPublisher.isFetched) {
-		if (dataPublisher.data && !filterCurrentDataset(dataPublisher.data.data.data.listOfDatasets)) {
+	if (dataPublisher.isSuccess) {
+		if (dataPublisher.data && !filterCurrentDataset(dataPublisher.data.data.data.results.listOfDatasets)) {
 			NotificationManager.error('The accessed dataset does not exist', 'Page not found', 10000);
 
 			return <Redirect to='/account?tab=datasets' />;
@@ -214,11 +217,15 @@ const AccountDataset = props => {
 
 			return <Redirect to='/account?tab=datasets' />;
 		}
+	} else if (dataPublisher.isError) {
+		NotificationManager.error('You do not have permission to access this resource', 'Unauthorised', 10000);
+
+		return <Redirect to='/account?tab=youraccount' />;
 	}
 
 	return currentDataset ? (
 		<Suspense fallback={t('loading')}>
-			<AccountContent>
+			<LayoutContent>
 				<DatasetCard
 					id={currentDataset._id}
 					title={currentDataset.name}
@@ -268,7 +275,7 @@ const AccountDataset = props => {
 					handleReject={closeRejectModalAndRedirectToPendingDatasets}
 					showGoToNext={showNext}
 				/>
-			</AccountContent>
+			</LayoutContent>
 		</Suspense>
 	) : null;
 };

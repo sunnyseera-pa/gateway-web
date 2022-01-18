@@ -1,0 +1,29 @@
+import { Meta, Story, Canvas } from '@storybook/addon-docs';
+
+import Dropdown from './Dropdown';
+
+<Meta
+	title='Core/Dropdown'
+	component={Dropdown}
+	args={{
+		options: [
+			{
+				label: 'Recently updated',
+				value: 'updated',
+			},
+			'Related resources',
+		],
+	}}
+/>
+
+<Canvas>
+	<Story name='Basic'>
+		{props => {
+			const [value, setValue] = React.useState('updated');
+			const handleChange = React.useCallback(value => {
+				setValue(value);
+			}, []);
+			return <Dropdown {...props} onSelect={handleChange} value={value} width='350px' />;
+		}}
+	</Story>
+</Canvas>

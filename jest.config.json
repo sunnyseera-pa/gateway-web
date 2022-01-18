@@ -13,7 +13,9 @@
 		"index.js",
 		"configs",
 		"mockMsw.js",
-		"mockServer.js"
+		"mockServer.js",
+		".constants.js",
+		".propTypes.js"
 	],
 	"collectCoverageFrom": ["src/**/*.{js,jsx}"]
 }

@@ -724,10 +724,10 @@ class SearchPage extends React.Component {
 		});
 	};
 
-	handleSort = sort => {
+	handleSort = ({ value }) => {
 		const entityType = typeMapper[`${this.state.key}`];
-		googleAnalytics.recordEvent(`${entityType}s`, `Sorted search results by ${sort}`, 'Sort dropdown option changed');
-		this.setState({ [`${entityType}Sort`]: sort, isResultsLoading: true }, () => {
+		googleAnalytics.recordEvent(`${entityType}s`, `Sorted search results by ${value}`, 'Sort dropdown option changed');
+		this.setState({ [`${entityType}Sort`]: value, isResultsLoading: true }, () => {
 			this.doSearchCall();
 		});
 	};
@@ -993,7 +993,7 @@ class SearchPage extends React.Component {
 	 * @return new tree
 	 */
 	resetTreeChecked = tree => {
-		if (_.isEmpty(tree)) return;
+		if (_.isEmpty(tree)) return [];
 
 		tree.forEach(node => {
 			if (typeof node.selectedCount !== 'undefined') node.selectedCount = 0;
@@ -1520,11 +1520,11 @@ class SearchPage extends React.Component {
 		};
 	}
 
-	getSearchProps(showSort, sortMenu, maxResult) {
+	getSearchProps(showSort, sortMenu, maxResults) {
 		const { savedSearchPanel, isResultsLoading: isLoading, search } = this.state;
 
 		return {
-			maxResult,
+			maxResults,
 			search,
 			isLoading,
 			sort: showSort && !savedSearchPanel && sortMenu,
@@ -1637,7 +1637,7 @@ class SearchPage extends React.Component {
 
 		const key = this.getKey(baseKey);
 
-		let maxResult = 40;
+		let maxResults = 40;
 
 		const sortMenu = (
 			<div className='text-right save-dropdown'>
@@ -1654,7 +1654,7 @@ class SearchPage extends React.Component {
 		const showSort = this.getShowSort(key);
 		const filterProps = this.getFilterProps(key);
 		const filtersSelectionProps = this.getFiltersSelectionProps(preferenceFilters);
-		const searchProps = this.getSearchProps(showSort, sortMenu, maxResult);
+		const searchProps = this.getSearchProps(showSort, sortMenu, maxResults);
 
 		return (
 			<Sentry.ErrorBoundary fallback={<ErrorModal />}>
@@ -1795,8 +1795,8 @@ class SearchPage extends React.Component {
 									<DatasetSearchResults
 										data={datasetData}
 										count={datasetCount}
-										pageNumber={datasetIndex / maxResult}
-										totalPages={datasetCount / maxResult}
+										pageNumber={datasetIndex / maxResults}
+										totalPages={datasetCount / maxResults}
 										{...searchProps}
 									/>
 								)}
@@ -1806,8 +1806,8 @@ class SearchPage extends React.Component {
 										type='tool'
 										data={toolData}
 										count={toolCount}
-										pageNumber={toolIndex / maxResult}
-										totalPages={toolCount / maxResult}
+										pageNumber={toolIndex / maxResults}
+										totalPages={toolCount / maxResults}
 										{...searchProps}
 									/>
 								)}
@@ -1817,8 +1817,8 @@ class SearchPage extends React.Component {
 										type='datause'
 										data={dataUseRegisterData}
 										count={dataUseRegisterCount}
-										pageNumber={dataUseRegisterIndex / maxResult}
-										totalPages={dataUseRegisterCount / maxResult}
+										pageNumber={dataUseRegisterIndex / maxResults}
+										totalPages={dataUseRegisterCount / maxResults}
 										{...searchProps}
 									/>
 								)}
@@ -1828,7 +1828,7 @@ class SearchPage extends React.Component {
 										data={collectionData}
 										count={collectionCount}
 										pageNumber={collectionIndex}
-										totalPages={collectionCount / maxResult}
+										totalPages={collectionCount / maxResults}
 										{...searchProps}
 									/>
 								)}
@@ -1838,8 +1838,8 @@ class SearchPage extends React.Component {
 										type='paper'
 										data={paperData}
 										count={paperCount}
-										pageNumber={paperIndex / maxResult}
-										totalPages={paperCount / maxResult}
+										pageNumber={paperIndex / maxResults}
+										totalPages={paperCount / maxResults}
 										{...searchProps}
 									/>
 								)}
@@ -1849,8 +1849,8 @@ class SearchPage extends React.Component {
 										type='person'
 										data={personData}
 										count={personCount}
-										pageNumber={personIndex / maxResult}
-										totalPages={personCount / maxResult}
+										pageNumber={personIndex / maxResults}
+										totalPages={personCount / maxResults}
 										{...searchProps}
 									/>
 								)}
@@ -1859,8 +1859,8 @@ class SearchPage extends React.Component {
 									<CoursesSearchResults
 										data={courseData}
 										count={courseCount}
-										pageNumber={courseIndex / maxResult}
-										totalPages={courseCount / maxResult}
+										pageNumber={courseIndex / maxResults}
+										totalPages={courseCount / maxResults}
 										{...searchProps}
 									/>
 								)}

@@ -18,18 +18,19 @@ import ErrorModal from '../commonComponents/errorModal';
 import ResourcePageButtons from '../commonComponents/resourcePageButtons/ResourcePageButtons';
 import SVGIcon from '../../images/SVGIcon';
 import './Collections.scss';
-import CollectionsSearch from './CollectionsSearch';
 import googleAnalytics from '../../tracking';
 import { getCollectionRequest, getCollectionRelatedObjectsRequest, postCollectionCounterUpdateRequest } from '../../services/collection';
 import { filterCollectionItems, generatePaginatedItems, generateDropdownItems } from './collection.utils';
 import { sortByMetadataQuality, sortByRecentlyAdded, sortByResources, sortByRelevance, sortByPopularity } from './collection.utils.sort';
-import { MAXRESULT } from './constants';
+import { MAXRESULTS } from './constants';
 import DatasetCollectionResults from './Components/DatasetCollectionResults';
 import ToolCollectionResults from './Components/ToolCollectionResults';
 import DataUseCollectionResults from './Components/DataUseCollectionResults';
 import PaperCollectionResults from './Components/PaperCollectionResults';
 import PersonCollectionResults from './Components/PersonCollectionResults';
 import CourseCollectionResults from './Components/CourseCollectionResults';
+import SearchControls from '../../components/SearchControls';
+import { LayoutContent } from '../../components/Layout';
 
 export const CollectionPage = props => {
 	const { t } = useTranslation();
@@ -52,8 +53,6 @@ export const CollectionPage = props => {
 	const [collectionAdded, setCollectionAdded] = useState(false);
 	const [collectionEdited, setCollectionEdited] = useState(false);
 	const [searchString, setSearchString] = useState('');
-	const [searchCollectionsString, setCollectionsSearchString] = useState('');
-	const [collectionsPageSort, setCollectionsPageSort] = useState('recentlyadded');
 	const [discoursePostCount, setDiscoursePostCount] = useState(0);
 	const [key, setKey] = useState('dataset');
 	const [searchBar] = useState(React.createRef());
@@ -81,10 +80,6 @@ export const CollectionPage = props => {
 		}
 		getCollectionDataFromApi();
 	}, []);
-
-	useEffect(() => {
-		handleSort(collectionsPageSort);
-	}, [filteredData]);
 
 	const getCollectionDataFromApi = async () => {
 		setIsLoading(true);
@@ -165,34 +160,31 @@ export const CollectionPage = props => {
 		setShowDrawer(showEnquiry);
 	};
 
-	const handleSort = sort => {
-		googleAnalytics.recordEvent('Collections', `Sorted collection entities by ${sort}`, 'Sort dropdown option changed');
-		setCollectionsPageSort(sort);
+	const getSortedData = (sort, data, value) => {
 		switch (sort) {
 			case 'metadata': {
-				sortByMetadataQuality(filteredData);
-				break;
+				return sortByMetadataQuality(data);
 			}
 			case 'recentlyadded': {
-				sortByRecentlyAdded(filteredData);
-				break;
+				return sortByRecentlyAdded(data);
 			}
 			case 'resources': {
-				sortByResources(filteredData);
-				break;
+				return sortByResources(data);
 			}
 			case 'relevance': {
-				sortByRelevance(filteredData, searchCollectionsString);
-				break;
+				return sortByRelevance(data, value);
 			}
 			case 'popularity': {
-				sortByPopularity(filteredData);
-				break;
+				return sortByPopularity(data);
 			}
 			default:
-				return sort;
+				return data;
 		}
 	};
+
+	const handleSort = React.useCallback(({ value, direction }) => {
+		googleAnalytics.recordEvent('Collections', `Sorted collection entities by ${value} ${direction}`, 'Sort dropdown option changed');
+	}, []);
 
 	const handlePaginatedItems = index => {
 		// Returns the related resources that have the same object type as the current active tab and performs a chunk on them to ensure each page returns 24 results
@@ -208,20 +200,21 @@ export const CollectionPage = props => {
 		}
 	};
 
-	const doCollectionsSearch = e => {
-		// Fires on enter on searchbar
-		if (e.key === 'Enter') {
-			const filteredCollectionItems = filterCollectionItems(objectData, searchCollectionsString);
+	const doCollectionsSearch = React.useCallback(
+		({ search, sortBy }) => {
+			const filteredCollectionItems = filterCollectionItems(objectData, search);
 
-			let tempFilteredData = filteredCollectionItems.filter(dat => {
+			const tempFilteredData = filteredCollectionItems.filter(dat => {
 				return dat !== '';
 			});
-			setFilteredData(tempFilteredData);
+
+			setFilteredData(getSortedData(sortBy, tempFilteredData, search));
 
 			countEntities(filteredCollectionItems);
 			handlePagination(key, 0);
-		}
-	};
+		},
+		[key, objectData]
+	);
 
 	const setIndexByType = page => {
 		return {
@@ -451,15 +444,23 @@ export const CollectionPage = props => {
 					</Row>
 				)}
 				{key !== 'discussion' && (
-					<CollectionsSearch
-						doCollectionsSearchMethod={doCollectionsSearch}
-						doUpdateCollectionsSearchString={searchCollectionsString => setCollectionsSearchString(searchCollectionsString)}
-						isLoading={isResultsLoading}
-						handleSort={handleSort}
-						isCollectionsSearch={true}
-						dropdownItems={dropdownItems}
-						sort={collectionsPageSort === '' ? (searchCollectionsString === '' ? 'recentlyadded' : 'relevance') : collectionsPageSort}
-					/>
+					<LayoutContent>
+						<SearchControls
+							onSubmit={doCollectionsSearch}
+							isLoading={isResultsLoading}
+							inputProps={{
+								mt: 2,
+							}}
+							sortProps={{
+								options: dropdownItems,
+								defaultValue: 'recentlyadded',
+								onSort: handleSort,
+								mt: 2,
+							}}
+							type='collection'
+							mb={2}
+						/>
+					</LayoutContent>
 				)}
 				<Row>
 					<Col sm={1} lg={1} />
@@ -492,12 +493,12 @@ export const CollectionPage = props => {
 						) : null}
 
 						<div className='text-center'>
-							{key === 'dataset' && datasetCount > MAXRESULT ? <Pagination>{datasetPaginationItems}</Pagination> : ''}
-							{key === 'tool' && toolCount > MAXRESULT ? <Pagination>{toolPaginationItems}</Pagination> : ''}
-							{key === 'dataUseRegister' && dataUseCount > MAXRESULT ? <Pagination>{dataUsePaginationItems}</Pagination> : ''}
-							{key === 'paper' && paperCount > MAXRESULT ? <Pagination>{paperPaginationItems}</Pagination> : ''}
-							{key === 'person' && personCount > MAXRESULT ? <Pagination>{personPaginationItems}</Pagination> : ''}
-							{key === 'course' && courseCount > MAXRESULT ? <Pagination>{coursePaginationItems}</Pagination> : ''}
+							{key === 'dataset' && datasetCount > MAXRESULTS ? <Pagination>{datasetPaginationItems}</Pagination> : ''}
+							{key === 'tool' && toolCount > MAXRESULTS ? <Pagination>{toolPaginationItems}</Pagination> : ''}
+							{key === 'dataUseRegister' && dataUseCount > MAXRESULTS ? <Pagination>{dataUsePaginationItems}</Pagination> : ''}
+							{key === 'paper' && paperCount > MAXRESULTS ? <Pagination>{paperPaginationItems}</Pagination> : ''}
+							{key === 'person' && personCount > MAXRESULTS ? <Pagination>{personPaginationItems}</Pagination> : ''}
+							{key === 'course' && courseCount > MAXRESULTS ? <Pagination>{coursePaginationItems}</Pagination> : ''}
 						</div>
 					</Col>
 					<Col sm={1} lg={10} />

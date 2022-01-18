@@ -31,7 +31,8 @@ a {
 	height: 100%;
 }
 
-button {
+button,
+[role='button'] {
 	&:hover {
 		cursor: pointer;
 	}

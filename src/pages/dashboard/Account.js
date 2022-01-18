@@ -20,23 +20,23 @@ import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
 import UserMessages from '../commonComponents/userMessages/UserMessages';
 import ActivityLog from '../DataAccessRequest/components/ActivityLog/ActivityLog';
 import ActivityLogActionButtons from '../DataAccessRequest/components/ActivityLog/ActivityLogActionButtons';
+import DataUsePage from '../dataUse/DataUsePage';
+import DataUseUpload from '../dataUse/upload/DataUseUpload';
+import DataUseUploadActionButtons from '../dataUse/upload/DataUseUploadActionButtons';
 import AccountAnalyticsDashboard from './AccountAnalyticsDashboard';
 import AccountCollections from './AccountCollections';
 import AccountCourses from './AccountCourses';
-import AccountTools from './AccountTools';
-import AccountDatasets from './AccountDatasets';
 import AccountPapers from './AccountPapers';
 import AccountTeamManagement from './AccountTeamManagement';
 import AccountTeams from './AccountTeams';
+import AccountTools from './AccountTools';
 import AccountUsers from './AccountUsers';
 import AccountDataset from './Components/AccountDataset';
+import AccountDatasets from './Components/AccountDatasets';
 import './Dashboard.scss';
 import DataAccessRequests from './DataAccessRequests/DataAccessRequests';
 import ReviewTools from './ReviewTools';
 import { tabTypes } from './Team/teamUtil';
-import DataUsePage from '../dataUse/DataUsePage';
-import DataUseUpload from '../dataUse/upload/DataUseUpload';
-import DataUseUploadActionButtons from '../dataUse/upload/DataUseUploadActionButtons';
 import TeamHelp from './TeamHelp/TeamHelp';
 import WorkflowDashboard from './Workflows/WorkflowDashboard';
 import YourAccount from './YourAccount';
@@ -799,6 +799,8 @@ class Account extends Component {
 							</>
 						)}
 
+						<Route path='/account/datasets/:id' component={AccountDataset} />
+
 						{team !== 'user' ? (
 							<>
 								{allowAccessRequestManagement && this.userHasRole(team, ['manager', 'reviewer']) && (
@@ -827,10 +829,11 @@ class Account extends Component {
 										)}
 									</>
 								)}
+
 								{(this.userHasRole(team, ['manager', 'metadata_editor']) || team === 'admin') && (
 									<>{tabId === 'datasets' ? <AccountDatasets userState={userState} team={team} alert={alert} /> : ''}</>
 								)}
-								<Route path='/account/datasets/:id' component={AccountDataset} />
+
 								{team === 'admin' && (
 									<>
 										{tabId === 'teams' && (
