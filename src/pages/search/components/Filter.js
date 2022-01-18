@@ -187,6 +187,8 @@ const Filter = ({
 					.map(node => {
 						const selectedValues = selected ? selected.map(({ value }) => value) : [];
 
+						console.log('Node', node.highlighted);
+
 						return (
 							<div key={node.label} className={generateClassName(node)}>
 								{!!node.filtersv2 && (

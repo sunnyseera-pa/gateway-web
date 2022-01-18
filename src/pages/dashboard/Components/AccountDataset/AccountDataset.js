@@ -3,7 +3,7 @@ import React, { Suspense, useCallback, useState } from 'react';
 import { Button } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { NotificationManager } from 'react-notifications';
-import { Redirect, useHistory, useParams } from 'react-router';
+import { Redirect, useHistory, useParams } from 'react-router-dom';
 import { useAuth } from '../../../../context/AuthContext';
 import serviceActivityLog from '../../../../services/activitylog/activitylog';
 import serviceDatasetOnboarding from '../../../../services/dataset-onboarding/dataset-onboarding';
