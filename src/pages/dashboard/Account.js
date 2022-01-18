@@ -4,7 +4,7 @@ import _ from 'lodash';
 import queryString from 'query-string';
 import React, { Component, Fragment, useState } from 'react';
 import { Accordion, Dropdown, Nav } from 'react-bootstrap';
-import { Route, withRouter } from 'react-router';
+import { Route, withRouter } from 'react-router-dom';
 import 'react-web-tabs/dist/react-web-tabs.css';
 import { ReactComponent as CheckSVG } from '../../images/check.svg';
 import { ReactComponent as ChevronRightSvg } from '../../images/chevron-bottom.svg';
