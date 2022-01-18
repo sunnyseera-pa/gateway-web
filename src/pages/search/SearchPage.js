@@ -1814,7 +1814,7 @@ class SearchPage extends React.Component {
 
 								{key === 'Datauses' && (
 									<SearchResults
-										type='datause'
+										type='dataUseRegister'
 										data={dataUseRegisterData}
 										count={dataUseRegisterCount}
 										pageNumber={dataUseRegisterIndex / maxResult}
