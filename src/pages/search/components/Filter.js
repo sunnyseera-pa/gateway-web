@@ -1,26 +1,31 @@
 import _ from 'lodash';
 import React, { Fragment, useEffect, useState } from 'react';
 import { SlideDown } from 'react-slidedown';
+import Checkbox from '../../../components/Checkbox';
 import SVGIcon from '../../../images/SVGIcon';
 import { FilterCount } from './FilterCount';
 import FilterTree from './FilterTree';
 import TreeSubHeader from './TreeSubHeader';
 
-const Checkbox = ({ node = {}, highlighted = [], parentKey = '', onHandleInputChange }) => {
+const CheckboxWrapper = ({ node = {}, highlighted = [], parentKey = '', onHandleInputChange }) => {
 	let highlight = false;
-	const onHandleChange = e => {
-		onHandleInputChange(node, parentKey, e.target.checked);
-	};
+	const onHandleChange = React.useCallback(
+		e => {
+			onHandleInputChange(node, parentKey, e.target.checked);
+		},
+		[node, parentKey]
+	);
+
 	if (!_.isEmpty(highlighted)) {
 		highlight = highlighted.includes(node.label.toLowerCase());
 	}
 
 	return (
-		<div className='checkbox'>
-			<div className={`${highlight ? 'highlighted-text' : 'checkbox-text'}`}>{node.label}</div>
-			<input type='checkbox' checked={node.checked} onChange={e => onHandleChange(e)} />
-			<span className='checkmark'></span>
-		</div>
+		<Checkbox
+			label={<span className={!highlight && 'checkbox-text'}>{node.label}</span>}
+			checked={node.checked}
+			onChange={onHandleChange}
+		/>
 	);
 };
 
@@ -83,10 +88,10 @@ const TreeItem = ({ node, highlighted, parentKey, hasChildren, onHandleInputChan
 		);
 	}
 
-	return <Checkbox node={node} highlighted={highlighted} parentKey={parentKey} onHandleInputChange={onHandleInputChange} />;
+	return <CheckboxWrapper node={node} highlighted={highlighted} parentKey={parentKey} onHandleInputChange={onHandleInputChange} />;
 };
 
-const TreeComponent = ({ node, parentKey, hasChildren, onHandleInputChange, onHandleClearSection, onHandleToggle, children, selected }) => {
+const TreeComponent = ({ node, parentKey, hasChildren, onHandleInputChange, onHandleToggle, children, selected }) => {
 	const [searchValue, setSearchValue] = useState('');
 	const [highlighted, setHighlight] = useState([]);
 
@@ -157,6 +162,17 @@ const Filter = ({
 		else return `${treeClass}-wrapper`;
 	};
 
+	console.log('PROPS', {
+		selected,
+		data,
+		parentKey,
+		highlighted,
+		hasChildren,
+		searchValue,
+		onHandleInputChange,
+		onHandleToggle,
+	});
+
 	return (
 		<Fragment>
 			{data &&
@@ -171,12 +187,16 @@ const Filter = ({
 					.map(node => {
 						const selectedValues = selected ? selected.map(({ value }) => value) : [];
 
-						console.log('SELECTED values', selectedValues);
-
 						return (
 							<div key={node.label} className={generateClassName(node)}>
 								{!!node.filtersv2 && (
-									<FilterTree node={node} filters={node.filtersv2} checked={selectedValues} onCheck={onHandleInputChange} />
+									<FilterTree
+										node={node}
+										filters={node.filtersv2}
+										checked={selectedValues}
+										onCheck={onHandleInputChange}
+										highlighted={node.highlighted}
+									/>
 								)}
 								{!node.filtersv2 && (
 									<>
@@ -192,7 +212,12 @@ const Filter = ({
 												onHandleToggle={onHandleToggle}
 											/>
 										) : (
-											<Checkbox node={node} highlighted={highlighted} parentKey={parentKey} onHandleInputChange={onHandleInputChange} />
+											<CheckboxWrapper
+												node={node}
+												highlighted={highlighted}
+												parentKey={parentKey}
+												onHandleInputChange={onHandleInputChange}
+											/>
 										)}
 									</>
 								)}

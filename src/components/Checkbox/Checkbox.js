@@ -12,7 +12,9 @@ const Checkbox = ({ className, mt, mb, ml, mr, width, minWidth, maxWidth, varian
 	return (
 		<label htmlFor={id} css={styles.root({ variant })} className={cx('ui-Checkbox', className, commonStyles)}>
 			<input type='checkbox' id={id} {...outerProps} />
-			<span className='ui-Checkbox__label'>{textLabel}</span>
+			<span className='ui-Checkbox__label'>
+				<span>{textLabel}</span>
+			</span>
 		</label>
 	);
 };

@@ -690,22 +690,47 @@ class SearchPage extends React.Component {
 	};
 
 	setHighlightedFilters = (filters = {}, tree) => {
-		for (let key in filters) {
-			// Find parent obj - recursive
-			const parentNode = this.findParentNode(tree, key);
-			// If parentNode exists
-			if (!_.isEmpty(parentNode) && typeof parentNode.highlighted !== 'undefined') {
+		Object.keys(filters).forEach(filterKey => {
+			const parentNode = this.findParentNode(tree, filterKey);
+
+			if (!_.isEmpty(parentNode)) {
 				parentNode.highlighted = [];
-				const lowerCasedFilters = filters[key].map(value => value.toLowerCase());
-				// Highlight any filter items which include any of the returned filter values
-				parentNode.filters.forEach(filter => {
-					const filterValues = filter.value.split(',');
-					if (filterValues.some(item => lowerCasedFilters.includes(item.toLowerCase())) && !parentNode.highlighted.includes(filter.label)) {
-						parentNode.highlighted.push(filter.label.toLowerCase());
-					}
-				});
+
+				if (this.isTree(parentNode.key)) {
+					this.setTreeHighlightedFilters(parentNode, filters[filterKey]);
+				} else {
+					this.setShallowHighlightedFilters(parentNode, filters[filterKey], tree);
+				}
 			}
-		}
+		});
+
+		console.log('TREE', tree);
+
+		return tree;
+	};
+
+	setTreeHighlightedFilters = (parentNode, filter, tree) => {
+		return replaceKey(parentNode.filtersv2, item => {
+			if (filter.includes(item.value)) parentNode.highlighted.push(item.value);
+
+			return item.children;
+		});
+	};
+
+	setShallowHighlightedFilters = (parentNode, filter, tree) => {
+		const lowerCasedFilters = filter.map(value => value.toLowerCase());
+
+		parentNode.filters.forEach(parentNodeFilter => {
+			const filterValues = parentNodeFilter.value.split(',');
+
+			if (
+				filterValues.some(item => lowerCasedFilters.includes(item.toLowerCase())) &&
+				!parentNode.highlighted.includes(parentNodeFilter.label)
+			) {
+				parentNode.highlighted.push(parentNodeFilter.label.toLowerCase());
+			}
+		});
+
 		return tree;
 	};
 
@@ -1540,6 +1565,8 @@ class SearchPage extends React.Component {
 		const filterProps = this.getFilterProps(key);
 		const filtersSelectionProps = this.getFiltersSelectionProps(preferenceFilters);
 		const searchProps = this.getSearchProps(showSort, sortMenu, maxResults);
+
+		console.log('filterProps', filterProps);
 
 		return (
 			<Sentry.ErrorBoundary fallback={<ErrorModal />}>

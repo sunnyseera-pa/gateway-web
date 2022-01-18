@@ -25,7 +25,17 @@ export const getCommonStyles = ({ ml, mr, mb, mt, width, maxWidth, minWidth }, t
 };
 
 export const THEME_INPUT = {
-	height: '40px',
+	sizes: {
+		small: {
+			height: '30px',
+		},
+		default: {
+			height: '40px',
+		},
+		large: {
+			height: '50px',
+		},
+	},
 	variants: {
 		primary: {
 			background: 'white',

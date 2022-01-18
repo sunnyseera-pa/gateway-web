@@ -23,6 +23,7 @@ const Dropdown = ({
 	width,
 	minWidth,
 	maxWidth,
+	size,
 	...outerProps
 }) => {
 	const commonStyles = useCommonStyles({ mt, mb, ml, mr, width, minWidth, maxWidth });
@@ -48,7 +49,7 @@ const Dropdown = ({
 	);
 
 	return (
-		<BootstrapDropdown className={cx('ui-Dropdown', className, commonStyles)} {...outerProps} css={styles.root({ variant })}>
+		<BootstrapDropdown className={cx('ui-Dropdown', className, commonStyles)} {...outerProps} css={styles.root({ variant, size })}>
 			<BootstrapDropdown.Toggle variant={variant}>{selectedOption && selectedOption.label}</BootstrapDropdown.Toggle>
 			<BootstrapDropdown.Menu>
 				{options.map(option => {
@@ -74,6 +75,7 @@ Dropdown.defaultProps = {
 	variant: 'primary',
 	options: [],
 	iconSelected: <Icon name='check' fill='green600' color='green600' ml={1} size='xl' />,
+	size: 'default',
 };
 
 export default Dropdown;

@@ -29,6 +29,7 @@ const Input = ({
 	variant,
 	label,
 	id,
+	size,
 	...outerProps
 }) => {
 	const prependRef = useRef(null);
@@ -53,7 +54,7 @@ const Input = ({
 			`}>
 			<Form.Label>{label}</Form.Label>
 			<InputGroup
-				css={styles.inputGroup({ prepend: domPrependChanged, append: domAppendChanged, variant })}
+				css={styles.inputGroup({ prepend: domPrependChanged, append: domAppendChanged, variant, size })}
 				className={cx('ui-Input', className, commonStyles)}>
 				{(iconPrepend || textPrepend) && (
 					<InputGroup.Prepend
@@ -86,6 +87,7 @@ const Input = ({
 Input.propTypes = PROP_TYPES_INPUT;
 
 Input.defaultProps = {
+	size: 'default',
 	variant: 'primary',
 	debounceDelay: 300,
 	onDebounce: () => {},

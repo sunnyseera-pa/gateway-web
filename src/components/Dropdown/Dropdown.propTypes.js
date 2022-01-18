@@ -16,4 +16,5 @@ export const PROP_TYPES_DROPDOWN = addCommonPropTypes({
 	variant: PropTypes.oneOf(['primary', 'secondary']),
 	iconSelected: PropTypes.node,
 	onSelect: PropTypes.func,
+	size: PropTypes.oneOf(['small', 'default', 'large']),
 });

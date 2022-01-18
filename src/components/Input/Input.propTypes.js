@@ -14,4 +14,5 @@ export const PROP_TYPES_INPUT = addCommonPropTypes({
 	inputRef: PropTypes.shape({ current: PropTypes.instanceOf(Element) }),
 	variant: PropTypes.oneOf(['primary', 'secondary']),
 	id: PropTypes.string,
+	size: PropTypes.oneOf(['small', 'default', 'large']),
 });

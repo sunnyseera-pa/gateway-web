@@ -37,7 +37,6 @@ export const mixins = {
 	root: ({ width }) => `
 		position: relative;
 		padding-left: calc(${width} + 0.5rem);
-		padding-top: 2px;
 
 		input {
 			display: none;
