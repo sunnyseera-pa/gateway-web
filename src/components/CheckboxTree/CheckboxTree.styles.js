@@ -44,7 +44,7 @@ export const root = ({ hasLeafIcon, hasParentIcon, checkboxVariant: variant }) =
 			display: flex;
 			justify-content: center;
 			align-items: center;
-			width: ${width};
+			flex: 0 0 ${width};
 		}
 
 		.rct-collapse:focus {

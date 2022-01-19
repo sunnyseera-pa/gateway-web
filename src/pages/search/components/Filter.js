@@ -162,6 +162,13 @@ const Filter = ({
 		else return `${treeClass}-wrapper`;
 	};
 
+	const filterOutHttp = filters => {
+		return filters.filter(filter => {
+			console.log('Filter', filter);
+			return !/http/i.test(filter.value);
+		});
+	};
+
 	return (
 		<Fragment>
 			{data &&
@@ -181,7 +188,7 @@ const Filter = ({
 								{!!node.filtersv2 && (
 									<FilterTree
 										node={node}
-										filters={node.filtersv2}
+										filters={filterOutHttp(node.filtersv2)}
 										checked={selectedValues}
 										onCheck={onHandleInputChange}
 										highlighted={node.highlighted}

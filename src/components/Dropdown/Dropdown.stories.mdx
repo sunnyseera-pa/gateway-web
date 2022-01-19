@@ -17,13 +17,40 @@ import Dropdown from './Dropdown';
 />
 
 <Canvas>
-	<Story name='Basic'>
+	<Story name='Variants'>
 		{props => {
-			const [value, setValue] = React.useState('updated');
-			const handleChange = React.useCallback(value => {
-				setValue(value);
-			}, []);
-			return <Dropdown {...props} onSelect={handleChange} value={value} width='350px' />;
+			return (
+				<>
+					<div>
+						<div>Primary</div>
+						<Dropdown {...props} label='Primary' width='350px' mb={4} />
+					</div>
+					<div>
+						<div>Secondary</div>
+						<Dropdown {...props} label='Secondary' variant='secondary' width='350px' />
+					</div>
+				</>
+			);
+		}}
+	</Story>
+	<Story name='Sizes'>
+		{props => {
+			return (
+				<>
+					<div>
+						<div>Small</div>
+						<Dropdown {...props} size='small' label='Small' width='350px' mb={4} />
+					</div>
+					<div>
+						<div>Default</div>
+						<Dropdown {...props} size='default' width='350px' mb={4} />
+					</div>
+					<div>
+						<div>Large</div>
+						<Dropdown {...props} size='large' label='Large' width='350px' />
+					</div>
+				</>
+			);
 		}}
 	</Story>
 </Canvas>
