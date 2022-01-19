@@ -164,7 +164,6 @@ const Filter = ({
 
 	const filterOutHttp = filters => {
 		return filters.filter(filter => {
-			console.log('Filter', filter);
 			return !/http/i.test(filter.value);
 		});
 	};
@@ -192,6 +191,7 @@ const Filter = ({
 										checked={selectedValues}
 										onCheck={onHandleInputChange}
 										highlighted={node.highlighted}
+										onHandleToggle={onHandleToggle}
 									/>
 								)}
 								{!node.filtersv2 && (

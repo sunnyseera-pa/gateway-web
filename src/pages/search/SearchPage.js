@@ -1281,6 +1281,9 @@ class SearchPage extends React.Component {
 			let { key } = node;
 			// // 3. return parent node of toggled
 			parentNode = this.findParentNode(filtersV2, key);
+
+			console.log('Toggling', parentNode);
+
 			if (!_.isEmpty(parentNode)) {
 				parentNode.closed = !parentNode.closed;
 				const filtersV2Entity = `filtersV2${this.state.key}`;

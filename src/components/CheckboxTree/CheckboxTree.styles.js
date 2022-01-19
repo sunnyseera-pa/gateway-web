@@ -12,7 +12,7 @@ export const root = ({ hasLeafIcon, hasParentIcon, checkboxVariant: variant }) =
 
 	return css`
 		.react-checkbox-tree {
-			font-size: 1rem;
+			font-size: 1em;
 		}
 		.react-checkbox-tree > ol {
 			width: 100%;

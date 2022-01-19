@@ -1,7 +1,7 @@
 import { css } from '@emotion/react';
 
 export const root = css`
-	* {
+	.ui-CheckboxTree .react-checkbox-tree {
 		font-size: 13px;
 	}
 `;

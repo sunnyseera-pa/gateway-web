@@ -10,7 +10,7 @@ import SearchInput from '../../../../components/SearchInput';
 import TreeSubHeader from '../TreeSubHeader';
 import * as styles from './FilterTree.styles';
 
-const FilterTree = ({ node, filters, highlighted, checked, expanded, onCheck }) => {
+const FilterTree = ({ node, filters, highlighted, checked, expanded, onCheck, onHandleToggle }) => {
 	const [nodesChecked, setNodesChecked] = React.useState(checked);
 	const [nodesExpanded, setNodesExpanded] = React.useState(expanded);
 	const [nodeFilters, setNodeFilters] = React.useState(filters);
@@ -70,9 +70,13 @@ const FilterTree = ({ node, filters, highlighted, checked, expanded, onCheck }) 
 		setNodeFilters(formatLabels(filters));
 	}, [highlighted]);
 
+	const handleToggleClick = React.useCallback(() => {
+		onHandleToggle(node);
+	}, []);
+
 	return (
 		<Accordion css={styles.root}>
-			<Accordion.Toggle eventKey='0' css={styles.toggle}>
+			<Accordion.Toggle eventKey='0' css={styles.toggle} onClick={handleToggleClick}>
 				<TreeSubHeader node={node} />
 			</Accordion.Toggle>
 			<Accordion.Collapse eventKey='0'>
