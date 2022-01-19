@@ -704,8 +704,6 @@ class SearchPage extends React.Component {
 			}
 		});
 
-		console.log('TREE', tree);
-
 		return tree;
 	};
 
@@ -1566,8 +1564,6 @@ class SearchPage extends React.Component {
 		const filtersSelectionProps = this.getFiltersSelectionProps(preferenceFilters);
 		const searchProps = this.getSearchProps(showSort, sortMenu, maxResults);
 
-		console.log('filterProps', filterProps);
-
 		return (
 			<Sentry.ErrorBoundary fallback={<ErrorModal />}>
 				<div>
@@ -1594,7 +1590,6 @@ class SearchPage extends React.Component {
 							</Tabs>
 						</div>
 					</div>
-
 					<div className='container'>
 						{this.state.showDataUtilityBanner && (
 							<SearchUtilityBanner onClick={this.openDataUtilityWizard} step={activeDataUtilityWizardStep} />

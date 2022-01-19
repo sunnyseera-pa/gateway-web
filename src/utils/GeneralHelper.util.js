@@ -82,7 +82,9 @@ export const replaceKey = (data, iteratee) => {
 		const clonedData = [...data];
 
 		data.forEach(item => {
-			return replaceKey(iteratee(item), iteratee);
+			const clonedItem = { ...item };
+
+			return replaceKey(iteratee(clonedItem), iteratee);
 		});
 
 		return clonedData;

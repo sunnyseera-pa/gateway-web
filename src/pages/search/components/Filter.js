@@ -162,17 +162,6 @@ const Filter = ({
 		else return `${treeClass}-wrapper`;
 	};
 
-	console.log('PROPS', {
-		selected,
-		data,
-		parentKey,
-		highlighted,
-		hasChildren,
-		searchValue,
-		onHandleInputChange,
-		onHandleToggle,
-	});
-
 	return (
 		<Fragment>
 			{data &&
@@ -186,8 +175,6 @@ const Filter = ({
 					})
 					.map(node => {
 						const selectedValues = selected ? selected.map(({ value }) => value) : [];
-
-						console.log('Node', node.highlighted);
 
 						return (
 							<div key={node.label} className={generateClassName(node)}>

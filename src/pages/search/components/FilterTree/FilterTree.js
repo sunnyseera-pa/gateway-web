@@ -6,19 +6,22 @@ import { Accordion } from 'react-bootstrap';
 import CheckboxTree from '../../../../components/CheckboxTree';
 import Input from '../../../../components/Input';
 import SearchInput from '../../../../components/SearchInput';
-import { replaceKey } from '../../../../utils/GeneralHelper.util';
+// import { replaceKey } from '../../../../utils/GeneralHelper.util';
 import TreeSubHeader from '../TreeSubHeader';
 import * as styles from './FilterTree.styles';
 
 const FilterTree = ({ node, filters, highlighted, checked, expanded, onCheck }) => {
 	const [nodesChecked, setNodesChecked] = React.useState(checked);
 	const [nodesExpanded, setNodesExpanded] = React.useState(expanded);
-
-	console.log('highlighted', highlighted);
+	const [nodeFilters, setNodeFilters] = React.useState(filters);
 
 	React.useEffect(() => {
 		setNodesChecked(checked);
 	}, [checked]);
+
+	React.useEffect(() => {
+		setNodeFilters(filters);
+	}, [filters]);
 
 	const flattenObject = (filters, nodes = []) => {
 		filters.forEach(filter => {
@@ -43,15 +46,29 @@ const FilterTree = ({ node, filters, highlighted, checked, expanded, onCheck }) 
 		[node]
 	);
 
-	const formattedFilters = filters => {
-		return replaceKey(filters, filter => {
-			filter.label = <span className={!highlighted.includes(filter.value) && 'checkbox-text'}>{filter.label}</span>;
+	React.useEffect(() => {
+		const formatLabels = filters => {
+			const data = [...filters];
 
-			return filter.children;
-		});
-	};
+			data.forEach((item, i) => {
+				const clonedItem = { ...item };
 
-	console.log('formattedFilters', formattedFilters);
+				clonedItem.label = highlighted.includes(clonedItem.value) ? (
+					clonedItem.label
+				) : (
+					<span className='checkbox-text'>{clonedItem.label}</span>
+				);
+
+				data[i] = clonedItem;
+
+				formatLabels(clonedItem.children);
+			});
+
+			return data;
+		};
+
+		setNodeFilters(formatLabels(filters));
+	}, [highlighted]);
 
 	return (
 		<Accordion css={styles.root}>
@@ -62,7 +79,7 @@ const FilterTree = ({ node, filters, highlighted, checked, expanded, onCheck }) 
 				<>
 					<SearchInput variant='secondary' size='small' />
 					<CheckboxTree
-						nodes={formattedFilters(filters)}
+						nodes={nodeFilters}
 						checked={nodesChecked}
 						expanded={nodesExpanded}
 						onCheck={handleChecked}
