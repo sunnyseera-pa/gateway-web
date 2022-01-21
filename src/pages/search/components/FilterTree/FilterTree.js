@@ -1,9 +1,8 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/react';
 import React from 'react';
-import reduceDeep from 'deepdash-es/reduceDeep';
 import CheckboxTree from '../../../../components/CheckboxTree';
-import { filterBranches, findAllByKey } from '../../../../utils/GeneralHelper.util';
+import { filterBranches } from '../../../../utils/GeneralHelper.util';
 
 const FilterTree = ({ node, filters, highlighted, checked, expanded, onCheck, searchValue }) => {
 	const [nodesChecked, setNodesChecked] = React.useState(checked);
@@ -85,6 +84,7 @@ const FilterTree = ({ node, filters, highlighted, checked, expanded, onCheck, se
 
 FilterTree.defaultProps = {
 	highlighted: [],
+	searchValue: '',
 };
 
 export default FilterTree;
