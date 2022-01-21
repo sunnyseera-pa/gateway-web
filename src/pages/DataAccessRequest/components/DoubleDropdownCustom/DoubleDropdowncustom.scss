@@ -41,12 +41,20 @@
 .nested-dropdown {
 	cursor: pointer;
 	border: none !important;
+	width: 97% !important;
+	text-align: left !important;
+	height: auto;
+	flex-direction: row;
+	flex-wrap: wrap;
 }
 
 .nest-dropdown-arrow {
 	cursor: pointer;
 	position: static;
 	margin-left: 100%;
+	margin-top: -25px;
+	padding-top: -20px;
+	float: right;
 }
 
 .main-dropdown-arrow {
@@ -91,11 +99,12 @@
 	height: auto;
 	flex-direction: row;
 	flex-wrap: wrap;
+	background-color: $white !important;
 }
 
 .double-dropdown-input:focus.btn-primary:focus,
 .double-dropdown-input:focus.btn-primary.focus {
-	box-shadow: 0 0 0 2px #3db28c !important;
+	box-shadow: 0 0 0 2px $teal !important;
 }
 
 .selected-options-container {
@@ -107,7 +116,7 @@
 .dropdown-item.active,
 .dropdown-item:active {
 	color: $gray-900 !important;
-	background-color: white !important;
+	background-color: $white !important;
 }
 
 .dropdown-item:hover {

@@ -7,7 +7,11 @@ const SelectedOption = ({ text, close }) => {
 	return (
 		<span className='chip'>
 			{text}{' '}
-			<span onClick={close}>
+			<span
+				onClick={e => {
+					e.stopPropagation();
+					close();
+				}}>
 				<CloseButtonSvg />
 			</span>
 		</span>

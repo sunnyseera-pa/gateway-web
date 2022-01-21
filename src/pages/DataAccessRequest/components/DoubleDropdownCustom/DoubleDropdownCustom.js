@@ -46,11 +46,11 @@ class DoubleDropdownCustom extends React.Component {
 	}
 
 	openDropDown() {
-		this.setState({ dropdownMenu: true });
+		this.setState({ dropdownMenu: !this.state.dropdownMenu });
 	}
 
 	openNestedDropDown() {
-		this.setState({ nestedDropdownMenu: true });
+		this.setState({ nestedDropdownMenu: !this.state.nestedDropdownMenu });
 	}
 
 	render() {
@@ -82,7 +82,7 @@ class DoubleDropdownCustom extends React.Component {
 								b.value === 'Biomedical research' ? (
 									<Dropdown className='nested-dropdown-whole' onToggle={this.openNestedDropDown}>
 										<Dropdown.Toggle className='nested-dropdown'>
-											Biomedical research
+											<div className='selected-options-container'>Biomedical research</div>
 											<SVGIcon
 												width='20px'
 												height='20px'
