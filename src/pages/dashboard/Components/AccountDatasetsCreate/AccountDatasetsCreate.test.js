@@ -30,5 +30,16 @@ describe('Given the AccountDatasetsCreate component', () => {
 		it('Then matches the previous snapshot', () => {
 			expect(wrapper.container).toMatchSnapshot();
 		});
+
+		describe('And "Add new dataset" is clicked', () => {
+			it('Then calls preventDefault', async () => {
+				const button = wrapper.container.querySelector('button');
+				const buttonEvent = createEvent.click(button, { cancelable: true });
+
+				fireEvent.click(button, buttonEvent);
+
+				expect(wrapper.container).toMatchSnapshot();
+			});
+		});
 	});
 });
