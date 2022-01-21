@@ -123,5 +123,12 @@
 			"relevance": "Match to search terms",
 			"alphabetic": "Alphabetically"
 		}
+	},
+	"notifications": {
+		"teamEmailText": "Send email notifications to team email address"
+	},
+	"searchResultsInfo": {
+		"withTerm": "Showing {{count}} results for '{{searchTerm}}'",
+		"withOutTerm": "Showing {{count}} results"
 	}
 }

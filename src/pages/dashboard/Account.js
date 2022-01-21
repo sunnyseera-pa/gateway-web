@@ -4,7 +4,7 @@ import _ from 'lodash';
 import queryString from 'query-string';
 import React, { Component, Fragment, useState } from 'react';
 import { Accordion, Dropdown, Nav } from 'react-bootstrap';
-import { Route } from 'react-router-dom';
+import { Route, withRouter } from 'react-router-dom';
 import 'react-web-tabs/dist/react-web-tabs.css';
 import { ReactComponent as CheckSVG } from '../../images/check.svg';
 import { ReactComponent as ChevronRightSvg } from '../../images/chevron-bottom.svg';
@@ -20,17 +20,19 @@ import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
 import UserMessages from '../commonComponents/userMessages/UserMessages';
 import ActivityLog from '../DataAccessRequest/components/ActivityLog/ActivityLog';
 import ActivityLogActionButtons from '../DataAccessRequest/components/ActivityLog/ActivityLogActionButtons';
+import DataUsePage from '../dataUse/DataUsePage';
+import DataUseUpload from '../dataUse/upload/DataUseUpload';
+import DataUseUploadActionButtons from '../dataUse/upload/DataUseUploadActionButtons';
 import AccountAnalyticsDashboard from './AccountAnalyticsDashboard';
 import AccountCollections from './AccountCollections';
 import AccountCourses from './AccountCourses';
-import AccountDatasets from './Components/AccountDatasets';
 import AccountPapers from './AccountPapers';
-import AccountProjects from './AccountProjects';
 import AccountTeamManagement from './AccountTeamManagement';
 import AccountTeams from './AccountTeams';
 import AccountTools from './AccountTools';
 import AccountUsers from './AccountUsers';
 import AccountDataset from './Components/AccountDataset';
+import AccountDatasets from './Components/AccountDatasets';
 import './Dashboard.scss';
 import DataAccessRequests from './DataAccessRequests/DataAccessRequests';
 import ReviewTools from './ReviewTools';
@@ -90,8 +92,6 @@ class Account extends Component {
 		isDeleted: false,
 		isApproved: false,
 		isRejected: false,
-		isProjectDeleted: false,
-		isProjectApproved: false,
 		showDrawer: false,
 		showModal: false,
 		activeAccordion: -1,
@@ -103,6 +103,7 @@ class Account extends Component {
 		isSubmitting: false,
 		teamManagementInternalTab: 'Notifications',
 		accountUpdated: false,
+		showDataUseUploadPage: false,
 		dataaccessrequest: {},
 	};
 
@@ -110,6 +111,8 @@ class Account extends Component {
 		super(props);
 		this.state.userState = props.userState;
 		this.searchBar = React.createRef();
+		this.dataUseUpload = React.createRef();
+		this.dataUsePage = React.createRef();
 		this.activityLog = React.createRef();
 
 		// 1. used for DAR custodian update status of application
@@ -123,6 +126,18 @@ class Account extends Component {
 		if (_.has(props, 'profileComplete')) {
 			this.state.profileComplete = props.profileComplete;
 		}
+
+		this.historyListener = props.history.listen(location => {
+			if (location.state) {
+				this.setState({
+					alert: location.state.alert || {},
+				});
+			}
+		});
+	}
+
+	componentWillUnmount() {
+		if (this.historyListener) this.historyListener();
 	}
 
 	async componentDidMount() {
@@ -138,8 +153,6 @@ class Account extends Component {
 					isDeleted: values.toolDeleted,
 					isApproved: values.toolApproved,
 					isRejected: values.toolRejected,
-					isProjectApproved: values.projectApproved,
-					isProjectRejected: values.projectRejected,
 					isReviewApproved: values.reviewApproved,
 					isReviewRejected: values.reviewRejected,
 					accountUpdated: !!values.accountUpdated,
@@ -175,8 +188,6 @@ class Account extends Component {
 					isDeleted: values.accountDeleted,
 					isApproved: values.toolApproved,
 					isRejected: values.toolRejected,
-					isProjectApproved: values.projectApproved,
-					isProjectRejected: values.projectRejected,
 					isReviewApproved: values.reviewApproved,
 					isReviewRejected: values.reviewRejected,
 					team,
@@ -405,6 +416,7 @@ class Account extends Component {
 				activeKey: tab.tabId,
 				alert: !_.isEmpty(alert) ? alert : {},
 				activeAccordion,
+				showDataUseUploadPage: false,
 				dataaccessrequest: {},
 			});
 			// 6. push state
@@ -445,6 +457,12 @@ class Account extends Component {
 		this.setState({ innertab: '' });
 	};
 
+	toggleDataUseUploadPage = () => {
+		this.setState(prevState => {
+			return { showDataUseUploadPage: !prevState.showDataUseUploadPage };
+		});
+	};
+
 	setDataAccessRequest = (dar = {}) => {
 		this.setState({ dataaccessrequest: dar });
 	};
@@ -453,8 +471,6 @@ class Account extends Component {
 		e.stopPropagation();
 
 		let [id] = e.currentTarget.id.split('_');
-
-		console.log(applicationId);
 
 		switch (id) {
 			case 'startReview':
@@ -516,6 +532,7 @@ class Account extends Component {
 			isSubmitting,
 			teamManagementTab,
 			accountUpdated,
+			showDataUseUploadPage,
 			dataaccessrequest,
 		} = this.state;
 
@@ -580,10 +597,10 @@ class Account extends Component {
 										</Nav.Link>
 									</div>
 
-									<div className={this.getNavActiveClass('projects')} onClick={e => this.toggleNav('projects')}>
-										<Nav.Link className='verticalNavBar gray700-13'>
-											<SVGIcon name='newestprojecticon' fill={'#b3b8bd'} className='accountSvgs' />
-											<span className='navLinkItem'>Projects</span>
+									<div className={this.getNavActiveClass('datause')} onClick={e => this.toggleNav('datause')}>
+										<Nav.Link eventKey={'datause'} className='verticalNavBar gray700-13'>
+											<SVGIcon name='datauseicon' fill={'#b3b8bd'} className='accountSvgs' />
+											<span className='navLinkItem'>Data Uses</span>
 										</Nav.Link>
 									</div>
 
@@ -638,6 +655,13 @@ class Account extends Component {
 											<span style={{ 'margin-left': '11px' }}>Datasets</span>
 										</Nav.Link>
 									</div>
+									<div className={this.getNavActiveClass('datause')} onClick={e => this.toggleNav('datause')}>
+										<Nav.Link eventKey={'datause'} className='verticalNavBar gray700-13'>
+											<SVGIcon name='datauseicon' fill={'#b3b8bd'} className='accountSvgs' />
+											<span className='navLinkItem'>Data Uses</span>
+										</Nav.Link>
+									</div>
+
 									<div className={this.getNavActiveClass('teams')} onClick={e => this.toggleNav('teams')}>
 										<Nav.Link className='verticalNavBar gray700-13'>
 											<span className='grey-circle-border'>
@@ -659,7 +683,6 @@ class Account extends Component {
 											<span style={{ marginLeft: '11px' }}>Team Management</span>
 										</Nav.Link>
 									</div>
-
 									{allowAccessRequestManagement && this.userHasRole(team, ['manager', 'reviewer']) && (
 										<div className={this.getNavActiveClass(['dataaccessrequests', 'workflows', 'addeditworkflow'])}>
 											<Accordion activeKey={activeAccordion} onSelect={this.accordionClick}>
@@ -698,6 +721,12 @@ class Account extends Component {
 											</Nav.Link>
 										</div>
 									)}
+									<div className={this.getNavActiveClass('datause')} onClick={e => this.toggleNav('datause')}>
+										<Nav.Link eventKey={'datause'} className='verticalNavBar gray700-13'>
+											<SVGIcon name='datauseicon' fill={'#b3b8bd'} className='accountSvgs' />
+											<span className='navLinkItem'>Data Uses</span>
+										</Nav.Link>
+									</div>
 									<div className={this.getNavActiveClass('help')} onClick={e => this.toggleNav('help')}>
 										<Nav.Link className='verticalNavBar gray700-13'>
 											<SVGIcon name='info' fill={'#b3b8bd'} className='accountSvgs' />
@@ -722,8 +751,6 @@ class Account extends Component {
 
 								{tabId === 'reviews' ? <ReviewTools userState={userState} /> : ''}
 
-								{tabId === 'projects' ? <AccountProjects userState={userState} /> : ''}
-
 								{tabId === 'papers' ? <AccountPapers userState={userState} /> : ''}
 
 								{tabId === 'courses' ? <AccountCourses userState={userState} /> : ''}
@@ -739,6 +766,27 @@ class Account extends Component {
 											team={team}
 											ref={this.activityLog}
 											onUpdateLogs={this.loadActivityLogNotifications}
+										/>
+									)
+								) : (
+									''
+								)}
+
+								{tabId === 'datause' ? (
+									showDataUseUploadPage ? (
+										<DataUseUpload
+											userState={userState}
+											onSubmit={this.toggleDataUseUploadPage}
+											team={team}
+											ref={this.dataUseUpload}
+											dataUsePage={this.dataUsePage}
+										/>
+									) : (
+										<DataUsePage
+											userState={userState}
+											team={team}
+											onClickDataUseUpload={this.toggleDataUseUploadPage}
+											ref={this.dataUsePage}
 										/>
 									)
 								) : (
@@ -792,6 +840,27 @@ class Account extends Component {
 											<AccountTeams userState={userState} onTeamsTabChange={this.onTeamsTabChange} team={team} alert={alert} />
 										)}
 									</>
+								)}
+
+								{tabId === 'datause' ? (
+									showDataUseUploadPage ? (
+										<DataUseUpload
+											userState={userState}
+											team={team}
+											ref={this.dataUseUpload}
+											dataUsePage={this.dataUsePage}
+											onSubmit={this.toggleDataUseUploadPage}
+										/>
+									) : (
+										<DataUsePage
+											userState={userState}
+											team={team}
+											onClickDataUseUpload={this.toggleDataUseUploadPage}
+											ref={this.dataUsePage}
+										/>
+									)
+								) : (
+									''
 								)}
 
 								{allowWorkflow && this.userHasRole(team, 'manager') && (
@@ -865,10 +934,21 @@ class Account extends Component {
 						</div>
 					</ActionBar>
 				)}
+
+				{showDataUseUploadPage && (
+					<ActionBar userState={userState}>
+						<div className='action-bar'>
+							<div className='action-bar-actions'>
+								<DataUseUploadActionButtons dataUseUpload={this.dataUseUpload} />
+							</div>
+						</div>
+					</ActionBar>
+				)}
+
 				<DataSetModal open={showModal} context={context} closed={this.toggleModal} userState={userState[0]} />
 			</Sentry.ErrorBoundary>
 		);
 	}
 }
 
-export default Account;
+export default withRouter(Account);

@@ -35,8 +35,8 @@ class AddEditToolPage extends React.Component {
 		userState: [],
 		searchString: '',
 		datasetData: [],
+		datauseData: [],
 		toolData: [],
-		projectData: [],
 		paperData: [],
 		personData: [],
 		courseData: [],
@@ -328,7 +328,7 @@ class AddEditToolPage extends React.Component {
 
 			if (type === 'dataset' && page > 0) searchURL += '&datasetIndex=' + page;
 			if (type === 'tool' && page > 0) searchURL += '&toolIndex=' + page;
-			if (type === 'project' && page > 0) searchURL += '&projectIndex=' + page;
+			if (type === 'datause' && page > 0) searchURL += '&datauseIndex=' + page;
 			if (type === 'paper' && page > 0) searchURL += '&paperIndex=' + page;
 			if (type === 'person' && page > 0) searchURL += '&personIndex=' + page;
 			if (type === 'course' && page > 0) searchURL += '&courseIndex=' + page;
@@ -344,7 +344,7 @@ class AddEditToolPage extends React.Component {
 					this.setState({
 						datasetData: res.data.datasetResults || [],
 						toolData: res.data.toolResults || [],
-						projectData: res.data.projectResults || [],
+						datauseData: res.data.dataUseRegisterResults || [],
 						paperData: res.data.paperResults || [],
 						personData: res.data.personResults || [],
 						courseData: res.data.courseResults || [],
@@ -436,7 +436,7 @@ class AddEditToolPage extends React.Component {
 			searchString,
 			datasetData,
 			toolData,
-			projectData,
+			datauseData,
 			paperData,
 			personData,
 			courseData,
@@ -481,7 +481,7 @@ class AddEditToolPage extends React.Component {
 						doUpdateSearchString={this.updateSearchString}
 						datasetData={datasetData}
 						toolData={toolData}
-						projectData={projectData}
+						datauseData={datauseData}
 						paperData={paperData}
 						personData={personData}
 						courseData={courseData}
