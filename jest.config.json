@@ -17,5 +17,6 @@
 		".constants.js",
 		".propTypes.js"
 	],
-	"collectCoverageFrom": ["src/**/*.{js,jsx}"]
+	"collectCoverageFrom": ["src/**/*.{js,jsx}"],
+	"testEnvironment": "node"
 }

@@ -9,7 +9,7 @@ import utils from '../../../../utils/DataSetHelper.util';
 import googleAnalytics from '../../../../tracking';
 import '../../Dashboard.scss';
 import AccountDatasetsContent from './AccountDatasetsContent';
-import AccountDatasetsCreate from './AccountDatasetsCreate';
+import AccountDatasetsCreate from '../AccountDatasetsCreate';
 import AccountDatasetsTabs from './AccountDatasetsTabs';
 import { MAXRESULTS } from '../../../collections/constants';
 
