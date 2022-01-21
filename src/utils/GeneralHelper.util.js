@@ -121,27 +121,31 @@ export const filterBranches = (filters, iteratee, children = 'children') => {
 	const filteredNodes = [];
 
 	const filter = (filters, parentNode) => {
-		const data = [...filters];
+		if (filters) {
+			const data = [...filters];
 
-		data.forEach((item, i) => {
-			const foundNodes = findAllByKey(item, (key, value) => {
-				return iteratee(item, key, value);
+			data.forEach((item, i) => {
+				const foundNodes = findAllByKey(item, (key, value) => {
+					return iteratee(item, key, value);
+				});
+
+				if (!!foundNodes.length) {
+					const foundNode = {
+						...item,
+						[children]: [],
+					};
+
+					if (!parentNode) filteredNodes.push(foundNode);
+					else parentNode[children].push(foundNode);
+
+					if (foundNodes) filter(item[children], foundNode);
+				}
 			});
 
-			if (!!foundNodes.length) {
-				const foundNode = {
-					...item,
-					[children]: [],
-				};
+			return data;
+		}
 
-				if (!parentNode) filteredNodes.push(foundNode);
-				else parentNode[children].push(foundNode);
-
-				if (foundNodes) filter(item[children], foundNode);
-			}
-		});
-
-		return data;
+		return filters;
 	};
 
 	filter(filters);
