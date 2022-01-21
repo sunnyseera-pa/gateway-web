@@ -19,8 +19,6 @@ const AccountDatasetsCreate = props => {
 	});
 
 	const createNewDataset = e => {
-		console.log('********************* YAY PREVENTED', e.preventDefault);
-
 		e.preventDefault();
 
 		dataPostDatasetOnboarding.refetch();
