@@ -44,6 +44,10 @@ const typeMapper = {
 	Collections: 'collection',
 };
 
+export const isTree = key => {
+	return ['spatial'].includes(key);
+};
+
 class SearchPage extends React.Component {
 	state = {
 		search: '',
@@ -696,7 +700,7 @@ class SearchPage extends React.Component {
 			if (!_.isEmpty(parentNode)) {
 				parentNode.highlighted = [];
 
-				if (this.isTree(parentNode.key)) {
+				if (isTree(parentNode.key)) {
 					this.setTreeHighlightedFilters(parentNode, filters[filterKey]);
 				} else {
 					this.setShallowHighlightedFilters(parentNode, filters[filterKey], tree);
@@ -950,14 +954,10 @@ class SearchPage extends React.Component {
 		}, {});
 	};
 
-	isTree = key => {
-		return ['spatial'].includes(key);
-	};
-
 	handleClearSelection = selectedNode => {
 		const { parentKey, value } = selectedNode;
 
-		if (this.isTree(parentKey)) {
+		if (isTree(parentKey)) {
 			const selectedV2 = this.getSelectedFiltersStateByKey(this.state.key);
 			const selectedV2Filtered = selectedV2.filter(filter => {
 				return filter.value !== value;
@@ -973,6 +973,88 @@ class SearchPage extends React.Component {
 		}
 	};
 
+	/**
+	 * HandleSelection
+	 *
+	 * @desc remove item from filters applied and update tree
+	 * @param {object} node
+	 */
+	handleClearSection = node => {
+		const { key } = node;
+
+		if (isTree(key)) {
+			this.handleClearTreeSection(node);
+		} else {
+			this.handleClearShallowSection(node);
+		}
+	};
+
+	handleClearTreeSection = node => {
+		const { key, filtersv2 } = node;
+		const selectedV2 = this.getSelectedFiltersStateByKey(this.state.key);
+
+		if (!_.isEmpty(filtersv2)) {
+			const filteredSelectedV2 = selectedV2.filter(selectedFilter => selectedFilter.parentKey !== key);
+			const filtersV2 = this.getFilterStateByKey(this.state.key);
+
+			const parentNode = this.findParentNode(filtersV2, key);
+
+			if (!_.isEmpty(parentNode)) {
+				parentNode.selectedCount = 0;
+
+				const filtersV2Entity = `filtersV2${this.state.key}`;
+				const selectedV2Entity = `selectedV2${this.state.key}`;
+
+				this.setState({ [filtersV2Entity]: filtersV2, [selectedV2Entity]: filteredSelectedV2, isResultsLoading: true }, () => {
+					this.doSearchCall();
+				});
+			}
+		}
+	};
+
+	handleClearShallowSection = node => {
+		const { key, filters } = node;
+		let selectedV2 = this.getSelectedFiltersStateByKey(this.state.key);
+
+		if (!_.isEmpty(filters)) {
+			const selectedNodeFilters = filters
+				.filter(nodeItem => nodeItem.checked)
+				.map(node => {
+					return { ...node, checked: false };
+				});
+
+			const filtersV2 = this.getFilterStateByKey(this.state.key);
+			const parentNode = this.findParentNode(filtersV2, key);
+
+			console.log('parentNode', parentNode);
+
+			if (!_.isEmpty(parentNode)) {
+				const { filters, key } = parentNode;
+
+				if (isTree(key)) {
+				}
+
+				selectedNodeFilters.forEach(node => {
+					const foundNode = this.findNode(filters, node.label);
+
+					if (!_.isEmpty(foundNode)) {
+						foundNode.checked = false;
+
+						--parentNode.selectedCount;
+
+						selectedV2 = [...selectedV2].filter(node => node.id !== foundNode.id);
+					}
+				});
+
+				const filtersV2Entity = `filtersV2${this.state.key}`;
+				const selectedV2Entity = `selectedV2${this.state.key}`;
+				this.setState({ [filtersV2Entity]: filtersV2, [selectedV2Entity]: [], isResultsLoading: true }, () => {
+					this.doSearchCall();
+				});
+			}
+		}
+	};
+
 	resetChecked = tree => {
 		if (_.isEmpty(tree)) return [];
 
@@ -985,6 +1067,7 @@ class SearchPage extends React.Component {
 
 			return this.resetChecked(node.filtersv2 || node.filters || node.children);
 		});
+
 		return tree;
 	};
 
@@ -1241,7 +1324,7 @@ class SearchPage extends React.Component {
 	 * @param {boolean} checkValue
 	 */
 	handleInputChange = (nodes, parentKey, checkValue) => {
-		if (this.isTree(parentKey)) {
+		if (isTree(parentKey)) {
 			this.setState(this.filterTreeByCheckbox(nodes, parentKey, checkValue), () => {
 				this.doSearchCall();
 			});
@@ -1444,6 +1527,7 @@ class SearchPage extends React.Component {
 			data: this.getFilterStateByKey(key),
 			onHandleInputChange: this.handleInputChange,
 			onHandleToggle: this.handleToggle,
+			onHandleClearSection: this.handleClearSection,
 			onTreeFormatted: this.handleTreeFormatted,
 		};
 	}

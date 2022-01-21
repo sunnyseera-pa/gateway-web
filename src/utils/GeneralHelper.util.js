@@ -70,7 +70,7 @@ export const flattenObject = (data, key) => {
 
 	if (data[key]) {
 		data[key].forEach(item => {
-			flattened.push(flattenObject(item, key));
+			flattened.concat(flattenObject(item, key));
 		});
 	}
 
@@ -115,4 +115,36 @@ export const findAllByKey = (data, iteratee) => {
 	findDeep(data);
 
 	return found;
+};
+
+export const filterBranches = (filters, iteratee, children = 'children') => {
+	const filteredNodes = [];
+
+	const filter = (filters, parentNode) => {
+		const data = [...filters];
+
+		data.forEach((item, i) => {
+			const foundNodes = findAllByKey(item, (key, value) => {
+				return iteratee(item, key, value);
+			});
+
+			if (!!foundNodes.length) {
+				const foundNode = {
+					...item,
+					[children]: [],
+				};
+
+				if (!parentNode) filteredNodes.push(foundNode);
+				else parentNode[children].push(foundNode);
+
+				if (foundNodes) filter(item[children], foundNode);
+			}
+		});
+
+		return data;
+	};
+
+	filter(filters);
+
+	return filteredNodes;
 };

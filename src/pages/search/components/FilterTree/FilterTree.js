@@ -1,19 +1,14 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/react';
-import { flatMapDeep } from 'lodash';
 import React from 'react';
-import { Accordion } from 'react-bootstrap';
+import reduceDeep from 'deepdash-es/reduceDeep';
 import CheckboxTree from '../../../../components/CheckboxTree';
-import Input from '../../../../components/Input';
-import SearchInput from '../../../../components/SearchInput';
-// import { replaceKey } from '../../../../utils/GeneralHelper.util';
-import TreeSubHeader from '../TreeSubHeader';
-import * as styles from './FilterTree.styles';
+import { filterBranches, findAllByKey } from '../../../../utils/GeneralHelper.util';
 
-const FilterTree = ({ node, filters, highlighted, checked, expanded, onCheck, onHandleToggle }) => {
+const FilterTree = ({ node, filters, highlighted, checked, expanded, onCheck, searchValue }) => {
 	const [nodesChecked, setNodesChecked] = React.useState(checked);
 	const [nodesExpanded, setNodesExpanded] = React.useState(expanded);
-	const [nodeFilters, setNodeFilters] = React.useState(filters);
+	const [nodeFilters, setNodeFilters] = React.useState([]);
 
 	React.useEffect(() => {
 		setNodesChecked(checked);
@@ -61,37 +56,30 @@ const FilterTree = ({ node, filters, highlighted, checked, expanded, onCheck, on
 
 				data[i] = clonedItem;
 
-				formatLabels(clonedItem.children);
+				formatLabels(data[i].children);
 			});
 
 			return data;
 		};
 
-		setNodeFilters(formatLabels(filters));
-	}, [highlighted]);
-
-	const handleToggleClick = React.useCallback(() => {
-		onHandleToggle(node);
-	}, []);
+		setNodeFilters(
+			formatLabels(
+				filterBranches(filters, (node, key, value) => {
+					return key === 'value' && value.toLowerCase().includes(searchValue.toLowerCase());
+				})
+			)
+		);
+	}, [highlighted, filters, searchValue]);
 
 	return (
-		<Accordion css={styles.root}>
-			<Accordion.Toggle eventKey='0' css={styles.toggle} onClick={handleToggleClick}>
-				<TreeSubHeader node={node} />
-			</Accordion.Toggle>
-			<Accordion.Collapse eventKey='0'>
-				<>
-					<SearchInput variant='secondary' size='small' />
-					<CheckboxTree
-						nodes={nodeFilters}
-						checked={nodesChecked}
-						expanded={nodesExpanded}
-						onCheck={handleChecked}
-						onExpand={setNodesExpanded}
-					/>
-				</>
-			</Accordion.Collapse>
-		</Accordion>
+		<CheckboxTree
+			nodes={nodeFilters}
+			checked={nodesChecked}
+			expanded={nodesExpanded}
+			onCheck={handleChecked}
+			onExpand={setNodesExpanded}
+			mt={3}
+		/>
 	);
 };
 

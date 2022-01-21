@@ -4,8 +4,11 @@ import { SlideDown } from 'react-slidedown';
 import Checkbox from '../../../components/Checkbox';
 import SVGIcon from '../../../images/SVGIcon';
 import { FilterCount } from './FilterCount';
+import { FilterSearch } from './FilterSearch';
+import { FilterClearSection } from './FilterClearSection';
 import FilterTree from './FilterTree';
 import TreeSubHeader from './TreeSubHeader';
+import { isTree } from '../SearchPage';
 
 const CheckboxWrapper = ({ node = {}, highlighted = [], parentKey = '', onHandleInputChange }) => {
 	let highlight = false;
@@ -91,9 +94,26 @@ const TreeItem = ({ node, highlighted, parentKey, hasChildren, onHandleInputChan
 	return <CheckboxWrapper node={node} highlighted={highlighted} parentKey={parentKey} onHandleInputChange={onHandleInputChange} />;
 };
 
-const TreeComponent = ({ node, parentKey, hasChildren, onHandleInputChange, onHandleToggle, children, selected }) => {
+const TreeComponent = ({
+	node,
+	parentKey,
+	hasChildren,
+	onHandleInputChange,
+	onHandleToggle,
+	onHandleClearSection,
+	children,
+	selected = [],
+}) => {
 	const [searchValue, setSearchValue] = useState('');
 	const [highlighted, setHighlight] = useState([]);
+
+	const onSearchChange = value => {
+		setSearchValue(value);
+	};
+
+	const onClearSection = () => {
+		onHandleClearSection(node);
+	};
 
 	const getSubClass = () => {
 		if (typeof node.filters !== 'undefined' && node.filters.length > 0) {
@@ -114,6 +134,20 @@ const TreeComponent = ({ node, parentKey, hasChildren, onHandleInputChange, onHa
 		if (node.closed) setSearchValue('');
 	}, [node.closed, node.highlighted]);
 
+	const hasControls = () => {
+		if (isTree(node)) {
+			return !!node.filtersv2 && !node.closed && node.filtersv2.length > 7;
+		} else {
+			return !!node.filters && !node.closed && node.filters.length > 7;
+		}
+	};
+
+	const filterOutHttp = filters => {
+		return filters.filter(filter => {
+			return !/http/i.test(filter.value);
+		});
+	};
+
 	return (
 		<Fragment>
 			<TreeItem
@@ -125,8 +159,26 @@ const TreeComponent = ({ node, parentKey, hasChildren, onHandleInputChange, onHa
 				onHandleToggle={onHandleToggle}
 			/>
 			<SlideDown closed={false} className={hasChildren ? 'node-check-group' : 'node-single-group'}>
+				{hasControls() && (
+					<>
+						<FilterSearch onSearchChange={onSearchChange} />
+						<FilterClearSection onClearSection={onClearSection} />
+					</>
+				)}
 				<div className={getSubClass()}>
-					{!children && typeof node.filters !== 'undefined' && node.filters.length > 0 && !node.closed && (
+					{isTree(node.key) && !node.closed && (
+						<FilterTree
+							node={node}
+							filters={filterOutHttp(node.filtersv2)}
+							checked={selected.map(({ value }) => value)}
+							onCheck={onHandleInputChange}
+							highlighted={node.highlighted}
+							onHandleToggle={onHandleToggle}
+							searchValue={searchValue}
+						/>
+					)}
+
+					{!isTree(node.key) && !children && typeof node.filters !== 'undefined' && node.filters.length > 0 && !node.closed && (
 						<Filter
 							selected={selected}
 							data={node.filters}
@@ -136,6 +188,7 @@ const TreeComponent = ({ node, parentKey, hasChildren, onHandleInputChange, onHa
 							searchValue={searchValue}
 							onHandleInputChange={onHandleInputChange}
 							onHandleToggle={onHandleToggle}
+							onHandleClearSection={onHandleClearSection}
 						/>
 					)}
 				</div>
@@ -153,6 +206,7 @@ const Filter = ({
 	searchValue = '',
 	onHandleInputChange,
 	onHandleToggle,
+	onHandleClearSection,
 }) => {
 	let generateClassName = node => {
 		let { key = '' } = node;
@@ -160,12 +214,6 @@ const Filter = ({
 		if (hasChildren && !_.isEmpty(key)) return `${treeClass}-group`;
 		else if (hasChildren) return `${treeClass}-subItem`;
 		else return `${treeClass}-wrapper`;
-	};
-
-	const filterOutHttp = filters => {
-		return filters.filter(filter => {
-			return !/http/i.test(filter.value);
-		});
 	};
 
 	return (
@@ -180,42 +228,22 @@ const Filter = ({
 						return false;
 					})
 					.map(node => {
-						const selectedValues = selected ? selected.map(({ value }) => value) : [];
-
 						return (
 							<div key={node.label} className={generateClassName(node)}>
-								{!!node.filtersv2 && (
-									<FilterTree
+								{generateClassName(node) !== 'node-subItem' ? (
+									<TreeComponent
+										selected={selected}
+										key={node.id}
 										node={node}
-										filters={filterOutHttp(node.filtersv2)}
-										checked={selectedValues}
-										onCheck={onHandleInputChange}
+										parentKey={parentKey}
 										highlighted={node.highlighted}
+										hasChildren={hasChildren}
+										onHandleInputChange={onHandleInputChange}
 										onHandleToggle={onHandleToggle}
+										onHandleClearSection={onHandleClearSection}
 									/>
-								)}
-								{!node.filtersv2 && (
-									<>
-										{generateClassName(node) !== 'node-subItem' ? (
-											<TreeComponent
-												selected={selected}
-												key={node.id}
-												node={node}
-												parentKey={parentKey}
-												highlighted={node.highlighted}
-												hasChildren={hasChildren}
-												onHandleInputChange={onHandleInputChange}
-												onHandleToggle={onHandleToggle}
-											/>
-										) : (
-											<CheckboxWrapper
-												node={node}
-												highlighted={highlighted}
-												parentKey={parentKey}
-												onHandleInputChange={onHandleInputChange}
-											/>
-										)}
-									</>
+								) : (
+									<CheckboxWrapper node={node} highlighted={highlighted} parentKey={parentKey} onHandleInputChange={onHandleInputChange} />
 								)}
 							</div>
 						);
