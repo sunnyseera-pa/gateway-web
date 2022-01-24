@@ -23,9 +23,9 @@ const AccountDatasetsTabs = ({ counts = { inReview: 0, active: 0, rejected: 0, a
 					) : (
 						<Tabs className='dataAccessTabs gray700-13' activeKey={activeKey} onSelect={onSelectTab}>
 							<Tab
-								eventKey='active'
+								eventKey='active,draft'
 								title={t('tabs.counts.active', {
-									count: counts.active,
+									count: counts.active + counts.draft,
 								})}>
 								{' '}
 							</Tab>
