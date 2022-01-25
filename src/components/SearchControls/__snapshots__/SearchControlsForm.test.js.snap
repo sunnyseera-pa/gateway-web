@@ -24,7 +24,7 @@ exports[`Given the SearchControls component When it is rendered And it is not lo
         <input
           class="form-control"
           name="search"
-          placeholder="search.placeholder"
+          placeholder="Search within dataset"
           value="dataset"
         />
         <div
@@ -58,7 +58,7 @@ exports[`Given the SearchControls component When it is rendered And it is not lo
             class="dropdown-toggle btn btn-primary"
             type="button"
           >
-            sortby.options.relevance
+            Match to search terms (closest first)
           </button>
         </div>
       </div>

@@ -25,7 +25,7 @@ const AccountDatasetsTabs = ({ counts = { inReview: 0, active: 0, rejected: 0, a
 							<Tab
 								eventKey='active,draft'
 								title={t('tabs.counts.active', {
-									count: counts.active + counts.draft,
+									count: counts['active,draft'],
 								})}>
 								{' '}
 							</Tab>
