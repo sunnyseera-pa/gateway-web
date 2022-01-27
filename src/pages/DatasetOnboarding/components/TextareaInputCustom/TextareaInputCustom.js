@@ -29,12 +29,14 @@ class TextareaInputCustom extends React.Component {
 	render() {
 		return (
 			<>
-				<div className='wordCount'>
-					<span>{this.state.length} character limit</span>{' '}
-					<span>
-						(<span id='currentCount'>{this.state.value ? this.state.value.length : 0}</span>/{this.state.length})
-					</span>
-				</div>
+				{this.state.length !== undefined && (
+					<div className='wordCount'>
+						<span>{this.state.length} character limit</span>{' '}
+						<span>
+							(<span id='currentCount'>{this.state.value ? this.state.value.length : 0}</span>/{this.state.length})
+						</span>
+					</div>
+				)}
 
 				<TextareaAutosize
 					type='text'
