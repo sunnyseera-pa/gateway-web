@@ -19,6 +19,7 @@ const Input = ({
 	debounceDelay,
 	inputRef,
 	className,
+	children,
 	ml,
 	mr,
 	mb,
@@ -67,7 +68,8 @@ const Input = ({
 						{iconPrepend}
 					</InputGroup.Prepend>
 				)}
-				<Form.Control {...outerProps} onChange={handleChange} ref={inputRef} />
+   			{!children && <Form.Control {...outerProps} onChange={handleChange} ref={inputRef} />}
+			  {children}
 				{(iconAppend || textAppend) && (
 					<InputGroup.Append
 						css={css`
@@ -81,7 +83,6 @@ const Input = ({
 				)}
 			</InputGroup>
 		</Form.Group>
-	);
 };
 
 Input.propTypes = PROP_TYPES_INPUT;

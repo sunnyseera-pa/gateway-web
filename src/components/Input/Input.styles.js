@@ -14,18 +14,22 @@ export const inputGroup = ({ prepend, append, variant, size }) => theme => {
 	return css`
 		width: 100%;
 
-		.form-control {
+		input.form-control,
+		.rbt-input.form-control {
 			${prepend.offsetWidth ? `padding-left: calc(${prepend.offsetWidth}px + 1.2em);` : ''}
 			${append.offsetWidth ? `padding-right: calc(${append.offsetWidth}px + 1.2em);` : ''}
 			background: ${colors[variants[variant].background]};
-			border-color: ${colors[variants[variant].borderColor]};
+			border-style: solid !important;
+			border-width: 2px !important;
+			border-color: ${colors[variants[variant].borderColor]} !important;
 			border-radius: 0.25rem !important;
 			font-size: ${defaultSize};
 			height: ${sizes[size].height};
 			width: 100%;
 
-			&:focus {
-				border-color: ${colors.green700};
+			&:focus,
+			&.focus {
+				border-color: ${colors.teal} !important;
 			}
 		}
 	`;

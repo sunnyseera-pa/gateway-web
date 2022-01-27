@@ -679,6 +679,12 @@ export const mockGetPublisher = {
 	},
 };
 
+export const mockPostDataset = {
+	data: {
+		id: '5f3f98068af2ef61552e1d75',
+	},
+};
+
 export const mswGetPublisher = rest.get(`${apiURL}/dataset-onboarding/publisher/applicant`, (req, res, ctx) => {
 	const search = req.url.searchParams.get('search');
 	const sortBy = req.url.searchParams.get('sortBy');
@@ -703,4 +709,8 @@ export const mswGetPublisher404 = rest.get(`${apiURL}/dataset-onboarding/publish
 	return res(ctx.status(404));
 });
 
-export default [mswGetPublisher, mswGetPublisher404];
+export const mswPostDataset = rest.post(`${apiURL}/dataset-onboarding`, (req, res, ctx) => {
+	return res(ctx.status(200), ctx.json(mockPostDataset));
+});
+
+export default [mswPostDataset, mswGetPublisher, mswGetPublisher404];
