@@ -72,10 +72,14 @@ export const theme = {
 		grey: '#F6F7F8',
 		grey100: '#F6F7F8',
 		grey200: '#EEE',
+		grey300: '#E2E2E2',
+		grey400: '#D0D3D4',
 		grey700: '#53575A',
 		grey700Alt: '#848E97',
 		grey800: '#3C3C3B',
 		red600: '#EF3F4B',
+		purple: '#475da7',
+		teal: '#3db28c',
 	},
 	components: {
 		Icon: {
@@ -83,5 +87,6 @@ export const theme = {
 		},
 		Input: THEME_INPUT,
 		Dropdown: THEME_INPUT,
+		Typeahead: THEME_INPUT,
 	},
 };

@@ -6,16 +6,20 @@ const useDOMChanged = ref => {
 		offsetWidth: null,
 	});
 
+	const updateValues = node => {
+		const updatedValues = Object.keys(values).reduce((previousValue, currentValue) => {
+			return {
+				...previousValue,
+				[currentValue]: node[currentValue],
+			};
+		}, {});
+
+		if (!isEqual(values, updatedValues)) setValues(updatedValues);
+	};
+
 	useEffect(() => {
 		const initValuesChanged = () => {
-			const updatedValues = Object.keys(values).reduce((previousValue, currentValue) => {
-				return {
-					...previousValue,
-					[currentValue]: ref.current[currentValue],
-				};
-			}, {});
-
-			if (!isEqual(values, updatedValues)) setValues(updatedValues);
+			updateValues(ref.current);
 		};
 
 		if (ref.current) ref.current.addEventListener('DOMSubtreeModified', initValuesChanged);
@@ -24,6 +28,12 @@ const useDOMChanged = ref => {
 			if (ref.current) ref.current.removeEventListener('DOMSubtreeModified', initValuesChanged);
 		};
 	}, [ref.current]);
+
+	useEffect(() => {
+		if (ref.current) {
+			updateValues(ref.current);
+		}
+	}, [ref.current && ref.current.offsetWidth]);
 
 	return values;
 };
