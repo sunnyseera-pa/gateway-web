@@ -34,18 +34,6 @@ describe('Given the SearchInput component', () => {
 			expect(wrapper.container.querySelector('[name="clear"]')).toBeFalsy();
 		});
 
-		describe('And it is submitted', () => {
-			beforeAll(() => {
-				const reset = wrapper.container.querySelector('[name="search"]');
-
-				fireEvent.click(reset);
-			});
-
-			it('Then calls onReset', () => {
-				expect(props.onSubmit).toHaveBeenCalled();
-			});
-		});
-
 		describe('And it is reset', () => {
 			beforeAll(() => {
 				wrapper = render(<SearchInput {...props} value='collection' />, {

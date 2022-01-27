@@ -1,17 +1,19 @@
 import { css } from '@emotion/react';
 
-export const inputGroup = ({ prepend, append, variant }) => theme => {
+export const inputGroup = ({ prepend, append, variant, size }) => theme => {
 	const {
 		font: {
 			size: { default: defaultSize },
 		},
 		colors,
 		components: {
-			Input: { variants, height },
+			Input: { variants, sizes },
 		},
 	} = theme;
 
 	return css`
+		width: 100%;
+
 		input.form-control,
 		.rbt-input.form-control {
 			${prepend.offsetWidth ? `padding-left: calc(${prepend.offsetWidth}px + 1.2em);` : ''}
@@ -22,7 +24,8 @@ export const inputGroup = ({ prepend, append, variant }) => theme => {
 			border-color: ${colors[variants[variant].borderColor]} !important;
 			border-radius: 0.25rem !important;
 			font-size: ${defaultSize};
-			height: ${height};
+			height: ${sizes[size].height};
+			width: 100%;
 
 			&:focus,
 			&.focus {
@@ -47,4 +50,9 @@ export const decorators = css`
 	transform: translateY(-50%);
 	display: inline-flex;
 	align-items: center;
+`;
+
+export const formGroup = css`
+	display: flex;
+	flex-direction: column;
 `;

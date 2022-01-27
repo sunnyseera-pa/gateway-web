@@ -22,8 +22,8 @@ jest.mock('../../../../components/Icon', () => ({ onClick }) => (
 
 jest.mock('../../../commonComponents/relatedObject/RelatedObject', () => <div />);
 
-jest.mock('react-router', () => ({
-	...jest.requireActual('react-router'),
+jest.mock('react-router-dom', () => ({
+	...jest.requireActual('react-router-dom'),
 	useHistory: () => ({
 		push: mockHistoryPush,
 	}),

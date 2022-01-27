@@ -1,13 +1,13 @@
 import { css } from '@emotion/react';
 
-export const root = ({ variant }) => theme => {
+export const root = ({ variant, size }) => theme => {
 	const {
 		font: {
 			size: { default: defaultSize },
 		},
 		colors,
 		components: {
-			Dropdown: { variants, height },
+			Dropdown: { variants, sizes },
 		},
 	} = theme;
 
@@ -18,7 +18,7 @@ export const root = ({ variant }) => theme => {
 			width: 100%;
 			padding-right: 1.5rem;
 			font-size: ${defaultSize};
-			height: ${height};
+			height: ${sizes[size].height};
 
 			&:after {
 				position: absolute;

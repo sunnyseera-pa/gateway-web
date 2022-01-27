@@ -25,7 +25,17 @@ export const getCommonStyles = ({ ml, mr, mb, mt, width, maxWidth, minWidth }, t
 };
 
 export const THEME_INPUT = {
-	height: '40px',
+	sizes: {
+		small: {
+			height: '30px',
+		},
+		default: {
+			height: '40px',
+		},
+		large: {
+			height: '50px',
+		},
+	},
 	variants: {
 		primary: {
 			background: 'white',
@@ -87,6 +97,24 @@ export const theme = {
 		},
 		Input: THEME_INPUT,
 		Dropdown: THEME_INPUT,
+		Checkbox: {
+			height: '20px',
+			width: '20px',
+			variants: {
+				primary: {
+					borderColor: 'grey200',
+					backgroundDisabled: 'grey100',
+					checkedBackground: 'green700',
+					hoverBackground: 'grey200',
+				},
+				secondary: {
+					borderColor: 'grey200',
+					backgroundDisabled: 'grey100',
+					checkedBackground: 'grey700',
+					hoverBackground: 'grey200',
+				},
+			},
+		},
 		Typeahead: THEME_INPUT,
 	},
 };

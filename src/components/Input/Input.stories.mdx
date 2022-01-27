@@ -6,7 +6,60 @@ import Icon from '../Icon';
 <Meta title='Core/Input' component={Input} />
 
 <Canvas>
-	<Story name='Basic'>
-		{props => <Input {...props} iconPrepend={<Icon name='star' />} iconAppend={<Icon name='tick' inline />} width='350px' />}
+	<Story name='Variants'>
+		{props => (
+			<>
+				<div>
+					<Input
+						{...props}
+						label='Primary'
+						iconPrepend={<Icon name='star' />}
+						iconAppend={<Icon name='tick' inline />}
+						width='350px'
+						mb={4}
+					/>
+				</div>
+				<div>
+					<Input
+						{...props}
+						label='Secondary'
+						variant='secondary'
+						iconPrepend={<Icon name='star' />}
+						iconAppend={<Icon name='tick' inline />}
+						width='350px'
+					/>
+				</div>
+			</>
+		)}
+	</Story>
+	<Story name='Sizes'>
+		{props => (
+			<>
+				<div>
+					<Input
+						{...props}
+						label='Small'
+						size='small'
+						iconPrepend={<Icon name='star' />}
+						iconAppend={<Icon name='tick' inline />}
+						width='350px'
+						mb={4}
+					/>
+				</div>
+				<div>
+					<Input {...props} label='Default' iconPrepend={<Icon name='star' />} iconAppend={<Icon name='tick' inline />} width='350px' />
+				</div>
+				<div>
+					<Input
+						{...props}
+						label='Default'
+						size='large'
+						iconPrepend={<Icon name='star' />}
+						iconAppend={<Icon name='tick' inline />}
+						width='350px'
+					/>
+				</div>
+			</>
+		)}
 	</Story>
 </Canvas>
