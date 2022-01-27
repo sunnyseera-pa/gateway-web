@@ -68,8 +68,8 @@ const Input = ({
 						{iconPrepend}
 					</InputGroup.Prepend>
 				)}
-   			{!children && <Form.Control {...outerProps} onChange={handleChange} ref={inputRef} />}
-			  {children}
+				{!children && <Form.Control {...outerProps} onChange={handleChange} ref={inputRef} />}
+				{children}
 				{(iconAppend || textAppend) && (
 					<InputGroup.Append
 						css={css`
@@ -83,6 +83,7 @@ const Input = ({
 				)}
 			</InputGroup>
 		</Form.Group>
+	);
 };
 
 Input.propTypes = PROP_TYPES_INPUT;
