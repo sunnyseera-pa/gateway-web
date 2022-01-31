@@ -468,12 +468,12 @@ class SearchPage extends React.Component {
 		let filtersV2PapersData = !_.isNil(this.state.filtersV2Papers) ? [...this.state.filtersV2Papers] : [];
 
 		// 2. v2 resets the filters UI tree back to default
-		let filtersV2Datasets = this.resetTreeChecked(filtersV2DatasetsData);
-		let filtersV2Tools = this.resetTreeChecked(filtersV2ToolsData);
-		let filtersV2Datauses = this.resetTreeChecked(filtersV2DatausesData);
-		let filtersV2Collections = this.resetTreeChecked(filtersV2CollectionsData);
-		let filtersV2Courses = this.resetTreeChecked(filtersV2CoursesData);
-		let filtersV2Papers = this.resetTreeChecked(filtersV2PapersData);
+		let filtersV2Datasets = this.resetChecked(filtersV2DatasetsData);
+		let filtersV2Tools = this.resetChecked(filtersV2ToolsData);
+		let filtersV2Datauses = this.resetChecked(filtersV2DatausesData);
+		let filtersV2Collections = this.resetChecked(filtersV2CollectionsData);
+		let filtersV2Courses = this.resetChecked(filtersV2CoursesData);
+		let filtersV2Papers = this.resetChecked(filtersV2PapersData);
 
 		this.setState(
 			prevState => ({
@@ -1440,12 +1440,12 @@ class SearchPage extends React.Component {
 		let filtersV2PapersData = !_.isNil(this.state.filtersV2Papers) ? [...this.state.filtersV2Papers] : [];
 
 		// 2. v2 resets the filters UI tree back to default
-		let filtersV2Datasets = this.resetTreeChecked(filtersV2DatasetsData);
-		let filtersV2Tools = this.resetTreeChecked(filtersV2ToolsData);
-		let filtersV2Datauses = this.resetTreeChecked(filtersV2DatausesData);
-		let filtersV2Collections = this.resetTreeChecked(filtersV2CollectionsData);
-		let filtersV2Courses = this.resetTreeChecked(filtersV2CoursesData);
-		let filtersV2Papers = this.resetTreeChecked(filtersV2PapersData);
+		let filtersV2Datasets = this.resetChecked(filtersV2DatasetsData);
+		let filtersV2Tools = this.resetChecked(filtersV2ToolsData);
+		let filtersV2Datauses = this.resetChecked(filtersV2DatausesData);
+		let filtersV2Collections = this.resetChecked(filtersV2CollectionsData);
+		let filtersV2Courses = this.resetChecked(filtersV2CoursesData);
+		let filtersV2Papers = this.resetChecked(filtersV2PapersData);
 
 		this.setState(
 			{
