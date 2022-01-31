@@ -1,0 +1,11 @@
+import { Meta, Story, Canvas } from '@storybook/addon-docs';
+
+import Textarea from './Textarea';
+
+<Meta title='Core/Textarea' component={Textarea} />
+
+<Canvas>
+	<Story name='Basic'>{props => <Textarea label='Label' />}</Story>
+	<Story name='With count'>{props => <Textarea label='Label' charCountLength={255} />}</Story>
+	<Story name='Autosize'>{props => <Textarea label='Label' autosize />}</Story>
+</Canvas>

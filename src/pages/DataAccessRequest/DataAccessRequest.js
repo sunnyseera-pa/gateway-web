@@ -55,6 +55,7 @@ import SelectDatasetModal from './components/SelectDatasetModal/SelectDatasetMod
 import VersionSelector from '../commonComponents/versionSelector/VersionSelector';
 import googleAnalytics from '../../tracking';
 import ErrorModal from '../commonComponents/errorModal';
+import TextareaInputCustom from '../commonComponents/TextareaInputCustom/TextareaInputCustom';
 
 class DataAccessRequest extends Component {
 	constructor(props) {
@@ -1896,6 +1897,8 @@ class DataAccessRequest extends Component {
 		Winterfell.addInputType('typeaheadCustom', TypeaheadCustom);
 		Winterfell.addInputType('datePickerCustom', DatePickerCustom);
 		Winterfell.addInputType('typeaheadUser', TypeaheadUser);
+		Winterfell.addInputType('textareaInputCustom', TextareaInputCustom);
+
 		Winterfell.validation.default.addValidationMethods({
 			isCustomDate: value => {
 				if (_.isEmpty(value) || _.isNil(value) || moment(value, 'DD/MM/YYYY').isValid()) {

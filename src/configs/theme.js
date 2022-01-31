@@ -97,6 +97,7 @@ export const theme = {
 		},
 		Input: THEME_INPUT,
 		Dropdown: THEME_INPUT,
+		Textarea: THEME_INPUT,
 		Checkbox: {
 			height: '20px',
 			width: '20px',

@@ -10,7 +10,7 @@ import TypeaheadCustom from './components/TypeaheadCustom/TypeaheadCustom';
 import TypeaheadAsyncCustom from './components/TypeaheadAsyncCustom';
 import TypeaheadCustomKeyValue from './components/TypeaheadCustom/TypeaheadCustomKeyValue';
 import TypeaheadKeywords from './components/TypeaheadKeywords/TypeaheadKeywords';
-import TextareaInputCustom from './components/TextareaInputCustom/TextareaInputCustom';
+import TextareaInputCustom from '../commonComponents/TextareaInputCustom/TextareaInputCustom';
 import TypeaheadUser from './components/TypeaheadUser/TypeaheadUser';
 import DatePickerCustom from './components/DatePickerCustom/DatepickerCustom';
 import MultiField from './components/MultiField/MultiField';
