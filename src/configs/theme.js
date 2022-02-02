@@ -25,7 +25,17 @@ export const getCommonStyles = ({ ml, mr, mb, mt, width, maxWidth, minWidth }, t
 };
 
 export const THEME_INPUT = {
-	height: '40px',
+	sizes: {
+		small: {
+			height: '30px',
+		},
+		default: {
+			height: '40px',
+		},
+		large: {
+			height: '50px',
+		},
+	},
 	variants: {
 		primary: {
 			background: 'white',
@@ -72,10 +82,14 @@ export const theme = {
 		grey: '#F6F7F8',
 		grey100: '#F6F7F8',
 		grey200: '#EEE',
+		grey300: '#E2E2E2',
+		grey400: '#D0D3D4',
 		grey700: '#53575A',
 		grey700Alt: '#848E97',
 		grey800: '#3C3C3B',
 		red600: '#EF3F4B',
+		purple: '#475da7',
+		teal: '#3db28c',
 	},
 	components: {
 		Icon: {
@@ -83,5 +97,24 @@ export const theme = {
 		},
 		Input: THEME_INPUT,
 		Dropdown: THEME_INPUT,
+		Checkbox: {
+			height: '20px',
+			width: '20px',
+			variants: {
+				primary: {
+					borderColor: 'grey200',
+					backgroundDisabled: 'grey100',
+					checkedBackground: 'green700',
+					hoverBackground: 'grey200',
+				},
+				secondary: {
+					borderColor: 'grey200',
+					backgroundDisabled: 'grey100',
+					checkedBackground: 'grey700',
+					hoverBackground: 'grey200',
+				},
+			},
+		},
+		Typeahead: THEME_INPUT,
 	},
 };

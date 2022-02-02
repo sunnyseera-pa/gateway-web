@@ -9,16 +9,29 @@ exports[`Given the AccountDatasetsContent component When it is rendered And has 
       class="col-lg-6"
     >
       <div
-        class="ui-Input ui-SearchInput css-nxqzw4 css-107dhd5-Input input-group"
+        class="css-koyxv1-Input form-group"
       >
+        <label
+          class="form-label"
+        />
         <div
-          class="css-j8o1xl-Input input-group-prepend"
+          class="ui-Input ui-SearchInput css-nxqzw4 css-1r1cho1-Input input-group"
         >
-          <span
-            class="icon-mock"
+          <div
+            class="css-haly75-Input input-group-prepend"
           >
-            Icon
-          </span>
+            <span
+              class="icon-mock"
+            >
+              Icon
+            </span>
+          </div>
+          <input
+            class="form-control"
+            name="search"
+            placeholder="search.placeholder"
+            value=""
+          />
         </div>
         <input
           class="form-control"

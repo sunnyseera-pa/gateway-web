@@ -9,7 +9,7 @@ exports[`Given the SearchControls component When it is rendered And it is not lo
       class="col-lg-6"
     >
       <div
-        class="ui-Input ui-SearchInput css-1sivg29 css-107dhd5-Input input-group"
+        class="css-koyxv1-Input form-group"
       >
         <div
           class="css-j8o1xl-Input input-group-prepend"
@@ -28,15 +28,35 @@ exports[`Given the SearchControls component When it is rendered And it is not lo
           value="dataset"
         />
         <div
-          class="css-41op7f-Input input-group-append"
+          class="ui-Input ui-SearchInput css-1sivg29 css-1r1cho1-Input input-group"
         >
-          <button
-            color="purple500"
-            name="clear"
-            role="button"
+          <div
+            class="css-haly75-Input input-group-prepend"
           >
-            Icon
-          </button>
+            <button
+              fill="green700"
+              name="search"
+            >
+              Icon
+            </button>
+          </div>
+          <input
+            class="form-control"
+            name="search"
+            placeholder="search.placeholder"
+            value="dataset"
+          />
+          <div
+            class="css-x0rxt-Input input-group-append"
+          >
+            <button
+              color="purple500"
+              name="clear"
+              role="button"
+            >
+              Icon
+            </button>
+          </div>
         </div>
       </div>
     </div>

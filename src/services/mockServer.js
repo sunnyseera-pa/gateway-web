@@ -3,6 +3,9 @@ import { rest } from 'msw';
 import mswDatasets from './datasets/mockMsw';
 import mswDatasetOnboarding from './dataset-onboarding/mockMsw';
 import mswPostDatasetActivityLog from './activitylog/mockMsw';
+import mswSearch from './search/mockMsw';
+import mswGetLocations from './locations/mockMsw';
+
 import translations from '../../public/locales/en-GB/translation.json';
 
 const mswGetEnTranslations = rest.get(`http://localhost/locales/en/translation.json`, (req, res, ctx) => {
@@ -21,6 +24,8 @@ const handlers = [
 	...mswDatasets,
 	...mswDatasetOnboarding,
 	...mswPostDatasetActivityLog,
+	...mswSearch,
+	...mswGetLocations,
 	mswGetEnTranslations,
 	mswGetEnGbTranslations,
 	mswGetIcon,
