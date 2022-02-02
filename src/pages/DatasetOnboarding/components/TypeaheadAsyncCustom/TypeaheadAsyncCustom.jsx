@@ -69,7 +69,7 @@ function TypeaheadAsyncCustom(props) {
 			selected={selected}
 			iconPrepend={showIcon && !selected.length && <Icon name='search' size='xl' fill='purple' />}
 			renderMenuItemChildren={({ location, hierarchy }) => (
-				<div>
+				<div class='menu'>
 					<span className='location'>{location}</span>
 					<span className='hierarchy'>{hierarchy}</span>
 				</div>
