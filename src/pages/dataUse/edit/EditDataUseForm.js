@@ -157,7 +157,7 @@ const EditFormDataUse = props => {
 			let gatewayDatasetsArray = [];
 			let nonGatewayDatasets = [];
 			values.datasets.forEach(dataset => {
-				if (dataset.id === 'nonGateway') nonGatewayDatasets.push(dataset.name);
+				if (dataset.pid === 'nonGateway') nonGatewayDatasets.push(dataset.name);
 				else gatewayDatasetsArray.push(dataset.pid);
 			});
 
