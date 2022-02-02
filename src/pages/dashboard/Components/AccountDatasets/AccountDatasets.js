@@ -67,7 +67,7 @@ const AccountDatasets = props => {
 
 	useEffect(() => {
 		setPublisherId(utils.getPublisherID(userState[0], team));
-		setKey(team === 'admin' ? 'inReview' : props.alert.tab || 'active');
+		setKey(team === 'admin' ? 'inReview' : props.alert.tab || 'active,draft');
 	}, [team]);
 
 	useEffect(() => {

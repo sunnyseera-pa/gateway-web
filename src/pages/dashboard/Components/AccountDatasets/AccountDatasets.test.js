@@ -80,7 +80,7 @@ describe('Given the AccountDatasets component', () => {
 		it('Then calls the tabs with the correct props', async () => {
 			await waitFor(() => {
 				expect(mockAccountDatasetsTabs).toHaveBeenCalledLastWithMatch({
-					activeKey: 'active',
+					activeKey: 'active,draft',
 					counts: { inReview: 19 },
 					team: 'applicant',
 				});
@@ -93,7 +93,7 @@ describe('Given the AccountDatasets component', () => {
 					data: mockGetPublisher.data.results.listOfDatasets,
 					isFetched: true,
 					isLoading: false,
-					status: 'active',
+					status: 'active,draft',
 					team: 'applicant',
 				});
 			});
@@ -119,7 +119,7 @@ describe('Given the AccountDatasets component', () => {
 					return expect(mockAccountDatasetsContent).toHaveBeenCalledLastWithMatch({
 						isFetched: true,
 						isLoading: false,
-						status: 'active',
+						status: 'active,draft',
 						team: 'applicant',
 					});
 				});

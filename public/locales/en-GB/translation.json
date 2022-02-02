@@ -32,6 +32,7 @@
 	"dataset": {
 		"inReview": "pending approval",
 		"active": "Active",
+		"active,draft": "Active",
 		"rejected": "Rejected",
 		"archive": "Archived",
 		"makeADecision": "Make a decision",

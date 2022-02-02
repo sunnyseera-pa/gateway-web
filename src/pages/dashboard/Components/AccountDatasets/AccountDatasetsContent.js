@@ -9,7 +9,7 @@ import SearchControls from '../../../../components/SearchControls';
 import '../../Dashboard.scss';
 import MessageNotFound from '../../../commonComponents/MessageNotFound';
 
-const options = ['alphabetic', 'latest', 'recentlyadded', 'metadata', 'popularity'];
+const options = ['alphabetic', 'latest', 'recentlyadded', 'metadata'];
 const inReviewOptions = ['alphabetic', 'latest', 'recentlyadded', 'metadata'];
 
 const AccountDatasetsContent = ({ data = [], onSubmit, isLoading, isFetched, status, params, team, count }) => {
