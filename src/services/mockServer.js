@@ -5,6 +5,7 @@ import mswDatasetOnboarding from './dataset-onboarding/mockMsw';
 import mswPostDatasetActivityLog from './activitylog/mockMsw';
 import mswSearch from './search/mockMsw';
 import mswGetLocations from './locations/mockMsw';
+import mswGetContributors from './contributors/mockMsw';
 
 import translations from '../../public/locales/en-GB/translation.json';
 
@@ -24,8 +25,9 @@ const handlers = [
 	...mswDatasets,
 	...mswDatasetOnboarding,
 	...mswPostDatasetActivityLog,
-	...mswSearch,
+	// ...mswSearch,
 	...mswGetLocations,
+	...mswGetContributors,
 	mswGetEnTranslations,
 	mswGetEnGbTranslations,
 	mswGetIcon,
