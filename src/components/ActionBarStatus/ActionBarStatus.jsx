@@ -3,12 +3,10 @@ import { cx } from '@emotion/css';
 import { jsx } from '@emotion/react';
 import PropTypes from 'prop-types';
 import { addCommonPropTypes } from '../../configs/propTypes';
-import useCommonStyles from '../../hooks/useCommonStyles';
 import { dateFormats } from '../../utils/GeneralHelper.util';
+import LayoutBox from '../LayoutBox';
 
 const ActionBarStatus = ({ status, dataset, totalQuestions, className, mt, mb, ml, mr, width, minWidth, maxWidth, ...outerProps }) => {
-	const commonStyles = useCommonStyles({ mt, mb, ml, mr, width, minWidth, maxWidth });
-
 	const {
 		timestamps: { published, submitted, rejected, archived },
 	} = dataset;
@@ -41,9 +39,11 @@ const ActionBarStatus = ({ status, dataset, totalQuestions, className, mt, mb, m
 	}
 
 	return (
-		<div {...outerProps} className={cx('action-bar-status', 'ui-ActionBarStatus', className, commonStyles)}>
-			{content}
-		</div>
+		<LayoutBox {...{ mt, mb, ml, mr, width, minWidth, maxWidth }}>
+			<div {...outerProps} className={cx('action-bar-status', 'ui-ActionBarStatus', className)}>
+				{content}
+			</div>
+		</LayoutBox>
 	);
 };
 

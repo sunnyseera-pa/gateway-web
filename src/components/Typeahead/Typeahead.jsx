@@ -1,13 +1,10 @@
 /** @jsx jsx */
 import { cx } from '@emotion/css';
 import { jsx } from '@emotion/react';
-import React from 'react';
 import PropTypes from 'prop-types';
-import { Spinner } from 'react-bootstrap';
-import { Typeahead as BootstrapTypeahead, AsyncTypeahead as BootstrapTypeaheadAsync } from 'react-bootstrap-typeahead';
+import { AsyncTypeahead as BootstrapTypeaheadAsync, Typeahead as BootstrapTypeahead } from 'react-bootstrap-typeahead';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import { addCommonPropTypes, pick } from '../../configs/propTypes';
-import Icon from '../Icon';
 import Input from '../Input';
 import { PROP_TYPES_INPUT } from '../Input/Input.propTypes';
 
@@ -59,16 +56,16 @@ const Typeahead = ({
 	);
 };
 
-Typeahead.propTypes = {
+Typeahead.propTypes = addCommonPropTypes({
 	...pick(PROP_TYPES_INPUT, ['className', 'selected', 'variant', 'textPrepend', 'iconPrepend', 'textAppend', 'iconAppend']),
 	selected: PropTypes.array,
 	async: PropTypes.bool,
-};
+});
 
-Typeahead.defaultProps = addCommonPropTypes({
+Typeahead.defaultProps = {
 	selected: [],
 	variant: 'primary',
 	async: false,
-});
+};
 
 export default Typeahead;

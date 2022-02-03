@@ -1,13 +1,13 @@
 /** @jsx jsx */
+import { cx } from '@emotion/css';
 import { jsx } from '@emotion/react';
+import PropTypes from 'prop-types';
 import { useMemo } from 'react';
 import { Dropdown as BootstrapDropdown } from 'react-bootstrap';
-import PropTypes from 'prop-types';
-import * as styles from './Dropdown.styles';
-import Icon from '../Icon';
 import { addCommonPropTypes } from '../../configs/propTypes';
-import { cx } from '@emotion/css';
-import useCommonStyles from '../../hooks/useCommonStyles';
+import Icon from '../Icon';
+import LayoutBox from '../LayoutBox';
+import * as styles from './Dropdown.styles';
 
 const Dropdown = ({
 	defaultValue,
@@ -26,7 +26,6 @@ const Dropdown = ({
 	size,
 	...outerProps
 }) => {
-	const commonStyles = useCommonStyles({ mt, mb, ml, mr, width, minWidth, maxWidth });
 	const currentValue = !value ? defaultValue : value;
 
 	const parseOption = option => {
@@ -49,21 +48,23 @@ const Dropdown = ({
 	);
 
 	return (
-		<BootstrapDropdown className={cx('ui-Dropdown', className, commonStyles)} {...outerProps} css={styles.root({ variant, size })}>
-			<BootstrapDropdown.Toggle variant={variant}>{selectedOption && selectedOption.label}</BootstrapDropdown.Toggle>
-			<BootstrapDropdown.Menu>
-				{options.map(option => {
-					const { value: eventKey, label } = parseOption(option);
+		<LayoutBox {...{ mt, mb, ml, mr, width, minWidth, maxWidth }}>
+			<BootstrapDropdown className={cx('ui-Dropdown', className)} {...outerProps} css={styles.root({ variant, size })}>
+				<BootstrapDropdown.Toggle variant={variant}>{selectedOption && selectedOption.label}</BootstrapDropdown.Toggle>
+				<BootstrapDropdown.Menu>
+					{options.map(option => {
+						const { value: eventKey, label } = parseOption(option);
 
-					return (
-						<BootstrapDropdown.Item eventKey={eventKey} key={eventKey} className='d-flex'>
-							<div className='flex-grow'>{label}</div>
-							{eventKey === currentValue && iconSelected}
-						</BootstrapDropdown.Item>
-					);
-				})}
-			</BootstrapDropdown.Menu>
-		</BootstrapDropdown>
+						return (
+							<BootstrapDropdown.Item eventKey={eventKey} key={eventKey} className='d-flex'>
+								<div className='flex-grow'>{label}</div>
+								{eventKey === currentValue && iconSelected}
+							</BootstrapDropdown.Item>
+						);
+					})}
+				</BootstrapDropdown.Menu>
+			</BootstrapDropdown>
+		</LayoutBox>
 	);
 };
 
