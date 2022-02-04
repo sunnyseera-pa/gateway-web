@@ -6,10 +6,10 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import ReactCheckboxTree from 'react-checkbox-tree';
 import 'react-checkbox-tree/lib/react-checkbox-tree.css';
-import { addCommonPropTypes } from '../../configs/propTypes';
 import useCommonStyles from '../../hooks/useCommonStyles';
 import Icon from '../Icon';
 import LayoutBox from '../LayoutBox';
+import { PROP_TYPES_LAYOUTBOX } from '../LayoutBox/LayoutBox.propTypes';
 import * as styles from './CheckboxTree.styles';
 
 const CheckboxTree = ({
@@ -66,7 +66,7 @@ const CheckboxTree = ({
 	);
 };
 
-CheckboxTree.propTypes = addCommonPropTypes({
+CheckboxTree.propTypes = {
 	nodes: PropTypes.array,
 	icons: PropTypes.shape({
 		expandClose: PropTypes.node,
@@ -78,7 +78,8 @@ CheckboxTree.propTypes = addCommonPropTypes({
 	checkboxProps: PropTypes.shape({
 		variant: PropTypes.oneOf(['primary', 'secondary']).isRequired,
 	}),
-});
+	...PROP_TYPES_LAYOUTBOX,
+};
 
 CheckboxTree.defaultProps = {
 	icons: {

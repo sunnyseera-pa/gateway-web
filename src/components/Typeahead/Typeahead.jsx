@@ -3,10 +3,12 @@ import { cx } from '@emotion/css';
 import { jsx } from '@emotion/react';
 import PropTypes from 'prop-types';
 import { AsyncTypeahead as BootstrapTypeaheadAsync, Typeahead as BootstrapTypeahead } from 'react-bootstrap-typeahead';
-import 'react-bootstrap-typeahead/css/Typeahead.css';
-import { addCommonPropTypes, pick } from '../../configs/propTypes';
+import { pick } from '../../configs/propTypes';
 import Input from '../Input';
 import { PROP_TYPES_INPUT } from '../Input/Input.propTypes';
+import { PROP_TYPES_LAYOUTBOX } from '../LayoutBox/LayoutBox.propTypes';
+
+import 'react-bootstrap-typeahead/css/Typeahead.css';
 
 const Typeahead = ({
 	className,
@@ -56,11 +58,12 @@ const Typeahead = ({
 	);
 };
 
-Typeahead.propTypes = addCommonPropTypes({
+Typeahead.propTypes = {
 	...pick(PROP_TYPES_INPUT, ['className', 'selected', 'variant', 'textPrepend', 'iconPrepend', 'textAppend', 'iconAppend']),
 	selected: PropTypes.array,
 	async: PropTypes.bool,
-});
+	...PROP_TYPES_LAYOUTBOX,
+};
 
 Typeahead.defaultProps = {
 	selected: [],

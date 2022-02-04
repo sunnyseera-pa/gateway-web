@@ -2,8 +2,8 @@
 import { cx } from '@emotion/css';
 import { jsx } from '@emotion/react';
 import PropTypes from 'prop-types';
-import { addCommonPropTypes } from '../../configs/propTypes';
 import LayoutBox from '../LayoutBox';
+import { PROP_TYPES_LAYOUTBOX } from '../LayoutBox/LayoutBox.propTypes';
 import * as styles from './Timeline.styles';
 
 const Timeline = ({ data, className, mt, mb, ml, mr, width, minWidth, maxWidth }) => {
@@ -30,7 +30,7 @@ const Timeline = ({ data, className, mt, mb, ml, mr, width, minWidth, maxWidth }
 	);
 };
 
-Timeline.propTypes = addCommonPropTypes({
+Timeline.propTypes = {
 	data: PropTypes.arrayOf(
 		PropTypes.shape({
 			icon: PropTypes.node,
@@ -38,6 +38,7 @@ Timeline.propTypes = addCommonPropTypes({
 			content: PropTypes.node,
 		})
 	).isRequired,
-});
+	...PROP_TYPES_LAYOUTBOX,
+};
 
 export default Timeline;

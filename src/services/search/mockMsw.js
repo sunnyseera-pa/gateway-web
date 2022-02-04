@@ -3475,4 +3475,13 @@ export const mockDatasetFilters = [
 	},
 ];
 
-export default [mockDatasetFilters];
+export const mswGetSearch = rest.get(`${apiURL}/search`, (req, res, ctx) => {
+	return res(
+		ctx.status(200),
+		ctx.json({
+			data: mockDatasetFilters,
+		})
+	);
+});
+
+export default [mswGetSearch];

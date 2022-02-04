@@ -4,9 +4,9 @@ import { jsx } from '@emotion/react';
 import PropTypes from 'prop-types';
 import { useMemo } from 'react';
 import { Dropdown as BootstrapDropdown } from 'react-bootstrap';
-import { addCommonPropTypes } from '../../configs/propTypes';
 import Icon from '../Icon';
 import LayoutBox from '../LayoutBox';
+import { PROP_TYPES_LAYOUTBOX } from '../LayoutBox/LayoutBox.propTypes';
 import * as styles from './Dropdown.styles';
 
 const Dropdown = ({
@@ -68,9 +68,10 @@ const Dropdown = ({
 	);
 };
 
-Dropdown.propTypes = addCommonPropTypes({
+Dropdown.propTypes = {
 	variant: PropTypes.oneOf(['primary', 'secondary']),
-});
+	...PROP_TYPES_LAYOUTBOX,
+};
 
 Dropdown.defaultProps = {
 	variant: 'primary',

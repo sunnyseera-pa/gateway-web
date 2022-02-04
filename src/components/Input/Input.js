@@ -7,6 +7,7 @@ import { Form, InputGroup } from 'react-bootstrap';
 import useDOMChanged from '../../hooks/useDOMChanged';
 import LayoutBox from '../LayoutBox';
 import { PROP_TYPES_INPUT } from './Input.propTypes';
+import { PROP_TYPES_LAYOUTBOX } from '../LayoutBox/LayoutBox.propTypes';
 import * as styles from './Input.styles';
 
 const Input = ({
@@ -87,7 +88,10 @@ const Input = ({
 	);
 };
 
-Input.propTypes = PROP_TYPES_INPUT;
+Input.propTypes = {
+	PROP_TYPES_INPUT,
+	...PROP_TYPES_LAYOUTBOX,
+};
 
 Input.defaultProps = {
 	size: 'default',

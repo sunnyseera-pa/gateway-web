@@ -1,7 +1,8 @@
 import React from 'react';
 import { Formik } from 'formik';
 import LayoutBox from '../LayoutBox';
-import { addCommonPropTypes } from '../../configs/propTypes';
+import PropTypes from 'prop-types';
+import { PROP_TYPES_LAYOUTBOX } from '../LayoutBox/LayoutBox.propTypes';
 import SearchControlsForm from './SearchControlsForm';
 
 const SearchControls = ({
@@ -39,7 +40,10 @@ const SearchControls = ({
 	);
 };
 
-SearchControls.propTypes = addCommonPropTypes({});
+SearchControls.propTypes = {
+	onSubmit: PropTypes.func,
+	...PROP_TYPES_LAYOUTBOX,
+};
 
 SearchControls.defaultProps = {
 	enableReinitialize: true,
