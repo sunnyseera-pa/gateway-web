@@ -6,7 +6,6 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import ReactCheckboxTree from 'react-checkbox-tree';
 import 'react-checkbox-tree/lib/react-checkbox-tree.css';
-import useCommonStyles from '../../hooks/useCommonStyles';
 import Icon from '../Icon';
 import LayoutBox from '../LayoutBox';
 import { PROP_TYPES_LAYOUTBOX } from '../LayoutBox/LayoutBox.propTypes';
@@ -26,8 +25,6 @@ const CheckboxTree = ({
 	checkboxProps: { variant: checkboxVariant },
 	...outerProps
 }) => {
-	const commonStyles = useCommonStyles({ mt, mb, ml, mr, width, minWidth, maxWidth });
-
 	const formatNode = node => {
 		if (isEmpty(node.children)) {
 			const { children, ...rest } = node;
