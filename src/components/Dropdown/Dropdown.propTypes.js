@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
-import { addCommonPropTypes } from '../../configs/propTypes';
 
-export const PROP_TYPES_DROPDOWN = addCommonPropTypes({
+export const PROP_TYPES_DROPDOWN = {
 	defaultValue: PropTypes.string,
 	value: PropTypes.string,
 	options: PropTypes.oneOfType([
@@ -17,4 +16,4 @@ export const PROP_TYPES_DROPDOWN = addCommonPropTypes({
 	iconSelected: PropTypes.node,
 	onSelect: PropTypes.func,
 	size: PropTypes.oneOf(['small', 'default', 'large']),
-});
+};

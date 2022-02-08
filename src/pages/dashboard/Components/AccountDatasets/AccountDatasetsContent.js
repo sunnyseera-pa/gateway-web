@@ -9,11 +9,11 @@ import SearchControls from '../../../../components/SearchControls';
 import '../../Dashboard.scss';
 import MessageNotFound from '../../../commonComponents/MessageNotFound';
 
-const options = ['alphabetic', 'latest', 'recentlyadded', 'metadata'];
-const inReviewOptions = ['alphabetic', 'latest', 'recentlyadded', 'metadata'];
+const options = ['latest', 'alphabetic', 'recentlyadded', 'metadata'];
+const inReviewOptions = ['latest', 'alphabetic', 'recentlyadded', 'metadata'];
 
 const AccountDatasetsContent = ({ data = [], onSubmit, isLoading, isFetched, status, params, team, count }) => {
-	const [searchValue, setSearchValue] = useState();
+	const [searchValue, setSearchValue] = useState('');
 	const history = useHistory();
 
 	const { t } = useTranslation();
