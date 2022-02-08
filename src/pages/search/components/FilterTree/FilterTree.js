@@ -55,7 +55,7 @@ const FilterTree = ({ node, filters, highlighted, checked, expanded, onCheck, se
 
 				data[i] = clonedItem;
 
-				formatLabels(data[i].children);
+				data[i].children = formatLabels(data[i].children);
 			});
 
 			return data;
