@@ -52,14 +52,15 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
 										if (
 											row.projectIdText === duplicateRow.projectIdText ||
 											(row.projectTitle === duplicateRow.projectTitle &&
-												row.organisationName === duplicateRow.organisationName &&
-												row.datasetTitles === duplicateRow.datasetTitles)
+												row.datasetTitles === duplicateRow.datasetTitles &&
+												Date.parse(row.latestApprovalDate) === Date.parse(duplicateRow.latestApprovalDate))
 										) {
 											if (!duplicateErrors.filter(error => error.row === duplicateIndex + 1).length > 0) {
 												duplicateErrors.push({ row: index + 1, duplicateRow: duplicateIndex + 1, error: 'duplicateRow' });
 											}
 										}
 									}
+									row.latestApprovalDate = row.latestApprovalDate || new Date();
 								});
 							});
 
@@ -100,7 +101,6 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
 			teamId: team,
 			dataUses: uploadedData.rows,
 		};
-
 		axios.post(baseURL + '/api/v2/data-use-registers/upload', payload).then(res => {
 			setIsSubmitModalVisible(false);
 			onSubmit();

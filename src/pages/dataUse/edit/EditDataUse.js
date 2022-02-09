@@ -85,7 +85,7 @@ const EditDataUse = props => {
 			res.data.nonGatewayApplicants.forEach(nonGatewayApplicant => {
 				applicants.push({ id: 'nonGateway', name: nonGatewayApplicant });
 			});
-			setApplicantsArray(!isEmpty(applicants) ? applicants : [{ id: '', name: '' }]);
+			setApplicantsArray(!isEmpty(applicants) ? applicants : []);
 
 			let datasets = [];
 			res.data.gatewayDatasetsInfo.forEach(gatewayDataset => {
