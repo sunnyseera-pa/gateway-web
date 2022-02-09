@@ -1,17 +1,18 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import _ from 'lodash';
 import reduce from 'lodash/reduce';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { NotificationManager } from 'react-notifications';
+import { Redirect } from 'react-router-dom';
 import { LayoutContent } from '../../../../components/Layout';
 import useSearch from '../../../../components/Search/useSearch';
 import { useAuth } from '../../../../context/AuthContext';
 import serviceDatasetOnboarding from '../../../../services/dataset-onboarding/dataset-onboarding';
-import utils from '../../../../utils/DataSetHelper.util';
 import googleAnalytics from '../../../../tracking';
-import '../../Dashboard.scss';
-import AccountDatasetsContent from './AccountDatasetsContent';
-import AccountDatasetsCreate from '../AccountDatasetsCreate';
-import AccountDatasetsTabs from './AccountDatasetsTabs';
+import utils from '../../../../utils/DataSetHelper.util';
 import { MAXRESULTS } from '../../../collections/constants';
+import '../../Dashboard.scss';
+import AccountDatasetsCreate from '../AccountDatasetsCreate';
+import AccountDatasetsContent from './AccountDatasetsContent';
+import AccountDatasetsTabs from './AccountDatasetsTabs';
 
 const AccountDatasets = props => {
 	const [key, setKey] = useState(props.alert ? props.alert.tab : '');
@@ -24,7 +25,7 @@ const AccountDatasets = props => {
 	const searchOptions = useMemo(
 		() => ({
 			initialParams: {
-				limit: MAXRESULTS,
+				limit: 1000,
 				search: '',
 				sortBy: 'latest',
 				sortDirection: 'desc',
@@ -34,7 +35,7 @@ const AccountDatasets = props => {
 		[key]
 	);
 
-	const { isLoading, isFetched, data, params, getResults, getCachedResults, getCache } = useSearch(
+	const { isLoading, isFetched, isError, data, params, getResults, getCachedResults, getCache } = useSearch(
 		serviceDatasetOnboarding.useGetPublisher(publisherID),
 		searchOptions
 	);
@@ -116,6 +117,10 @@ const AccountDatasets = props => {
 		[key]
 	);
 
+	if (isError) {
+		NotificationManager.error('Unable to find data', 'Error', 10000);
+	}
+
 	return (
 		<div>
 			<LayoutContent>
@@ -126,7 +131,7 @@ const AccountDatasets = props => {
 				<AccountDatasetsResults
 					isLoading={isLoading}
 					isFetched={isFetched}
-					datasets={data && data.data.data.results.listOfDatasets}
+					datasets={(data && data.data.data.results.listOfDatasets) || []}
 					params={params}
 					team={team}
 					count={statusCounts[key]}
