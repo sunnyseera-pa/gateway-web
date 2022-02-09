@@ -8,7 +8,7 @@ import React from 'react';
 import { Alert, Button, Col, Container, Row, Tab, Tabs } from 'react-bootstrap';
 import SVGIcon from '../../images/SVGIcon';
 import googleAnalytics from '../../tracking';
-import { findAllByKey, replaceKey } from '../../utils/GeneralHelper.util';
+import { findAllByKey, iterateDeep, replaceKey } from '../../utils/GeneralHelper.util';
 import AdvancedSearchModal from '../commonComponents/AdvancedSearchModal/AdvancedSearchModal';
 import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
 import DataUtilityWizardModal from '../commonComponents/DataUtilityWizard/DataUtilityWizardModal';
@@ -730,11 +730,11 @@ class SearchPage extends React.Component {
 		return tree;
 	};
 
-	setTreeHighlightedFilters = (parentNode, filter, tree) => {
-		return replaceKey(parentNode.filtersv2, item => {
-			if (filter.includes(item.value)) parentNode.highlighted.push(item.value);
-
-			return item.children;
+	setTreeHighlightedFilters = (parentNode, filter) => {
+		return iterateDeep(parentNode.filtersv2, (item, key) => {
+			if (!key && filter.includes(item.value)) {
+				parentNode.highlighted.push(item.value);
+			}
 		});
 	};
 
@@ -1267,26 +1267,26 @@ class SearchPage extends React.Component {
 
 		let selectedCount = 0;
 
-		parentNode[filtersv2] = replaceKey(filtersv2, filter => {
-			filter.checked = false;
+		iterateDeep(filtersv2, (filter, childKey) => {
+			if (!childKey) {
+				filter.checked = false;
 
-			if (nodes.find(node => node.value === filter.value)) {
-				const { id, value, encodedValue } = filter;
+				if (nodes.find(node => node.value === filter.value)) {
+					const { id, value, encodedValue } = filter;
 
-				filter.checked = checked;
+					filter.checked = checked;
 
-				state[`selectedV2${this.state.key}`].push({
-					parentKey: alias || key,
-					id,
-					label: value,
-					value,
-					encodedValue,
-				});
+					state[`selectedV2${this.state.key}`].push({
+						parentKey: alias || key,
+						id,
+						label: value,
+						value,
+						encodedValue,
+					});
+				}
+
+				if (filter.checked) selectedCount++;
 			}
-
-			if (filter.checked) selectedCount++;
-
-			return filter.children;
 		});
 
 		parentNode.selectedCount = selectedCount;
@@ -1386,8 +1386,6 @@ class SearchPage extends React.Component {
 			let { key } = node;
 			// // 3. return parent node of toggled
 			parentNode = this.findParentNode(filtersV2, key);
-
-			console.log('Toggling', parentNode);
 
 			if (!_.isEmpty(parentNode)) {
 				parentNode.closed = !parentNode.closed;

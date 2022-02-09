@@ -1,10 +1,13 @@
 import isEqual from 'lodash/isEqual';
 import { useEffect, useState } from 'react';
 
-const useDOMChanged = ref => {
-	const [values, setValues] = useState({
+const useDOMChanged = (
+	ref,
+	atts = {
 		offsetWidth: null,
-	});
+	}
+) => {
+	const [values, setValues] = useState(atts);
 
 	const updateValues = node => {
 		const updatedValues = Object.keys(values).reduce((previousValue, currentValue) => {

@@ -8,6 +8,7 @@ import ReactCheckboxTree from 'react-checkbox-tree';
 import 'react-checkbox-tree/lib/react-checkbox-tree.css';
 import { addCommonPropTypes } from '../../configs/propTypes';
 import useCommonStyles from '../../hooks/useCommonStyles';
+import { iterateDeep } from '../../utils/GeneralHelper.util';
 import Icon from '../Icon';
 import * as styles from './CheckboxTree.styles';
 
@@ -23,6 +24,8 @@ const CheckboxTree = ({
 	icons,
 	nodes,
 	checkboxProps: { variant: checkboxVariant },
+	includeParent,
+	onCheck,
 	...outerProps
 }) => {
 	const commonStyles = useCommonStyles({ mt, mb, ml, mr, width, minWidth, maxWidth });
@@ -43,6 +46,10 @@ const CheckboxTree = ({
 		}
 	};
 
+	const handleOnCheck = React.useCallback((checked, node) => {
+		onCheck(checked, node);
+	}, []);
+
 	const formattedNodes = React.useMemo(() => {
 		return nodes.map(node => {
 			return formatNode(node);
@@ -58,7 +65,7 @@ const CheckboxTree = ({
 				checkboxVariant,
 			})}
 			className={cx(className, commonStyles, 'ui-CheckboxTree')}>
-			<ReactCheckboxTree nodes={formattedNodes} icons={icons} {...outerProps} />
+			<ReactCheckboxTree nodes={formattedNodes} icons={icons} onCheck={handleOnCheck} {...outerProps} checkModel='all' />
 		</div>
 	);
 };
@@ -75,6 +82,8 @@ CheckboxTree.propTypes = addCommonPropTypes({
 	checkboxProps: PropTypes.shape({
 		variant: PropTypes.oneOf(['primary', 'secondary']).isRequired,
 	}),
+	includeParent: PropTypes.bool,
+	onCheck: PropTypes.func,
 });
 
 CheckboxTree.defaultProps = {
