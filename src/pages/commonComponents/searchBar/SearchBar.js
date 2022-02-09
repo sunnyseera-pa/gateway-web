@@ -311,22 +311,13 @@ class SearchBar extends React.Component {
 		if (isLoading) {
 			return <></>;
 		}
-		let showUatBanner = false;
-		let currentEnv = '';
-		if (urlEnv === 'uat' || urlEnv === 'uatbeta' || urlEnv === 'latest') {
-			showUatBanner = true;
-			if (urlEnv === 'uatbeta') {
-				currentEnv = 'UAT BETA';
-			} else if (urlEnv === 'uat') {
-				currentEnv = 'UAT';
-			} else if (urlEnv === 'latest') {
-				currentEnv = 'LATEST';
-			}
-		}
+
+		const showUatBanner = process.env.REACT_APP_SHOW_NON_PROD_BANNER;
+		const currentEnv = urlEnv.toUpperCase();
 
 		return (
 			<Fragment>
-				{showUatBanner === true && <UatBanner currentEnv={currentEnv} />}
+				{showUatBanner && <UatBanner currentEnv={currentEnv} />}
 				<nav className={classnames('navbarShown', { navbarHidden: !this.state.visible })}>
 					<div className='searchBarBackground' id='desktopSearchBar'>
 						<Row className='whiteBackground'>
@@ -1127,7 +1118,7 @@ class SearchBar extends React.Component {
 										</Dropdown.Toggle>
 
 										<Dropdown.Menu as={CustomMenu} className='mobileLoginMenu'>
-											{showUatBanner === true && (
+											{showUatBanner && (
 												<Dropdown.Item href='https://discourse.healthdatagateway.org/t/using-the-uat-environment/451' target='_blank'>
 													<span className='uatMobileSearchBarBanner uatBannerText'>
 														{currentEnv}
