@@ -8,7 +8,6 @@ import ReactCheckboxTree from 'react-checkbox-tree';
 import 'react-checkbox-tree/lib/react-checkbox-tree.css';
 import { addCommonPropTypes } from '../../configs/propTypes';
 import useCommonStyles from '../../hooks/useCommonStyles';
-import { iterateDeep } from '../../utils/GeneralHelper.util';
 import Icon from '../Icon';
 import * as styles from './CheckboxTree.styles';
 
