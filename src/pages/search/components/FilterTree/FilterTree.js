@@ -7,7 +7,6 @@ import { filterBranches } from '../../../../utils/GeneralHelper.util';
 const FilterTree = ({ node, filters, highlighted, checked, expanded, onCheck, searchValue }) => {
 	const treeRef = React.useRef();
 	const [nodesChecked, setNodesChecked] = React.useState(checked);
-	const [parentsChecked, setParentsChecked] = React.useState([]);
 	const [nodesExpanded, setNodesExpanded] = React.useState(expanded);
 	const [nodeFilters, setNodeFilters] = React.useState([]);
 
@@ -30,9 +29,8 @@ const FilterTree = ({ node, filters, highlighted, checked, expanded, onCheck, se
 	};
 
 	const handleChecked = React.useCallback(
-		(checked, parents) => {
+		checked => {
 			setNodesChecked(checked);
-			setParentsChecked(parents);
 
 			const nodes = flattenObject(filters).filter(filter => {
 				return checked.includes(filter.value);
@@ -71,7 +69,7 @@ const FilterTree = ({ node, filters, highlighted, checked, expanded, onCheck, se
 				})
 			)
 		);
-	}, [highlighted, filters, parentsChecked, searchValue]);
+	}, [highlighted, filters, searchValue]);
 
 	return (
 		<div ref={treeRef}>
@@ -82,7 +80,6 @@ const FilterTree = ({ node, filters, highlighted, checked, expanded, onCheck, se
 				onCheck={handleChecked}
 				onExpand={setNodesExpanded}
 				mt={3}
-				includeParent
 			/>
 		</div>
 	);
