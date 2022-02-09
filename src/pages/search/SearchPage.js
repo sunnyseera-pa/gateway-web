@@ -3,12 +3,13 @@ import axios from 'axios';
 import _ from 'lodash';
 import moment from 'moment';
 import queryString from 'query-string';
-import { CSVLink } from 'react-csv';
 import React from 'react';
 import { Alert, Button, Col, Container, Row, Tab, Tabs } from 'react-bootstrap';
+import { CSVLink } from 'react-csv';
+import { hotjar } from 'react-hotjar';
 import SVGIcon from '../../images/SVGIcon';
 import googleAnalytics from '../../tracking';
-import { findAllByKey, iterateDeep, replaceKey } from '../../utils/GeneralHelper.util';
+import { findAllByKey, iterateDeep } from '../../utils/GeneralHelper.util';
 import AdvancedSearchModal from '../commonComponents/AdvancedSearchModal/AdvancedSearchModal';
 import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
 import DataUtilityWizardModal from '../commonComponents/DataUtilityWizard/DataUtilityWizardModal';
@@ -18,6 +19,7 @@ import SavedPreferencesModal from '../commonComponents/savedPreferencesModal/Sav
 import SaveModal from '../commonComponents/saveModal/SaveModal';
 import SearchBar from '../commonComponents/searchBar/SearchBar';
 import SearchResults from '../commonComponents/SearchResults';
+import SearchResultsInfo from '../commonComponents/SearchResultsInfo';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
 import UserMessages from '../commonComponents/userMessages/UserMessages';
 import CollectionsSearchResults from './components/CollectionsSearchResults/CollectionsSearchResults';
@@ -25,17 +27,15 @@ import CollectionsSearchSort from './components/CollectionsSearchResults/Collect
 import CoursesSearchResults from './components/CoursesSearchResults';
 import DatasetSearchResults from './components/DatasetSearchResults';
 import DatasetSearchSort from './components/DatasetSearchResults/DatasetSearchSort';
+import DataUsesSearchSort from './components/DataUsesSearchResults/DataUsesSearchSort';
 import Filter from './components/Filter';
 import FilterSelection from './components/FilterSelection';
 import PapersSearchSort from './components/PapersSearchResults/PapersSearchSort';
 import PeopleSearchSort from './components/PeopleSearchResult/PeopleSearchSort';
-import DataUsesSearchSort from './components/DataUsesSearchResults/DataUsesSearchSort';
 import SearchFilters from './components/SearchFilters';
 import SearchUtilityBanner from './components/SearchUtilityBanner';
 import ToolsSearchSort from './components/ToolsSearchResults/ToolsSearchSort';
-import SearchResultsInfo from '../commonComponents/SearchResultsInfo';
 import './Search.scss';
-import { hotjar } from 'react-hotjar';
 
 let baseURL = require('../commonComponents/BaseURL').getURL();
 const typeMapper = {
