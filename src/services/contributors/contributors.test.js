@@ -26,9 +26,12 @@ describe('Given the contributors service', () => {
 
 	describe('When getContributorsInfo is called', () => {
 		it('Then calls getRequest with the correct arguments', async () => {
-			console.log(apiURL, '++++++');
-			await service.getContributorsInfo('123');
-			expect(getRequest).toHaveBeenCalledWith(`${apiURL}/data-access-request/prepopulate-contributors/123`);
+			await service.getContributorsInfo('123', {
+				option1: true,
+			});
+			expect(getRequest).toHaveBeenCalledWith(`${apiURL}/data-access-request/prepopulate-contributors/123`, {
+				option1: true,
+			});
 		});
 	});
 

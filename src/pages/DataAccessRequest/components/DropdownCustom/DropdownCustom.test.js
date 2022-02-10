@@ -74,16 +74,16 @@ describe('Given the DropdownCustom component', () => {
 		it('Then name should be rendered for 3 contributors', async () => {
 			await waitFor(() => {
 				expect(wrapper.getByTestId('darContributorDropdownName-0')).toHaveTextContent('Ciara Ward');
-				expect(wrapper.getByTestId('darContributorDropdownName-1')).toHaveTextContent('Paul McCafferty');
-				expect(wrapper.getByTestId('darContributorDropdownName-2')).toHaveTextContent('Ciara Test');
+				expect(wrapper.getByTestId('darContributorDropdownName-1')).toHaveTextContent('Paul McCafferty (contributor)');
+				expect(wrapper.getByTestId('darContributorDropdownName-2')).toHaveTextContent('Ciara Test (contributor)');
 			});
 		});
 
 		it('Then email should be rendered for only the logged in users email displayed', async () => {
 			await waitFor(() => {
 				expect(wrapper.getByTestId('darContributorDropdownEmail-0')).toHaveTextContent('ciara.ward@paconsulting.com');
-				expect(wrapper.getByTestId('darContributorDropdownEmail-1')).toHaveTextContent('Email address cannot be shared');
-				expect(wrapper.getByTestId('darContributorDropdownEmail-2')).toHaveTextContent('Email address cannot be shared');
+				expect(wrapper.getByTestId('darContributorDropdownEmail-1')).toHaveTextContent('Email address cannot be shown');
+				expect(wrapper.getByTestId('darContributorDropdownEmail-2')).toHaveTextContent('Email address cannot be shown');
 			});
 		});
 
@@ -91,7 +91,7 @@ describe('Given the DropdownCustom component', () => {
 			await waitFor(() => {
 				expect(wrapper.getByTestId('darContributorDropdownOrganisation-0')).toHaveTextContent('test');
 				expect(wrapper.getByTestId('darContributorDropdownOrganisation-1')).toHaveTextContent('PA Consulting');
-				expect(wrapper.getByTestId('darContributorDropdownOrganisation-2')).toHaveTextContent('Organisation is hidden');
+				expect(wrapper.getByTestId('darContributorDropdownOrganisation-2')).toHaveTextContent('Organisation cannot be shown');
 			});
 		});
 	});
