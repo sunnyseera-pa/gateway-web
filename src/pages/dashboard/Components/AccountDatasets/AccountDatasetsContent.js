@@ -1,16 +1,17 @@
+import pluralize from 'pluralize';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
-import pluralize from 'pluralize';
-import DatasetCard from '../../../commonComponents/DatasetCard';
-import SearchResults from '../../../commonComponents/SearchResults';
 import Icon from '../../../../components/Icon';
 import SearchControls from '../../../../components/SearchControls';
-import '../../Dashboard.scss';
+import { DATASETS_STATUS_ACTIVE, STATUS_ARCHIVE, STATUS_INREVIEW, STATUS_REJECTED } from '../../../../configs/constants';
+import DatasetCard from '../../../commonComponents/DatasetCard';
 import MessageNotFound from '../../../commonComponents/MessageNotFound';
+import SearchResults from '../../../commonComponents/SearchResults';
+import '../../Dashboard.scss';
 
-const options = ['latest', 'alphabetic', 'metadata', 'recentlyadded'];
-const inReviewOptions = ['latest', 'alphabetic', 'metadata', 'recentlyadded'];
+const options = ['latest', 'alphabetic', 'metadata'];
+const optionsWithPublish = ['latest', 'alphabetic', 'metadata', 'recentlyadded'];
 
 const AccountDatasetsContent = ({ data = [], onSubmit, isLoading, isFetched, status, params, team, count }) => {
 	const [searchValue, setSearchValue] = useState('');
@@ -39,13 +40,13 @@ const AccountDatasetsContent = ({ data = [], onSubmit, isLoading, isFetched, sta
 	const getDatasetCardProps = dataset => {
 		const datasetCardProps = {};
 
-		if (dataset.activeflag === 'inReview' && hasActivityHistory(dataset)) {
+		if (dataset.activeflag === STATUS_INREVIEW && hasActivityHistory(dataset)) {
 			datasetCardProps.slaProps = {
 				icon: <Icon name='eye' role='button' onClick={() => handleActivityLogClick(dataset.pid)} mr={1} />,
 			};
 
 			datasetCardProps.path = getDatasetPath(dataset.pid);
-		} else if (dataset.activeflag === 'rejected') {
+		} else if (dataset.activeflag === STATUS_REJECTED) {
 			datasetCardProps.rejectionText = dataset.applicationStatusDesc;
 			datasetCardProps.rejectionAuthor = dataset.applicationStatusAuthor;
 		}
@@ -54,6 +55,12 @@ const AccountDatasetsContent = ({ data = [], onSubmit, isLoading, isFetched, sta
 	};
 
 	const { search, sortBy, sortDirection, maxResults } = params;
+
+	let statusOptions = options;
+
+	if (team !== 'admin' && (status === STATUS_ARCHIVE || status === DATASETS_STATUS_ACTIVE)) {
+		statusOptions = optionsWithPublish;
+	}
 
 	return (
 		<>
@@ -70,7 +77,7 @@ const AccountDatasetsContent = ({ data = [], onSubmit, isLoading, isFetched, sta
 					sortProps={{
 						direction: sortDirection,
 						value: sortBy,
-						options: status === 'inReview' ? inReviewOptions : options,
+						options: statusOptions,
 						mt: 2,
 						allowDirection: true,
 						minWidth: '300px',
@@ -87,7 +94,7 @@ const AccountDatasetsContent = ({ data = [], onSubmit, isLoading, isFetched, sta
 							key={dataset._id}
 							id={dataset._id}
 							title={dataset.name}
-							publisher={status !== 'archive' && dataset.datasetv2.summary.publisher.name}
+							publisher={status !== STATUS_ARCHIVE && dataset.datasetv2.summary.publisher.name}
 							version={dataset.datasetVersion}
 							isDraft={true}
 							datasetStatus={dataset.activeflag}
