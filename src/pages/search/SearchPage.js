@@ -468,12 +468,12 @@ class SearchPage extends React.Component {
 		let filtersV2PapersData = !_.isNil(this.state.filtersV2Papers) ? [...this.state.filtersV2Papers] : [];
 
 		// 2. v2 resets the filters UI tree back to default
-		let filtersV2Datasets = this.resetTreeChecked(filtersV2DatasetsData);
-		let filtersV2Tools = this.resetTreeChecked(filtersV2ToolsData);
-		let filtersV2Datauses = this.resetTreeChecked(filtersV2DatausesData);
-		let filtersV2Collections = this.resetTreeChecked(filtersV2CollectionsData);
-		let filtersV2Courses = this.resetTreeChecked(filtersV2CoursesData);
-		let filtersV2Papers = this.resetTreeChecked(filtersV2PapersData);
+		let filtersV2Datasets = this.resetChecked(filtersV2DatasetsData);
+		let filtersV2Tools = this.resetChecked(filtersV2ToolsData);
+		let filtersV2Datauses = this.resetChecked(filtersV2DatausesData);
+		let filtersV2Collections = this.resetChecked(filtersV2CollectionsData);
+		let filtersV2Courses = this.resetChecked(filtersV2CoursesData);
+		let filtersV2Papers = this.resetChecked(filtersV2PapersData);
 
 		this.setState(
 			prevState => ({
@@ -1440,12 +1440,12 @@ class SearchPage extends React.Component {
 		let filtersV2PapersData = !_.isNil(this.state.filtersV2Papers) ? [...this.state.filtersV2Papers] : [];
 
 		// 2. v2 resets the filters UI tree back to default
-		let filtersV2Datasets = this.resetTreeChecked(filtersV2DatasetsData);
-		let filtersV2Tools = this.resetTreeChecked(filtersV2ToolsData);
-		let filtersV2Datauses = this.resetTreeChecked(filtersV2DatausesData);
-		let filtersV2Collections = this.resetTreeChecked(filtersV2CollectionsData);
-		let filtersV2Courses = this.resetTreeChecked(filtersV2CoursesData);
-		let filtersV2Papers = this.resetTreeChecked(filtersV2PapersData);
+		let filtersV2Datasets = this.resetChecked(filtersV2DatasetsData);
+		let filtersV2Tools = this.resetChecked(filtersV2ToolsData);
+		let filtersV2Datauses = this.resetChecked(filtersV2DatausesData);
+		let filtersV2Collections = this.resetChecked(filtersV2CollectionsData);
+		let filtersV2Courses = this.resetChecked(filtersV2CoursesData);
+		let filtersV2Papers = this.resetChecked(filtersV2PapersData);
 
 		this.setState(
 			{
@@ -1546,10 +1546,10 @@ class SearchPage extends React.Component {
 				'Funders/Sponsors': dataUse.fundersAndSponsors,
 				'DEA Accredited Researcher': dataUse.accreditedResearcherStatus,
 				'Sub-Licence Arrangements': dataUse.sublicenceArrangements,
-				'Lay Summary': dataUse.laySummary,
-				'Public Benefit Statement': dataUse.publicBenefitStatement,
+				'Lay Summary': dataUse.laySummary ? dataUse.laySummary.replace(/"/g, '""') : '',
+				'Public Benefit Statement': dataUse.publicBenefitStatement ? dataUse.publicBenefitStatement.replace(/"/g, '""') : '',
 				'Request Category Type': dataUse.requestCategoryType,
-				'Techinical Summary': dataUse.technicalSummary,
+				'Techinical Summary': dataUse.technicalSummary ? dataUse.technicalSummary.replace(/"/g, '""') : '',
 				'Other Approval Committees': dataUse.otherApprovalCommittees,
 				'Project Start Date': moment(dataUse.projectStartDate).format('DD/MM/YY'),
 				'Project End Date': moment(dataUse.projectEndDate).format('DD/MM/YY'),
@@ -1561,11 +1561,11 @@ class SearchPage extends React.Component {
 				'Common Law Duty Of Confidentiality': dataUse.dutyOfConfidentiality,
 				'National Data Opt-Out Applied': dataUse.nationalDataOptOut,
 				'Request Frequency': dataUse.requestFrequency,
-				'Dataset Linkage Description': dataUse.datasetLinkageDescription,
-				'Confidential Data Description': dataUse.confidentialDataDescription,
+				'Dataset Linkage Description': dataUse.datasetLinkageDescription ? dataUse.datasetLinkageDescription.replace(/"/g, '""') : '',
+				'Confidential Data Description': dataUse.confidentialDataDescription ? dataUse.confidentialDataDescription.replace(/"/g, '""') : '',
 				'Access Date': moment(dataUse.accessDate).format('DD/MM/YY'),
 				'Access Type': dataUse.accessType,
-				'Privacy Enhancements': dataUse.privacyEnhancements,
+				'Privacy Enhancements': dataUse.privacyEnhancements ? dataUse.privacyEnhancements.replace(/"/g, '""') : '',
 				'Gateway Research Outputs Tools': gatewayOutputsTools,
 				'Gateway Research Outputs Papers': gatewayOutputsPapers,
 				'Research Outputs': dataUse.nonGatewayOutputs,
@@ -1932,7 +1932,7 @@ class SearchPage extends React.Component {
 
 								{key === 'Datauses' && (
 									<SearchResults
-										type='datause'
+										type='dataUseRegister'
 										data={dataUseRegisterData}
 										count={dataUseRegisterCount}
 										pageNumber={dataUseRegisterIndex / maxResults}

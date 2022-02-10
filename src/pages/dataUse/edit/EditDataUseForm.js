@@ -143,9 +143,7 @@ const EditFormDataUse = props => {
 		validationSchema: Yup.object({
 			organisationName: Yup.string().required('This cannot be empty'),
 			projectTitle: Yup.string().required('This cannot be empty'),
-			laySummary: Yup.string().max(300, 'Maximum of 300 characters').required('This cannot be empty'),
-			publicBenefitStatement: Yup.string().required('This cannot be empty'),
-			latestApprovalDate: Yup.string().required('This cannot be empty'),
+			datasets: Yup.string().required('This cannot be empty'),
 		}),
 
 		onSubmit: values => {
@@ -159,7 +157,7 @@ const EditFormDataUse = props => {
 			let gatewayDatasetsArray = [];
 			let nonGatewayDatasets = [];
 			values.datasets.forEach(dataset => {
-				if (dataset.id === 'nonGateway') nonGatewayDatasets.push(dataset.name);
+				if (dataset.pid === 'nonGateway') nonGatewayDatasets.push(dataset.name);
 				else gatewayDatasetsArray.push(dataset.pid);
 			});
 

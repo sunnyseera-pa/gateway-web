@@ -33,6 +33,12 @@ exports[`Given the AccountDatasetsContent component When it is rendered And has 
             value=""
           />
         </div>
+        <input
+          class="form-control"
+          name="search"
+          placeholder="Search within pending approval"
+          value=""
+        />
       </div>
     </div>
     <div
@@ -53,7 +59,7 @@ exports[`Given the AccountDatasetsContent component When it is rendered And has 
             class="dropdown-toggle btn btn-primary"
             type="button"
           >
-            sortby.optionsSortable.latest
+            Latest
           </button>
         </div>
         <button

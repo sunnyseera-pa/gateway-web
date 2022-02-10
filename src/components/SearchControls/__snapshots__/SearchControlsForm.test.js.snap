@@ -11,8 +11,21 @@ exports[`Given the SearchControls component When it is rendered And it is not lo
       <div
         class="css-koyxv1-Input form-group"
       >
-        <label
-          class="form-label"
+        <div
+          class="css-j8o1xl-Input input-group-prepend"
+        >
+          <button
+            fill="green700"
+            name="search"
+          >
+            Icon
+          </button>
+        </div>
+        <input
+          class="form-control"
+          name="search"
+          placeholder="Search within dataset"
+          value="dataset"
         />
         <div
           class="ui-Input ui-SearchInput css-1sivg29 css-1r1cho1-Input input-group"
@@ -65,7 +78,7 @@ exports[`Given the SearchControls component When it is rendered And it is not lo
             class="dropdown-toggle btn btn-primary"
             type="button"
           >
-            sortby.options.relevance
+            Match to search terms (closest first)
           </button>
         </div>
       </div>
