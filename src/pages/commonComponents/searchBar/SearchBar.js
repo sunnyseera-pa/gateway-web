@@ -312,7 +312,7 @@ class SearchBar extends React.Component {
 			return <></>;
 		}
 
-		const showUatBanner = process.env.REACT_APP_SHOW_NON_PROD_BANNER;
+		const showUatBanner = urlEnv !== 'prod';
 		const currentEnv = urlEnv.toUpperCase();
 
 		return (
