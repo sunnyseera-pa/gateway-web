@@ -316,7 +316,7 @@ const AddEditToolForm = props => {
 														</span>
 													</div>
 													<TextareaAutosize
-														as='textarea' 
+														as='textarea'
 														id='description'
 														name='description'
 														type='text'
@@ -348,7 +348,7 @@ const AddEditToolForm = props => {
 														</span>
 													</div>
 
-													<TextareaAutosize 
+													<TextareaAutosize
 														as='textarea'
 														id='resultsInsights'
 														name='resultsInsights'

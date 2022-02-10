@@ -15,4 +15,5 @@ export const PROP_TYPES_INPUT = {
 	id: PropTypes.string,
 	name: PropTypes.string,
 	size: PropTypes.oneOf(['small', 'default', 'large']),
+	error: PropTypes.node,
 };

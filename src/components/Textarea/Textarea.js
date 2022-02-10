@@ -26,14 +26,15 @@ const Textarea = ({
 	inputRef,
 	id,
 	rows,
+	error,
 	...outerProps
 }) => {
 	const commonStyles = useCommonStyles({ mt, mb, ml, mr, width, width, minWidth, maxWidth });
 
 	return (
-		<Form.Group controlId={id} css={styles.formGroup}>
-			<Form.Label>{label}</Form.Label>
-			<InputGroup css={styles.inputGroup({ variant, rows })} className={cx('ui-Textarea', className, commonStyles)}>
+		<Form.Group controlId={id} className={cx('ui-Textarea', className, commonStyles)} css={styles.formGroup}>
+			<Form.Label css={styles.label}>{label}</Form.Label>
+			<InputGroup css={styles.inputGroup({ variant, rows, error })}>
 				{!!maxCharCount && (
 					<div className='ui-TextArea__charCount' css={styles.charCount}>
 						{value.length} {charCountDescription}
@@ -46,6 +47,7 @@ const Textarea = ({
 				{autosize && <TextareaAutosize type='text' value={value} {...outerProps} ref={inputRef} />}
 				{!autosize && <Form.Control as='textarea' {...outerProps} ref={inputRef} />}
 			</InputGroup>
+			{error && <div className='errorMessages'>{error}</div>}
 		</Form.Group>
 	);
 };
@@ -60,6 +62,7 @@ Textarea.defaultProps = {
 
 Textarea.propTypes = addCommonPropTypes({
 	label: PropTypes.node,
+	error: PropTypes.node,
 	placeholder: PropTypes.string,
 	value: PropTypes.string,
 	maxlength: PropTypes.number,

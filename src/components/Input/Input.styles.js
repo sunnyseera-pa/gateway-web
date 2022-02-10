@@ -1,14 +1,15 @@
 import { css } from '@emotion/react';
+import { getSpacingStyle } from '../../configs/theme';
 
 export const mixins = {
-	input: ({ variant }) => config => {
+	input: ({ variant, error }) => config => {
 		const { colors, variants } = config;
 
 		return css`
 			background: ${colors[variants[variant].background]};
 			border-style: solid !important;
 			border-width: 2px !important;
-			border-color: ${colors[variants[variant].borderColor]} !important;
+			border-color: ${error ? colors.red600 : colors[variants[variant].borderColor]} !important;
 			border-radius: 0.25rem !important;
 
 			&:focus,
@@ -20,9 +21,21 @@ export const mixins = {
 			}
 		`;
 	},
+	label: theme => css`
+		${getSpacingStyle('margin-bottom', 2, theme)}
+	`,
+	formGroup: ({
+		font: {
+			size: { default: fontSize },
+		},
+	}) => css`
+		font-size: ${fontSize};
+		display: flex;
+		flex-direction: column;
+	`,
 };
 
-export const inputGroup = ({ prepend, append, variant, size }) => theme => {
+export const inputGroup = ({ prepend, append, variant, size, error }) => theme => {
 	const {
 		colors,
 		font: {
@@ -44,7 +57,7 @@ export const inputGroup = ({ prepend, append, variant, size }) => theme => {
 			height: ${sizes[size].height};
 			width: 100%;
 
-			${mixins.input({ variant })({ colors, variants })}
+			${mixins.input({ variant, error })({ colors, variants })}
 		}
 	`;
 };
@@ -66,7 +79,6 @@ export const decorators = css`
 	align-items: center;
 `;
 
-export const formGroup = css`
-	display: flex;
-	flex-direction: column;
-`;
+export const formGroup = mixins.formGroup;
+
+export const label = mixins.label;
