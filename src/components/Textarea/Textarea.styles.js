@@ -1,7 +1,7 @@
 import { css } from '@emotion/react';
 import { mixins } from '../Input/Input.styles';
 
-export const inputGroup = ({ variant }) => theme => {
+export const inputGroup = ({ variant, rows }) => theme => {
 	const {
 		colors,
 		components: {
@@ -15,6 +15,7 @@ export const inputGroup = ({ variant }) => theme => {
 		textarea {
 			${mixins.input({ variant })({ colors, variants })}
 			width: 100%;
+			height: ${rows}em;
 		}
 	`;
 };
@@ -24,12 +25,12 @@ export const formGroup = css`
 	flex-direction: column;
 `;
 
-export const label = css`
+export const charCount = ({ colors: { grey700Alt } }) => css`
 	display: flex;
+	color: ${grey700Alt};
 `;
 
-export const charCount = ({ colors: { grey700Alt } }) => css`
+export const charCountValue = () => css`
 	flex-grow: 1;
 	text-align: right;
-	color: ${grey700Alt};
 `;

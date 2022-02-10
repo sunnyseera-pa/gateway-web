@@ -5,7 +5,25 @@ import Textarea from './Textarea';
 <Meta title='Core/Textarea' component={Textarea} />
 
 <Canvas>
-	<Story name='Basic'>{props => <Textarea label='Label' />}</Story>
-	<Story name='With count'>{props => <Textarea label='Label' charCountLength={255} />}</Story>
-	<Story name='Autosize'>{props => <Textarea label='Label' autosize />}</Story>
+	<Story name='Basic'>
+		{props => (
+			<div>
+				<Textarea label='Basic label' />
+			</div>
+		)}
+	</Story>
+	<Story name='With count'>
+		{props => (
+			<div>
+				<Textarea label='Count label' maxCharCount={255} charCountDescription='characters of (example)' />
+			</div>
+		)}
+	</Story>
+	<Story name='Autosize'>
+		{props => (
+			<div>
+				<Textarea label='Autosize label' autosize />
+			</div>
+		)}
+	</Story>
 </Canvas>

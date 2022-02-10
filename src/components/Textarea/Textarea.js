@@ -12,7 +12,8 @@ const Textarea = ({
 	className,
 	autosize,
 	label,
-	charCountLength,
+	maxCharCount,
+	charCountDescription,
 	variant,
 	value,
 	mt,
@@ -24,23 +25,24 @@ const Textarea = ({
 	maxWidth,
 	inputRef,
 	id,
+	rows,
 	...outerProps
 }) => {
 	const commonStyles = useCommonStyles({ mt, mb, ml, mr, width, width, minWidth, maxWidth });
 
 	return (
 		<Form.Group controlId={id} css={styles.formGroup}>
-			<Form.Label css={styles.label}>
-				{label}
-				{!!charCountLength && (
-					<span css={styles.charCount}>
-						{' '}
-						({value ? value.length : 0}/{charCountLength})
-					</span>
+			<Form.Label>{label}</Form.Label>
+			<InputGroup css={styles.inputGroup({ variant, rows })} className={cx('ui-Textarea', className, commonStyles)}>
+				{!!maxCharCount && (
+					<div className='ui-TextArea__charCount' css={styles.charCount}>
+						{value.length} {charCountDescription}
+						<span css={styles.charCountValue}>
+							{' '}
+							({value.length}/{maxCharCount})
+						</span>
+					</div>
 				)}
-			</Form.Label>
-
-			<InputGroup css={styles.inputGroup({ variant })} className={cx('ui-Textarea', className, commonStyles)}>
 				{autosize && <TextareaAutosize type='text' value={value} {...outerProps} ref={inputRef} />}
 				{!autosize && <Form.Control as='textarea' {...outerProps} ref={inputRef} />}
 			</InputGroup>
@@ -51,6 +53,9 @@ const Textarea = ({
 Textarea.defaultProps = {
 	autosize: false,
 	variant: 'primary',
+	charCountDescription: 'character limit',
+	value: '',
+	rows: 5,
 };
 
 Textarea.propTypes = addCommonPropTypes({
@@ -58,13 +63,15 @@ Textarea.propTypes = addCommonPropTypes({
 	placeholder: PropTypes.string,
 	value: PropTypes.string,
 	maxlength: PropTypes.number,
-	charCountLength: PropTypes.number,
+	maxCharCount: PropTypes.number,
+	charCountDescription: PropTypes.node,
 	onChange: PropTypes.func,
 	inputRef: PropTypes.shape({ current: PropTypes.instanceOf(Element) }),
 	variant: PropTypes.oneOf(['primary', 'secondary']),
 	id: PropTypes.string,
 	name: PropTypes.string,
 	autosize: PropTypes.bool,
+	rows: PropTypes.number,
 });
 
 export default Textarea;

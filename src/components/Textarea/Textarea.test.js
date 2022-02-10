@@ -12,7 +12,8 @@ jest.mock('react-textarea-autosize', () => props => {
 const props = {
 	label: 'Sample label',
 	value: 'Lorem ipsum',
-	charCountLength: 255,
+	maxCharCount: 255,
+	charCountDescription: 'sample description',
 	onChange: jest.fn(),
 };
 
@@ -35,7 +36,7 @@ describe('Given the Textarea component', () => {
 		});
 
 		it('Then has a label with a count', () => {
-			expect(wrapper.container.querySelector('.form-label').textContent).toEqual('Sample label (11/255)');
+			expect(wrapper.container.querySelector('.ui-TextArea__charCount').textContent).toEqual('11 sample description (11/255)');
 		});
 
 		describe('And it is set to not show char count', () => {
