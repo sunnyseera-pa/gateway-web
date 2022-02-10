@@ -56,16 +56,25 @@ const svgFragments = {
 	tick: '6 6 12 12',
 };
 
+let source = axios.CancelToken.source();
+
 const Icon = ({ name, size, color, fill, stroke, className, ml, mr, mb, mt, width, minWidth, maxWidth, inline, ...outerProps }) => {
 	const [svg, setSvg] = useState();
 	const commonStyles = useCommonStyles({ mt, mb, ml, mr, width, minWidth, maxWidth });
 
 	useEffect(() => {
-		const importIcon = () => {
-			import(`../../images/${name}.svg`).then(({ default: namedImport }) => {
-				axios.get(namedImport).then(({ data }) => {
+		const importIcon = async () => {
+			await source.cancel('Cancelled icon');
+
+			source = axios.CancelToken.source();
+
+			import(`../../images/${name}.svg`).then(async ({ default: namedImport }) => {
+				try {
+					const { data } = await axios.get(namedImport, {
+						cancelToken: source.token,
+					});
 					setSvg(data);
-				});
+				} catch (e) {}
 			});
 		};
 

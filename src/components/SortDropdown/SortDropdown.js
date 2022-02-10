@@ -1,38 +1,21 @@
 /** @jsx jsx */
-import { jsx } from '@emotion/react';
-import React from 'react';
 import { cx } from '@emotion/css';
-import Dropdown from '../Dropdown';
-import Icon from '../Icon';
+import { jsx } from '@emotion/react';
 import PropTypes from 'prop-types';
-import useCommonStyles from '../../hooks/useCommonStyles';
-import { PROP_TYPES_DROPDOWN } from '../Dropdown/Dropdown.propTypes';
-import { useTranslation } from 'react-i18next';
+import React from 'react';
 import { Button } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
+import Dropdown from '../Dropdown';
+import { PROP_TYPES_DROPDOWN } from '../Dropdown/Dropdown.propTypes';
+import Icon from '../Icon';
 import * as styles from './SortDropdown.styles';
 
-const SortDropdown = ({
-	onSort,
-	className,
-	options,
-	mt,
-	mb,
-	ml,
-	mr,
-	width,
-	minWidth,
-	maxWidth,
-	value,
-	direction,
-	allowDirection,
-	...outerProps
-}) => {
+const SortDropdown = ({ onSort, className, options, value, direction, allowDirection, ...outerProps }) => {
 	const { t } = useTranslation();
 	const [state, setState] = React.useState({
 		value,
 		direction,
 	});
-	const commonStyles = useCommonStyles({ mt, mb, ml, mr, width, minWidth, maxWidth, width, minWidth, maxWidth });
 
 	const handleSort = React.useCallback(
 		value => {
@@ -66,7 +49,7 @@ const SortDropdown = ({
 	}, [value, direction]);
 
 	return (
-		<div css={styles.root} className={cx('ui-SortDropdown', className, commonStyles)}>
+		<div css={styles.root} className={cx('ui-SortDropdown', className)}>
 			<Dropdown
 				css={styles.dropdown}
 				onSelect={handleSort}

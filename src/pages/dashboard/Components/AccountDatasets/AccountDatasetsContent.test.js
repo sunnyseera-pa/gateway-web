@@ -36,6 +36,8 @@ const props = {
 	isFetched: false,
 	status: 'inReview',
 	team: 'admin',
+	count: 19,
+	params: { search: 'covid', sortBy: 'latest', sortDirection: 'desc', maxResults: 1000 },
 };
 
 let wrapper;
@@ -50,7 +52,7 @@ describe('Given the AccountDatasetsContent component', () => {
 
 		it('The should call SearchResults with the correct arguments', () => {
 			expect(searchResultsSpy.mock.calls[0][0]).toMatchObject({
-				count: 0,
+				count: 19,
 				data: [],
 				isLoading: true,
 			});
@@ -93,8 +95,10 @@ describe('Given the AccountDatasetsContent component', () => {
 					count: 19,
 					data: mockGetPublisher.data.results.listOfDatasets,
 					isLoading: false,
-					search: undefined,
+					search: '',
+					maxResults: 1000,
 					results: expect.any(Function),
+					errorMessage: expect.any(Function),
 					type: 'dataset',
 				});
 			});
@@ -248,7 +252,9 @@ describe('Given the AccountDatasetsContent component', () => {
 
 					fireEvent.click(link);
 
-					await waitFor(() => expect(mockOnSubmit.mock.calls[0][0]).toEqual({ search: '', sortBy: 'latest', sortDirection: 'desc' }));
+					await waitFor(() =>
+						expect(mockOnSubmit.mock.calls[0][0]).toEqual({ search: 'covid', sortBy: 'alphabetic', sortDirection: 'desc' })
+					);
 				});
 
 				it('Then submits with the correct sort direction', async () => {
@@ -256,7 +262,9 @@ describe('Given the AccountDatasetsContent component', () => {
 
 					fireEvent.click(link);
 
-					await waitFor(() => expect(mockOnSubmit.mock.calls[1][0]).toEqual({ search: '', sortBy: 'latest', sortDirection: 'asc' }));
+					await waitFor(() =>
+						expect(mockOnSubmit.mock.calls[1][0]).toEqual({ search: 'covid', sortBy: 'alphabetic', sortDirection: 'asc' })
+					);
 				});
 			});
 		});

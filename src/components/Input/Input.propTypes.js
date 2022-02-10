@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
-import { addCommonPropTypes } from '../../configs/propTypes';
 
-export const PROP_TYPES_INPUT = addCommonPropTypes({
+export const PROP_TYPES_INPUT = {
 	placeholder: PropTypes.string,
 	value: PropTypes.string,
 	iconPrepend: PropTypes.node,
@@ -16,4 +15,4 @@ export const PROP_TYPES_INPUT = addCommonPropTypes({
 	id: PropTypes.string,
 	name: PropTypes.string,
 	size: PropTypes.oneOf(['small', 'default', 'large']),
-});
+};

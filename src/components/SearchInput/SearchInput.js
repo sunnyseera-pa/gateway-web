@@ -4,6 +4,7 @@ import { omit } from '../../configs/propTypes';
 import Icon from '../Icon';
 import Input from '../Input';
 import { PROP_TYPES_INPUT } from '../Input/Input.propTypes';
+import { PROP_TYPES_LAYOUTBOX } from '../LayoutBox/LayoutBox.propTypes';
 
 const SearchInput = ({ value, onReset, ...outerProps }) => {
 	const inputRef = React.useRef(null);
@@ -30,6 +31,7 @@ const SearchInput = ({ value, onReset, ...outerProps }) => {
 SearchInput.propTypes = {
 	...omit(PROP_TYPES_INPUT, ['inputRef']),
 	onReset: PropTypes.func,
+	...PROP_TYPES_LAYOUTBOX,
 };
 
 SearchInput.defaultProps = {
