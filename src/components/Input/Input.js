@@ -32,6 +32,7 @@ const Input = ({
 	label,
 	id,
 	size,
+	error,
 	...outerProps
 }) => {
 	const prependRef = useRef(null);
@@ -49,14 +50,10 @@ const Input = ({
 
 	return (
 		<LayoutBox {...{ mt, mb, ml, mr, width, minWidth, maxWidth }}>
-			<Form.Group
-				controlId={id}
-				css={css`
-					${styles.formGroup};
-				`}>
-				<Form.Label>{label}</Form.Label>
+			<Form.Group controlId={id} css={styles.formGroup}>
+				<Form.Label css={styles.label}>{label}</Form.Label>
 				<InputGroup
-					css={styles.inputGroup({ prepend: domPrependChanged, append: domAppendChanged, variant, size })}
+					css={styles.inputGroup({ prepend: domPrependChanged, append: domAppendChanged, variant, size, error })}
 					className={cx('ui-Input', className)}>
 					{(iconPrepend || textPrepend) && (
 						<InputGroup.Prepend
@@ -83,6 +80,7 @@ const Input = ({
 						</InputGroup.Append>
 					)}
 				</InputGroup>
+				{error && <div className='errorMessages'>{error}</div>}
 			</Form.Group>
 		</LayoutBox>
 	);

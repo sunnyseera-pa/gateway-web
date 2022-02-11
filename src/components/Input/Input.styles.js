@@ -1,13 +1,48 @@
 import { css } from '@emotion/react';
+import { getSpacingStyle } from '../../configs/theme';
 
-export const inputGroup = ({ prepend, append, variant, size }) => theme => {
+export const mixins = {
+	input: ({ variant, error }) => config => {
+		const { colors, variants } = config;
+
+		return css`
+			background: ${colors[variants[variant].background]};
+			border-style: solid !important;
+			border-width: 2px !important;
+			border-color: ${error ? colors.red600 : colors[variants[variant].borderColor]} !important;
+			border-radius: 0.25rem !important;
+
+			&:focus,
+			&.focus,
+			&:focus-within,
+			&:focus-visible {
+				border-color: ${colors.teal} !important;
+				outline: none;
+			}
+		`;
+	},
+	label: theme => css`
+		${getSpacingStyle('margin-bottom', 2, theme)}
+	`,
+	formGroup: ({
+		font: {
+			size: { default: fontSize },
+		},
+	}) => css`
+		font-size: ${fontSize};
+		display: flex;
+		flex-direction: column;
+	`,
+};
+
+export const inputGroup = ({ prepend, append, variant, size, error }) => theme => {
 	const {
+		colors,
 		font: {
 			size: { default: defaultSize },
 		},
-		colors,
 		components: {
-			Input: { variants, sizes },
+			Input: { sizes, variants },
 		},
 	} = theme;
 
@@ -18,19 +53,11 @@ export const inputGroup = ({ prepend, append, variant, size }) => theme => {
 		.rbt-input.form-control {
 			${prepend.offsetWidth ? `padding-left: calc(${prepend.offsetWidth}px + 1.2em);` : ''}
 			${append.offsetWidth ? `padding-right: calc(${append.offsetWidth}px + 1.2em);` : ''}
-			background: ${colors[variants[variant].background]};
-			border-style: solid !important;
-			border-width: 2px !important;
-			border-color: ${colors[variants[variant].borderColor]} !important;
-			border-radius: 0.25rem !important;
 			font-size: ${defaultSize};
 			height: ${sizes[size].height};
 			width: 100%;
 
-			&:focus,
-			&.focus {
-				border-color: ${colors.teal} !important;
-			}
+			${mixins.input({ variant, error })({ colors, variants })}
 		}
 	`;
 };
@@ -52,7 +79,6 @@ export const decorators = css`
 	align-items: center;
 `;
 
-export const formGroup = css`
-	display: flex;
-	flex-direction: column;
-`;
+export const formGroup = mixins.formGroup;
+
+export const label = mixins.label;

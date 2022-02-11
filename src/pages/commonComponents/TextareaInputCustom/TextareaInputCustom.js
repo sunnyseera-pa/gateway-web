@@ -1,5 +1,6 @@
 import React from 'react';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
+import TextareaAutosize from 'react-textarea-autosize';
 
 class TextareaInputCustom extends React.Component {
 	constructor(props) {
@@ -35,7 +36,7 @@ class TextareaInputCustom extends React.Component {
 					</span>
 				</div>
 
-				<textarea
+				<TextareaAutosize
 					type='text'
 					name={this.props.name}
 					id={this.props.id}

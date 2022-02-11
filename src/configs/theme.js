@@ -49,17 +49,17 @@ export const THEME_INPUT = {
 };
 
 export const THEME_FONT_SIZES = {
-	xxs: '10px',
-	xs: '12px',
-	sm: '13px',
-	md: '14px',
-	default: '14px',
-	lg: '16px',
-	xl: '20px',
-	'2xl': '24px',
-	'3xl': '28px',
-	'4xl': '32px',
-	'5xl': '40px',
+	xxs: '7.52px',
+	xs: '9.03px',
+	sm: '10.83px',
+	md: '13px',
+	default: '13px',
+	lg: '15.6px',
+	xl: '18.72px',
+	'2xl': '22.46rem',
+	'3xl': '26.96px',
+	'4xl': '32.35px',
+	'5xl': '38.82px',
 };
 
 export const theme = {
@@ -68,9 +68,7 @@ export const theme = {
 		unit: 'px',
 	},
 	font: {
-		size: {
-			default: '14px',
-		},
+		size: THEME_FONT_SIZES,
 	},
 	colors: {
 		white: '#fff',
@@ -97,6 +95,7 @@ export const theme = {
 		},
 		Input: THEME_INPUT,
 		Dropdown: THEME_INPUT,
+		Textarea: THEME_INPUT,
 		Checkbox: {
 			height: '20px',
 			width: '20px',
