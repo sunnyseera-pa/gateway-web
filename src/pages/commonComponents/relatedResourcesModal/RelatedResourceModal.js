@@ -51,6 +51,10 @@ class RelatedResourcesModal extends React.Component {
 		this.props.doSearchMethod(e, type, page);
 	};
 
+	handleUpdateSearchString = ({ target: { value } }) => {
+		this.props.doUpdateSearchString(value);
+	};
+
 	render() {
 		const { datasetIndex, toolIndex, datauseIndex, paperIndex, personIndex, courseIndex, selected } = this.state;
 		let { key } = this.state;
@@ -228,7 +232,7 @@ class RelatedResourcesModal extends React.Component {
 					<div className='realted-search-body'>
 						<SearchInput
 							value={searchString}
-							onChange={doUpdateSearchString}
+							onChange={this.handleUpdateSearchString}
 							onReset={() => doUpdateSearchString('')}
 							onSubmit={doSearchMethod}
 							onKeyDown={doSearchMethod}
