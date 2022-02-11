@@ -10,7 +10,7 @@ class RelatedResourcesModal extends React.Component {
 		key: '',
 		datasetIndex: 0,
 		toolIndex: 0,
-		datauseIndex: 0,
+		dataUseRegisterIndex: 0,
 		paperIndex: 0,
 		personIndex: 0,
 		courseIndex: 0,
@@ -40,7 +40,7 @@ class RelatedResourcesModal extends React.Component {
 		} else if (type === 'tool') {
 			await Promise.all([this.setState({ toolIndex: page })]);
 		} else if (type === 'datause') {
-			await Promise.all([this.setState({ datauseIndex: page })]);
+			await Promise.all([this.setState({ dataUseRegisterIndex: page })]);
 		} else if (type === 'paper') {
 			await Promise.all([this.setState({ paperIndex: page })]);
 		} else if (type === 'person') {
@@ -52,12 +52,12 @@ class RelatedResourcesModal extends React.Component {
 	};
 
 	render() {
-		const { datasetIndex, toolIndex, datauseIndex, paperIndex, personIndex, courseIndex, selected } = this.state;
+		const { datasetIndex, toolIndex, dataUseRegisterIndex, paperIndex, personIndex, courseIndex, selected } = this.state;
 		let { key } = this.state;
 
 		let datasetCount = this.props.summary.datasetCount || 0;
 		let toolCount = this.props.summary.toolCount || 0;
-		let datauseCount = this.props.summary.dataUseRegisterCount || 0;
+		let dataUseRegisterCount = this.props.summary.dataUseRegisterCount || 0;
 		let paperCount = this.props.summary.paperCount || 0;
 		let personCount = this.props.summary.personCount || 0;
 		let courseCount = this.props.summary.courseCount || 0;
@@ -67,7 +67,7 @@ class RelatedResourcesModal extends React.Component {
 				key = 'Datasets';
 			} else if (toolCount > 0) {
 				key = 'Tools';
-			} else if (datauseCount > 0) {
+			} else if (dataUseRegisterCount > 0) {
 				key = 'Data Uses';
 			} else if (paperCount > 0) {
 				key = 'Papers';
@@ -111,11 +111,11 @@ class RelatedResourcesModal extends React.Component {
 				</Pagination.Item>
 			);
 		}
-		for (let i = 1; i <= Math.ceil(datauseCount / maxResults); i++) {
+		for (let i = 1; i <= Math.ceil(dataUseRegisterCount / maxResults); i++) {
 			datausePaginationItems.push(
 				<Pagination.Item
 					key={i}
-					active={i === datauseIndex / maxResults + 1}
+					active={i === dataUseRegisterIndex / maxResults + 1}
 					onClick={e => {
 						this.handlePagination('datause', (i - 1) * maxResults, 'click');
 					}}>
@@ -450,7 +450,7 @@ class RelatedResourcesModal extends React.Component {
 
 									{key === 'Tools' && toolCount > maxResults ? <Pagination>{toolPaginationItems}</Pagination> : ''}
 
-									{key === 'Datauses' && datauseCount > maxResults ? <Pagination>{datausePaginationItems}</Pagination> : ''}
+									{key === 'Datauses' && dataUseRegisterCount > maxResults ? <Pagination>{datausePaginationItems}</Pagination> : ''}
 
 									{key === 'Papers' && paperCount > maxResults ? <Pagination>{paperPaginationItems}</Pagination> : ''}
 
