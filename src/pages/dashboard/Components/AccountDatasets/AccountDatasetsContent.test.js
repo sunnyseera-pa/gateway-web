@@ -34,7 +34,7 @@ const props = {
 	onSubmit: mockOnSubmit,
 	isLoading: true,
 	isFetched: false,
-	status: 'inReview',
+	status: STATUS_INREVIEW,
 	team: 'admin',
 	count: 19,
 	params: { search: 'covid', sortBy: 'latest', sortDirection: 'desc', maxResults: 1000 },
@@ -142,7 +142,7 @@ describe('Given the AccountDatasetsContent component', () => {
 							data={mockGetPublisher.data.results.listOfDatasets}
 							isFetched={true}
 							isLoading={false}
-							status='inReview'
+							status=STATUS_INREVIEW
 						/>,
 						{
 							wrapper: Providers,

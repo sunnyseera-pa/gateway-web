@@ -3,7 +3,7 @@ import React, { Suspense } from 'react';
 import { Button, Form, Modal } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
-import { TEXTAREA_ROWS } from '../../../../configs/constants';
+import { STATUS_INREVIEW, TEXTAREA_ROWS } from '../../../../configs/constants';
 import { ReactComponent as CloseButtonSvg } from '../../../../images/close-alt.svg';
 import datasetOnboardingService from '../../../../services/dataset-onboarding/dataset-onboarding';
 import './AccountDatasetDecisionModal.scss';
@@ -30,7 +30,7 @@ const AccountDatasetApproveModal = ({ id, open, closed, goToNext, showGoToNext, 
 
 			handleApprove({
 				publisher: '',
-				tab: 'inReview',
+				tab: STATUS_INREVIEW,
 				message: `You have approved the dataset`,
 			});
 		},

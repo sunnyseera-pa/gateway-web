@@ -4,6 +4,7 @@ import AccountDatasets from './AccountDatasets';
 import { server } from '../../../../services/mockServer';
 import { mockGetPublisher } from '../../../../services/dataset-onboarding/mockMsw';
 import '../../../../utils/test.util';
+import { DATASETS_STATUS_ACTIVE, STATUS_INREVIEW } from '../../../../configs/constants';
 
 const mockAccountDatasetsTabs = jest.fn();
 const mockAccountDatasetsContent = jest.fn();
@@ -14,7 +15,7 @@ jest.mock('./AccountDatasetsTabs', () => props => {
 	return (
 		<button
 			onClick={() => {
-				props.onSelectTab('inReview');
+				props.onSelectTab(STATUS_INREVIEW);
 			}}>
 			Select tab
 		</button>
@@ -80,7 +81,7 @@ describe('Given the AccountDatasets component', () => {
 		it('Then calls the tabs with the correct props', async () => {
 			await waitFor(() => {
 				expect(mockAccountDatasetsTabs).toHaveBeenCalledLastWithMatch({
-					activeKey: 'active,draft',
+					activeKey: DATASETS_STATUS_ACTIVE,
 					counts: { inReview: 19 },
 					team: 'applicant',
 				});
@@ -93,7 +94,7 @@ describe('Given the AccountDatasets component', () => {
 					data: mockGetPublisher.data.results.listOfDatasets,
 					isFetched: true,
 					isLoading: false,
-					status: 'active,draft',
+					status: DATASETS_STATUS_ACTIVE,
 					team: 'applicant',
 				});
 			});
@@ -119,7 +120,7 @@ describe('Given the AccountDatasets component', () => {
 					return expect(mockAccountDatasetsContent).toHaveBeenCalledLastWithMatch({
 						isFetched: true,
 						isLoading: false,
-						status: 'active,draft',
+						status: DATASETS_STATUS_ACTIVE,
 						team: 'applicant',
 					});
 				});
@@ -130,7 +131,7 @@ describe('Given the AccountDatasets component', () => {
 					mockAccountDatasetsContent.mockClear();
 
 					act(async () => {
-						const tab = wrapper.getByText('Select tab', 'inReview');
+						const tab = wrapper.getByText('Select tab', STATUS_INREVIEW);
 
 						await fireEvent.click(tab);
 					});
@@ -142,7 +143,7 @@ describe('Given the AccountDatasets component', () => {
 							data: mockGetPublisher.data.results.listOfDatasets,
 							isFetched: true,
 							isLoading: false,
-							status: 'inReview',
+							status: STATUS_INREVIEW,
 							team: 'applicant',
 						});
 					});
