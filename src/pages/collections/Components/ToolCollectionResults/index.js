@@ -1,15 +1,12 @@
 import React from 'react';
 import _ from 'lodash';
 import RelatedObject from '../../../commonComponents/relatedObject/RelatedObject';
-import NoResults from '../../../commonComponents/NoResults';
 
-const ToolCollectionResults = ({ searchResults, relatedObjects, userId, search, isLoading, count }) => {
+const ToolCollectionResults = ({ searchResults, relatedObjects, userId }) => {
 	const canViewResults = object =>
 		Boolean(
 			object.activeflag === 'active' || (object.type === 'tool' && object.activeflag === 'review' && object.authors.includes(userId))
 		);
-
-	if (!isLoading && !!count) return <NoResults type='tool' searchString={search} />;
 
 	return searchResults.map(object => {
 		if (canViewResults(object)) {
