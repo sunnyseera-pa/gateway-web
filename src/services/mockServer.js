@@ -6,6 +6,7 @@ import mswPostDatasetActivityLog from './activitylog/mockMsw';
 import mswSearch from './search/mockMsw';
 import mswGetLocations from './locations/mockMsw';
 import mswGetContributors from './contributors/mockMsw';
+import mswGetAuthStatus from './auth/mockMsw';
 
 import translations from '../../public/locales/en-GB/translation.json';
 
