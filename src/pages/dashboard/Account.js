@@ -586,7 +586,7 @@ class Account extends Component {
 										</Nav.Link>
 									</div>
 
-									<div className={`${tabId === 'papers' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('papers')}>
+									{/* <div className={`${tabId === 'papers' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('papers')}>
 										<Nav.Link eventKey={'papers'} className='verticalNavBar gray700-13'>
 											<SVGIcon name='newprojecticon' fill={'#b3b8bd'} className='accountSvgs' />
 											<span className='navLinkItem'>Papers</span>
@@ -598,7 +598,7 @@ class Account extends Component {
 											<SVGIcon name='educationicon' fill={'#b3b8bd'} className='svg-20' />
 											<span className='navLinkItem'>Courses</span>
 										</Nav.Link>
-									</div>
+									</div> */}
 									<div
 										className={`${tabId === 'dataaccessrequests' ? 'activeCard' : 'accountNav'}`}
 										onClick={e => this.toggleNav('dataaccessrequests')}>
@@ -737,16 +737,15 @@ class Account extends Component {
 									_.isEmpty(dataaccessrequest) ? (
 										<DataAccessRequests setDataAccessRequest={this.setDataAccessRequest} userState={userState} team={team} alert={alert} />
 									) : (
-
-																				<ActivityLog
-																				applicationId={this.state._id}
-																					onClickStartReview={this.navigateToLocation}
-																					dataaccessrequest={dataaccessrequest}
-																					userState={userState}
-																					team={team}
-																					ref={this.activityLog}
-																					onUpdateLogs={this.loadActivityLogNotifications}
-																				/>
+										<ActivityLog
+											applicationId={this.state._id}
+											onClickStartReview={this.navigateToLocation}
+											dataaccessrequest={dataaccessrequest}
+											userState={userState}
+											team={team}
+											ref={this.activityLog}
+											onUpdateLogs={this.loadActivityLogNotifications}
+										/>
 									)
 								) : (
 									''

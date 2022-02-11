@@ -56,13 +56,13 @@ const AddNewEntity = props => {
 					onClick={() => googleAnalytics.recordEvent('Collections', 'Add a new collection', 'Search bar add new link clicked')}>
 					Collection
 				</Dropdown.Item>
-				<Dropdown.Item
+				{/* <Dropdown.Item
 					href='/paper/add'
 					className='black-14'
 					data-test-id='addNewPaper'
 					onClick={() => googleAnalytics.recordEvent('Papers', 'Add a new paper', 'Search bar add new link clicked')}>
 					Paper
-				</Dropdown.Item>
+				</Dropdown.Item> */}
 				<Dropdown.Item
 					href='/project/add'
 					className='black-14'

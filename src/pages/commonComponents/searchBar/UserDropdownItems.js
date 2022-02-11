@@ -22,12 +22,12 @@ export const UserDropdownItems = isAdmin => {
 			<Dropdown.Item href='/account?tab=projects&team=user' className='black-14 user-dropdown-item' data-test-id='optProjects'>
 				Projects
 			</Dropdown.Item>
-			<Dropdown.Item href='/account?tab=papers&team=user' className='black-14 user-dropdown-item' data-test-id='optPapers'>
+			{/* <Dropdown.Item href='/account?tab=papers&team=user' className='black-14 user-dropdown-item' data-test-id='optPapers'>
 				Papers
-			</Dropdown.Item>
+			</Dropdown.Item> 
 			<Dropdown.Item href='/account?tab=courses&team=user' className='black-14 user-dropdown-item' data-test-id='optCourses'>
 				Courses
-			</Dropdown.Item>
+			</Dropdown.Item> */}
 			<Dropdown.Item href='/account?tab=collections&team=user' className='black-14 user-dropdown-item' data-test-id='optCollections'>
 				Collections
 			</Dropdown.Item>
