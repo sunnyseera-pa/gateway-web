@@ -1260,7 +1260,6 @@ class SearchPage extends React.Component {
 	};
 
 	filterTreeByCheckbox = (nodes, parentKey, checked) => {
-		console.log(nodes, parentKey, checked);
 		const state = this.resetNodesByParent(parentKey);
 		const parentNode = this.findParentNode(state[`filtersV2${this.state.key}`], parentKey);
 
