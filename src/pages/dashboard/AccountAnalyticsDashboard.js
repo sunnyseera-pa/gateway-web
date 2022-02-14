@@ -1,14 +1,14 @@
-import React, { Fragment } from 'react';
 import axios from 'axios';
 import moment from 'moment';
-import UnmetDemand from './DARComponents/UnmetDemand';
-import TopSearches from './TopSearches';
-import TopDatasets from './TopDatasets';
-import { Row, Col, Tabs, Tab, DropdownButton, Dropdown } from 'react-bootstrap';
-import DashboardKPI from './DARComponents/DashboardKPI';
+import React, { Fragment } from 'react';
+import { Col, Dropdown, DropdownButton, Row } from 'react-bootstrap';
 import Loading from '../commonComponents/Loading';
+import { LayoutContent } from '../../components/Layout';
 import UnmetDemandSection from './Components/UnmetDemand/UnmetDemandSection';
+import DashboardKPI from './DARComponents/DashboardKPI';
 import './Dashboard.scss';
+import TopDatasets from './TopDatasets';
+import TopSearches from './TopSearches';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 let isMounted = false;
@@ -238,13 +238,9 @@ class AccountAnalyticsDashboard extends React.Component {
 
 		if (isLoading) {
 			return (
-				<Row>
-					<Col xs={1}></Col>
-					<Col xs={10}>
-						<Loading data-testid='isLoading' />
-					</Col>
-					<Col xs={1}></Col>
-				</Row>
+				<LayoutContent>
+					<Loading data-testid='isLoading' />
+				</LayoutContent>
 			);
 		}
 
@@ -438,7 +434,7 @@ class AccountAnalyticsDashboard extends React.Component {
 								</Row>
 							</Fragment>
 						)}
-						
+
 						<UnmetDemandSection data={data} key={key} handleSelect={this.handleSelect.bind(this)} renderNoResults={this.renderNoResults} />
 					</Col>
 					<Col sm={1} lg={10} />

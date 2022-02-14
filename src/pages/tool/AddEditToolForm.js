@@ -15,6 +15,7 @@ import ActionBar from '../commonComponents/actionbar/ActionBar';
 import SVGIcon from '../../images/SVGIcon';
 import googleAnalytics from '../../tracking';
 import './Tool.scss';
+import TextareaAutosize from 'react-textarea-autosize';
 
 const baseURL = require('../commonComponents/BaseURL').getURL();
 let windowUrl = window.location.origin;
@@ -314,15 +315,15 @@ const AddEditToolForm = props => {
 															(<span id='currentCount'>{formik.values.description.length || 0}</span>/1500)
 														</span>
 													</div>
-													<Form.Control
+													<TextareaAutosize
 														as='textarea'
 														id='description'
 														name='description'
 														type='text'
 														className={
 															formik.touched.description && formik.errors.description
-																? 'emptyFormInput addFormInput descriptionInput'
-																: 'addFormInput descriptionInput'
+																? 'emptyFormInput addFormInput descriptionInput textarea-addEditForm'
+																: 'addFormInput descriptionInput textarea-addEditForm'
 														}
 														onKeyUp={descriptionCount}
 														onChange={formik.handleChange}
@@ -346,15 +347,16 @@ const AddEditToolForm = props => {
 															/3000)
 														</span>
 													</div>
-													<Form.Control
+
+													<TextareaAutosize
 														as='textarea'
 														id='resultsInsights'
 														name='resultsInsights'
 														type='text'
 														className={
 															formik.touched.resultsInsights && formik.errors.resultsInsights
-																? 'emptyFormInput addFormInput descriptionInput'
-																: 'addFormInput descriptionInput'
+																? 'emptyFormInput addFormInput descriptionInput textarea-addEditForm'
+																: 'addFormInput descriptionInput textarea-addEditForm'
 														}
 														onKeyUp={resultsInsightsCount}
 														onChange={formik.handleChange}
@@ -625,7 +627,7 @@ const AddEditToolForm = props => {
 												<span className='gray800-14'> (optional)</span>
 												<br />
 												<span className='gray800-14'>
-													Show relationships to papers, projects, datasets and tools. Resources must be added to the Gateway first.
+													Show relationships to papers, data uses, datasets and tools. Resources must be added to the Gateway first.
 												</span>
 											</div>
 
@@ -665,7 +667,7 @@ const AddEditToolForm = props => {
 															userState={props.userState}
 															datasetData={props.datasetData}
 															toolData={props.toolData}
-															projectData={props.projectData}
+															datauseData={props.datauseData}
 															paperData={props.paperData}
 															personData={props.personData}
 															courseData={props.courseData}

@@ -34,11 +34,17 @@ export const DatasetCard = props => {
 		rejectionText,
 		rejectionAuthor,
 		listOfVersions,
+		path,
+		slaProps,
 	} = props;
 	const [flagClosed, setFlagClosed] = useState(true);
 
+	const handleClick = React.useCallback(() => {
+		window.location.href = path || `/dataset-onboarding/${id}`;
+	}, [id]);
+
 	return (
-		<Row key={`dataset_card_${title}`} onClick={() => (window.location.href = `/dataset-onboarding/${id}`)}>
+		<Row key={`dataset_card_${title}`} onClick={handleClick}>
 			<div className='col-md-12'>
 				<div className='layoutCard mb-0'>
 					<div className='datasetHeader mb-0 mt-2'>
@@ -56,9 +62,11 @@ export const DatasetCard = props => {
 							) : (
 								''
 							)}
+
 							<SLA
 								classProperty={DatasetOnboardingHelper.datasetStatusColours[datasetStatus]}
 								text={DatasetOnboardingHelper.datasetSLAText[datasetStatus]}
+								{...slaProps}
 							/>
 
 							{datasetStatus === 'draft' && listOfVersions.find(version => version.activeflag === 'active') ? (
@@ -67,6 +75,7 @@ export const DatasetCard = props => {
 									<SLA
 										classProperty={DatasetOnboardingHelper.datasetStatusColours['active']}
 										text={DatasetOnboardingHelper.datasetSLAText['active']}
+										{...slaProps}
 									/>
 								</>
 							) : (
@@ -158,9 +167,6 @@ export const DatasetCard = props => {
 									{datasetStatus === 'draft' ? ' (Draft)' : ''}
 								</div>
 							)}
-							{(() => {
-								console.log(timeStamps.updated);
-							})()}
 							<div className='box'>Last activity</div>
 							<div className='box'>{!isEmpty(timeStamps.updated) ? moment(timeStamps.updated).format('D MMMM YYYY HH:mm') : '-'}</div>
 						</Fragment>

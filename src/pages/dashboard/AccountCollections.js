@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import moment from 'moment';
 import { Row, Col, Button, Tabs, Tab, DropdownButton, Dropdown } from 'react-bootstrap';
-import NotFound from '../commonComponents/NotFound';
+import MessageNotFound from '../commonComponents/MessageNotFound';
 import Loading from '../commonComponents/Loading';
 import './Dashboard.scss';
 import { EntityActionButton } from './EntityActionButton.jsx';
 import googleAnalytics from '../../tracking';
 import { PaginationHelper } from '../commonComponents/PaginationHelper';
+import { LayoutContent } from '../../components/Layout';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -20,7 +21,7 @@ const AccountCollections = props => {
 	const [activeIndex, setActiveIndex] = useState(0);
 	const [archiveIndex, setArchiveIndex] = useState(0);
 	const [isResultsLoading, setIsResultsLoading] = useState(true);
-	const maxResult = 40;
+	const maxResults = 40;
 
 	useEffect(() => {
 		doCollectionsCall('active', true, 0, true);
@@ -49,7 +50,7 @@ const AccountCollections = props => {
 		if (typeof index === 'undefined') {
 			apiUrl = baseURL + `/api/v1/collections/getList?status=${key}`;
 		} else {
-			apiUrl = baseURL + `/api/v1/collections/getList?status=${key}&offset=${index}&limit=${maxResult}`;
+			apiUrl = baseURL + `/api/v1/collections/getList?status=${key}&offset=${index}&limit=${maxResults}`;
 		}
 
 		axios.get(apiUrl).then(res => {
@@ -76,9 +77,9 @@ const AccountCollections = props => {
 				if (shouldChangeTab()) {
 					setKey('active');
 					doCollectionsCall('active', true, activeIndex);
-				} else if (archiveCount - (archiveIndex + maxResult) <= 0 && archiveCount % maxResult === 1 && archiveCount !== 1) {
-					setArchiveIndex(archiveIndex - maxResult);
-					doCollectionsCall(key, true, archiveIndex - maxResult);
+				} else if (archiveCount - (archiveIndex + maxResults) <= 0 && archiveCount % maxResults === 1 && archiveCount !== 1) {
+					setArchiveIndex(archiveIndex - maxResults);
+					doCollectionsCall(key, true, archiveIndex - maxResults);
 				} else {
 					doCollectionsCall('archive', true, archiveIndex);
 				}
@@ -90,17 +91,22 @@ const AccountCollections = props => {
 			if (shouldChangeTab()) {
 				setKey('active');
 				doCollectionsCall('active', true, activeIndex);
-			} else if (key === 'active' && !shouldChangeTab() && activeCount - (activeIndex + maxResult) <= 0 && activeCount % maxResult === 1) {
-				setActiveIndex(activeIndex - maxResult);
-				doCollectionsCall('active', true, activeIndex - maxResult);
+			} else if (
+				key === 'active' &&
+				!shouldChangeTab() &&
+				activeCount - (activeIndex + maxResults) <= 0 &&
+				activeCount % maxResults === 1
+			) {
+				setActiveIndex(activeIndex - maxResults);
+				doCollectionsCall('active', true, activeIndex - maxResults);
 			} else if (
 				key === 'archive' &&
 				!shouldChangeTab() &&
-				archiveCount - (archiveIndex + maxResult) <= 0 &&
-				archiveCount % maxResult === 1
+				archiveCount - (archiveIndex + maxResults) <= 0 &&
+				archiveCount % maxResults === 1
 			) {
-				setArchiveIndex(archiveIndex - maxResult);
-				doCollectionsCall('archive', true, archiveIndex - maxResult);
+				setArchiveIndex(archiveIndex - maxResults);
+				doCollectionsCall('archive', true, archiveIndex - maxResults);
 			} else if (!shouldChangeTab()) {
 				if (key === 'active') {
 					doCollectionsCall('active', true, activeIndex);
@@ -118,9 +124,9 @@ const AccountCollections = props => {
 			})
 			.then(res => {
 				setKey('active');
-				if (activeCount - (activeIndex + maxResult) <= 0 && activeCount % maxResult === 1 && activeCount !== 1) {
-					setActiveIndex(activeIndex - maxResult);
-					doCollectionsCall(key, true, activeIndex - maxResult);
+				if (activeCount - (activeIndex + maxResults) <= 0 && activeCount % maxResults === 1 && activeCount !== 1) {
+					setActiveIndex(activeIndex - maxResults);
+					doCollectionsCall(key, true, activeIndex - maxResults);
 				} else {
 					doCollectionsCall('active', true, activeIndex);
 				}
@@ -133,242 +139,234 @@ const AccountCollections = props => {
 
 	if (isLoading) {
 		return (
-			<Row className='mt-4'>
-				<Col xs={1}></Col>
-				<Col xs={10}>
-					<Loading data-testid='isLoading' />
-				</Col>
-				<Col xs={1}></Col>
-			</Row>
+			<LayoutContent className='mt-4'>
+				<Loading data-testid='isLoading' />
+			</LayoutContent>
 		);
 	}
 
 	return (
 		<div>
-			<Row>
-				<Col xs={1}></Col>
-				<Col xs={10}>
-					<Row className='accountHeader'>
-						<Col sm={12} md={8}>
-							<Row>
-								<span className='black-20'>Collections</span>
-							</Row>
-							<Row>
-								<span className='gray700-13 '>Manage your existing collections or create new ones</span>
-							</Row>
-						</Col>
-						<Col sm={12} md={4} style={{ textAlign: 'right' }}>
-							<Button
-								data-test-id='add-collection-btn'
-								variant='primary'
-								href='/collection/add'
-								className='addButton'
-								onClick={() => googleAnalytics.recordEvent('Collections', 'Add a new collection', 'Collections dashboard button clicked')}>
-								+ Create a collection
-							</Button>
-						</Col>
-					</Row>
-
-					<Row className='tabsBackground'>
-						<Col sm={12} lg={12}>
-							<Tabs data-testid='collectionTabs' className='dataAccessTabs gray700-13' activeKey={key} onSelect={handleSelect}>
-								<Tab eventKey='active' title={'Active (' + activeCount + ')'}>
-									{' '}
-								</Tab>
-								<Tab eventKey='archive' title={'Archive (' + archiveCount + ')'}>
-									{' '}
-								</Tab>
-							</Tabs>
-						</Col>
-					</Row>
-
-					{isResultsLoading && (
-						<Row className='width-100'>
-							<Col xs={12} className='noPadding'>
-								<Loading />
-							</Col>
+			<LayoutContent>
+				<Row className='accountHeader'>
+					<Col sm={12} md={8}>
+						<Row>
+							<span className='black-20'>Collections</span>
 						</Row>
-					)}
+						<Row>
+							<span className='gray700-13 '>Manage your existing collections or create new ones</span>
+						</Row>
+					</Col>
+					<Col sm={12} md={4} style={{ textAlign: 'right' }}>
+						<Button
+							data-test-id='add-collection-btn'
+							variant='primary'
+							href='/collection/add'
+							className='addButton'
+							onClick={() => googleAnalytics.recordEvent('Collections', 'Add a new collection', 'Collections dashboard button clicked')}>
+							+ Create a collection
+						</Button>
+					</Col>
+				</Row>
 
-					{!isResultsLoading &&
-						(() => {
-							switch (key) {
-								case 'active':
-									return (
-										<div>
-											{activeCount <= 0 ? (
-												''
-											) : (
-												<Row className='subHeader mt-3 gray800-14-bold'>
-													<Col xs={2}>Last activity</Col>
-													<Col xs={5}>Name</Col>
-													<Col xs={2}>Author</Col>
-													<Col xs={3}></Col>
-												</Row>
-											)}
+				<Row className='tabsBackground'>
+					<Col sm={12} lg={12}>
+						<Tabs data-testid='collectionTabs' className='dataAccessTabs gray700-13' activeKey={key} onSelect={handleSelect}>
+							<Tab eventKey='active' title={'Active (' + activeCount + ')'}>
+								{' '}
+							</Tab>
+							<Tab eventKey='archive' title={'Archive (' + archiveCount + ')'}>
+								{' '}
+							</Tab>
+						</Tabs>
+					</Col>
+				</Row>
 
-											{activeCount <= 0 ? (
-												<Row className='margin-right-15' data-testid='collectionEntryNotFound'>
-													<NotFound word='collections' />
-												</Row>
-											) : (
-												collectionsList.map(collection => {
-													if (collection.activeflag !== 'active') {
-														return <></>;
-													} else {
-														return (
-															<Row className='entryBox' data-testid='collectionEntryActive'>
-																<Col sm={12} lg={2} className='pt-2 gray800-14'>
-																	{moment(collection.updatedAt).format('D MMMM YYYY HH:mm')}
-																</Col>
-																<Col sm={12} lg={5} className='pt-2'>
-																	<a href={'/collection/' + collection.id} className='black-14'>
-																		{collection.name}
-																	</a>
-																</Col>
-																<Col sm={12} lg={2} className='pt-2 gray800-14'>
-																	{collection.persons <= 0
-																		? 'Author not listed'
-																		: collection.persons.map((person, index) => {
-																				return (
-																					<span key={index}>
-																						{person.firstname} {person.lastname} <br />
-																					</span>
-																				);
-																		  })}
-																</Col>
+				{isResultsLoading && (
+					<Row className='width-100'>
+						<Col xs={12} className='noPadding'>
+							<Loading />
+						</Col>
+					</Row>
+				)}
 
-																<Col sm={12} lg={3} style={{ textAlign: 'right' }} className='toolsButtons'>
-																	<DropdownButton variant='outline-secondary' alignRight title='Actions' className='floatRight'>
-																		<Dropdown.Item href={'/collection/edit/' + collection.id} className='black-14'>
-																			Edit
-																		</Dropdown.Item>
-																		<EntityActionButton
-																			id={collection.id}
-																			action={archiveCollection}
-																			actionType='archive'
-																			entity='collection'
-																		/>
-																		<EntityActionButton
-																			id={collection.id}
-																			action={deleteCollection}
-																			actionType='delete'
-																			entity='collection'
-																		/>
-																	</DropdownButton>
-																</Col>
-															</Row>
-														);
-													}
-												})
-											)}
-										</div>
-									);
-								case 'archive':
-									return (
-										<div>
-											{archiveCount <= 0 ? (
-												''
-											) : (
-												<Row className='subHeader mt-3 gray800-14-bold'>
-													<Col xs={2}>Last activity</Col>
-													<Col xs={5}>Name</Col>
-													<Col xs={2}>Author</Col>
-													<Col xs={3}></Col>
-												</Row>
-											)}
+				{!isResultsLoading &&
+					(() => {
+						switch (key) {
+							case 'active':
+								return (
+									<div>
+										{activeCount <= 0 ? (
+											''
+										) : (
+											<Row className='subHeader mt-3 gray800-14-bold'>
+												<Col xs={2}>Last activity</Col>
+												<Col xs={5}>Name</Col>
+												<Col xs={2}>Author</Col>
+												<Col xs={3}></Col>
+											</Row>
+										)}
 
-											{archiveCount <= 0 ? (
-												<Row className='margin-right-15'>
-													<NotFound word='collections' />
-												</Row>
-											) : (
-												collectionsList.map(collection => {
-													if (collection.activeflag !== 'archive') {
-														return <></>;
-													} else {
-														return (
-															<Row className='entryBox' data-testid='collectionEntryArchive'>
-																<Col sm={12} lg={2} className='pt-2 gray800-14'>
-																	{moment(collection.updatedAt).format('D MMMM YYYY HH:mm')}
-																</Col>
-																<Col sm={12} lg={5} className='pt-2'>
-																	<a href={'/collection/' + collection.id} className='black-14'>
-																		{collection.name}
-																	</a>
-																</Col>
-																<Col sm={12} lg={2} className='pt-2 gray800-14'>
-																	{collection.persons <= 0
-																		? 'Author not listed'
-																		: collection.persons.map(person => {
-																				return (
-																					<span>
-																						{person.firstname} {person.lastname} <br />
-																					</span>
-																				);
-																		  })}
-																</Col>
+										{activeCount <= 0 ? (
+											<Row className='margin-right-15' data-testid='collectionEntryMessageNotFound'>
+												<MessageNotFound word='collections' />
+											</Row>
+										) : (
+											collectionsList.map(collection => {
+												if (collection.activeflag !== 'active') {
+													return <></>;
+												} else {
+													return (
+														<Row className='entryBox' data-testid='collectionEntryActive'>
+															<Col sm={12} lg={2} className='pt-2 gray800-14'>
+																{moment(collection.updatedAt).format('D MMMM YYYY HH:mm')}
+															</Col>
+															<Col sm={12} lg={5} className='pt-2'>
+																<a href={'/collection/' + collection.id} className='black-14'>
+																	{collection.name}
+																</a>
+															</Col>
+															<Col sm={12} lg={2} className='pt-2 gray800-14'>
+																{collection.persons <= 0
+																	? 'Author not listed'
+																	: collection.persons.map((person, index) => {
+																			return (
+																				<span key={index}>
+																					{person.firstname} {person.lastname} <br />
+																				</span>
+																			);
+																	  })}
+															</Col>
 
-																<Col sm={12} lg={3} style={{ textAlign: 'right' }} className='toolsButtons'>
-																	<DropdownButton variant='outline-secondary' alignRight title='Actions' className='floatRight'>
-																		<Dropdown.Item href={'/collection/edit/' + collection.id} className='black-14'>
-																			Edit
-																		</Dropdown.Item>
-																		<EntityActionButton
-																			id={collection.id}
-																			action={unarchiveCollection}
-																			actionType='unarchive'
-																			entity='collection'
-																		/>
-																		<EntityActionButton
-																			id={collection.id}
-																			action={deleteCollection}
-																			actionType='delete'
-																			entity='collection'
-																		/>
-																	</DropdownButton>
-																</Col>
-															</Row>
-														);
-													}
-												})
-											)}
-										</div>
-									);
-								default:
-									return key;
-							}
-						})()}
+															<Col sm={12} lg={3} style={{ textAlign: 'right' }} className='toolsButtons'>
+																<DropdownButton variant='outline-secondary' alignRight title='Actions' className='floatRight'>
+																	<Dropdown.Item href={'/collection/edit/' + collection.id} className='black-14'>
+																		Edit
+																	</Dropdown.Item>
+																	<EntityActionButton
+																		id={collection.id}
+																		action={archiveCollection}
+																		actionType='archive'
+																		entity='collection'
+																	/>
+																	<EntityActionButton
+																		id={collection.id}
+																		action={deleteCollection}
+																		actionType='delete'
+																		entity='collection'
+																	/>
+																</DropdownButton>
+															</Col>
+														</Row>
+													);
+												}
+											})
+										)}
+									</div>
+								);
+							case 'archive':
+								return (
+									<div>
+										{archiveCount <= 0 ? (
+											''
+										) : (
+											<Row className='subHeader mt-3 gray800-14-bold'>
+												<Col xs={2}>Last activity</Col>
+												<Col xs={5}>Name</Col>
+												<Col xs={2}>Author</Col>
+												<Col xs={3}></Col>
+											</Row>
+										)}
 
-					{!isResultsLoading && (
-						<div className='text-center entityDashboardPagination'>
-							{key === 'active' && activeCount > maxResult ? (
-								<PaginationHelper
-									doEntitiesCall={doCollectionsCall}
-									entityCount={activeCount}
-									statusKey={key}
-									paginationIndex={activeIndex}
-									setPaginationIndex={setActiveIndex}
-									maxResult={maxResult}></PaginationHelper>
-							) : (
-								''
-							)}
-							{key === 'archive' && archiveCount > maxResult ? (
-								<PaginationHelper
-									doEntitiesCall={doCollectionsCall}
-									entityCount={archiveCount}
-									statusKey={key}
-									paginationIndex={archiveIndex}
-									setPaginationIndex={setArchiveIndex}
-									maxResult={maxResult}></PaginationHelper>
-							) : (
-								''
-							)}
-						</div>
-					)}
-				</Col>
-				<Col xs={1}></Col>
-			</Row>
+										{archiveCount <= 0 ? (
+											<Row className='margin-right-15'>
+												<MessageNotFound word='collections' />
+											</Row>
+										) : (
+											collectionsList.map(collection => {
+												if (collection.activeflag !== 'archive') {
+													return <></>;
+												} else {
+													return (
+														<Row className='entryBox' data-testid='collectionEntryArchive'>
+															<Col sm={12} lg={2} className='pt-2 gray800-14'>
+																{moment(collection.updatedAt).format('D MMMM YYYY HH:mm')}
+															</Col>
+															<Col sm={12} lg={5} className='pt-2'>
+																<a href={'/collection/' + collection.id} className='black-14'>
+																	{collection.name}
+																</a>
+															</Col>
+															<Col sm={12} lg={2} className='pt-2 gray800-14'>
+																{collection.persons <= 0
+																	? 'Author not listed'
+																	: collection.persons.map(person => {
+																			return (
+																				<span>
+																					{person.firstname} {person.lastname} <br />
+																				</span>
+																			);
+																	  })}
+															</Col>
+
+															<Col sm={12} lg={3} style={{ textAlign: 'right' }} className='toolsButtons'>
+																<DropdownButton variant='outline-secondary' alignRight title='Actions' className='floatRight'>
+																	<Dropdown.Item href={'/collection/edit/' + collection.id} className='black-14'>
+																		Edit
+																	</Dropdown.Item>
+																	<EntityActionButton
+																		id={collection.id}
+																		action={unarchiveCollection}
+																		actionType='unarchive'
+																		entity='collection'
+																	/>
+																	<EntityActionButton
+																		id={collection.id}
+																		action={deleteCollection}
+																		actionType='delete'
+																		entity='collection'
+																	/>
+																</DropdownButton>
+															</Col>
+														</Row>
+													);
+												}
+											})
+										)}
+									</div>
+								);
+							default:
+								return key;
+						}
+					})()}
+
+				{!isResultsLoading && (
+					<div className='text-center entityDashboardPagination'>
+						{key === 'active' && activeCount > maxResults ? (
+							<PaginationHelper
+								doEntitiesCall={doCollectionsCall}
+								entityCount={activeCount}
+								statusKey={key}
+								paginationIndex={activeIndex}
+								setPaginationIndex={setActiveIndex}
+								maxResults={maxResults}></PaginationHelper>
+						) : (
+							''
+						)}
+						{key === 'archive' && archiveCount > maxResults ? (
+							<PaginationHelper
+								doEntitiesCall={doCollectionsCall}
+								entityCount={archiveCount}
+								statusKey={key}
+								paginationIndex={archiveIndex}
+								setPaginationIndex={setArchiveIndex}
+								maxResults={maxResults}></PaginationHelper>
+						) : (
+							''
+						)}
+					</div>
+				)}
+			</LayoutContent>
 		</div>
 	);
 };

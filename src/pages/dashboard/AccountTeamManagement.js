@@ -14,6 +14,7 @@ import TeamNotificationsConfirmationModal from './Team/TeamNotificationsConfirma
 import { userTypes, tabTypes } from './Team/teamUtil';
 import SVGIcon from '../../images/SVGIcon';
 import './Dashboard.scss';
+import { LayoutContent } from '../../components/Layout';
 
 const AccountTeamManagement = ({
 	userState = [],
@@ -432,43 +433,37 @@ const AccountTeamManagement = ({
 	return (
 		<Fragment>
 			<Fragment>{!isEmpty(alerts) ? generateAlerts() : ''}</Fragment>
-			<Row>
-				<Col xs={1}></Col>
-				<div className='col-sm-10'>
-					<div className='accountHeader dataAccessHeader'>
-						<Col xs={8}>
-							<Row>
-								<div className='black-20'>Team management</div>
-								<div className='gray700-14'>Organise and manage team members and the teams email notifications.</div>
-							</Row>
-						</Col>
-						<Col xs={4} style={{ textAlign: 'right' }}></Col>
-					</div>
-					<div className='tabsBackground'>
-						<Col sm={12} lg={12}>
-							<Tabs className='dataAccessTabs gray700-14' activeKey={activeTabKey} onSelect={onTabChange}>
-								{!userRoleIsAdmin(teamId)
-									? Object.keys(tabTypes).map((keyName, i) => (
-											<Tab
-												key={i}
-												eventKey={`${tabTypes[keyName]}`}
-												title={`${upperFirst(tabTypes[keyName])}`}
-												data-testid={tabTypes[keyName]}></Tab>
-									  ))
-									: ''}
-							</Tabs>
-						</Col>
-					</div>
+			<LayoutContent>
+				<div className='accountHeader dataAccessHeader'>
+					<Col xs={8}>
+						<Row>
+							<div className='black-20'>Team management</div>
+							<div className='gray700-14'>Organise and manage team members and the teams email notifications.</div>
+						</Row>
+					</Col>
+					<Col xs={4} style={{ textAlign: 'right' }}></Col>
 				</div>
-				{/*CLOSE col-sm-10 */}
-				<Col xs={1}></Col>
-			</Row>
+				<div className='tabsBackground'>
+					<Col sm={12} lg={12}>
+						<Tabs className='dataAccessTabs gray700-14' activeKey={activeTabKey} onSelect={onTabChange}>
+							{!userRoleIsAdmin(teamId)
+								? Object.keys(tabTypes).map((keyName, i) => (
+										<Tab
+											key={i}
+											eventKey={`${tabTypes[keyName]}`}
+											title={`${upperFirst(tabTypes[keyName])}`}
+											data-testid={tabTypes[keyName]}></Tab>
+								  ))
+								: ''}
+						</Tabs>
+					</Col>
+				</div>
+			</LayoutContent>
 
 			{activeTabKey === tabTypes.Members && <AccountMembers userState={userState} team={team} teamId={teamId} />}
 
 			{activeTabKey === tabTypes.Notifications && (
-				<Row>
-					<Col xs={1}></Col>
+				<LayoutContent>
 					<div className='col-sm-10'>
 						<div className='accountHeader dataAccessHeader'>
 							<Col xs={12}>
@@ -532,8 +527,7 @@ const AccountTeamManagement = ({
 								})}
 						</div>
 					</div>
-					<Col xs={1}></Col>
-				</Row>
+				</LayoutContent>
 			)}
 			<TeamEmailAlertModal open={alertModal} close={toggleAlertModal} options={alertModalOptions} />
 			<TeamNotificationsConfirmationModal

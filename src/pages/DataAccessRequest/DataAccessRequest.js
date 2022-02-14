@@ -57,6 +57,7 @@ import googleAnalytics from '../../tracking';
 import ErrorModal from '../commonComponents/errorModal';
 import DropdownCustom from './components/DropdownCustom/DropdownCustom';
 import DoubleDropdownCustom from './components/DoubleDropdownCustom/DoubleDropdownCustom';
+import TextareaInputCustom from '../commonComponents/TextareaInputCustom/TextareaInputCustom';
 
 class DataAccessRequest extends Component {
 	constructor(props) {
@@ -1148,7 +1149,6 @@ class DataAccessRequest extends Component {
 	onHandleDataSetChange = (value = []) => {
 		// 1. Deconstruct current state
 		let { aboutApplication, allowedNavigation, topicContext } = { ...this.state };
-
 		aboutApplication.selectedDatasets = [...value];
 
 		// 3. If no datasets are passed, set invalid and incomplete step, and update message context
@@ -1876,6 +1876,7 @@ class DataAccessRequest extends Component {
 					onQuestionAction={this.onQuestionAction}
 					onUpdate={this.onFormUpdate}
 					onSubmit={this.onFormSubmit}
+					applicationId={this.state._id}
 				/>
 			);
 		}
@@ -1922,6 +1923,8 @@ class DataAccessRequest extends Component {
 		Winterfell.addInputType('typeaheadUser', TypeaheadUser);
 		Winterfell.addInputType('dropdownCustom', DropdownCustom);
 		Winterfell.addInputType('doubleDropdownCustom', DoubleDropdownCustom);
+		Winterfell.addInputType('textareaInputCustom', TextareaInputCustom);
+
 		Winterfell.validation.default.addValidationMethods({
 			isCustomDate: value => {
 				if (_.isEmpty(value) || _.isNil(value) || moment(value, 'DD/MM/YYYY').isValid()) {

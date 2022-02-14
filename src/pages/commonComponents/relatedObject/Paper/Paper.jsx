@@ -9,11 +9,12 @@ import RemoveButton from '../RemoveButton/RemoveButton';
 import Title from '../Title/Title';
 import Description from '../Description/Description';
 import Tag from '../Tag/Tag';
+import { ReactComponent as LockSVG } from '../../../../images/icon-security.svg';
 import { paper } from './constants';
 import * as styles from './Paper.styles';
 import '../../CommonComponents.scss';
 
-const Paper = ({ data, activeLink, onSearchPage, showRelationshipQuestion, updateOnFilterBadge, removeButton }) => {
+const Paper = ({ data, activeLink, onSearchPage, showRelationshipQuestion, updateOnFilterBadge, removeButton, isLocked }) => {
 	return (
 		<Row data-test-id='related-paper-object' className='noMargin'>
 			<Col sm={10} lg={10} className='pad-left-24'>
@@ -26,8 +27,8 @@ const Paper = ({ data, activeLink, onSearchPage, showRelationshipQuestion, updat
 					{data.journal} {data.journalYear}
 				</div>
 			</Col>
-			<Col sm={2} lg={2} className='pad-right-24'>
-				{showRelationshipQuestion && <RemoveButton removeButtonHandler={removeButton} />}
+			<Col sm={2} lg={2} className={isLocked ? 'lockSVG pad-right-24' : 'pad-right-24'}>
+				{showRelationshipQuestion ? isLocked ? <LockSVG /> : <RemoveButton removeButtonHandler={removeButton} /> : ''}
 			</Col>
 			<Col sm={12} lg={12} className='pad-left-24 pad-right-24 pad-top-16'>
 				<Tag tagName={paper.TAB} tagType={data.type} updateOnFilterBadgeHandler={updateOnFilterBadge}>

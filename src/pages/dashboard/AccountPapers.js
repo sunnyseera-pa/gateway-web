@@ -2,13 +2,14 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import moment from 'moment';
 import { Row, Col, Button, Tabs, Tab, DropdownButton, Dropdown } from 'react-bootstrap';
-import NotFound from '../commonComponents/NotFound';
+import MessageNotFound from '../commonComponents/MessageNotFound';
 import Loading from '../commonComponents/Loading';
 import './Dashboard.scss';
 import ActionModal from '../commonComponents/ActionModal/ActionModal';
 import { EntityActionButton } from './EntityActionButton.jsx';
 import googleAnalytics from '../../tracking';
 import { PaginationHelper } from '../commonComponents/PaginationHelper';
+import { LayoutContent } from '../../components/Layout';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -30,7 +31,7 @@ export const AccountPapers = props => {
 	const actionModalConfig = {
 		title: 'Reject this Paper?',
 	};
-	const maxResult = 40;
+	const maxResults = 40;
 
 	useEffect(() => {
 		doPapersCall('active', true, 0, true);
@@ -67,7 +68,7 @@ export const AccountPapers = props => {
 		if (typeof index === 'undefined') {
 			apiUrl = baseURL + `/api/v1/papers/getList?status=${key}`;
 		} else {
-			apiUrl = baseURL + `/api/v1/papers/getList?status=${key}&offset=${index}&limit=${maxResult}`;
+			apiUrl = baseURL + `/api/v1/papers/getList?status=${key}&offset=${index}&limit=${maxResults}`;
 		}
 
 		axios.get(apiUrl).then(res => {
@@ -97,13 +98,13 @@ export const AccountPapers = props => {
 				if (shouldChangeTab()) {
 					setKey('active');
 					doPapersCall('active', true);
-				} else if (!shouldChangeTab() && count - (index + maxResult) <= 0 && count % maxResult === 1) {
+				} else if (!shouldChangeTab() && count - (index + maxResults) <= 0 && count % maxResults === 1) {
 					if (key === 'pending') {
-						setPendingIndex(index - maxResult);
+						setPendingIndex(index - maxResults);
 					} else if (key === 'archive') {
-						setArchiveIndex(index - maxResult);
+						setArchiveIndex(index - maxResults);
 					}
-					doPapersCall(key, true, index - maxResult);
+					doPapersCall(key, true, index - maxResults);
 				} else if (!shouldChangeTab()) {
 					doPapersCall(key, true, index);
 				}
@@ -121,13 +122,13 @@ export const AccountPapers = props => {
 				if (shouldChangeTab()) {
 					setKey('active');
 					doPapersCall('active', true);
-				} else if (!shouldChangeTab() && count - (index + maxResult) <= 0 && count % maxResult === 1) {
+				} else if (!shouldChangeTab() && count - (index + maxResults) <= 0 && count % maxResults === 1) {
 					if (key === 'pending') {
-						setPendingIndex(index - maxResult);
+						setPendingIndex(index - maxResults);
 					} else if (key === 'archive') {
-						setArchiveIndex(index - maxResult);
+						setArchiveIndex(index - maxResults);
 					}
-					doPapersCall(key, true, index - maxResult);
+					doPapersCall(key, true, index - maxResults);
 				} else if (!shouldChangeTab()) {
 					doPapersCall(key, true, index);
 				}
@@ -142,9 +143,9 @@ export const AccountPapers = props => {
 			})
 			.then(res => {
 				setKey('active');
-				if (activeCount - (activeIndex + maxResult) <= 0 && activeCount % maxResult === 1) {
-					setActiveIndex(activeIndex - maxResult);
-					doPapersCall(key, true, activeIndex - maxResult);
+				if (activeCount - (activeIndex + maxResults) <= 0 && activeCount % maxResults === 1) {
+					setActiveIndex(activeIndex - maxResults);
+					doPapersCall(key, true, activeIndex - maxResults);
 				} else {
 					doPapersCall('active', true, activeIndex);
 				}
@@ -161,400 +162,392 @@ export const AccountPapers = props => {
 
 	if (isLoading) {
 		return (
-			<Row>
-				<Col xs={1}></Col>
-				<Col xs={10}>
-					<Loading data-testid='isLoading' />
-				</Col>
-				<Col xs={1}></Col>
-			</Row>
+			<LayoutContent>
+				<Loading data-testid='isLoading' />
+			</LayoutContent>
 		);
 	}
 
 	return (
 		<div>
-			<Row>
-				<Col xs={1}></Col>
-				<Col xs={10}>
-					<Row className='accountHeader'>
-						<Col sm={12} md={8}>
-							<Row>
-								<span className='black-20'>Papers</span>
-							</Row>
-							<Row>
-								<span className='gray700-13 '>Manage your existing papers or add new ones</span>
-							</Row>
-						</Col>
-						<Col sm={12} md={4} style={{ textAlign: 'right' }}>
-							<Button
-								data-test-id='add-paper-btn'
-								variant='primary'
-								href='/paper/add'
-								className='addButton'
-								onClick={() => googleAnalytics.recordEvent('Papers', 'Add a new paper', 'Papers dashboard button clicked')}>
-								+ Add a new paper
-							</Button>
-						</Col>
-					</Row>
-					<Row className='tabsBackground'>
-						<Col sm={12} lg={12}>
-							<Tabs className='dataAccessTabs gray700-13' data-testid='paperTabs' activeKey={key} onSelect={handleSelect}>
-								<Tab eventKey='active' title={'Active (' + activeCount + ')'}>
-									{' '}
-								</Tab>
-								<Tab eventKey='pending' title={'Pending approval (' + reviewCount + ')'}>
-									{' '}
-								</Tab>
-								<Tab eventKey='rejected' title={'Rejected (' + rejectedCount + ')'}>
-									{' '}
-								</Tab>
-								<Tab eventKey='archive' title={'Archive (' + archiveCount + ')'}>
-									{' '}
-								</Tab>
-							</Tabs>
-						</Col>
-					</Row>
-
-					{isResultsLoading && (
-						<Row className='width-100'>
-							<Col xs={12} className='noPadding'>
-								<Loading />
-							</Col>
+			<LayoutContent>
+				<Row className='accountHeader'>
+					<Col sm={12} md={8}>
+						<Row>
+							<span className='black-20'>Papers</span>
 						</Row>
-					)}
+						<Row>
+							<span className='gray700-13 '>Manage your existing papers or add new ones</span>
+						</Row>
+					</Col>
+					<Col sm={12} md={4} style={{ textAlign: 'right' }}>
+						<Button
+							data-test-id='add-paper-btn'
+							variant='primary'
+							href='/paper/add'
+							className='addButton'
+							onClick={() => googleAnalytics.recordEvent('Papers', 'Add a new paper', 'Papers dashboard button clicked')}>
+							+ Add a new paper
+						</Button>
+					</Col>
+				</Row>
+				<Row className='tabsBackground'>
+					<Col sm={12} lg={12}>
+						<Tabs className='dataAccessTabs gray700-13' data-testid='paperTabs' activeKey={key} onSelect={handleSelect}>
+							<Tab eventKey='active' title={'Active (' + activeCount + ')'}>
+								{' '}
+							</Tab>
+							<Tab eventKey='pending' title={'Pending approval (' + reviewCount + ')'}>
+								{' '}
+							</Tab>
+							<Tab eventKey='rejected' title={'Rejected (' + rejectedCount + ')'}>
+								{' '}
+							</Tab>
+							<Tab eventKey='archive' title={'Archive (' + archiveCount + ')'}>
+								{' '}
+							</Tab>
+						</Tabs>
+					</Col>
+				</Row>
 
-					{!isResultsLoading &&
-						(() => {
-							switch (key) {
-								case 'active':
-									return (
-										<div>
-											{activeCount <= 0 ? (
-												''
-											) : (
-												<Row className='subHeader mt-3 gray800-14-bold'>
-													<Col xs={2}>Last activity</Col>
-													<Col xs={5}>Name</Col>
-													<Col xs={2}>Uploader(s)</Col>
-													<Col xs={3}></Col>
-												</Row>
-											)}
-											{activeCount <= 0 ? (
-												<Row className='margin-right-15'>
-													<NotFound word='papers' />
-												</Row>
-											) : (
-												papersList.map((paper, i) => {
-													if (paper.activeflag !== 'active') {
-														return <></>;
-													} else {
-														return (
-															<Row className='entryBox' data-testid='paperEntryActive' key={i}>
-																<Col sm={12} lg={2} className='pt-2 gray800-14'>
-																	{moment(paper.updatedAt).format('D MMMM YYYY HH:mm')}
-																</Col>
-																<Col sm={12} lg={5} className='pt-2'>
-																	<a href={'/paper/' + paper.id} className='black-14'>
-																		{paper.name}
-																	</a>
-																</Col>
-																<Col sm={12} lg={2} className='pt-2 gray800-14'>
-																	{paper.persons <= 0
-																		? 'Author not listed'
-																		: paper.persons.map(person => {
-																				return (
-																					<span>
-																						{person.firstname} {person.lastname} <br />
-																					</span>
-																				);
-																		  })}
-																</Col>
-																<Col sm={12} lg={3} style={{ textAlign: 'right' }} className='toolsButtons'>
+				{isResultsLoading && (
+					<Row className='width-100'>
+						<Col xs={12} className='noPadding'>
+							<Loading />
+						</Col>
+					</Row>
+				)}
+
+				{!isResultsLoading &&
+					(() => {
+						switch (key) {
+							case 'active':
+								return (
+									<div>
+										{activeCount <= 0 ? (
+											''
+										) : (
+											<Row className='subHeader mt-3 gray800-14-bold'>
+												<Col xs={2}>Last activity</Col>
+												<Col xs={5}>Name</Col>
+												<Col xs={2}>Uploader(s)</Col>
+												<Col xs={3}></Col>
+											</Row>
+										)}
+										{activeCount <= 0 ? (
+											<Row className='margin-right-15'>
+												<MessageNotFound word='papers' />
+											</Row>
+										) : (
+											papersList.map((paper, i) => {
+												if (paper.activeflag !== 'active') {
+													return <></>;
+												} else {
+													return (
+														<Row className='entryBox' data-testid='paperEntryActive' key={i}>
+															<Col sm={12} lg={2} className='pt-2 gray800-14'>
+																{moment(paper.updatedAt).format('D MMMM YYYY HH:mm')}
+															</Col>
+															<Col sm={12} lg={5} className='pt-2'>
+																<a href={'/paper/' + paper.id} className='black-14'>
+																	{paper.name}
+																</a>
+															</Col>
+															<Col sm={12} lg={2} className='pt-2 gray800-14'>
+																{paper.persons <= 0
+																	? 'Author not listed'
+																	: paper.persons.map(person => {
+																			return (
+																				<span>
+																					{person.firstname} {person.lastname} <br />
+																				</span>
+																			);
+																	  })}
+															</Col>
+															<Col sm={12} lg={3} style={{ textAlign: 'right' }} className='toolsButtons'>
+																<DropdownButton variant='outline-secondary' alignRight title='Actions' className='floatRight'>
+																	<Dropdown.Item href={'/paper/edit/' + paper.id} className='black-14'>
+																		Edit
+																	</Dropdown.Item>
+																	<EntityActionButton id={paper.id} action={archivePaper} entity='paper' actionType='archive' />
+																</DropdownButton>
+															</Col>
+														</Row>
+													);
+												}
+											})
+										)}
+									</div>
+								);
+							case 'pending':
+								return (
+									<div>
+										{reviewCount <= 0 ? (
+											''
+										) : (
+											<Row className='subHeader mt-3 gray800-14-bold'>
+												<Col xs={2}>Last activity</Col>
+												<Col xs={5}>Name</Col>
+												<Col xs={2}>Author</Col>
+												<Col xs={3}></Col>
+											</Row>
+										)}
+										{reviewCount <= 0 ? (
+											<Row className='margin-right-15'>
+												<MessageNotFound word='papers' />
+											</Row>
+										) : (
+											papersList.map(paper => {
+												if (paper.activeflag !== 'review') {
+													return <></>;
+												} else {
+													return (
+														<Row className='entryBox' data-testid='paperEntryPending'>
+															<Col sm={12} lg={2} className='pt-2 gray800-14'>
+																{moment(paper.updatedAt).format('D MMMM YYYY HH:mm')}
+															</Col>
+															<Col sm={12} lg={5} className='pt-2'>
+																<a href={'/paper/' + paper.id} className='black-14'>
+																	{paper.name}
+																</a>
+															</Col>
+															<Col sm={12} lg={2} className='pt-2 gray800-14'>
+																{paper.persons <= 0
+																	? 'Author not listed'
+																	: paper.persons.map(person => {
+																			return (
+																				<span>
+																					{person.firstname} {person.lastname} <br />
+																				</span>
+																			);
+																	  })}
+															</Col>
+															<Col sm={12} lg={3} style={{ textAlign: 'right' }} className='toolsButtons'>
+																{userState[0].role === 'Admin' ? (
 																	<DropdownButton variant='outline-secondary' alignRight title='Actions' className='floatRight'>
 																		<Dropdown.Item href={'/paper/edit/' + paper.id} className='black-14'>
 																			Edit
 																		</Dropdown.Item>
-																		<EntityActionButton id={paper.id} action={archivePaper} entity='paper' actionType='archive' />
+																		<Dropdown.Item
+																			href='#'
+																			onClick={() => approvePaper(paper.id, key, pendingIndex, reviewCount)}
+																			className='black-14'>
+																			Approve
+																		</Dropdown.Item>
+																		<Dropdown.Item href='#' onClick={() => toggleActionModal()} className='black-14'>
+																			Reject
+																		</Dropdown.Item>
+																		<ActionModal
+																			id={paper.id}
+																			entityKey={'pending'}
+																			entityIndex={pendingIndex}
+																			entityCount={reviewCount}
+																			open={showActionModal}
+																			context={actionModalConfig}
+																			updateApplicationStatus={rejectPaper}
+																			close={toggleActionModal}
+																		/>
 																	</DropdownButton>
-																</Col>
-															</Row>
-														);
-													}
-												})
-											)}
-										</div>
-									);
-								case 'pending':
-									return (
-										<div>
-											{reviewCount <= 0 ? (
-												''
-											) : (
-												<Row className='subHeader mt-3 gray800-14-bold'>
-													<Col xs={2}>Last activity</Col>
-													<Col xs={5}>Name</Col>
-													<Col xs={2}>Author</Col>
-													<Col xs={3}></Col>
-												</Row>
-											)}
-											{reviewCount <= 0 ? (
-												<Row className='margin-right-15'>
-													<NotFound word='papers' />
-												</Row>
-											) : (
-												papersList.map(paper => {
-													if (paper.activeflag !== 'review') {
-														return <></>;
-													} else {
-														return (
-															<Row className='entryBox' data-testid='paperEntryPending'>
-																<Col sm={12} lg={2} className='pt-2 gray800-14'>
-																	{moment(paper.updatedAt).format('D MMMM YYYY HH:mm')}
-																</Col>
-																<Col sm={12} lg={5} className='pt-2'>
-																	<a href={'/paper/' + paper.id} className='black-14'>
-																		{paper.name}
-																	</a>
-																</Col>
-																<Col sm={12} lg={2} className='pt-2 gray800-14'>
-																	{paper.persons <= 0
-																		? 'Author not listed'
-																		: paper.persons.map(person => {
-																				return (
-																					<span>
-																						{person.firstname} {person.lastname} <br />
-																					</span>
-																				);
-																		  })}
-																</Col>
-																<Col sm={12} lg={3} style={{ textAlign: 'right' }} className='toolsButtons'>
-																	{userState[0].role === 'Admin' ? (
-																		<DropdownButton variant='outline-secondary' alignRight title='Actions' className='floatRight'>
-																			<Dropdown.Item href={'/paper/edit/' + paper.id} className='black-14'>
-																				Edit
-																			</Dropdown.Item>
-																			<Dropdown.Item
-																				href='#'
-																				onClick={() => approvePaper(paper.id, key, pendingIndex, reviewCount)}
-																				className='black-14'>
-																				Approve
-																			</Dropdown.Item>
-																			<Dropdown.Item href='#' onClick={() => toggleActionModal()} className='black-14'>
-																				Reject
-																			</Dropdown.Item>
-																			<ActionModal
-																				id={paper.id}
-																				entityKey={'pending'}
-																				entityIndex={pendingIndex}
-																				entityCount={reviewCount}
-																				open={showActionModal}
-																				context={actionModalConfig}
-																				updateApplicationStatus={rejectPaper}
-																				close={toggleActionModal}
-																			/>
-																		</DropdownButton>
-																	) : (
-																		''
-																	)}
-																</Col>
-															</Row>
-														);
-													}
-												})
-											)}
-										</div>
-									);
-								case 'rejected':
-									return (
-										<div>
-											{rejectedCount <= 0 ? (
-												''
-											) : (
-												<Row className='subHeader mt-3 gray800-14-bold'>
-													<Col xs={2}>Last activity</Col>
-													<Col xs={5}>Name</Col>
-													<Col xs={2}>Author</Col>
-													<Col xs={3}></Col>
-												</Row>
-											)}
-											{rejectedCount <= 0 ? (
-												<Row className='margin-right-15'>
-													<NotFound word='papers' />
-												</Row>
-											) : (
-												papersList.map(paper => {
-													if (paper.activeflag !== 'rejected') {
-														return <></>;
-													} else {
-														return (
-															<Row className='entryBox' data-testid='paperEntryRejected'>
-																<Col sm={12} lg={2} className='pt-2 gray800-14'>
-																	{moment(paper.updatedAt).format('D MMMM YYYY HH:mm')}
-																</Col>
-																<Col sm={12} lg={5} className='pt-2'>
-																	<a href={'/paper/' + paper.id} className='black-14'>
-																		{paper.name}
-																	</a>
-																</Col>
-																<Col sm={12} lg={2} className='pt-2 gray800-14'>
-																	{paper.persons <= 0
-																		? 'Author not listed'
-																		: paper.persons.map(person => {
-																				return (
-																					<span>
-																						{person.firstname} {person.lastname} <br />
-																					</span>
-																				);
-																		  })}
-																</Col>
-																<Col sm={12} lg={3} style={{ textAlign: 'right' }} className='toolsButtons'></Col>
-															</Row>
-														);
-													}
-												})
-											)}
-										</div>
-									);
-								case 'archive':
-									return (
-										<div>
-											{archiveCount <= 0 ? (
-												''
-											) : (
-												<Row className='subHeader mt-3 gray800-14-bold'>
-													<Col xs={2}>Last activity</Col>
-													<Col xs={5}>Name</Col>
-													<Col xs={2}>Author</Col>
-													<Col xs={3}></Col>
-												</Row>
-											)}
-											{archiveCount <= 0 ? (
-												<Row className='margin-right-15'>
-													<NotFound word='papers' />
-												</Row>
-											) : (
-												papersList.map(paper => {
-													if (paper.activeflag !== 'archive') {
-														return <></>;
-													} else {
-														return (
-															<Row className='entryBox' data-testid='paperEntryArchive'>
-																<Col sm={12} lg={2} className='pt-2 gray800-14'>
-																	{moment(paper.updatedAt).format('D MMMM YYYY HH:mm')}
-																</Col>
-																<Col sm={12} lg={5} className='pt-2'>
-																	<a href={'/paper/' + paper.id} className='black-14'>
-																		{paper.name}
-																	</a>
-																</Col>
-																<Col sm={12} lg={2} className='pt-2 gray800-14'>
-																	{paper.persons <= 0
-																		? 'Author not listed'
-																		: paper.persons.map(person => {
-																				return (
-																					<span>
-																						{person.firstname} {person.lastname} <br />
-																					</span>
-																				);
-																		  })}
-																</Col>
-																<Col sm={12} lg={3} style={{ textAlign: 'right' }} className='toolsButtons'>
-																	{userState[0].role === 'Admin' ? (
-																		<DropdownButton variant='outline-secondary' alignRight title='Actions' className='floatRight'>
-																			<Dropdown.Item href={'/paper/edit/' + paper.id} className='black-14'>
-																				Edit
-																			</Dropdown.Item>
-																			<Dropdown.Item
-																				href='#'
-																				onClick={() => approvePaper(paper.id, key, archiveIndex, archiveCount)}
-																				className='black-14'>
-																				Approve
-																			</Dropdown.Item>
-																			<Dropdown.Item href='#' onClick={() => toggleActionModal()} className='black-14'>
-																				Reject
-																			</Dropdown.Item>
-																			<ActionModal
-																				id={paper.id}
-																				entityKey={'archive'}
-																				entityIndex={archiveIndex}
-																				entityCount={archiveCount}
-																				open={showActionModal}
-																				context={actionModalConfig}
-																				updateApplicationStatus={rejectPaper}
-																				close={toggleActionModal}
-																			/>
-																		</DropdownButton>
-																	) : (
-																		<DropdownButton variant='outline-secondary' alignRight title='Actions' className='floatRight'>
-																			<Dropdown.Item href={'/paper/edit/' + paper.id} className='black-14'>
-																				Edit
-																			</Dropdown.Item>
-																		</DropdownButton>
-																	)}
-																</Col>
-															</Row>
-														);
-													}
-												})
-											)}
-										</div>
-									);
-								default:
-									return key;
-							}
-						})()}
+																) : (
+																	''
+																)}
+															</Col>
+														</Row>
+													);
+												}
+											})
+										)}
+									</div>
+								);
+							case 'rejected':
+								return (
+									<div>
+										{rejectedCount <= 0 ? (
+											''
+										) : (
+											<Row className='subHeader mt-3 gray800-14-bold'>
+												<Col xs={2}>Last activity</Col>
+												<Col xs={5}>Name</Col>
+												<Col xs={2}>Author</Col>
+												<Col xs={3}></Col>
+											</Row>
+										)}
+										{rejectedCount <= 0 ? (
+											<Row className='margin-right-15'>
+												<MessageNotFound word='papers' />
+											</Row>
+										) : (
+											papersList.map(paper => {
+												if (paper.activeflag !== 'rejected') {
+													return <></>;
+												} else {
+													return (
+														<Row className='entryBox' data-testid='paperEntryRejected'>
+															<Col sm={12} lg={2} className='pt-2 gray800-14'>
+																{moment(paper.updatedAt).format('D MMMM YYYY HH:mm')}
+															</Col>
+															<Col sm={12} lg={5} className='pt-2'>
+																<a href={'/paper/' + paper.id} className='black-14'>
+																	{paper.name}
+																</a>
+															</Col>
+															<Col sm={12} lg={2} className='pt-2 gray800-14'>
+																{paper.persons <= 0
+																	? 'Author not listed'
+																	: paper.persons.map(person => {
+																			return (
+																				<span>
+																					{person.firstname} {person.lastname} <br />
+																				</span>
+																			);
+																	  })}
+															</Col>
+															<Col sm={12} lg={3} style={{ textAlign: 'right' }} className='toolsButtons'></Col>
+														</Row>
+													);
+												}
+											})
+										)}
+									</div>
+								);
+							case 'archive':
+								return (
+									<div>
+										{archiveCount <= 0 ? (
+											''
+										) : (
+											<Row className='subHeader mt-3 gray800-14-bold'>
+												<Col xs={2}>Last activity</Col>
+												<Col xs={5}>Name</Col>
+												<Col xs={2}>Author</Col>
+												<Col xs={3}></Col>
+											</Row>
+										)}
+										{archiveCount <= 0 ? (
+											<Row className='margin-right-15'>
+												<MessageNotFound word='papers' />
+											</Row>
+										) : (
+											papersList.map(paper => {
+												if (paper.activeflag !== 'archive') {
+													return <></>;
+												} else {
+													return (
+														<Row className='entryBox' data-testid='paperEntryArchive'>
+															<Col sm={12} lg={2} className='pt-2 gray800-14'>
+																{moment(paper.updatedAt).format('D MMMM YYYY HH:mm')}
+															</Col>
+															<Col sm={12} lg={5} className='pt-2'>
+																<a href={'/paper/' + paper.id} className='black-14'>
+																	{paper.name}
+																</a>
+															</Col>
+															<Col sm={12} lg={2} className='pt-2 gray800-14'>
+																{paper.persons <= 0
+																	? 'Author not listed'
+																	: paper.persons.map(person => {
+																			return (
+																				<span>
+																					{person.firstname} {person.lastname} <br />
+																				</span>
+																			);
+																	  })}
+															</Col>
+															<Col sm={12} lg={3} style={{ textAlign: 'right' }} className='toolsButtons'>
+																{userState[0].role === 'Admin' ? (
+																	<DropdownButton variant='outline-secondary' alignRight title='Actions' className='floatRight'>
+																		<Dropdown.Item href={'/paper/edit/' + paper.id} className='black-14'>
+																			Edit
+																		</Dropdown.Item>
+																		<Dropdown.Item
+																			href='#'
+																			onClick={() => approvePaper(paper.id, key, archiveIndex, archiveCount)}
+																			className='black-14'>
+																			Approve
+																		</Dropdown.Item>
+																		<Dropdown.Item href='#' onClick={() => toggleActionModal()} className='black-14'>
+																			Reject
+																		</Dropdown.Item>
+																		<ActionModal
+																			id={paper.id}
+																			entityKey={'archive'}
+																			entityIndex={archiveIndex}
+																			entityCount={archiveCount}
+																			open={showActionModal}
+																			context={actionModalConfig}
+																			updateApplicationStatus={rejectPaper}
+																			close={toggleActionModal}
+																		/>
+																	</DropdownButton>
+																) : (
+																	<DropdownButton variant='outline-secondary' alignRight title='Actions' className='floatRight'>
+																		<Dropdown.Item href={'/paper/edit/' + paper.id} className='black-14'>
+																			Edit
+																		</Dropdown.Item>
+																	</DropdownButton>
+																)}
+															</Col>
+														</Row>
+													);
+												}
+											})
+										)}
+									</div>
+								);
+							default:
+								return key;
+						}
+					})()}
 
-					{!isResultsLoading && (
-						<div className='text-center entityDashboardPagination'>
-							{key === 'active' && activeCount > maxResult ? (
-								<PaginationHelper
-									doEntitiesCall={doPapersCall}
-									entityCount={activeCount}
-									statusKey={key}
-									paginationIndex={activeIndex}
-									setPaginationIndex={setActiveIndex}
-									maxResult={maxResult}></PaginationHelper>
-							) : (
-								''
-							)}
-							{key === 'pending' && reviewCount > maxResult ? (
-								<PaginationHelper
-									doEntitiesCall={doPapersCall}
-									entityCount={reviewCount}
-									statusKey={key}
-									paginationIndex={pendingIndex}
-									setPaginationIndex={setPendingIndex}
-									maxResult={maxResult}></PaginationHelper>
-							) : (
-								''
-							)}
-							{key === 'rejected' && rejectedCount > maxResult ? (
-								<PaginationHelper
-									doEntitiesCall={doPapersCall}
-									entityCount={rejectedCount}
-									statusKey={key}
-									paginationIndex={rejectedIndex}
-									setPaginationIndex={setRejectedIndex}
-									maxResult={maxResult}></PaginationHelper>
-							) : (
-								''
-							)}
-							{key === 'archive' && archiveCount > maxResult ? (
-								<PaginationHelper
-									doEntitiesCall={doPapersCall}
-									entityCount={archiveCount}
-									statusKey={key}
-									paginationIndex={archiveIndex}
-									setPaginationIndex={setArchiveIndex}
-									maxResult={maxResult}></PaginationHelper>
-							) : (
-								''
-							)}
-						</div>
-					)}
-				</Col>
-				<Col xs={1}></Col>
-			</Row>
+				{!isResultsLoading && (
+					<div className='text-center entityDashboardPagination'>
+						{key === 'active' && activeCount > maxResults ? (
+							<PaginationHelper
+								doEntitiesCall={doPapersCall}
+								entityCount={activeCount}
+								statusKey={key}
+								paginationIndex={activeIndex}
+								setPaginationIndex={setActiveIndex}
+								maxResults={maxResults}></PaginationHelper>
+						) : (
+							''
+						)}
+						{key === 'pending' && reviewCount > maxResults ? (
+							<PaginationHelper
+								doEntitiesCall={doPapersCall}
+								entityCount={reviewCount}
+								statusKey={key}
+								paginationIndex={pendingIndex}
+								setPaginationIndex={setPendingIndex}
+								maxResults={maxResults}></PaginationHelper>
+						) : (
+							''
+						)}
+						{key === 'rejected' && rejectedCount > maxResults ? (
+							<PaginationHelper
+								doEntitiesCall={doPapersCall}
+								entityCount={rejectedCount}
+								statusKey={key}
+								paginationIndex={rejectedIndex}
+								setPaginationIndex={setRejectedIndex}
+								maxResults={maxResults}></PaginationHelper>
+						) : (
+							''
+						)}
+						{key === 'archive' && archiveCount > maxResults ? (
+							<PaginationHelper
+								doEntitiesCall={doPapersCall}
+								entityCount={archiveCount}
+								statusKey={key}
+								paginationIndex={archiveIndex}
+								setPaginationIndex={setArchiveIndex}
+								maxResults={maxResults}></PaginationHelper>
+						) : (
+							''
+						)}
+					</div>
+				)}
+			</LayoutContent>
 		</div>
 	);
 };

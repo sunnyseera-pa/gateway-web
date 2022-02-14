@@ -11,9 +11,9 @@ const _buildUrl = urlType => {
 	let {
 		location: { href, origin },
 	} = window;
-	if (href.includes('appspot.com')) {
+	if (href && href.includes('appspot.com')) {
 		return origin;
-	} else if (!href.includes('localhost')) {
+	} else if (href && !href.includes('localhost')) {
 		let regArray = _getRegexURL(urlType, href);
 		if (regArray) {
 			let url = regArray[2];
@@ -48,4 +48,5 @@ const _getRegexURL = (urlType, href) => {
 
 export const baseURL = _buildUrl('http');
 export const cmsURL = _buildUrl('cms');
-export const apiURL = `${baseURL}/api/${process.env.REACT_APP_API_VERSION}`;
+export const apiURL = `${baseURL}/api/${process.env.REACT_APP_API_VERSION || 'v1'}`;
+export const apiV2URL = `${baseURL}/api/v2`;
