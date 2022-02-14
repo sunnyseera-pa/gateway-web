@@ -80,6 +80,7 @@ const FilterTree = ({ node, filters, highlighted, checked, expanded, onCheck, se
 				onCheck={handleChecked}
 				onExpand={setNodesExpanded}
 				mt={3}
+				noCascade
 			/>
 		</div>
 	);
