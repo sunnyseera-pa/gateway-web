@@ -39,9 +39,9 @@ export const CollectionPage = props => {
 	const [isLoading, setIsLoading] = useState(true);
 	const [isResultsLoading, setIsResultsLoading] = useState(true);
 	const [toolCount, setToolCount] = useState(0);
-	const [dataUseRegisterCount, setDataUseRegisterCount] = useState(0);
+	const [datasetCount, setDatasetCount] = useState(0);
 	const [personCount, setPersonCount] = useState(0);
-	const [dataUseCount, setDataUseCount] = useState(0);
+	const [dataUseRegisterCount, setDataUseRegisterCount] = useState(0);
 	const [paperCount, setPaperCount] = useState(0);
 	const [courseCount, setCourseCount] = useState(0);
 	const [datasetIndex, setDatasetIndex] = useState(0);
@@ -211,6 +211,7 @@ export const CollectionPage = props => {
 			setFilteredData(getSortedData(sortBy, tempFilteredData, search));
 
 			countEntities(filteredCollectionItems);
+
 			handlePagination(key, 0);
 		},
 		[key, objectData]
@@ -477,7 +478,7 @@ export const CollectionPage = props => {
 						) : null}
 						{key === 'dataUseRegister' ? (
 							<DataUseCollectionResults
-								searchResults={handlePaginatedItems(dataUseIndex)}
+								searchResults={handlePaginatedItems(dataUseRegisterIndex)}
 								relatedObjects={relatedObjects}
 								userId={userId}
 							/>
