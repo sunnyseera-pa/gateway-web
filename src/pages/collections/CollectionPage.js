@@ -227,7 +227,6 @@ export const CollectionPage = props => {
 		};
 	};
 	const handlePagination = (type, page) => {
-		console.log('type, page', type, page);
 		setIndexByType(page)[type]();
 		window.scrollTo(0, 0);
 	};
