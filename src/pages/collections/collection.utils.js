@@ -5,7 +5,6 @@ import { DATASET, PERSON, RELEVANCE, POPULARITY, RECENTLYADDED, RESOURCES, METAD
 
 // TODO: Add tests for this
 export const filterCollectionItems = (objectData, searchCollectionsString) => {
-	console.log('objectData', objectData);
 	return objectData.map(object => {
 		// Searching functionality - searches through object data and returns true if there is a match with the search term
 		if (
