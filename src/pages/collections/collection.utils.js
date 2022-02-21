@@ -5,13 +5,11 @@ import { DATASET, PERSON, RELEVANCE, POPULARITY, RECENTLYADDED, RESOURCES, METAD
 
 // TODO: Add tests for this
 export const filterCollectionItems = (objectData, searchCollectionsString) => {
-	console.log('objectData', objectData);
 	return objectData.map(object => {
 		// Searching functionality - searches through object data and returns true if there is a match with the search term
 		if (
 			!searchCollectionsString ||
 			(_.has(object, 'name') ? object.name.toLowerCase().includes(searchCollectionsString.toLowerCase()) : false) ||
-			(_.has(object, 'projectTitle') ? object.projectTitle.toLowerCase().includes(searchCollectionsString.toLowerCase()) : false) ||
 			(_.has(object, 'title') ? object.title.toLowerCase().includes(searchCollectionsString.toLowerCase()) : false) ||
 			(_.has(object, 'firstname') ? object.firstname.toLowerCase().includes(searchCollectionsString.toLowerCase()) : false) ||
 			(_.has(object, 'lastname') ? object.lastname.toLowerCase().includes(searchCollectionsString.toLowerCase()) : false) ||
@@ -21,9 +19,6 @@ export const filterCollectionItems = (objectData, searchCollectionsString) => {
 				: false) ||
 			(_.has(object, 'datasetfields.abstract') && !_.isNull(object.datasetfields.abstract)
 				? object.datasetfields.abstract.toLowerCase().includes(searchCollectionsString.toLowerCase())
-				: false) ||
-			(_.has(object, 'keywords') && object.keywords && object.keywords.length > 0
-				? new RegExp(object.keywords.join('|'), 'i').test(searchCollectionsString)
 				: false) ||
 			(_.has(object, 'tags.features') && object.tags.features && object.tags.features.length > 0
 				? new RegExp(object.tags.features.join('|'), 'i').test(searchCollectionsString)
