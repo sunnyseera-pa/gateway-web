@@ -211,7 +211,6 @@ export const CollectionPage = props => {
 			setFilteredData(getSortedData(sortBy, tempFilteredData, search));
 
 			countEntities(filteredCollectionItems);
-
 			handlePagination(key, 0);
 		},
 		[key, objectData]
@@ -228,13 +227,19 @@ export const CollectionPage = props => {
 		};
 	};
 	const handlePagination = (type, page) => {
+		console.log('type, page', type, page);
 		setIndexByType(page)[type]();
 		window.scrollTo(0, 0);
 	};
 
 	const datasetPaginationItems = generatePaginatedItems('dataset', datasetCount, datasetIndex, handlePagination);
 	const toolPaginationItems = generatePaginatedItems('tool', toolCount, toolIndex, handlePagination);
-	const dataUsePaginationItems = generatePaginatedItems('datause', dataUseRegisterCount, dataUseRegisterIndex, handlePagination);
+	const dataUseRegisterPaginationItems = generatePaginatedItems(
+		'dataUseRegister',
+		dataUseRegisterCount,
+		dataUseRegisterIndex,
+		handlePagination
+	);
 	const paperPaginationItems = generatePaginatedItems('paper', paperCount, paperIndex, handlePagination);
 	const personPaginationItems = generatePaginatedItems('person', personCount, personIndex, handlePagination);
 	const coursePaginationItems = generatePaginatedItems('course', courseCount, courseIndex, handlePagination);
@@ -496,7 +501,11 @@ export const CollectionPage = props => {
 						<div className='text-center'>
 							{key === 'dataset' && datasetCount > MAXRESULTS ? <Pagination>{datasetPaginationItems}</Pagination> : ''}
 							{key === 'tool' && toolCount > MAXRESULTS ? <Pagination>{toolPaginationItems}</Pagination> : ''}
-							{key === 'dataUseRegister' && dataUseRegisterCount > MAXRESULTS ? <Pagination>{dataUsePaginationItems}</Pagination> : ''}
+							{key === 'dataUseRegister' && dataUseRegisterCount > MAXRESULTS ? (
+								<Pagination>{dataUseRegisterPaginationItems}</Pagination>
+							) : (
+								''
+							)}
 							{key === 'paper' && paperCount > MAXRESULTS ? <Pagination>{paperPaginationItems}</Pagination> : ''}
 							{key === 'person' && personCount > MAXRESULTS ? <Pagination>{personPaginationItems}</Pagination> : ''}
 							{key === 'course' && courseCount > MAXRESULTS ? <Pagination>{coursePaginationItems}</Pagination> : ''}
