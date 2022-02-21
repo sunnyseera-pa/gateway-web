@@ -41,13 +41,13 @@ export const CollectionPage = props => {
 	const [toolCount, setToolCount] = useState(0);
 	const [datasetCount, setDatasetCount] = useState(0);
 	const [personCount, setPersonCount] = useState(0);
-	const [dataUseCount, setDataUseCount] = useState(0);
+	const [dataUseRegisterCount, setDataUseRegisterCount] = useState(0);
 	const [paperCount, setPaperCount] = useState(0);
 	const [courseCount, setCourseCount] = useState(0);
 	const [datasetIndex, setDatasetIndex] = useState(0);
 	const [toolIndex, setToolIndex] = useState(0);
 	const [paperIndex, setPaperIndex] = useState(0);
-	const [dataUseIndex, setDatauseIndex] = useState(0);
+	const [dataUseRegisterIndex, setDataUseRegisterIndex] = useState(0);
 	const [personIndex, setPersonIndex] = useState(0);
 	const [courseIndex, setCourseIndex] = useState(0);
 	const [collectionAdded, setCollectionAdded] = useState(false);
@@ -110,6 +110,8 @@ export const CollectionPage = props => {
 	};
 
 	const countEntities = filteredData => {
+		console.log('filteredData', filteredData);
+
 		const entityCounts = filteredData.reduce((entityCountsByType, currentValue) => {
 			let type = currentValue.type;
 			if (!entityCountsByType.hasOwnProperty(type)) {
@@ -118,6 +120,8 @@ export const CollectionPage = props => {
 			entityCountsByType[type]++;
 			return entityCountsByType;
 		}, {});
+
+		console.log('countEntities', entityCounts);
 
 		let key;
 		if (entityCounts.dataset > 0) {
@@ -139,7 +143,7 @@ export const CollectionPage = props => {
 		setPersonCount(entityCounts.person || 0);
 		setDatasetCount(entityCounts.dataset || 0);
 		setPaperCount(entityCounts.paper || 0);
-		setDataUseCount(entityCounts.dataUseRegister || 0);
+		setDataUseRegisterCount(entityCounts.dataUseRegister || 0);
 		setCourseCount(entityCounts.course || 0);
 	};
 
@@ -220,20 +224,26 @@ export const CollectionPage = props => {
 		return {
 			dataset: () => setDatasetIndex(page),
 			tool: () => setToolIndex(page),
-			datause: () => setDatauseIndex(page),
+			dataUseRegister: () => setDataUseRegisterIndex(page),
 			paper: () => setPaperIndex(page),
 			person: () => setPersonIndex(page),
 			course: () => setCourseIndex(page),
 		};
 	};
 	const handlePagination = (type, page) => {
+		console.log('type, page', type, page);
 		setIndexByType(page)[type]();
 		window.scrollTo(0, 0);
 	};
 
 	const datasetPaginationItems = generatePaginatedItems('dataset', datasetCount, datasetIndex, handlePagination);
 	const toolPaginationItems = generatePaginatedItems('tool', toolCount, toolIndex, handlePagination);
-	const dataUsePaginationItems = generatePaginatedItems('datause', dataUseCount, dataUseIndex, handlePagination);
+	const dataUseRegisterPaginationItems = generatePaginatedItems(
+		'dataUseRegister',
+		dataUseRegisterCount,
+		dataUseRegisterIndex,
+		handlePagination
+	);
 	const paperPaginationItems = generatePaginatedItems('paper', paperCount, paperIndex, handlePagination);
 	const personPaginationItems = generatePaginatedItems('person', personCount, personIndex, handlePagination);
 	const coursePaginationItems = generatePaginatedItems('course', courseCount, courseIndex, handlePagination);
@@ -415,7 +425,7 @@ export const CollectionPage = props => {
 					<Tab eventKey='dataset' title={'Datasets (' + datasetCount + ')'}></Tab>
 					<Tab eventKey='tool' title={'Tools (' + toolCount + ')'}></Tab>
 					<Tab eventKey='paper' title={'Papers (' + paperCount + ')'}></Tab>
-					<Tab eventKey='dataUseRegister' title={'Data Uses (' + dataUseCount + ')'}></Tab>
+					<Tab eventKey='dataUseRegister' title={'Data Uses (' + dataUseRegisterCount + ')'}></Tab>
 					<Tab eventKey='person' title={'People (' + personCount + ')'}></Tab>
 					<Tab eventKey='course' title={'Course (' + courseCount + ')'}></Tab>
 					<Tab eventKey='discussion' title={`Discussion (${discoursePostCount})`}>
@@ -477,7 +487,7 @@ export const CollectionPage = props => {
 						) : null}
 						{key === 'dataUseRegister' ? (
 							<DataUseCollectionResults
-								searchResults={handlePaginatedItems(dataUseIndex)}
+								searchResults={handlePaginatedItems(dataUseRegisterIndex)}
 								relatedObjects={relatedObjects}
 								userId={userId}
 							/>
@@ -495,7 +505,11 @@ export const CollectionPage = props => {
 						<div className='text-center'>
 							{key === 'dataset' && datasetCount > MAXRESULTS ? <Pagination>{datasetPaginationItems}</Pagination> : ''}
 							{key === 'tool' && toolCount > MAXRESULTS ? <Pagination>{toolPaginationItems}</Pagination> : ''}
-							{key === 'dataUseRegister' && dataUseCount > MAXRESULTS ? <Pagination>{dataUsePaginationItems}</Pagination> : ''}
+							{key === 'dataUseRegister' && dataUseRegisterCount > MAXRESULTS ? (
+								<Pagination>{dataUseRegisterPaginationItems}</Pagination>
+							) : (
+								''
+							)}
 							{key === 'paper' && paperCount > MAXRESULTS ? <Pagination>{paperPaginationItems}</Pagination> : ''}
 							{key === 'person' && personCount > MAXRESULTS ? <Pagination>{personPaginationItems}</Pagination> : ''}
 							{key === 'course' && courseCount > MAXRESULTS ? <Pagination>{coursePaginationItems}</Pagination> : ''}
