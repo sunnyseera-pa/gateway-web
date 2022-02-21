@@ -9,8 +9,6 @@ const DataUseCollectionResults = ({ searchResults, relatedObjects, userId }) => 
 				(object.type === 'dataUseRegister' && object.activeflag === 'review' && object.authors.includes(userId))
 		);
 
-	console.log('SEARCH RESULTS', searchResults);
-
 	return searchResults.map(object => {
 		if (canViewResults) {
 			let reason = '';
