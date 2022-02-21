@@ -215,6 +215,7 @@ export const CollectionPage = props => {
 			setFilteredData(getSortedData(sortBy, tempFilteredData, search));
 
 			countEntities(filteredCollectionItems);
+
 			handlePagination(key, 0);
 		},
 		[key, objectData]
@@ -244,6 +245,7 @@ export const CollectionPage = props => {
 		dataUseRegisterIndex,
 		handlePagination
 	);
+
 	const paperPaginationItems = generatePaginatedItems('paper', paperCount, paperIndex, handlePagination);
 	const personPaginationItems = generatePaginatedItems('person', personCount, personIndex, handlePagination);
 	const coursePaginationItems = generatePaginatedItems('course', courseCount, courseIndex, handlePagination);

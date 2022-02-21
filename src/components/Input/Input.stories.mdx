@@ -22,11 +22,33 @@ import Icon from '../Icon';
 				<div>
 					<Input
 						{...props}
+						label='Primary with error'
+						iconPrepend={<Icon name='star' />}
+						iconAppend={<Icon name='tick' inline />}
+						width='350px'
+						mb={10}
+						error='Must have a value'
+					/>
+				</div>
+				<div>
+					<Input
+						{...props}
 						label='Secondary'
 						variant='secondary'
 						iconPrepend={<Icon name='star' />}
 						iconAppend={<Icon name='tick' inline />}
 						width='350px'
+					/>
+				</div>
+				<div>
+					<Input
+						{...props}
+						label='Secondary with error'
+						variant='secondary'
+						iconPrepend={<Icon name='star' />}
+						iconAppend={<Icon name='tick' inline />}
+						width='350px'
+						error='Must have an error'
 					/>
 				</div>
 			</>
@@ -52,7 +74,7 @@ import Icon from '../Icon';
 				<div>
 					<Input
 						{...props}
-						label='Default'
+						label='Large'
 						size='large'
 						iconPrepend={<Icon name='star' />}
 						iconAppend={<Icon name='tick' inline />}

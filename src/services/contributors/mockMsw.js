@@ -4,13 +4,13 @@ import { apiURL } from '../../configs/url.config';
 export const mockContributorsInfo = [
 	{
 		_id: '5e6f984a0a7300dc8f6fb196',
-		id: 947228017269611,
+		id: 2623650828181272,
 		firstname: 'Ciara',
 		lastname: 'Ward',
 		orcid:
 			'https://orcid.org/https://www.ons.gov.uk/peoplepopulationandcommunity/healthandsocialcare/conditionsanddiseases/articles/impactofcoronavirusincarehomesinenglandvivaldi/26mayto19june2020',
 		organisation: 'test',
-		showOrganisation: false,
+		showOrganisation: true,
 		showOrcid: true,
 		user: {
 			email: 'ciara.ward@paconsulting.com',

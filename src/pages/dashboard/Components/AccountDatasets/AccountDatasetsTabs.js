@@ -1,6 +1,7 @@
 import React from 'react';
 import { Col, Row, Tab, Tabs } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
+import { DATASETS_STATUS_ACTIVE, STATUS_ARCHIVE, STATUS_INREVIEW, STATUS_REJECTED } from '../../../../configs/constants';
 import '../../Dashboard.scss';
 
 const AccountDatasetsTabs = ({ counts = { inReview: 0, active: 0, rejected: 0, archive: 0 }, team, onSelectTab, activeKey }) => {
@@ -13,7 +14,7 @@ const AccountDatasetsTabs = ({ counts = { inReview: 0, active: 0, rejected: 0, a
 					{team === 'admin' ? (
 						<Tabs className='dataAccessTabs gray700-13' activeKey={activeKey} onSelect={onSelectTab}>
 							<Tab
-								eventKey='inReview'
+								eventKey={STATUS_INREVIEW}
 								title={t('tabs.counts.inReview', {
 									count: counts.inReview,
 								})}>
@@ -23,30 +24,30 @@ const AccountDatasetsTabs = ({ counts = { inReview: 0, active: 0, rejected: 0, a
 					) : (
 						<Tabs className='dataAccessTabs gray700-13' activeKey={activeKey} onSelect={onSelectTab}>
 							<Tab
-								eventKey='active,draft'
+								eventKey={DATASETS_STATUS_ACTIVE}
 								title={t('tabs.counts.active', {
-									count: counts['active,draft'],
+									count: counts[DATASETS_STATUS_ACTIVE],
 								})}>
 								{' '}
 							</Tab>
 							<Tab
-								eventKey='inReview'
+								eventKey={STATUS_INREVIEW}
 								title={t('tabs.counts.inReview', {
-									count: counts.inReview,
+									count: counts[STATUS_INREVIEW],
 								})}>
 								{' '}
 							</Tab>
 							<Tab
-								eventKey='rejected'
+								eventKey={STATUS_REJECTED}
 								title={t('tabs.counts.rejected', {
-									count: counts.rejected,
+									count: counts[STATUS_REJECTED],
 								})}>
 								{' '}
 							</Tab>
 							<Tab
-								eventKey='archive'
+								eventKey={STATUS_ARCHIVE}
 								title={t('tabs.counts.archive', {
-									count: counts.archive,
+									count: counts[STATUS_ARCHIVE],
 								})}>
 								{' '}
 							</Tab>

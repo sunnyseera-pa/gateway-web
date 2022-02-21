@@ -2,6 +2,7 @@ import React, { useState, Fragment, useRef } from 'react';
 import _ from 'lodash';
 import { Modal } from 'react-bootstrap';
 import { ReactComponent as CloseButtonSvg } from '../../../../images/close-alt.svg';
+import TextareaAutosize from 'react-textarea-autosize';
 
 import './ActionModal.scss';
 
@@ -133,12 +134,12 @@ const ActionModal = ({ open, close, context, datasetVersionAction }) => {
 								<label htmlFor='decription' className='gray800-14'>
 									<span>Description</span> <span>{count}/1500</span>
 								</label>
-								<textarea
-									className={`form-control ${formState.invalid && formState.submitted ? `is-invalid` : ''}`}
+								<TextareaAutosize 
+									className={`form-control ${formState.invalid && formState.submitted ? `is-invalid textarea-modal` : 'textarea-modal'}`}
 									name='statusDesc'
 									onChange={handleChange}
 									value={formState.statusDesc}
-									rows='8'></textarea>
+									rows='8'></TextareaAutosize>
 								<div className='invalid-feedback'>{formState.invalidMessage}</div>
 							</div>
 						</form>
