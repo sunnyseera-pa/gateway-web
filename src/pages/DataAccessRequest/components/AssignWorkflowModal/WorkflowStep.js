@@ -11,7 +11,7 @@ const WorkflowStep = ({ index, step, reviewers, displaySections }) => {
 	};
 
 	return (
-		<Row className='noMargin gray-top-border' style={{ width: '100%' }}>e.stopPropagation()
+		<Row className='noMargin gray-top-border' style={{ width: '100%' }}>
 			<Accordion defaultActiveKey='1' style={{ width: '100%' }}>
 				<Accordion.Toggle
 					className='accordionToggle'
@@ -21,7 +21,7 @@ const WorkflowStep = ({ index, step, reviewers, displaySections }) => {
 					onClick={e => updateFlag()}
 					data-testid='accordion-toggle'>
 					<Row>
-						<Col sm={3} lg={3} id='workflowText' className='gray800-14' style={{ float: 'left' }}>
+						<Col sm={3} lg={3} className='gray800-14' style={{ float: 'left' }}>
 							<span style={{ float: 'left' }}>
 								<h3>{`${index + 1}. ${step.stepName}`}</h3>
 							</span>
