@@ -28,6 +28,37 @@ body.modal-open {
 	box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.09);
 }
 
+.navBarLoginSpacing {
+	padding: 0px 24px 0px 0px;
+
+	@include mq('desktop', max) {
+		padding: 0px 16px 0px 0px;
+	}
+}
+
+.navBarNotificationSpacing {
+	padding: 0px 16px;
+	margin: auto;
+}
+
+// Internet Explorer
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+	.navBarNotificationSpacing {
+		padding: 0px 16px;
+		margin: auto;
+		width: 30%;
+	}
+}
+
+// Internet Explorer
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+	.navBarNotificationSpacing {
+		padding: 0px 16px;
+		margin: auto;
+		width: 30%;
+	}
+}
+
 @media (min-width: 1286px) {
 	.navBarLogoSpacing {
 		vertical-align: middle;
@@ -38,20 +69,18 @@ body.modal-open {
 		vertical-align: middle;
 		display: inline-block;
 		margin-top: 12px;
-		padding: 0px 0px 0px 30px;
+		padding: 0px 0px 0px 24px;
 	}
 
-	.navBarLoginSpacing {
-		padding: 0px 40px 0px 0px;
-	}
-
-	.navBarNotificationSpacing {
-		padding: 0px 25px;
+	.navBarBellNotificationSpacing {
+		padding: 0px 16px 0px 0px;
+		margin: auto !important;
 	}
 
 	.navBarSearchBarSpacing {
-		width: 50%;
 		text-align: left;
+		margin: auto;
+		min-width: 150px;
 	}
 
 	.searchBarInputGrey {
