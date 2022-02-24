@@ -767,11 +767,7 @@ class DatasetDetail extends Component {
 					Click to read more about how the score is calculated.
 					<br />
 					<br />
-					{Math.trunc(data.datasetfields.metadataquality.completeness_percent)} Completeness %
-					<br />
 					{Math.trunc(data.datasetfields.metadataquality.weighted_completeness_percent)} Weighted completeness %
-					<br />
-					{Math.trunc(data.datasetfields.metadataquality.error_percent)} Error %
 					<br />
 					{Math.trunc(data.datasetfields.metadataquality.weighted_error_percent)} Weighted error %
 				</Tooltip>
