@@ -7,7 +7,6 @@ import NotificationBadge from 'react-notification-badge';
 import { isEmpty } from 'lodash';
 import SVGIcon from '../../../images/SVGIcon';
 import { ReactComponent as ColourLogoSvg } from '../../../images/colour.svg';
-import { ReactComponent as ColourLogoSvgMobile } from '../../../images/colourMobile.svg';
 import { ReactComponent as ClearButtonSvg } from '../../../images/clear.svg';
 import { ReactComponent as HamBurgerSvg } from '../../../images/hamburger.svg';
 import { ReactComponent as WhiteArrowDownSvg } from '../../../images/arrowDownWhite.svg';
@@ -352,14 +351,14 @@ class SearchBar extends React.Component {
 												<Col>
 													<span className='searchBarInputGrey'>
 														<span className='searchInputIconGrey'>
-															<SVGIcon name='searchicon' width={20} height={20} fill={'#2c8267'} stroke='none' type='submit' />
+															<SVGIcon name='searchicon' width={20} height={20} fill={'#b04a83'} stroke='none' type='submit' />
 														</span>
 														<span>
 															<input
 																data-testid='searchbar'
 																type='text'
-																placeholder=''
-																id='searchInputSpanGrey'
+																placeholder='Search datasets'
+																id='searchInputSpanPink'
 																onChange={this.onSearch}
 																onKeyDown={this.props.doSearchMethod}
 																value={textValue}
