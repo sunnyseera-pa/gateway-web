@@ -33,7 +33,7 @@ const mockData = {
 	nonGatewayOutputs: [],
 	projectTitle: 'test title',
 	projectIdText: '123',
-	organisationName: 'Testing 1, Testing 2',
+	organisationName: 'Testing1, Testing2',
 	relatedObjects: [
 		{
 			_id: '61ea77b94e9d631a4d8f3b96',
@@ -142,38 +142,25 @@ const mockData = {
 		],
 	],
 };
-const renderToolTip = jest.fn();
 let wrapper;
 
-describe('Given the About component', () => {
+describe('Given the AboutSection component', () => {
 	describe('When it is rendered', () => {
 		beforeAll(() => {
-			wrapper = render(<About data={mockData} renderTooltip={renderToolTip} />);
+			wrapper = render(<About data={mockData} />);
 		});
 
 		it('Then matches the previous snapshot', () => {
 			expect(wrapper.container).toMatchSnapshot();
 		});
-	});
 
-	it('OrganistionName should be displayed', () => {
-		expect(screen.getByTestId(`badge-Testing 1`)).toHaveTextContent(`Testing 1`);
-		expect(screen.getByTestId(`badge-Testing 2`)).toHaveTextContent(`Testing 2`);
-	});
+		it('OrganistionName should be displayed  in badges', () => {
+			expect(screen.getByTestId(`badge-Testing1`)).toHaveTextContent(`Testing1`);
+			expect(screen.getByTestId(`badge-Testing2`)).toHaveTextContent(`Testing2`);
+		});
 
-	// describe('And activeLink and onSearchPage is true', () => {
-	// 	let updateOnFilterBadgeHandler = props.updateOnFilterBadgeHandler;
-	// 	it('Then Tag  should be rendered without links', () => {
-	// 		const { rerender } = wrapper;
-	// 		rerender(<Tag {...props} activeLink={true} onSearchPage={true} />);
-	// 		expect(screen.getByTestId(`badge-${props.tagName}`)).toBeTruthy();
-	// 		expect(screen.queryByTestId(`badge-${props.tagName}-link`)).toBeNull();
-	// 	});
-	// 	it('Then onclick Tag updateOnFilterBadgeHandler should be called', () => {
-	// 		fireEvent.click(screen.getByTestId(`badge-${props.tagName}`));
-	// 		expect(updateOnFilterBadgeHandler.mock.calls.length).toBe(1);
-	// 		expect(updateOnFilterBadgeHandler.mock.calls[0][0]).toEqual(props.parentKey);
-	// 		expect(updateOnFilterBadgeHandler.mock.calls[0][1]).toEqual({ label: props.tagName, parentKey: props.parentKey });
-	// 	});
-	// });
+		it('empty vaue should have `Not specified` displayed', () => {
+			expect(screen.getByTestId(`laySummary-details`)).toHaveTextContent(`Not specifie`);
+		});
+	});
 });

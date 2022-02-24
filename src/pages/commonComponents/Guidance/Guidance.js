@@ -1,12 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { OverlayTrigger } from 'react-bootstrap';
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import SVGIcon from '../../../images/SVGIcon';
 
-const Guidance = ({ renderTooltip, text, id }) => {
+const renderTooltip = props => (
+	<Tooltip className='tool-tip' style={{ width: '240px' }}>
+		{props}
+	</Tooltip>
+);
+
+const Guidance = ({ text, id }) => {
 	return (
-		<OverlayTrigger placement='top' overlay={renderTooltip(`${text}`)} data-testid={id}>
-			<button className='datause-info-icon-button'>
+		<OverlayTrigger placement='top' overlay={renderTooltip(`${text}`)}>
+			<button className='datause-info-icon-button' data-testid={id}>
 				<SVGIcon name='info' width={10} height={10} fill={'#475da7'} className='datause-info-icon' />
 			</button>
 		</OverlayTrigger>
@@ -14,13 +20,11 @@ const Guidance = ({ renderTooltip, text, id }) => {
 };
 
 Guidance.propTypes = {
-	renderTooltip: PropTypes.func.isRequired,
 	text: PropTypes.string.isRequired,
 	id: PropTypes.string,
 };
 
 Guidance.defaultProps = {
-	renderTooltip: () => {},
 	text: '',
 	id: '',
 };
