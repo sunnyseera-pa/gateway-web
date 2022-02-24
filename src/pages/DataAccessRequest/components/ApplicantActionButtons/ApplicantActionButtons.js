@@ -39,6 +39,7 @@ const ApplicantActionButtons = ({
 					isVisible:
 						applicationStatus === DarHelper.darStatus.inReview ||
 						applicationStatus === DarHelper.darStatus.approved ||
+						applicationStatus.includes(DarHelper.darStatus['approved with conditions']) ||
 						applicationStatus === DarHelper.darStatus.rejected,
 				},
 				{
