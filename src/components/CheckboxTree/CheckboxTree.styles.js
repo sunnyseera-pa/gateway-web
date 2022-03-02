@@ -92,8 +92,16 @@ export const root = ({ hasLeafIcon, hasParentIcon, checkboxVariant: variant }) =
 			${mixins.disabledNotChecked({ width, height })}
 		}
 
-		input + .rct-checkbox .rct-icon-check::after {
+		input + .rct-checkbox .rct-icon-check::after,
+		input + .rct-checkbox .rct-icon-half-check::after {
 			${mixins.checked({ colors, variants, variant })}
+		}
+
+		input + .rct-checkbox .rct-icon-half-check::after {
+			${mixins.partial({ width, height })}
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
 		}
 
 		input:disabled + .rct-checkbox .rct-icon::after {

@@ -93,6 +93,34 @@ export const replaceKey = (data, iteratee) => {
 	return data;
 };
 
+export const iterateDeep = (data, iteratee) => {
+	const iterate = data => {
+		if (Array.isArray(data)) {
+			data.forEach(item => {
+				if (!Array.isArray(item)) {
+					iteratee(item);
+				}
+
+				if (item) iterate(item);
+			});
+		} else if (typeof data === 'object') {
+			Object.keys(data).forEach(key => {
+				if (typeof data[key] === 'object' && !Array.isArray(data[key])) {
+					iteratee(data[key], key);
+				}
+
+				if (data[key]) iterate(data[key]);
+			});
+		}
+	};
+
+	const clonedData = _.cloneDeep(data);
+
+	iterate(clonedData);
+
+	return clonedData;
+};
+
 export const findAllByKey = (data, iteratee) => {
 	const found = [];
 
