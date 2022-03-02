@@ -1,6 +1,10 @@
 import { useMutation, useQuery } from 'react-query';
-import { apiURL } from '../configs/url.config';
-import { getRequest, postRequest } from '../utils/requests';
+import { apiURL } from '../../configs/url.config';
+import { getRequest, postRequest } from '../../utils/requests';
+
+const getStatus = options => {
+	return getRequest(`${apiURL}/auth/status`, options);
+};
 
 const getLogout = options => {
 	return getRequest(`${apiURL}/auth/logout`, options);
@@ -8,6 +12,13 @@ const getLogout = options => {
 
 const postRegister = (data, options) => {
 	return postRequest(`${apiURL}/auth/register`, data, options);
+};
+
+const useGetStatus = (requestOptions, queryOptions = { queryKey: 'getStatus' }) => {
+	return useQuery({
+		...queryOptions,
+		queryFn: () => getStatus(requestOptions),
+	});
 };
 
 const useGetLogout = (requestOptions, queryOptions = { queryKey: 'getLogout' }) => {
@@ -24,8 +35,10 @@ const usePostRegister = (requestOptions, mutateOptions = { queryKey: 'postRegist
 };
 
 export default {
+	getStatus,
 	getLogout,
 	postRegister,
+	useGetStatus,
 	useGetLogout,
 	usePostRegister,
 };
