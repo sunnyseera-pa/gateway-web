@@ -28,7 +28,7 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
 	const [isSubmitModalVisible, setIsSubmitModalVisible] = useState(false);
 	const [alert, setAlert] = useState('');
 	const [uploadedData, setUploadedData] = useState({ rows: [], uploadErrors: [], checks: [] });
-	const [dataUseIndexes, setDataUseIndexes] = useState([]);
+	const [dataUseRegisterIndexes, setdataUseRegisterIndexes] = useState([]);
 	const [recommendedFieldsMissing, setRecommendedFieldsMissing] = useState(false);
 
 	const onUploadDataUseRegister = event => {
@@ -172,12 +172,12 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
 		});
 	};
 
-	const toggleDataUseSection = dataUseIndex => {
-		const newArray = dataUseIndexes.includes(dataUseIndex)
-			? dataUseIndexes.filter(index => index !== dataUseIndex)
-			: [...dataUseIndexes, dataUseIndex];
+	const toggleDataUseSection = dataUseRegisterIndex => {
+		const newArray = dataUseRegisterIndexes.includes(dataUseRegisterIndex)
+			? dataUseRegisterIndexes.filter(index => index !== dataUseRegisterIndex)
+			: [...dataUseRegisterIndexes, dataUseRegisterIndex];
 
-		setDataUseIndexes(newArray);
+		setdataUseRegisterIndexes(newArray);
 	};
 
 	const renderApplicants = dataUse => {
@@ -378,7 +378,7 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
 												width={16}
 												height={16}
 												fill={'#3c4e8c'}
-												className={!dataUseIndexes.includes(index) ? 'mr-3' : 'flip180 mr-3'}
+												className={!dataUseRegisterIndexes.includes(index) ? 'mr-3' : 'flip180 mr-3'}
 											/>
 											{some(filtered, ['column', 'Project title*'])
 												? find(filtered, ['column', 'Project title*']).value
@@ -425,7 +425,7 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
 												: moment(data.latestApprovalDate).format('DD/MM/YY')}
 										</div>
 
-										<SlideDown className='dataUseDetails' closed={!dataUseIndexes.includes(index)}>
+										<SlideDown className='dataUseDetails' closed={!dataUseRegisterIndexes.includes(index)}>
 											<div className='dataUseDetailsGrid'>
 												<div className='gray800-14-bold dataUseDetailsGridSection'>Safe people</div>
 												<div className='dataUseDetailsGridHeader'>Project ID</div>

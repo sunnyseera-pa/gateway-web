@@ -1,10 +1,13 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/react';
+import groupBy from 'lodash/groupBy';
+import PropTypes from 'prop-types';
 import { Suspense } from 'react';
 import { Col, Row } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
-import PropTypes from 'prop-types';
-import groupBy from 'lodash/groupBy';
+import BlockQuote from '../../../../components/BlockQuote';
+import ListInfo from '../../../../components/ListInfo';
+import Timeline from '../../../../components/Timeline';
 import approved from '../../../../images/Application_approved.svg';
 import rejected from '../../../../images/Application_rejected.svg';
 import updated from '../../../../images/Updates_requested.svg';
@@ -12,10 +15,7 @@ import versionCreated from '../../../../images/Versions_created.svg';
 import ACTIVITY_LOG_PROP_TYPES from '../../../../services/activitylog/activitylog';
 import DatasetOnboardingHelper from '../../../../utils/DatasetOnboardingHelper.util';
 import { dateFormats } from '../../../../utils/GeneralHelper.util';
-import BlockQuote from '../../../commonComponents/Blockquote';
-import ListInfo from '../../../commonComponents/ListInfo';
 import SLA from '../../../commonComponents/sla/SLA';
-import Timeline from '../../../commonComponents/Timeline';
 import * as styles from './ActivityLogCard.styles';
 
 let eventStatusIcons = {

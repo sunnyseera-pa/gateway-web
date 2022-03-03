@@ -10,9 +10,10 @@ import SVGIcon from '../../images/SVGIcon';
 import DataUseApproveModal from './modals/DataUseApproveModal';
 import DataUseRejectModal from './modals/DataUseRejectModal';
 import DarHelperUtil from './../../utils/DarHelper.util';
-import AccountContent from '../dashboard/Components/AccountContent';
+
 import Loading from '../commonComponents/Loading';
 import googleAnalytics from '../../tracking';
+import { LayoutContent } from '../../components/Layout';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -122,15 +123,15 @@ const DataUsePage = React.forwardRef(({ onClickDataUseUpload, team }, ref) => {
 
 	if (isLoading) {
 		return (
-			<AccountContent>
+			<LayoutContent>
 				<Loading data-testid='isLoading' />
-			</AccountContent>
+			</LayoutContent>
 		);
 	}
 
 	return (
 		<Fragment>
-			<AccountContent>
+			<LayoutContent>
 				<Row>
 					<Col className='pl-0 pr-0'>
 						{!isEmpty(alert) && (
@@ -225,7 +226,7 @@ const DataUsePage = React.forwardRef(({ onClickDataUseUpload, team }, ref) => {
 				{showRejectModal && (
 					<DataUseRejectModal onConfirm={updataDataUseStatus} isVisible={showRejectModal} toggleModal={toggleRejectModal} />
 				)}
-			</AccountContent>
+			</LayoutContent>
 		</Fragment>
 	);
 });
