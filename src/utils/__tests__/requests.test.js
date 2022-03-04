@@ -1,5 +1,14 @@
+import { renderHook } from '@testing-library/react-hooks';
 import axios from 'axios';
-import { deleteRequest, getRequest, patchRequest, postRequest, putRequest } from '../requests';
+import {
+	deleteRequest,
+	getRequest,
+	patchRequest,
+	postRequest,
+	putRequest,
+	useMutationWithTranslations,
+	useQueryWithTranslations,
+} from '../requests';
 
 jest.mock('axios');
 
@@ -86,5 +95,71 @@ describe('Given the request helpers', () => {
 				option1: true,
 			});
 		});
+	});
+
+	describe('When useMutationWithTranslations is called', () => {
+		it('Then rewrites the error function to have translations', async () =>
+			expect(
+				new Promise(resolves => {
+					const { result } = renderHook(
+						() =>
+							useMutationWithTranslations(
+								() =>
+									Promise.reject({
+										response: {
+											status: 404,
+										},
+									}),
+								{
+									mutationKey: 'dur.getDataUseRegistersByTeam',
+									onError: addedTranslations => {
+										resolves(addedTranslations);
+									},
+								}
+							),
+						{
+							wrapper: Providers,
+						}
+					);
+
+					result.current.mutate();
+				})
+			).resolves.toEqual({
+				title: 'Page not found',
+				message: 'There has been an error getting data uses for this team',
+			}));
+	});
+
+	describe('When useQueryWithTranslations is called', () => {
+		it('Then rewrites the error function to have translations', async () =>
+			expect(
+				new Promise(resolves => {
+					const { result } = renderHook(
+						() =>
+							useQueryWithTranslations(
+								() =>
+									Promise.reject({
+										response: {
+											status: 404,
+										},
+									}),
+								{
+									mutationKey: 'dur.getDataUseRegistersByTeam',
+									onError: addedTranslations => {
+										resolves(addedTranslations);
+									},
+								}
+							),
+						{
+							wrapper: Providers,
+						}
+					);
+
+					result.current.refetch();
+				})
+			).resolves.toEqual({
+				title: 'Page not found',
+				message: 'There has been an error getting data uses for this team',
+			}));
 	});
 });

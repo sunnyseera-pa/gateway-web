@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import Icon from '../../../../components/Icon';
-import SearchControls from '../../../../components/SearchControls';
+import SearchControlsSort from '../../../../components/SearchControlsSort';
 import { DATASETS_STATUS_ACTIVE, STATUS_ARCHIVE, STATUS_INREVIEW, STATUS_REJECTED } from '../../../../configs/constants';
 import DatasetCard from '../../../commonComponents/DatasetCard';
 import MessageNotFound from '../../../commonComponents/MessageNotFound';
@@ -13,7 +13,7 @@ import '../../Dashboard.scss';
 const options = ['latest', 'alphabetic', 'metadata'];
 const optionsWithPublish = ['latest', 'alphabetic', 'metadata', 'recentlyadded'];
 
-const AccountDatasetsContent = ({ data = [], onSubmit, isLoading, isFetched, status, params, team, count }) => {
+const AccountDatasetsContent = ({ data = [], onSubmit, onReset, isLoading, isFetched, status, params, team, count }) => {
 	const [searchValue, setSearchValue] = useState('');
 	const history = useHistory();
 
@@ -22,20 +22,13 @@ const AccountDatasetsContent = ({ data = [], onSubmit, isLoading, isFetched, sta
 		setSearchValue(value);
 	}, []);
 
-	const getDatasetPath = id => {
-		return `/account/datasets/${id}`;
-	};
+	const getDatasetPath = id => `/account/datasets/${id}`;
 
 	const handleActivityLogClick = id => {
 		history.push(getDatasetPath(id));
 	};
 
-	const hasActivityHistory = React.useCallback(
-		dataset => {
-			return dataset.listOfVersions.length > 0 && team === 'admin';
-		},
-		[team]
-	);
+	const hasActivityHistory = React.useCallback(dataset => dataset.listOfVersions.length > 0 && team === 'admin', [team]);
 
 	const getDatasetCardProps = dataset => {
 		const datasetCardProps = {};
@@ -65,23 +58,22 @@ const AccountDatasetsContent = ({ data = [], onSubmit, isLoading, isFetched, sta
 	return (
 		<>
 			{isFetched && (
-				<SearchControls
+				<SearchControlsSort
 					type={t(`dataset.${status}`)}
-					mt={3}
 					onSubmit={onSubmit}
 					inputProps={{
 						onChange: handleChange,
-						mt: 2,
 						value: search,
+						onReset,
 					}}
 					sortProps={{
 						direction: sortDirection,
 						value: sortBy,
 						options: statusOptions,
-						mt: 2,
 						allowDirection: true,
 						minWidth: '300px',
 					}}
+					mt={4}
 				/>
 			)}
 
@@ -96,7 +88,7 @@ const AccountDatasetsContent = ({ data = [], onSubmit, isLoading, isFetched, sta
 							title={dataset.name}
 							publisher={status !== STATUS_ARCHIVE && dataset.datasetv2.summary.publisher.name}
 							version={dataset.datasetVersion}
-							isDraft={true}
+							isDraft
 							datasetStatus={dataset.activeflag}
 							timeStamps={dataset.timestamps}
 							completion={dataset.percentageCompleted}

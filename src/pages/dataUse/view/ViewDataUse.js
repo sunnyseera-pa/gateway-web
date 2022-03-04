@@ -1,12 +1,16 @@
 import * as Sentry from '@sentry/react';
-import axios from 'axios';
 import _ from 'lodash';
 import queryString from 'query-string';
 import React, { useEffect, useState } from 'react';
-import { Alert, Col, Container, Dropdown, Row, Tab, Tabs, Tooltip } from 'react-bootstrap';
+import { Alert, Col, Container, Row, Tab, Tabs, Tooltip } from 'react-bootstrap';
+import { NotificationManager } from 'react-notifications';
 import 'react-tabs/style/react-tabs.css';
-import { baseURL } from '../../../configs/url.config';
+import LayoutBox from '../../../components/LayoutBox';
+import SearchControlsFilter from '../../../components/SearchControlsFilter';
 import SVGIcon from '../../../images/SVGIcon';
+import collectionsService from '../../../services/collections';
+import dataUseRegistersService from '../../../services/data-use-registers';
+import relatedObjectsService from '../../../services/related-objects';
 import googleAnalytics from '../../../tracking';
 import ActionBar from '../../commonComponents/actionbar/ActionBar';
 import CollectionCard from '../../commonComponents/collectionCard/CollectionCard';
@@ -52,19 +56,49 @@ export const DataUseView = props => {
 		]
 	);
 
+	const dataUseRegisterCounterQuery = dataUseRegistersService.usePatchDataUseRegisterCounter(null, {
+		onError: ({ title, message }) => {
+			NotificationManager.error(message, title, 10000);
+		},
+	});
+
+	const dataUseRegisterQuery = dataUseRegistersService.useGetDataUseRegister(null, {
+		onError: ({ title, message }) => {
+			NotificationManager.error(message, title, 10000);
+		},
+	});
+
+	const collectionsQuery = collectionsService.useGetCollections(null, {
+		onError: ({ title, message }) => {
+			NotificationManager.error(message, title, 10000);
+		},
+	});
+
+	const relatedObjectByTypeQuery = relatedObjectsService.useGetRelatedObjectByType(null, {
+		onError: ({ title, message }) => {
+			NotificationManager.error(message, title, 10000);
+		},
+	});
+
+	const relatedObjectQuery = relatedObjectsService.useGetRelatedObject(null, {
+		onError: ({ title, message }) => {
+			NotificationManager.error(message, title, 10000);
+		},
+	});
+
 	let showError = false;
 
-	//componentDidMount - on loading of page detail page
+	// componentDidMount - on loading of page detail page
 	useEffect(() => {
-		if (!!window.location.search) {
-			let values = queryString.parse(window.location.search);
+		if (window.location.search) {
+			const values = queryString.parse(window.location.search);
 			setDataUseAdded(values.dataUseAdded);
 			setDataUseEdited(values.dataUseEdited);
 		}
 		getDataUseDataFromDb();
 	}, []);
 
-	//componentDidUpdate - on render of page detail page were id is different
+	// componentDidUpdate - on render of page detail page were id is different
 	useEffect(() => {
 		if (props.match.params.toolID !== id && id !== '' && !isLoading) {
 			getDataUseDataFromDb();
@@ -81,8 +115,8 @@ export const DataUseView = props => {
 
 	const getDataUseDataFromDb = () => {
 		setIsLoading(true);
-		axios
-			.get(baseURL + '/api/v2/data-use-registers/' + props.match.params.datauseID)
+		dataUseRegisterQuery
+			.mutateAsync(props.match.params.datauseID)
 			.then(async res => {
 				if (_.isNil(res.data)) {
 					window.localStorage.setItem('redirectMsg', `Data Use not found for Id: ${props.match.params.datauseID}`);
@@ -91,11 +125,11 @@ export const DataUseView = props => {
 					const localDataUseData = res.data;
 					document.title = localDataUseData.projectTitle.trim();
 
-					let counter = !localDataUseData.counter ? 1 : localDataUseData.counter + 1;
+					const counter = !localDataUseData.counter ? 1 : localDataUseData.counter + 1;
 					updateCounter(res.data._id, counter);
 
 					if (!_.isUndefined(localDataUseData.relatedObjects)) {
-						let localAdditionalObjInfo = await getAdditionalObjectInfo(localDataUseData.relatedObjects);
+						const localAdditionalObjInfo = await getAdditionalObjectInfo(localDataUseData.relatedObjects);
 						await populateRelatedObjects(localDataUseData, localAdditionalObjInfo);
 					}
 					setDataUseData(localDataUseData);
@@ -109,13 +143,19 @@ export const DataUseView = props => {
 
 	const populateCollections = localDataUseData => {
 		setIsLoading(true);
-		axios.get(baseURL + '/api/v1/collections/entityid/' + localDataUseData.id).then(res => {
-			setCollections(res.data.data || []);
-		});
+
+		collectionsQuery
+			.mutateAsync(localDataUseData.id)
+			.then(res => {
+				setCollections(res.data.data || []);
+			})
+			.finally(() => {
+				setIsLoading(false);
+			});
 	};
 
 	const doSearch = e => {
-		//fires on enter on searchbar
+		// fires on enter on searchbar
 		if (e.key === 'Enter') window.location.href = `/search?search=${encodeURIComponent(searchString)}`;
 	};
 
@@ -124,7 +164,7 @@ export const DataUseView = props => {
 	};
 
 	const updateCounter = (id, counter) => {
-		axios.patch(baseURL + '/api/v2/data-use-registers/counter', { id, counter });
+		dataUseRegisterCounterQuery.mutateAsync({ id, counter });
 	};
 
 	const updateDiscoursePostCount = count => {
@@ -132,49 +172,58 @@ export const DataUseView = props => {
 	};
 
 	const getAdditionalObjectInfo = async additionalObjInfo => {
-		let tempObjects = [];
+		const tempObjects = [];
 		if (additionalObjInfo) {
 			const promises = additionalObjInfo.map(async (object, index) => {
 				if (object.objectType === 'course') {
-					await axios.get(baseURL + '/api/v1/relatedobject/course/' + object.objectId).then(res => {
+					return relatedObjectByTypeQuery.mutateAsync({ _id: object.objectId, type: 'course' }).then(res => {
 						tempObjects.push({
 							name: res.data.data[0].title,
 							id: object.objectId,
 							activeflag: res.data.data[0].activeflag,
 						});
 					});
-				} else if (object.objectType === 'dataUseRegister') {
-					await axios.get(baseURL + '/api/v1/relatedobject/dataUseRegister/' + object.objectId).then(res => {
+
+					await axios.get(`${baseURL}/api/v1/relatedobject/course/${object.objectId}`).then(res => {
+						tempObjects.push({
+							name: res.data.data[0].title,
+							id: object.objectId,
+							activeflag: res.data.data[0].activeflag,
+						});
+					});
+				}
+				if (object.objectType === 'dataUseRegister') {
+					return relatedObjectByTypeQuery.mutateAsync({ _id: object.objectId, type: 'dataUseRegister' }).then(res => {
 						tempObjects.push({
 							id: object.objectId,
 							activeflag: res.data.data[0].activeflag,
 							projectTitle: res.data.data[0].projectTitle,
 						});
 					});
-				} else {
-					await axios.get(baseURL + '/api/v1/relatedobject/' + object.objectId).then(res => {
-						let datasetPublisher;
-						let datasetLogo;
-						!_.isEmpty(res.data.data[0].datasetv2) && _.has(res.data.data[0], 'datasetv2.summary.publisher.name')
-							? (datasetPublisher = res.data.data[0].datasetv2.summary.publisher.name)
-							: (datasetPublisher = '');
-
-						!_.isEmpty(res.data.data[0].datasetv2) && _.has(res.data.data[0], 'datasetv2.summary.publisher.logo')
-							? (datasetLogo = res.data.data[0].datasetv2.summary.publisher.logo)
-							: (datasetLogo = '');
-
-						tempObjects.push({
-							name: res.data.data[0].name,
-							firstname: res.data.data[0].firstname || '',
-							lastname: res.data.data[0].lastname || '',
-							id: object.objectId,
-							authors: res.data.data[0].authors,
-							activeflag: res.data.data[0].activeflag,
-							datasetPublisher: datasetPublisher,
-							datasetLogo: datasetLogo,
-						});
-					});
 				}
+
+				return relatedObjectQuery.mutateAsync(object.objectId).then(res => {
+					let datasetPublisher;
+					let datasetLogo;
+					!_.isEmpty(res.data.data[0].datasetv2) && _.has(res.data.data[0], 'datasetv2.summary.publisher.name')
+						? (datasetPublisher = res.data.data[0].datasetv2.summary.publisher.name)
+						: (datasetPublisher = '');
+
+					!_.isEmpty(res.data.data[0].datasetv2) && _.has(res.data.data[0], 'datasetv2.summary.publisher.logo')
+						? (datasetLogo = res.data.data[0].datasetv2.summary.publisher.logo)
+						: (datasetLogo = '');
+
+					tempObjects.push({
+						name: res.data.data[0].name,
+						firstname: res.data.data[0].firstname || '',
+						lastname: res.data.data[0].lastname || '',
+						id: object.objectId,
+						authors: res.data.data[0].authors,
+						activeflag: res.data.data[0].activeflag,
+						datasetPublisher,
+						datasetLogo,
+					});
+				});
 			});
 			await Promise.all(promises);
 		}
@@ -182,18 +231,18 @@ export const DataUseView = props => {
 	};
 
 	const populateRelatedObjects = (localDataUseData, localAdditionalObjInfo) => {
-		let tempRelatedObjects = [];
+		const tempRelatedObjects = [];
 
 		if (localDataUseData.relatedObjects && localAdditionalObjInfo) {
 			localDataUseData.relatedObjects.map(object =>
 				localAdditionalObjInfo.forEach(item => {
 					if (object.objectId === item.id && item.activeflag === 'active') {
-						object['datasetPublisher'] = item.datasetPublisher;
-						object['datasetLogo'] = item.datasetLogo;
-						object['name'] = item.name || '';
-						object['firstname'] = item.firstname || '';
-						object['lastname'] = item.lastname || '';
-						object['projectTitle'] = item.projectTitle || '';
+						object.datasetPublisher = item.datasetPublisher;
+						object.datasetLogo = item.datasetLogo;
+						object.name = item.name || '';
+						object.firstname = item.firstname || '';
+						object.lastname = item.lastname || '';
+						object.projectTitle = item.projectTitle || '';
 
 						tempRelatedObjects.push(object);
 					}
@@ -221,24 +270,30 @@ export const DataUseView = props => {
 		setShowDrawer(showEnquiry);
 	};
 
-	const onRelatedObjectsSearch = e => {
-		setRelatedObjectsSearchValue(e.target.value);
+	const doRelatedObjectsQuery = async ({ search, filterValue }) => {
+		setRelatedObjectsFiltered([]);
+		setRelatedResourcesSort([]);
+		setSorting(filterValue);
+
+		const filteredRelatedResourceItems = await filterRelatedResourceItems(relatedObjects, search);
+
+		const tempFilteredData = filteredRelatedResourceItems.filter(dat => dat !== '');
+
+		setRelatedObjectsFiltered(tempFilteredData);
+		setRelatedResourcesSort(tempFilteredData);
 	};
 
-	const doRelatedObjectsSearch = async e => {
-		// Fires on enter on searchbar
-		if (e.key === 'Enter') {
-			setRelatedObjectsFiltered([]);
-			setRelatedResourcesSort([]);
-			setSorting('showAll');
-			const filteredRelatedResourceItems = await filterRelatedResourceItems(relatedObjects, relatedObjectsSearchValue);
+	const onRelatedObjectsSearch = value => {
+		setRelatedObjectsSearchValue(value);
+	};
 
-			let tempFilteredData = filteredRelatedResourceItems.filter(dat => {
-				return dat !== '';
-			});
-			setRelatedObjectsFiltered(tempFilteredData);
-			setRelatedResourcesSort(tempFilteredData);
-		}
+	const onRelatedObjectsSearchReset = () => {
+		setRelatedObjectsSearchValue('');
+		doRelatedObjectsQuery({ search: '', filterValue: 'showAll' });
+	};
+
+	const doRelatedObjectsSearch = values => {
+		doRelatedObjectsQuery(values);
 	};
 
 	const filterRelatedResourceItems = (objectData, relatedObjectsSearchValue) =>
@@ -252,9 +307,8 @@ export const DataUseView = props => {
 				(_.has(object, 'projectTitle') ? object.projectTitle.toLowerCase().includes(relatedObjectsSearchValue.toLowerCase()) : false)
 			) {
 				return object;
-			} else {
-				return '';
 			}
+			return '';
 		});
 
 	const handleSort = async sort => {
@@ -372,7 +426,7 @@ export const DataUseView = props => {
 								<Row className='margin-top-16'>
 									<Col>
 										<span className='badge-datause badge-tag badge-datause-bold'>
-											<SVGIcon name='datauseicon' width={12} height={12} fill={'#fff'} /> Data use
+											<SVGIcon name='datauseicon' width={12} height={12} fill='#fff' /> Data use
 										</span>
 										{dataUseData.keywords &&
 											dataUseData.keywords.map(keyword => (
@@ -404,7 +458,7 @@ export const DataUseView = props => {
 										googleAnalytics.recordVirtualPageView(`${key} tab`);
 										googleAnalytics.recordEvent('Data Use', `Clicked ${key} tab`, `Viewing ${key}`);
 									}}>
-									<Tab eventKey='about' title={'About'}>
+									<Tab eventKey='about' title='About'>
 										<About data={dataUseData} renderTooltip={renderTooltip} />
 									</Tab>
 
@@ -416,122 +470,63 @@ export const DataUseView = props => {
 											onUpdateDiscoursePostCount={updateDiscoursePostCount}
 										/>
 									</Tab>
-									<Tab eventKey='Related resources' title={'Related resources (' + relatedObjects.length + ')'}>
+									<Tab eventKey='Related resources' title={`Related resources (${relatedObjects.length})`}>
 										<>
-											<Row>
-												<Col lg={8}>
-													<span className='collectionsSearchBar form-control'>
-														<span className='collectionsSearchIcon'>
-															<SVGIcon name='searchicon' width={20} height={20} fill={'#2c8267'} stroke='none' type='submit' />
-														</span>
-														<span>
-															<input
-																id='collectionsSearchBarInput'
-																type='text'
-																placeholder='Search within related resources'
-																onChange={onRelatedObjectsSearch}
-																value={relatedObjectsSearchValue}
-																onKeyDown={doRelatedObjectsSearch}
-															/>
-														</span>
-													</span>
-												</Col>
-
-												<Col lg={4} className='text-right'>
-													<Dropdown className='sorting-dropdown' alignRight onSelect={handleSort}>
-														<Dropdown.Toggle variant='info' id='dropdown-menu-align-right' className='gray800-14'>
-															{(() => {
-																if (sorting !== 'showAll')
-																	return `Show ${
-																		sorting === 'dataUseRegister' ? `data uses` : sorting === 'people' ? sorting : `${sorting}s`
-																	} (
-																	${relatedResourcesSort.filter(dat => dat.objectType === sorting).length})`;
-																else return `Show all resources (${relatedResourcesSort.length})`;
-															})()}
-															&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-														</Dropdown.Toggle>
-														<Dropdown.Menu>
-															<Row
-																key={`ddl-item-showall`}
-																className={
-																	sorting === 'showAll'
-																		? 'sort-dropdown-item sort-dropdown-item-selected sortingDropdown'
-																		: 'sort-dropdown-item sortingDropdown'
-																}>
-																<Col xs={12} className='p-0'>
-																	<Dropdown.Item eventKey={'showAll'} className='gray800-14'>
-																		Show all resources ({relatedResourcesSort.length})
-																	</Dropdown.Item>
-																</Col>
-																<div className='p-0 sortingCheckmark'>
-																	{sorting === 'showAll' ? (
-																		<SVGIcon
-																			name='check'
-																			width={20}
-																			height={20}
-																			visble='true'
-																			style={{
-																				float: 'right',
-																				fill: '#3db28c',
-																				marginTop: '5px',
-																			}}
-																			fill={'#3db28c'}
-																			stroke='none'
-																		/>
-																	) : null}
-																</div>
-															</Row>
-															{['dataset', 'tool', 'paper', 'dataUseRegister', 'course', 'person'].map(item => {
-																return relatedResourcesSort.filter(dat => dat.objectType === item).length > 0 ? (
-																	<Row
-																		key={`ddl-item-${item}`}
-																		className={
-																			sorting === item
-																				? 'sort-dropdown-item sort-dropdown-item-selected sortingDropdown'
-																				: 'sort-dropdown-item sortingDropdown'
-																		}>
-																		<Col xs={12} className='p-0'>
-																			<Dropdown.Item eventKey={item} className='gray800-14'>
-																				Show {item === 'dataUseRegister' ? `data uses` : item === 'people' ? item : `${item}s`} (
-																				{relatedResourcesSort.filter(dat => dat.objectType === item).length})
-																			</Dropdown.Item>
-																		</Col>
-																		<div className='p-0 sortingCheckmark'>
-																			{sorting === item ? (
-																				<SVGIcon
-																					name='check'
-																					width={20}
-																					height={20}
-																					visble='true'
-																					style={{
-																						float: 'right',
-																						fill: '#3db28c',
-																						marginTop: '5px',
-																					}}
-																					fill={'#3db28c'}
-																					stroke='none'
-																				/>
-																			) : null}
-																		</div>
-																	</Row>
-																) : (
-																	''
-																);
-															})}
-														</Dropdown.Menu>
-													</Dropdown>
-												</Col>
-											</Row>
+											<SearchControlsFilter
+												type='related resources'
+												onSubmit={doRelatedObjectsSearch}
+												inputProps={{
+													onChange: onRelatedObjectsSearch,
+													value: relatedObjectsSearchValue,
+													onReset: onRelatedObjectsSearchReset,
+												}}
+												dropdownProps={{
+													onSelect: handleSort,
+													options: [
+														{
+															label: `Show all resources (${relatedResourcesSort.length})`,
+															value: 'showAll',
+														},
+													]
+														.concat(
+															['dataset', 'tool', 'paper', 'dataUseRegister', 'course', 'person'].map(
+																item =>
+																	relatedResourcesSort.filter(dat => dat.objectType === item).length > 0 && {
+																		label: `Show
+                                                                                ${
+																																									item === 'dataUseRegister'
+																																										? `data uses`
+																																										: item === 'people'
+																																										? item
+																																										: `${item}s`
+																																								}
+                                                                                (
+                                                                                ${
+																																									relatedResourcesSort.filter(
+																																										dat => dat.objectType === item
+																																									).length
+																																								}
+                                                                                )`,
+																		value: item,
+																	}
+															)
+														)
+														.filter(item => !!item),
+													value: sorting,
+												}}
+											/>
 											{relatedObjectsFiltered.length <= 0 ? (
-												<MessageNotFound word='related resources' />
+												<LayoutBox mt={2}>
+													<MessageNotFound word='related resources' />
+												</LayoutBox>
 											) : (
 												relatedObjectsFiltered.map((object, index) => (
 													<span key={index}>
 														<RelatedObject
 															relatedObject={object}
 															objectType={object.objectType}
-															activeLink={true}
-															showRelationshipAnswer={true}
+															activeLink
+															showRelationshipAnswer
 															datasetPublisher={object.datasetPublisher}
 															datasetLogo={object.datasetLogo}
 														/>
@@ -540,7 +535,7 @@ export const DataUseView = props => {
 											)}
 										</>
 									</Tab>
-									<Tab eventKey='Collections' title={'Collections (' + collections.length + ')'}>
+									<Tab eventKey='Collections' title={`Collections (${collections.length})`}>
 										{!collections || collections.length <= 0 ? (
 											<MessageNotFound text='This data use has not been featured on any collections yet.' />
 										) : (

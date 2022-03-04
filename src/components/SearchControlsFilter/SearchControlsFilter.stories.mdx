@@ -1,0 +1,20 @@
+import { Meta, Story, Canvas } from '@storybook/addon-docs';
+
+import SearchControlsFilter from './SearchControlsFilter';
+
+<Meta
+    title='Core/SearchControlsFilter'
+    component={SearchControlsFilter}
+    args={{
+        type: 'dataset',
+        dropdownProps: { options: ['relevance', 'recentlyadded'], value: 'relevance' },
+        inputProps: {
+            value: 'covid 19',
+        },
+        width: '900px',
+    }}
+/>
+
+<Canvas>
+    <Story name='Basic'>{props => <SearchControlsFilter {...props} />}</Story>
+</Canvas>

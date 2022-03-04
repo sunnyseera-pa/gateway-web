@@ -21,7 +21,7 @@ const SearchResults = ({
 	errorMessage,
 }) => (
 	<>
-		<div style={{ marginTop: '8px' }}>
+		<div>
 			{!isLoading && (
 				<>
 					{sort && (

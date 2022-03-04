@@ -1906,7 +1906,7 @@ class SearchPage extends React.Component {
 									</SearchFilters>
 								)}
 							</Col>
-							<Col sm={12} md={12} lg={9} className='mt-1 mb-5'>
+							<Col sm={12} md={12} lg={9} className='mt-2 mb-5'>
 								{key === 'Datasets' && (
 									<DatasetSearchResults
 										data={datasetData}
