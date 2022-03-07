@@ -20,6 +20,26 @@
 					"404": {
 						"message": "There has been an error getting data uses for this team"
 					}
+				},
+				"getDataUseRegister": {
+					"404": {
+						"message": "There has been an error getting this data use"
+					}
+				},
+				"patchDataUseRegister": {
+					"404": {
+						"message": "There has been an error upadting the data use"
+					}
+				},
+				"postDataUseRegisterCheck": {
+					"404": {
+						"message": "There has been an error checking if this is a duplicate record"
+					}
+				},
+				"postDataUseRegisterUpload": {
+					"404": {
+						"message": "There has been an problem uploading the new data use"
+					}
 				}
 			}
 		}

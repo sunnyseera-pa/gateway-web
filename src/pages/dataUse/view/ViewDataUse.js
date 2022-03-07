@@ -1,5 +1,5 @@
 import * as Sentry from '@sentry/react';
-import _ from 'lodash';
+import _, { isEmpty } from 'lodash';
 import queryString from 'query-string';
 import React, { useEffect, useState } from 'react';
 import { Alert, Col, Container, Row, Tab, Tabs, Tooltip } from 'react-bootstrap';
@@ -119,6 +119,7 @@ export const DataUseView = props => {
 
 	const getDataUseDataFromDb = () => {
 		setIsLoading(true);
+
 		dataUseRegisterQuery
 			.mutateAsync(props.match.params.datauseID)
 			.then(async res => {
@@ -136,6 +137,7 @@ export const DataUseView = props => {
 						const localAdditionalObjInfo = await getAdditionalObjectInfo(localDataUseData.relatedObjects);
 						await populateRelatedObjects(localDataUseData, localAdditionalObjInfo);
 					}
+
 					setDataUseData(localDataUseData);
 					populateCollections(localDataUseData);
 				}
@@ -365,6 +367,8 @@ export const DataUseView = props => {
 		</Tooltip>
 	);
 
+	console.log(dataUseData);
+
 	return (
 		<Sentry.ErrorBoundary fallback={<ErrorModal show={showModalHandler} handleClose={hideModalHandler} />}>
 			<div>
@@ -384,7 +388,6 @@ export const DataUseView = props => {
 							</Alert>
 						</LayoutContent>
 					)}
-
 					{dataUseEdited && (
 						<LayoutContent>
 							<Alert variant='success' className='mt-3'>
@@ -392,7 +395,6 @@ export const DataUseView = props => {
 							</Alert>
 						</LayoutContent>
 					)}
-
 					{dataUseData.activeflag === 'inReview' && (
 						<LayoutContent>
 							<Alert data-test-id='datause-pending-banner' variant='warning' className='mt-3'>
@@ -400,7 +402,6 @@ export const DataUseView = props => {
 							</Alert>
 						</LayoutContent>
 					)}
-
 					{dataUseData.activeflag === 'archived' && (
 						<LayoutContent>
 							<Alert data-test-id='datause-pending-banner' variant='warning' className='mt-3'>
@@ -408,122 +409,127 @@ export const DataUseView = props => {
 							</Alert>
 						</LayoutContent>
 					)}
-
 					<Row className='mt-4'>
 						<Col sm={1} lg={1} />
 						<Col sm={10} lg={10}>
-							<div className='rectangle'>
-								<Row>
-									<Col>
-										<span data-test-id='datause-name' className='black-16' data-testid='title'>
-											{dataUseData.projectTitle}
-										</span>
-										<br />
-										<span className='gray800-14'>{dataUseData.organisationName}</span>
-									</Col>
-								</Row>
-								<Row className='margin-top-16'>
-									<Col>
-										<span className='badge-datause badge-tag badge-datause-bold'>
-											<SVGIcon name='datauseicon' width={12} height={12} fill='#fff' /> Data use
-										</span>
-										{dataUseData.keywords &&
-											dataUseData.keywords.map(keyword => (
-												<a href={`/search?search=&datausekeywords=${keyword}&tab=Datauses`} className='badge-tag badge-datause-bold'>
-													{keyword}
-												</a>
-											))}
-									</Col>
-								</Row>
-								<Row className='margin-top-16'>
-									<Col xs={12}>
-										<span className='gray800-14'>
-											{dataUseData.counter === undefined ? 1 : dataUseData.counter + 1}
-											{dataUseData.counter === undefined ? ' view' : ' views'}
-										</span>
-									</Col>
-								</Row>
-							</div>
+							{isEmpty(dataUseData) && <MessageNotFound word='data use' retry />}
+
+							{!isEmpty(dataUseData) && (
+								<div className='rectangle'>
+									<Row>
+										<Col>
+											<span data-test-id='datause-name' className='black-16' data-testid='title'>
+												{dataUseData.projectTitle}
+											</span>
+											<br />
+											<span className='gray800-14'>{dataUseData.organisationName}</span>
+										</Col>
+									</Row>
+									<Row className='margin-top-16'>
+										<Col>
+											<span className='badge-datause badge-tag badge-datause-bold'>
+												<SVGIcon name='datauseicon' width={12} height={12} fill='#fff' /> Data use
+											</span>
+											{dataUseData.keywords &&
+												dataUseData.keywords.map(keyword => (
+													<a href={`/search?search=&datausekeywords=${keyword}&tab=Datauses`} className='badge-tag badge-datause-bold'>
+														{keyword}
+													</a>
+												))}
+										</Col>
+									</Row>
+									<Row className='margin-top-16'>
+										<Col xs={12}>
+											<span className='gray800-14'>
+												{dataUseData.counter === undefined ? 1 : dataUseData.counter + 1}
+												{dataUseData.counter === undefined ? ' view' : ' views'}
+											</span>
+										</Col>
+									</Row>
+								</div>
+							)}
 						</Col>
 						<Col sm={1} lg={10} />
 					</Row>
-					<Row>
-						<Col sm={1} lg={1} />
-						<Col sm={10} lg={10}>
-							<div>
-								<Tabs
-									className='tabsBackground gray700-13 margin-bottom-16'
-									onSelect={key => {
-										googleAnalytics.recordVirtualPageView(`${key} tab`);
-										googleAnalytics.recordEvent('Data Use', `Clicked ${key} tab`, `Viewing ${key}`);
-									}}>
-									<Tab eventKey='about' title='About'>
-										<About data={dataUseData} renderTooltip={renderTooltip} />
-									</Tab>
+					{!isEmpty(dataUseData) && (
+						<Row>
+							<Col sm={1} lg={1} />
+							<Col sm={10} lg={10}>
+								<div>
+									<Tabs
+										className='tabsBackground gray700-13 margin-bottom-16'
+										onSelect={key => {
+											googleAnalytics.recordVirtualPageView(`${key} tab`);
+											googleAnalytics.recordEvent('Data Use', `Clicked ${key} tab`, `Viewing ${key}`);
+										}}>
+										<Tab eventKey='about' title='About'>
+											<About data={dataUseData} renderTooltip={renderTooltip} />
+										</Tab>
 
-									<Tab eventKey='Discussion' title={`Discussion (${discoursePostCount})`}>
-										<DiscourseTopic
-											toolId={dataUseData.id}
-											topicId={dataUseData.discourseTopicId || 0}
-											userState={userState}
-											onUpdateDiscoursePostCount={updateDiscoursePostCount}
-										/>
-									</Tab>
-									<Tab eventKey='Related resources' title={`Related resources (${relatedObjects.length})`}>
-										<>
-											<SearchControls
-												onSubmit={doRelatedObjectsQuery}
-												type='related resources'
-												inputProps={{
-													onChange: onRelatedObjectsSearch,
-													value: relatedObjectsSearchValue,
-													onReset: onRelatedObjectsSearchReset,
-													onKeyDownEnter: doRelatedObjectsSearch,
-												}}
-												sortProps={dropdownProps}
+										<Tab eventKey='Discussion' title={`Discussion (${discoursePostCount})`}>
+											<DiscourseTopic
+												toolId={dataUseData.id}
+												topicId={dataUseData.discourseTopicId || 0}
+												userState={userState}
+												onUpdateDiscoursePostCount={updateDiscoursePostCount}
 											/>
-											{relatedObjectsFiltered.length <= 0 ? (
-												<LayoutBox mt={2}>
-													<MessageNotFound word='related resources' />
-												</LayoutBox>
-											) : (
-												relatedObjectsFiltered.map((object, index) => (
-													<span key={index}>
-														<RelatedObject
-															relatedObject={object}
-															objectType={object.objectType}
-															activeLink
-															showRelationshipAnswer
-															datasetPublisher={object.datasetPublisher}
-															datasetLogo={object.datasetLogo}
-														/>
-													</span>
-												))
-											)}
-										</>
-									</Tab>
-									<Tab eventKey='Collections' title={`Collections (${collections.length})`}>
-										{!collections || collections.length <= 0 ? (
-											<MessageNotFound text='This data use has not been featured on any collections yet.' />
-										) : (
+										</Tab>
+										<Tab eventKey='Related resources' title={`Related resources (${relatedObjects.length})`}>
 											<>
-												<MessageNotFound text='This data use appears on the collections below. A collection is a group of resources on the same theme.' />
-
-												<Row>
-													{collections.map(collection => (
-														<Col sm={12} md={12} lg={6} className='flexCenter'>
-															<CollectionCard data={collection} />
-														</Col>
-													))}
-												</Row>
+												<SearchControls
+													onSubmit={doRelatedObjectsQuery}
+													type='related resources'
+													inputProps={{
+														onChange: onRelatedObjectsSearch,
+														value: relatedObjectsSearchValue,
+														onReset: onRelatedObjectsSearchReset,
+														onKeyDownEnter: doRelatedObjectsSearch,
+													}}
+													sortProps={dropdownProps}
+												/>
+												{relatedObjectsFiltered.length <= 0 ? (
+													<LayoutBox mt={2}>
+														<MessageNotFound word='related resources' />
+													</LayoutBox>
+												) : (
+													relatedObjectsFiltered.map((object, index) => (
+														<span key={index}>
+															<RelatedObject
+																relatedObject={object}
+																objectType={object.objectType}
+																activeLink
+																showRelationshipAnswer
+																datasetPublisher={object.datasetPublisher}
+																datasetLogo={object.datasetLogo}
+															/>
+														</span>
+													))
+												)}
 											</>
-										)}
-									</Tab>
-								</Tabs>
-							</div>
-						</Col>
-						<Col sm={1} lg={1} />
-					</Row>
+										</Tab>
+										<Tab eventKey='Collections' title={`Collections (${collections.length})`}>
+											{!collections || collections.length <= 0 ? (
+												<MessageNotFound text='This data use has not been featured on any collections yet.' />
+											) : (
+												<>
+													<MessageNotFound text='This data use appears on the collections below. A collection is a group of resources on the same theme.' />
+
+													<Row>
+														{collections.map(collection => (
+															<Col sm={12} md={12} lg={6} className='flexCenter'>
+																<CollectionCard data={collection} />
+															</Col>
+														))}
+													</Row>
+												</>
+											)}
+										</Tab>
+									</Tabs>
+								</div>
+							</Col>
+							<Col sm={1} lg={1} />
+						</Row>
+					)}
 				</Container>
 				<SideDrawer open={showDrawer} closed={toggleDrawer}>
 					<UserMessages userState={userState[0]} closed={toggleDrawer} toggleModal={toggleModal} drawerIsOpen={showDrawer} />

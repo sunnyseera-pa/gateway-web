@@ -217,7 +217,7 @@ const DataUsePage = React.forwardRef(({ onClickDataUseUpload, team }, ref) => {
 										<Table team={team} data={currentArchived} archived={true} onClickUnarchive={onClickUnarchive} />
 									)}
 
-									{!row.length && <MessageNotFound />}
+									{!row.length && !isLoading && <MessageNotFound word='data uses' retry={dataUseRegistersByTeam.isError} />}
 
 									<Pagination
 										rowsPerPage={rowsPerPage}
