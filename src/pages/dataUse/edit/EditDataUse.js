@@ -239,24 +239,24 @@ const EditDataUse = props => {
 			if (type === 'person' && page > 0) searchURL += `&personIndex=${page}`;
 			if (type === 'course' && page > 0) searchURL += `&courseIndex=${page}`;
 
-            searchRequest
-                .mutateAsync({
-                    params: {
-                        search: encodeURIComponent(searchString) + searchURL,
-                        form: true,
-                        userID: userState[0].id,
-                    },
-                })
-                .then(res => {
-                    setDatasetData(res.data.datasetResults || []);
-                    setToolData(res.data.toolResults || []);
-                    setDatauseData(res.data.dataUseRegisterResults || []);
-                    setPaperData(res.data.paperResults || []);
-                    setPersonData(res.data.personResults || []);
-                    setCourseData(res.data.courseResults || []);
-                    setSummary(res.data.summary || []);
-                    setIsLoading(false);
-                });
+			searchRequest
+				.mutateAsync({
+					params: {
+						search: encodeURIComponent(searchString) + searchURL,
+						form: true,
+						userID: userState[0].id,
+					},
+				})
+				.then(res => {
+					setDatasetData(res.data.datasetResults || []);
+					setToolData(res.data.toolResults || []);
+					setDatauseData(res.data.dataUseRegisterResults || []);
+					setPaperData(res.data.paperResults || []);
+					setPersonData(res.data.personResults || []);
+					setCourseData(res.data.courseResults || []);
+					setSummary(res.data.summary || []);
+					setIsLoading(false);
+				});
 		}
 	};
 
@@ -317,15 +317,6 @@ const EditDataUse = props => {
 		setShowModal(!showModal);
 		setContext(context);
 		setShowDrawer(showEnquiry);
-	};
-
-	const showSaveModal = () => {
-		setShowModal(true);
-		console.log('saved');
-	};
-
-	const hideSaveModal = () => {
-		setShowModal(false);
 	};
 
 	const doGetKeywordsCall = () =>

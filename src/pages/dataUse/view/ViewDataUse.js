@@ -3,10 +3,12 @@ import _ from 'lodash';
 import queryString from 'query-string';
 import React, { useEffect, useState } from 'react';
 import { Alert, Col, Container, Row, Tab, Tabs, Tooltip } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
 import { NotificationManager } from 'react-notifications';
 import 'react-tabs/style/react-tabs.css';
+import { LayoutContent } from '../../../components/Layout';
 import LayoutBox from '../../../components/LayoutBox';
-import SearchControlsFilter from '../../../components/SearchControlsFilter';
+import SearchControls from '../../../components/SearchControls';
 import SVGIcon from '../../../images/SVGIcon';
 import collectionsService from '../../../services/collections';
 import dataUseRegistersService from '../../../services/data-use-registers';
@@ -28,6 +30,8 @@ import '../DataUse.scss';
 import About from './About';
 
 export const DataUseView = props => {
+	const { t } = useTranslation();
+
 	const [id] = useState('');
 	const [dataUseData, setDataUseData] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
@@ -183,14 +187,6 @@ export const DataUseView = props => {
 							activeflag: res.data.data[0].activeflag,
 						});
 					});
-
-					await axios.get(`${baseURL}/api/v1/relatedobject/course/${object.objectId}`).then(res => {
-						tempObjects.push({
-							name: res.data.data[0].title,
-							id: object.objectId,
-							activeflag: res.data.data[0].activeflag,
-						});
-					});
 				}
 				if (object.objectType === 'dataUseRegister') {
 					return relatedObjectByTypeQuery.mutateAsync({ _id: object.objectId, type: 'dataUseRegister' }).then(res => {
@@ -252,6 +248,7 @@ export const DataUseView = props => {
 				})
 			);
 		}
+
 		setRelatedObjects(tempRelatedObjects);
 		setRelatedObjectsFiltered(tempRelatedObjects);
 		setRelatedResourcesSort(tempRelatedObjects);
@@ -270,31 +267,36 @@ export const DataUseView = props => {
 		setShowDrawer(showEnquiry);
 	};
 
-	const doRelatedObjectsQuery = async ({ search, filterValue }) => {
+	const doRelatedObjectsQuery = async ({ search, sortBy }) => {
 		setRelatedObjectsFiltered([]);
 		setRelatedResourcesSort([]);
-		setSorting(filterValue);
+		setSorting(sortBy);
 
 		const filteredRelatedResourceItems = await filterRelatedResourceItems(relatedObjects, search);
 
-		const tempFilteredData = filteredRelatedResourceItems.filter(dat => dat !== '');
+		const validData = filteredRelatedResourceItems.filter(dat => dat.objectType);
+		const tempFilteredData = validData.filter(dat => dat.objectType === sortBy || sortBy === 'showAll');
 
 		setRelatedObjectsFiltered(tempFilteredData);
-		setRelatedResourcesSort(tempFilteredData);
+		setRelatedResourcesSort(validData);
 	};
 
 	const onRelatedObjectsSearch = value => {
 		setRelatedObjectsSearchValue(value);
 	};
 
-	const onRelatedObjectsSearchReset = () => {
+	const onRelatedObjectsSearchReset = submitForm => {
 		setRelatedObjectsSearchValue('');
-		doRelatedObjectsQuery({ search: '', filterValue: 'showAll' });
+
+		submitForm();
 	};
 
-	const doRelatedObjectsSearch = values => {
-		doRelatedObjectsQuery(values);
-	};
+	const doRelatedObjectsSearch = React.useCallback(() => {
+		doRelatedObjectsQuery({
+			search: relatedObjectsSearchValue,
+			sortBy: 'showAll',
+		});
+	}, [relatedObjectsSearchValue]);
 
 	const filterRelatedResourceItems = (objectData, relatedObjectsSearchValue) =>
 		objectData.map(object => {
@@ -311,17 +313,38 @@ export const DataUseView = props => {
 			return '';
 		});
 
-	const handleSort = async sort => {
-		setRelatedObjectsFiltered([]);
-		googleAnalytics.recordEvent('Courses', `Sorted related resources by ${sort}`, 'Sort dropdown option changed');
-		let tempFilteredData = [];
-		if (sort === 'showAll') {
-			tempFilteredData = await relatedResourcesSort;
-		} else {
-			tempFilteredData = await relatedResourcesSort.filter(dat => dat.objectType === sort);
-		}
-		setSorting(sort);
-		setRelatedObjectsFiltered(tempFilteredData);
+	const handleSort = React.useCallback(
+		async (sort, submitForm) => {
+			googleAnalytics.recordEvent('Courses', `Sorted related resources by ${sort}`, 'Sort dropdown option changed');
+
+			submitForm();
+		},
+		[relatedResourcesSort]
+	);
+
+	const dropdownProps = {
+		onSort: handleSort,
+		options: [
+			{
+				label: t(`sortby.optionsFilters.showAll`, {
+					n: relatedResourcesSort.length,
+				}),
+				value: 'showAll',
+			},
+		]
+			.concat(
+				['dataset', 'tool', 'paper', 'dataUseRegister', 'course', 'person'].map(
+					item =>
+						relatedResourcesSort.filter(dat => dat.objectType === item).length > 0 && {
+							label: t(`sortby.optionsFilters.${item}`, {
+								n: relatedResourcesSort.filter(dat => dat.objectType === item).length,
+							}),
+							value: item,
+						}
+				)
+			)
+			.filter(item => !!item),
+		value: sorting,
 	};
 
 	if (isLoading) {
@@ -354,60 +377,36 @@ export const DataUseView = props => {
 					doToggleDrawer={toggleDrawer}
 				/>
 				<Container className='margin-bottom-48'>
-					{dataUseAdded ? (
-						<Row className=''>
-							<Col sm={1} lg={1} />
-							<Col sm={10} lg={10}>
-								<Alert data-test-id='datause-added-banner' variant='success' className='mt-3'>
-									Done! Someone will review your data use and let you know when it goes live
-								</Alert>
-							</Col>
-							<Col sm={1} lg={10} />
-						</Row>
-					) : (
-						''
+					{dataUseAdded && (
+						<LayoutContent>
+							<Alert data-test-id='datause-added-banner' variant='success' className='mt-3'>
+								Done! Someone will review your data use and let you know when it goes live
+							</Alert>
+						</LayoutContent>
 					)}
 
-					{dataUseEdited ? (
-						<Row className=''>
-							<Col sm={1} lg={1} />
-							<Col sm={10} lg={10}>
-								<Alert variant='success' className='mt-3'>
-									Done! Your data use has been updated
-								</Alert>
-							</Col>
-							<Col sm={1} lg={10} />
-						</Row>
-					) : (
-						''
+					{dataUseEdited && (
+						<LayoutContent>
+							<Alert variant='success' className='mt-3'>
+								Done! Your data use has been updated
+							</Alert>
+						</LayoutContent>
 					)}
 
-					{dataUseData.activeflag === 'inReview' ? (
-						<Row className=''>
-							<Col sm={1} lg={1} />
-							<Col sm={10} lg={10}>
-								<Alert data-test-id='datause-pending-banner' variant='warning' className='mt-3'>
-									Your data use is pending review. Only you can see this page.
-								</Alert>
-							</Col>
-							<Col sm={1} lg={10} />
-						</Row>
-					) : (
-						''
+					{dataUseData.activeflag === 'inReview' && (
+						<LayoutContent>
+							<Alert data-test-id='datause-pending-banner' variant='warning' className='mt-3'>
+								Your data use is pending review. Only you can see this page.
+							</Alert>
+						</LayoutContent>
 					)}
 
-					{dataUseData.activeflag === 'archived' ? (
-						<Row className=''>
-							<Col sm={1} lg={1} />
-							<Col sm={10} lg={10}>
-								<Alert data-test-id='datause-pending-banner' variant='warning' className='mt-3'>
-									Your data use is archived. Only you can see this page.
-								</Alert>
-							</Col>
-							<Col sm={1} lg={10} />
-						</Row>
-					) : (
-						''
+					{dataUseData.activeflag === 'archived' && (
+						<LayoutContent>
+							<Alert data-test-id='datause-pending-banner' variant='warning' className='mt-3'>
+								Your data use is archived. Only you can see this page.
+							</Alert>
+						</LayoutContent>
 					)}
 
 					<Row className='mt-4'>
@@ -472,48 +471,16 @@ export const DataUseView = props => {
 									</Tab>
 									<Tab eventKey='Related resources' title={`Related resources (${relatedObjects.length})`}>
 										<>
-											<SearchControlsFilter
+											<SearchControls
+												onSubmit={doRelatedObjectsQuery}
 												type='related resources'
-												onSubmit={doRelatedObjectsSearch}
 												inputProps={{
 													onChange: onRelatedObjectsSearch,
 													value: relatedObjectsSearchValue,
 													onReset: onRelatedObjectsSearchReset,
+													onKeyDownEnter: doRelatedObjectsSearch,
 												}}
-												dropdownProps={{
-													onSelect: handleSort,
-													options: [
-														{
-															label: `Show all resources (${relatedResourcesSort.length})`,
-															value: 'showAll',
-														},
-													]
-														.concat(
-															['dataset', 'tool', 'paper', 'dataUseRegister', 'course', 'person'].map(
-																item =>
-																	relatedResourcesSort.filter(dat => dat.objectType === item).length > 0 && {
-																		label: `Show
-                                                                                ${
-																																									item === 'dataUseRegister'
-																																										? `data uses`
-																																										: item === 'people'
-																																										? item
-																																										: `${item}s`
-																																								}
-                                                                                (
-                                                                                ${
-																																									relatedResourcesSort.filter(
-																																										dat => dat.objectType === item
-																																									).length
-																																								}
-                                                                                )`,
-																		value: item,
-																	}
-															)
-														)
-														.filter(item => !!item),
-													value: sorting,
-												}}
+												sortProps={dropdownProps}
 											/>
 											{relatedObjectsFiltered.length <= 0 ? (
 												<LayoutBox mt={2}>

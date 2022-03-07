@@ -135,6 +135,15 @@
 			"sortbyyear": "Year (latest first)",
 			"relevance": "Match to search terms (closest first)"
 		},
+		"optionsFilters": {
+			"showAll": "Show all resources ({{n}})",
+			"dataset": "Show data ({{n}})",
+			"tool": "Show tools ({{n}})",
+			"paper": "Show papers ({{n}})",
+			"dataUseRegister": "Show data uses ({{n}})",
+			"course": "Show courses ({{n}})",
+			"people": "Show people ({{n}})"
+		},
 		"optionsSortable": {
 			"popularity": "Number of views",
 			"mostViewed": "Most viewed",

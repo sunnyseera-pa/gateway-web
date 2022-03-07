@@ -65,12 +65,8 @@ const AccountDatasets = props => {
 		[key, publisherID]
 	);
 
-	const handleReset = React.useCallback(() => {
-		handleSubmit({
-			search: '',
-			sortBy: 'latest',
-			sortDirection: 'desc',
-		});
+	const handleReset = React.useCallback(submitForm => {
+		submitForm();
 	}, []);
 
 	useEffect(() => {

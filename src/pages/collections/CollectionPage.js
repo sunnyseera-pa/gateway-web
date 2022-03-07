@@ -9,7 +9,7 @@ import ReactMarkdown from 'react-markdown';
 import 'react-tabs/style/react-tabs.css';
 import { LayoutContent } from '../../components/Layout';
 import LayoutBox from '../../components/LayoutBox';
-import SearchControlsSort from '../../components/SearchControlsSort';
+import SearchControls from '../../components/SearchControls';
 import SVGIcon from '../../images/SVGIcon';
 import collectionsService from '../../services/collections';
 import googleAnalytics from '../../tracking';
@@ -185,26 +185,34 @@ export const CollectionPage = props => {
 		}
 	};
 
-	const handleSort = React.useCallback(({ value }) => {
+	const handleSort = React.useCallback(({ value }, submitForm) => {
+		submitForm();
+
 		setSort(value);
 
 		googleAnalytics.recordEvent('Collections', `Sorted collection entities by ${value}`, 'Sort dropdown option changed');
 	}, []);
 
 	const handleReset = React.useCallback(() => {
+		setSort('recentlyadded');
+		setSearchString('');
+
 		doCollectionsSearch({
 			search: '',
 			sortyBy: 'recentlyadded',
 		});
+	}, [key, objectData]);
+
+	const handleKeyDownEnter = React.useCallback(submitForm => {
+		submitForm();
 	}, []);
 
 	const handlePaginatedItems = index => {
-		// Returns the related resources that have the same object type as the current active tab and performs a chunk on them to ensure each page returns 24 results
 		const paginatedItems = _.chunk(
 			filteredData.filter(object => object.type === key),
 			24
 		);
-		// If there are items to show based on search results, display them on the currently active page
+
 		if (paginatedItems.length > 0) {
 			return paginatedItems[index];
 		}
@@ -233,6 +241,7 @@ export const CollectionPage = props => {
 		person: () => setPersonIndex(page),
 		course: () => setCourseIndex(page),
 	});
+
 	const handlePagination = (type, page) => {
 		setIndexByType(page)[type]();
 		window.scrollTo(0, 0);
@@ -455,12 +464,13 @@ export const CollectionPage = props => {
 				)}
 				{key !== 'discussion' && (
 					<LayoutContent>
-						<SearchControlsSort
+						<SearchControls
 							onSubmit={doCollectionsSearch}
 							isLoading={isResultsLoading}
 							inputProps={{
 								onChange: setSearchString,
 								onReset: handleReset,
+								onKeyDownEnter: handleKeyDownEnter,
 								value: searchString,
 							}}
 							sortProps={{
