@@ -56,7 +56,7 @@ const EditDataUse = props => {
 		]
 	);
 
-	const dataUseResgiters = dataUseRegistersService.useGetDataUseRegisters(null, {
+	const dataUseRegistersRequest = dataUseRegistersService.useGetDataUseRegisters(null, {
 		onError: ({ title, message }) => {
 			NotificationManager.error(message, title, 10000);
 		},
@@ -320,33 +320,28 @@ const EditDataUse = props => {
 	};
 
 	const doGetKeywordsCall = () =>
-		new Promise((resolve, reject) => {
-			axios
-				.get(`${baseURL}/api/v2/data-use-registers`, {
-					params: {
-						activeflag: 'active',
-						fields: 'keywords,',
-					},
-				})
-				.then(res => {
-					const tempKeywordsArray = [];
+		dataUseRegisters
+			.mutateAsync({
+				params: {
+					activeflag: 'active',
+					fields: 'keywords,',
+				},
+			})
+			.then(res => {
+				const tempKeywordsArray = [];
 
-					res.data.data.forEach(keywordsArray => {
-						if (keywordsArray.keywords) {
-							keywordsArray.keywords.forEach(keywords => {
-								if (!tempKeywordsArray.includes(keywords) && keywords !== '') {
-									tempKeywordsArray.push(keywords);
-								}
-							});
-						}
-					});
-
-					setKeywords(
-						tempKeywordsArray.sort((a, b) => (a.toUpperCase() < b.toUpperCase() ? -1 : a.toUpperCase() > b.toUpperCase() ? 1 : 0))
-					);
-					resolve();
+				res.data.data.forEach(keywordsArray => {
+					if (keywordsArray.keywords) {
+						keywordsArray.keywords.forEach(keywords => {
+							if (!tempKeywordsArray.includes(keywords) && keywords !== '') {
+								tempKeywordsArray.push(keywords);
+							}
+						});
+					}
 				});
-		});
+
+				setKeywords(tempKeywordsArray.sort((a, b) => (a.toUpperCase() < b.toUpperCase() ? -1 : a.toUpperCase() > b.toUpperCase() ? 1 : 0)));
+			});
 
 	if (isLoading) {
 		return (

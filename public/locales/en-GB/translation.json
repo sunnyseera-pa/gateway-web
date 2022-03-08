@@ -28,7 +28,7 @@
 				},
 				"patchDataUseRegister": {
 					"404": {
-						"message": "There has been an error upadting the data use"
+						"message": "There has been an error updating the data use"
 					}
 				},
 				"postDataUseRegisterCheck": {
@@ -39,6 +39,53 @@
 				"postDataUseRegisterUpload": {
 					"404": {
 						"message": "There has been an problem uploading the new data use"
+					}
+				}
+			},
+			"tools": {
+				"getTools": {
+					"404": {
+						"message": "There has been a problem getting the list of tools"
+					}
+				}
+			},
+			"datasets": {
+				"getDatasets": {
+					"404": {
+						"message": "There has been a problem getting the list of datasets"
+					}
+				}
+			},
+			"collections": {
+				"getCollections": {
+					"404": {
+						"message": "There has been a problem getting the list of collections"
+					}
+				}
+			},
+			"search": {
+				"getSearch": {
+					"404": {
+						"message": "There has been a problem getting the search results"
+					}
+				}
+			},
+			"papers": {
+				"getPapers": {
+					"404": {
+						"message": "There has been a problem getting the list of papers"
+					}
+				}
+			},
+			"relatedobjects": {
+				"getRelatedObject": {
+					"404": {
+						"message": "There has been a problem getting the related object"
+					}
+				},
+				"getRelatedObjectByType": {
+					"404": {
+						"message": "There has been a problem getting the related object"
 					}
 				}
 			}
