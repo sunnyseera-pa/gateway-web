@@ -18,7 +18,7 @@ import VersionSelector from '../../commonComponents/versionSelector/VersionSelec
 import './DataAccessRequests.scss';
 
 import createCSV from './csvUtils';
-import { getDataAccessRequests, isUserManagerofCurrentTeam } from './DataAccessRequestsService';
+import { getDataAccessRequests, isUserManagerofCurrentTeam, getAccessRequestsUserDetails } from './DataAccessRequestsService';
 import { CSVLink } from 'react-csv';
 
 class DataAccessRequestsNew extends React.Component {
@@ -342,7 +342,15 @@ class DataAccessRequestsNew extends React.Component {
 	*/
 	 onClickDownloadCsv = async (team) => {
 
+
 	   const dataAccessRequests = await getDataAccessRequests(team); // call the backend
+        console.log("dataAccessRequests ",dataAccessRequests);
+        console.log("parseInt(dataAccessRequests[0].userId) ",parseInt(dataAccessRequests[0].userId));
+	    const userDetails = await getAccessRequestsUserDetails(parseInt(dataAccessRequests[0].userId));
+	   //make another call her to backend for name
+
+	   {console.log(" dataAccessRequests  ", dataAccessRequests)}
+	   {console.log(" dataAccessRequests.userId  ", dataAccessRequests[0].userId)}
 	   const csvData = createCSV(dataAccessRequests); // generate csv using the backend response
 
 	   // we pass anonnymous function as 2nd argument, and set a timeout, to ensure that we will get the csv 

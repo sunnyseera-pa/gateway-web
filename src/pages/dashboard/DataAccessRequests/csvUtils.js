@@ -151,6 +151,7 @@ const buildOneRow = (dar, applicant) => {
 			dar.datasetTitles.join(';'),			
 
 			dar.aboutApplication.projectName, // Project name
+			//Project submitted by
 			applicant.safeprojectapplicantfullname, //"Applicant full name"
 			applicant.safeprojectapplicantjobtitle,
 			applicant.safeprojectapplicanttelephone,		
@@ -186,7 +187,8 @@ const buildHeaders = () => {
 				"Created At",
 				"Updated At", 
 				"Datasets",
-				"Project name", 
+				"Project name",
+				"Project submitted by",
 				"Applicant full name", 
 				"Job title", 
 				"Telephone", 

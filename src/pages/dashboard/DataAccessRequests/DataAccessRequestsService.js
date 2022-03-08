@@ -8,6 +8,12 @@ export const getDataAccessRequests = async (team) => {
 	return response.data.dars;
 }
 
+export const getAccessRequestsUserDetails = async (userId) => {
+	const url = `${getBaseUrl()}/api/v1/data-access-request/${userId}/userDetails`;
+	const response = await axios.get(url)
+	return response.data;
+}
+
 export const isUserManagerofCurrentTeam = (currentTeam, userTeams) => {
 	let isManager = false;	
 
