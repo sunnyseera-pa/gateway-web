@@ -22,4 +22,16 @@ export const mswGetUserByID = rest.get(`${apiURL}/person/123`, (req, res, ctx) =
 	);
 });
 
-export default [mswGetUsers, mswGetUserByID];
+export const mswSearchUsers = rest.get(`${apiURL}/users/search/jack`, (req, res, ctx) => {
+	return res(
+		ctx.status(200),
+		ctx.json({
+			data: [
+				{ id: 123, name: 'Jack Leacher' },
+				{ id: 124, name: 'Jack Sparrow' },
+			],
+		})
+	);
+});
+
+export default [mswGetUsers, mswGetUserByID, mswSearchUsers];

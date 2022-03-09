@@ -12,7 +12,7 @@ exports[`Given the AsyncTypeAheadUsers component When it is rendered Then matche
         class="css-prhs3j-Input form-label"
       />
       <div
-        class="ui-Input ui-Typeahead css-1401dor-AsyncTypeAheadUsers input-group"
+        class="ui-Input ui-Typeahead css-kuqv2w-Input input-group"
       >
         <div
           class="css-f50cg4-Input input-group-prepend"
@@ -83,7 +83,7 @@ exports[`Given the AsyncTypeAheadUsers component When it is rendered Then matche
                 <input
                   aria-autocomplete="list"
                   aria-haspopup="listbox"
-                  aria-owns="async-location"
+                  aria-owns="async-users"
                   autocomplete="off"
                   class="rbt-input-main"
                   placeholder=""
@@ -105,7 +105,7 @@ exports[`Given the AsyncTypeAheadUsers component When it is rendered Then matche
           <ul
             aria-label="menu-options"
             class="rbt-menu dropdown-menu show"
-            id="async-location"
+            id="async-users"
             role="listbox"
             style="position: absolute; display: block; max-height: 300px; overflow: auto; top: 0px; left: 0px; transform: translate3d(NaNpx, NaNpx, 0); will-change: transform; width: 0px;"
           >

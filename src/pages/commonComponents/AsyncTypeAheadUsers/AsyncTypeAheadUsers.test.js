@@ -50,4 +50,19 @@ describe('Given the AsyncTypeAheadUsers component', () => {
 			});
 		});
 	});
+	describe('And the input has a value', () => {
+		beforeAll(() => {
+			fireEvent.click(input);
+			fireEvent.change(input, { target: { value: 'jack' } });
+		});
+
+		it('Then should have the correct value', () => {
+			expect(input.value).toBe('jack');
+		});
+
+		it('Then should have the correct dropdown values', async () => {
+			await waitFor(() => expect(wrapper.queryByText('Jack Leacher')).toBeTruthy());
+			await waitFor(() => expect(wrapper.queryByText('Jack Sparrow')).toBeTruthy());
+		});
+	});
 });

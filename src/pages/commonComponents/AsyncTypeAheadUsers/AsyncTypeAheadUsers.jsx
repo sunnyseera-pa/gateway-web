@@ -4,54 +4,30 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Typeahead from '../../../components/Typeahead/Typeahead';
 import serviceUsers from '../../../services/users/users';
-import serviceAuth from '../../../services/auth/auth';
 import UploaderUtil from '../../../utils/Uploader.util';
 import Icon from '../../../components/Icon';
-import * as styles from './AsyncTypeAheadUsers.styles';
 
 function AsyncTypeAheadUsers(props) {
 	const [isLoading, setIsLoading] = useState(false);
 	const [options, setOptions] = useState([]);
 	const [selected, setSelected] = useState([]);
-	const [showIcon, setShowIcon] = useState(true);
-	const [currentUserInfo, setCurrentUserInfo] = useState([]);
 
 	useEffect(() => {
-		getCurrentUserInfo();
 		props.selectedUsers && props.getUsersInfo ? getUsersInfo(props.selectedUsers) : setSelected(props.selectedUsers);
 	}, [props.selectedUsers]);
 
-	const getCurrentUserInfo = async () => {
-		const res = await serviceAuth.getStatus();
-		let userData = res.data.data[0];
-		userData.name = `${userData.name} (You)`;
-		setCurrentUserInfo(userData);
-	};
-
 	const getUsersInfo = async contributors => {
 		const selectedUsers = await Promise.all(
-			contributors.map(async id => {
-				const userInfo = await UploaderUtil.getUserInfo(id);
-				return userInfo
-					? { id: userInfo.id, name: `${userInfo.firstname} ${userInfo.lastname} ${id == props.currentUserId ? '(You)' : ''}` }
-					: { id: 123, name: 'null' };
-			})
+			contributors
+				.filter(id => id !== props.currentUserId)
+				.map(async id => {
+					const userInfo = await UploaderUtil.getUserInfo(id);
+					if (userInfo) {
+						return { id: userInfo.id, name: `${userInfo.firstname} ${userInfo.lastname}` };
+					}
+				})
 		);
 		setSelected(selectedUsers);
-	};
-
-	const handleSearch = async query => {
-		setIsLoading(true);
-		const locations = await serviceUsers.getUsers();
-		const { data } = locations.data;
-		// if (data) {
-		// 	const options = data.map(i => ({
-		// 		location: i.location,
-		// 		hierarchy: i.hierarchy,
-		// 	}));
-		// 	setOptions(options);
-		// }
-		setIsLoading(false);
 	};
 
 	const handleChange = options => {
@@ -69,8 +45,13 @@ function AsyncTypeAheadUsers(props) {
 		}
 	};
 
-	const handleInputChange = value => {
-		value ? setShowIcon(false) : setShowIcon(true);
+	const handleInputChange = async value => {
+		if (value.length > 2) {
+			const users = await serviceUsers.searchUsers(value);
+			setOptions(users.data.data);
+		} else {
+			handleOnFocus();
+		}
 	};
 
 	const handleOnFocus = async () => {
@@ -83,18 +64,15 @@ function AsyncTypeAheadUsers(props) {
 
 	return (
 		<Typeahead
-			css={styles.root(showIcon)}
 			filterBy={filterBy}
-			data-testid='async-location'
-			id='async-location'
+			data-testid='async-users'
+			id='async-users'
 			isLoading={isLoading}
 			labelKey='name'
-			// minLength={3}
 			placeholder='Recently added'
-			onSearch={handleSearch}
-			onFocus={handleOnFocus}
 			onChange={handleChange}
 			onInputChange={handleInputChange}
+			onFocus={handleOnFocus}
 			options={options}
 			selected={selected}
 			iconPrepend={<Icon name='search' size='xl' fill='purple' />}
