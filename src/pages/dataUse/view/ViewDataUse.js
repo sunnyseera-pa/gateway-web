@@ -54,17 +54,17 @@ export const DataUseView = props => {
 
 	let showError = false;
 
-	//componentDidMount - on loading of page detail page
+	// componentDidMount - on loading of page detail page
 	useEffect(() => {
-		if (!!window.location.search) {
-			let values = queryString.parse(window.location.search);
+		if (window.location.search) {
+			const values = queryString.parse(window.location.search);
 			setDataUseAdded(values.dataUseAdded);
 			setDataUseEdited(values.dataUseEdited);
 		}
 		getDataUseDataFromDb();
 	}, []);
 
-	//componentDidUpdate - on render of page detail page were id is different
+	// componentDidUpdate - on render of page detail page were id is different
 	useEffect(() => {
 		if (props.match.params.toolID !== id && id !== '' && !isLoading) {
 			getDataUseDataFromDb();
@@ -82,7 +82,7 @@ export const DataUseView = props => {
 	const getDataUseDataFromDb = () => {
 		setIsLoading(true);
 		axios
-			.get(baseURL + '/api/v2/data-use-registers/' + props.match.params.datauseID)
+			.get(`${baseURL}/api/v2/data-use-registers/${props.match.params.datauseID}`)
 			.then(async res => {
 				if (_.isNil(res.data)) {
 					window.localStorage.setItem('redirectMsg', `Data Use not found for Id: ${props.match.params.datauseID}`);
@@ -91,11 +91,11 @@ export const DataUseView = props => {
 					const localDataUseData = res.data;
 					document.title = localDataUseData.projectTitle.trim();
 
-					let counter = !localDataUseData.counter ? 1 : localDataUseData.counter + 1;
+					const counter = !localDataUseData.counter ? 1 : localDataUseData.counter + 1;
 					updateCounter(res.data._id, counter);
 
 					if (!_.isUndefined(localDataUseData.relatedObjects)) {
-						let localAdditionalObjInfo = await getAdditionalObjectInfo(localDataUseData.relatedObjects);
+						const localAdditionalObjInfo = await getAdditionalObjectInfo(localDataUseData.relatedObjects);
 						await populateRelatedObjects(localDataUseData, localAdditionalObjInfo);
 					}
 					setDataUseData(localDataUseData);
@@ -109,13 +109,13 @@ export const DataUseView = props => {
 
 	const populateCollections = localDataUseData => {
 		setIsLoading(true);
-		axios.get(baseURL + '/api/v1/collections/entityid/' + localDataUseData.id).then(res => {
+		axios.get(`${baseURL}/api/v1/collections/entityid/${localDataUseData.id}`).then(res => {
 			setCollections(res.data.data || []);
 		});
 	};
 
 	const doSearch = e => {
-		//fires on enter on searchbar
+		// fires on enter on searchbar
 		if (e.key === 'Enter') window.location.href = `/search?search=${encodeURIComponent(searchString)}`;
 	};
 
@@ -124,19 +124,25 @@ export const DataUseView = props => {
 	};
 
 	const updateCounter = (id, counter) => {
-		axios.patch(baseURL + '/api/v2/data-use-registers/counter', { id, counter });
+		axios.patch(`${baseURL}/api/v2/data-use-registers/counter`, { id, counter });
 	};
 
-	const updateDiscoursePostCount = count => {
+	const handleAnalytics = (label, value) => {
+		googleAnalytics.recordEvent('Data uses', label, value);
+	};
+
+	const updateDiscoursePostCount = (count, comment) => {
 		setDiscoursePostCount(count);
+
+		handleAnalytics('Added comment', comment);
 	};
 
 	const getAdditionalObjectInfo = async additionalObjInfo => {
-		let tempObjects = [];
+		const tempObjects = [];
 		if (additionalObjInfo) {
 			const promises = additionalObjInfo.map(async (object, index) => {
 				if (object.objectType === 'course') {
-					await axios.get(baseURL + '/api/v1/relatedobject/course/' + object.objectId).then(res => {
+					await axios.get(`${baseURL}/api/v1/relatedobject/course/${object.objectId}`).then(res => {
 						tempObjects.push({
 							name: res.data.data[0].title,
 							id: object.objectId,
@@ -144,7 +150,7 @@ export const DataUseView = props => {
 						});
 					});
 				} else if (object.objectType === 'dataUseRegister') {
-					await axios.get(baseURL + '/api/v1/relatedobject/dataUseRegister/' + object.objectId).then(res => {
+					await axios.get(`${baseURL}/api/v1/relatedobject/dataUseRegister/${object.objectId}`).then(res => {
 						tempObjects.push({
 							id: object.objectId,
 							activeflag: res.data.data[0].activeflag,
@@ -152,7 +158,7 @@ export const DataUseView = props => {
 						});
 					});
 				} else {
-					await axios.get(baseURL + '/api/v1/relatedobject/' + object.objectId).then(res => {
+					await axios.get(`${baseURL}/api/v1/relatedobject/${object.objectId}`).then(res => {
 						let datasetPublisher;
 						let datasetLogo;
 						!_.isEmpty(res.data.data[0].datasetv2) && _.has(res.data.data[0], 'datasetv2.summary.publisher.name')
@@ -170,8 +176,8 @@ export const DataUseView = props => {
 							id: object.objectId,
 							authors: res.data.data[0].authors,
 							activeflag: res.data.data[0].activeflag,
-							datasetPublisher: datasetPublisher,
-							datasetLogo: datasetLogo,
+							datasetPublisher,
+							datasetLogo,
 						});
 					});
 				}
@@ -182,18 +188,18 @@ export const DataUseView = props => {
 	};
 
 	const populateRelatedObjects = (localDataUseData, localAdditionalObjInfo) => {
-		let tempRelatedObjects = [];
+		const tempRelatedObjects = [];
 
 		if (localDataUseData.relatedObjects && localAdditionalObjInfo) {
 			localDataUseData.relatedObjects.map(object =>
 				localAdditionalObjInfo.forEach(item => {
 					if (object.objectId === item.id && item.activeflag === 'active') {
-						object['datasetPublisher'] = item.datasetPublisher;
-						object['datasetLogo'] = item.datasetLogo;
-						object['name'] = item.name || '';
-						object['firstname'] = item.firstname || '';
-						object['lastname'] = item.lastname || '';
-						object['projectTitle'] = item.projectTitle || '';
+						object.datasetPublisher = item.datasetPublisher;
+						object.datasetLogo = item.datasetLogo;
+						object.name = item.name || '';
+						object.firstname = item.firstname || '';
+						object.lastname = item.lastname || '';
+						object.projectTitle = item.projectTitle || '';
 
 						tempRelatedObjects.push(object);
 					}
@@ -233,9 +239,7 @@ export const DataUseView = props => {
 			setSorting('showAll');
 			const filteredRelatedResourceItems = await filterRelatedResourceItems(relatedObjects, relatedObjectsSearchValue);
 
-			let tempFilteredData = filteredRelatedResourceItems.filter(dat => {
-				return dat !== '';
-			});
+			const tempFilteredData = filteredRelatedResourceItems.filter(dat => dat !== '');
 			setRelatedObjectsFiltered(tempFilteredData);
 			setRelatedResourcesSort(tempFilteredData);
 		}
@@ -252,14 +256,15 @@ export const DataUseView = props => {
 				(_.has(object, 'projectTitle') ? object.projectTitle.toLowerCase().includes(relatedObjectsSearchValue.toLowerCase()) : false)
 			) {
 				return object;
-			} else {
-				return '';
 			}
+			return '';
 		});
 
 	const handleSort = async sort => {
 		setRelatedObjectsFiltered([]);
-		googleAnalytics.recordEvent('Courses', `Sorted related resources by ${sort}`, 'Sort dropdown option changed');
+
+		handleAnalytics('Sorting related resource', sort);
+
 		let tempFilteredData = [];
 		if (sort === 'showAll') {
 			tempFilteredData = await relatedResourcesSort;
@@ -372,7 +377,7 @@ export const DataUseView = props => {
 								<Row className='margin-top-16'>
 									<Col>
 										<span className='badge-datause badge-tag badge-datause-bold'>
-											<SVGIcon name='datauseicon' width={12} height={12} fill={'#fff'} /> Data use
+											<SVGIcon name='datauseicon' width={12} height={12} fill='#fff' /> Data use
 										</span>
 										{dataUseData.keywords &&
 											dataUseData.keywords.map(keyword => (
@@ -402,9 +407,9 @@ export const DataUseView = props => {
 									className='tabsBackground gray700-13 margin-bottom-16'
 									onSelect={key => {
 										googleAnalytics.recordVirtualPageView(`${key} tab`);
-										googleAnalytics.recordEvent('Data Use', `Clicked ${key} tab`, `Viewing ${key}`);
+										googleAnalytics.recordEvent('Data uses', `Clicked ${key} tab`, `Viewing ${key}`);
 									}}>
-									<Tab eventKey='about' title={'About'}>
+									<Tab eventKey='about' title='About'>
 										<About data={dataUseData} renderTooltip={renderTooltip} />
 									</Tab>
 
@@ -416,13 +421,13 @@ export const DataUseView = props => {
 											onUpdateDiscoursePostCount={updateDiscoursePostCount}
 										/>
 									</Tab>
-									<Tab eventKey='Related resources' title={'Related resources (' + relatedObjects.length + ')'}>
+									<Tab eventKey='Related resources' title={`Related resources (${relatedObjects.length})`}>
 										<>
 											<Row>
 												<Col lg={8}>
 													<span className='collectionsSearchBar form-control'>
 														<span className='collectionsSearchIcon'>
-															<SVGIcon name='searchicon' width={20} height={20} fill={'#2c8267'} stroke='none' type='submit' />
+															<SVGIcon name='searchicon' width={20} height={20} fill='#2c8267' stroke='none' type='submit' />
 														</span>
 														<span>
 															<input
@@ -446,20 +451,20 @@ export const DataUseView = props => {
 																		sorting === 'dataUseRegister' ? `data uses` : sorting === 'people' ? sorting : `${sorting}s`
 																	} (
 																	${relatedResourcesSort.filter(dat => dat.objectType === sorting).length})`;
-																else return `Show all resources (${relatedResourcesSort.length})`;
+																return `Show all resources (${relatedResourcesSort.length})`;
 															})()}
 															&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 														</Dropdown.Toggle>
 														<Dropdown.Menu>
 															<Row
-																key={`ddl-item-showall`}
+																key='ddl-item-showall'
 																className={
 																	sorting === 'showAll'
 																		? 'sort-dropdown-item sort-dropdown-item-selected sortingDropdown'
 																		: 'sort-dropdown-item sortingDropdown'
 																}>
 																<Col xs={12} className='p-0'>
-																	<Dropdown.Item eventKey={'showAll'} className='gray800-14'>
+																	<Dropdown.Item eventKey='showAll' className='gray800-14'>
 																		Show all resources ({relatedResourcesSort.length})
 																	</Dropdown.Item>
 																</Col>
@@ -475,14 +480,14 @@ export const DataUseView = props => {
 																				fill: '#3db28c',
 																				marginTop: '5px',
 																			}}
-																			fill={'#3db28c'}
+																			fill='#3db28c'
 																			stroke='none'
 																		/>
 																	) : null}
 																</div>
 															</Row>
-															{['dataset', 'tool', 'paper', 'dataUseRegister', 'course', 'person'].map(item => {
-																return relatedResourcesSort.filter(dat => dat.objectType === item).length > 0 ? (
+															{['dataset', 'tool', 'paper', 'dataUseRegister', 'course', 'person'].map(item =>
+																relatedResourcesSort.filter(dat => dat.objectType === item).length > 0 ? (
 																	<Row
 																		key={`ddl-item-${item}`}
 																		className={
@@ -508,7 +513,7 @@ export const DataUseView = props => {
 																						fill: '#3db28c',
 																						marginTop: '5px',
 																					}}
-																					fill={'#3db28c'}
+																					fill='#3db28c'
 																					stroke='none'
 																				/>
 																			) : null}
@@ -516,8 +521,8 @@ export const DataUseView = props => {
 																	</Row>
 																) : (
 																	''
-																);
-															})}
+																)
+															)}
 														</Dropdown.Menu>
 													</Dropdown>
 												</Col>
@@ -530,17 +535,20 @@ export const DataUseView = props => {
 														<RelatedObject
 															relatedObject={object}
 															objectType={object.objectType}
-															activeLink={true}
-															showRelationshipAnswer={true}
+															activeLink
+															showRelationshipAnswer
 															datasetPublisher={object.datasetPublisher}
 															datasetLogo={object.datasetLogo}
+															onClick={() => {
+																handleAnalytics('Clicked on related resource', object.objectType);
+															}}
 														/>
 													</span>
 												))
 											)}
 										</>
 									</Tab>
-									<Tab eventKey='Collections' title={'Collections (' + collections.length + ')'}>
+									<Tab eventKey='Collections' title={`Collections (${collections.length})`}>
 										{!collections || collections.length <= 0 ? (
 											<MessageNotFound text='This data use has not been featured on any collections yet.' />
 										) : (

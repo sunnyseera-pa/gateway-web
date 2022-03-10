@@ -1352,7 +1352,7 @@ class SearchPage extends React.Component {
 			});
 
 			googleAnalytics.recordEvent(
-				'Datasets',
+				this.state.key,
 				`Changed ${parentKey} filters ${this.state.showDataUtilityBanner ? 'after utility wizard search' : ''}`,
 				`Filter values: "${nodes.map(filter => filter.value).join('" & ') || 'All'}"`
 			);
@@ -1362,7 +1362,7 @@ class SearchPage extends React.Component {
 			});
 
 			googleAnalytics.recordEvent(
-				'Datasets',
+				this.state.key,
 				`${checkValue ? 'Applied' : 'Removed'} ${parentKey} filter ${
 					this.state.showDataUtilityBanner ? 'after utility wizard search' : ''
 				}`,
@@ -1510,10 +1510,13 @@ class SearchPage extends React.Component {
 	};
 
 	onClickDownloadResults = () => {
-		let searchObject = this.buildSearchObj(this.state.selectedV2Datauses);
-		let searchURL = this.buildSearchUrl(searchObject);
+		const searchObject = this.buildSearchObj(this.state.selectedV2Datauses);
+		const searchURL = this.buildSearchUrl(searchObject);
+		const url = `search=${encodeURIComponent(this.state.search)}${searchURL}`;
 
-		axios.get(`${baseURL}/api/v2/data-use-registers/search?search=${encodeURIComponent(this.state.search)}${searchURL}`).then(response => {
+		googleAnalytics.recordEvent('Data Use', `Download Results`, `Search values: ${url}`);
+
+		axios.get(`${baseURL}/api/v2/data-use-registers/${url}`).then(response => {
 			this.formatDataUseRegisterForDownload(response.data.result);
 		});
 	};

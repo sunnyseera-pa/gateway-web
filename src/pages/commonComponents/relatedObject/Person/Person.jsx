@@ -8,13 +8,13 @@ import RemoveButton from '../RemoveButton/RemoveButton';
 import Title from '../Title/Title';
 import '../../CommonComponents.scss';
 
-const Person = ({ data, activeLink, showRelationshipQuestion, removeButton }) => {
-	const name = data.firstname && data.lastname ? data.firstname + ' ' + data.lastname : '';
+const Person = ({ data, activeLink, showRelationshipQuestion, removeButton, onClick }) => {
+	const name = data.firstname && data.lastname ? `${data.firstname} ${data.lastname}` : '';
 	return (
 		<Row data-testid='related-person-object' className='noMargin pad-left-24'>
 			<Col className='iconHolder noPadding widthAuto'>
-				<div class='avatar-circle' data-testid='avatar-circle'>
-					<span class='initials'>
+				<div className='avatar-circle' data-testid='avatar-circle'>
+					<span className='initials'>
 						{' '}
 						{data.firstname ? data.firstname.charAt(0).toUpperCase() : ''}
 						{data.lastname ? data.lastname.charAt(0).toUpperCase() : ''}
@@ -22,7 +22,14 @@ const Person = ({ data, activeLink, showRelationshipQuestion, removeButton }) =>
 				</div>
 			</Col>
 			<Col className='pad-left-8' sm={8} lg={9}>
-				<Title id={data.id} name={name} type={data.type} activeLink={activeLink}>
+				<Title
+					id={data.id}
+					name={name}
+					type={data.type}
+					activeLink={activeLink}
+					onClickHandler={() => {
+						onClick();
+					}}>
 					<br />
 					<span className='gray800-14' data-testid='person-bio'>
 						{' '}
@@ -42,6 +49,10 @@ Person.propTypes = {
 	activeLink: PropTypes.bool.isRequired,
 	showRelationshipQuestion: PropTypes.bool.isRequired,
 	removeButton: PropTypes.func.isRequired,
+};
+
+Person.defaultProps = {
+	onClick: () => {},
 };
 
 export default Person;

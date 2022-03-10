@@ -28,19 +28,20 @@ const Dataset = ({
 	updateOnFilterBadge,
 	removeButton,
 	isLocked,
+	onClick,
 }) => {
 	const [publisherDetails, setPublisherDetails] = useState({ name: '', label: '' });
 
 	const getPublisherDetails = useCallback(() => {
-		let publisher = { name: '', label: '', showShield: false };
+		const publisher = { name: '', label: '', showShield: false };
 		if (!isEmpty(data.datasetv2)) {
-			let name = data.datasetv2.summary.publisher.name.toUpperCase();
+			const name = data.datasetv2.summary.publisher.name.toUpperCase();
 			publisher.name = name;
 			publisher.label = name;
-			publisher.showShield = !isNil(data.datasetv2.summary.publisher.memberOf) ? true : false;
+			publisher.showShield = !isNil(data.datasetv2.summary.publisher.memberOf);
 		} else {
-			let name = data.datasetfields.publisher;
-			let publisherName = name.includes('>') ? name.split(' > ')[1].toUpperCase() : name.toUpperCase();
+			const name = data.datasetfields.publisher;
+			const publisherName = name.includes('>') ? name.split(' > ')[1].toUpperCase() : name.toUpperCase();
 			publisher.name = publisherName;
 			publisher.label = publisherName;
 			publisher.showShield = false;
@@ -49,7 +50,7 @@ const Dataset = ({
 	}, [data.datasetv2, data.datasetfields.publisher]);
 
 	useEffect(() => {
-		let publisherDetails = getPublisherDetails();
+		const publisherDetails = getPublisherDetails();
 		setPublisherDetails(publisherDetails);
 	}, [getPublisherDetails]);
 
@@ -92,12 +93,14 @@ const Dataset = ({
 						activeLink={activeLink}
 						onClickHandler={() => {
 							googleAnalytics.recordEvent(`${dataset.TAB}`, 'Clicked on dataset to open', `Dataset name: ${data.name}`);
+
+							onClick();
 						}}
 					/>
 					<br />
 					{publisherDetails.showShield && (
 						<span>
-							<SVGIcon name='shield' fill={'#475da7'} className='svg-16 mr-2' viewBox='0 0 16 16' />
+							<SVGIcon name='shield' fill='#475da7' className='svg-16 mr-2' viewBox='0 0 16 16' />
 						</span>
 					)}
 					<span
@@ -122,22 +125,22 @@ const Dataset = ({
 				</Col>
 				<Col sm={12} lg={12} className='pad-left-24 pad-right-24 pad-top-16'>
 					<Tag tagName={dataset.TAB} tagType={data.type} updateOnFilterBadgeHandler={updateOnFilterBadge}>
-						<SVGIcon name='dataseticon' fill={'#113328'} className='badgeSvg mr-2' viewBox='-2 -2 22 22' />
+						<SVGIcon name='dataseticon' fill='#113328' className='badgeSvg mr-2' viewBox='-2 -2 22 22' />
 					</Tag>
 					{isCohortDiscovery && (
 						<Tag tagName='Cohort Discovery' tagType='project' updateOnFilterBadgeHandler={updateOnFilterBadge} showTagType={false}>
-							<SVGIcon name='cohorticon' fill={'#472505'} className='badgeSvg mr-2' width='22' height='22' viewBox='0 0 10 10' />
+							<SVGIcon name='cohorticon' fill='#472505' className='badgeSvg mr-2' width='22' height='22' viewBox='0 0 10 10' />
 						</Tag>
 					)}
 
 					{phenotypesSearched && phenotypesSearched.length > 0 && (
 						<Tag
-							key={`phenotypes-searched`}
+							key='phenotypes-searched'
 							tagName={phenotypesSearched[0].name}
 							activeLink={activeLink}
 							onSearchPage={onSearchPage}
 							updateOnFilterBadgeHandler={updateOnFilterBadge}
-							showTagType={true}
+							showTagType
 							{...dataset.PHENOTYPES}
 						/>
 					)}
@@ -152,28 +155,25 @@ const Dataset = ({
 										activeLink={activeLink}
 										onSearchPage={onSearchPage}
 										updateOnFilterBadgeHandler={updateOnFilterBadge}
-										showTagType={true}
+										showTagType
 										{...dataset.PHENOTYPES}
 									/>
 								);
-							} else {
-								return null;
 							}
+							return null;
 						})}
 
 					{data.tags.features &&
-						data.tags.features.map((feature, index) => {
-							return (
-								<Tag
-									key={`tag-${index}`}
-									tagName={feature}
-									activeLink={activeLink}
-									onSearchPage={onSearchPage}
-									updateOnFilterBadgeHandler={updateOnFilterBadge}
-									{...dataset.FEATURES}
-								/>
-							);
-						})}
+						data.tags.features.map((feature, index) => (
+							<Tag
+								key={`tag-${index}`}
+								tagName={feature}
+								activeLink={activeLink}
+								onSearchPage={onSearchPage}
+								updateOnFilterBadgeHandler={updateOnFilterBadge}
+								{...dataset.FEATURES}
+							/>
+						))}
 				</Col>
 				{!showRelationshipQuestion && <Description type={data.type} description={getDescription()} />}
 			</Row>
@@ -190,6 +190,10 @@ Dataset.propTypes = {
 	isCohortDiscovery: PropTypes.bool.isRequired,
 	updateOnFilterBadge: PropTypes.func.isRequired,
 	removeButton: PropTypes.func.isRequired,
+};
+
+Dataset.defaultProps = {
+	onClick: () => {},
 };
 
 export default Dataset;

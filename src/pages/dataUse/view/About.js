@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Container, Row, Col, Button, OverlayTrigger } from 'react-bootstrap';
 import { isArray } from 'lodash';
 import moment from 'moment';
+import googleAnalytics from '../../../tracking';
 import SVGIcon from '../../../images/SVGIcon';
 
 const About = ({ data, renderTooltip }) => {
@@ -18,6 +19,10 @@ const About = ({ data, renderTooltip }) => {
 			  }, 0)
 			: 0;
 
+	const handleAnalytics = (label, value) => {
+		googleAnalytics.recordEvent('Data uses', label, value);
+	};
+
 	return (
 		<>
 			<>
@@ -30,13 +35,15 @@ const About = ({ data, renderTooltip }) => {
 							placement='top'
 							overlay={renderTooltip('The name of the legal entity that signs the contract to access the data.')}>
 							<button className='datause-info-icon-button'>
-								<SVGIcon name='info' width={10} height={10} fill={'#475da7'} className='datause-info-icon' />
+								<SVGIcon name='info' width={10} height={10} fill='#475da7' className='datause-info-icon' />
 							</button>
 						</OverlayTrigger>
 						<Col md={7}>
 							{data.organisationName.length > 0 ? (
 								<p>
-									<a href={'/search?search=&tab=Datauses&datauseorganisationname=' + data.organisationName}>
+									<a
+										href={`/search?search=&tab=Datauses&datauseorganisationname=${data.organisationName}`}
+										onClick={() => handleAnalytics('Clicked datauseorganisationname', data.organisationName)}>
 										<span className='badge-tag badge-datause-bold'>{data.organisationName}</span>
 									</a>
 								</p>
@@ -59,7 +66,7 @@ const About = ({ data, renderTooltip }) => {
 									'A unique identifier for an organisation that is preferably an industry used standard such as Grid.ac (see https://www.grid.ac/institutes)'
 								)}>
 								<button className='datause-info-icon-button'>
-									<SVGIcon name='info' width={10} height={10} fill={'#475da7'} className='datause-info-icon' />
+									<SVGIcon name='info' width={10} height={10} fill='#475da7' className='datause-info-icon' />
 								</button>
 							</OverlayTrigger>
 							<Col>
@@ -80,12 +87,14 @@ const About = ({ data, renderTooltip }) => {
 							<Col md={4}>Organisation sector</Col>
 							<OverlayTrigger placement='top' overlay={renderTooltip('Sector which the applicant(s) work falls under.')}>
 								<button className='datause-info-icon-button'>
-									<SVGIcon name='info' width={10} height={10} fill={'#475da7'} className='datause-info-icon' />
+									<SVGIcon name='info' width={10} height={10} fill='#475da7' className='datause-info-icon' />
 								</button>
 							</OverlayTrigger>
 							<Col md={7}>
 								{data.organisationSector && data.organisationSector.length > 0 ? (
-									<a href={'/search?search=&tab=Datauses&datauserganisationsector=' + data.organisationSector}>
+									<a
+										href={`/search?search=&tab=Datauses&datauserganisationsector=${data.organisationSector}`}
+										onClick={() => handleAnalytics('Clicked datauserganisationsector', data.organisationSector)}>
 										<span className='badge-tag badge-datause-bold'>{data.organisationSector}</span>
 									</a>
 								) : (
@@ -109,7 +118,7 @@ const About = ({ data, renderTooltip }) => {
 									'The name of the Principal Investigator, as well as any other individuals that have been authorised to use the data.'
 								)}>
 								<button className='datause-info-icon-button'>
-									<SVGIcon name='info' width={10} height={10} fill={'#475da7'} className='datause-info-icon' />
+									<SVGIcon name='info' width={10} height={10} fill='#475da7' className='datause-info-icon' />
 								</button>
 							</OverlayTrigger>
 							<Col md={7}>
@@ -120,7 +129,7 @@ const About = ({ data, renderTooltip }) => {
 											data.gatewayApplicants.map(gatewayApplicant => (
 												<span className='hdruser badge-tag'>
 													<span className='datatuse-personicon-bg'>
-														<SVGIcon name='personiconwithbg' width={17} height={16} fill={'#3db28c'} />
+														<SVGIcon name='personiconwithbg' width={17} height={16} fill='#3db28c' />
 													</span>
 													<a href={`/person/${gatewayApplicant.id}`} className='soft-black-14 badge-datause-bold'>
 														{' '}
@@ -152,7 +161,7 @@ const About = ({ data, renderTooltip }) => {
 									'A unique identifier for the applicant that is preferably an industry used standard such as Grid.ac (see https://www.grid.ac/)'
 								)}>
 								<button className='datause-info-icon-button'>
-									<SVGIcon name='info' width={10} height={10} fill={'#475da7'} className='datause-info-icon' />
+									<SVGIcon name='info' width={10} height={10} fill='#475da7' className='datause-info-icon' />
 								</button>
 							</OverlayTrigger>
 							<Col md={7}>
@@ -169,13 +178,15 @@ const About = ({ data, renderTooltip }) => {
 							<Col md={4}>Funders/Sponsor</Col>
 							<OverlayTrigger placement='top' overlay={renderTooltip('The name of any funders or sponsors involved in the project.')}>
 								<button className='datause-info-icon-button'>
-									<SVGIcon name='info' width={10} height={10} fill={'#475da7'} className='datause-info-icon' />
+									<SVGIcon name='info' width={10} height={10} fill='#475da7' className='datause-info-icon' />
 								</button>
 							</OverlayTrigger>
 							<Col md={6}>
 								{data.fundersAndSponsors.length > 0 ? (
 									data.fundersAndSponsors.map(a => (
-										<a href={'/search?search=&tab=Datauses&datausefundersandsponsors=' + a}>
+										<a
+											href={`/search?search=&tab=Datauses&datausefundersandsponsors=${a}`}
+											onClick={() => handleAnalytics('Clicked datausefundersandsponsors', a)}>
 											<span className='badge-tag badge-datause-bold'>{a}</span>
 										</a>
 									))
@@ -198,7 +209,7 @@ const About = ({ data, renderTooltip }) => {
 									'The accreditation status of the Principal Investigator/applicant, as defined by the ONS Research Code of Practice and Accreditation criteria. '
 								)}>
 								<button className='datause-info-icon-button'>
-									<SVGIcon name='info' width={10} height={10} fill={'#475da7'} className='datause-info-icon' />
+									<SVGIcon name='info' width={10} height={10} fill='#475da7' className='datause-info-icon' />
 								</button>
 							</OverlayTrigger>
 							<Col md={7}>
@@ -223,7 +234,7 @@ const About = ({ data, renderTooltip }) => {
 									'Identifies whether there are any permissions for the applicant to share the data beyond the named parties.'
 								)}>
 								<button className='datause-info-icon-button'>
-									<SVGIcon name='info' width={10} height={10} fill={'#475da7'} className='datause-info-icon' />
+									<SVGIcon name='info' width={10} height={10} fill='#475da7' className='datause-info-icon' />
 								</button>
 							</OverlayTrigger>
 							<Col md={7}>
@@ -251,7 +262,7 @@ const About = ({ data, renderTooltip }) => {
 									'A unique identifier for the project that is preferably an industry used standard, such as IRAS ID. However for non-research projects, a unique reference number created by the data custodian on receipt of the application is sufficient.'
 								)}>
 								<button className='datause-info-icon-button'>
-									<SVGIcon name='info' width={10} height={10} fill={'#475da7'} className='datause-info-icon' />
+									<SVGIcon name='info' width={10} height={10} fill='#475da7' className='datause-info-icon' />
 								</button>
 							</OverlayTrigger>
 							<Col md={6}>
@@ -272,7 +283,7 @@ const About = ({ data, renderTooltip }) => {
 								'The title of the project/research study/request that the applicant is investigating through the use of health data.'
 							)}>
 							<button className='datause-info-icon-button'>
-								<SVGIcon name='info' width={10} height={10} fill={'#475da7'} className='datause-info-icon' />
+								<SVGIcon name='info' width={10} height={10} fill='#475da7' className='datause-info-icon' />
 							</button>
 						</OverlayTrigger>
 						<Col md={7}>
@@ -287,7 +298,7 @@ const About = ({ data, renderTooltip }) => {
 								<button
 									className='datause-arrow'
 									onClick={() => (!closedLaySummary ? setClosedLaySummary(true) : setClosedLaySummary(false))}>
-									<SVGIcon width='20px' height='20px' name='chevronbottom' fill={'#475da7'} className={closedLaySummary ? '' : 'flip180'} />
+									<SVGIcon width='20px' height='20px' name='chevronbottom' fill='#475da7' className={closedLaySummary ? '' : 'flip180'} />
 								</button>
 							) : (
 								''
@@ -299,7 +310,7 @@ const About = ({ data, renderTooltip }) => {
 								'A concise and clear description of the project, (e.g. as required by URKI in funding applications). It should outline the problem, objectives and expected outcomes in language that is understandable to the general public and contain a maximum of 300 words.'
 							)}>
 							<button className='datause-info-icon-button'>
-								<SVGIcon name='info' width={10} height={10} fill={'#475da7'} className='datause-info-icon' />
+								<SVGIcon name='info' width={10} height={10} fill='#475da7' className='datause-info-icon' />
 							</button>
 						</OverlayTrigger>
 						<Col md={7}>
@@ -329,7 +340,7 @@ const About = ({ data, renderTooltip }) => {
 										width='20px'
 										height='20px'
 										name='chevronbottom'
-										fill={'#475da7'}
+										fill='#475da7'
 										className={closedPublicBenefit ? '' : 'flip180'}
 									/>
 								</button>
@@ -343,7 +354,7 @@ const About = ({ data, renderTooltip }) => {
 								'A description in plain English of the anticipated outcomes, or impact of project on the general public.'
 							)}>
 							<button className='datause-info-icon-button'>
-								<SVGIcon name='info' width={10} height={10} fill={'#475da7'} className='datause-info-icon' />
+								<SVGIcon name='info' width={10} height={10} fill='#475da7' className='datause-info-icon' />
 							</button>
 						</OverlayTrigger>
 						<Col md={7}>
@@ -371,7 +382,7 @@ const About = ({ data, renderTooltip }) => {
 							<Col md={4}>Request category type</Col>
 							<OverlayTrigger placement='top' overlay={renderTooltip('This categorises the main purpose of the data being shared.')}>
 								<button className='datause-info-icon-button'>
-									<SVGIcon name='info' width={10} height={10} fill={'#475da7'} className='datause-info-icon' />
+									<SVGIcon name='info' width={10} height={10} fill='#475da7' className='datause-info-icon' />
 								</button>
 							</OverlayTrigger>
 							<Col md={7}>
@@ -394,7 +405,7 @@ const About = ({ data, renderTooltip }) => {
 								placement='top'
 								overlay={renderTooltip('A summary of the proposed research, in a manner that is suitable for a specialist reader.')}>
 								<button className='datause-info-icon-button'>
-									<SVGIcon name='info' width={10} height={10} fill={'#475da7'} className='datause-info-icon' />
+									<SVGIcon name='info' width={10} height={10} fill='#475da7' className='datause-info-icon' />
 								</button>
 							</OverlayTrigger>
 							<Col md={7}>
@@ -417,7 +428,7 @@ const About = ({ data, renderTooltip }) => {
 								placement='top'
 								overlay={renderTooltip('Reference to other decision-making bodies that the project has already been authorised by.')}>
 								<button className='datause-info-icon-button'>
-									<SVGIcon name='info' width={10} height={10} fill={'#475da7'} className='datause-info-icon' />
+									<SVGIcon name='info' width={10} height={10} fill='#475da7' className='datause-info-icon' />
 								</button>
 							</OverlayTrigger>
 							<Col md={7}>
@@ -438,7 +449,7 @@ const About = ({ data, renderTooltip }) => {
 							<Col md={4}>Project start date</Col>
 							<OverlayTrigger placement='top' overlay={renderTooltip('The date the project is scheduled to start or actual start date.')}>
 								<button className='datause-info-icon-button'>
-									<SVGIcon name='info' width={10} height={10} fill={'#475da7'} className='datause-info-icon' />
+									<SVGIcon name='info' width={10} height={10} fill='#475da7' className='datause-info-icon' />
 								</button>
 							</OverlayTrigger>
 							<Col md={6}>
@@ -459,7 +470,7 @@ const About = ({ data, renderTooltip }) => {
 							<Col md={4}>Project end date</Col>
 							<OverlayTrigger placement='top' overlay={renderTooltip('The date the project is scheduled to finish or actual end date.')}>
 								<button className='datause-info-icon-button'>
-									<SVGIcon name='info' width={10} height={10} fill={'#475da7'} className='datause-info-icon' />
+									<SVGIcon name='info' width={10} height={10} fill='#475da7' className='datause-info-icon' />
 								</button>
 							</OverlayTrigger>
 							<Col md={7}>
@@ -477,7 +488,7 @@ const About = ({ data, renderTooltip }) => {
 							placement='top'
 							overlay={renderTooltip('The last date the data access request for this project was approved by a data custodian.')}>
 							<button className='datause-info-icon-button'>
-								<SVGIcon name='info' width={10} height={10} fill={'#475da7'} className='datause-info-icon' />
+								<SVGIcon name='info' width={10} height={10} fill='#475da7' className='datause-info-icon' />
 							</button>
 						</OverlayTrigger>
 						<Col md={7}>
@@ -495,7 +506,7 @@ const About = ({ data, renderTooltip }) => {
 						<Col md={4}>Dataset(s) name</Col>
 						<OverlayTrigger placement='top' overlay={renderTooltip('The name of the dataset(s) being accessed.')}>
 							<button className='datause-info-icon-button'>
-								<SVGIcon name='info' width={10} height={10} fill={'#475da7'} className='datause-info-icon' />
+								<SVGIcon name='info' width={10} height={10} fill='#475da7' className='datause-info-icon' />
 							</button>
 						</OverlayTrigger>
 						<Col md={7}>
@@ -544,7 +555,7 @@ const About = ({ data, renderTooltip }) => {
 									'The level of identifiability of the data being accessed, as defined by Understanding Patient Data. In the case of multiple datasets being accessed, the sensitivity level for the dataset with the most sensitive data should be used: Personally Identifiable > De-Personalised > Anonymous'
 								)}>
 								<button className='datause-info-icon-button'>
-									<SVGIcon name='info' width={10} height={10} fill={'#475da7'} className='datause-info-icon' />
+									<SVGIcon name='info' width={10} height={10} fill='#475da7' className='datause-info-icon' />
 								</button>
 							</OverlayTrigger>
 							<Col md={7}>
@@ -569,7 +580,7 @@ const About = ({ data, renderTooltip }) => {
 									'The lawful basis for processing are set out in Article 6 of the GDPR. At least one legal basis must apply whenever you process personal data. Please select appropriate Article 6 lawful basis. Processing shall be lawful only if and to the extent that at least one of the following applies.'
 								)}>
 								<button className='datause-info-icon-button'>
-									<SVGIcon name='info' width={10} height={10} fill={'#475da7'} className='datause-info-icon' />
+									<SVGIcon name='info' width={10} height={10} fill='#475da7' className='datause-info-icon' />
 								</button>
 							</OverlayTrigger>
 							<Col md={7}>
@@ -594,7 +605,7 @@ const About = ({ data, renderTooltip }) => {
 									"Processing of personal data revealing racial or ethnic origin, political opinions, religious or philosophical beliefs, or trade union membership, and the processing of genetic data, biometric data for the purpose of uniquely identifying a natural person, data concerning health or data concerning a natural person's sex life or sexual orientation shall be prohibited. This does not apply if one of the following applies."
 								)}>
 								<button className='datause-info-icon-button'>
-									<SVGIcon name='info' width={10} height={10} fill={'#475da7'} className='datause-info-icon' />
+									<SVGIcon name='info' width={10} height={10} fill='#475da7' className='datause-info-icon' />
 								</button>
 							</OverlayTrigger>
 							<Col md={7}>
@@ -619,7 +630,7 @@ const About = ({ data, renderTooltip }) => {
 									'In the application of the Common Law Duty of Confidentiality there are 2 options that enable a release: Consent (Reasonable Expectation) or Section 251 NHS Act 2006.'
 								)}>
 								<button className='datause-info-icon-button'>
-									<SVGIcon name='info' width={10} height={10} fill={'#475da7'} className='datause-info-icon' />
+									<SVGIcon name='info' width={10} height={10} fill='#475da7' className='datause-info-icon' />
 								</button>
 							</OverlayTrigger>
 							<Col md={7}>
@@ -644,7 +655,7 @@ const About = ({ data, renderTooltip }) => {
 									'Specifies whether the preference for people to opt-out of their confidential patient information being used for secondary use has been applied to the data prior to release.'
 								)}>
 								<button className='datause-info-icon-button'>
-									<SVGIcon name='info' width={10} height={10} fill={'#475da7'} className='datause-info-icon' />
+									<SVGIcon name='info' width={10} height={10} fill='#475da7' className='datause-info-icon' />
 								</button>
 							</OverlayTrigger>
 							<Col md={7}>
@@ -669,7 +680,7 @@ const About = ({ data, renderTooltip }) => {
 									'Determines whether this a "one-off" request or a recurring dataset to be provided over a specific time period.'
 								)}>
 								<button className='datause-info-icon-button'>
-									<SVGIcon name='info' width={10} height={10} fill={'#475da7'} className='datause-info-icon' />
+									<SVGIcon name='info' width={10} height={10} fill='#475da7' className='datause-info-icon' />
 								</button>
 							</OverlayTrigger>
 							<Col md={7}>
@@ -694,7 +705,7 @@ const About = ({ data, renderTooltip }) => {
 									'The information relevant to data linkage, including organisations undertaking linkages and data flows.'
 								)}>
 								<button className='datause-info-icon-button'>
-									<SVGIcon name='info' width={10} height={10} fill={'#475da7'} className='datause-info-icon' />
+									<SVGIcon name='info' width={10} height={10} fill='#475da7' className='datause-info-icon' />
 								</button>
 							</OverlayTrigger>
 							<Col md={7}>
@@ -716,7 +727,7 @@ const About = ({ data, renderTooltip }) => {
 								Description of the confidential data being used
 								{data.confidentialDataDescription && data.confidentialDataDescription.length >= 250 ? (
 									<button className='datause-arrow' onClick={() => (!closedDataUse ? setClosedDataUse(true) : setClosedDataUse(false))}>
-										<SVGIcon width='20px' height='20px' name='chevronbottom' fill={'#475da7'} className={closedDataUse ? '' : 'flip180'} />
+										<SVGIcon width='20px' height='20px' name='chevronbottom' fill='#475da7' className={closedDataUse ? '' : 'flip180'} />
 									</button>
 								) : (
 									''
@@ -728,7 +739,7 @@ const About = ({ data, renderTooltip }) => {
 									'A description of the specific patient identifiable fields that have been included in the dataset(s) being accessed.'
 								)}>
 								<button className='datause-info-icon-button'>
-									<SVGIcon name='info' width={10} height={10} fill={'#475da7'} className='datause-info-icon' />
+									<SVGIcon name='info' width={10} height={10} fill='#475da7' className='datause-info-icon' />
 								</button>
 							</OverlayTrigger>
 							<Col md={7}>
@@ -753,7 +764,7 @@ const About = ({ data, renderTooltip }) => {
 							<Col md={4}>Release/Access date</Col>
 							<OverlayTrigger placement='top' overlay={renderTooltip('The date the data access was granted and active research started.')}>
 								<button className='datause-info-icon-button'>
-									<SVGIcon name='info' width={10} height={10} fill={'#475da7'} className='datause-info-icon' />
+									<SVGIcon name='info' width={10} height={10} fill='#475da7' className='datause-info-icon' />
 								</button>
 							</OverlayTrigger>
 							<Col md={7}>
@@ -776,7 +787,7 @@ const About = ({ data, renderTooltip }) => {
 								'An indication of how data is accessed, whether through access to a Data Safe Haven/Trusted Research Environment or through data release in any other local environment.'
 							)}>
 							<button className='datause-info-icon-button'>
-								<SVGIcon name='info' width={10} height={10} fill={'#475da7'} className='datause-info-icon' />
+								<SVGIcon name='info' width={10} height={10} fill='#475da7' className='datause-info-icon' />
 							</button>
 						</OverlayTrigger>
 						<Col md={7}>
@@ -795,7 +806,7 @@ const About = ({ data, renderTooltip }) => {
 								placement='top'
 								overlay={renderTooltip('Description of the tools or software used to reduce level of identifiable data being shared.')}>
 								<button className='datause-info-icon-button'>
-									<SVGIcon name='info' width={10} height={10} fill={'#475da7'} className='datause-info-icon' />
+									<SVGIcon name='info' width={10} height={10} fill='#475da7' className='datause-info-icon' />
 								</button>
 							</OverlayTrigger>
 							<Col md={7}>
@@ -827,7 +838,7 @@ const About = ({ data, renderTooltip }) => {
 									'A URL link to any academic or non-academic research outputs, as they become available, including code used.'
 								)}>
 								<button className='datause-info-icon-button'>
-									<SVGIcon name='info' width={10} height={10} fill={'#475da7'} className='datause-info-icon' />
+									<SVGIcon name='info' width={10} height={10} fill='#475da7' className='datause-info-icon' />
 								</button>
 							</OverlayTrigger>
 							<Col md={7}>
@@ -873,8 +884,14 @@ const About = ({ data, renderTooltip }) => {
 				</Col>
 			</Row>
 			<Row className='datause-hidefields-button'>
-				<Button className='datause-button' onClick={() => (hide ? setHide(false) : setHide(true))}>
-					{!hide ? 'Hide all empty fields' : 'Show all empty fields (' + count + ')'}
+				<Button
+					className='datause-button'
+					onClick={() => {
+						hide ? setHide(false) : setHide(true);
+
+						handleAnalytics('Clicked show / hide empty fields', !hide ? 'show' : 'hide');
+					}}>
+					{!hide ? 'Hide all empty fields' : `Show all empty fields (${count})`}
 				</Button>
 			</Row>
 		</>
