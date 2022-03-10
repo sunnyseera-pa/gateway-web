@@ -976,6 +976,8 @@ class SearchPage extends React.Component {
 	handleClearSelection = selectedNode => {
 		const { parentKey, value } = selectedNode;
 
+		googleAnalytics.recordEvent(this.state.key, `Removed ${parentKey} filter`, `Filter value: ${selectedNode.label}`);
+
 		if (isTree(parentKey)) {
 			const selectedV2 = this.getSelectedFiltersStateByKey(this.state.key);
 			const selectedV2Filtered = selectedV2.filter(filter => {
@@ -1087,9 +1089,17 @@ class SearchPage extends React.Component {
 
 	handleClearAll = () => {
 		const filtersV2Data = this.getFilterStateByKey(this.state.key);
+		const selectedV2Data = this.getSelectedFiltersStateByKey(this.state.key);
+
 		const filtersV2 = this.resetChecked(filtersV2Data);
 		const filtersV2Entity = `filtersV2${this.state.key}`;
 		const selectedV2Entity = `selectedV2${this.state.key}`;
+
+		googleAnalytics.recordEvent(
+			this.state.key,
+			`Removed all filters`,
+			selectedV2Data.map(item => `${item.parentKey}=${item.value}`).join(',')
+		);
 
 		this.setState({ [filtersV2Entity]: filtersV2, [selectedV2Entity]: [], isResultsLoading: true }, () => {
 			this.doSearchCall();

@@ -271,6 +271,7 @@ export const DataUseView = props => {
 		} else {
 			tempFilteredData = await relatedResourcesSort.filter(dat => dat.objectType === sort);
 		}
+
 		setSorting(sort);
 		setRelatedObjectsFiltered(tempFilteredData);
 	};
