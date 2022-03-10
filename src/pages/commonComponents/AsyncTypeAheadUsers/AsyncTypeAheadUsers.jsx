@@ -57,8 +57,7 @@ function AsyncTypeAheadUsers(props) {
 	const handleOnFocus = async () => {
 		const response = await serviceUsers.getUsers();
 		const { data } = response.data;
-		const users = data.slice(0, 10);
-		setOptions(users);
+		setOptions(data);
 	};
 	const filterBy = () => true;
 
