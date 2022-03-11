@@ -1,3 +1,5 @@
+import {getAccessRequestsUserDetails } from './DataAccessRequestsService';
+//import logger from './Logger'
 /**
  * written by: Sam H. @ PA
  * 
@@ -28,7 +30,7 @@ const createCSV = (dataAccessRequests) => {
 		return csvRows		
 	} catch (err) {
 		console.log("error inside createCSV");
-		return [["there", "was", "an", "error", "inside", "createCSV"]];
+		return [["An", "error", "has ", "occurred", "please", "contact", "support"]];
 	}
 }
 
@@ -140,7 +142,11 @@ const FetchKeyNameBeforeTheUnderScore = (key) => {
  * impact this function, and changes will need to be done
  * 
  */
-const buildOneRow = (dar, applicant) => {
+ const buildOneRow = async (dar, applicant) => {
+
+ const userDetails = await getAccessRequestsUserDetails(dar.userId);
+
+ console.log("userDetails.mainApplicantUserName", userDetails.mainApplicantUserName)
 
 	const row = [
 			dar._id,
@@ -151,7 +157,7 @@ const buildOneRow = (dar, applicant) => {
 			dar.datasetTitles.join(';'),			
 
 			dar.aboutApplication.projectName, // Project name
-			//Project submitted by
+			userDetails.mainApplicantUserName,
 			applicant.safeprojectapplicantfullname, //"Applicant full name"
 			applicant.safeprojectapplicantjobtitle,
 			applicant.safeprojectapplicanttelephone,		
@@ -205,5 +211,6 @@ const buildHeaders = () => {
 				"Organisation Country"
 			];
 }
+
 
 export default createCSV

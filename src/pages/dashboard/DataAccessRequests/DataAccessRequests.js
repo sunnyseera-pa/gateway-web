@@ -344,21 +344,14 @@ class DataAccessRequestsNew extends React.Component {
 
 
 	   const dataAccessRequests = await getDataAccessRequests(team); // call the backend
-        console.log("dataAccessRequests ",dataAccessRequests);
-        console.log("parseInt(dataAccessRequests[0].userId) ",parseInt(dataAccessRequests[0].userId));
-	    const userDetails = await getAccessRequestsUserDetails(parseInt(dataAccessRequests[0].userId));
-	   //make another call her to backend for name
-
-	   {console.log(" dataAccessRequests  ", dataAccessRequests)}
-	   {console.log(" dataAccessRequests.userId  ", dataAccessRequests[0].userId)}
-	   const csvData = createCSV(dataAccessRequests); // generate csv using the backend response
+	   const csvData = await createCSV(dataAccessRequests); // generate csv using the backend response
 
 	   // we pass anonnymous function as 2nd argument, and set a timeout, to ensure that we will get the csv 
 	   // back from the backend before we download the csv
 	   this.setState({ csvData: csvData }, () => {
 	     setTimeout(() => {
 	       this.csvLink.current.link.click();
-	     }, 0);
+	     }, 100);
 	   });
 	 }
 
