@@ -288,12 +288,6 @@ export const DataUseView = props => {
 		dataUseData.relatedObjects = [];
 	}
 
-	const renderTooltip = props => (
-		<Tooltip className='tool-tip' style={{ width: '240px' }}>
-			{props}
-		</Tooltip>
-	);
-
 	return (
 		<Sentry.ErrorBoundary fallback={<ErrorModal show={showModalHandler} handleClose={hideModalHandler} />}>
 			<div>
@@ -410,8 +404,9 @@ export const DataUseView = props => {
 										googleAnalytics.recordVirtualPageView(`${key} tab`);
 										googleAnalytics.recordEvent('Data uses', `Clicked ${key} tab`, `Viewing ${key}`);
 									}}>
-									<Tab eventKey='about' title='About'>
-										<About data={dataUseData} renderTooltip={renderTooltip} />
+
+									<Tab eventKey='about' title={'About'}>
+										<About data={dataUseData} />
 									</Tab>
 
 									<Tab eventKey='Discussion' title={`Discussion (${discoursePostCount})`}>
