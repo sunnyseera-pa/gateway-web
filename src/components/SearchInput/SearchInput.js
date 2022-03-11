@@ -36,6 +36,7 @@ SearchInput.propTypes = {
 
 SearchInput.defaultProps = {
 	className: 'ui-SearchInput',
+	onReset: null,
 };
 
 export default SearchInput;

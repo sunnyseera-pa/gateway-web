@@ -1,19 +1,22 @@
-import React, { useState, useEffect, createRef } from 'react';
 import * as Sentry from '@sentry/react';
-import axios from 'axios';
-import { baseURL } from '../../../configs/url.config';
-import { isEmpty, isArray } from 'lodash';
-
+import { isArray, isEmpty } from 'lodash';
+import moment from 'moment';
+import React, { createRef, useEffect, useState } from 'react';
 import { Container } from 'react-bootstrap';
-import EditFormDataUse from './EditDataUseForm';
-import SearchBar from '../../commonComponents/searchBar/SearchBar';
+import { NotificationManager } from 'react-notifications';
+import dataUseRegistersService from '../../../services/data-use-registers';
+import datasetsService from '../../../services/datasets';
+import papersService from '../../../services/papers';
+import searchService from '../../../services/search';
+import toolsService from '../../../services/tools';
+import usersService from '../../../services/users';
+import DataSetModal from '../../commonComponents/dataSetModal/DataSetModal';
 import ErrorModal from '../../commonComponents/errorModal/ErrorModal';
+import Loading from '../../commonComponents/Loading';
+import SearchBar from '../../commonComponents/searchBar/SearchBar';
 import SideDrawer from '../../commonComponents/sidedrawer/SideDrawer';
 import UserMessages from '../../commonComponents/userMessages/UserMessages';
-import DataSetModal from '../../commonComponents/dataSetModal/DataSetModal';
-import Loading from '../../commonComponents/Loading';
-import moment from 'moment';
-import SaveModal from '../SaveEditModal';
+import EditFormDataUse from './EditDataUseForm';
 
 const EditDataUse = props => {
 	const [data, setData] = useState([]);
@@ -53,61 +56,112 @@ const EditDataUse = props => {
 		]
 	);
 
-	useEffect(async () => {
-		setIsLoading(true);
-		await Promise.all([
-			doGetKeywordsCall(),
-			doGetUsersCall(),
-			doGetDatasetsCall(),
-			doGetSafeOutputsToolCall(),
-			doGetSafeOutputsPaperCall(),
-		]);
-		axios.get(`${baseURL}/api/v2/data-use-registers/${props.match.params.datauseID}?isEdit=true`).then(res => {
-			setData(res.data);
-			setRelatedObjects(res.data.relatedObjects ? res.data.relatedObjects : []);
-			let safeOutputs = [];
-			res.data.gatewayOutputsPapersInfo.forEach(output => {
-				safeOutputs.push({ id: output.id, name: output.name });
-			});
-			res.data.gatewayOutputsToolsInfo.forEach(output => {
-				safeOutputs.push({ id: output.id, name: output.name });
-			});
-			res.data.nonGatewayOutputs.forEach(output => {
-				safeOutputs.push({ id: 'nonGateway', name: output });
-			});
+	const dataUseRegistersRequest = dataUseRegistersService.useGetDataUseRegisters(null, {
+		onError: ({ title, message }) => {
+			NotificationManager.error(message, title, 10000);
+		},
+	});
 
-			setSafeOuputsArray(!isEmpty(safeOutputs) ? safeOutputs : [{ id: '', name: '' }]);
+	const usersRequest = usersService.useGetUsers(null, {
+		onError: ({ title, message }) => {
+			NotificationManager.error(message, title, 10000);
+		},
+	});
 
-			let applicants = [];
-			res.data.gatewayApplicants.forEach(gatewayApplicant => {
-				applicants.push({ id: gatewayApplicant.id, name: `${gatewayApplicant.firstname} ${gatewayApplicant.lastname}` });
-			});
-			res.data.nonGatewayApplicants.forEach(nonGatewayApplicant => {
-				applicants.push({ id: 'nonGateway', name: nonGatewayApplicant });
-			});
-			setApplicantsArray(!isEmpty(applicants) ? applicants : []);
+	const toolsRequest = toolsService.useGetTools(null, {
+		onError: ({ title, message }) => {
+			NotificationManager.error(message, title, 10000);
+		},
+	});
 
-			let datasets = [];
-			res.data.gatewayDatasetsInfo.forEach(gatewayDataset => {
-				if (isArray(gatewayDataset)) {
-					datasets.push({ pid: gatewayDataset[0].pid, name: gatewayDataset[0].name });
-				} else {
-					datasets.push({ pid: gatewayDataset.pid, name: gatewayDataset.name });
-				}
-			});
-			res.data.nonGatewayDatasets.forEach(nonGatewayDataset => {
-				datasets.push({ pid: 'nonGateway', name: nonGatewayDataset });
-			});
-			setDatasetsArray(!isEmpty(datasets) ? datasets : [{ pid: '', name: '' }]);
+	const papersRequest = papersService.useGetPapers(null, {
+		onError: ({ title, message }) => {
+			NotificationManager.error(message, title, 10000);
+		},
+	});
 
-			setDisableInput(getUserRoles(res.data.publisher));
-			setIsLoading(false);
-		});
+	const datasetsRequest = datasetsService.useGetDatasets(null, {
+		onError: ({ title, message }) => {
+			NotificationManager.error(message, title, 10000);
+		},
+	});
+
+	const searchRequest = searchService.useGetSearch(null, {
+		onError: ({ title, message }) => {
+			NotificationManager.error(message, title, 10000);
+		},
+	});
+
+	useEffect(() => {
+		const init = async () => {
+			setIsLoading(true);
+
+			await Promise.all([
+				doGetKeywordsCall(),
+				doGetUsersCall(),
+				doGetDatasetsCall(),
+				doGetSafeOutputsToolCall(),
+				doGetSafeOutputsPaperCall(),
+			]);
+
+			dataUseRegister.mutateAsync(props.match.params.datauseID).then(res => {
+				setData(res.data);
+				setRelatedObjects(res.data.relatedObjects ? res.data.relatedObjects : []);
+
+				const safeOutputs = [];
+				res.data.gatewayOutputsPapersInfo.forEach(output => {
+					safeOutputs.push({ id: output.id, name: output.name });
+				});
+
+				res.data.gatewayOutputsToolsInfo.forEach(output => {
+					safeOutputs.push({ id: output.id, name: output.name });
+				});
+
+				res.data.nonGatewayOutputs.forEach(output => {
+					safeOutputs.push({ id: 'nonGateway', name: output });
+				});
+
+				setSafeOuputsArray(!isEmpty(safeOutputs) ? safeOutputs : [{ id: '', name: '' }]);
+
+				const applicants = [];
+
+				res.data.gatewayApplicants.forEach(gatewayApplicant => {
+					applicants.push({ id: gatewayApplicant.id, name: `${gatewayApplicant.firstname} ${gatewayApplicant.lastname}` });
+				});
+
+				res.data.nonGatewayApplicants.forEach(nonGatewayApplicant => {
+					applicants.push({ id: 'nonGateway', name: nonGatewayApplicant });
+				});
+
+				setApplicantsArray(!isEmpty(applicants) ? applicants : []);
+
+				const datasets = [];
+
+				res.data.gatewayDatasetsInfo.forEach(gatewayDataset => {
+					if (isArray(gatewayDataset)) {
+						datasets.push({ pid: gatewayDataset[0].pid, name: gatewayDataset[0].name });
+					} else {
+						datasets.push({ pid: gatewayDataset.pid, name: gatewayDataset.name });
+					}
+				});
+
+				res.data.nonGatewayDatasets.forEach(nonGatewayDataset => {
+					datasets.push({ pid: 'nonGateway', name: nonGatewayDataset });
+				});
+
+				setDatasetsArray(!isEmpty(datasets) ? datasets : [{ pid: '', name: '' }]);
+
+				setDisableInput(getUserRoles(res.data.publisher));
+				setIsLoading(false);
+			});
+		};
+
+		init();
 	}, []);
 
 	const getUserRoles = publisher => {
-		let { teams } = userState[0];
-		let foundTeam = teams.filter(team => team._id === publisher);
+		const { teams } = userState[0];
+		const foundTeam = teams.filter(team => team._id === publisher);
 		if (isEmpty(teams) || isEmpty(foundTeam)) {
 			return true;
 		}
@@ -115,62 +169,46 @@ const EditDataUse = props => {
 		return !foundTeam[0].roles.some(role => ['manager', 'reviewer'].includes(role));
 	};
 
-	const doGetUsersCall = () => {
-		return new Promise(resolve => {
-			axios.get(baseURL + '/api/v1/users').then(res => {
-				setApplicantsList(res.data.data);
-				resolve();
+	const doGetUsersCall = () =>
+		usersRequest.refetch().then(res => {
+			setApplicantsList(res.data.data.data);
+		});
+
+	const doGetDatasetsCall = () =>
+		datasetsRequest
+			.mutateAsync({
+				params: {
+					activeflag: 'active',
+					fields: 'pid,name,',
+				},
+			})
+			.then(res => {
+				setDatasetsList(res.data.datasets);
 			});
-		});
-	};
 
-	const doGetDatasetsCall = () => {
-		return new Promise(resolve => {
-			axios
-				.get(`${baseURL}/api/v2/datasets`, {
-					params: {
-						activeflag: 'active',
-						fields: 'pid,name,',
-					},
-				})
-				.then(res => {
-					setDatasetsList(res.data.datasets);
-					resolve();
-				});
-		});
-	};
+	const doGetSafeOutputsToolCall = () =>
+		toolsRequest
+			.mutateAsync({
+				params: {
+					activeflag: 'active',
+					fields: 'id,name,',
+				},
+			})
+			.then(res => {
+				setSafeOuputsToolList(res.data.data);
+			});
 
-	const doGetSafeOutputsToolCall = () => {
-		return new Promise(resolve => {
-			axios
-				.get(`${baseURL}/api/v2/tools`, {
-					params: {
-						activeflag: 'active',
-						fields: 'id,name,',
-					},
-				})
-				.then(res => {
-					setSafeOuputsToolList(res.data.data);
-					resolve();
-				});
-		});
-	};
-
-	const doGetSafeOutputsPaperCall = () => {
-		return new Promise(resolve => {
-			axios
-				.get(`${baseURL}/api/v2/papers`, {
-					params: {
-						activeflag: 'active',
-						fields: 'id,name,',
-					},
-				})
-				.then(res => {
-					setSafeOuputsPaperList(res.data.data);
-					resolve();
-				});
-		});
-	};
+	const doGetSafeOutputsPaperCall = () =>
+		papersRequest
+			.mutateAsync({
+				params: {
+					activeflag: 'active',
+					fields: 'id,name,',
+				},
+			})
+			.then(res => {
+				setSafeOuputsPaperList(res.data.data);
+			});
 
 	let showError = false;
 
@@ -183,7 +221,7 @@ const EditDataUse = props => {
 	};
 
 	const doSearch = e => {
-		//fires on enter on searchbar
+		// fires on enter on searchbar
 		if (e.key === 'Enter') window.location.href = `/search?search=${encodeURIComponent(searchString)}`;
 	};
 
@@ -193,17 +231,18 @@ const EditDataUse = props => {
 
 	const doModalSearch = (e, type = 'dataset', page = 0) => {
 		if (e.key === 'Enter' || e === 'click') {
-			var searchURL = '';
+			let searchURL = '';
 
-			if (type === 'dataset' && page > 0) searchURL += '&datasetIndex=' + page;
-			if (type === 'tool' && page > 0) searchURL += '&toolIndex=' + page;
-			if (type === 'paper' && page > 0) searchURL += '&paperIndex=' + page;
-			if (type === 'person' && page > 0) searchURL += '&personIndex=' + page;
-			if (type === 'course' && page > 0) searchURL += '&courseIndex=' + page;
+			if (type === 'dataset' && page > 0) searchURL += `&datasetIndex=${page}`;
+			if (type === 'tool' && page > 0) searchURL += `&toolIndex=${page}`;
+			if (type === 'paper' && page > 0) searchURL += `&paperIndex=${page}`;
+			if (type === 'person' && page > 0) searchURL += `&personIndex=${page}`;
+			if (type === 'course' && page > 0) searchURL += `&courseIndex=${page}`;
 
-			axios
-				.get(baseURL + '/api/v1/search?search=' + encodeURIComponent(searchString) + searchURL, {
+			searchRequest
+				.mutateAsync({
 					params: {
+						search: encodeURIComponent(searchString) + searchURL,
 						form: true,
 						userID: userState[0].id,
 					},
@@ -226,16 +265,16 @@ const EditDataUse = props => {
 		if (tempRelatedObjectIds && tempRelatedObjectIds.some(object => object.objectId === id)) {
 			updatedTempRelatedObjectIds = updatedTempRelatedObjectIds.filter(object => object.objectId !== id);
 		} else {
-			updatedTempRelatedObjectIds.push({ objectId: id, objectType: type, pid: pid });
+			updatedTempRelatedObjectIds.push({ objectId: id, objectType: type, pid });
 		}
 		setTempRelatedObjectIds(updatedTempRelatedObjectIds);
 	};
 
 	const addToRelatedObjects = () => {
-		let relatedObjectIds = [...tempRelatedObjectIds];
+		const relatedObjectIds = [...tempRelatedObjectIds];
 
-		let newRelatedObjects = relatedObjectIds.map(relatedObject => {
-			let newRelatedObject = {
+		const newRelatedObjects = relatedObjectIds.map(relatedObject => {
+			const newRelatedObject = {
 				...relatedObject,
 				objectId: relatedObject.type === 'dataset' ? relatedObject.pid : relatedObject.objectId,
 				user: userState.name,
@@ -252,10 +291,10 @@ const EditDataUse = props => {
 	};
 
 	const removeObject = (id, type, datasetid) => {
-		let countOfRelatedObjects = relatedObjects.length;
+		const countOfRelatedObjects = relatedObjects.length;
 		let newRelatedObjects = [...relatedObjects].filter(obj => obj.objectId !== id && obj.objectId !== id.toString() && obj.pid !== id);
 
-		//if an item was not removed try removing by datasetid for retro linkages
+		// if an item was not removed try removing by datasetid for retro linkages
 		if (countOfRelatedObjects <= newRelatedObjects.length && type === 'dataset') {
 			newRelatedObjects = [...relatedObjects].filter(obj => obj.objectId !== datasetid && obj.objectId !== datasetid.toString());
 		}
@@ -280,46 +319,29 @@ const EditDataUse = props => {
 		setShowDrawer(showEnquiry);
 	};
 
-	const showSaveModal = () => {
-		setShowModal(true);
-		console.log('saved');
-	};
+	const doGetKeywordsCall = () =>
+		dataUseRegisters
+			.mutateAsync({
+				params: {
+					activeflag: 'active',
+					fields: 'keywords,',
+				},
+			})
+			.then(res => {
+				const tempKeywordsArray = [];
 
-	const hideSaveModal = () => {
-		setShowModal(false);
-	};
-
-	const doGetKeywordsCall = () => {
-		return new Promise((resolve, reject) => {
-			axios
-				.get(`${baseURL}/api/v2/data-use-registers`, {
-					params: {
-						activeflag: 'active',
-						fields: 'keywords,',
-					},
-				})
-				.then(res => {
-					var tempKeywordsArray = [];
-
-					res.data.data.forEach(keywordsArray => {
-						if (keywordsArray.keywords) {
-							keywordsArray.keywords.forEach(keywords => {
-								if (!tempKeywordsArray.includes(keywords) && keywords !== '') {
-									tempKeywordsArray.push(keywords);
-								}
-							});
-						}
-					});
-
-					setKeywords(
-						tempKeywordsArray.sort(function (a, b) {
-							return a.toUpperCase() < b.toUpperCase() ? -1 : a.toUpperCase() > b.toUpperCase() ? 1 : 0;
-						})
-					);
-					resolve();
+				res.data.data.forEach(keywordsArray => {
+					if (keywordsArray.keywords) {
+						keywordsArray.keywords.forEach(keywords => {
+							if (!tempKeywordsArray.includes(keywords) && keywords !== '') {
+								tempKeywordsArray.push(keywords);
+							}
+						});
+					}
 				});
-		});
-	};
+
+				setKeywords(tempKeywordsArray.sort((a, b) => (a.toUpperCase() < b.toUpperCase() ? -1 : a.toUpperCase() > b.toUpperCase() ? 1 : 0)));
+			});
 
 	if (isLoading) {
 		return (
