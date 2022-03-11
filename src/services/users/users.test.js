@@ -1,11 +1,11 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { apiURL } from '../configs/url.config';
-import { getRequest, patchRequest } from '../utils/requests';
+import { apiURL } from '../../configs/url.config';
+import { getRequest, patchRequest } from '../../utils/requests';
 import service from './users';
 
 jest.mock('axios');
-jest.mock('../utils/requests');
+jest.mock('../../utils/requests');
 
 let wrapper;
 
@@ -31,6 +31,30 @@ describe('Given the users service', () => {
 			});
 
 			expect(getRequest).toHaveBeenCalledWith(`${apiURL}/users`, {
+				option1: true,
+			});
+		});
+	});
+
+	describe('When getUserById is called', () => {
+		it('Then calls getRequest with the correct arguments', async () => {
+			await service.getUserById('123', {
+				option1: true,
+			});
+
+			expect(getRequest).toHaveBeenCalledWith(`${apiURL}/person/123`, {
+				option1: true,
+			});
+		});
+	});
+
+	describe('When searchUsers is called', () => {
+		it('Then calls getRequest with the correct arguments', async () => {
+			await service.searchUsers('test', {
+				option1: true,
+			});
+
+			expect(getRequest).toHaveBeenCalledWith(`${apiURL}/users/search/test`, {
 				option1: true,
 			});
 		});
@@ -82,6 +106,24 @@ describe('Given the users service', () => {
 			const rendered = renderHook(() => service.useGetUsers({ option1: true }), { wrapper });
 
 			assertServiceRefetchCalled(rendered, getSpy);
+		});
+	});
+
+	describe('When useGetUserById is called', () => {
+		it('Then calls getUserById with the correct arguments', async () => {
+			const getSpy = jest.spyOn(service, 'getUserById');
+			const rendered = renderHook(() => service.useGetUsers({ option1: true }), { wrapper });
+
+			assertServiceRefetchCalled(rendered, getSpy, '123');
+		});
+	});
+
+	describe('When useSearchUsers is called', () => {
+		it('Then calls searchUsers with the correct arguments', async () => {
+			const getSpy = jest.spyOn(service, 'searchUsers');
+			const rendered = renderHook(() => service.useSearchUsers({ option1: true }), { wrapper });
+
+			assertServiceRefetchCalled(rendered, getSpy, 'test');
 		});
 	});
 

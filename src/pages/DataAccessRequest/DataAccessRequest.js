@@ -59,6 +59,8 @@ import TextareaInputCustom from '../commonComponents/TextareaInputCustom/Textare
 import DropdownCustom from './components/DropdownCustom/DropdownCustom';
 import DoubleDropdownCustom from './components/DoubleDropdownCustom/DoubleDropdownCustom';
 
+import AsyncTypeAheadUsers from '../commonComponents/AsyncTypeAheadUsers';
+
 class DataAccessRequest extends Component {
 	constructor(props) {
 		super(props);
@@ -2205,11 +2207,7 @@ class DataAccessRequest extends Component {
 						close={this.toggleContributorModal}
 						mainApplicant={this.state.mainApplicant}
 						handleOnSaveChanges={this.submitContributors}>
-						<TypeaheadMultiUser
-							onHandleContributorChange={this.updateContributors}
-							selectedContributors={this.state.authorIds}
-							currentUserId={this.state.userId}
-						/>
+						<AsyncTypeAheadUsers selectedUsers={this.state.authorIds} changeHandler={this.updateContributors} getUsersInfo={true} />
 					</ContributorModal>
 
 					<AssignWorkflowModal
