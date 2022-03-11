@@ -10,10 +10,10 @@ const useDOMChanged = (
 	const [values, setValues] = useState(atts);
 
 	const updateValues = node => {
-		const updatedValues = Object.keys(values).reduce((previousValue, currentValue) => {
+		const updatedValues = Object.keys(values).reduce((previousValue, key) => {
 			return {
 				...previousValue,
-				[currentValue]: node[currentValue],
+				[key]: !!node[key] ? node[key] : previousValue[key],
 			};
 		}, {});
 
@@ -22,7 +22,7 @@ const useDOMChanged = (
 
 	useEffect(() => {
 		const initValuesChanged = () => {
-			updateValues(ref.current);
+			if (ref.current) updateValues(ref.current);
 		};
 
 		if (ref.current) ref.current.addEventListener('DOMSubtreeModified', initValuesChanged);

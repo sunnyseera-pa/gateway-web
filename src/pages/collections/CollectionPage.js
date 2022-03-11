@@ -1,36 +1,38 @@
-import React, { useState, useEffect } from 'react';
-import ReactMarkdown from 'react-markdown';
 import * as Sentry from '@sentry/react';
-import queryString from 'query-string';
-import { useTranslation } from 'react-i18next';
-import { Row, Col, Tabs, Tab, Container, Alert, Pagination } from 'react-bootstrap';
-import Loading from '../commonComponents/Loading';
-import SearchBar from '../commonComponents/searchBar/SearchBar';
-import 'react-tabs/style/react-tabs.css';
-import DiscourseTopic from '../discourse/DiscourseTopic';
-import moment from 'moment';
 import _ from 'lodash';
+import moment from 'moment';
+import queryString from 'query-string';
+import React, { useEffect, useState } from 'react';
+import { Alert, Col, Container, Pagination, Row, Tab, Tabs } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
+import ReactMarkdown from 'react-markdown';
+import 'react-tabs/style/react-tabs.css';
+import { LayoutContent } from '../../components/Layout';
+import LayoutBox from '../../components/LayoutBox';
+import SearchControls from '../../components/SearchControls';
+import SVGIcon from '../../images/SVGIcon';
+import collectionsService from '../../services/collections';
+import googleAnalytics from '../../tracking';
+import ActionBar from '../commonComponents/actionbar/ActionBar';
+import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
+import ErrorModal from '../commonComponents/errorModal';
+import Loading from '../commonComponents/Loading';
+import ResourcePageButtons from '../commonComponents/resourcePageButtons/ResourcePageButtons';
+import SearchBar from '../commonComponents/searchBar/SearchBar';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
 import UserMessages from '../commonComponents/userMessages/UserMessages';
-import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
-import ActionBar from '../commonComponents/actionbar/ActionBar';
-import ErrorModal from '../commonComponents/errorModal';
-import ResourcePageButtons from '../commonComponents/resourcePageButtons/ResourcePageButtons';
-import SVGIcon from '../../images/SVGIcon';
+import DiscourseTopic from '../discourse/DiscourseTopic';
+import { filterCollectionItems, generateDropdownItems, generatePaginatedItems } from './collection.utils';
+import { sortByMetadataQuality, sortByPopularity, sortByRecentlyAdded, sortByRelevance, sortByResources } from './collection.utils.sort';
 import './Collections.scss';
-import googleAnalytics from '../../tracking';
-import { getCollectionRequest, getCollectionRelatedObjectsRequest, postCollectionCounterUpdateRequest } from '../../services/collection';
-import { filterCollectionItems, generatePaginatedItems, generateDropdownItems } from './collection.utils';
-import { sortByMetadataQuality, sortByRecentlyAdded, sortByResources, sortByRelevance, sortByPopularity } from './collection.utils.sort';
-import { MAXRESULTS } from './constants';
+import CourseCollectionResults from './Components/CourseCollectionResults';
 import DatasetCollectionResults from './Components/DatasetCollectionResults';
-import ToolCollectionResults from './Components/ToolCollectionResults';
 import DataUseCollectionResults from './Components/DataUseCollectionResults';
 import PaperCollectionResults from './Components/PaperCollectionResults';
 import PersonCollectionResults from './Components/PersonCollectionResults';
-import CourseCollectionResults from './Components/CourseCollectionResults';
-import SearchControls from '../../components/SearchControls';
-import { LayoutContent } from '../../components/Layout';
+import ToolCollectionResults from './Components/ToolCollectionResults';
+import MessageNotFound from '../commonComponents/MessageNotFound';
+import { MAXRESULTS } from './constants';
 
 export const CollectionPage = props => {
 	const { t } = useTranslation();
@@ -53,6 +55,7 @@ export const CollectionPage = props => {
 	const [collectionAdded, setCollectionAdded] = useState(false);
 	const [collectionEdited, setCollectionEdited] = useState(false);
 	const [searchString, setSearchString] = useState('');
+	const [sort, setSort] = useState('recentlyadded');
 	const [discoursePostCount, setDiscoursePostCount] = useState(0);
 	const [key, setKey] = useState('dataset');
 	const [searchBar] = useState(React.createRef());
@@ -73,8 +76,8 @@ export const CollectionPage = props => {
 	);
 
 	useEffect(() => {
-		if (!!window.location.search) {
-			let values = queryString.parse(window.location.search);
+		if (window.location.search) {
+			const values = queryString.parse(window.location.search);
 			setCollectionAdded(values.collectionAdded);
 			setCollectionEdited(values.collectionEdited);
 		}
@@ -83,15 +86,15 @@ export const CollectionPage = props => {
 
 	const getCollectionDataFromApi = async () => {
 		setIsLoading(true);
-		await getCollectionRequest(props.match.params.collectionID).then(async res => {
+		await collectionsService.getCollectionRequest(props.match.params.collectionID).then(async res => {
 			if (_.isNil(res.data)) {
 				// Redirect user if invalid collection id is supplied
 				window.localStorage.setItem('redirectMsg', `Collection not found for Id: ${props.match.params.collectionID}`);
 				props.history.push({ pathname: '/search?search=', search: '' });
 			} else {
 				const localCollectionData = res.data.data[0];
-				let counter = !localCollectionData.counter ? 1 : localCollectionData.counter + 1;
-				postCollectionCounterUpdateRequest({ id: props.match.params.collectionID, counter });
+				const counter = !localCollectionData.counter ? 1 : localCollectionData.counter + 1;
+				collectionsService.postCollectionCounterUpdateRequest({ id: props.match.params.collectionID, counter });
 
 				setCollectionData(res.data.data[0]);
 				getObjectData();
@@ -101,7 +104,7 @@ export const CollectionPage = props => {
 	};
 
 	const getObjectData = async () => {
-		await getCollectionRelatedObjectsRequest(props.match.params.collectionID).then(async res => {
+		await collectionsService.getCollectionRelatedObjectsRequest(props.match.params.collectionID).then(async res => {
 			setObjectData(res.data.data);
 			setFilteredData(res.data.data);
 			countEntities(res.data.data);
@@ -111,7 +114,7 @@ export const CollectionPage = props => {
 
 	const countEntities = filteredData => {
 		const entityCounts = filteredData.reduce((entityCountsByType, currentValue) => {
-			let type = currentValue.type;
+			const { type } = currentValue;
 			if (!entityCountsByType.hasOwnProperty(type)) {
 				entityCountsByType[type] = 0;
 			}
@@ -182,31 +185,45 @@ export const CollectionPage = props => {
 		}
 	};
 
-	const handleSort = React.useCallback(({ value, direction }) => {
-		googleAnalytics.recordEvent('Collections', `Sorted collection entities by ${value} ${direction}`, 'Sort dropdown option changed');
+	const handleSort = React.useCallback(({ value }, submitForm) => {
+		submitForm();
+
+		setSort(value);
+
+		googleAnalytics.recordEvent('Collections', `Sorted collection entities by ${value}`, 'Sort dropdown option changed');
+	}, []);
+
+	const handleReset = React.useCallback(() => {
+		setSort('recentlyadded');
+		setSearchString('');
+
+		doCollectionsSearch({
+			search: '',
+			sortyBy: 'recentlyadded',
+		});
+	}, [key, objectData]);
+
+	const handleKeyDownEnter = React.useCallback(submitForm => {
+		submitForm();
 	}, []);
 
 	const handlePaginatedItems = index => {
-		// Returns the related resources that have the same object type as the current active tab and performs a chunk on them to ensure each page returns 24 results
-		let paginatedItems = _.chunk(
+		const paginatedItems = _.chunk(
 			filteredData.filter(object => object.type === key),
 			24
 		);
-		// If there are items to show based on search results, display them on the currently active page
+
 		if (paginatedItems.length > 0) {
 			return paginatedItems[index];
-		} else {
-			return [];
 		}
+		return [];
 	};
 
 	const doCollectionsSearch = React.useCallback(
 		({ search, sortBy }) => {
 			const filteredCollectionItems = filterCollectionItems(objectData, search);
 
-			const tempFilteredData = filteredCollectionItems.filter(dat => {
-				return dat !== '';
-			});
+			const tempFilteredData = filteredCollectionItems.filter(dat => dat !== '');
 
 			setFilteredData(getSortedData(sortBy, tempFilteredData, search));
 
@@ -216,16 +233,15 @@ export const CollectionPage = props => {
 		[key, objectData]
 	);
 
-	const setIndexByType = page => {
-		return {
-			dataset: () => setDatasetIndex(page),
-			tool: () => setToolIndex(page),
-			dataUseRegister: () => setDataUseRegisterIndex(page),
-			paper: () => setPaperIndex(page),
-			person: () => setPersonIndex(page),
-			course: () => setCourseIndex(page),
-		};
-	};
+	const setIndexByType = page => ({
+		dataset: () => setDatasetIndex(page),
+		tool: () => setToolIndex(page),
+		dataUseRegister: () => setDataUseRegisterIndex(page),
+		paper: () => setPaperIndex(page),
+		person: () => setPersonIndex(page),
+		course: () => setCourseIndex(page),
+	});
+
 	const handlePagination = (type, page) => {
 		setIndexByType(page)[type]();
 		window.scrollTo(0, 0);
@@ -316,20 +332,20 @@ export const CollectionPage = props => {
 								{!collectionData.imageLink || collectionData.imageLink === 'https://' ? (
 									<div id='defaultCollectionImage' className='margin-right-1' />
 								) : (
-									<div id='collectionImage' style={{ backgroundImage: `url(${collectionData.imageLink})` }}></div>
+									<div id='collectionImage' style={{ backgroundImage: `url(${collectionData.imageLink})` }} />
 								)}
 							</Col>
 							<Col md={2} lg={1} className='privatePublicDisplayCol'>
 								{collectionData.publicflag === true ? (
 									<div className='privatePublicDisplay'>
-										<SVGIcon name='eye' width={24} height={24} fill={'#000000'} className={'margin-right-8'} />
+										<SVGIcon name='eye' width={24} height={24} fill='#000000' className='margin-right-8' />
 										<span className='deepBlack-14 alignSuper' data-testid='publicBadge'>
 											Public
 										</span>
 									</div>
 								) : (
 									<div className='privatePublicDisplay'>
-										<SVGIcon name='eyeCrossed' width={24} height={24} fill={'#000000'} className={'margin-right-8'} />
+										<SVGIcon name='eyeCrossed' width={24} height={24} fill='#000000' className='margin-right-8' />
 										<span className='deepBlack-14 alignSuper' data-testid='privateBadge'>
 											Private
 										</span>
@@ -358,17 +374,16 @@ export const CollectionPage = props => {
 								{collectionData.persons.map((person, index) => {
 									if (index > 0) {
 										return (
-											<a className='gray800-14' href={'/person/' + person.id} key={index}>
+											<a className='gray800-14' href={`/person/${person.id}`} key={index}>
 												, {person.firstname} {person.lastname}
 											</a>
 										);
-									} else {
-										return (
-											<a className='gray800-14' href={'/person/' + person.id} key={index}>
-												{person.firstname} {person.lastname}
-											</a>
-										);
 									}
+									return (
+										<a className='gray800-14' href={`/person/${person.id}`} key={index}>
+											{person.firstname} {person.lastname}
+										</a>
+									);
 								})}
 							</Col>
 							<Col sm={1} lg={1} />
@@ -383,15 +398,13 @@ export const CollectionPage = props => {
 							<Col sm={10} lg={10} className='collectionKeywords'>
 								{collectionData.keywords &&
 									collectionData.keywords.length > 0 &&
-									collectionData.keywords.map((keyword, index) => {
-										return (
-											<a href={'/search?search=&tab=Collections&collectionkeywords=' + keyword}>
-												<div className='badge-tag' data-testid={`collectionKeyword${index}`}>
-													{keyword}
-												</div>
-											</a>
-										);
-									})}
+									collectionData.keywords.map((keyword, index) => (
+										<a href={`/search?search=&tab=Collections&collectionkeywords=${keyword}`}>
+											<div className='badge-tag' data-testid={`collectionKeyword${index}`}>
+												{keyword}
+											</div>
+										</a>
+									))}
 							</Col>
 							<Col sm={1} lg={1} />
 						</Row>
@@ -417,12 +430,12 @@ export const CollectionPage = props => {
 						googleAnalytics.recordEvent('Collections', `Clicked ${key} tab`, `Viewing ${key}`);
 					}}
 					data-testid='collectionPageTabs'>
-					<Tab eventKey='dataset' title={'Datasets (' + datasetCount + ')'}></Tab>
-					<Tab eventKey='tool' title={'Tools (' + toolCount + ')'}></Tab>
-					<Tab eventKey='paper' title={'Papers (' + paperCount + ')'}></Tab>
-					<Tab eventKey='dataUseRegister' title={'Data Uses (' + dataUseRegisterCount + ')'}></Tab>
-					<Tab eventKey='person' title={'People (' + personCount + ')'}></Tab>
-					<Tab eventKey='course' title={'Course (' + courseCount + ')'}></Tab>
+					<Tab eventKey='dataset' title={`Datasets (${datasetCount})`} />
+					<Tab eventKey='tool' title={`Tools (${toolCount})`} />
+					<Tab eventKey='paper' title={`Papers (${paperCount})`} />
+					<Tab eventKey='dataUseRegister' title={`Data Uses (${dataUseRegisterCount})`} />
+					<Tab eventKey='person' title={`People (${personCount})`} />
+					<Tab eventKey='course' title={`Course (${courseCount})`} />
 					<Tab eventKey='discussion' title={`Discussion (${discoursePostCount})`}>
 						<Container className='resource-card'>
 							<Row>
@@ -432,7 +445,8 @@ export const CollectionPage = props => {
 										collectionId={collectionData.id}
 										topicId={collectionData.discourseTopicId || 0}
 										userState={userState}
-										onUpdateDiscoursePostCount={updateDiscoursePostCount}></DiscourseTopic>
+										onUpdateDiscoursePostCount={updateDiscoursePostCount}
+									/>
 								</Col>
 							</Row>
 						</Container>
@@ -454,22 +468,28 @@ export const CollectionPage = props => {
 							onSubmit={doCollectionsSearch}
 							isLoading={isResultsLoading}
 							inputProps={{
-								mt: 2,
+								onChange: setSearchString,
+								onReset: handleReset,
+								onKeyDownEnter: handleKeyDownEnter,
+								value: searchString,
 							}}
 							sortProps={{
 								options: dropdownItems,
-								defaultValue: 'recentlyadded',
+								value: sort,
 								onSort: handleSort,
-								mt: 2,
 							}}
 							type='collection'
-							mb={2}
 						/>
 					</LayoutContent>
 				)}
 				<Row>
 					<Col sm={1} lg={1} />
 					<Col sm={10} lg={10}>
+						{!key && (
+							<LayoutBox mt={2}>
+								<MessageNotFound />
+							</LayoutBox>
+						)}
 						{key === 'dataset' ? (
 							<DatasetCollectionResults
 								searchResults={handlePaginatedItems(datasetIndex)}
@@ -517,7 +537,7 @@ export const CollectionPage = props => {
 			{userState[0].loggedIn &&
 				(userState[0].role === 'Admin' || (collectionData.authors && collectionData.authors.includes(userState[0].id))) && (
 					<ActionBar userState={userState}>
-						<ResourcePageButtons data={collectionData} userState={userState} isCollection={true} />
+						<ResourcePageButtons data={collectionData} userState={userState} isCollection />
 					</ActionBar>
 				)}
 

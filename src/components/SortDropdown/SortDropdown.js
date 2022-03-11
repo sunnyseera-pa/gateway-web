@@ -53,9 +53,9 @@ const SortDropdown = ({ onSort, className, options, value, direction, allowDirec
 			<Dropdown
 				css={styles.dropdown}
 				onSelect={handleSort}
-				options={options.map(value => ({
-					label: t(`sortby.options${allowDirection ? 'Sortable' : ''}.${value}`),
-					value,
+				options={options.map(option => ({
+					label: typeof option === 'string' ? t(`sortby.options${allowDirection ? 'Sortable' : ''}.${option}`) : option.label,
+					value: typeof option === 'string' ? option : option.value,
 				}))}
 				value={state.value}
 				{...outerProps}
