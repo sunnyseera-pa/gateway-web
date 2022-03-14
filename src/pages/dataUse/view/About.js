@@ -23,7 +23,6 @@ const About = ({ data }) => {
 			: 0;
 
 	const handleAnalytics = (label, value) => {
-		console.log('Ananlystics', label,value);
 		googleAnalytics.recordEvent('Data uses', label, value);
 	};
 
