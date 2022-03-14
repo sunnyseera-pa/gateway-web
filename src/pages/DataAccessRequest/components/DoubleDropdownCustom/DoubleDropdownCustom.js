@@ -68,7 +68,7 @@ class DoubleDropdownCustom extends React.Component {
             .pop([]);
 
         return (
-            <Navbar collapseOnSelect expand='lg'>
+            <Navbar collapseOnSelect expand='lg' className='doubleDropdownCustom'>
                 <Nav className='mr-auto'>
                     <Dropdown
                         onSelect={this.changingSelect}
