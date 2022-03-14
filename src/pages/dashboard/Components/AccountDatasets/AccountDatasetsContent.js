@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import Icon from '../../../../components/Icon';
+import LayoutBox from '../../../../components/LayoutBox';
 import SearchControls from '../../../../components/SearchControls';
 import { DATASETS_STATUS_ACTIVE, STATUS_ARCHIVE, STATUS_INREVIEW, STATUS_REJECTED } from '../../../../configs/constants';
 import DatasetCard from '../../../commonComponents/DatasetCard';
@@ -13,29 +14,56 @@ import '../../Dashboard.scss';
 const options = ['latest', 'alphabetic', 'metadata'];
 const optionsWithPublish = ['latest', 'alphabetic', 'metadata', 'recentlyadded'];
 
-const AccountDatasetsContent = ({ data = [], onSubmit, isLoading, isFetched, status, params, team, count }) => {
+const AccountDatasetsContent = ({ data = [], onSubmit, onReset, isLoading, isFetched, status, params, team, count }) => {
+	const { search, sortBy, sortDirection, maxResults } = params;
+
 	const [searchValue, setSearchValue] = useState('');
+	const [sortValue, setSortValue] = useState({
+		value: sortBy,
+		direction: sortDirection,
+	});
+
 	const history = useHistory();
 
 	const { t } = useTranslation();
+
 	const handleChange = React.useCallback(value => {
 		setSearchValue(value);
 	}, []);
 
-	const getDatasetPath = id => {
-		return `/account/datasets/${id}`;
-	};
+	const getDatasetPath = id => `/account/datasets/${id}`;
 
 	const handleActivityLogClick = id => {
 		history.push(getDatasetPath(id));
 	};
 
-	const hasActivityHistory = React.useCallback(
-		dataset => {
-			return dataset.listOfVersions.length > 0 && team === 'admin';
+	const handleKeyDownEnter = React.useCallback(submitForm => {
+		submitForm();
+	}, []);
+
+	const handleSort = React.useCallback(
+		(data, submitForm) => {
+			setSortValue(data);
+
+			submitForm();
 		},
-		[team]
+		[searchValue]
 	);
+
+	React.useEffect(() => {
+		setSearchValue(search);
+	}, [search]);
+
+	React.useEffect(() => {
+		if (sortBy && sortDirection) {
+			setSortValue({
+				value: sortBy,
+				direction: sortDirection,
+			});
+		}
+	}, [sortBy, sortDirection]);
+
+	const hasActivityHistory = React.useCallback(dataset => dataset.listOfVersions.length > 0 && team === 'admin', [team]);
 
 	const getDatasetCardProps = dataset => {
 		const datasetCardProps = {};
@@ -54,8 +82,6 @@ const AccountDatasetsContent = ({ data = [], onSubmit, isLoading, isFetched, sta
 		return datasetCardProps;
 	};
 
-	const { search, sortBy, sortDirection, maxResults } = params;
-
 	let statusOptions = options;
 
 	if (team !== 'admin' && (status === STATUS_ARCHIVE || status === DATASETS_STATUS_ACTIVE)) {
@@ -67,27 +93,32 @@ const AccountDatasetsContent = ({ data = [], onSubmit, isLoading, isFetched, sta
 			{isFetched && (
 				<SearchControls
 					type={t(`dataset.${status}`)}
-					mt={3}
 					onSubmit={onSubmit}
 					inputProps={{
+						onKeyDownEnter: handleKeyDownEnter,
 						onChange: handleChange,
-						mt: 2,
-						value: search,
+						value: searchValue,
+						onReset,
 					}}
 					sortProps={{
-						direction: sortDirection,
-						value: sortBy,
+						direction: sortValue.direction,
+						value: sortValue.value,
 						options: statusOptions,
-						mt: 2,
 						allowDirection: true,
 						minWidth: '300px',
+						onSort: handleSort,
 					}}
+					mt={4}
 				/>
 			)}
 
 			<SearchResults
 				data={data}
-				errorMessage={({ type }) => <MessageNotFound word={pluralize(type)} />}
+				errorMessage={({ type }) => (
+					<LayoutBox mt={2}>
+						<MessageNotFound word={pluralize(type)} />
+					</LayoutBox>
+				)}
 				results={data =>
 					data.map(dataset => (
 						<DatasetCard
@@ -96,7 +127,7 @@ const AccountDatasetsContent = ({ data = [], onSubmit, isLoading, isFetched, sta
 							title={dataset.name}
 							publisher={status !== STATUS_ARCHIVE && dataset.datasetv2.summary.publisher.name}
 							version={dataset.datasetVersion}
-							isDraft={true}
+							isDraft
 							datasetStatus={dataset.activeflag}
 							timeStamps={dataset.timestamps}
 							completion={dataset.percentageCompleted}
