@@ -801,7 +801,7 @@ const EditFormDataUse = props => {
 																			selected.forEach(selectedItem => {
 																				selectedItem.customOption === true
 																					? tempSelected.push({
-																							id: isNumber(selectedItem.pid) ? selectedItem.pid : 'nonGateway',
+																							pid: isNumber(selectedItem.pid) ? selectedItem.pid : 'nonGateway',
 																							name: selectedItem.name || selectedItem.label,
 																					  })
 																					: tempSelected.push(selectedItem);
