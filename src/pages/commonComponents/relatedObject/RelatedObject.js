@@ -8,7 +8,7 @@ import Tool from './Tool/Tool';
 import Paper from './Paper/Paper';
 import Course from './Course/Course';
 import Person from './Person/Person';
-import relatedObjectService from '../../../services/related-object';
+import relatedObjectService from '../../../services/related-objects';
 import './RelatedObject.scss';
 
 var cmsURL = require('../BaseURL').getCMSURL();
@@ -76,7 +76,7 @@ class RelatedObject extends React.Component {
 		//need to handle error if no id is found
 		this.setState({ isLoading: true });
 
-		relatedObjectService.getRelatedObjectRequest(id, type).then(res => {
+		relatedObjectService.getRelatedObjectByType(id, type).then(res => {
 			this.setState({
 				data: res.data.data[0],
 				isCohortDiscovery: res.data.data[0].isCohortDiscovery || false,

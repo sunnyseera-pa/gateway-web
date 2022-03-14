@@ -1,7 +1,7 @@
 import React from 'react';
 import { Formik } from 'formik';
-import LayoutBox from '../LayoutBox';
 import PropTypes from 'prop-types';
+import LayoutBox from '../LayoutBox';
 import { PROP_TYPES_LAYOUTBOX } from '../LayoutBox/LayoutBox.propTypes';
 import SearchControlsForm from './SearchControlsForm';
 
@@ -46,7 +46,7 @@ SearchControls.propTypes = {
 };
 
 SearchControls.defaultProps = {
-	enableReinitialize: true,
+	enableReinitialize: false,
 };
 
 export default SearchControls;
