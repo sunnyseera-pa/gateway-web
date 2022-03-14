@@ -37,14 +37,10 @@ const Dropdown = ({
 			: option;
 	};
 
-	const selectedOption = useMemo(
-		() =>
-			parseOption(
-				options.find(option => {
-					return parseOption(option).value === currentValue;
-				})
-			),
-		[currentValue]
+	const selectedOption = parseOption(
+		options.find(option => {
+			return parseOption(option).value === currentValue;
+		})
 	);
 
 	return (
