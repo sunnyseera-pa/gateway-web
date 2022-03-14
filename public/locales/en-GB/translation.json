@@ -137,7 +137,8 @@
 			"buttons": {
 				"cancel": "No, nevermind",
 				"approve": "Approve",
-				"approveAndGoToNext": "Approve and go to next"
+				"approveAndGoToNext": "Approve and go to next",
+				"confirm": "Approve this version"
 			}
 		},
 		"rejectModal": {
@@ -148,7 +149,8 @@
 			"buttons": {
 				"cancel": "No, nevermind",
 				"reject": "Reject",
-				"rejectAndGoToNext": "Reject and go to next"
+				"rejectAndGoToNext": "Reject and go to next",
+				"confirm": "Reject this version"
 			}
 		},
 		"validationErrosModal": {
