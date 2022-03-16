@@ -9,7 +9,7 @@ exports[`Given the AsyncTypeAheadUsers component When it is rendered Then matche
       class="css-1bab3f0-Input form-group"
     >
       <div
-        class="ui-Input ui-Typeahead css-v63lc4-Input input-group"
+        class="ui-Input ui-Typeahead css-vggsyf-AsyncTypeAheadUsers input-group"
       >
         <div
           class="css-1h9gu1e-Input input-group-prepend"
@@ -111,19 +111,7 @@ exports[`Given the AsyncTypeAheadUsers component When it is rendered Then matche
             id="async-users"
             role="listbox"
             style="position: absolute; display: block; max-height: 300px; overflow: auto; top: 0px; left: 0px; transform: translate3d(NaNpx, NaNpx, 0); will-change: transform; width: 0px;"
-          >
-            <li
-              class="disabled"
-              role="option"
-            >
-              <a
-                class="dropdown-item disabled"
-                href="#"
-              >
-                No matches found.
-              </a>
-            </li>
-          </ul>
+          />
         </div>
       </div>
     </div>

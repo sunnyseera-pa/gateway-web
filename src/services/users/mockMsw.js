@@ -6,8 +6,9 @@ export const mswGetUsers = rest.get(`${apiURL}/users`, (req, res, ctx) => {
 		ctx.status(200),
 		ctx.json({
 			data: [
-				{ id: 123, name: 'Test1 Test1' },
-				{ id: 124, name: 'Test2 Test2' },
+				{ id: 12344, name: 'Test1 Test1' },
+				{ id: 12455, name: 'Test2 Test2' },
+				{ id: 123, name: 'Jack Reacher' },
 			],
 		})
 	);

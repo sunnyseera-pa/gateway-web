@@ -45,13 +45,28 @@ describe('Given the AsyncTypeAheadUsers component', () => {
 
 		it('Then name should be rendered for 2 contributors', async () => {
 			await waitFor(() => {
-				expect(wrapper.getByTestId('name-0')).toHaveTextContent('Test1 Test1');
-				expect(wrapper.getByTestId('name-1')).toHaveTextContent('Test2 Test2');
+				expect(wrapper.getByText('Test1 Test1')).toBeTruthy();
+				expect(wrapper.getByText('Test2 Test2')).toBeTruthy();
 			});
+		});
+
+		it('It should have icon next to the current user ', async () => {
+			await waitFor(() => {
+				expect(wrapper.getByTestId('icon-0')).toBeTruthy();
+			});
+		});
+
+		it('Then it should  have `Recently added` Header', async () => {
+			await waitFor(() => expect(wrapper.getByText('Recently added:')).toBeTruthy());
 		});
 	});
 	describe('And the input has a value', () => {
 		beforeAll(() => {
+			server.listen();
+			wrapper = render(<AsyncTypeAheadUsers selectedUsers={mockAuthors} showAuthor={true} currentUserId={123} changeHandler={handler} />, {
+				wrapper: Providers,
+			});
+			input = document.querySelector('.rbt-input-main');
 			fireEvent.click(input);
 			fireEvent.change(input, { target: { value: 'jack' } });
 		});
@@ -63,6 +78,10 @@ describe('Given the AsyncTypeAheadUsers component', () => {
 		it('Then should have the correct dropdown values', async () => {
 			await waitFor(() => expect(wrapper.queryByText('Jack Leacher')).toBeTruthy());
 			await waitFor(() => expect(wrapper.queryByText('Jack Sparrow')).toBeTruthy());
+		});
+
+		it('Then it should not have `Recently added` Header', async () => {
+			await waitFor(() => expect(wrapper.queryByText('Recently added:')).toBeNull());
 		});
 	});
 });
