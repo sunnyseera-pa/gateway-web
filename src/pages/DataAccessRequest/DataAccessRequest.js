@@ -2206,7 +2206,12 @@ class DataAccessRequest extends Component {
 						close={this.toggleContributorModal}
 						mainApplicant={this.state.mainApplicant}
 						handleOnSaveChanges={this.submitContributors}>
-						<AsyncTypeAheadUsers selectedUsers={this.state.authorIds} changeHandler={this.updateContributors} getUsersInfo={true} />
+						<AsyncTypeAheadUsers
+							selectedUsers={this.state.authorIds}
+							changeHandler={this.updateContributors}
+							getUsersInfo={true}
+							currentUserId={this.state.userId}
+						/>
 					</ContributorModal>
 
 					<AssignWorkflowModal
