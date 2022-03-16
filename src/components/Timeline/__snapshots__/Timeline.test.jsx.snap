@@ -2,69 +2,73 @@
 
 exports[`Given the Timeline component When it is rendered Then matches the previous snapshot 1`] = `
 <div>
-  <ul
-    class="ui-Timeline additional-classname css-1sivg29 css-1rag44v-Timeline"
+  <div
+    class="ui-LayoutBox css-1sivg29"
   >
-    <li
-      class="css-f5erw7"
+    <ul
+      class="ui-Timeline additional-classname css-1rag44v-Timeline"
     >
-      <div
-        class="css-z67izj"
+      <li
+        class="css-2thmyz-Timeline"
       >
         <div
-          class="timeline-icon css-1vyp46c"
+          class="css-1joet7c-Timeline"
         >
-          <div>
-            Icon 1
+          <div
+            class="timeline-icon css-ltao01-Timeline"
+          >
+            <div>
+              Icon 1
+            </div>
+          </div>
+          <div
+            class="css-ja54hi-Timeline"
+          >
+            <time
+              data-testid="event-time-0"
+              datetime="17:02"
+            >
+              17:02
+            </time>
           </div>
         </div>
         <div
-          class="css-1pfaqp5"
+          class="css-1sdr2xt-Timeline"
         >
-          <time
-            data-testid="event-time-0"
-            datetime="17:02"
-          >
-            17:02
-          </time>
+          Content 1
         </div>
-      </div>
-      <div
-        class="css-obendf"
-      >
-        Content 1
-      </div>
-    </li>
-    <li
-      class="css-f5erw7"
-    >
-      <div
-        class="css-z67izj"
+      </li>
+      <li
+        class="css-2thmyz-Timeline"
       >
         <div
-          class="timeline-icon css-1vyp46c"
+          class="css-1joet7c-Timeline"
         >
-          <div>
-            Icon 2
+          <div
+            class="timeline-icon css-ltao01-Timeline"
+          >
+            <div>
+              Icon 2
+            </div>
+          </div>
+          <div
+            class="css-ja54hi-Timeline"
+          >
+            <time
+              data-testid="event-time-1"
+              datetime="16:07"
+            >
+              16:07
+            </time>
           </div>
         </div>
         <div
-          class="css-1pfaqp5"
+          class="css-1sdr2xt-Timeline"
         >
-          <time
-            data-testid="event-time-1"
-            datetime="16:07"
-          >
-            16:07
-          </time>
+          Content 2
         </div>
-      </div>
-      <div
-        class="css-obendf"
-      >
-        Content 2
-      </div>
-    </li>
-  </ul>
+      </li>
+    </ul>
+  </div>
 </div>
 `;
