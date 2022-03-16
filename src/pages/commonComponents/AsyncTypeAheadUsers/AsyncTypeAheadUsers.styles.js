@@ -5,6 +5,7 @@ export const root = icon => theme => {
 
 	return css`
 		.header {
+			border-top: none;
 			font-weight: bold;
 			font-size: 16px;
 		}
