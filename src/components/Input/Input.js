@@ -87,7 +87,7 @@ const Input = ({
 };
 
 Input.propTypes = {
-    PROP_TYPES_INPUT,
+    ...PROP_TYPES_INPUT,
     ...PROP_TYPES_LAYOUTBOX,
 };
 

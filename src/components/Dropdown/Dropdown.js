@@ -2,8 +2,8 @@
 import { cx } from '@emotion/css';
 import { jsx } from '@emotion/react';
 import PropTypes from 'prop-types';
-import { useMemo } from 'react';
 import { Dropdown as BootstrapDropdown } from 'react-bootstrap';
+import { ReactComponent as CheckIcon } from '../../images/check.svg';
 import Icon from '../Icon';
 import LayoutBox from '../LayoutBox';
 import { PROP_TYPES_LAYOUTBOX } from '../LayoutBox/LayoutBox.propTypes';
@@ -72,7 +72,7 @@ Dropdown.propTypes = {
 Dropdown.defaultProps = {
     variant: 'primary',
     options: [],
-    iconSelected: <Icon name='check' fill='green600' color='green600' ml={1} size='xl' />,
+    iconSelected: <Icon svg={<CheckIcon />} fill='green600' color='green600' ml={1} size='xl' />,
     size: 'default',
 };
 

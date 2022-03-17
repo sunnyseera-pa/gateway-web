@@ -9,6 +9,7 @@ import serviceUsers from '../../../services/users/users';
 import serviceAuth from '../../../services/auth/auth';
 import UploaderUtil from '../../../utils/Uploader.util';
 import Icon from '../../../components/Icon';
+import { ReactComponent as SearchIcon } from '../../../images/search.svg';
 import * as styles from './AsyncTypeAheadUsers.styles';
 
 function AsyncTypeAheadUsers(props) {
@@ -17,38 +18,38 @@ function AsyncTypeAheadUsers(props) {
 	const [selected, setSelected] = useState([]);
 	const [showRecentlyAdded, setShowRecentlyAdded] = useState(false);
 
-	useEffect(() => {
-		props.selectedUsers && props.getUsersInfo ? getUsersInfo(props.selectedUsers) : setSelected(props.selectedUsers);
-	}, [props.selectedUsers]);
+    useEffect(() => {
+        props.selectedUsers && props.getUsersInfo ? getUsersInfo(props.selectedUsers) : setSelected(props.selectedUsers);
+    }, [props.selectedUsers]);
 
-	const getUsersInfo = async contributors => {
-		const selectedUsers = await Promise.all(
-			contributors
-				.filter(id => id !== props.currentUserId)
-				.map(async id => {
-					const userInfo = await UploaderUtil.getUserInfo(id);
-					if (userInfo) {
-						return { id: userInfo.id, name: `${userInfo.firstname} ${userInfo.lastname}` };
-					}
-				})
-		);
-		setSelected(selectedUsers);
-	};
+    const getUsersInfo = async contributors => {
+        const selectedUsers = await Promise.all(
+            contributors
+                .filter(id => id !== props.currentUserId)
+                .map(async id => {
+                    const userInfo = await UploaderUtil.getUserInfo(id);
+                    if (userInfo) {
+                        return { id: userInfo.id, name: `${userInfo.firstname} ${userInfo.lastname}` };
+                    }
+                })
+        );
+        setSelected(selectedUsers);
+    };
 
-	const handleChange = options => {
-		if (props.showAuthor) {
-			props.changeHandler(options);
-		} else {
-			props.changeHandler(options);
-			if (options.length) {
-				setSelected(options);
-				props.changeHandler(options);
-			} else {
-				setSelected([]);
-				props.changeHandler([]);
-			}
-		}
-	};
+    const handleChange = options => {
+        if (props.showAuthor) {
+            props.changeHandler(options);
+        } else {
+            props.changeHandler(options);
+            if (options.length) {
+                setSelected(options);
+                props.changeHandler(options);
+            } else {
+                setSelected([]);
+                props.changeHandler([]);
+            }
+        }
+    };
 
 	const handleInputChange = async value => {
 		if (value.length > 2) {
@@ -113,16 +114,16 @@ function AsyncTypeAheadUsers(props) {
 }
 
 AsyncTypeAheadUsers.propTypes = {
-	selectedUsers: PropTypes.array,
-	showAuthor: PropTypes.bool,
-	getUsersInfo: PropTypes.bool,
-	changeHandler: PropTypes.func,
-	currentUserId: PropTypes.number,
+    selectedUsers: PropTypes.array,
+    showAuthor: PropTypes.bool,
+    getUsersInfo: PropTypes.bool,
+    changeHandler: PropTypes.func,
+    currentUserId: PropTypes.number,
 };
 AsyncTypeAheadUsers.defaultProps = {
-	selectedUsers: [],
-	showAuthor: false,
-	getUsersInfo: false,
+    selectedUsers: [],
+    showAuthor: false,
+    getUsersInfo: false,
 };
 
 export default AsyncTypeAheadUsers;
