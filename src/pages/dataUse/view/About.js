@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Container, Row, Col, Button } from 'react-bootstrap';
 import { isArray } from 'lodash';
 import moment from 'moment';
+import googleAnalytics from '../../../tracking';
 import SVGIcon from '../../../images/SVGIcon';
 import Tag from '../../commonComponents/relatedObject/Tag/Tag';
 import AboutSection from './AboutSection';
@@ -21,6 +22,10 @@ const About = ({ data }) => {
 			  }, 0)
 			: 0;
 
+	const handleAnalytics = (label, value) => {
+		googleAnalytics.recordEvent('Data uses', label, value);
+	};
+
 	return (
 		<>
 			<>
@@ -39,9 +44,10 @@ const About = ({ data }) => {
 											tagName={value.trim()}
 											url='/search?search=&tab=Datauses&datauseorganisationname='
 											onSearchPage={false}
-											activeLink={true}
+											activeLink
 											tagType='tag'
 											className='badge-datause-bold'
+											onClick={() => handleAnalytics('Clicked datauseorganisationname', value.trim())}
 										/>
 									))}
 								</>
@@ -64,7 +70,6 @@ const About = ({ data }) => {
 							</span>
 						</AboutSection>
 					)}
-
 					{!data.organisationSector && hide ? (
 						(() => {
 							count++;
@@ -81,7 +86,8 @@ const About = ({ data }) => {
 										tagType='tag'
 										url='/search?search=&tab=Datauses&datauserganisationsector='
 										onSearchPage={false}
-										activeLink={true}
+										activeLink
+										onClick={() => handleAnalytics('Clicked datauserganisationsector', data.organisationSector)}
 									/>
 								) : (
 									notSpecified
@@ -114,10 +120,10 @@ const About = ({ data }) => {
 													url='/person/'
 													onSearchPage={false}
 													showTagType={false}
-													activeLink={true}
+													activeLink
 													className='hdruser badge-datause-bold'>
 													<span className='datatuse-personicon-bg'>
-														<SVGIcon name='personiconwithbg' width={17} height={16} fill={'#3db28c'} />
+														<SVGIcon name='personiconwithbg' width={17} height={16} fill='#3db28c' />
 													</span>
 												</Tag>
 											))}
@@ -164,7 +170,8 @@ const About = ({ data }) => {
 												tagType='tag'
 												url='/search?search=&tab=Datauses&datausefundersandsponsors='
 												onSearchPage={false}
-												activeLink={true}
+												activeLink
+												onClick={() => handleAnalytics('Clicked datausefundersandsponsors', value)}
 											/>
 									  ))
 									: notSpecified}
@@ -230,7 +237,7 @@ const About = ({ data }) => {
 					<AboutSection
 						heading='Lay summary'
 						id='laySummary-details'
-						showMoreButton={data.laySummary && data.laySummary.length >= 250 ? true : false}
+						showMoreButton={!!(data.laySummary && data.laySummary.length >= 250)}
 						showLess={closedLaySummary}
 						onClickHandler={() => (!closedLaySummary ? setClosedLaySummary(true) : setClosedLaySummary(false))}
 						toolTipText='A concise and clear description of the project, (e.g. as required by URKI in funding applications). It should outline the problem, objectives and expected outcomes in language that is understandable to the general public and contain a maximum of 300 words.'>
@@ -252,7 +259,7 @@ const About = ({ data }) => {
 					<AboutSection
 						heading='Public benefit statement'
 						id='publicBenefitStatement-details'
-						showMoreButton={data.publicBenefitStatement && data.publicBenefitStatement.length >= 250 ? true : false}
+						showMoreButton={!!(data.publicBenefitStatement && data.publicBenefitStatement.length >= 250)}
 						showLess={closedPublicBenefit}
 						onClickHandler={() => (!closedPublicBenefit ? setClosedPublicBenefit(true) : setClosedPublicBenefit(false))}
 						toolTipText='A description in plain English of the anticipated outcomes, or impact of project on the general public.'>
@@ -373,8 +380,9 @@ const About = ({ data }) => {
 														tagType='tag'
 														url='/dataset/'
 														onSearchPage={false}
-														activeLink={true}
+														activeLink
 														className='badge-datause-bold'
+														onClick={() => handleAnalytics('Clicked dataset', gatewayDataset[0].pid)}
 													/>
 												) : (
 													<Tag
@@ -384,8 +392,9 @@ const About = ({ data }) => {
 														tagType='tag'
 														url='/dataset/'
 														onSearchPage={false}
-														activeLink={true}
+														activeLink
 														className='badge-datause-bold'
+														onClick={() => handleAnalytics('Clicked dataset', gatewayDataset.pid)}
 													/>
 												)}
 											</>
@@ -519,7 +528,7 @@ const About = ({ data }) => {
 						<AboutSection
 							heading='Description of the confidential data being used'
 							id='confidential-data-details'
-							showMoreButton={data.confidentialDataDescription && data.confidentialDataDescription.length >= 250 ? true : false}
+							showMoreButton={!!(data.confidentialDataDescription && data.confidentialDataDescription.length >= 250)}
 							showLess={closedDataUse}
 							onClickHandler={() => (!closedDataUse ? setClosedDataUse(true) : setClosedDataUse(false))}
 							toolTipText='A description of the specific patient identifiable fields that have been included in the dataset(s) being accessed.'>
@@ -601,8 +610,9 @@ const About = ({ data }) => {
 													url='/tool/'
 													onSearchPage={false}
 													showTagType={false}
-													activeLink={true}
+													activeLink
 													className='badge-datause-bold'
+													onClick={() => handleAnalytics('Clicked tool', gatewayOutputsTool.id)}
 												/>
 											))}{' '}
 										{data &&
@@ -615,8 +625,9 @@ const About = ({ data }) => {
 													url='/paper/'
 													onSearchPage={false}
 													showTagType={false}
-													activeLink={true}
+													activeLink
 													className='badge-datause-bold'
+													onClick={() => handleAnalytics('Clicked paper', gatewayOutputsPaper.id)}
 												/>
 											))}{' '}
 										{data &&
@@ -645,8 +656,15 @@ const About = ({ data }) => {
 				</Col>
 			</Row>
 			<Row className='datause-hidefields-button'>
-				<Button className='datause-button' onClick={() => (hide ? setHide(false) : setHide(true))} data-testid='hidefields'>
-					{!hide ? 'Hide all empty fields' : 'Show all empty fields (' + count + ')'}
+				<Button
+					className='datause-button'
+					onClick={() => {
+						hide ? setHide(false) : setHide(true);
+
+						handleAnalytics('Clicked show / hide empty fields', !hide ? 'show' : 'hide');
+					}}
+					data-testid='hidefields'>
+					{!hide ? 'Hide all empty fields' : `Show all empty fields (${count})`}
 				</Button>
 			</Row>
 		</>
