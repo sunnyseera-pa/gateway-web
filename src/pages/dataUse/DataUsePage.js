@@ -179,7 +179,7 @@ const DataUsePage = React.forwardRef(({ onClickDataUseUpload, team }, ref) => {
 								variant='primary'
 								className='addButton'
 								onClick={
-									(() => googleAnalytics.recordEvent('DataUses', 'Upload a data use', 'Data use dashboard button clicked'),
+									(() => googleAnalytics.recordEvent('Data uses', 'Upload a data use', 'Data use dashboard button clicked'),
 									onClickDataUseUpload)
 								}>
 								+ Upload

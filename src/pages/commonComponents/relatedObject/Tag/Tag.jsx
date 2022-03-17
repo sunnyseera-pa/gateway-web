@@ -20,6 +20,7 @@ const Tag = props => {
 		version,
 		tagId,
 		className,
+		onClick,
 	} = props;
 	const displayTagName = showTagType ? (
 		<>
@@ -37,7 +38,7 @@ const Tag = props => {
 			return (
 				<span
 					css={styles.pointer}
-					onClick={event => updateOnFilterBadgeHandler(filter, { label: tagName, parentKey: parentKey })}
+					onClick={event => updateOnFilterBadgeHandler(filter, { label: tagName, parentKey })}
 					data-testid={`badge-${tagName}-span`}>
 					<div className={`badge-${tagType} ${className}`} data-testid={`badge-${tagName}`}>
 						{props.children}
@@ -45,24 +46,22 @@ const Tag = props => {
 					</div>
 				</span>
 			);
-		} else {
-			return (
-				<a href={`${url}${tagId ? tagId : tagName}`} data-testid={`badge-${tagName}-link`} css={styles.pointer}>
-					<div className={`badge-${tagType} ${className}`} data-testid={`badge-${tagName}`}>
-						{props.children}
-						<span className={className}>{displayTagName}</span>
-					</div>
-				</a>
-			);
 		}
-	} else {
 		return (
-			<div className={`badge-${tagType} ${className}`} data-testid={`badge-${tagName}`}>
-				{props.children}
-				<span className={className}>{displayTagName}</span>
-			</div>
+			<a href={`${url}${tagId || tagName}`} data-testid={`badge-${tagName}-link`} css={styles.pointer} onClick={onClick}>
+				<div className={`badge-${tagType} ${className}`} data-testid={`badge-${tagName}`}>
+					{props.children}
+					<span className={className}>{displayTagName}</span>
+				</div>
+			</a>
 		);
 	}
+	return (
+		<div className={`badge-${tagType} ${className}`} data-testid={`badge-${tagName}`}>
+			{props.children}
+			<span className={className}>{displayTagName}</span>
+		</div>
+	);
 };
 
 Tag.propTypes = {
@@ -78,7 +77,9 @@ Tag.propTypes = {
 	showTagType: PropTypes.bool.isRequired,
 	version: PropTypes.string,
 	className: PropTypes.string,
+	onClick: PropTypes.func,
 };
+
 Tag.defaultProps = {
 	tagId: '',
 	version: '',
@@ -90,6 +91,7 @@ Tag.defaultProps = {
 	url: '/search?search',
 	className: '',
 	updateOnFilterBadgeHandler: () => {},
+	onClick: () => {},
 };
 
 export default Tag;
