@@ -6,17 +6,20 @@ exports[`Given the AsyncTypeAheadUsers component When it is rendered Then matche
     class="ui-LayoutBox css-1sivg29"
   >
     <div
-      class="css-1r9m6uy-Input form-group"
+      class="css-1bab3f0-Input form-group"
     >
-      <label
-        class="css-prhs3j-Input form-label"
-      />
       <div
-        class="ui-Input ui-Typeahead css-kuqv2w-Input input-group"
+        class="ui-Input ui-Typeahead css-vggsyf-AsyncTypeAheadUsers input-group"
       >
         <div
-          class="css-f50cg4-Input input-group-prepend"
-        />
+          class="css-1h9gu1e-Input input-group-prepend"
+        >
+          <span
+            class="ui-Icon css-1sivg29 css-2qlk89-Icon"
+          >
+            <iconmock />
+          </span>
+        </div>
         <div
           class="rbt"
           style="outline: none; position: relative;"
@@ -108,19 +111,7 @@ exports[`Given the AsyncTypeAheadUsers component When it is rendered Then matche
             id="async-users"
             role="listbox"
             style="position: absolute; display: block; max-height: 300px; overflow: auto; top: 0px; left: 0px; transform: translate3d(NaNpx, NaNpx, 0); will-change: transform; width: 0px;"
-          >
-            <li
-              class="disabled"
-              role="option"
-            >
-              <a
-                class="dropdown-item disabled"
-                href="#"
-              >
-                No matches found.
-              </a>
-            </li>
-          </ul>
+          />
         </div>
       </div>
     </div>

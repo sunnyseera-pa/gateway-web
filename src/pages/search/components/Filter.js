@@ -33,7 +33,7 @@ const CheckboxWrapper = ({ node = {}, highlighted = [], parentKey = '', onHandle
 };
 
 const TreeHeader = ({ node }) => {
-	let { label, closed, beta = false } = node;
+	const { label, closed, beta = false } = node;
 	let count = 0;
 
 	const getParentCounts = tree => {
@@ -45,7 +45,7 @@ const TreeHeader = ({ node }) => {
 				count += node.selectedCount;
 			}
 			if (typeof node.filters !== 'undefined' && !_.isEmpty(node.filters)) {
-				let child = getParentCounts(node.filters);
+				const child = getParentCounts(node.filters);
 				return child;
 			}
 		});
@@ -53,7 +53,7 @@ const TreeHeader = ({ node }) => {
 	};
 
 	const renderCount = () => {
-		let parentCount = getParentCounts(node.filters) || node.selectedCount;
+		const parentCount = getParentCounts(node.filters) || node.selectedCount;
 		return parentCount > 0 ? (
 			<div className='node-micro__count'>
 				<FilterCount count={parentCount} />
@@ -64,16 +64,16 @@ const TreeHeader = ({ node }) => {
 	};
 
 	return (
-		<Fragment>
+		<>
 			<div className='node-title'>
 				<span className={closed ? '' : 'selected'}>{label}</span>
 				{beta ? <div className='node-beta'>BETA</div> : ''}
 			</div>
 			<div className='node-micro'>
 				{renderCount()}
-				<SVGIcon width='12px' height='12px' className={closed ? '' : 'flip180'} name='chevronbottom' fill={'#475da7'} />
+				<SVGIcon width='12px' height='12px' className={closed ? '' : 'flip180'} name='chevronbottom' fill='#475da7' />
 			</div>
-		</Fragment>
+		</>
 	);
 };
 
@@ -120,9 +120,9 @@ const TreeComponent = ({
 			const hasFilterGroups = [...node.filters].filter(i => i.hasOwnProperty('key')).length > 0;
 			const rawFilterValues = [...node.filters].filter(i => i.hasOwnProperty('checked')).length > 0;
 			if (hasChildren && hasFilterGroups) return 'node-parent-wrap';
-			else if (!hasChildren && !hasFilterGroups && rawFilterValues) return 'node-checkbox-items';
-			else if (hasChildren) return 'node-checkbox-wrap';
-			else return 'node-checbox-single';
+			if (!hasChildren && !hasFilterGroups && rawFilterValues) return 'node-checkbox-items';
+			if (hasChildren) return 'node-checkbox-wrap';
+			return 'node-checbox-single';
 		}
 	};
 
@@ -137,19 +137,14 @@ const TreeComponent = ({
 	const hasControls = () => {
 		if (isTree(node)) {
 			return !!node.filtersv2 && !node.closed && node.filtersv2.length > 7;
-		} else {
-			return !!node.filters && !node.closed && node.filters.length > 7;
 		}
+		return !!node.filters && !node.closed && node.filters.length > 7;
 	};
 
-	const filterOutHttp = filters => {
-		return filters.filter(filter => {
-			return !/http/i.test(filter.value);
-		});
-	};
+	const filterOutHttp = filters => filters.filter(filter => !/http/i.test(filter.value));
 
 	return (
-		<Fragment>
+		<>
 			<TreeItem
 				node={node}
 				highlighted={highlighted}
@@ -184,7 +179,7 @@ const TreeComponent = ({
 							data={node.filters}
 							parentKey={node.key}
 							highlighted={node.highlighted}
-							hasChildren={true}
+							hasChildren
 							searchValue={searchValue}
 							onHandleInputChange={onHandleInputChange}
 							onHandleToggle={onHandleToggle}
@@ -193,7 +188,7 @@ const TreeComponent = ({
 					)}
 				</div>
 			</SlideDown>
-		</Fragment>
+		</>
 	);
 };
 
@@ -208,16 +203,16 @@ const Filter = ({
 	onHandleToggle,
 	onHandleClearSection,
 }) => {
-	let generateClassName = node => {
-		let { key = '' } = node;
-		let treeClass = 'node';
+	const generateClassName = node => {
+		const { key = '' } = node;
+		const treeClass = 'node';
 		if (hasChildren && !_.isEmpty(key)) return `${treeClass}-group`;
-		else if (hasChildren) return `${treeClass}-subItem`;
-		else return `${treeClass}-wrapper`;
+		if (hasChildren) return `${treeClass}-subItem`;
+		return `${treeClass}-wrapper`;
 	};
 
 	return (
-		<Fragment>
+		<>
 			{data &&
 				data
 					.filter(node => {
@@ -227,28 +222,26 @@ const Filter = ({
 
 						return false;
 					})
-					.map(node => {
-						return (
-							<div key={node.label} className={generateClassName(node)}>
-								{generateClassName(node) !== 'node-subItem' ? (
-									<TreeComponent
-										selected={selected}
-										key={node.id}
-										node={node}
-										parentKey={parentKey}
-										highlighted={node.highlighted}
-										hasChildren={hasChildren}
-										onHandleInputChange={onHandleInputChange}
-										onHandleToggle={onHandleToggle}
-										onHandleClearSection={onHandleClearSection}
-									/>
-								) : (
-									<CheckboxWrapper node={node} highlighted={highlighted} parentKey={parentKey} onHandleInputChange={onHandleInputChange} />
-								)}
-							</div>
-						);
-					})}
-		</Fragment>
+					.map(node => (
+						<div key={node.label} className={generateClassName(node)}>
+							{generateClassName(node) !== 'node-subItem' ? (
+								<TreeComponent
+									selected={selected}
+									key={node.id}
+									node={node}
+									parentKey={parentKey}
+									highlighted={node.highlighted}
+									hasChildren={hasChildren}
+									onHandleInputChange={onHandleInputChange}
+									onHandleToggle={onHandleToggle}
+									onHandleClearSection={onHandleClearSection}
+								/>
+							) : (
+								<CheckboxWrapper node={node} highlighted={highlighted} parentKey={parentKey} onHandleInputChange={onHandleInputChange} />
+							)}
+						</div>
+					))}
+		</>
 	);
 };
 

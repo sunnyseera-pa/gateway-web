@@ -5,7 +5,8 @@ import PropTypes from 'prop-types';
 import { Form, InputGroup } from 'react-bootstrap';
 import TextareaAutosize from 'react-textarea-autosize';
 import { addCommonPropTypes } from '../../configs/propTypes';
-import useCommonStyles from '../../hooks/useCommonStyles';
+import LayoutBox from '../LayoutBox';
+import { PROP_TYPES_LAYOUTBOX } from '../LayoutBox/LayoutBox.propTypes';
 import * as styles from './Textarea.styles';
 
 const Textarea = ({
@@ -29,26 +30,26 @@ const Textarea = ({
     error,
     ...outerProps
 }) => {
-    const commonStyles = useCommonStyles({ mt, mb, ml, mr, width, minWidth, maxWidth });
-
     return (
-        <Form.Group controlId={id} className={cx('ui-Textarea', className, commonStyles)} css={styles.formGroup}>
-            <Form.Label css={styles.label}>{label}</Form.Label>
-            <InputGroup css={styles.inputGroup({ variant, rows, error })}>
-                {!!maxCharCount && (
-                    <div className='ui-TextArea__charCount' css={styles.charCount}>
-                        {value.length} {charCountDescription}
-                        <span css={styles.charCountValue}>
-                            {' '}
-                            ({value.length}/{maxCharCount})
-                        </span>
-                    </div>
-                )}
-                {autosize && <TextareaAutosize type='text' value={value} {...outerProps} ref={inputRef} />}
-                {!autosize && <Form.Control as='textarea' {...outerProps} ref={inputRef} />}
-            </InputGroup>
-            {error && <div className='errorMessages'>{error}</div>}
-        </Form.Group>
+        <LayoutBox {...{ mt, mb, ml, mr, width, minWidth, maxWidth }}>
+            <Form.Group controlId={id} className={cx('ui-Textarea', className)} css={styles.formGroup}>
+                <Form.Label css={styles.label}>{label}</Form.Label>
+                <InputGroup css={styles.inputGroup({ variant, rows, error })}>
+                    {!!maxCharCount && (
+                        <div className='ui-TextArea__charCount' css={styles.charCount}>
+                            {value.length} {charCountDescription}
+                            <span css={styles.charCountValue}>
+                                {' '}
+                                ({value.length}/{maxCharCount})
+                            </span>
+                        </div>
+                    )}
+                    {autosize && <TextareaAutosize type='text' value={value} {...outerProps} ref={inputRef} />}
+                    {!autosize && <Form.Control as='textarea' {...outerProps} ref={inputRef} />}
+                </InputGroup>
+                {error && <div className='errorMessages'>{error}</div>}
+            </Form.Group>
+        </LayoutBox>
     );
 };
 
@@ -58,6 +59,7 @@ Textarea.defaultProps = {
     charCountDescription: 'character limit',
     value: '',
     rows: 5,
+    ...PROP_TYPES_LAYOUTBOX,
 };
 
 Textarea.propTypes = addCommonPropTypes({
