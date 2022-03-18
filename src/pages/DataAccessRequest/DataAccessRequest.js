@@ -245,7 +245,7 @@ class DataAccessRequest extends Component {
 				roles: this.getUserRoles(),
 			});
 		}
-	}	
+	}
 
 	loadMultipleDatasetMode = async datasetIds => {
 		try {
@@ -591,20 +591,25 @@ class DataAccessRequest extends Component {
 	 */
 	onFormUpdate = (id = '', questionAnswers = {}) => {
 		// Populate relevant fields when contributor is selected in DropdownCustom
-		if(id === 'safepeopleprimaryapplicantfullname' && typeof questionAnswers.safepeopleprimaryapplicantfullname === 'object'){
+		if (id === 'safepeopleprimaryapplicantfullname' && typeof questionAnswers.safepeopleprimaryapplicantfullname === 'object') {
 			let contributor = questionAnswers.safepeopleprimaryapplicantfullname;
 
 			questionAnswers.safepeopleprimaryapplicantfullname = `${contributor.firstname} ${contributor.lastname}`;
 			questionAnswers.safepeopleprimaryapplicantorcid = contributor.orcid;
-			(_.has(contributor,'user.email') ? questionAnswers.safepeopleprimaryapplicantemail = contributor.user.email : questionAnswers.safepeopleprimaryapplicantemail ='');
+			_.has(contributor, 'user.email')
+				? (questionAnswers.safepeopleprimaryapplicantemail = contributor.user.email)
+				: (questionAnswers.safepeopleprimaryapplicantemail = '');
 			questionAnswers.safepeopleprimaryapplicantorganisationname = contributor.organisation;
-
-		} else if(id.includes('safepeopleotherindividualsfullname') && typeof questionAnswers[id] === 'object') {
+		} else if (id.includes('safepeopleotherindividualsfullname') && typeof questionAnswers[id] === 'object') {
 			let contributor = questionAnswers[id];
-			let organisation = id.length > 34 ? `safepeopleotherindividualsorganisation`.concat(id.substring(34, id.length)) : 'safepeopleotherindividualsorganisation';
+			let organisation =
+				id.length > 34
+					? `safepeopleotherindividualsorganisation`.concat(id.substring(34, id.length))
+					: 'safepeopleotherindividualsorganisation';
 
 			questionAnswers[id] = `${contributor.firstname} ${contributor.lastname}`;
 			questionAnswers[organisation] = contributor.organisation;
+			questionAnswers.safepeopleotherindividualsorcid = contributor.orcid;
 		}
 
 		if (!_.isEmpty(id) && !_.isEmpty(questionAnswers)) {
@@ -1911,11 +1916,10 @@ class DataAccessRequest extends Component {
 		} = this.state;
 		const { userState } = this.props;
 
-
 		const selectedVersion = !_.isEmpty(versions) ? versions.find(v => v.isCurrent).displayTitle : '';
 
-		Winterfell.addInputType('typeaheadCustom', TypeaheadCustom); 
-		Winterfell.addInputType('datePickerCustom', DatePickerCustom); 
+		Winterfell.addInputType('typeaheadCustom', TypeaheadCustom);
+		Winterfell.addInputType('datePickerCustom', DatePickerCustom);
 		Winterfell.addInputType('typeaheadUser', TypeaheadUser);
 		Winterfell.addInputType('textareaInputCustom', TextareaInputCustom);
 		Winterfell.addInputType('dropdownCustom', DropdownCustom);
