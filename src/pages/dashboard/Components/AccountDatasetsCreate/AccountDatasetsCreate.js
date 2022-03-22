@@ -1,13 +1,14 @@
 import React, { useEffect } from 'react';
 import _ from 'lodash';
 import { Alert, Button, Col, Row } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
 import SVGIcon from '../../../../images/SVGIcon';
 import serviceDatasetOnboarding from '../../../../services/dataset-onboarding/dataset-onboarding';
 import googleAnalytics from '../../../../tracking';
-import { useTranslation } from 'react-i18next';
 
 const AccountDatasetsCreate = props => {
 	const {
+		isFederated,
 		publisherID,
 		team,
 		alert: { message },
@@ -41,8 +42,8 @@ const AccountDatasetsCreate = props => {
 	return (
 		<>
 			{message && (
-				<Alert variant={'success'} className='col-sm-12 main-alert'>
-					<SVGIcon name='check' width={18} height={18} fill={'#2C8267'} /> {message}
+				<Alert variant='success' className='col-sm-12 main-alert'>
+					<SVGIcon name='check' width={18} height={18} fill='#2C8267' /> {message}
 				</Alert>
 			)}
 			<div className='accountHeader'>
@@ -58,7 +59,7 @@ const AccountDatasetsCreate = props => {
 						</div>
 					</Col>
 					<Col sm={12} md={4} style={{ textAlign: 'right' }}>
-						{team !== 'admin' && (
+						{team !== 'admin' && !isFederated && (
 							<Button
 								variant='primary'
 								className='addButton'

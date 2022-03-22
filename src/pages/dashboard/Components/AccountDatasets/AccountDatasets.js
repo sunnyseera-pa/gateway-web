@@ -5,6 +5,7 @@ import { LayoutContent } from '../../../../components/Layout';
 import useSearch from '../../../../components/Search/useSearch';
 import { DATASETS_STATUS_ACTIVE, STATUS_INREVIEW } from '../../../../configs/constants';
 import { useAuth } from '../../../../context/AuthContext';
+import { useDashboard } from '../../../../context/DashboardContext';
 import serviceDatasetOnboarding from '../../../../services/dataset-onboarding/dataset-onboarding';
 import googleAnalytics from '../../../../tracking';
 import utils from '../../../../utils/DataSetHelper.util';
@@ -17,6 +18,7 @@ const AccountDatasets = props => {
 	const [key, setKey] = useState(props.alert ? props.alert.tab : '');
 	const [statusCounts, setStatusCounts] = useState({});
 	const { userState } = useAuth();
+	const { isFederated } = useDashboard();
 	const [publisherID, setPublisherId] = useState();
 
 	const { team } = props;
@@ -123,7 +125,7 @@ const AccountDatasets = props => {
 	return (
 		<div>
 			<LayoutContent>
-				<AccountDatasetsCreate publisherID={publisherID} alert={props.alert} team={team} />
+				{isFetched && <AccountDatasetsCreate isFederated={isFederated} publisherID={publisherID} alert={props.alert} team={team} />}
 
 				{isFetched && <AccountDatasetsTabs counts={statusCounts} onSelectTab={handleSelect} team={team} activeKey={key} />}
 
