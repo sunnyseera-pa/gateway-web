@@ -437,7 +437,8 @@ export const DataUseView = props => {
                                                         className='badge-tag badge-datause-bold'
                                                         onClick={() => {
                                                             handleAnalytics('Clicked on datausekeywords', keyword);
-                                                        }}>
+                                                        }}
+                                                    >
                                                         {keyword}
                                                     </a>
                                                 ))}
@@ -467,7 +468,8 @@ export const DataUseView = props => {
                                             googleAnalytics.recordVirtualPageView(`${key} tab`);
 
                                             handleAnalytics(`Clicked ${key} tab`, `Viewing ${key}`);
-                                        }}>
+                                        }}
+                                    >
                                         <Tab eventKey='about' title='About'>
                                             <About data={dataUseData} />
                                         </Tab>

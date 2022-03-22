@@ -189,7 +189,8 @@ const DataUsePage = React.forwardRef(({ onClickDataUseUpload, team }, ref) => {
                                     handleAnalytics('Clicked upload data use', 'Dashboard button');
 
                                     onClickDataUseUpload();
-                                }}>
+                                }}
+                            >
                                 + Upload
                             </Button>
                         </Col>
@@ -200,7 +201,8 @@ const DataUsePage = React.forwardRef(({ onClickDataUseUpload, team }, ref) => {
                     <Col sm={12} lg={12}>
                         <Tabs
                             defaultActiveKey={team === 'user' || (team !== 'user' && team !== 'admin') ? 'Active' : 'Pending approval'}
-                            className='gray700-13 data-use-tabs'>
+                            className='gray700-13 data-use-tabs'
+                        >
                             {tabs.map(tabName => (
                                 <Tab
                                     eventKey={tabName}
@@ -216,7 +218,8 @@ const DataUsePage = React.forwardRef(({ onClickDataUseUpload, team }, ref) => {
                                             tabName === 'Rejected' &&
                                             `${tabName} (${rejected.length})`) ||
                                         (team !== 'user' && team !== 'admin' && tabName === 'Archived' && `${tabName} (${archived.length})`)
-                                    }>
+                                    }
+                                >
                                     {(team === 'user' || (team !== 'user' && team !== 'admin')) && tabName === 'Active' && (
                                         <Table data={currentActive} active team={team} onClickArchive={onClickArchive} />
                                     )}

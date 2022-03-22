@@ -75,7 +75,8 @@ class DoubleDropdownCustom extends React.Component {
                         onFocus={this.handleFocus}
                         onToggle={this.openDropDown}
                         onBlur={this.handleBlur}
-                        autoClose={false}>
+                        autoClose={false}
+                    >
                         <Dropdown.Toggle className='double-dropdown-input' id={this.props.id}>
                             <div className='selected-options-container'>
                                 {this.state.value.map(selectedValue => {
@@ -96,7 +97,8 @@ class DoubleDropdownCustom extends React.Component {
                                     <Dropdown
                                         className='nested-dropdown-whole'
                                         onToggle={this.openNestedDropDown}
-                                        onBlur={this.handleNestedBlur}>
+                                        onBlur={this.handleNestedBlur}
+                                    >
                                         <Dropdown.Toggle className='nested-dropdown'>
                                             Biomedical research
                                             <SVGIcon
