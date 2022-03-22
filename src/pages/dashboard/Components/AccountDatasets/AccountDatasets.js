@@ -67,6 +67,10 @@ const AccountDatasets = props => {
 		[key, publisherID]
 	);
 
+	const handleReset = React.useCallback(submitForm => {
+		submitForm();
+	}, []);
+
 	useEffect(() => {
 		setPublisherId(utils.getPublisherID(userState[0], team));
 		setKey(team === 'admin' ? STATUS_INREVIEW : props.alert.tab || DATASETS_STATUS_ACTIVE);
@@ -109,6 +113,7 @@ const AccountDatasets = props => {
 				isFetched={isFetched}
 				data={datasets}
 				onSubmit={handleSubmit}
+				onReset={handleReset}
 				team={team}
 				params={params}
 				status={key}

@@ -8,7 +8,7 @@ import Tool from './Tool/Tool';
 import Paper from './Paper/Paper';
 import Course from './Course/Course';
 import Person from './Person/Person';
-import relatedObjectService from '../../../services/related-object';
+import relatedObjectService from '../../../services/related-objects';
 import './RelatedObject.scss';
 
 var cmsURL = require('../BaseURL').getCMSURL();
@@ -76,7 +76,7 @@ class RelatedObject extends React.Component {
 		//need to handle error if no id is found
 		this.setState({ isLoading: true });
 
-		relatedObjectService.getRelatedObjectRequest(id, type).then(res => {
+		relatedObjectService.getRelatedObjectByType(id, type).then(res => {
 			this.setState({
 				data: res.data.data[0],
 				isCohortDiscovery: res.data.data[0].isCohortDiscovery || false,
@@ -135,6 +135,8 @@ class RelatedObject extends React.Component {
 			rectangleClassName = 'collection-rectangleWithBorder';
 		}
 
+		const { onClick } = this.props;
+
 		return (
 			<Row className='resource-card-row'>
 				<Col>
@@ -169,6 +171,7 @@ class RelatedObject extends React.Component {
 										updateOnFilterBadge={this.updateOnFilterBadge}
 										removeButton={this.removeButton}
 										isLocked={this.props.isLocked}
+										onClick={onClick}
 									/>
 								);
 							} else if (data.type === 'dataUseRegister') {
@@ -176,7 +179,7 @@ class RelatedObject extends React.Component {
 									<Row className='noMargin'>
 										<Col sm={10} lg={10} className='pad-left-24'>
 											{activeLink === true ? (
-												<a className='purple-bold-16' style={{ cursor: 'pointer' }} href={'/datause/' + data.id}>
+												<a className='purple-bold-16' style={{ cursor: 'pointer' }} href={'/datause/' + data.id} onClick={onClick}>
 													{data.projectTitle}
 												</a>
 											) : (
@@ -209,7 +212,7 @@ class RelatedObject extends React.Component {
 												<Col md={9} className='gray800-14'>
 													{data.gatewayDatasetsInfo &&
 														data.gatewayDatasetsInfo.map(dataset => (
-															<a href={`/dataset/${dataset.pid}`}>
+															<a href={`/dataset/${dataset.pid}`} onClick={onClick}>
 																<div className='badge-tag'>{dataset.name}</div>
 															</a>
 														))}
@@ -237,6 +240,7 @@ class RelatedObject extends React.Component {
 										updateOnFilterBadge={this.updateOnFilterBadge}
 										removeButton={this.removeButton}
 										isLocked={this.props.isLocked}
+										onClick={onClick}
 									/>
 								);
 							} else if (data.type === 'person') {
@@ -246,6 +250,7 @@ class RelatedObject extends React.Component {
 										activeLink={activeLink ? activeLink : false}
 										showRelationshipQuestion={this.props.showRelationshipQuestion ? this.props.showRelationshipQuestion : false}
 										removeButton={this.removeButton}
+										onClick={onClick}
 									/>
 								);
 							} else if (data.type === 'course') {
@@ -257,6 +262,7 @@ class RelatedObject extends React.Component {
 										showRelationshipQuestion={this.props.showRelationshipQuestion ? this.props.showRelationshipQuestion : false}
 										updateOnFilterBadge={this.updateOnFilterBadge}
 										removeButton={this.removeButton}
+										onClick={onClick}
 									/>
 								);
 							} else {
@@ -271,6 +277,7 @@ class RelatedObject extends React.Component {
 										updateOnFilterBadge={this.updateOnFilterBadge}
 										removeButton={this.removeButton}
 										isLocked={this.props.isLocked}
+										onClick={onClick}
 									/>
 								);
 							}
@@ -344,5 +351,9 @@ class RelatedObject extends React.Component {
 		);
 	}
 }
+
+RelatedObject.defaultProps = {
+	onClick: () => {},
+};
 
 export default RelatedObject;

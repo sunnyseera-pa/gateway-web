@@ -1,9 +1,7 @@
 {
 	"env": {
 		"browser": true,
-		"es2021": true,
-		"jest": true,
-		"jest/globals": true
+		"jest": true
 	},
 	"extends": ["airbnb", "prettier"],
 	"parserOptions": {
@@ -13,8 +11,17 @@
 		"ecmaVersion": 12,
 		"sourceType": "module"
 	},
-	"plugins": ["prettier", "jest"],
+	"plugins": ["prettier"],
 	"rules": {
-		"prettier/prettier": ["error"]
+		"indent": ["error", 4],
+		"prettier/prettier": ["error", { "endOfLine": "auto" }],
+		"react/jsx-props-no-spreading": "off",
+		"react/jsx-filename-extension": [
+			1,
+			{
+				"extensions": [".js", ".jsx", ".tsx"]
+			}
+		],
+		"arrow-body-style": "off"
 	}
 }

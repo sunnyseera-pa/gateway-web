@@ -15,10 +15,10 @@ import Tag from '../Tag/Tag';
 import { course } from './constants';
 import '../../CommonComponents.scss';
 
-const Course = ({ data, activeLink, onSearchPage, showRelationshipQuestion, updateOnFilterBadge, removeButton }) => {
+const Course = ({ data, activeLink, onSearchPage, showRelationshipQuestion, updateOnFilterBadge, removeButton, onClick }) => {
 	const renderCourseDetails = () => {
 		const courseRender = [];
-		const courseOptions = data.courseOptions;
+		const { courseOptions } = data;
 		has(courseOptions[0], 'startDate') && isObject(courseOptions[0].startDate)
 			? courseRender.push(
 					<span data-testid='course-start-date'> Starts {moment(courseOptions.startDate).format('dddd Do MMMM YYYY')} </span>
@@ -31,16 +31,24 @@ const Course = ({ data, activeLink, onSearchPage, showRelationshipQuestion, upda
 
 		!onSearchPage &&
 			!isEmpty(courseOptions[1]) &&
-			courseOptions.map((courseOption, index) => {
-				return courseRender.push(<>{index > 0 && <span data-testid='course-study-mode-extra'> ,{courseOption.studyMode} </span>}</>);
-			});
+			courseOptions.map((courseOption, index) =>
+				courseRender.push(<>{index > 0 && <span data-testid='course-study-mode-extra'> ,{courseOption.studyMode} </span>}</>)
+			);
 
 		return courseRender;
 	};
 	return (
 		<Row data-testid='related-course-object' className='noMargin'>
 			<Col sm={10} lg={10} className='pad-left-24'>
-				<Title activeLink={activeLink} name={data.title} id={data.id} type={data.type} />
+				<Title
+					activeLink={activeLink}
+					name={data.title}
+					id={data.id}
+					type={data.type}
+					onClickHandler={() => {
+						onClick();
+					}}
+				/>
 				<br />
 				<Title
 					activeLink={false}
@@ -63,36 +71,32 @@ const Course = ({ data, activeLink, onSearchPage, showRelationshipQuestion, upda
 			</Col>
 			<Col sm={12} lg={12} className='pad-left-24 pad-right-24 pad-top-16'>
 				<Tag tagName={course.TAB} tagType={data.type} updateOnFilterBadgeHandler={updateOnFilterBadge}>
-					<SVGIcon name='educationicon' fill={'#ffffff'} className='badgeSvg mr-2' viewBox='-2 -2 22 22' />
+					<SVGIcon name='educationicon' fill='#ffffff' className='badgeSvg mr-2' viewBox='-2 -2 22 22' />
 				</Tag>
 
 				{data.award &&
-					data.award.map((award, index) => {
-						return (
-							<Tag
-								key={`${award}-${index}`}
-								tagName={award}
-								activeLink={activeLink}
-								onSearchPage={onSearchPage}
-								updateOnFilterBadgeHandler={updateOnFilterBadge}
-								{...course.AWARDS}
-							/>
-						);
-					})}
+					data.award.map((award, index) => (
+						<Tag
+							key={`${award}-${index}`}
+							tagName={award}
+							activeLink={activeLink}
+							onSearchPage={onSearchPage}
+							updateOnFilterBadgeHandler={updateOnFilterBadge}
+							{...course.AWARDS}
+						/>
+					))}
 
 				{data.domains &&
-					data.domains.map((domain, index) => {
-						return (
-							<Tag
-								key={`${domain}-${index}`}
-								tagName={domain}
-								activeLink={activeLink}
-								onSearchPage={onSearchPage}
-								updateOnFilterBadgeHandler={updateOnFilterBadge}
-								{...course.DOMAINS}
-							/>
-						);
-					})}
+					data.domains.map((domain, index) => (
+						<Tag
+							key={`${domain}-${index}`}
+							tagName={domain}
+							activeLink={activeLink}
+							onSearchPage={onSearchPage}
+							updateOnFilterBadgeHandler={updateOnFilterBadge}
+							{...course.DOMAINS}
+						/>
+					))}
 			</Col>
 			{!showRelationshipQuestion && <Description type={data.type} description={stripMarkdown(data.description, 255)} />}
 		</Row>
@@ -106,6 +110,10 @@ Course.propTypes = {
 	onSearchPage: PropTypes.bool.isRequired,
 	updateOnFilterBadge: PropTypes.func.isRequired,
 	removeButton: PropTypes.func.isRequired,
+};
+
+Course.defaultProps = {
+	onClick: () => {},
 };
 
 export default Course;

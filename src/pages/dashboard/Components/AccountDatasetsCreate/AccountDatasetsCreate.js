@@ -14,68 +14,70 @@ const AccountDatasetsCreate = props => {
 		alert: { message },
 	} = props;
 
-	const { t } = useTranslation();
-	const dataPostDatasetOnboarding = serviceDatasetOnboarding.usePostDatasetOnboarding({ publisherID }, null, {
-		enabled: false,
-	});
+    const { t } = useTranslation();
 
-	const createNewDataset = e => {
-		e.preventDefault();
 
-		dataPostDatasetOnboarding.refetch();
-	};
+    const dataPostDatasetOnboarding = serviceDatasetOnboarding.usePostDatasetOnboarding(null, {
+        enabled: false,
+    });
 
-	useEffect(() => {
-		if (dataPostDatasetOnboarding.data) {
-			const {
-				data: {
-					data: {
-						data: { id },
-					},
-				},
-			} = dataPostDatasetOnboarding;
+    const createNewDataset = e => {
+        e.preventDefault();
 
-			if (!_.isUndefined(id)) window.location.href = `/dataset-onboarding/${id}`;
-		}
-	}, [dataPostDatasetOnboarding.data]);
+        dataPostDatasetOnboarding.mutateAsync({ publisherID });
+    };
 
-	return (
-		<>
-			{message && (
-				<Alert variant='success' className='col-sm-12 main-alert'>
-					<SVGIcon name='check' width={18} height={18} fill='#2C8267' /> {message}
-				</Alert>
-			)}
-			<div className='accountHeader'>
-				<Row>
-					<Col sm={12} md={8}>
-						<div>
-							<span className='black-20'>{t('datasets')}</span>
-						</div>
-						<div>
-							<span className='gray700-13 '>
-								{publisherID !== 'admin' ? t('dataset.create.description.admin') : t('dataset.create.description.user')}
-							</span>
-						</div>
-					</Col>
-					<Col sm={12} md={4} style={{ textAlign: 'right' }}>
-						{team !== 'admin' && !isFederated && (
-							<Button
-								variant='primary'
-								className='addButton'
-								onClick={e => {
-									googleAnalytics.recordEvent('Datasets', 'Add a new dataset', 'Datasets dashboard button clicked');
+    useEffect(() => {
+        if (dataPostDatasetOnboarding.data) {
+            const {
+                data: {
+                    data: {
+                        data: { id },
+                    },
+                },
+            } = dataPostDatasetOnboarding;
 
-									createNewDataset(e);
-								}}>
-								+ {t('dataset.create.action')}
-							</Button>
-						)}
-					</Col>
-				</Row>
-			</div>
-		</>
-	);
+            if (!_.isUndefined(id)) window.location.href = `/dataset-onboarding/${id}`;
+        }
+    }, [dataPostDatasetOnboarding.data]);
+
+    return (
+        <>
+            {message && (
+                <Alert variant='success' className='col-sm-12 main-alert'>
+                    <SVGIcon name='check' width={18} height={18} fill='#2C8267' /> {message}
+                </Alert>
+            )}
+            <div className='accountHeader'>
+                <Row>
+                    <Col sm={12} md={8}>
+                        <div>
+                            <span className='black-20'>{t('datasets')}</span>
+                        </div>
+                        <div>
+                            <span className='gray700-13 '>
+                                {publisherID !== 'admin' ? t('dataset.create.description.admin') : t('dataset.create.description.user')}
+                            </span>
+                        </div>
+                    </Col>
+                    <Col sm={12} md={4} style={{ textAlign: 'right' }}>
+                        {team !== 'admin' && !isFederated && (
+                            <Button
+                                variant='primary'
+                                className='addButton'
+                                onClick={e => {
+                                    googleAnalytics.recordEvent('Datasets', 'Add a new dataset', 'Datasets dashboard button clicked');
+
+                                    createNewDataset(e);
+                                }}>
+                                + {t('dataset.create.action')}
+                            </Button>
+                        )}
+                    </Col>
+                </Row>
+            </div>
+        </>
+    );
 };
 
 export default AccountDatasetsCreate;
