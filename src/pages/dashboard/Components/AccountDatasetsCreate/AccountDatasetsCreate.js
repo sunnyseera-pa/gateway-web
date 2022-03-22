@@ -7,15 +7,15 @@ import serviceDatasetOnboarding from '../../../../services/dataset-onboarding/da
 import googleAnalytics from '../../../../tracking';
 
 const AccountDatasetsCreate = props => {
-	const {
-		isFederated,
-		publisherID,
-		team,
-		alert: { message },
-	} = props;
+    const {
+        isFederated,
+        isLoading,
+        publisherID,
+        team,
+        alert: { message },
+    } = props;
 
     const { t } = useTranslation();
-
 
     const dataPostDatasetOnboarding = serviceDatasetOnboarding.usePostDatasetOnboarding(null, {
         enabled: false,
@@ -61,7 +61,7 @@ const AccountDatasetsCreate = props => {
                         </div>
                     </Col>
                     <Col sm={12} md={4} style={{ textAlign: 'right' }}>
-                        {team !== 'admin' && !isFederated && (
+                        {team !== 'admin' && !isFederated && !isLoading && (
                             <Button
                                 variant='primary'
                                 className='addButton'
