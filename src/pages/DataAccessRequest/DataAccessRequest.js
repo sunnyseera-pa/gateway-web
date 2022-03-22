@@ -612,6 +612,7 @@ class DataAccessRequest extends Component {
 
 			questionAnswers[id] = `${contributor.firstname} ${contributor.lastname}`;
 			questionAnswers[organisation] = contributor.organisation;
+			questionAnswers.safepeopleotherindividualsorcid = contributor.orcid;
 		}
 
 		if (!_.isEmpty(id) && !_.isEmpty(questionAnswers)) {
