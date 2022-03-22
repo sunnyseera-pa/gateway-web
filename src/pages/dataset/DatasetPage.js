@@ -4,7 +4,6 @@ import { has, isEmpty, isNil, isUndefined } from 'lodash';
 import React, { Component, Fragment } from 'react';
 import { Alert, Button, Col, Container, Dropdown, OverlayTrigger, Row, Tab, Tabs, Tooltip } from 'react-bootstrap/';
 import Linkify from 'react-linkify';
-import ReactMarkdown from 'react-markdown';
 import 'react-tabs/style/react-tabs.css';
 import { ReactComponent as MetadataBronze } from '../../images/bronzeNew.svg';
 import { ReactComponent as GoldStar } from '../../images/cd-star.svg';
@@ -83,6 +82,7 @@ class DatasetDetail extends Component {
 		showEmpty: false,
 		showCitationSuccess: false,
 		emptyFlagDetails: false,
+		emptyFlagDocumentation: false,
 		emptyFlagCoverage: false,
 		emptyFlagFormats: false,
 		emptyFlagProvenance: false,
@@ -291,6 +291,9 @@ class DatasetDetail extends Component {
 			this.setState({ emptyFlagDetails: true });
 		}
 
+		if (isEmpty(v2data.documentation.description) && isEmpty(v2data.documentation.associatedMedia)) {
+			this.setState({ emptyFlagDocumentation: true });
+		}
 		if (
 			(isEmpty(v2data.provenance.temporal.startDate) || isEmpty(v2data.provenance.temporal.endDate)) &&
 			isEmpty(v2data.provenance.temporal.timeLag) &&
@@ -407,6 +410,8 @@ class DatasetDetail extends Component {
 
 		let requiredFieldsArray = [
 			v2data.summary.doiName,
+			v2data.documentation.associatedMedia,
+			v2data.documentation.isPartOf,
 			v2data.provenance.temporal.distributionReleaseDate,
 			v2data.provenance.temporal.accrualPeriodicity,
 			v2data.issued,
@@ -457,6 +462,7 @@ class DatasetDetail extends Component {
 	showHideAllEmpty() {
 		if (this.state.showEmpty === false) {
 			this.setState({
+				emptyFlagDocumentation: false,
 				emptyFlagDetails: false,
 				emptyFlagCoverage: false,
 				emptyFlagFormats: false,
@@ -756,6 +762,7 @@ class DatasetDetail extends Component {
 			showAllLinkedDatasets,
 			collections,
 			emptyFlagDetails,
+			emptyFlagDocumentation,
 			emptyFlagCoverage,
 			emptyFlagFormats,
 			emptyFlagProvenance,
@@ -782,11 +789,6 @@ class DatasetDetail extends Component {
 				</a>
 			</span>
 		);
-
-		const formatLinks = source => {
-			const reUrl = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#/%?=~_|!:,.;]*[-A-Z0-9+&@#/%=~_|])/gi;
-			return source.replace(reUrl, '[$1]($1) ');
-		};
 
 		if (isLoading) {
 			return (
@@ -1032,23 +1034,8 @@ class DatasetDetail extends Component {
 												''
 											)}
 
-											{!isEmpty(v2data.documentation.description) ? (
-												<Row className='mt-1'>
-													<Col sm={12}>
-														<div className='rectangle'>
-															<Row className='gray800-14-bold'>
-																<Col sm={12}>Description</Col>
-															</Row>
-															<Row className='mt-3'>
-																<Col sm={12} className='gray800-14 overflowWrap'>
-																	<span className='gray800-14'>
-																		<ReactMarkdown source={formatLinks(v2data.documentation.description)} />
-																	</span>
-																</Col>
-															</Row>
-														</div>
-													</Col>
-												</Row>
+											{emptyFlagDocumentation === false ? (
+												<DatasetAboutCard section='Documentation' v2data={v2data} showEmpty={showEmpty} />
 											) : (
 												''
 											)}
