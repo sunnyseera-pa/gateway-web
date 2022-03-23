@@ -823,92 +823,79 @@ const EditFormDataUse = props => {
                                                                                 The last date the data access request for this project was
                                                                                 approved by a data custodian
                                                                             </p>
-
-                                                                            <span className='datause-datepicker'>
-                                                                                <DatePicker
-                                                                                    disabled={disableInput}
-                                                                                    id='latestApprovalDate'
-                                                                                    name='latestApprovalDate'
-                                                                                    dateFormat='dd/MM/yyyy'
-                                                                                    peekNextMonth
-                                                                                    showMonthDropdown
-                                                                                    showYearDropdown
-                                                                                    dropdownMode='select'
-                                                                                    selected={
-                                                                                        formik.values.latestApprovalDate
-                                                                                            ? new Date(formik.values.latestApprovalDate)
-                                                                                            : ''
-                                                                                    }
-                                                                                    onChange={date => {
-                                                                                        formik.values.latestApprovalDate = date;
-                                                                                        formik.setFieldValue();
-                                                                                    }}
-                                                                                    onBlur={formik.handleBlur}
-                                                                                />
-                                                                                <Calendar className='datePickerCalendar datause-calendar-svg' />
-                                                                                {formik.touched.latestApprovalDate &&
-                                                                                formik.errors.latestApprovalDate ? (
-                                                                                    <div className='errorMessages'>
-                                                                                        {formik.errors.latestApprovalDate}
-                                                                                    </div>
-                                                                                ) : null}
-                                                                            </span>
-                                                                        </Form.Group>
-                                                                    </Col>
-                                                                </Row>
-                                                            </Form>
-                                                        </Card.Body>
-                                                    </Accordion.Collapse>
-                                                </Card>
-                                                <Card className='edit-datause-card'>
-                                                    <Accordion.Toggle as={Button} variant='link' eventKey='2'>
-                                                        <Card.Header
-                                                            className='datause-accordion saved-search-arrow'
-                                                            onClick={() => (!safeData ? setSafeData(true) : setSafeData(false))}
-                                                        >
-                                                            <SVGIcon
-                                                                width='20px'
-                                                                height='20px'
-                                                                name='chevronbottom'
-                                                                fill='#fff'
-                                                                className={safeData ? 'edit-datause-arrow' : 'flip180 edit-datause-arrow'}
-                                                            />
-                                                            Safe data
-                                                        </Card.Header>
-                                                    </Accordion.Toggle>
-                                                    <Accordion.Collapse className='datause-accordion-collapse' eventKey='2'>
-                                                        <Card.Body className='datause-card-body'>
-                                                            <Form>
-                                                                <Form.Group>
-                                                                    <Form.Label className='black-14'>Dataset(s) name</Form.Label>
-                                                                    <p className='gray800-13-opacity datause-edit-p'>
-                                                                        The name of the dataset(s) being accessed
-                                                                    </p>
-                                                                    <Typeahead
-                                                                        disabled={props.data.manualUpload ? disableInput : true}
-                                                                        id='datasets'
-                                                                        labelKey={dataset => `${dataset.name}`}
-                                                                        allowNew
-                                                                        multiple
-                                                                        defaultSelected={formik.values.datasets}
-                                                                        options={datasetsList}
-                                                                        className='addFormInputTypeAhead'
-                                                                        onChange={selected => {
-                                                                            const tempSelected = [];
-                                                                            selected.forEach(selectedItem => {
-                                                                                selectedItem.customOption === true
-                                                                                    ? tempSelected.push({
-                                                                                          id: isNumber(selectedItem.pid)
-                                                                                              ? selectedItem.pid
-                                                                                              : 'nonGateway',
-                                                                                          name: selectedItem.name || selectedItem.label,
-                                                                                      })
-                                                                                    : tempSelected.push(selectedItem);
-                                                                            });
-                                                                            formik.values.datasets = tempSelected;
-                                                                        }}
-                                                                    />
-                                                                </Form.Group>
+																			<span className='datause-datepicker'>
+																				<DatePicker
+																					disabled={disableInput}
+																					id='latestApprovalDate'
+																					name='latestApprovalDate'
+																					dateFormat='dd/MM/yyyy'
+																					peekNextMonth
+																					showMonthDropdown
+																					showYearDropdown
+																					dropdownMode='select'
+																					selected={formik.values.latestApprovalDate ? new Date(formik.values.latestApprovalDate) : ''}
+																					onChange={date => {
+																						formik.values.latestApprovalDate = date;
+																						formik.setFieldValue();
+																					}}
+																					onBlur={formik.handleBlur}
+																				/>
+																				<Calendar className='datePickerCalendar datause-calendar-svg' />
+																				{formik.touched.latestApprovalDate && formik.errors.latestApprovalDate ? (
+																					<div className='errorMessages'>{formik.errors.latestApprovalDate}</div>
+																				) : null}
+																			</span>
+																		</Form.Group>
+																	</Col>
+																</Row>
+															</Form>
+														</Card.Body>
+													</Accordion.Collapse>
+												</Card>
+												<Card className='edit-datause-card'>
+													<Accordion.Toggle as={Button} variant='link' eventKey='2'>
+														<Card.Header
+															className='datause-accordion saved-search-arrow'
+															onClick={() => (!safeData ? setSafeData(true) : setSafeData(false))}>
+															<SVGIcon
+																width='20px'
+																height='20px'
+																name='chevronbottom'
+																fill={'#fff'}
+																className={safeData ? 'edit-datause-arrow' : 'flip180 edit-datause-arrow'}
+															/>
+															Safe data
+														</Card.Header>
+													</Accordion.Toggle>
+													<Accordion.Collapse className='datause-accordion-collapse' eventKey='2'>
+														<Card.Body className='datause-card-body'>
+															<Form>
+																<Form.Group>
+																	<Form.Label className='black-14'>Dataset(s) name</Form.Label>
+																	<p className='gray800-13-opacity datause-edit-p'>The name of the dataset(s) being accessed</p>
+																	<Typeahead
+																		disabled={props.data.manualUpload ? disableInput : true}
+																		id='datasets'
+																		labelKey={dataset => `${dataset.name}`}
+																		allowNew
+																		multiple
+																		defaultSelected={formik.values.datasets}
+																		options={datasetsList}
+																		className='addFormInputTypeAhead'
+																		onChange={selected => {
+																			var tempSelected = [];
+																			selected.forEach(selectedItem => {
+																				selectedItem.customOption === true
+																					? tempSelected.push({
+																							pid: isNumber(selectedItem.pid) ? selectedItem.pid : 'nonGateway',
+																							name: selectedItem.name || selectedItem.label,
+																					  })
+																					: tempSelected.push(selectedItem);
+																			});
+																			formik.values.datasets = tempSelected;
+																		}}
+																	/>
+																</Form.Group>
 
                                                                 <Form.Group>
                                                                     <Form.Label className='black-14'>
