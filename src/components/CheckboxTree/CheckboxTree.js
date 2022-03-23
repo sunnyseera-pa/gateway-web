@@ -59,7 +59,8 @@ const CheckboxTree = ({
                 hasParentIcon: !!icons.parentClose || !!icons.parentOpen,
                 checkboxVariant,
             })}
-            className={cx(className, commonStyles, 'ui-CheckboxTree')}>
+            className={cx(className, commonStyles, 'ui-CheckboxTree')}
+        >
             <ReactCheckboxTree nodes={formattedNodes} icons={icons} {...outerProps} checkModel='all' />
         </div>
     );

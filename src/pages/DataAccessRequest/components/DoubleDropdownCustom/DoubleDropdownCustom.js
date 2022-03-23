@@ -69,7 +69,8 @@ class DoubleDropdownCustom extends React.Component {
                         onFocus={this.handleFocus}
                         onToggle={this.openDropDown}
                         onBlur={this.handleBlur}
-                        autoClose={false}>
+                        autoClose={false}
+                    >
                         <Dropdown.Toggle className='double-dropdown-input' id={this.props.id}>
                             <div className='selected-options-container'>
                                 {this.state.value.map(selectedValue => {

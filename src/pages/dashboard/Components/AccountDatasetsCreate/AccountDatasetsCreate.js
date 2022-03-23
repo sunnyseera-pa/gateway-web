@@ -69,7 +69,8 @@ const AccountDatasetsCreate = props => {
                                     googleAnalytics.recordEvent('Datasets', 'Add a new dataset', 'Datasets dashboard button clicked');
 
                                     createNewDataset(e);
-                                }}>
+                                }}
+                            >
                                 + {t('dataset.create.action')}
                             </Button>
                         )}
