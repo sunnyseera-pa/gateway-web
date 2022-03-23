@@ -8,6 +8,8 @@ import googleAnalytics from '../../../../tracking';
 
 const AccountDatasetsCreate = props => {
     const {
+        isFederated,
+        isLoading,
         publisherID,
         team,
         alert: { message },
@@ -59,7 +61,7 @@ const AccountDatasetsCreate = props => {
                         </div>
                     </Col>
                     <Col sm={12} md={4} style={{ textAlign: 'right' }}>
-                        {team !== 'admin' && (
+                        {team !== 'admin' && !isFederated && !isLoading && (
                             <Button
                                 variant='primary'
                                 className='addButton'
