@@ -5,7 +5,7 @@ import { server } from '../../../../services/mockServer';
 
 let wrapper;
 
-const props = { publisherID: 'admin', team: '1234', alert: { message: 'Sample message' } };
+const props = { publisherID: 'admin', team: '1234', alert: { message: 'Sample message' }, isFederated: false, isLoading: false };
 
 describe('Given the AccountDatasetsCreate component', () => {
     beforeAll(() => {
@@ -33,12 +33,28 @@ describe('Given the AccountDatasetsCreate component', () => {
 
         describe('And "Add new dataset" is clicked', () => {
             it('Then calls preventDefault', async () => {
-                const button = wrapper.container.querySelector('button');
+                const button = wrapper.queryByText(/Add a new dataset/i);
                 const buttonEvent = createEvent.click(button, { cancelable: true });
 
                 fireEvent.click(button, buttonEvent);
 
                 expect(wrapper.container).toMatchSnapshot();
+            });
+        });
+
+        describe('And the user is federated', () => {
+            it('Then hides create new datatset', async () => {
+                wrapper.rerender(<AccountDatasetsCreate {...props} isFederated />);
+
+                expect(wrapper.queryByText(/Add a new dataset/i)).toBeNull();
+            });
+        });
+
+        describe('And data is loading', () => {
+            it('Then hides create new datatset', async () => {
+                wrapper.rerender(<AccountDatasetsCreate {...props} isLoading />);
+
+                expect(wrapper.queryByText(/Add a new dataset/i)).toBeNull();
             });
         });
     });

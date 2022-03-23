@@ -6,6 +6,7 @@ import React, { Component, Fragment, useState } from 'react';
 import { Accordion, Dropdown, Nav } from 'react-bootstrap';
 import { Route, withRouter } from 'react-router-dom';
 import 'react-web-tabs/dist/react-web-tabs.css';
+import { DashboardProvider } from '../../context/DashboardContext';
 import { ReactComponent as CheckSVG } from '../../images/check.svg';
 import { ReactComponent as ChevronRightSvg } from '../../images/chevron-bottom.svg';
 import SVGIcon from '../../images/SVGIcon';
@@ -85,6 +86,7 @@ class Account extends Component {
                 teams: [],
             },
         ],
+        dashboardState: {},
         tabId: '',
         innertab: '',
         activeKey: '',
@@ -196,13 +198,26 @@ class Account extends Component {
                 });
 
                 if (team !== 'user' && team !== 'admin') {
+                    this.setState({
+                        dashboardState: {
+                            isLoading: true,
+                        },
+                    });
+
                     await axios.get(baseURL + `/api/v1/publishers/${team}`).then(res => {
-                        let publisherDetails = res.data.publisher;
-                        if (!publisherDetails.allowAccessRequestManagement && values.tab === 'dataaccessrequests')
+                        const { allowAccessRequestManagement, workflowEnabled, federation } = res.data.publisher;
+
+                        if (!allowAccessRequestManagement && values.tab === 'dataaccessrequests') {
                             this.setState({ tabId: 'teamManagement' });
+                        }
+
                         this.setState({
-                            allowWorkflow: publisherDetails.workflowEnabled,
-                            allowAccessRequestManagement: publisherDetails.allowAccessRequestManagement,
+                            allowWorkflow: workflowEnabled,
+                            allowAccessRequestManagement: allowAccessRequestManagement,
+                            dashboardState: {
+                                isLoading: false,
+                                isFederated: !_.isEmpty(federation) && federation.active,
+                            },
                         });
                     });
                 }
@@ -541,447 +556,454 @@ class Account extends Component {
 
         return (
             <Sentry.ErrorBoundary fallback={<ErrorModal />}>
-                <SearchBar
-                    ref={this.searchBar}
-                    searchString={searchString}
-                    doSearchMethod={this.doSearch}
-                    doUpdateSearchString={this.updateSearchString}
-                    doToggleDrawer={this.toggleDrawer}
-                    userState={userState}
-                />
+                <DashboardProvider value={this.state.dashboardState}>
+                    <SearchBar
+                        ref={this.searchBar}
+                        searchString={searchString}
+                        doSearchMethod={this.doSearch}
+                        doUpdateSearchString={this.updateSearchString}
+                        doToggleDrawer={this.toggleDrawer}
+                        userState={userState}
+                    />
 
-                <div className='container-wrap'>
-                    <div className='col-sm-12 col-md-2 accountMenuHolder'>
-                        <div className='account-menu'>
-                            <Dropdown>
-                                <Dropdown.Toggle as={CustomToggle}>
-                                    <div className='teamSelectorHeader'>
-                                        <span className='gray700-13'>{this.renderCurrentTeam()}</span>
-                                        <ChevronRightSvg fill={'#475da7'} className='dataClassArrow pointer' />
-                                    </div>
-                                </Dropdown.Toggle>
+                    <div className='container-wrap'>
+                        <div className='col-sm-12 col-md-2 accountMenuHolder'>
+                            <div className='account-menu'>
+                                <Dropdown>
+                                    <Dropdown.Toggle as={CustomToggle}>
+                                        <div className='teamSelectorHeader'>
+                                            <span className='gray700-13'>{this.renderCurrentTeam()}</span>
+                                            <ChevronRightSvg fill={'#475da7'} className='dataClassArrow pointer' />
+                                        </div>
+                                    </Dropdown.Toggle>
 
-                                <Dropdown.Menu as={CustomMenu} className='teamSelectorMenu'>
-                                    <Dropdown.Item className='gray700-13' onClick={e => this.toggleNav(`youraccount&team=user`)}>
-                                        {userState[0].name || ''}
-                                    </Dropdown.Item>
-                                    {this.renderAdmin()}
-                                    {this.renderPublishers()}
-                                </Dropdown.Menu>
-                            </Dropdown>
+                                    <Dropdown.Menu as={CustomMenu} className='teamSelectorMenu'>
+                                        <Dropdown.Item className='gray700-13' onClick={e => this.toggleNav(`youraccount&team=user`)}>
+                                            {userState[0].name || ''}
+                                        </Dropdown.Item>
+                                        {this.renderAdmin()}
+                                        {this.renderPublishers()}
+                                    </Dropdown.Menu>
+                                </Dropdown>
 
-                            {team === 'user' ? (
-                                <Fragment>
-                                    <div className={this.getNavActiveClass('dashboard')} onClick={e => this.toggleNav('dashboard')}>
-                                        <Nav.Link className='verticalNavBar gray700-13'>
-                                            <SVGIcon name='dashboard' fill={'#b3b8bd'} className='accountSvgs' />
-                                            <span className='navLinkItem'>Dashboard</span>
-                                        </Nav.Link>
-                                    </div>
-
-                                    <div className={this.getNavActiveClass('youraccount')} onClick={e => this.toggleNav('youraccount')}>
-                                        <Nav.Link className='verticalNavBar gray700-13'>
-                                            <SVGIcon name='accounticon' fill={'#b3b8bd'} className='accountSvgs' />
-                                            <span className='navLinkItem'>Account</span>
-                                        </Nav.Link>
-                                    </div>
-
-                                    <div className={this.getNavActiveClass('tools')} onClick={e => this.toggleNav('tools')}>
-                                        <Nav.Link className='verticalNavBar gray700-13'>
-                                            <SVGIcon name='newtoolicon' fill={'#b3b8bd'} className='accountSvgs' />
-                                            <span className='navLinkItem'>Tools</span>
-                                        </Nav.Link>
-                                    </div>
-
-                                    <div className={this.getNavActiveClass('reviews')} onClick={e => this.toggleNav('reviews')}>
-                                        <Nav.Link className='verticalNavBar gray700-13'>
-                                            <SVGIcon name='reviewsicon' fill={'#b3b8bd'} className='accountSvgs' />
-                                            <span className='navLinkItem'>Reviews</span>
-                                        </Nav.Link>
-                                    </div>
-
-                                    <div className={this.getNavActiveClass('datause')} onClick={e => this.toggleNav('datause')}>
-                                        <Nav.Link eventKey={'datause'} className='verticalNavBar gray700-13'>
-                                            <SVGIcon name='datauseicon' fill={'#b3b8bd'} className='accountSvgs' />
-                                            <span className='navLinkItem'>Data Uses</span>
-                                        </Nav.Link>
-                                    </div>
-
-                                    <div className={this.getNavActiveClass('papers')} onClick={e => this.toggleNav('papers')}>
-                                        <Nav.Link eventKey={'papers'} className='verticalNavBar gray700-13'>
-                                            <SVGIcon name='newprojecticon' fill={'#b3b8bd'} className='accountSvgs' />
-                                            <span className='navLinkItem'>Papers</span>
-                                        </Nav.Link>
-                                    </div>
-
-                                    <div className={this.getNavActiveClass('courses')} onClick={e => this.toggleNav('courses')}>
-                                        <Nav.Link eventKey={'courses'} className='verticalNavBar gray700-13'>
-                                            <SVGIcon name='educationicon' fill={'#b3b8bd'} className='svg-20' />
-                                            <span className='navLinkItem'>Courses</span>
-                                        </Nav.Link>
-                                    </div>
-
-                                    <div
-                                        className={this.getNavActiveClass('dataaccessrequests')}
-                                        onClick={e => this.toggleNav('dataaccessrequests')}
-                                    >
-                                        <Nav.Link eventKey={'dataaccessrequests'} className='verticalNavBar gray700-13'>
-                                            <SVGIcon name='newprojecticon' fill={'#b3b8bd'} className='accountSvgs' />
-                                            <span className='navLinkItem'>Data access requests</span>
-                                        </Nav.Link>
-                                    </div>
-
-                                    <div className={this.getNavActiveClass('collections')} onClick={e => this.toggleNav('collections')}>
-                                        <Nav.Link eventKey={'collections'} className='verticalNavBar gray700-13'>
-                                            <SVGIcon name='collections' fill={'#b3b8bd'} className='accountSvgs' />
-                                            <span className='navLinkItem'>Collections</span>
-                                        </Nav.Link>
-                                    </div>
-
-                                    {userState[0].role === 'Admin' ? (
-                                        <div className={this.getNavActiveClass('usersroles')} onClick={e => this.toggleNav('usersroles')}>
-                                            <Nav.Link eventKey={'usersroles'} className='verticalNavBar gray700-13'>
-                                                <SVGIcon name='rolesicon' fill={'#b3b8bd'} className='accountSvgs' />
-                                                <span className='navLinkItem'>Users and roles</span>
+                                {team === 'user' ? (
+                                    <Fragment>
+                                        <div className={this.getNavActiveClass('dashboard')} onClick={e => this.toggleNav('dashboard')}>
+                                            <Nav.Link className='verticalNavBar gray700-13'>
+                                                <SVGIcon name='dashboard' fill={'#b3b8bd'} className='accountSvgs' />
+                                                <span className='navLinkItem'>Dashboard</span>
                                             </Nav.Link>
                                         </div>
-                                    ) : (
-                                        ''
-                                    )}
-                                </Fragment>
-                            ) : (
-                                ''
-                            )}
 
-                            {team === 'admin' ? (
-                                <Fragment>
-                                    <div
-                                        className={this.getNavActiveClass('datasets')}
-                                        onClick={e => this.toggleNav('datasets', '/account')}
-                                    >
-                                        <Nav.Link className='verticalNavBar gray700-13' activeClassName='is-active' to='/account'>
-                                            <SVGIcon name='dataseticon' fill={'#b3b8bd'} className='accountSvgs' />
-                                            <span style={{ 'margin-left': '11px' }}>Datasets</span>
-                                        </Nav.Link>
-                                    </div>
-                                    <div className={this.getNavActiveClass('datause')} onClick={e => this.toggleNav('datause')}>
-                                        <Nav.Link eventKey={'datause'} className='verticalNavBar gray700-13'>
-                                            <SVGIcon name='datauseicon' fill={'#b3b8bd'} className='accountSvgs' />
-                                            <span className='navLinkItem'>Data Uses</span>
-                                        </Nav.Link>
-                                    </div>
-
-                                    <div className={this.getNavActiveClass('teams')} onClick={e => this.toggleNav('teams')}>
-                                        <Nav.Link className='verticalNavBar gray700-13'>
-                                            <span className='grey-circle-border'>
-                                                <SVGIcon name='plusChunky' fill={'#b3b8bd'} viewBox='-1 -1 26 26' className='accountSvgs' />
-                                            </span>
-                                            <span style={{ 'margin-left': '5px' }}>Teams</span>
-                                        </Nav.Link>
-                                    </div>
-                                </Fragment>
-                            ) : (
-                                ''
-                            )}
-
-                            {team !== 'user' && team !== 'admin' ? (
-                                <Fragment>
-                                    <div
-                                        className={this.getNavActiveClass('teamManagement')}
-                                        onClick={e => this.toggleNav('teamManagement')}
-                                    >
-                                        <Nav.Link className='verticalNavBar gray700-13'>
-                                            <SVGIcon name='rolesicon' fill={'#b3b8bd'} className='accountSvgs' />
-                                            <span style={{ marginLeft: '11px' }}>Team Management</span>
-                                        </Nav.Link>
-                                    </div>
-                                    {allowAccessRequestManagement && this.userHasRole(team, ['manager', 'reviewer']) && (
-                                        <div className={this.getNavActiveClass(['dataaccessrequests', 'workflows', 'addeditworkflow'])}>
-                                            <Accordion activeKey={activeAccordion} onSelect={this.accordionClick}>
-                                                <Fragment>
-                                                    <Accordion.Toggle
-                                                        variant='link'
-                                                        className='verticalNavBar gray700-13 navLinkButton'
-                                                        eventKey='0'
-                                                    >
-                                                        <SVGIcon name='dataaccessicon' fill={'#b3b8bd'} className='accountSvgs' />
-                                                        <span className='navLinkItem'>Data access requests</span>
-                                                    </Accordion.Toggle>
-                                                    <Accordion.Collapse eventKey='0'>
-                                                        <div>
-                                                            <Nav.Link
-                                                                onClick={e => this.toggleNav('dataaccessrequests')}
-                                                                bsPrefix='nav-block'
-                                                                className={`gray700-13 ${
-                                                                    tabId === 'dataaccessrequests' ? 'nav-item-active' : ''
-                                                                }`}
-                                                            >
-                                                                <span className='subLinkItem'>Applications</span>
-                                                            </Nav.Link>
-                                                            {allowWorkflow && this.userHasRole(team, 'manager') && (
-                                                                <Nav.Link
-                                                                    onClick={e => this.toggleNav(`workflows`)}
-                                                                    bsPrefix='nav-block'
-                                                                    className={`gray700-13 ${
-                                                                        tabId === 'workflows' ? 'nav-item-active' : ''
-                                                                    }`}
-                                                                >
-                                                                    <span className='subLinkItem'>Workflows</span>
-                                                                </Nav.Link>
-                                                            )}
-                                                        </div>
-                                                    </Accordion.Collapse>
-                                                </Fragment>
-                                            </Accordion>
+                                        <div className={this.getNavActiveClass('youraccount')} onClick={e => this.toggleNav('youraccount')}>
+                                            <Nav.Link className='verticalNavBar gray700-13'>
+                                                <SVGIcon name='accounticon' fill={'#b3b8bd'} className='accountSvgs' />
+                                                <span className='navLinkItem'>Account</span>
+                                            </Nav.Link>
                                         </div>
-                                    )}
-                                    {this.userHasRole(team, ['manager', 'metadata_editor']) && (
+
+                                        <div className={this.getNavActiveClass('tools')} onClick={e => this.toggleNav('tools')}>
+                                            <Nav.Link className='verticalNavBar gray700-13'>
+                                                <SVGIcon name='newtoolicon' fill={'#b3b8bd'} className='accountSvgs' />
+                                                <span className='navLinkItem'>Tools</span>
+                                            </Nav.Link>
+                                        </div>
+
+                                        <div className={this.getNavActiveClass('reviews')} onClick={e => this.toggleNav('reviews')}>
+                                            <Nav.Link className='verticalNavBar gray700-13'>
+                                                <SVGIcon name='reviewsicon' fill={'#b3b8bd'} className='accountSvgs' />
+                                                <span className='navLinkItem'>Reviews</span>
+                                            </Nav.Link>
+                                        </div>
+
+                                        <div className={this.getNavActiveClass('datause')} onClick={e => this.toggleNav('datause')}>
+                                            <Nav.Link eventKey={'datause'} className='verticalNavBar gray700-13'>
+                                                <SVGIcon name='datauseicon' fill={'#b3b8bd'} className='accountSvgs' />
+                                                <span className='navLinkItem'>Data Uses</span>
+                                            </Nav.Link>
+                                        </div>
+
+                                        <div className={this.getNavActiveClass('papers')} onClick={e => this.toggleNav('papers')}>
+                                            <Nav.Link eventKey={'papers'} className='verticalNavBar gray700-13'>
+                                                <SVGIcon name='newprojecticon' fill={'#b3b8bd'} className='accountSvgs' />
+                                                <span className='navLinkItem'>Papers</span>
+                                            </Nav.Link>
+                                        </div>
+
+                                        <div className={this.getNavActiveClass('courses')} onClick={e => this.toggleNav('courses')}>
+                                            <Nav.Link eventKey={'courses'} className='verticalNavBar gray700-13'>
+                                                <SVGIcon name='educationicon' fill={'#b3b8bd'} className='svg-20' />
+                                                <span className='navLinkItem'>Courses</span>
+                                            </Nav.Link>
+                                        </div>
+
+                                        <div
+                                            className={this.getNavActiveClass('dataaccessrequests')}
+                                            onClick={e => this.toggleNav('dataaccessrequests')}>
+                                            <Nav.Link eventKey={'dataaccessrequests'} className='verticalNavBar gray700-13'>
+                                                <SVGIcon name='newprojecticon' fill={'#b3b8bd'} className='accountSvgs' />
+                                                <span className='navLinkItem'>Data access requests</span>
+                                            </Nav.Link>
+                                        </div>
+
+                                        <div className={this.getNavActiveClass('collections')} onClick={e => this.toggleNav('collections')}>
+                                            <Nav.Link eventKey={'collections'} className='verticalNavBar gray700-13'>
+                                                <SVGIcon name='collections' fill={'#b3b8bd'} className='accountSvgs' />
+                                                <span className='navLinkItem'>Collections</span>
+                                            </Nav.Link>
+                                        </div>
+
+                                        {userState[0].role === 'Admin' ? (
+                                            <div
+                                                className={this.getNavActiveClass('usersroles')}
+                                                onClick={e => this.toggleNav('usersroles')}>
+                                                <Nav.Link eventKey={'usersroles'} className='verticalNavBar gray700-13'>
+                                                    <SVGIcon name='rolesicon' fill={'#b3b8bd'} className='accountSvgs' />
+                                                    <span className='navLinkItem'>Users and roles</span>
+                                                </Nav.Link>
+                                            </div>
+                                        ) : (
+                                            ''
+                                        )}
+                                    </Fragment>
+                                ) : (
+                                    ''
+                                )}
+
+                                {team === 'admin' ? (
+                                    <Fragment>
                                         <div
                                             className={this.getNavActiveClass('datasets')}
-                                            onClick={e => this.toggleNav('datasets', '/account')}
-                                        >
-                                            <Nav.Link className='verticalNavBar gray700-13' to='/account'>
+                                            onClick={e => this.toggleNav('datasets', '/account')}>
+                                            <Nav.Link className='verticalNavBar gray700-13' activeClassName='is-active' to='/account'>
                                                 <SVGIcon name='dataseticon' fill={'#b3b8bd'} className='accountSvgs' />
                                                 <span style={{ 'margin-left': '11px' }}>Datasets</span>
                                             </Nav.Link>
                                         </div>
+                                        <div className={this.getNavActiveClass('datause')} onClick={e => this.toggleNav('datause')}>
+                                            <Nav.Link eventKey={'datause'} className='verticalNavBar gray700-13'>
+                                                <SVGIcon name='datauseicon' fill={'#b3b8bd'} className='accountSvgs' />
+                                                <span className='navLinkItem'>Data Uses</span>
+                                            </Nav.Link>
+                                        </div>
+
+                                        <div className={this.getNavActiveClass('teams')} onClick={e => this.toggleNav('teams')}>
+                                            <Nav.Link className='verticalNavBar gray700-13'>
+                                                <span className='grey-circle-border'>
+                                                    <SVGIcon
+                                                        name='plusChunky'
+                                                        fill={'#b3b8bd'}
+                                                        viewBox='-1 -1 26 26'
+                                                        className='accountSvgs'
+                                                    />
+                                                </span>
+                                                <span style={{ 'margin-left': '5px' }}>Teams</span>
+                                            </Nav.Link>
+                                        </div>
+                                    </Fragment>
+                                ) : (
+                                    ''
+                                )}
+
+                                {team !== 'user' && team !== 'admin' ? (
+                                    <Fragment>
+                                        <div
+                                            className={this.getNavActiveClass('teamManagement')}
+                                            onClick={e => this.toggleNav('teamManagement')}>
+                                            <Nav.Link className='verticalNavBar gray700-13'>
+                                                <SVGIcon name='rolesicon' fill={'#b3b8bd'} className='accountSvgs' />
+                                                <span style={{ marginLeft: '11px' }}>Team Management</span>
+                                            </Nav.Link>
+                                        </div>
+                                        {allowAccessRequestManagement && this.userHasRole(team, ['manager', 'reviewer']) && (
+                                            <div className={this.getNavActiveClass(['dataaccessrequests', 'workflows', 'addeditworkflow'])}>
+                                                <Accordion activeKey={activeAccordion} onSelect={this.accordionClick}>
+                                                    <Fragment>
+                                                        <Accordion.Toggle
+                                                            variant='link'
+                                                            className='verticalNavBar gray700-13 navLinkButton'
+                                                            eventKey='0'>
+                                                            <SVGIcon name='dataaccessicon' fill={'#b3b8bd'} className='accountSvgs' />
+                                                            <span className='navLinkItem'>Data access requests</span>
+                                                        </Accordion.Toggle>
+                                                        <Accordion.Collapse eventKey='0'>
+                                                            <div>
+                                                                <Nav.Link
+                                                                    onClick={e => this.toggleNav('dataaccessrequests')}
+                                                                    bsPrefix='nav-block'
+                                                                    className={`gray700-13 ${
+                                                                        tabId === 'dataaccessrequests' ? 'nav-item-active' : ''
+                                                                    }`}>
+                                                                    <span className='subLinkItem'>Applications</span>
+                                                                </Nav.Link>
+                                                                {allowWorkflow && this.userHasRole(team, 'manager') && (
+                                                                    <Nav.Link
+                                                                        onClick={e => this.toggleNav(`workflows`)}
+                                                                        bsPrefix='nav-block'
+                                                                        className={`gray700-13 ${
+                                                                            tabId === 'workflows' ? 'nav-item-active' : ''
+                                                                        }`}>
+                                                                        <span className='subLinkItem'>Workflows</span>
+                                                                    </Nav.Link>
+                                                                )}
+                                                            </div>
+                                                        </Accordion.Collapse>
+                                                    </Fragment>
+                                                </Accordion>
+                                            </div>
+                                        )}
+                                        {this.userHasRole(team, ['manager', 'metadata_editor']) && (
+                                            <div
+                                                className={this.getNavActiveClass('datasets')}
+                                                onClick={e => this.toggleNav('datasets', '/account')}>
+                                                <Nav.Link className='verticalNavBar gray700-13' to='/account'>
+                                                    <SVGIcon name='dataseticon' fill={'#b3b8bd'} className='accountSvgs' />
+                                                    <span style={{ 'margin-left': '11px' }}>Datasets</span>
+                                                </Nav.Link>
+                                            </div>
+                                        )}
+                                        <div className={this.getNavActiveClass('datause')} onClick={e => this.toggleNav('datause')}>
+                                            <Nav.Link eventKey={'datause'} className='verticalNavBar gray700-13'>
+                                                <SVGIcon name='datauseicon' fill={'#b3b8bd'} className='accountSvgs' />
+                                                <span className='navLinkItem'>Data Uses</span>
+                                            </Nav.Link>
+                                        </div>
+                                        <div className={this.getNavActiveClass('help')} onClick={e => this.toggleNav('help')}>
+                                            <Nav.Link className='verticalNavBar gray700-13'>
+                                                <SVGIcon name='info' fill={'#b3b8bd'} className='accountSvgs' />
+                                                <span className='navLinkItem'>Help</span>
+                                            </Nav.Link>
+                                        </div>
+                                    </Fragment>
+                                ) : (
+                                    ''
+                                )}
+                            </div>
+                        </div>
+
+                        <div className='col-sm-12 col-md-10 margin-top-32'>
+                            {team === 'user' && (
+                                <>
+                                    {tabId === 'dashboard' ? <AccountAnalyticsDashboard userState={userState} /> : ''}
+
+                                    {tabId === 'youraccount' ? <YourAccount userState={userState} accountUpdated={accountUpdated} /> : ''}
+
+                                    {tabId === 'tools' ? <AccountTools userState={userState} /> : ''}
+
+                                    {tabId === 'reviews' ? <ReviewTools userState={userState} /> : ''}
+
+                                    {tabId === 'papers' ? <AccountPapers userState={userState} /> : ''}
+
+                                    {tabId === 'courses' ? <AccountCourses userState={userState} /> : ''}
+
+                                    {tabId === 'dataaccessrequests' ? (
+                                        _.isEmpty(dataaccessrequest) ? (
+                                            <DataAccessRequests
+                                                setDataAccessRequest={this.setDataAccessRequest}
+                                                userState={userState}
+                                                team={team}
+                                                alert={alert}
+                                            />
+                                        ) : (
+                                            <ActivityLog
+                                                onClickStartReview={this.navigateToLocation}
+                                                dataaccessrequest={dataaccessrequest}
+                                                userState={userState}
+                                                team={team}
+                                                ref={this.activityLog}
+                                                onUpdateLogs={this.loadActivityLogNotifications}
+                                            />
+                                        )
+                                    ) : (
+                                        ''
                                     )}
-                                    <div className={this.getNavActiveClass('datause')} onClick={e => this.toggleNav('datause')}>
-                                        <Nav.Link eventKey={'datause'} className='verticalNavBar gray700-13'>
-                                            <SVGIcon name='datauseicon' fill={'#b3b8bd'} className='accountSvgs' />
-                                            <span className='navLinkItem'>Data Uses</span>
-                                        </Nav.Link>
-                                    </div>
-                                    <div className={this.getNavActiveClass('help')} onClick={e => this.toggleNav('help')}>
-                                        <Nav.Link className='verticalNavBar gray700-13'>
-                                            <SVGIcon name='info' fill={'#b3b8bd'} className='accountSvgs' />
-                                            <span className='navLinkItem'>Help</span>
-                                        </Nav.Link>
-                                    </div>
-                                </Fragment>
+
+                                    {tabId === 'datause' ? (
+                                        showDataUseUploadPage ? (
+                                            <DataUseUpload
+                                                userState={userState}
+                                                onSubmit={this.toggleDataUseUploadPage}
+                                                team={team}
+                                                ref={this.dataUseUpload}
+                                                dataUsePage={this.dataUsePage}
+                                            />
+                                        ) : (
+                                            <DataUsePage
+                                                userState={userState}
+                                                team={team}
+                                                onClickDataUseUpload={this.toggleDataUseUploadPage}
+                                                ref={this.dataUsePage}
+                                            />
+                                        )
+                                    ) : (
+                                        ''
+                                    )}
+
+                                    {tabId === 'collections' ? <AccountCollections userState={userState} /> : ''}
+
+                                    {tabId === 'usersroles' ? <AccountUsers userState={userState} /> : ''}
+                                </>
+                            )}
+
+                            <Route path='/account/datasets/:id' component={AccountDataset} />
+
+                            {team !== 'user' ? (
+                                <>
+                                    {allowAccessRequestManagement && this.userHasRole(team, ['manager', 'reviewer']) && (
+                                        <>
+                                            {' '}
+                                            {tabId === 'dataaccessrequests' ? (
+                                                _.isEmpty(dataaccessrequest) ? (
+                                                    <DataAccessRequests
+                                                        setDataAccessRequest={this.setDataAccessRequest}
+                                                        userState={userState}
+                                                        team={team}
+                                                        alert={alert}
+                                                    />
+                                                ) : (
+                                                    <ActivityLog
+                                                        onClickStartReview={this.navigateToLocation}
+                                                        dataaccessrequest={dataaccessrequest}
+                                                        userState={userState}
+                                                        team={team}
+                                                        ref={this.activityLog}
+                                                        onUpdateLogs={this.loadActivityLogNotifications}
+                                                    />
+                                                )
+                                            ) : (
+                                                ''
+                                            )}
+                                        </>
+                                    )}
+
+                                    {(this.userHasRole(team, ['manager', 'metadata_editor']) || team === 'admin') && (
+                                        <>
+                                            {tabId === 'datasets' ? (
+                                                <AccountDatasets userState={userState} team={team} alert={alert} />
+                                            ) : (
+                                                ''
+                                            )}
+                                        </>
+                                    )}
+
+                                    {team === 'admin' && (
+                                        <>
+                                            {tabId === 'teams' && (
+                                                <AccountTeams
+                                                    userState={userState}
+                                                    onTeamsTabChange={this.onTeamsTabChange}
+                                                    team={team}
+                                                    alert={alert}
+                                                />
+                                            )}
+                                        </>
+                                    )}
+
+                                    {tabId === 'datause' ? (
+                                        showDataUseUploadPage ? (
+                                            <DataUseUpload
+                                                userState={userState}
+                                                team={team}
+                                                ref={this.dataUseUpload}
+                                                dataUsePage={this.dataUsePage}
+                                                onSubmit={this.toggleDataUseUploadPage}
+                                            />
+                                        ) : (
+                                            <DataUsePage
+                                                userState={userState}
+                                                team={team}
+                                                onClickDataUseUpload={this.toggleDataUseUploadPage}
+                                                ref={this.dataUsePage}
+                                            />
+                                        )
+                                    ) : (
+                                        ''
+                                    )}
+
+                                    {allowWorkflow && this.userHasRole(team, 'manager') && (
+                                        <>{tabId === 'workflows' ? <WorkflowDashboard userState={userState} team={team} /> : ''}</>
+                                    )}
+                                    {tabId === 'teamManagement' ? (
+                                        <AccountTeamManagement
+                                            userState={userState}
+                                            team={team}
+                                            innertab={innertab}
+                                            forwardRef={c => {
+                                                this.saveNotifiations = c;
+                                            }}
+                                            onTeamManagementSave={this.onTeamManagementSave}
+                                            onTeamManagementTabChange={this.onTeamManagementTabChange}
+                                            onClearInnerTab={this.onClearInnerTab}
+                                        />
+                                    ) : (
+                                        ''
+                                    )}
+                                    {tabId === 'help' ? <TeamHelp /> : ''}
+                                </>
                             ) : (
                                 ''
                             )}
                         </div>
                     </div>
 
-                    <div className='col-sm-12 col-md-10 margin-top-32'>
-                        {team === 'user' && (
-                            <>
-                                {tabId === 'dashboard' ? <AccountAnalyticsDashboard userState={userState} /> : ''}
-
-                                {tabId === 'youraccount' ? <YourAccount userState={userState} accountUpdated={accountUpdated} /> : ''}
-
-                                {tabId === 'tools' ? <AccountTools userState={userState} /> : ''}
-
-                                {tabId === 'reviews' ? <ReviewTools userState={userState} /> : ''}
-
-                                {tabId === 'papers' ? <AccountPapers userState={userState} /> : ''}
-
-                                {tabId === 'courses' ? <AccountCourses userState={userState} /> : ''}
-
-                                {tabId === 'dataaccessrequests' ? (
-                                    _.isEmpty(dataaccessrequest) ? (
-                                        <DataAccessRequests
-                                            setDataAccessRequest={this.setDataAccessRequest}
-                                            userState={userState}
-                                            team={team}
-                                            alert={alert}
-                                        />
-                                    ) : (
-                                        <ActivityLog
-                                            onClickStartReview={this.navigateToLocation}
-                                            dataaccessrequest={dataaccessrequest}
-                                            userState={userState}
-                                            team={team}
-                                            ref={this.activityLog}
-                                            onUpdateLogs={this.loadActivityLogNotifications}
-                                        />
-                                    )
-                                ) : (
-                                    ''
-                                )}
-
-                                {tabId === 'datause' ? (
-                                    showDataUseUploadPage ? (
-                                        <DataUseUpload
-                                            userState={userState}
-                                            onSubmit={this.toggleDataUseUploadPage}
-                                            team={team}
-                                            ref={this.dataUseUpload}
-                                            dataUsePage={this.dataUsePage}
-                                        />
-                                    ) : (
-                                        <DataUsePage
-                                            userState={userState}
-                                            team={team}
-                                            onClickDataUseUpload={this.toggleDataUseUploadPage}
-                                            ref={this.dataUsePage}
-                                        />
-                                    )
-                                ) : (
-                                    ''
-                                )}
-
-                                {tabId === 'collections' ? <AccountCollections userState={userState} /> : ''}
-
-                                {tabId === 'usersroles' ? <AccountUsers userState={userState} /> : ''}
-                            </>
-                        )}
-
-                        <Route path='/account/datasets/:id' component={AccountDataset} />
-
-                        {team !== 'user' ? (
-                            <>
-                                {allowAccessRequestManagement && this.userHasRole(team, ['manager', 'reviewer']) && (
-                                    <>
-                                        {' '}
-                                        {tabId === 'dataaccessrequests' ? (
-                                            _.isEmpty(dataaccessrequest) ? (
-                                                <DataAccessRequests
-                                                    setDataAccessRequest={this.setDataAccessRequest}
-                                                    userState={userState}
-                                                    team={team}
-                                                    alert={alert}
-                                                />
-                                            ) : (
-                                                <ActivityLog
-                                                    onClickStartReview={this.navigateToLocation}
-                                                    dataaccessrequest={dataaccessrequest}
-                                                    userState={userState}
-                                                    team={team}
-                                                    ref={this.activityLog}
-                                                    onUpdateLogs={this.loadActivityLogNotifications}
-                                                />
-                                            )
-                                        ) : (
-                                            ''
-                                        )}
-                                    </>
-                                )}
-
-                                {(this.userHasRole(team, ['manager', 'metadata_editor']) || team === 'admin') && (
-                                    <>{tabId === 'datasets' ? <AccountDatasets userState={userState} team={team} alert={alert} /> : ''}</>
-                                )}
-
-                                {team === 'admin' && (
-                                    <>
-                                        {tabId === 'teams' && (
-                                            <AccountTeams
-                                                userState={userState}
-                                                onTeamsTabChange={this.onTeamsTabChange}
-                                                team={team}
-                                                alert={alert}
-                                            />
-                                        )}
-                                    </>
-                                )}
-
-                                {tabId === 'datause' ? (
-                                    showDataUseUploadPage ? (
-                                        <DataUseUpload
-                                            userState={userState}
-                                            team={team}
-                                            ref={this.dataUseUpload}
-                                            dataUsePage={this.dataUsePage}
-                                            onSubmit={this.toggleDataUseUploadPage}
-                                        />
-                                    ) : (
-                                        <DataUsePage
-                                            userState={userState}
-                                            team={team}
-                                            onClickDataUseUpload={this.toggleDataUseUploadPage}
-                                            ref={this.dataUsePage}
-                                        />
-                                    )
-                                ) : (
-                                    ''
-                                )}
-
-                                {allowWorkflow && this.userHasRole(team, 'manager') && (
-                                    <>{tabId === 'workflows' ? <WorkflowDashboard userState={userState} team={team} /> : ''}</>
-                                )}
-                                {tabId === 'teamManagement' ? (
-                                    <AccountTeamManagement
-                                        userState={userState}
+                    {!_.isEmpty(dataaccessrequest) && (
+                        <ActionBar userState={userState}>
+                            <div className='action-bar'>
+                                <div className='action-bar-actions'>
+                                    <ActivityLogActionButtons
                                         team={team}
-                                        innertab={innertab}
-                                        forwardRef={c => {
-                                            this.saveNotifiations = c;
-                                        }}
-                                        onTeamManagementSave={this.onTeamManagementSave}
-                                        onTeamManagementTabChange={this.onTeamManagementTabChange}
-                                        onClearInnerTab={this.onClearInnerTab}
+                                        latestVersion={this.state.dataaccessrequest}
+                                        onClickStartReview={this.navigateToLocation}
+                                        activityLog={this.activityLog}
+                                        onClickAddNewEvent={() => this.activityLog.current.showAddNewEventModal()}
                                     />
-                                ) : (
-                                    ''
-                                )}
-                                {tabId === 'help' ? <TeamHelp /> : ''}
-                            </>
-                        ) : (
-                            ''
-                        )}
-                    </div>
-                </div>
-
-                {!_.isEmpty(dataaccessrequest) && (
-                    <ActionBar userState={userState}>
-                        <div className='action-bar'>
-                            <div className='action-bar-actions'>
-                                <ActivityLogActionButtons
-                                    team={team}
-                                    latestVersion={this.state.dataaccessrequest}
-                                    onClickStartReview={this.navigateToLocation}
-                                    activityLog={this.activityLog}
-                                    onClickAddNewEvent={() => this.activityLog.current.showAddNewEventModal()}
-                                />
+                                </div>
                             </div>
-                        </div>
-                    </ActionBar>
-                )}
+                        </ActionBar>
+                    )}
 
-                <SideDrawer open={showDrawer} closed={this.toggleDrawer}>
-                    <UserMessages
-                        userState={userState[0]}
-                        closed={this.toggleDrawer}
-                        toggleModal={this.toggleModal}
-                        drawerIsOpen={this.state.showDrawer}
-                        selectedTopicId={this.state.selectedTopicId}
-                    />
-                </SideDrawer>
-                {tabId === 'teamManagement' && teamManagementTab === tabTypes.Notifications && (
-                    <ActionBar userState={userState}>
-                        <div>
-                            <button
-                                className={savedTeamNotificationSuccess ? 'button-teal' : 'button-primary'}
-                                type='button'
-                                onClick={this.onSaveNotificationsClick}
-                                disabled={isSubmitting}
-                            >
-                                {' '}
-                                {savedTeamNotificationSuccess ? (
-                                    <div>
-                                        <CheckSVG fill='#fff' className='submitClose' /> Saved
-                                    </div>
-                                ) : (
-                                    'Save'
-                                )}
-                            </button>
-                        </div>
-                    </ActionBar>
-                )}
-
-                {showDataUseUploadPage && (
-                    <ActionBar userState={userState}>
-                        <div className='action-bar'>
-                            <div className='action-bar-actions'>
-                                <DataUseUploadActionButtons dataUseUpload={this.dataUseUpload} />
+                    <SideDrawer open={showDrawer} closed={this.toggleDrawer}>
+                        <UserMessages
+                            userState={userState[0]}
+                            closed={this.toggleDrawer}
+                            toggleModal={this.toggleModal}
+                            drawerIsOpen={this.state.showDrawer}
+                            selectedTopicId={this.state.selectedTopicId}
+                        />
+                    </SideDrawer>
+                    {tabId === 'teamManagement' && teamManagementTab === tabTypes.Notifications && (
+                        <ActionBar userState={userState}>
+                            <div>
+                                <button
+                                    className={savedTeamNotificationSuccess ? 'button-teal' : 'button-primary'}
+                                    type='button'
+                                    onClick={this.onSaveNotificationsClick}
+                                    disabled={isSubmitting}>
+                                    {' '}
+                                    {savedTeamNotificationSuccess ? (
+                                        <div>
+                                            <CheckSVG fill='#fff' className='submitClose' /> Saved
+                                        </div>
+                                    ) : (
+                                        'Save'
+                                    )}
+                                </button>
                             </div>
-                        </div>
-                    </ActionBar>
-                )}
+                        </ActionBar>
+                    )}
 
-                <DataSetModal open={showModal} context={context} closed={this.toggleModal} userState={userState[0]} />
+                    {showDataUseUploadPage && (
+                        <ActionBar userState={userState}>
+                            <div className='action-bar'>
+                                <div className='action-bar-actions'>
+                                    <DataUseUploadActionButtons dataUseUpload={this.dataUseUpload} />
+                                </div>
+                            </div>
+                        </ActionBar>
+                    )}
+
+                    <DataSetModal open={showModal} context={context} closed={this.toggleModal} userState={userState[0]} />
+                </DashboardProvider>
             </Sentry.ErrorBoundary>
         );
     }

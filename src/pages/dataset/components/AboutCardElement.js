@@ -53,30 +53,31 @@ class AboutCardElement extends React.Component {
                         </div>
                     )}
 
-                    {!description || (typeof description === 'object' && _.isEmpty(description)) ? (
-                        <Col sm={8} className='v2Value'>
-                            <span className='gray800-14-opacity'> Not specified </span>
-                        </Col>
-                    ) : (
-                        <Col sm={8} className='gray800-14 v2Value'>
-                            {typeof description === 'object' ? (
-                                description.map((item, index) => (
-                                    <Linkify key={`description-${index}`} properties={{ target: '_blank' }} className='overflowWrap'>
-                                        {' '}
-                                        {index !== 0 ? ', ' : ''} {item}
-                                    </Linkify>
-                                ))
-                            ) : (
-                                <Linkify properties={{ target: '_blank' }} className='overflowWrap'>
-                                    {description}
-                                </Linkify>
-                            )}
-                        </Col>
-                    )}
-                </Row>
-            </div>
-        );
-    }
+
+					{!description || (typeof description === 'object' && _.isEmpty(description)) ? (
+						<Col sm={8} className='v2Value'>
+							<span className='gray800-14-opacity'> Not specified </span>
+						</Col>
+					) : (
+						<Col sm={8} className='gray800-14 v2Value'>
+							{typeof description === 'object' ? (
+								description.map((item, index) => (
+									<Linkify key={`description-${index}`} properties={{ target: '_blank' }} className='overflowWrap'>
+										{' '}
+										{index !== 0 ? ', ' : ''} {item}
+									</Linkify>
+								))
+							) : (
+								<Linkify properties={{ target: '_blank' }} className='overflowWrap'>
+									{description}
+								</Linkify>
+							)}
+						</Col>
+					)}
+				</Row>
+			</div>
+		);
+	}
 }
 
 export default AboutCardElement;
