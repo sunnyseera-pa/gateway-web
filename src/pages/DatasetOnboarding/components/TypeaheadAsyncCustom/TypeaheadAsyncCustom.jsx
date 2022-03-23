@@ -48,10 +48,6 @@ function TypeaheadAsyncCustom(props) {
         }
     };
 
-    const handleInputChange = value => {
-        value ? setShowIcon(false) : setShowIcon(true);
-    };
-
     const filterBy = () => true;
 
     return (
@@ -65,10 +61,9 @@ function TypeaheadAsyncCustom(props) {
             minLength={3}
             onSearch={handleSearch}
             onChange={handleChange}
-            onInputChange={handleInputChange}
             options={options}
             selected={selected}
-            iconPrepend={showIcon && !selected.length && <Icon svg={<SearchIcon />} size='lg' fill='purple' color='purple' />}
+            iconPrepend={showIcon && !selected.length && <Icon svg={<SearchIcon />} size='lg' fill='green700' />}
             renderMenuItemChildren={({ location, hierarchy }) => (
                 <div className='menu'>
                     <span className='location'>{location}</span>
