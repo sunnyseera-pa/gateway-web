@@ -639,7 +639,8 @@ class Account extends Component {
 
                                         <div
                                             className={this.getNavActiveClass('dataaccessrequests')}
-                                            onClick={e => this.toggleNav('dataaccessrequests')}>
+                                            onClick={e => this.toggleNav('dataaccessrequests')}
+                                        >
                                             <Nav.Link eventKey={'dataaccessrequests'} className='verticalNavBar gray700-13'>
                                                 <SVGIcon name='newprojecticon' fill={'#b3b8bd'} className='accountSvgs' />
                                                 <span className='navLinkItem'>Data access requests</span>
@@ -656,7 +657,8 @@ class Account extends Component {
                                         {userState[0].role === 'Admin' ? (
                                             <div
                                                 className={this.getNavActiveClass('usersroles')}
-                                                onClick={e => this.toggleNav('usersroles')}>
+                                                onClick={e => this.toggleNav('usersroles')}
+                                            >
                                                 <Nav.Link eventKey={'usersroles'} className='verticalNavBar gray700-13'>
                                                     <SVGIcon name='rolesicon' fill={'#b3b8bd'} className='accountSvgs' />
                                                     <span className='navLinkItem'>Users and roles</span>
@@ -674,7 +676,8 @@ class Account extends Component {
                                     <Fragment>
                                         <div
                                             className={this.getNavActiveClass('datasets')}
-                                            onClick={e => this.toggleNav('datasets', '/account')}>
+                                            onClick={e => this.toggleNav('datasets', '/account')}
+                                        >
                                             <Nav.Link className='verticalNavBar gray700-13' activeClassName='is-active' to='/account'>
                                                 <SVGIcon name='dataseticon' fill={'#b3b8bd'} className='accountSvgs' />
                                                 <span style={{ 'margin-left': '11px' }}>Datasets</span>
@@ -709,7 +712,8 @@ class Account extends Component {
                                     <Fragment>
                                         <div
                                             className={this.getNavActiveClass('teamManagement')}
-                                            onClick={e => this.toggleNav('teamManagement')}>
+                                            onClick={e => this.toggleNav('teamManagement')}
+                                        >
                                             <Nav.Link className='verticalNavBar gray700-13'>
                                                 <SVGIcon name='rolesicon' fill={'#b3b8bd'} className='accountSvgs' />
                                                 <span style={{ marginLeft: '11px' }}>Team Management</span>
@@ -722,7 +726,8 @@ class Account extends Component {
                                                         <Accordion.Toggle
                                                             variant='link'
                                                             className='verticalNavBar gray700-13 navLinkButton'
-                                                            eventKey='0'>
+                                                            eventKey='0'
+                                                        >
                                                             <SVGIcon name='dataaccessicon' fill={'#b3b8bd'} className='accountSvgs' />
                                                             <span className='navLinkItem'>Data access requests</span>
                                                         </Accordion.Toggle>
@@ -733,7 +738,8 @@ class Account extends Component {
                                                                     bsPrefix='nav-block'
                                                                     className={`gray700-13 ${
                                                                         tabId === 'dataaccessrequests' ? 'nav-item-active' : ''
-                                                                    }`}>
+                                                                    }`}
+                                                                >
                                                                     <span className='subLinkItem'>Applications</span>
                                                                 </Nav.Link>
                                                                 {allowWorkflow && this.userHasRole(team, 'manager') && (
@@ -742,7 +748,8 @@ class Account extends Component {
                                                                         bsPrefix='nav-block'
                                                                         className={`gray700-13 ${
                                                                             tabId === 'workflows' ? 'nav-item-active' : ''
-                                                                        }`}>
+                                                                        }`}
+                                                                    >
                                                                         <span className='subLinkItem'>Workflows</span>
                                                                     </Nav.Link>
                                                                 )}
@@ -755,7 +762,8 @@ class Account extends Component {
                                         {this.userHasRole(team, ['manager', 'metadata_editor']) && (
                                             <div
                                                 className={this.getNavActiveClass('datasets')}
-                                                onClick={e => this.toggleNav('datasets', '/account')}>
+                                                onClick={e => this.toggleNav('datasets', '/account')}
+                                            >
                                                 <Nav.Link className='verticalNavBar gray700-13' to='/account'>
                                                     <SVGIcon name='dataseticon' fill={'#b3b8bd'} className='accountSvgs' />
                                                     <span style={{ 'margin-left': '11px' }}>Datasets</span>
@@ -978,7 +986,8 @@ class Account extends Component {
                                     className={savedTeamNotificationSuccess ? 'button-teal' : 'button-primary'}
                                     type='button'
                                     onClick={this.onSaveNotificationsClick}
-                                    disabled={isSubmitting}>
+                                    disabled={isSubmitting}
+                                >
                                     {' '}
                                     {savedTeamNotificationSuccess ? (
                                         <div>
