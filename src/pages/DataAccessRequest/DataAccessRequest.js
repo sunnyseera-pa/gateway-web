@@ -57,6 +57,9 @@ import googleAnalytics from '../../tracking';
 import ErrorModal from '../commonComponents/errorModal';
 import TextareaInputCustom from '../commonComponents/TextareaInputCustom/TextareaInputCustom';
 import DropdownCustom from './components/DropdownCustom/DropdownCustom';
+import DoubleDropdownCustom from './components/DoubleDropdownCustom/DoubleDropdownCustom';
+
+import AsyncTypeAheadUsers from '../commonComponents/AsyncTypeAheadUsers';
 
 class DataAccessRequest extends Component {
 	constructor(props) {
@@ -2006,309 +2009,325 @@ class DataAccessRequest extends Component {
 											className={`${!this.state.inReviewMode ? 'black-16' : item.inReview ? 'black-16' : 'section-not-inreview'}
 										${item.active ? 'section-header-active' : 'section-header'} 
 										${this.state.allowedNavigation ? '' : 'disabled'}`}
-											onClick={e => this.updateNavigation(item)}>
-											<span>{item.title}</span>
-											<span>{item.flag && <i className={DarHelper.flagIcons[item.flag]} />}</span>
-										</h3>
-										{item.active && (
-											<ul className='list-unstyled section-subheader'>
-												<NavItem
-													parentForm={item}
-													questionPanels={this.state.jsonSchema.questionPanels}
-													onFormSwitchPanel={this.updateNavigation}
-													activePanelId={this.state.activePanelId}
-													enabled={allowedNavigation}
-													notForReview={!item.inReview && this.state.inReviewMode}
-												/>
-											</ul>
-										)}
-									</div>
-								</div>
-							))}
-						</div>
-						<div id='darCenterCol' className={isWideForm ? 'extended' : ''}>
-							{this.state.reviewWarning && (
-								<Alert variant='warning' className=''>
-									<SVGIcon name='attention' width={24} height={24} fill={'#f0bb24'} viewBox='2 -9 22 22'></SVGIcon>
-									You are not assigned to this section but can still view the form
-								</Alert>
-							)}
-							{!_.isEmpty(alert) && (
-								<Alert variant={'success'} className='main-alert'>
-									<SVGIcon name='check' width={24} height={24} fill={'#2C8267'} /> {alert.message}
-								</Alert>
-							)}
-							<div id='darDropdownNav'>
-								<NavDropdown
-									options={{
-										...this.state.jsonSchema,
-										allowsMultipleDatasets: this.state.allowsMultipleDatasets,
-									}}
-									onFormSwitchPanel={this.updateNavigation}
-									enabled={allowedNavigation}
-								/>
-							</div>
-							<div style={{ backgroundColor: '#ffffff' }} className='dar__header'>
-								{this.state.jsonSchema.pages
-									? [...this.state.jsonSchema.pages].map((item, idx) =>
-											item.active ? (
-												<Fragment key={`pageContent-${idx}`}>
-													<p className='black-20-semibold mb-0'>{item.active ? item.title : ''}</p>
-													<ReactMarkdown className='gray800-14' source={item.description} />
-												</Fragment>
-											) : (
-												''
-											)
-									  )
-									: ''}
-							</div>
-							<div
-								className={`dar__questions ${this.state.activePanelId === 'about' ? 'pad-bottom-0' : ''}`}
-								style={{ backgroundColor: '#ffffff' }}>
-								{this.renderApp()}
-							</div>
-						</div>
-						{isWideForm ? null : (
-							<div id='darRightCol' className='scrollable-sticky-column'>
-								<div className='darTab'>
-									<QuestionActionTabs
-										applicationId={this.state._id}
-										userState={userState}
-										settings={this.state.actionTabSettings}
-										activeGuidance={activeGuidance}
-										onHandleActionTabChange={this.onHandleActionTabChange}
-										toggleDrawer={this.toggleDrawer}
-										setMessageDescription={this.setMessageDescription}
-										userType={userType}
-										messagesCount={this.state.messagesCount}
-										notesCount={this.state.notesCount}
-										isShared={this.state.isShared}
-										updateCount={this.updateCount}
-										publisher={datasets[0].datasetv2.summary.publisher.name}
-										applicationStatus={applicationStatus}
-									/>
-								</div>
-							</div>
-						)}
-					</div>
+                                            onClick={e => this.updateNavigation(item)}
+                                        >
+                                            <span>{item.title}</span>
+                                            <span>{item.flag && <i className={DarHelper.flagIcons[item.flag]} />}</span>
+                                        </h3>
+                                        {item.active && (
+                                            <ul className='list-unstyled section-subheader'>
+                                                <NavItem
+                                                    parentForm={item}
+                                                    questionPanels={this.state.jsonSchema.questionPanels}
+                                                    onFormSwitchPanel={this.updateNavigation}
+                                                    activePanelId={this.state.activePanelId}
+                                                    enabled={allowedNavigation}
+                                                    notForReview={!item.inReview && this.state.inReviewMode}
+                                                />
+                                            </ul>
+                                        )}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                        <div id='darCenterCol' className={isWideForm ? 'extended' : ''}>
+                            {this.state.reviewWarning && (
+                                <Alert variant='warning' className=''>
+                                    <SVGIcon name='attention' width={24} height={24} fill={'#f0bb24'} viewBox='2 -9 22 22'></SVGIcon>
+                                    You are not assigned to this section but can still view the form
+                                </Alert>
+                            )}
+                            {!_.isEmpty(alert) && (
+                                <Alert variant={'success'} className='main-alert'>
+                                    <SVGIcon name='check' width={24} height={24} fill={'#2C8267'} /> {alert.message}
+                                </Alert>
+                            )}
+                            <div id='darDropdownNav'>
+                                <NavDropdown
+                                    options={{
+                                        ...this.state.jsonSchema,
+                                        allowsMultipleDatasets: this.state.allowsMultipleDatasets,
+                                    }}
+                                    onFormSwitchPanel={this.updateNavigation}
+                                    enabled={allowedNavigation}
+                                />
+                            </div>
+                            <div style={{ backgroundColor: '#ffffff' }} className='dar__header'>
+                                {this.state.jsonSchema.pages
+                                    ? [...this.state.jsonSchema.pages].map((item, idx) =>
+                                          item.active ? (
+                                              <Fragment key={`pageContent-${idx}`}>
+                                                  <p className='black-20-semibold mb-0'>{item.active ? item.title : ''}</p>
+                                                  <ReactMarkdown className='gray800-14' source={item.description} />
+                                              </Fragment>
+                                          ) : (
+                                              ''
+                                          )
+                                      )
+                                    : ''}
+                            </div>
+                            <div
+                                className={`dar__questions ${this.state.activePanelId === 'about' ? 'pad-bottom-0' : ''}`}
+                                style={{ backgroundColor: '#ffffff' }}
+                            >
+                                {this.renderApp()}
+                            </div>
+                        </div>
+                        {isWideForm ? null : (
+                            <div id='darRightCol' className='scrollable-sticky-column'>
+                                <div className='darTab'>
+                                    <QuestionActionTabs
+                                        applicationId={this.state._id}
+                                        userState={userState}
+                                        settings={this.state.actionTabSettings}
+                                        activeGuidance={activeGuidance}
+                                        onHandleActionTabChange={this.onHandleActionTabChange}
+                                        toggleDrawer={this.toggleDrawer}
+                                        setMessageDescription={this.setMessageDescription}
+                                        userType={userType}
+                                        messagesCount={this.state.messagesCount}
+                                        notesCount={this.state.notesCount}
+                                        isShared={this.state.isShared}
+                                        updateCount={this.updateCount}
+                                        publisher={datasets[0].datasetv2.summary.publisher.name}
+                                        applicationStatus={applicationStatus}
+                                    />
+                                </div>
+                            </div>
+                        )}
+                    </div>
 
-					<ActionBar userState={userState}>
-						<div className='action-bar'>
-							<div className='action-bar--questions'>
-								{applicationStatus === 'inProgress' ? (
-									''
-								) : (
-									<SLA classProperty={DarHelper.darStatusColours[applicationStatus]} text={DarHelper.darSLAText[applicationStatus]} />
-								)}
-								<div className='action-bar-status'>
-									{totalQuestions} &nbsp;|&nbsp; {projectId}
-								</div>
-							</div>
-							<div className='action-bar-actions'>
-								<AmendmentCount answeredAmendments={this.state.answeredAmendments} unansweredAmendments={this.state.unansweredAmendments} />
-								{userType.toUpperCase() === 'APPLICANT' ? (
-									<ApplicantActionButtons
-										allowedNavigation={allowedNavigation}
-										isCloneable={this.state.isCloneable}
-										onNextClick={this.onNextClick}
-										onSubmitClick={this.onSubmitClick}
-										onShowContributorModal={this.toggleContributorModal}
-										onEditForm={this.onEditForm}
-										showSubmit={this.state.showSubmit}
-										submitButtonText={this.state.submitButtonText}
-										onDeleteDraftClick={this.toggleDeleteDraftModal}
-										applicationStatus={applicationStatus}
-										onDuplicateClick={this.toggleDuplicateApplicationModal}
-										onShowAmendApplicationModal={this.toggleAmendApplicationModal}
-									/>
-								) : (
-									<CustodianActionButtons
-										activeParty={this.state.activeParty}
-										allowedNavigation={allowedNavigation}
-										unansweredAmendments={this.state.unansweredAmendments}
-										onUpdateRequest={this.onUpdateRequest}
-										onActionClick={this.onCustodianAction}
-										onWorkflowReview={this.toggleWorkflowReviewModal}
-										onWorkflowReviewDecisionClick={this.toggleWorkflowReviewDecisionModal}
-										onNextClick={this.onNextClick}
-										workflowEnabled={this.state.workflowEnabled}
-										workflowAssigned={this.state.workflowAssigned}
-										inReviewMode={this.state.inReviewMode}
-										hasRecommended={this.state.hasRecommended}
-										applicationStatus={applicationStatus}
-										roles={roles}
-									/>
-								)}
-							</div>
-						</div>
-					</ActionBar>
+                    <ActionBar userState={userState}>
+                        <div className='action-bar'>
+                            <div className='action-bar--questions'>
+                                {applicationStatus === 'inProgress' ? (
+                                    ''
+                                ) : (
+                                    <SLA
+                                        classProperty={DarHelper.darStatusColours[applicationStatus]}
+                                        text={DarHelper.darSLAText[applicationStatus]}
+                                    />
+                                )}
+                                <div className='action-bar-status'>
+                                    {totalQuestions} &nbsp;|&nbsp; {projectId}
+                                </div>
+                            </div>
+                            <div className='action-bar-actions'>
+                                <AmendmentCount
+                                    answeredAmendments={this.state.answeredAmendments}
+                                    unansweredAmendments={this.state.unansweredAmendments}
+                                />
+                                {userType.toUpperCase() === 'APPLICANT' ? (
+                                    <ApplicantActionButtons
+                                        allowedNavigation={allowedNavigation}
+                                        isCloneable={this.state.isCloneable}
+                                        onNextClick={this.onNextClick}
+                                        onSubmitClick={this.onSubmitClick}
+                                        onShowContributorModal={this.toggleContributorModal}
+                                        onEditForm={this.onEditForm}
+                                        showSubmit={this.state.showSubmit}
+                                        submitButtonText={this.state.submitButtonText}
+                                        onDeleteDraftClick={this.toggleDeleteDraftModal}
+                                        applicationStatus={applicationStatus}
+                                        onDuplicateClick={this.toggleDuplicateApplicationModal}
+                                        onShowAmendApplicationModal={this.toggleAmendApplicationModal}
+                                    />
+                                ) : (
+                                    <CustodianActionButtons
+                                        activeParty={this.state.activeParty}
+                                        allowedNavigation={allowedNavigation}
+                                        unansweredAmendments={this.state.unansweredAmendments}
+                                        onUpdateRequest={this.onUpdateRequest}
+                                        onActionClick={this.onCustodianAction}
+                                        onWorkflowReview={this.toggleWorkflowReviewModal}
+                                        onWorkflowReviewDecisionClick={this.toggleWorkflowReviewDecisionModal}
+                                        onNextClick={this.onNextClick}
+                                        workflowEnabled={this.state.workflowEnabled}
+                                        workflowAssigned={this.state.workflowAssigned}
+                                        inReviewMode={this.state.inReviewMode}
+                                        hasRecommended={this.state.hasRecommended}
+                                        applicationStatus={applicationStatus}
+                                        roles={roles}
+                                    />
+                                )}
+                            </div>
+                        </div>
+                    </ActionBar>
 
-					<SideDrawer open={showDrawer} closed={e => this.toggleDrawer()}>
-						<UserMessages
-							userState={userState[0]}
-							closed={e => this.toggleDrawer()}
-							toggleModal={this.toggleModal}
-							drawerIsOpen={this.state.showDrawer}
-							topicContext={this.state.topicContext}
-							msgDescription={messageDescription}
-						/>
-					</SideDrawer>
+                    <SideDrawer open={showDrawer} closed={e => this.toggleDrawer()}>
+                        <UserMessages
+                            userState={userState[0]}
+                            closed={e => this.toggleDrawer()}
+                            toggleModal={this.toggleModal}
+                            drawerIsOpen={this.state.showDrawer}
+                            topicContext={this.state.topicContext}
+                            msgDescription={messageDescription}
+                        />
+                    </SideDrawer>
 
-					<DataSetModal open={showModal} context={context} closed={this.toggleModal} userState={userState[0]} />
+                    <DataSetModal open={showModal} context={context} closed={this.toggleModal} userState={userState[0]} />
 
-					<ActionModal
-						open={showActionModal}
-						context={actionModalConfig}
-						updateApplicationStatus={this.updateApplicationStatus}
-						close={this.toggleActionModal}
-					/>
+                    <ActionModal
+                        open={showActionModal}
+                        context={actionModalConfig}
+                        updateApplicationStatus={this.updateApplicationStatus}
+                        close={this.toggleActionModal}
+                    />
 
-					<WorkflowReviewStepsModal
-						open={this.state.showWorkflowReviewModal}
-						close={this.toggleWorkflowReviewModal}
-						workflow={this.state.workflow}
-					/>
+                    <WorkflowReviewStepsModal
+                        open={this.state.showWorkflowReviewModal}
+                        close={this.toggleWorkflowReviewModal}
+                        workflow={this.state.workflow}
+                    />
 
-					<ActivePhaseModal
-						open={this.state.showActivePhaseModal}
-						close={this.toggleActivePhaseModal}
-						workflow={this.state.workflow}
-						projectName={projectName}
-						dataSets={selectedDatasets}
-						completeActivePhase={this.completeActivePhase}
-					/>
+                    <ActivePhaseModal
+                        open={this.state.showActivePhaseModal}
+                        close={this.toggleActivePhaseModal}
+                        workflow={this.state.workflow}
+                        projectName={projectName}
+                        dataSets={selectedDatasets}
+                        completeActivePhase={this.completeActivePhase}
+                    />
 
-					<WorkflowReviewDecisionModal
-						open={this.state.showWorkflowReviewDecisionModal}
-						close={this.toggleWorkflowReviewDecisionModal}
-						onDecisionReview={this.onDecisionReview}
-						approved={this.state.workflowReviewDecisionType}
-						workflow={this.state.workflow}
-						projectName={projectName}
-						dataSets={selectedDatasets}
-					/>
+                    <WorkflowReviewDecisionModal
+                        open={this.state.showWorkflowReviewDecisionModal}
+                        close={this.toggleWorkflowReviewDecisionModal}
+                        onDecisionReview={this.onDecisionReview}
+                        approved={this.state.workflowReviewDecisionType}
+                        workflow={this.state.workflow}
+                        projectName={projectName}
+                        dataSets={selectedDatasets}
+                    />
 
-					<MinorVersionBlockedModal
-						open={this.state.showMinorVersionBlockedModal}
-						close={this.toggleMinorVersionBlockedModal}
-						confirm={this.goToLatestVersion}
-					/>
+                    <MinorVersionBlockedModal
+                        open={this.state.showMinorVersionBlockedModal}
+                        close={this.toggleMinorVersionBlockedModal}
+                        confirm={this.goToLatestVersion}
+                    />
 
-					<ActionNotAllowedModal
-						open={this.state.showAmendNotAllowedModal}
-						close={this.toggleAmendNotAllowedModal}
-						confirm={this.toggleDrawer}
-						headerText='Application in review cannot be amended'
-						bodyText='This application is in review so cannot be amended. However, updates can be requested by the custodian.'
-					/>
+                    <ActionNotAllowedModal
+                        open={this.state.showAmendNotAllowedModal}
+                        close={this.toggleAmendNotAllowedModal}
+                        confirm={this.toggleDrawer}
+                        headerText='Application in review cannot be amended'
+                        bodyText='This application is in review so cannot be amended. However, updates can be requested by the custodian.'
+                    />
 
-					<ContributorModal
-						open={showContributorModal}
-						close={this.toggleContributorModal}
-						mainApplicant={this.state.mainApplicant}
-						handleOnSaveChanges={this.submitContributors}>
-						<TypeaheadMultiUser
-							onHandleContributorChange={this.updateContributors}
-							selectedContributors={this.state.authorIds}
-							currentUserId={this.state.userId}
-						/>
-					</ContributorModal>
+                    <ContributorModal
+                        open={showContributorModal}
+                        close={this.toggleContributorModal}
+                        mainApplicant={this.state.mainApplicant}
+                        handleOnSaveChanges={this.submitContributors}
+                    >
+                        <AsyncTypeAheadUsers
+                            selectedUsers={this.state.authorIds}
+                            changeHandler={this.updateContributors}
+                            getUsersInfo={true}
+                            currentUserId={this.state.userId}
+                        />
+                    </ContributorModal>
 
-					<AssignWorkflowModal
-						open={showAssignWorkflowModal}
-						close={this.toggleAssignWorkflowModal}
-						applicationId={this.state._id}
-						publisher={datasets[0].datasetfields.publisher}
-						workflows={this.state.workflows}
-					/>
+                    <AssignWorkflowModal
+                        open={showAssignWorkflowModal}
+                        close={this.toggleAssignWorkflowModal}
+                        applicationId={this.state._id}
+                        publisher={datasets[0].datasetfields.publisher}
+                        workflows={this.state.workflows}
+                    />
 
-					<UpdateRequestModal
-						open={this.state.updateRequestModal}
-						close={this.toggleUpdateRequestModal}
-						publisher={this.state.publisher}
-						projectName={projectName}
-						applicationId={this.state._id}
-						fullAmendments={this.state.fullAmendments}
-						amendmentIterations={this.state.amendmentIterations}
-					/>
+                    <UpdateRequestModal
+                        open={this.state.updateRequestModal}
+                        close={this.toggleUpdateRequestModal}
+                        publisher={this.state.publisher}
+                        projectName={projectName}
+                        applicationId={this.state._id}
+                        fullAmendments={this.state.fullAmendments}
+                        amendmentIterations={this.state.amendmentIterations}
+                    />
 
-					<Modal
-						show={showMrcModal}
-						onHide={e => this.toggleMrcModal()}
-						size='lg'
-						aria-labelledby='contained-modal-title-vcenter'
-						centered
-						className='darModal'>
-						<iframe src='https://hda-toolkit.org/story_html5.html' className='darIframe'>
-							{' '}
-						</iframe>
-					</Modal>
+                    <Modal
+                        show={showMrcModal}
+                        onHide={e => this.toggleMrcModal()}
+                        size='lg'
+                        aria-labelledby='contained-modal-title-vcenter'
+                        centered
+                        className='darModal'
+                    >
+                        <iframe src='https://hda-toolkit.org/story_html5.html' className='darIframe'>
+                            {' '}
+                        </iframe>
+                    </Modal>
 
-					<Modal
-						show={showEmailModal}
-						onHide={e => this.toggleEmailModal(false)}
-						aria-labelledby='contained-modal-title-vcenter'
-						centered
-						className='workflowModal'>
-						<div className='workflowModal-header'>
-							<h1 className='black-20-semibold'>Email application</h1>
-							<CloseButtonSvg className='workflowModal-header--close' onClick={e => this.toggleEmailModal(false)} />
-						</div>
+                    <Modal
+                        show={showEmailModal}
+                        onHide={e => this.toggleEmailModal(false)}
+                        aria-labelledby='contained-modal-title-vcenter'
+                        centered
+                        className='workflowModal'
+                    >
+                        <div className='workflowModal-header'>
+                            <h1 className='black-20-semibold'>Email application</h1>
+                            <CloseButtonSvg className='workflowModal-header--close' onClick={e => this.toggleEmailModal(false)} />
+                        </div>
 
-						<div className='workflowModal-body'>
-							Are you sure you want to email yourself this application? This will be sent to the email address provided in your HDR UK
-							account, where it will be available for you to print.
-						</div>
-						<div className='workflowModal-footer'>
-							<div className='workflowModal-footer--wrap'>
-								<Button variant='white' className='techDetailButton mr-2' onClick={e => this.toggleEmailModal(false)}>
-									No, nevermind
-								</Button>
-								<Button variant='primary' className='white-14-semibold' onClick={this.onClickMailDAR}>
-									Email application
-								</Button>
-							</div>
-						</div>
-					</Modal>
+                        <div className='workflowModal-body'>
+                            Are you sure you want to email yourself this application? This will be sent to the email address provided in
+                            your HDR UK account, where it will be available for you to print.
+                        </div>
+                        <div className='workflowModal-footer'>
+                            <div className='workflowModal-footer--wrap'>
+                                <Button variant='white' className='techDetailButton mr-2' onClick={e => this.toggleEmailModal(false)}>
+                                    No, nevermind
+                                </Button>
+                                <Button variant='primary' className='white-14-semibold' onClick={this.onClickMailDAR}>
+                                    Email application
+                                </Button>
+                            </div>
+                        </div>
+                    </Modal>
 
-					<MissingFieldsModal open={this.state.showMissingFieldsModal} close={this.toggleMissingFieldsModal} />
-					<ConfirmSubmissionModal
-						open={this.state.showConfirmSubmissionModal}
-						close={this.toggleConfirmSubmissionModal}
-						confirm={this.onFormSubmit}
-					/>
-					<SubmitAmendmentModal
-						open={this.state.showSubmitAmendmentModal}
-						close={this.toggleSubmitAmendmentModal}
-						onHandleSubmit={amendDescription => {
-							this.onFormSubmit({ type: DarHelper.darApplicationTypes.amendment, description: amendDescription });
-						}}
-					/>
-					<DeleteDraftModal open={this.state.showDeleteDraftModal} close={this.toggleDeleteDraftModal} confirm={this.onDeleteDraft} />
+                    <MissingFieldsModal open={this.state.showMissingFieldsModal} close={this.toggleMissingFieldsModal} />
+                    <ConfirmSubmissionModal
+                        open={this.state.showConfirmSubmissionModal}
+                        close={this.toggleConfirmSubmissionModal}
+                        confirm={this.onFormSubmit}
+                    />
+                    <SubmitAmendmentModal
+                        open={this.state.showSubmitAmendmentModal}
+                        close={this.toggleSubmitAmendmentModal}
+                        onHandleSubmit={amendDescription => {
+                            this.onFormSubmit({ type: DarHelper.darApplicationTypes.amendment, description: amendDescription });
+                        }}
+                    />
+                    <DeleteDraftModal
+                        open={this.state.showDeleteDraftModal}
+                        close={this.toggleDeleteDraftModal}
+                        confirm={this.onDeleteDraft}
+                    />
 
-					<AmendApplicationModal
-						open={this.state.showAmendApplicationModal}
-						close={this.toggleAmendApplicationModal}
-						confirm={this.onAmendApplication}
-					/>
+                    <AmendApplicationModal
+                        open={this.state.showAmendApplicationModal}
+                        close={this.toggleAmendApplicationModal}
+                        confirm={this.onAmendApplication}
+                    />
 
-					<DuplicateApplicationModal
-						isOpen={this.state.showDuplicateApplicationModal}
-						closeModal={this.toggleDuplicateApplicationModal}
-						duplicateApplication={this.onDuplicateApplication}
-						showDatasetModal={this.showDatasetModal}
-					/>
+                    <DuplicateApplicationModal
+                        isOpen={this.state.showDuplicateApplicationModal}
+                        closeModal={this.toggleDuplicateApplicationModal}
+                        duplicateApplication={this.onDuplicateApplication}
+                        showDatasetModal={this.showDatasetModal}
+                    />
 
-					<SelectDatasetModal
-						isOpen={this.state.showSelectDatasetModal}
-						closeModal={this.toggleSelectDatasetModal}
-						duplicateApplication={this.onDuplicateApplication}
-						appToCloneId={this.state._id}
-					/>
-				</div>
-			</Sentry.ErrorBoundary>
-		);
-	}
+                    <SelectDatasetModal
+                        isOpen={this.state.showSelectDatasetModal}
+                        closeModal={this.toggleSelectDatasetModal}
+                        duplicateApplication={this.onDuplicateApplication}
+                        appToCloneId={this.state._id}
+                    />
+                </div>
+            </Sentry.ErrorBoundary>
+        );
+    }
 }
 
 export default DataAccessRequest;
