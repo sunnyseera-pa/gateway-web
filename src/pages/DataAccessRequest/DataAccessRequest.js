@@ -601,15 +601,17 @@ class DataAccessRequest extends Component {
 				: (questionAnswers.safepeopleprimaryapplicantemail = '');
 			questionAnswers.safepeopleprimaryapplicantorganisationname = contributor.organisation;
 		} else if (id.includes('safepeopleotherindividualsfullname') && typeof questionAnswers[id] === 'object') {
+			let organisation = 'safepeopleotherindividualsorganisation';
+			let orcid = 'safepeopleotherindividualsorcid';
+			if (id.includes('_')) {
+				const tempId = id.split('_')[1];
+				organisation = `${organisation}_${tempId}`;
+				orcid = `${orcid}_${tempId}`;
+			}
 			let contributor = questionAnswers[id];
-			let organisation =
-				id.length > 34
-					? `safepeopleotherindividualsorganisation`.concat(id.substring(34, id.length))
-					: 'safepeopleotherindividualsorganisation';
-
 			questionAnswers[id] = `${contributor.firstname} ${contributor.lastname}`;
 			questionAnswers[organisation] = contributor.organisation;
-			questionAnswers.safepeopleotherindividualsorcid = contributor.orcid;
+			questionAnswers[orcid] = contributor.orcid;
 		}
 
 		if (!_.isEmpty(id) && !_.isEmpty(questionAnswers)) {
