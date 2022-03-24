@@ -606,15 +606,17 @@ class DataAccessRequest extends Component {
                 : (questionAnswers.safepeopleprimaryapplicantemail = '');
             questionAnswers.safepeopleprimaryapplicantorganisationname = contributor.organisation;
         } else if (id.includes('safepeopleotherindividualsfullname') && typeof questionAnswers[id] === 'object') {
+            let organisation = 'safepeopleotherindividualsorganisation';
+            let orcid = 'safepeopleotherindividualsorcid';
+            if (id.includes('_')) {
+                const tempId = id.split('_')[1];
+                organisation = `${organisation}_${tempId}`;
+                orcid = `${orcid}_${tempId}`;
+            }
             let contributor = questionAnswers[id];
-            let organisation =
-                id.length > 34
-                    ? `safepeopleotherindividualsorganisation`.concat(id.substring(34, id.length))
-                    : 'safepeopleotherindividualsorganisation';
-
             questionAnswers[id] = `${contributor.firstname} ${contributor.lastname}`;
             questionAnswers[organisation] = contributor.organisation;
-            questionAnswers.safepeopleotherindividualsorcid = contributor.orcid;
+            questionAnswers[orcid] = contributor.orcid;
         }
 
         if (!_.isEmpty(id) && !_.isEmpty(questionAnswers)) {
@@ -1934,7 +1936,6 @@ class DataAccessRequest extends Component {
         Winterfell.addInputType('typeaheadUser', TypeaheadUser);
         Winterfell.addInputType('textareaInputCustom', TextareaInputCustom);
         Winterfell.addInputType('dropdownCustom', DropdownCustom);
-        Winterfell.addInputType('doubleDropdownCustom', DoubleDropdownCustom);
         Winterfell.validation.default.addValidationMethods({
             isCustomDate: value => {
                 if (_.isEmpty(value) || _.isNil(value) || moment(value, 'DD/MM/YYYY').isValid()) {
@@ -1989,8 +1990,7 @@ class DataAccessRequest extends Component {
                                 <a
                                     className={`linkButton white-14-semibold ml-2 ${allowedNavigation ? '' : 'disabled'}`}
                                     onClick={this.onClickSave}
-                                    href='javascript:void(0)'
-                                >
+                                    href='javascript:void(0)'>
                                     Save now
                                 </a>
                             }
@@ -1998,8 +1998,7 @@ class DataAccessRequest extends Component {
                                 <a
                                     className={`linkButton white-14-semibold ml-2 ${allowedNavigation ? '' : 'disabled'}`}
                                     href='javascript:;'
-                                    onClick={e => this.toggleEmailModal(true)}
-                                >
+                                    onClick={e => this.toggleEmailModal(true)}>
                                     Email me a copy
                                 </a>
                             ) : (
@@ -2008,6 +2007,7 @@ class DataAccessRequest extends Component {
                             <CloseButtonSvg width='16px' height='16px' fill='#fff' onClick={e => this.redirectDashboard(e)} />
                         </Col>
                     </Row>
+
                     <div id='darContainer' className='flex-form'>
                         <div id='darLeftCol' className='scrollable-sticky-column'>
                             {[...this.state.jsonSchema.pages].map((item, idx) => (
@@ -2019,8 +2019,7 @@ class DataAccessRequest extends Component {
                                             }
 										${item.active ? 'section-header-active' : 'section-header'} 
 										${this.state.allowedNavigation ? '' : 'disabled'}`}
-                                            onClick={e => this.updateNavigation(item)}
-                                        >
+                                            onClick={e => this.updateNavigation(item)}>
                                             <span>{item.title}</span>
                                             <span>{item.flag && <i className={DarHelper.flagIcons[item.flag]} />}</span>
                                         </h3>
@@ -2078,8 +2077,7 @@ class DataAccessRequest extends Component {
                             </div>
                             <div
                                 className={`dar__questions ${this.state.activePanelId === 'about' ? 'pad-bottom-0' : ''}`}
-                                style={{ backgroundColor: '#ffffff' }}
-                            >
+                                style={{ backgroundColor: '#ffffff' }}>
                                 {this.renderApp()}
                             </div>
                         </div>
@@ -2227,8 +2225,7 @@ class DataAccessRequest extends Component {
                         open={showContributorModal}
                         close={this.toggleContributorModal}
                         mainApplicant={this.state.mainApplicant}
-                        handleOnSaveChanges={this.submitContributors}
-                    >
+                        handleOnSaveChanges={this.submitContributors}>
                         <AsyncTypeAheadUsers
                             selectedUsers={this.state.authorIds}
                             changeHandler={this.updateContributors}
@@ -2261,8 +2258,7 @@ class DataAccessRequest extends Component {
                         size='lg'
                         aria-labelledby='contained-modal-title-vcenter'
                         centered
-                        className='darModal'
-                    >
+                        className='darModal'>
                         <iframe src='https://hda-toolkit.org/story_html5.html' className='darIframe'>
                             {' '}
                         </iframe>
@@ -2273,8 +2269,7 @@ class DataAccessRequest extends Component {
                         onHide={e => this.toggleEmailModal(false)}
                         aria-labelledby='contained-modal-title-vcenter'
                         centered
-                        className='workflowModal'
-                    >
+                        className='workflowModal'>
                         <div className='workflowModal-header'>
                             <h1 className='black-20-semibold'>Email application</h1>
                             <CloseButtonSvg className='workflowModal-header--close' onClick={e => this.toggleEmailModal(false)} />
