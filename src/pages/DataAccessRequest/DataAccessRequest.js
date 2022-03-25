@@ -1936,6 +1936,7 @@ class DataAccessRequest extends Component {
         Winterfell.addInputType('typeaheadUser', TypeaheadUser);
         Winterfell.addInputType('textareaInputCustom', TextareaInputCustom);
         Winterfell.addInputType('dropdownCustom', DropdownCustom);
+        Winterfell.addInputType('doubleDropdownCustom', DoubleDropdownCustom);
         Winterfell.validation.default.addValidationMethods({
             isCustomDate: value => {
                 if (_.isEmpty(value) || _.isNil(value) || moment(value, 'DD/MM/YYYY').isValid()) {
