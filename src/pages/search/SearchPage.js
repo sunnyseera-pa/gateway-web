@@ -976,6 +976,8 @@ class SearchPage extends React.Component {
 	handleClearSelection = selectedNode => {
 		const { parentKey, value } = selectedNode;
 
+		googleAnalytics.recordEvent(this.state.key, `Removed ${parentKey} filter`, `Filter value: ${selectedNode.label}`);
+
 		if (isTree(parentKey)) {
 			const selectedV2 = this.getSelectedFiltersStateByKey(this.state.key);
 			const selectedV2Filtered = selectedV2.filter(filter => {
@@ -1087,9 +1089,17 @@ class SearchPage extends React.Component {
 
 	handleClearAll = () => {
 		const filtersV2Data = this.getFilterStateByKey(this.state.key);
+		const selectedV2Data = this.getSelectedFiltersStateByKey(this.state.key);
+
 		const filtersV2 = this.resetChecked(filtersV2Data);
 		const filtersV2Entity = `filtersV2${this.state.key}`;
 		const selectedV2Entity = `selectedV2${this.state.key}`;
+
+		googleAnalytics.recordEvent(
+			this.state.key,
+			`Removed all filters`,
+			selectedV2Data.map(item => `${item.parentKey}=${item.value}`).join(',')
+		);
 
 		this.setState({ [filtersV2Entity]: filtersV2, [selectedV2Entity]: [], isResultsLoading: true }, () => {
 			this.doSearchCall();
@@ -1352,7 +1362,7 @@ class SearchPage extends React.Component {
 			});
 
 			googleAnalytics.recordEvent(
-				'Datasets',
+				this.state.key,
 				`Changed ${parentKey} filters ${this.state.showDataUtilityBanner ? 'after utility wizard search' : ''}`,
 				`Filter values: "${nodes.map(filter => filter.value).join('" & ') || 'All'}"`
 			);
@@ -1362,7 +1372,7 @@ class SearchPage extends React.Component {
 			});
 
 			googleAnalytics.recordEvent(
-				'Datasets',
+				this.state.key,
 				`${checkValue ? 'Applied' : 'Removed'} ${parentKey} filter ${
 					this.state.showDataUtilityBanner ? 'after utility wizard search' : ''
 				}`,
@@ -1510,10 +1520,13 @@ class SearchPage extends React.Component {
 	};
 
 	onClickDownloadResults = () => {
-		let searchObject = this.buildSearchObj(this.state.selectedV2Datauses);
-		let searchURL = this.buildSearchUrl(searchObject);
+		const searchObject = this.buildSearchObj(this.state.selectedV2Datauses);
+		const searchURL = this.buildSearchUrl(searchObject);
+		const url = `search=${encodeURIComponent(this.state.search)}${searchURL}`;
 
-		axios.get(`${baseURL}/api/v2/data-use-registers/search?search=${encodeURIComponent(this.state.search)}${searchURL}`).then(response => {
+		googleAnalytics.recordEvent('Data Use', `Download Results`, `Search values: ${url}`);
+
+		axios.get(`${baseURL}/api/v2/data-use-registers/${url}`).then(response => {
 			this.formatDataUseRegisterForDownload(response.data.result);
 		});
 	};
@@ -1906,7 +1919,7 @@ class SearchPage extends React.Component {
 									</SearchFilters>
 								)}
 							</Col>
-							<Col sm={12} md={12} lg={9} className='mt-1 mb-5'>
+							<Col sm={12} md={12} lg={9} className='mt-2 mb-5'>
 								{key === 'Datasets' && (
 									<DatasetSearchResults
 										data={datasetData}

@@ -57,6 +57,7 @@ import googleAnalytics from '../../tracking';
 import ErrorModal from '../commonComponents/errorModal';
 import TextareaInputCustom from '../commonComponents/TextareaInputCustom/TextareaInputCustom';
 import DropdownCustom from './components/DropdownCustom/DropdownCustom';
+import DoubleDropdownCustom from './components/DoubleDropdownCustom/DoubleDropdownCustom';
 
 import AsyncTypeAheadUsers from '../commonComponents/AsyncTypeAheadUsers';
 
@@ -1924,6 +1925,7 @@ class DataAccessRequest extends Component {
 		Winterfell.addInputType('typeaheadUser', TypeaheadUser);
 		Winterfell.addInputType('textareaInputCustom', TextareaInputCustom);
 		Winterfell.addInputType('dropdownCustom', DropdownCustom);
+		Winterfell.addInputType('doubleDropdownCustom', DoubleDropdownCustom);
 		Winterfell.validation.default.addValidationMethods({
 			isCustomDate: value => {
 				if (_.isEmpty(value) || _.isNil(value) || moment(value, 'DD/MM/YYYY').isValid()) {
@@ -1995,7 +1997,6 @@ class DataAccessRequest extends Component {
 							<CloseButtonSvg width='16px' height='16px' fill='#fff' onClick={e => this.redirectDashboard(e)} />
 						</Col>
 					</Row>
-
 					<div id='darContainer' className='flex-form'>
 						<div id='darLeftCol' className='scrollable-sticky-column'>
 							{[...this.state.jsonSchema.pages].map((item, idx) => (

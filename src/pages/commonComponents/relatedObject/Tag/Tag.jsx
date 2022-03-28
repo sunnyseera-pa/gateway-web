@@ -7,7 +7,21 @@ import * as styles from '../Dataset/Dataset.styles';
 import '../../CommonComponents.scss';
 
 const Tag = props => {
-	const { tagName, tagType, activeLink, onSearchPage, updateOnFilterBadgeHandler, parentKey, filter, url, showTagType, version } = props;
+	const {
+		tagName,
+		tagType,
+		activeLink,
+		onSearchPage,
+		updateOnFilterBadgeHandler,
+		parentKey,
+		filter,
+		url,
+		showTagType,
+		version,
+		tagId,
+		className,
+		onClick,
+	} = props;
 	const displayTagName = showTagType ? (
 		<>
 			<span>{`${toTitleCase(tagType)}: ${tagName}`}</span>
@@ -24,33 +38,34 @@ const Tag = props => {
 			return (
 				<span
 					css={styles.pointer}
-					onClick={event => updateOnFilterBadgeHandler(filter, { label: tagName, parentKey: parentKey })}
+					onClick={event => updateOnFilterBadgeHandler(filter, { label: tagName, parentKey })}
 					data-testid={`badge-${tagName}-span`}>
-					<div className={`badge-${tagType}`} data-testid={`badge-${tagName}`}>
-						{displayTagName}
+					<div className={`badge-${tagType} ${className}`} data-testid={`badge-${tagName}`}>
+						{props.children}
+						<span className={className}>{displayTagName}</span>
 					</div>
 				</span>
 			);
-		} else {
-			return (
-				<a href={`${url}${tagName}`} data-testid={`badge-${tagName}-link`} css={styles.pointer}>
-					<div className={`badge-${tagType}`} data-testid={`badge-${tagName}`}>
-						{displayTagName}
-					</div>
-				</a>
-			);
 		}
-	} else {
 		return (
-			<div className={`badge-${tagType}`} data-testid={`badge-${tagName}`}>
-				{props.children}
-				{displayTagName}
-			</div>
+			<a href={`${url}${tagId || tagName}`} data-testid={`badge-${tagName}-link`} css={styles.pointer} onClick={onClick}>
+				<div className={`badge-${tagType} ${className}`} data-testid={`badge-${tagName}`}>
+					{props.children}
+					<span className={className}>{displayTagName}</span>
+				</div>
+			</a>
 		);
 	}
+	return (
+		<div className={`badge-${tagType} ${className}`} data-testid={`badge-${tagName}`}>
+			{props.children}
+			<span className={className}>{displayTagName}</span>
+		</div>
+	);
 };
 
 Tag.propTypes = {
+	tagId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 	tagName: PropTypes.string.isRequired,
 	tagType: PropTypes.string.isRequired,
 	activeLink: PropTypes.bool.isRequired,
@@ -61,8 +76,12 @@ Tag.propTypes = {
 	updateOnFilterBadgeHandler: PropTypes.func.isRequired,
 	showTagType: PropTypes.bool.isRequired,
 	version: PropTypes.string,
+	className: PropTypes.string,
+	onClick: PropTypes.func,
 };
+
 Tag.defaultProps = {
+	tagId: '',
 	version: '',
 	filter: '',
 	parentKey: '',
@@ -70,6 +89,9 @@ Tag.defaultProps = {
 	onSearchPage: false,
 	showTagType: false,
 	url: '/search?search',
+	className: '',
+	updateOnFilterBadgeHandler: () => {},
+	onClick: () => {},
 };
 
 export default Tag;

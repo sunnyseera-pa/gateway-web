@@ -69,11 +69,13 @@ class DiscourseTopic extends Component {
 
 	submitPost = async values => {
 		// If postId is a valid number, we are in edit mode
+		const comment = values.comment.trim();
+
 		if (values.postId) {
 			// 1. Assemble payload to edit existing post
 			let payload = {
 				id: values.postId,
-				comment: values.comment.trim(),
+				comment,
 			};
 			// 2. Call endpoint to update existing post
 			axios
@@ -97,7 +99,7 @@ class DiscourseTopic extends Component {
 				toolId,
 				collectionId,
 				topicId,
-				comment: values.comment.trim(),
+				comment,
 			};
 			// 2. Call endpoint to create new post
 			axios
@@ -111,8 +113,9 @@ class DiscourseTopic extends Component {
 						topic,
 						showCreatePost: false,
 					});
+
 					// 4. Increment discussion counter
-					this.props.onUpdateDiscoursePostCount(topic.posts.length);
+					this.props.onUpdateDiscoursePostCount(topic.posts.length, comment);
 				})
 				.catch(err => {
 					console.error(err.message);

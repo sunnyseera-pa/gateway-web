@@ -9,6 +9,7 @@ import serviceUsers from '../../../services/users/users';
 import serviceAuth from '../../../services/auth/auth';
 import UploaderUtil from '../../../utils/Uploader.util';
 import Icon from '../../../components/Icon';
+import { ReactComponent as SearchIcon } from '../../../images/search.svg';
 import * as styles from './AsyncTypeAheadUsers.styles';
 
 function AsyncTypeAheadUsers(props) {
@@ -84,7 +85,7 @@ function AsyncTypeAheadUsers(props) {
             onFocus={handleOnFocus}
             options={options}
             selected={selected}
-            iconPrepend={<Icon name='search' size='xl' fill='purple' />}
+            iconPrepend={<Icon svg={<SearchIcon />} size='xl' fill='purple' />}
             multiple={props.multiple}
             renderMenu={(results, menuProps) => (
                 <Menu {...menuProps}>

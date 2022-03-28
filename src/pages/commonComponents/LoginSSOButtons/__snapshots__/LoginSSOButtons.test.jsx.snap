@@ -17,12 +17,12 @@ exports[`Given the LoginSSOButtons component When it is rendered Then matches th
           class="gray800-14"
         >
           <button
-            class="btn btn-outline-secondary btn-block css-117p4px"
+            class="btn btn-outline-secondary btn-block css-ayanwq-LoginSSOButtons"
             data-testid="google"
           >
             <img
               alt="google"
-              class="css-1o49y5s"
+              class="css-10nh4b5-LoginSSOButtons"
               src="googleIcon"
             />
               
@@ -37,12 +37,12 @@ exports[`Given the LoginSSOButtons component When it is rendered Then matches th
           class="gray800-14"
         >
           <button
-            class="btn btn-outline-secondary btn-block css-117p4px"
+            class="btn btn-outline-secondary btn-block css-ayanwq-LoginSSOButtons"
             data-testid="openAthens"
           >
             <img
               alt="openAthens"
-              class="css-1o49y5s"
+              class="css-10nh4b5-LoginSSOButtons"
               src="instIcon"
             />
               
@@ -68,12 +68,12 @@ exports[`Given the LoginSSOButtons component When it is rendered Then matches th
           class="gray800-14"
         >
           <button
-            class="btn btn-outline-secondary btn-block css-117p4px"
+            class="btn btn-outline-secondary btn-block css-ayanwq-LoginSSOButtons"
             data-testid="azure"
           >
             <img
               alt="azure"
-              class="css-1o49y5s"
+              class="css-10nh4b5-LoginSSOButtons"
               src="microsoftIcon"
             />
               
