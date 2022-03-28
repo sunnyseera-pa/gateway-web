@@ -22,7 +22,7 @@ const patchDataUseRegisterCounter = (data, options) => {
 };
 
 const postDataUseRegisterCheck = (data, options) => {
-    return postRequest(`${apiV2URL}/data-use-regiasdasdsters/check`, data, options);
+    return postRequest(`${apiV2URL}/data-use-registers/check`, data, options);
 };
 
 const postDataUseRegisterUpload = (data, options) => {
