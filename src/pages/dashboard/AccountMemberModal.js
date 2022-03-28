@@ -95,7 +95,6 @@ const AccountMemberModal = ({ open, close, teamId, onMemberAdded }) => {
             }
         },
     });
-
     return (
         <div className='container'>
             <Formik

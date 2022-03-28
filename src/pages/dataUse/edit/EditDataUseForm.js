@@ -290,7 +290,8 @@ const EditFormDataUse = props => {
                                                     <Accordion.Toggle as={Button} variant='link' eventKey='0'>
                                                         <Card.Header
                                                             className='datause-accordion saved-search-arrow'
-                                                            onClick={() => (!safePeople ? setSafePeople(true) : setSafePeople(false))}>
+                                                            onClick={() => (!safePeople ? setSafePeople(true) : setSafePeople(false))}
+                                                        >
                                                             <SVGIcon
                                                                 width='20px'
                                                                 height='20px'
@@ -371,13 +372,15 @@ const EditFormDataUse = props => {
                                                                         className='addFormInput'
                                                                         onChange={formik.handleChange}
                                                                         value={formik.values.organisationSector}
-                                                                        onBlur={formik.handleBlur}>
+                                                                        onBlur={formik.handleBlur}
+                                                                    >
                                                                         {organisationSectorList.map(l => (
                                                                             <option
                                                                                 selected={formik.values.organisationSector === l}
                                                                                 value={l}
                                                                                 key={l}
-                                                                                eventKey={l}>
+                                                                                eventKey={l}
+                                                                            >
                                                                                 {l}
                                                                             </option>
                                                                         ))}
@@ -477,13 +480,15 @@ const EditFormDataUse = props => {
                                                                         className='addFormInput'
                                                                         onChange={formik.handleChange}
                                                                         value={formik.values.accreditedResearcherStatus}
-                                                                        onBlur={formik.handleBlur}>
+                                                                        onBlur={formik.handleBlur}
+                                                                    >
                                                                         {yesNoList.map(l => (
                                                                             <option
                                                                                 selected={formik.values.accreditedResearcherStatus === l}
                                                                                 value={l}
                                                                                 key={l}
-                                                                                eventKey={l}>
+                                                                                eventKey={l}
+                                                                            >
                                                                                 {l}
                                                                             </option>
                                                                         ))}
@@ -510,13 +515,15 @@ const EditFormDataUse = props => {
                                                                         className='addFormInput'
                                                                         onChange={formik.handleChange}
                                                                         value={formik.values.sublicenceArrangements}
-                                                                        onBlur={formik.handleBlur}>
+                                                                        onBlur={formik.handleBlur}
+                                                                    >
                                                                         {yesNoList.map(l => (
                                                                             <option
                                                                                 selected={formik.values.sublicenceArrangements === l}
                                                                                 value={l}
                                                                                 key={l}
-                                                                                eventKey={l}>
+                                                                                eventKey={l}
+                                                                            >
                                                                                 {l}
                                                                             </option>
                                                                         ))}
@@ -530,7 +537,8 @@ const EditFormDataUse = props => {
                                                     <Accordion.Toggle as={Button} variant='link' eventKey='1'>
                                                         <Card.Header
                                                             className='datause-accordion saved-search-arrow'
-                                                            onClick={() => (!safeProject ? setSafeProject(true) : setSafeProject(false))}>
+                                                            onClick={() => (!safeProject ? setSafeProject(true) : setSafeProject(false))}
+                                                        >
                                                             <SVGIcon
                                                                 width='20px'
                                                                 height='20px'
@@ -676,13 +684,15 @@ const EditFormDataUse = props => {
                                                                         className='addFormInput'
                                                                         onChange={formik.handleChange}
                                                                         value={formik.values.requestCategoryType}
-                                                                        onBlur={formik.handleBlur}>
+                                                                        onBlur={formik.handleBlur}
+                                                                    >
                                                                         {requestCategoryTypeList.map(l => (
                                                                             <option
                                                                                 selected={formik.values.requestCategoryType === l}
                                                                                 value={l}
                                                                                 key={l}
-                                                                                eventKey={l}>
+                                                                                eventKey={l}
+                                                                            >
                                                                                 {l}
                                                                             </option>
                                                                         ))}
@@ -813,91 +823,79 @@ const EditFormDataUse = props => {
                                                                                 The last date the data access request for this project was
                                                                                 approved by a data custodian
                                                                             </p>
-
-                                                                            <span className='datause-datepicker'>
-                                                                                <DatePicker
-                                                                                    disabled={disableInput}
-                                                                                    id='latestApprovalDate'
-                                                                                    name='latestApprovalDate'
-                                                                                    dateFormat='dd/MM/yyyy'
-                                                                                    peekNextMonth
-                                                                                    showMonthDropdown
-                                                                                    showYearDropdown
-                                                                                    dropdownMode='select'
-                                                                                    selected={
-                                                                                        formik.values.latestApprovalDate
-                                                                                            ? new Date(formik.values.latestApprovalDate)
-                                                                                            : ''
-                                                                                    }
-                                                                                    onChange={date => {
-                                                                                        formik.values.latestApprovalDate = date;
-                                                                                        formik.setFieldValue();
-                                                                                    }}
-                                                                                    onBlur={formik.handleBlur}
-                                                                                />
-                                                                                <Calendar className='datePickerCalendar datause-calendar-svg' />
-                                                                                {formik.touched.latestApprovalDate &&
-                                                                                formik.errors.latestApprovalDate ? (
-                                                                                    <div className='errorMessages'>
-                                                                                        {formik.errors.latestApprovalDate}
-                                                                                    </div>
-                                                                                ) : null}
-                                                                            </span>
-                                                                        </Form.Group>
-                                                                    </Col>
-                                                                </Row>
-                                                            </Form>
-                                                        </Card.Body>
-                                                    </Accordion.Collapse>
-                                                </Card>
-                                                <Card className='edit-datause-card'>
-                                                    <Accordion.Toggle as={Button} variant='link' eventKey='2'>
-                                                        <Card.Header
-                                                            className='datause-accordion saved-search-arrow'
-                                                            onClick={() => (!safeData ? setSafeData(true) : setSafeData(false))}>
-                                                            <SVGIcon
-                                                                width='20px'
-                                                                height='20px'
-                                                                name='chevronbottom'
-                                                                fill='#fff'
-                                                                className={safeData ? 'edit-datause-arrow' : 'flip180 edit-datause-arrow'}
-                                                            />
-                                                            Safe data
-                                                        </Card.Header>
-                                                    </Accordion.Toggle>
-                                                    <Accordion.Collapse className='datause-accordion-collapse' eventKey='2'>
-                                                        <Card.Body className='datause-card-body'>
-                                                            <Form>
-                                                                <Form.Group>
-                                                                    <Form.Label className='black-14'>Dataset(s) name</Form.Label>
-                                                                    <p className='gray800-13-opacity datause-edit-p'>
-                                                                        The name of the dataset(s) being accessed
-                                                                    </p>
-                                                                    <Typeahead
-                                                                        disabled={props.data.manualUpload ? disableInput : true}
-                                                                        id='datasets'
-                                                                        labelKey={dataset => `${dataset.name}`}
-                                                                        allowNew
-                                                                        multiple
-                                                                        defaultSelected={formik.values.datasets}
-                                                                        options={datasetsList}
-                                                                        className='addFormInputTypeAhead'
-                                                                        onChange={selected => {
-                                                                            const tempSelected = [];
-                                                                            selected.forEach(selectedItem => {
-                                                                                selectedItem.customOption === true
-                                                                                    ? tempSelected.push({
-                                                                                          id: isNumber(selectedItem.pid)
-                                                                                              ? selectedItem.pid
-                                                                                              : 'nonGateway',
-                                                                                          name: selectedItem.name || selectedItem.label,
-                                                                                      })
-                                                                                    : tempSelected.push(selectedItem);
-                                                                            });
-                                                                            formik.values.datasets = tempSelected;
-                                                                        }}
-                                                                    />
-                                                                </Form.Group>
+																			<span className='datause-datepicker'>
+																				<DatePicker
+																					disabled={disableInput}
+																					id='latestApprovalDate'
+																					name='latestApprovalDate'
+																					dateFormat='dd/MM/yyyy'
+																					peekNextMonth
+																					showMonthDropdown
+																					showYearDropdown
+																					dropdownMode='select'
+																					selected={formik.values.latestApprovalDate ? new Date(formik.values.latestApprovalDate) : ''}
+																					onChange={date => {
+																						formik.values.latestApprovalDate = date;
+																						formik.setFieldValue();
+																					}}
+																					onBlur={formik.handleBlur}
+																				/>
+																				<Calendar className='datePickerCalendar datause-calendar-svg' />
+																				{formik.touched.latestApprovalDate && formik.errors.latestApprovalDate ? (
+																					<div className='errorMessages'>{formik.errors.latestApprovalDate}</div>
+																				) : null}
+																			</span>
+																		</Form.Group>
+																	</Col>
+																</Row>
+															</Form>
+														</Card.Body>
+													</Accordion.Collapse>
+												</Card>
+												<Card className='edit-datause-card'>
+													<Accordion.Toggle as={Button} variant='link' eventKey='2'>
+														<Card.Header
+															className='datause-accordion saved-search-arrow'
+															onClick={() => (!safeData ? setSafeData(true) : setSafeData(false))}>
+															<SVGIcon
+																width='20px'
+																height='20px'
+																name='chevronbottom'
+																fill={'#fff'}
+																className={safeData ? 'edit-datause-arrow' : 'flip180 edit-datause-arrow'}
+															/>
+															Safe data
+														</Card.Header>
+													</Accordion.Toggle>
+													<Accordion.Collapse className='datause-accordion-collapse' eventKey='2'>
+														<Card.Body className='datause-card-body'>
+															<Form>
+																<Form.Group>
+																	<Form.Label className='black-14'>Dataset(s) name</Form.Label>
+																	<p className='gray800-13-opacity datause-edit-p'>The name of the dataset(s) being accessed</p>
+																	<Typeahead
+																		disabled={props.data.manualUpload ? disableInput : true}
+																		id='datasets'
+																		labelKey={dataset => `${dataset.name}`}
+																		allowNew
+																		multiple
+																		defaultSelected={formik.values.datasets}
+																		options={datasetsList}
+																		className='addFormInputTypeAhead'
+																		onChange={selected => {
+																			var tempSelected = [];
+																			selected.forEach(selectedItem => {
+																				selectedItem.customOption === true
+																					? tempSelected.push({
+																							pid: isNumber(selectedItem.pid) ? selectedItem.pid : 'nonGateway',
+																							name: selectedItem.name || selectedItem.label,
+																					  })
+																					: tempSelected.push(selectedItem);
+																			});
+																			formik.values.datasets = tempSelected;
+																		}}
+																	/>
+																</Form.Group>
 
                                                                 <Form.Group>
                                                                     <Form.Label className='black-14'>
@@ -916,13 +914,15 @@ const EditFormDataUse = props => {
                                                                         className='addFormInput'
                                                                         onChange={formik.handleChange}
                                                                         value={formik.values.dataSensitivityLevel}
-                                                                        onBlur={formik.handleBlur}>
+                                                                        onBlur={formik.handleBlur}
+                                                                    >
                                                                         {dataSensitivityLevelList.map(l => (
                                                                             <option
                                                                                 selected={formik.values.dataSensitivityLevel === l}
                                                                                 value={l}
                                                                                 key={l}
-                                                                                eventKey={l}>
+                                                                                eventKey={l}
+                                                                            >
                                                                                 {l}
                                                                             </option>
                                                                         ))}
@@ -950,13 +950,15 @@ const EditFormDataUse = props => {
                                                                         className='addFormInput'
                                                                         onChange={formik.handleChange}
                                                                         value={formik.values.legalBasisForDataArticle6}
-                                                                        onBlur={formik.handleBlur}>
+                                                                        onBlur={formik.handleBlur}
+                                                                    >
                                                                         {legalBasisForDataArticle6List.map(l => (
                                                                             <option
                                                                                 selected={formik.values.legalBasisForDataArticle6 === l}
                                                                                 value={l}
                                                                                 key={l}
-                                                                                eventKey={l}>
+                                                                                eventKey={l}
+                                                                            >
                                                                                 {l}
                                                                             </option>
                                                                         ))}
@@ -985,13 +987,15 @@ const EditFormDataUse = props => {
                                                                         className='addFormInput'
                                                                         onChange={formik.handleChange}
                                                                         value={formik.values.legalBasisForDataArticle9}
-                                                                        onBlur={formik.handleBlur}>
+                                                                        onBlur={formik.handleBlur}
+                                                                    >
                                                                         {legalBasisForDataArticle9List.map(l => (
                                                                             <option
                                                                                 selected={formik.values.legalBasisForDataArticle9 === l}
                                                                                 value={l}
                                                                                 key={l}
-                                                                                eventKey={l}>
+                                                                                eventKey={l}
+                                                                            >
                                                                                 {l}
                                                                             </option>
                                                                         ))}
@@ -1027,13 +1031,15 @@ const EditFormDataUse = props => {
                                                                         className='addFormInput'
                                                                         onChange={formik.handleChange}
                                                                         value={formik.values.dutyOfConfidentiality}
-                                                                        onBlur={formik.handleBlur}>
+                                                                        onBlur={formik.handleBlur}
+                                                                    >
                                                                         {dutyOfConfidentialityList.map(l => (
                                                                             <option
                                                                                 selected={formik.values.dutyOfConfidentiality === l}
                                                                                 value={l}
                                                                                 key={l}
-                                                                                eventKey={l}>
+                                                                                eventKey={l}
+                                                                            >
                                                                                 {l}
                                                                             </option>
                                                                         ))}
@@ -1058,13 +1064,15 @@ const EditFormDataUse = props => {
                                                                         className='addFormInput'
                                                                         onChange={formik.handleChange}
                                                                         value={formik.values.nationalDataOptOut}
-                                                                        onBlur={formik.handleBlur}>
+                                                                        onBlur={formik.handleBlur}
+                                                                    >
                                                                         {yesNoNotList.map(l => (
                                                                             <option
                                                                                 selected={formik.values.nationalDataOptOut === l}
                                                                                 value={l}
                                                                                 key={l}
-                                                                                eventKey={l}>
+                                                                                eventKey={l}
+                                                                            >
                                                                                 {l}
                                                                             </option>
                                                                         ))}
@@ -1088,13 +1096,15 @@ const EditFormDataUse = props => {
                                                                         className='addFormInput'
                                                                         onChange={formik.handleChange}
                                                                         value={formik.values.requestFrequency}
-                                                                        onBlur={formik.handleBlur}>
+                                                                        onBlur={formik.handleBlur}
+                                                                    >
                                                                         {requestFrequencyList.map(l => (
                                                                             <option
                                                                                 selected={formik.values.requestFrequency === l}
                                                                                 value={l}
                                                                                 key={l}
-                                                                                eventKey={l}>
+                                                                                eventKey={l}
+                                                                            >
                                                                                 {l}
                                                                             </option>
                                                                         ))}
@@ -1193,9 +1203,8 @@ const EditFormDataUse = props => {
                                                     <Accordion.Toggle as={Button} variant='link' eventKey='3'>
                                                         <Card.Header
                                                             className='datause-accordion saved-search-arrow'
-                                                            onClick={() =>
-                                                                !safeSettings ? setSafeSettings(true) : setSafeSettings(false)
-                                                            }>
+                                                            onClick={() => (!safeSettings ? setSafeSettings(true) : setSafeSettings(false))}
+                                                        >
                                                             <SVGIcon
                                                                 width='20px'
                                                                 height='20px'
@@ -1228,13 +1237,15 @@ const EditFormDataUse = props => {
                                                                         className='addFormInput'
                                                                         onChange={formik.handleChange}
                                                                         value={formik.values.accessType}
-                                                                        onBlur={formik.handleBlur}>
+                                                                        onBlur={formik.handleBlur}
+                                                                    >
                                                                         {accessTypeList.map(l => (
                                                                             <option
                                                                                 selected={formik.values.accessType === l}
                                                                                 value={l}
                                                                                 key={l}
-                                                                                eventKey={l}>
+                                                                                eventKey={l}
+                                                                            >
                                                                                 {l}
                                                                             </option>
                                                                         ))}
@@ -1242,7 +1253,8 @@ const EditFormDataUse = props => {
                                                                     {formik.touched.accessType && formik.errors.accessType ? (
                                                                         <div
                                                                             className='errorMessages margin-top-8'
-                                                                            data-test-id='user-account-sector-validation'>
+                                                                            data-test-id='user-account-sector-validation'
+                                                                        >
                                                                             {formik.errors.accessType}
                                                                         </div>
                                                                     ) : null}
@@ -1276,7 +1288,8 @@ const EditFormDataUse = props => {
                                                     <Accordion.Toggle as={Button} variant='link' eventKey='4'>
                                                         <Card.Header
                                                             className='datause-accordion saved-search-arrow'
-                                                            onClick={() => (!safeOutput ? setSafeOutput(true) : setSafeOutput(false))}>
+                                                            onClick={() => (!safeOutput ? setSafeOutput(true) : setSafeOutput(false))}
+                                                        >
                                                             <SVGIcon
                                                                 width='20px'
                                                                 height='20px'
@@ -1359,7 +1372,8 @@ const EditFormDataUse = props => {
 
                                                                                             <Col
                                                                                                 style={{ paddingRight: '0px' }}
-                                                                                                className='col-sm-6 col-md-2 d-flex justify-content-center align-items-center setHeight'>
+                                                                                                className='col-sm-6 col-md-2 d-flex justify-content-center align-items-center setHeight'
+                                                                                            >
                                                                                                 <button
                                                                                                     type='button'
                                                                                                     className='plusMinusButton'
@@ -1367,7 +1381,8 @@ const EditFormDataUse = props => {
                                                                                                     onClick={() => {
                                                                                                         remove(index);
                                                                                                         safeOuputsArray.splice(index, 1);
-                                                                                                    }}>
+                                                                                                    }}
+                                                                                                >
                                                                                                     -
                                                                                                 </button>
                                                                                                 <button
@@ -1383,7 +1398,8 @@ const EditFormDataUse = props => {
                                                                                                             id: '',
                                                                                                             name: '',
                                                                                                         });
-                                                                                                    }}>
+                                                                                                    }}
+                                                                                                >
                                                                                                     +
                                                                                                 </button>
                                                                                             </Col>
@@ -1402,7 +1418,8 @@ const EditFormDataUse = props => {
                                                     <Accordion.Toggle as={Button} variant='link' eventKey='5'>
                                                         <Card.Header
                                                             className='datause-accordion saved-search-arrow'
-                                                            onClick={() => (!keywords ? setKeywords(true) : setKeywords(false))}>
+                                                            onClick={() => (!keywords ? setKeywords(true) : setKeywords(false))}
+                                                        >
                                                             <SVGIcon
                                                                 width='20px'
                                                                 height='20px'
@@ -1452,7 +1469,8 @@ const EditFormDataUse = props => {
                                                             className='datause-accordion saved-search-arrow'
                                                             onClick={() =>
                                                                 !relatedResources ? setRelatedResources(true) : setRelatedResources(false)
-                                                            }>
+                                                            }
+                                                        >
                                                             <SVGIcon
                                                                 width='20px'
                                                                 height='20px'
@@ -1560,7 +1578,8 @@ const EditFormDataUse = props => {
                         variant='primary'
                         className='publishButton white-14-semibold mr-2'
                         type='submit'
-                        onClick={formik.handleSubmit}>
+                        onClick={formik.handleSubmit}
+                    >
                         Save
                     </Button>
                 </div>

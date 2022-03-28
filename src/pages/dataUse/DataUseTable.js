@@ -49,7 +49,8 @@ const DataUseTable = ({ team, data, active, pending, archived, onClickArchive, o
                     className='data-use-link'
                     to={`/dataset/${gatewayDataset.pid}`}
                     target='_blank'
-                    onClick={() => handleClickDataset(gatewayDataset.pid)}>
+                    onClick={() => handleClickDataset(gatewayDataset.pid)}
+                >
                     {gatewayDataset.name}
                 </Link>
             </div>
@@ -83,7 +84,8 @@ const DataUseTable = ({ team, data, active, pending, archived, onClickArchive, o
                                 className='data-use-link'
                                 to={`/datause/${dataUse.id}`}
                                 target='_blank'
-                                onClick={() => handleClickDatause(dataUse.id)}>
+                                onClick={() => handleClickDatause(dataUse.id)}
+                            >
                                 {dataUse.projectTitle}
                             </Link>
                             <p>{dataUse.organisationName}</p>

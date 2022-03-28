@@ -16,7 +16,6 @@ class DoubleDropdownCustom extends React.Component {
         };
         this.handleFocus = this.handleFocus.bind(this);
         this.handleBlur = this.handleBlur.bind(this);
-        this.handleNestedBlur = this.handleNestedBlur.bind(this);
         this.openDropDown = this.openDropDown.bind(this);
         this.openNestedDropDown = this.openNestedDropDown.bind(this);
         this.changingSelect = this.changingSelect.bind(this);
@@ -44,21 +43,15 @@ class DoubleDropdownCustom extends React.Component {
     }
 
     handleBlur(e) {
-        this.setState({ dropdownMenu: false });
-
         this.props.onBlur(this.props.value);
     }
 
-    handleNestedBlur() {
-        this.setState({ nestedDropdownMenu: false });
+    openDropDown(dropdownMenu) {
+        this.setState({ dropdownMenu });
     }
 
-    openDropDown() {
-        this.setState({ dropdownMenu: true });
-    }
-
-    openNestedDropDown() {
-        this.setState({ nestedDropdownMenu: true });
+    openNestedDropDown(nestedDropdownMenu) {
+        this.setState({ nestedDropdownMenu });
     }
 
     render() {
@@ -93,10 +86,7 @@ class DoubleDropdownCustom extends React.Component {
                         <Dropdown.Menu className='dropdown-menu'>
                             {this.props.options.map(b =>
                                 b.value === 'Biomedical research' ? (
-                                    <Dropdown
-                                        className='nested-dropdown-whole'
-                                        onToggle={this.openNestedDropDown}
-                                        onBlur={this.handleNestedBlur}>
+                                    <Dropdown className='nested-dropdown-whole' onToggle={this.openNestedDropDown}>
                                         <Dropdown.Toggle className='nested-dropdown'>
                                             Biomedical research
                                             <SVGIcon
