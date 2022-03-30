@@ -85,11 +85,37 @@ export const theme = {
         grey700: '#53575A',
         grey700Alt: '#848E97',
         grey800: '#3C3C3B',
+        red50: '#FFECF1',
         red600: '#EF3F4B',
+        red700: '#DC3645',
         purple: '#475da7',
         teal: '#3db28c',
     },
     components: {
+        Alert: {
+            variants: {
+                success: {
+                    background: 'red50',
+                    color: 'red700',
+                    borderColor: 'red700',
+                },
+                info: {
+                    background: 'red50',
+                    color: 'red700',
+                    borderColor: 'red700',
+                },
+                warning: {
+                    background: 'red50',
+                    color: 'red700',
+                    borderColor: 'red700',
+                },
+                danger: {
+                    background: 'red50',
+                    color: 'red700',
+                    borderColor: 'red700',
+                },
+            },
+        },
         Checkbox: {
             height: '20px',
             width: '20px',

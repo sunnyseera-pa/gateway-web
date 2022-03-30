@@ -1,18 +1,31 @@
-import PropTypes from 'prop-types';
+/** @jsx jsx */
+import { jsx } from '@emotion/react';
 import React from 'react';
+import PropTypes from 'prop-types';
 import Icon from '../Icon';
-import { ReactElement as CloseIcon } from '../../images/close.svg';
+import { ReactComponent as CloseIcon } from '../../images/close-alt.svg';
 import { PROP_TYPES_LAYOUTBOX } from '../LayoutBox/LayoutBox.propTypes';
 
-const Alert = ({ variant, onClose, children, ...outerProps }) => {
+import * as styles from './Alert.styles.js';
+import LayoutBox from '../LayoutBox';
+
+const Alert = ({ variant, onClose, children, mt, mb, ml, mr, width, minWidth, maxWidth, ...outerProps }) => {
     const [show, setShow] = React.useState(true);
+
+    const handleClose = React.useCallback(() => {
+        setShow(false);
+
+        onClose();
+    }, []);
 
     return (
         show && (
-            <div show={show} variant={variant} {...outerProps}>
-                <Icon svg={<CloseIcon />} color='red' />
-                {children}
-            </div>
+            <LayoutBox {...{ mt, mb, ml, mr, width, minWidth, maxWidth }}>
+                <div css={styles.root({ variant })} {...outerProps}>
+                    <div css={styles.content}>{children}</div>
+                    <Icon svg={<CloseIcon />} color='red600' fill='red600' onClick={handleClose} />
+                </div>
+            </LayoutBox>
         )
     );
 };

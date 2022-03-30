@@ -2,17 +2,7 @@ import { Meta, Story, Canvas, ArgsTable } from '@storybook/addon-docs';
 
 import Alert from './Alert';
 
-<Meta
-    title='Core/Alert'
-    component={Alert}
-    parameters={{
-        docs: {
-            source: {
-                type: 'code',
-            },
-        },
-    }}
-/>
+<Meta title='Core/Alert' component={Alert} />
 
 <Canvas>
     <Story name='Variants'>
@@ -21,7 +11,9 @@ import Alert from './Alert';
                 <>
                     {['success', 'info', 'warning', 'danger'].map(variant => (
                         <div>
-                            <Alert variant={variant}>{variant}</Alert>
+                            <Alert variant={variant} mb={4}>
+                                {variant}
+                            </Alert>
                         </div>
                     ))}
                 </>
