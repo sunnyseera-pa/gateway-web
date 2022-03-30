@@ -14,14 +14,19 @@ export const root =
         return css`
             background: ${colors[variants[variant].background]};
             color: ${colors[variants[variant].color]};
+            fill: ${colors[variants[variant].color]};
             border: 2px solid ${colors[variants[variant].borderColor]};
             padding: ${increment * 3}px;
             display: flex;
             border-radius: 4px;
+            line-height: 1;
         `;
     };
 
+export const icon = ({ base: { increment } }) => css`
+    margin-right: ${increment * 2}px;
+`;
+
 export const content = () => css`
     flex-grow: 1;
-    line-height: 1;
 `;

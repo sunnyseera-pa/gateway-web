@@ -1,12 +1,13 @@
 import { find, isEmpty, isUndefined, some } from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
-import { Alert, Col, Image, OverlayTrigger, Row, Tooltip } from 'react-bootstrap';
+import { Col, Image, OverlayTrigger, Row, Tooltip } from 'react-bootstrap';
 import { NotificationManager } from 'react-notifications';
 import { Link } from 'react-router-dom';
 import { SlideDown } from 'react-slidedown';
 import readXlsxFile from 'read-excel-file';
 import convertToJson from 'read-excel-file/schema';
+import Alert from '../../../components/Alert';
 import SVGIcon from '../../../images/SVGIcon';
 import dataUseRegistersService from '../../../services/data-use-registers';
 import dataUseSchema from './DataUseSchema';
@@ -159,9 +160,8 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
         setIsSubmitModalVisible(!isSubmitModalVisible);
     };
 
-    const showAlert = alert => {
-        setAlert(alert);
-        setTimeout(() => setAlert(''), 10000);
+    const showAlert = data => {
+        setAlert(data);
     };
 
     const searchForDuplicates = checks => {
@@ -312,11 +312,7 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
         <Row>
             <Col xs={1} />
             <Col>
-                {!isEmpty(alert) && (
-                    <Alert variant='success' className='main-alert'>
-                        <SVGIcon name='check' width={24} height={24} fill='#2C8267' /> {alert}
-                    </Alert>
-                )}
+                {!isEmpty(alert) && <Alert variant='success'>{alert}</Alert>}
                 <div className='layoutCard p-4'>
                     <p className='black-20-semibold mb-2'>Download template</p>
 
@@ -331,8 +327,7 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
                             to='/DataUseUploadTemplate.xlsx'
                             download
                             target='_blank'
-                            onClick={handleDownloadTemplate}
-                        >
+                            onClick={handleDownloadTemplate}>
                             Download the data use template
                         </Link>{' '}
                     </button>
@@ -418,8 +413,7 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
                                                     ? 'invalid-info dataUseGridItem soft-black-14'
                                                     : 'dataUseGridItem soft-black-14'
                                             }
-                                            onClick={() => toggleDataUseSection(index)}
-                                        >
+                                            onClick={() => toggleDataUseSection(index)}>
                                             <SVGIcon
                                                 name='chevronbottom'
                                                 width={16}
@@ -439,8 +433,7 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
                                                     ? 'invalid-info dataUseGridItem soft-black-14'
                                                     : 'dataUseGridItem soft-black-14'
                                             }
-                                            onClick={() => toggleDataUseSection(index)}
-                                        >
+                                            onClick={() => toggleDataUseSection(index)}>
                                             {some(filtered, ['column', 'Dataset(s) name*'])
                                                 ? find(filtered, ['column', 'Dataset(s) name*']).value
                                                 : renderDatasets(data)}
@@ -454,8 +447,7 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
                                                     ? 'invalid-info dataUseGridItem soft-black-14'
                                                     : 'dataUseGridItem soft-black-14'
                                             }
-                                            onClick={() => toggleDataUseSection(index)}
-                                        >
+                                            onClick={() => toggleDataUseSection(index)}>
                                             {some(filtered, ['column', 'Organisation name*'])
                                                 ? find(filtered, ['column', 'Organisation name*']).value
                                                 : data.organisationName}
@@ -468,8 +460,7 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
                                                     ? 'invalid-info dataUseGridItem soft-black-14'
                                                     : 'dataUseGridItem soft-black-14'
                                             }
-                                            onClick={() => toggleDataUseSection(index)}
-                                        >
+                                            onClick={() => toggleDataUseSection(index)}>
                                             {some(filtered, ['column', 'Latest approval date*'])
                                                 ? find(filtered, ['column', 'Latest approval date*']).value
                                                 : moment(data.latestApprovalDate).format('DD/MM/YY')}
@@ -487,8 +478,7 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
                                                         some(filtered, ['column', 'Organisation name*'])
                                                             ? 'invalid-info dataUseDetailsGridItem'
                                                             : 'dataUseDetailsGridItem'
-                                                    }
-                                                >
+                                                    }>
                                                     {some(filtered, ['column', 'Organisation name*'])
                                                         ? find(filtered, ['column', 'Organisation name*']).value
                                                         : data.organisationName}
@@ -519,8 +509,7 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
                                                         some(filtered, ['column', 'Project title*'])
                                                             ? 'invalid-info dataUseDetailsGridItem'
                                                             : 'dataUseDetailsGridItem'
-                                                    }
-                                                >
+                                                    }>
                                                     {some(filtered, ['column', 'Project title*'])
                                                         ? find(filtered, ['column', 'Project title*']).value
                                                         : data.projectTitle}
@@ -531,8 +520,7 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
                                                         some(filtered, ['column', 'Lay summary*'])
                                                             ? 'invalid-info dataUseDetailsGridItem'
                                                             : 'dataUseDetailsGridItem'
-                                                    }
-                                                >
+                                                    }>
                                                     {some(filtered, ['column', 'Lay summary*'])
                                                         ? find(filtered, ['column', 'Lay summary*']).value
                                                         : data.laySummary}
@@ -560,8 +548,7 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
                                                             ? 'invalid-info dataUseDetailsGridItem'
                                                             : 'dataUseDetailsGridItem '
                                                     }
-                                                    onClick={() => toggleDataUseSection(index)}
-                                                >
+                                                    onClick={() => toggleDataUseSection(index)}>
                                                     {some(filtered, ['column', 'Latest approval date*'])
                                                         ? find(filtered, ['column', 'Latest approval date*']).value
                                                         : data.latestApprovalDate
@@ -576,8 +563,7 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
                                                         some(filtered, ['column', 'Dataset(s) name*'])
                                                             ? 'invalid-info dataUseDetailsGridItem '
                                                             : 'dataUseDetailsGridItem'
-                                                    }
-                                                >
+                                                    }>
                                                     {some(filtered, ['column', 'Dataset(s) name*'])
                                                         ? find(filtered, ['column', 'Dataset(s) name*']).value
                                                         : renderDatasets(data)}
@@ -619,8 +605,7 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
                                                             ? 'invalid-info dataUseDetailsGridItem'
                                                             : 'dataUseDetailsGridItem '
                                                     }
-                                                    onClick={() => toggleDataUseSection(index)}
-                                                >
+                                                    onClick={() => toggleDataUseSection(index)}>
                                                     {some(filtered, ['column', 'Access type*'])
                                                         ? find(filtered, ['column', 'Access type*']).value
                                                         : data.accessType}

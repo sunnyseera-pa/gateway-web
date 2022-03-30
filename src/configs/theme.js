@@ -75,6 +75,10 @@ export const theme = {
         transparent: 'transparent',
         inherit: 'inherit',
         purple500: '#475DA7',
+        blue50: '#E3F4FB',
+        blue400: '#5EB0DD',
+        green50: '#E2F3F0',
+        green400: '#3DB28C',
         green600: '#329276',
         green700: '#2c8267',
         grey: '#F6F7F8',
@@ -90,24 +94,26 @@ export const theme = {
         red700: '#DC3645',
         purple: '#475da7',
         teal: '#3db28c',
+        yellow700: '#F0BB24',
+        yellow50: '#FDFCE6',
     },
     components: {
         Alert: {
             variants: {
                 success: {
-                    background: 'red50',
-                    color: 'red700',
-                    borderColor: 'red700',
+                    background: 'green50',
+                    color: 'green400',
+                    borderColor: 'green400',
                 },
                 info: {
-                    background: 'red50',
-                    color: 'red700',
-                    borderColor: 'red700',
+                    background: 'blue50',
+                    color: 'blue400',
+                    borderColor: 'blue400',
                 },
                 warning: {
-                    background: 'red50',
-                    color: 'red700',
-                    borderColor: 'red700',
+                    background: 'yellow50',
+                    color: 'yellow700',
+                    borderColor: 'yellow700',
                 },
                 danger: {
                     background: 'red50',
