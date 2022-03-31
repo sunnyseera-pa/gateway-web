@@ -146,7 +146,7 @@
             "errorLoading": "There was an error loading the file",
             "errors": "There are errors in the data you uploaded. Please correct these and try again. Errors are listed below.",
             "warning": "Warning! Uploading a new file will delete any data uses that have not yet been submitted for admin checks by the gateway team.",
-            "loadingtext": "Uploding...",
+            "loadingtext": "Uploading...",
             "requiredError": "Error in row {{row}} Mandatory field “{{column}}” is empty",
             "duplicateError": "Error in row {{row}} : Suspected data use duplicate",
             "duplicateRowError": "Error in row {{row}}: Suspected data use duplicate of row {{duplicateRow}}"

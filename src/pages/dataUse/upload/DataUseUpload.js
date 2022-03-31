@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import { SlideDown } from 'react-slidedown';
 import moment from 'moment';
-import Loading from '../../commonComponents/Loading';
+import Loading from '../../../components/Loading';
 import SVGIcon from '../../../images/SVGIcon';
 import DataUseSubmitModal from './DataUseSubmitModal';
 import dataUseSchema from './DataUseSchema';
