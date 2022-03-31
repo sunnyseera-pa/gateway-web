@@ -12,7 +12,7 @@ import { PROP_TYPES_LAYOUTBOX } from '../LayoutBox/LayoutBox.propTypes';
 import * as styles from './Alert.styles.js';
 import LayoutBox from '../LayoutBox';
 
-const Alert = ({ icon, variant, onClose, children, mt, mb, ml, mr, width, minWidth, maxWidth, dismissable, ...outerProps }) => {
+const Alert = ({ icon, variant, onClose, children, mt, mb, ml, mr, width, minWidth, maxWidth, dismissable, duration, ...outerProps }) => {
     const [show, setShow] = React.useState(true);
 
     const handleClose = React.useCallback(() => {
@@ -21,19 +21,29 @@ const Alert = ({ icon, variant, onClose, children, mt, mb, ml, mr, width, minWid
         onClose();
     }, []);
 
+    React.useEffect(() => {
+        const showTimeout = setTimeout(() => {
+            if (!dismissable && show) handleClose();
+        }, duration);
+
+        return () => {
+            clearTimeout(showTimeout);
+        };
+    }, [show, dismissable]);
+
     return (
         show && (
             <LayoutBox {...{ mt, mb, ml, mr, width, minWidth, maxWidth }}>
                 <div css={styles.root({ variant })} {...outerProps}>
                     <div css={styles.icon}>
                         {icon}
-                        {!icon && variant === 'success' && <Icon svg={<CheckIcon fill='inherit' />} size='sm' />}
-                        {!icon && variant === 'danger' && <Icon svg={<DangerIcon fill='inherit' />} />}
-                        {!icon && variant === 'warning' && <Icon svg={<DangerIcon fill='inherit' />} />}
-                        {!icon && variant === 'info' && <Icon svg={<InfoIcon fill='inherit' />} />}
+                        {!icon && variant === 'success' && <Icon svg={<CheckIcon fill='inherit' />} />}
+                        {!icon && variant === 'danger' && <Icon svg={<DangerIcon fill='inherit' />} size='lg' />}
+                        {!icon && variant === 'warning' && <Icon svg={<DangerIcon fill='inherit' />} size='lg' />}
+                        {!icon && variant === 'info' && <Icon svg={<InfoIcon fill='inherit' />} size='lg' />}
                     </div>
                     <div css={styles.content}>{children}</div>
-                    {dismissable && <Icon svg={<CloseIcon fill='inherit' />} onClick={handleClose} size='sm' />}
+                    {dismissable && <Icon svg={<CloseIcon fill='inherit' />} onClick={handleClose} />}
                 </div>
             </LayoutBox>
         )
@@ -41,6 +51,7 @@ const Alert = ({ icon, variant, onClose, children, mt, mb, ml, mr, width, minWid
 };
 
 Alert.propTypes = {
+    duration: PropTypes.number,
     dismissable: PropTypes.bool,
     onClose: PropTypes.func,
     variant: PropTypes.oneOf(['success', 'warning', 'info', 'danger']).isRequired,
@@ -48,6 +59,7 @@ Alert.propTypes = {
 };
 
 Alert.defaultProps = {
+    duration: 5000,
     dismissable: true,
     className: 'ui-Alert',
     onClose: () => {},

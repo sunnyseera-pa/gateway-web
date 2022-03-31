@@ -75,8 +75,8 @@ export const theme = {
         transparent: 'transparent',
         inherit: 'inherit',
         purple500: '#475DA7',
-        blue50: '#E3F4FB',
-        blue400: '#5EB0DD',
+        platinum50: '#E3F4FB',
+        platinum700: '#4682B4',
         green50: '#E2F3F0',
         green400: '#3DB28C',
         green600: '#329276',
@@ -106,9 +106,9 @@ export const theme = {
                     borderColor: 'green400',
                 },
                 info: {
-                    background: 'blue50',
-                    color: 'blue400',
-                    borderColor: 'blue400',
+                    background: 'platinum50',
+                    color: 'platinum700',
+                    borderColor: 'platinum700',
                 },
                 warning: {
                     background: 'yellow50',
