@@ -12,6 +12,7 @@ import Loading from '../../../components/Loading';
 import SVGIcon from '../../../images/SVGIcon';
 import DataUseSubmitModal from './DataUseSubmitModal';
 import dataUseSchema from './DataUseSchema';
+import googleAnalytics from '../../../tracking';
 import './DataUseUpload.scss';
 
 const baseURL = require('../../commonComponents/BaseURL').getURL();
@@ -31,6 +32,32 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
     const [dataUseRegisterIndexes, setdataUseRegisterIndexes] = useState([]);
     const [recommendedFieldsMissing, setRecommendedFieldsMissing] = useState(false);
     const [showEmptyError, setShowEmptyError] = useState(false);
+
+    const dataUseRegistersUpload = dataUseRegistersService.usePostDataUseRegisterUpload(null, {
+        onError: ({ title, message }) => {
+            NotificationManager.error(message, title, 10000);
+        },
+    });
+
+    const dataUseRegisterCheck = dataUseRegistersService.usePostDataUseRegisterCheck(null, {
+        onError: ({ title, message }) => {
+            NotificationManager.error(message, title, 10000);
+        },
+    });
+
+    const handleAnalytics = (label, value) => {
+        googleAnalytics.recordEvent('Data uses', label, value);
+    };
+
+    const handleDownloadTemplate = () => {
+        handleAnalytics('Clicked download data use template', 'DataUseUploadTemplate.xlsx');
+    };
+
+    const handleUploadFileClick = () => {
+        handleAnalytics('Clicked select data uses to upload', 'File');
+
+        hiddenFileInput.current.click();
+    };
 
     const onUploadDataUseRegister = event => {
         if (maxSize < event.target.files[0].size) {
@@ -81,7 +108,6 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
                     setIsLoading(false);
                     setUploadedData({ uploadErrors: [{ error: 'errorLoading' }] });
                 });
-        }
         event.target.value = null;
     };
 
@@ -115,7 +141,8 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
             dataUses: uploadedData.rows,
         };
 
-        axios.post(`${baseURL}/api/v2/data-use-registers/upload`, payload).then(res => {
+        dataUseRegistersUpload.mutateAsync(payload).then(() => {
+            setIsSubmitModalVisible(false);
             onSubmit();
             setSubmitted(false);
             setIsLoading(false);
@@ -124,12 +151,10 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
     };
 
     const checkDataUses = async rows => {
-        const payload = {
+        const response = await dataUseRegisterCheck.mutateAsync({
             teamId: team,
             dataUses: rows,
-        };
-
-        const response = await axios.post(`${baseURL}/api/v2/data-use-registers/check`, payload);
+        });
         return response.data.result;
     };
 
@@ -166,6 +191,7 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
             }
             case 'duplicateRow': {
                 return <div>{t('datause.upload.duplicateRowError', { row: error.row, duplicateRow: error.duplicateRow })}</div>;
+
             }
             default: {
                 return '';
@@ -219,12 +245,12 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
             </div>
         ));
 
+
         return [...linkedDatasets, ...namedDatasets];
     };
 
     const renderOutputs = dataUse => {
         const dataUseCheck = findDataUseCheck(dataUse);
-
         const gatewayOutputsTools = dataUseCheck.gatewayOutputsTools.map(gatewayOutputsTool => (
             <div>
                 <Link className='data-use-link' to={`/tool/${gatewayOutputsTool.id}`} target='_blank'>
@@ -286,7 +312,7 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
                         <p className='dataUseSubHeader mb-4'>{t('datause.upload.downloadTemplateSubText')}</p>
 
                         <button className='button-tertiary' type>
-                            <Link style={{ color: '#29235c' }} to='/DataUseUploadTemplate.xlsx' download target='_blank'>
+                            <Link style={{ color: '#29235c' }} to='/DataUseUploadTemplate.xlsx' download target='_blank' onClick={handleDownloadTemplate}>
                                 {t('datause.upload.downloadTemplateButtonTxt')}
                             </Link>{' '}
                         </button>

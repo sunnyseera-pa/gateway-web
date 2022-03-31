@@ -1,21 +1,20 @@
-import React, { useState, useEffect, Fragment } from 'react';
-import { Row, Col, Button, Tab, Tabs, Alert } from 'react-bootstrap';
-import axios from 'axios';
 import { isEmpty } from 'lodash';
-import Table from './DataUseTable';
-import Pagination from './DataUsePagination';
+import React, { Fragment, useEffect, useState } from 'react';
+import { Alert, Button, Col, Row, Tab, Tabs } from 'react-bootstrap';
+import { NotificationManager } from 'react-notifications';
+import { LayoutContent } from '../../components/Layout';
+import SVGIcon from '../../images/SVGIcon';
+import dataUseRegistersService from '../../services/data-use-registers';
+import googleAnalytics from '../../tracking';
+import DarHelperUtil from '../../utils/DarHelper.util';
+import Loading from '../commonComponents/Loading';
+import MessageNotFound from '../commonComponents/MessageNotFound';
 import ArchiveModal from './ArchiveModal';
 import './DataUse.scss';
-import SVGIcon from '../../images/SVGIcon';
+import Pagination from './DataUsePagination';
+import Table from './DataUseTable';
 import DataUseApproveModal from './modals/DataUseApproveModal';
 import DataUseRejectModal from './modals/DataUseRejectModal';
-import DarHelperUtil from '../../utils/DarHelper.util';
-
-import Loading from '../commonComponents/Loading';
-import googleAnalytics from '../../tracking';
-import { LayoutContent } from '../../components/Layout';
-
-const baseURL = require('../commonComponents/BaseURL').getURL();
 
 const DataUsePage = React.forwardRef(({ onClickDataUseUpload, team }, ref) => {
     React.useImperativeHandle(ref, () => ({
@@ -34,15 +33,61 @@ const DataUsePage = React.forwardRef(({ onClickDataUseUpload, team }, ref) => {
     const [showUnarchiveModal, setShowUnarchiveModal] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
 
-    useEffect(() => {
-        axios.get(`${baseURL}/api/v2/data-use-registers?team=${team}`).then(res => {
-            const dataUses = res.data.data;
+    const dataUseRegistersByTeam = dataUseRegistersService.useGetDataUseRegistersByTeam(null, {
+        onError: ({ title, message }) => {
+            NotificationManager.error(message, title, 10000);
+        },
+    });
 
-            dataUses.sort((dataUseOne, dataUseTwo) => Date.parse(dataUseTwo.lastActivity) - Date.parse(dataUseOne.lastActivity));
-            setRow(dataUses);
+    const dataUseRegistersUpdate = dataUseRegistersService.usePatchDataUseRegister(null, {
+        onError: ({ title, message }) => {
+            NotificationManager.error(message, title, 10000);
+        },
+    });
+
+    useEffect(() => {
+        const init = async () => {
+            try {
+                const {
+                    data: { data },
+                } = await dataUseRegistersByTeam.mutateAsync(team);
+
+                data.sort((a, b) => Date.parse(a.lastActivity) - Date.parse(b.lastActivity));
+
+                setRow(data);
+            } catch (e) {
+                setRow([]);
+            }
+
             setIsLoading(false);
-        });
+        };
+
+        init();
     }, [team, alert]);
+
+    const handleAnalytics = (label, value) => {
+        googleAnalytics.recordEvent('Data uses', label, value);
+    };
+
+    const onClickArchive = dataUseId => {
+        toggleArchiveModal();
+        setDataUseId(dataUseId);
+    };
+
+    const onClickUnarchive = dataUseId => {
+        toggleUnarchiveModal();
+        setDataUseId(dataUseId);
+    };
+
+    const onClickApprove = dataUseId => {
+        toggleApproveModal();
+        setDataUseId(dataUseId);
+    };
+
+    const onClickReject = dataUseId => {
+        toggleRejectModal();
+        setDataUseId(dataUseId);
+    };
 
     const toggleApproveModal = () => {
         setShowApproveModal(!showApproveModal);
@@ -60,26 +105,6 @@ const DataUsePage = React.forwardRef(({ onClickDataUseUpload, team }, ref) => {
         setShowUnarchiveModal(!showUnarchiveModal);
     };
 
-    const onClickArchive = id => {
-        toggleArchiveModal();
-        setDataUseId(id);
-    };
-
-    const onClickUnarchive = id => {
-        toggleUnarchiveModal();
-        setDataUseId(id);
-    };
-
-    const onClickApprove = id => {
-        toggleApproveModal();
-        setDataUseId(id);
-    };
-
-    const onClickReject = id => {
-        toggleRejectModal();
-        setDataUseId(id);
-    };
-
     const showAlert = (message, tab) => {
         setAlert(message);
         setActiveTab(tab);
@@ -89,7 +114,7 @@ const DataUsePage = React.forwardRef(({ onClickDataUseUpload, team }, ref) => {
     };
 
     const updataDataUseStatus = (oldStatus, newStatus, rejectionReason = '') => {
-        axios.patch(`${baseURL}/api/v2/data-use-registers/${dataUseId}`, { activeflag: newStatus, rejectionReason }).then(res => {
+        dataUseRegistersUpdate.mutateAsync({ _id: dataUseId, activeflag: newStatus, rejectionReason }).then(() => {
             if (oldStatus === DarHelperUtil.dataUseRegisterStatus.INREVIEW && newStatus === DarHelperUtil.dataUseRegisterStatus.ACTIVE) {
                 showAlert('Your data use have been successfully approved.');
                 toggleApproveModal();
@@ -160,11 +185,11 @@ const DataUsePage = React.forwardRef(({ onClickDataUseUpload, team }, ref) => {
                             <Button
                                 variant='primary'
                                 className='addButton'
-                                onClick={
-                                    (() =>
-                                        googleAnalytics.recordEvent('DataUses', 'Upload a data use', 'Data use dashboard button clicked'),
-                                    onClickDataUseUpload)
-                                }>
+                                onClick={() => {
+                                    handleAnalytics('Clicked upload data use', 'Dashboard button');
+
+                                    onClickDataUseUpload();
+                                }}>
                                 + Upload
                             </Button>
                         </Col>
@@ -213,6 +238,10 @@ const DataUsePage = React.forwardRef(({ onClickDataUseUpload, team }, ref) => {
                                         <Table team={team} data={currentArchived} archived onClickUnarchive={onClickUnarchive} />
                                     )}
 
+                                    {!row.length && !isLoading && (
+                                        <MessageNotFound word='data uses' retry={dataUseRegistersByTeam.isError} />
+                                    )}
+
                                     <Pagination
                                         rowsPerPage={rowsPerPage}
                                         totalRows={
@@ -254,4 +283,5 @@ const DataUsePage = React.forwardRef(({ onClickDataUseUpload, team }, ref) => {
         </>
     );
 });
+
 export default DataUsePage;
