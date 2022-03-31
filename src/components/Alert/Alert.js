@@ -12,7 +12,23 @@ import { PROP_TYPES_LAYOUTBOX } from '../LayoutBox/LayoutBox.propTypes';
 import * as styles from './Alert.styles.js';
 import LayoutBox from '../LayoutBox';
 
-const Alert = ({ icon, variant, onClose, children, mt, mb, ml, mr, width, minWidth, maxWidth, dismissable, duration, ...outerProps }) => {
+const Alert = ({
+    icon,
+    variant,
+    onClose,
+    children,
+    mt,
+    mb,
+    ml,
+    mr,
+    width,
+    minWidth,
+    maxWidth,
+    dismissable,
+    autoclose,
+    autocloseDuration,
+    ...outerProps
+}) => {
     const [show, setShow] = React.useState(true);
 
     const handleClose = React.useCallback(() => {
@@ -23,8 +39,8 @@ const Alert = ({ icon, variant, onClose, children, mt, mb, ml, mr, width, minWid
 
     React.useEffect(() => {
         const showTimeout = setTimeout(() => {
-            if (!dismissable && show) handleClose();
-        }, duration);
+            if (autoclose && show) handleClose();
+        }, autocloseDuration);
 
         return () => {
             clearTimeout(showTimeout);
@@ -51,7 +67,8 @@ const Alert = ({ icon, variant, onClose, children, mt, mb, ml, mr, width, minWid
 };
 
 Alert.propTypes = {
-    duration: PropTypes.number,
+    autoclose: PropTypes.bool,
+    autocloseDuration: PropTypes.number,
     dismissable: PropTypes.bool,
     onClose: PropTypes.func,
     variant: PropTypes.oneOf(['success', 'warning', 'info', 'danger']).isRequired,
@@ -59,8 +76,9 @@ Alert.propTypes = {
 };
 
 Alert.defaultProps = {
-    duration: 5000,
-    dismissable: true,
+    autoclose: false,
+    autocloseDuration: 5000,
+    dismissable: false,
     className: 'ui-Alert',
     onClose: () => {},
 };

@@ -4,6 +4,7 @@ export const root =
     ({ variant }) =>
     theme => {
         const {
+            font: { size },
             base: { increment },
             colors,
             components: {
@@ -20,6 +21,7 @@ export const root =
             display: flex;
             border-radius: 4px;
             line-height: 1;
+            font-size: ${size.default};
         `;
     };
 
@@ -29,4 +31,8 @@ export const icon = ({ base: { increment } }) => css`
 
 export const content = () => css`
     flex-grow: 1;
+
+    > *:last-child {
+        margin-bottom: 0;
+    }
 `;

@@ -29,7 +29,7 @@ import Alert from './Alert';
             }, []);
             return (
                 <div>
-                    <Alert variant='success' mb={4} dismissable={false} duration={10000} onClose={handleClose}>
+                    <Alert variant='success' mb={4} dismissable={false} autoclose onClose={handleClose}>
                         Lorem ipsum dolor sit amet ad hicio hortus est
                     </Alert>
                     {showClosed && 'Alert has been auto-closed!'}

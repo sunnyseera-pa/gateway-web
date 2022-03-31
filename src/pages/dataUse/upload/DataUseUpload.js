@@ -164,6 +164,11 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
         setAlert(data);
     };
 
+    const handleAlertAutoClose = React.useCallback(() => {
+        console.log('Autoclose');
+        setAlert('');
+    }, []);
+
     const searchForDuplicates = checks => {
         const duplicateErrors = [];
         checks.forEach((check, index) => {
@@ -178,19 +183,19 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
         switch (error.error) {
             case 'required': {
                 return (
-                    <div>
+                    <p>
                         Error in row {error.row}: Mandatory field “{error.column}” is empty
-                    </div>
+                    </p>
                 );
             }
             case 'duplicate': {
-                return <div>Error in row {error.row} : Suspected data use duplicate</div>;
+                return <p>Error in row {error.row} : Suspected data use duplicate</p>;
             }
             case 'duplicateRow': {
                 return (
-                    <div>
+                    <p>
                         Error in row {error.row} : Suspected data use duplicate of row {error.duplicateRow}
-                    </div>
+                    </p>
                 );
             }
             default: {
@@ -312,7 +317,11 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
         <Row>
             <Col xs={1} />
             <Col>
-                {!isEmpty(alert) && <Alert variant='success'>{alert}</Alert>}
+                {!isEmpty(alert) && (
+                    <Alert variant='success' autoclose onClose={handleAlertAutoClose}>
+                        {alert}
+                    </Alert>
+                )}
                 <div className='layoutCard p-4'>
                     <p className='black-20-semibold mb-2'>Download template</p>
 
@@ -360,19 +369,25 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
                         </div>
 
                         {!isEmpty(uploadedData.uploadErrors) && uploadedData.uploadErrors[0].error === 'fileSizeError' && (
-                            <Alert variant='danger'>File exceeds 10MB limit</Alert>
+                            <Alert variant='danger' dismissable>
+                                File exceeds 10MB limit
+                            </Alert>
                         )}
                         {!isEmpty(uploadedData.uploadErrors) && uploadedData.uploadErrors[0].error === 'noEntries' && (
-                            <Alert variant='danger'>File contained no entries</Alert>
+                            <Alert variant='danger' dismissable>
+                                File contained no entries
+                            </Alert>
                         )}
                         {!isEmpty(uploadedData.uploadErrors) && uploadedData.uploadErrors[0].error === 'errorLoading' && (
-                            <Alert variant='danger'>There was an error loading the file</Alert>
+                            <Alert variant='danger' dismissable>
+                                There was an error loading the file
+                            </Alert>
                         )}
                         {!isEmpty(uploadedData.uploadErrors) &&
                             uploadedData.uploadErrors[0].error !== 'fileSizeError' &&
                             uploadedData.uploadErrors[0].error !== 'noEntries' &&
                             uploadedData.uploadErrors[0].error !== 'errorLoading' && (
-                                <Alert variant='danger'>
+                                <Alert variant='danger' dismissable>
                                     There are errors in the data you uploaded. Please correct these and try again. Errors are listed below.
                                 </Alert>
                             )}
@@ -391,7 +406,9 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
                         ) : (
                             <>
                                 <p className='dark-red-semibold-20'>Upload Data Errors</p>
-                                <Alert variant='danger'>{uploadedData.uploadErrors.map(error => renderUploadError(error))}</Alert>
+                                <Alert variant='danger' dismissable>
+                                    {uploadedData.uploadErrors.map(error => renderUploadError(error))}
+                                </Alert>
                             </>
                         )}
 
