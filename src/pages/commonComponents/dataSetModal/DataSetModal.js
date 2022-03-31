@@ -9,7 +9,6 @@ import contentService from '../../../services/content';
 import './DataSetModal.scss';
 
 const DataSetModal = ({ open, closed, context, userState, is5Safes, showLoginModal }) => {
-    console.log('MODAL');
     let datasets = [];
     let title = '';
     let subTitle = '';
