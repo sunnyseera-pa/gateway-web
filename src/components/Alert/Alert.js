@@ -39,7 +39,9 @@ const Alert = ({
 
     React.useEffect(() => {
         const showTimeout = setTimeout(() => {
-            if (autoclose && show) handleClose();
+            if (autoclose && show) {
+                handleClose();
+            }
         }, autocloseDuration);
 
         return () => {
@@ -51,7 +53,7 @@ const Alert = ({
         show && (
             <LayoutBox {...{ mt, mb, ml, mr, width, minWidth, maxWidth }}>
                 <div css={styles.root({ variant })} {...outerProps}>
-                    <div css={styles.icon}>
+                    <div css={styles.icon} className='ui-Alert__icon'>
                         {icon}
                         {!icon && variant === 'success' && <Icon svg={<CheckIcon fill='inherit' />} />}
                         {!icon && variant === 'danger' && <Icon svg={<DangerIcon fill='inherit' />} size='lg' />}
@@ -59,7 +61,7 @@ const Alert = ({
                         {!icon && variant === 'info' && <Icon svg={<InfoIcon fill='inherit' />} size='lg' />}
                     </div>
                     <div css={styles.content}>{children}</div>
-                    {dismissable && <Icon svg={<CloseIcon fill='inherit' />} onClick={handleClose} />}
+                    {dismissable && <Icon svg={<CloseIcon fill='inherit' />} onClick={handleClose} role='button' />}
                 </div>
             </LayoutBox>
         )

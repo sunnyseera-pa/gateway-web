@@ -1,53 +1,98 @@
-import { render } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 import React from 'react';
-import SearchInput from '.';
-
-jest.mock('../Icon', () => {
-	return props => <button {...props}>Icon</button>;
-});
+import Alert from './Alert';
 
 const props = {
-	value: '',
-	onReset: jest.fn(),
-	onSubmit: jest.fn(),
+    onClose: jest.fn(),
+    variant: 'success',
 };
 
 let wrapper;
 
-describe('Given the SearchInput component', () => {
-	describe('When it is rendered', () => {
-		beforeEach(() => {
-			wrapper = render(<SearchInput {...props} />, {
-				wrapper: Providers,
-			});
-		});
+describe('Given the Alert component', () => {
+    describe('When it is rendered', () => {
+        beforeEach(() => {
+            wrapper = render(<Alert {...props}>Content</Alert>, {
+                wrapper: Providers,
+            });
+        });
 
-		it('Then matches the previous snapshot', async () => {
-			expect(wrapper.container).toMatchSnapshot();
-		});
+        it('Then matches the previous snapshot', async () => {
+            expect(wrapper.container).toMatchSnapshot();
+        });
 
-		it('Then has a search icon', () => {
-			expect(wrapper.container.querySelector('[name="search"]')).toBeTruthy();
-		});
+        describe('And it is dismissable', () => {
+            beforeEach(() => {
+                wrapper = render(
+                    <Alert {...props} dismissable>
+                        Content
+                    </Alert>,
+                    {
+                        wrapper: Providers,
+                    }
+                );
+            });
 
-		it('Then does not have a reset icon', () => {
-			expect(wrapper.container.querySelector('[name="clear"]')).toBeFalsy();
-		});
+            afterEach(() => {
+                jest.clearAllMocks();
+            });
 
-		describe('And it is reset', () => {
-			beforeAll(() => {
-				wrapper = render(<SearchInput {...props} value='collection' />, {
-					wrapper: Providers,
-				});
+            describe('And it is closed', () => {
+                beforeEach(() => {
+                    const close = wrapper.container.querySelector('[role="button"]');
 
-				const reset = wrapper.container.querySelector('[name="clear"]');
+                    fireEvent.click(close);
+                });
 
-				fireEvent.click(reset);
-			});
+                it('Then does not show anything', async () => {
+                    await waitFor(() => {
+                        expect(wrapper.container.querySelector('.ui-LayoutBox')).toBeNull();
+                    });
+                });
 
-			it('Then calls onReset', () => {
-				expect(props.onReset).toHaveBeenCalled();
-			});
-		});
-	});
+                it('Then calls onClose', () => {
+                    expect(props.onClose).toHaveBeenCalled();
+                });
+            });
+        });
+
+        describe('And autoclose is set', () => {
+            beforeEach(() => {
+                wrapper = render(
+                    <Alert {...props} autoclose autocloseDuration={1000}>
+                        Content
+                    </Alert>,
+                    {
+                        wrapper: Providers,
+                    }
+                );
+            });
+
+            afterAll(() => {
+                jest.clearAllMocks();
+            });
+
+            it('Then does not show anything', async () => {
+                await waitFor(() => {
+                    expect(wrapper.container.querySelector('.ui-LayoutBox')).toBeNull();
+                });
+            });
+
+            it('Then calls onClose', () => {
+                expect(props.onClose).toHaveBeenCalled();
+            });
+        });
+
+        describe('And it has an icon specified', () => {
+            it('Then does not show other icons', () => {
+                wrapper.rerender(
+                    <Alert {...props} icon='Icon'>
+                        Content
+                    </Alert>
+                );
+
+                expect(wrapper.container.querySelector('.ui-Alert__icon').innerHTML).toEqual('Icon');
+            });
+        });
+    });
 });
