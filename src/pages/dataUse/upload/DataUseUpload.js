@@ -1,21 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import { find, isEmpty, isUndefined, some } from 'lodash';
+import moment from 'moment';
+import React, { useEffect, useState } from 'react';
+import { Alert, Col, Image, OverlayTrigger, Row, Tooltip } from 'react-bootstrap';
+import { NotificationManager } from 'react-notifications';
+import { Link } from 'react-router-dom';
+import { SlideDown } from 'react-slidedown';
 import readXlsxFile from 'read-excel-file';
 import convertToJson from 'read-excel-file/schema';
-import { Row, Col, Alert, Tooltip, OverlayTrigger } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
-import { isEmpty, some, find, isUndefined } from 'lodash';
-import { useTranslation } from 'react-i18next';
-import axios from 'axios';
-import { SlideDown } from 'react-slidedown';
-import moment from 'moment';
-import Loading from '../../../components/Loading';
 import SVGIcon from '../../../images/SVGIcon';
-import DataUseSubmitModal from './DataUseSubmitModal';
+import dataUseRegistersService from '../../../services/data-use-registers';
 import dataUseSchema from './DataUseSchema';
+import { useTranslation } from 'react-i18next';
+import Loading from '../../../components/Loading';
 import googleAnalytics from '../../../tracking';
+import DataUseSubmitModal from './DataUseSubmitModal';
 import './DataUseUpload.scss';
-
-const baseURL = require('../../commonComponents/BaseURL').getURL();
 
 const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState }, ref) => {
     React.useImperativeHandle(ref, () => ({
@@ -108,6 +107,7 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
                     setIsLoading(false);
                     setUploadedData({ uploadErrors: [{ error: 'errorLoading' }] });
                 });
+        }
         event.target.value = null;
     };
 
@@ -129,6 +129,7 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
             });
         } else {
             setShowEmptyError(true);
+            setIsLoading(false);
         }
     }, [uploadedData]);
 
@@ -177,10 +178,6 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
         return duplicateErrors;
     };
 
-    const handleUploadFileClick = () => {
-        hiddenFileInput.current.click();
-    };
-
     const renderUploadError = error => {
         switch (error.error) {
             case 'required': {
@@ -191,7 +188,6 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
             }
             case 'duplicateRow': {
                 return <div>{t('datause.upload.duplicateRowError', { row: error.row, duplicateRow: error.duplicateRow })}</div>;
-
             }
             default: {
                 return '';
@@ -244,7 +240,6 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
                 {namedDataset}
             </div>
         ));
-
 
         return [...linkedDatasets, ...namedDatasets];
     };
@@ -312,7 +307,12 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
                         <p className='dataUseSubHeader mb-4'>{t('datause.upload.downloadTemplateSubText')}</p>
 
                         <button className='button-tertiary' type>
-                            <Link style={{ color: '#29235c' }} to='/DataUseUploadTemplate.xlsx' download target='_blank' onClick={handleDownloadTemplate}>
+                            <Link
+                                style={{ color: '#29235c' }}
+                                to='/DataUseUploadTemplate.xlsx'
+                                download
+                                target='_blank'
+                                onClick={handleDownloadTemplate}>
                                 {t('datause.upload.downloadTemplateButtonTxt')}
                             </Link>{' '}
                         </button>
