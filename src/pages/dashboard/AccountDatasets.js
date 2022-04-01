@@ -10,7 +10,7 @@ import SVGIcon from '../../images/SVGIcon';
 import utils from '../../utils/DataSetHelper.util';
 import './Dashboard.scss';
 import AccountContent from './Components/AccountContent';
-import { useHistory } from 'react-router';
+import { useHistory } from 'react-router-dom';
 import { ReactComponent as EyeIcon } from '../../images/eye.svg';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();

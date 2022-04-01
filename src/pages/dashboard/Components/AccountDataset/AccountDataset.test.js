@@ -1,11 +1,11 @@
 import { render, waitFor } from '@testing-library/react';
 import React from 'react';
-import reactRouter from 'react-router';
+import reactRouter from 'react-router-dom';
 import AccountDataset from '.';
 import { server } from '../../../../services/mockServer';
 
-jest.mock('react-router', () => ({
-	...jest.requireActual('react-router'),
+jest.mock('react-router-dom', () => ({
+	...jest.requireActual('react-router-dom'),
 	Redirect: props => {
 		mockRedirect(props);
 		return null;

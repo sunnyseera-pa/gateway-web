@@ -3,7 +3,7 @@ import React, { Suspense, useCallback, useState } from 'react';
 import { Button } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { NotificationManager } from 'react-notifications';
-import { Redirect, useHistory, useParams } from 'react-router';
+import { Redirect, useHistory, useParams } from 'react-router-dom';
 import { useAuth } from '../../../../context/AuthContext';
 import serviceActivityLog from '../../../../services/activitylog/activitylog';
 import serviceDatasetOnboarding from '../../../../services/dataset-onboarding/dataset-onboarding';
@@ -31,7 +31,7 @@ const AccountDataset = props => {
 		showNext: true,
 		statusError: false,
 		showApproveDatasetModal: false,
-		showRejectDatasetModal: false
+		showRejectDatasetModal: false,
 	});
 
 	const dataActivityLog = serviceActivityLog.usePostActivityLog();
@@ -42,20 +42,13 @@ const AccountDataset = props => {
 		setTeam(getTeam(props));
 	}, [id]);
 
-	const getValidDatasets = listOfDatasets => {
-		return listOfDatasets.filter(dataset => {
-			return DataSetHelper.isInReview(dataset) && parseFloat(dataset.datasetVersion) > 1;
-		});
-	};
+	const getValidDatasets = listOfDatasets =>
+		listOfDatasets.filter(dataset => DataSetHelper.isInReview(dataset) && parseFloat(dataset.datasetVersion) > 1);
 
-	const getDatasetIndex = datasets => {
-		return _.findIndex(datasets, dataset => {
-			return dataset.pid == id;
-		});
-	};
+	const getDatasetIndex = datasets => _.findIndex(datasets, dataset => dataset.pid == id);
 
 	const updateButtonStates = ({ currentIndex, total }) => {
-		let buttonState = {
+		const buttonState = {
 			showNext: Boolean(currentIndex < total - 1),
 			showPrevious: currentIndex > 0,
 		};
@@ -65,8 +58,6 @@ const AccountDataset = props => {
 				...buttonState,
 				statusError: true,
 			});
-
-			return;
 		} else {
 			setState({
 				...buttonState,
@@ -94,9 +85,7 @@ const AccountDataset = props => {
 		}
 	};
 
-	const filterCurrentDataset = datasets => {
-		return datasets.find(dataset => dataset.pid === id);
-	};
+	const filterCurrentDataset = datasets => datasets.find(dataset => dataset.pid === id);
 
 	React.useEffect(() => {
 		const page = getNextPage(0);
@@ -137,24 +126,27 @@ const AccountDataset = props => {
 		history.push(`/dataset-onboarding/${currentDataset._id}`);
 	}, [currentDataset]);
 
-	const makeADecisionActions = [{
-		description: t('dataset.makeADecision'),
-		actions: [
+	const makeADecisionActions = [
 		{
-			title: t('dataset.approve'),
-			onClick: () => {
-				setState({...state, showApproveDatasetModal: true })
-			},
-			visible: true
+			description: t('dataset.makeADecision'),
+			actions: [
+				{
+					title: t('dataset.approve'),
+					onClick: () => {
+						setState({ ...state, showApproveDatasetModal: true });
+					},
+					visible: true,
+				},
+				{
+					title: t('dataset.reject'),
+					onClick: () => {
+						setState({ ...state, showRejectDatasetModal: true });
+					},
+					visible: true,
+				},
+			],
 		},
-		{
-			title: t('dataset.reject'),
-			onClick: () => {
-				setState({...state, showRejectDatasetModal: true })
-			},
-			visible: true
-		}
-	]}];
+	];
 
 	if (dataPublisher.isLoading || dataActivityLog.isLoading) {
 		return (
@@ -169,7 +161,8 @@ const AccountDataset = props => {
 			NotificationManager.error('The accessed dataset does not exist', 'Page not found', 10000);
 
 			return <Redirect to='/account?tab=datasets' />;
-		} else if (statusError) {
+		}
+		if (statusError) {
 			NotificationManager.error('The status of the dataset must be in review', 'Invalid status', 10000);
 
 			return <Redirect to='/account?tab=datasets' />;
@@ -184,7 +177,7 @@ const AccountDataset = props => {
 					title={currentDataset.name}
 					publisher={currentDataset.datasetv2.summary.publisher.name}
 					version={currentDataset.datasetVersion}
-					isDraft={true}
+					isDraft
 					datasetStatus={currentDataset.activeflag}
 					timeStamps={currentDataset.timestamps}
 					completion={currentDataset.percentageCompleted}
@@ -215,15 +208,17 @@ const AccountDataset = props => {
 				<AccountDatasetApproveModal
 					id={currentDataset._id}
 					open={showApproveDatasetModal}
-					closed={() => setState({...state, showApproveDatasetModal: false })}
+					closed={() => setState({ ...state, showApproveDatasetModal: false })}
 					goToNext={goToNext}
-					showGoToNext={showNext} />
+					showGoToNext={showNext}
+				/>
 				<AccountDatasetRejectModal
 					id={currentDataset._id}
 					open={showRejectDatasetModal}
-					closed={() => setState({...state, showRejectDatasetModal: false })}
+					closed={() => setState({ ...state, showRejectDatasetModal: false })}
 					goToNext={goToNext}
-					showGoToNext={showNext} />
+					showGoToNext={showNext}
+				/>
 			</AccountContent>
 		</Suspense>
 	) : null;
