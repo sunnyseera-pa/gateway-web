@@ -634,8 +634,6 @@ class DatasetDetail extends Component {
     };
 
     toggleModal = action => {
-        console.log('topicContext', this.topicContext);
-
         this.setState(prevState => {
             return { showModal: !prevState.showModal };
         });
@@ -657,14 +655,12 @@ class DatasetDetail extends Component {
         });
 
         if (action === 'ENQUIRY') {
-            console.log('Show message drawer');
             this.topicContext = {
                 ...this.topicContext,
                 allowNewMessage: true,
             };
             this.toggleDrawer();
         } else if (action === 'SUBMIT_APPLICATION') {
-            console.log('Take user to application');
             const { publisher } = this.topicContext.datasets[0];
             googleAnalytics.recordEvent('Data access request', 'Start application', 'Modal button clicked');
             this.props.history.push({ pathname: `/data-access-request/publisher/${publisher}` }, { datasets: this.topicContext.datasets });

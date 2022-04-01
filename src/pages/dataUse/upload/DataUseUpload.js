@@ -165,7 +165,6 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
     };
 
     const handleAlertAutoClose = React.useCallback(() => {
-        console.log('Autoclose');
         setAlert('');
     }, []);
 
