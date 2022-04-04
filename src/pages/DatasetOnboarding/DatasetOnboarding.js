@@ -1329,9 +1329,6 @@ class DatasetOnboarding extends Component {
 			);
 		}
 
-		console.log('ihbeorvhbqreohfbqweoi');
-		console.log(this.props.userState[0]);
-
 		return (
 			<Sentry.ErrorBoundary fallback={<ErrorModal />}>
 				<div>
