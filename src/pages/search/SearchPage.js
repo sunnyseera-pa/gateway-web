@@ -198,7 +198,12 @@ class SearchPage extends React.Component {
 	}
 
 	toggleDataUtilityWizardModal = () => {
-		this.setState({ showDataUtilityWizardModal: false });
+		if (!this.state.showDataUtilityWizardModal) {
+			googleAnalytics.recordVirtualPageView('Data Utility Wizard');
+		}
+		this.setState(prevState => {
+			return { showDataUtilityWizardModal: !prevState.showDataUtilityWizardModal };
+		});
 	};
 
 	showLoginModal = () => {
@@ -254,6 +259,8 @@ class SearchPage extends React.Component {
 			// 7. if openAdvancedSearch is true open the user messages
 			else if (queryParams.openAdvancedSearch === 'true') {
 				this.toggleAdvancedSearchModal();
+			} else if (queryParams.openDataUtilityWizard === 'true') {
+				this.toggleDataUtilityWizardModal();
 			}
 			// 8. set the selectedFilter states from queryParams ** does not return anything **
 			await this.updateFilterStates(queryParams);
