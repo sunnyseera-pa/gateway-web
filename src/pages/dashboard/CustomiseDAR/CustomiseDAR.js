@@ -143,16 +143,16 @@ const CustomiseDAR = ({
                     </div>
                     <div className='tabsBackground mb-3'>
                         <Tabs className='dataAccessTabs gray700-13' activeKey={activeTab} onSelect={onSelectTab}>
-                            <Tab eventKey='presubmissionGuidance' title={t('tabs.presubmissionGuidance')}>
+                            <Tab eventKey='customisedataaccessrequests_guidance' title={t('tabs.presubmissionGuidance')}>
                                 {' '}
                             </Tab>
-                            <Tab eventKey='applicationForm' title={t('tabs.applicationForm')}>
+                            <Tab eventKey='customisedataaccessrequests_applicationform' title={t('tabs.applicationForm')}>
                                 {' '}
                             </Tab>
                         </Tabs>
                     </div>
 
-                    {activeTab === 'presubmissionGuidance' && (
+                    {activeTab === 'customisedataaccessrequests_guidance' && (
                         <div className='main-card cursorPointer' onClick={() => setShowHowToRequestAccessEditor(true)}>
                             <div className='super-header'>
                                 <h1 className='black-20-semibold mb-3'>
@@ -189,7 +189,7 @@ const CustomiseDAR = ({
                             </div>
                         </div>
                     )}
-                    {activeTab === 'applicationForm' && (
+                    {activeTab === 'customisedataaccessrequests_applicationform' && (
                         <div className='main-card cursorPointer' onClick={() => loadCustomiseForm()}>
                             <div className='super-header'>
                                 <h1 className='black-20-semibold mb-3'>
@@ -256,7 +256,7 @@ const CustomiseDAR = ({
 };
 
 CustomiseDAR.defaultProps = {
-    defaultTab: 'guidance',
+    defaultTab: 'customisedataaccessrequests_guidance',
     onSelectTab: () => {},
 };
 

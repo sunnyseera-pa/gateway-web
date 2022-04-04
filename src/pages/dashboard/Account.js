@@ -6,6 +6,7 @@ import React, { Component, Fragment, useState } from 'react';
 import { Accordion, Dropdown, Nav, Button } from 'react-bootstrap';
 import { Route, withRouter } from 'react-router-dom';
 import 'react-web-tabs/dist/react-web-tabs.css';
+import Icon from '../../components/Icon';
 import { DashboardProvider } from '../../context/DashboardContext';
 import { ReactComponent as CheckSVG } from '../../images/check.svg';
 import { ReactComponent as ChevronRightSvg } from '../../images/chevron-bottom.svg';
@@ -42,6 +43,8 @@ import { tabTypes } from './Team/teamUtil';
 import TeamHelp from './TeamHelp/TeamHelp';
 import WorkflowDashboard from './Workflows/WorkflowDashboard';
 import YourAccount from './YourAccount';
+
+import { ReactComponent as UsersIcon } from '../../images/icons/users.svg';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -560,6 +563,12 @@ class Account extends Component {
         return isActive ? 'activeCard' : 'accountNav';
     };
 
+    handleCustomiseDARSelectTab = tabId => {
+        this.setState({
+            tabId,
+        });
+    };
+
     render() {
         const {
             searchString,
@@ -799,7 +808,7 @@ class Account extends Component {
                                                                 variant='link'
                                                                 className='verticalNavBar gray700-13 navLinkButton'
                                                                 eventKey='1'>
-                                                                <SVGIcon name='dataaccessicon' fill={'#b3b8bd'} className='accountSvgs' />
+                                                                <Icon svg={<UsersIcon />} fill='grey500' size='2xl' />
                                                                 <span className='navLinkItem'>Edit DAR Form</span>
                                                             </Accordion.Toggle>
                                                             <Accordion.Collapse eventKey='1'>
@@ -1021,11 +1030,8 @@ class Account extends Component {
                                                 setShowHowToRequestAccessEditor={show =>
                                                     this.setState({ showHowToRequestAccessEditor: show })
                                                 }
-                                                activeTab={
-                                                    tabId === 'customisedataaccessrequests_applicationform'
-                                                        ? 'applicationForm'
-                                                        : 'presubmissionGuidance'
-                                                }
+                                                activeTab={tabId}
+                                                onSelectTab={this.handleCustomiseDARSelectTab}
                                             />
                                         )}
 
