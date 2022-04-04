@@ -655,14 +655,12 @@ class DatasetDetail extends Component {
         });
 
         if (action === 'ENQUIRY') {
-            console.log('Show message drawer');
             this.topicContext = {
                 ...this.topicContext,
                 allowNewMessage: true,
             };
             this.toggleDrawer();
         } else if (action === 'SUBMIT_APPLICATION') {
-            console.log('Take user to application');
             const { publisher } = this.topicContext.datasets[0];
             googleAnalytics.recordEvent('Data access request', 'Start application', 'Modal button clicked');
             this.props.history.push({ pathname: `/data-access-request/publisher/${publisher}` }, { datasets: this.topicContext.datasets });
@@ -853,8 +851,7 @@ class DatasetDetail extends Component {
                                     '_blank',
                                     'noopener, noreferrer'
                                 )
-                            }
-                        >
+                            }>
                             <div style={{ cursor: 'pointer' }}>
                                 <div style={{ lineHeight: 1 }}>
                                     {(() => {
@@ -919,8 +916,7 @@ class DatasetDetail extends Component {
                                                     <>
                                                         <span
                                                             onMouseEnter={this.handleMouseHoverShield}
-                                                            onMouseLeave={this.handleMouseHoverShield}
-                                                        >
+                                                            onMouseLeave={this.handleMouseHoverShield}>
                                                             <SVGIcon
                                                                 name='shield'
                                                                 fill={'#475da7'}
@@ -985,8 +981,7 @@ class DatasetDetail extends Component {
                                                       return (
                                                           <a
                                                               key={`tag-${index}`}
-                                                              href={`/search?search=&tab=Datasets&datasetfeatures=${keyword}`}
-                                                          >
+                                                              href={`/search?search=&tab=Datasets&datasetfeatures=${keyword}`}>
                                                               <div className='ml-2 badge-tag'>{keyword}</div>
                                                           </a>
                                                       );
@@ -1013,8 +1008,7 @@ class DatasetDetail extends Component {
                                                             'How to request access',
                                                             'Dataset page primary button clicked'
                                                         );
-                                                    }}
-                                                >
+                                                    }}>
                                                     How to request access
                                                 </button>
                                             </Col>
@@ -1034,8 +1028,7 @@ class DatasetDetail extends Component {
                                         onSelect={key => {
                                             googleAnalytics.recordVirtualPageView(`${key} tab`);
                                             googleAnalytics.recordEvent('Datasets', `Clicked ${key} tab`, `Viewing ${key}`);
-                                        }}
-                                    >
+                                        }}>
                                         <Tab eventKey='About' title={'About'}>
                                             {!isEmpty(v2data.summary.abstract) ? (
                                                 <Row className='mt-1'>
@@ -1119,8 +1112,7 @@ class DatasetDetail extends Component {
 
                                                                         <span
                                                                             onMouseEnter={this.handleMouseHover}
-                                                                            onMouseLeave={this.handleMouseHover}
-                                                                        >
+                                                                            onMouseLeave={this.handleMouseHover}>
                                                                             {this.state.isHoveringPhenotypes ? (
                                                                                 <InfoFillSVG />
                                                                             ) : (
@@ -1160,8 +1152,7 @@ class DatasetDetail extends Component {
                                                                                           <a
                                                                                               href={phenotype.url}
                                                                                               rel='noopener noreferrer'
-                                                                                              className='purple-14'
-                                                                                          >
+                                                                                              className='purple-14'>
                                                                                               {phenotype.name}
                                                                                           </a>
                                                                                       </Col>
@@ -1178,8 +1169,7 @@ class DatasetDetail extends Component {
                                                                                           <a
                                                                                               href={phenotype.url}
                                                                                               rel='noopener noreferrer'
-                                                                                              className='purple-14'
-                                                                                          >
+                                                                                              className='purple-14'>
                                                                                               {phenotype.name}
                                                                                           </a>
                                                                                       </Col>
@@ -1195,8 +1185,7 @@ class DatasetDetail extends Component {
                                                                         <Col sm={12} className='purple-14'>
                                                                             <span
                                                                                 onClick={() => this.showAllPhenotypes()}
-                                                                                style={{ cursor: 'pointer' }}
-                                                                            >
+                                                                                style={{ cursor: 'pointer' }}>
                                                                                 Show all phenotypes
                                                                             </span>
                                                                         </Col>
@@ -1253,16 +1242,14 @@ class DatasetDetail extends Component {
                                                                                               sm={11}
                                                                                               m={11}
                                                                                               lg={11}
-                                                                                              className='datasetLinked'
-                                                                                          >
+                                                                                              className='datasetLinked'>
                                                                                               {relation.type === 'gatewaylink' ? (
                                                                                                   <span>
                                                                                                       <a
                                                                                                           href={'/dataset/' + relation.id}
                                                                                                           target='_blank'
                                                                                                           rel='noopener noreferrer'
-                                                                                                          className='gray800-14-bold pointer overflowWrap'
-                                                                                                      >
+                                                                                                          className='gray800-14-bold pointer overflowWrap'>
                                                                                                           {relation.title}
                                                                                                       </a>
                                                                                                   </span>
@@ -1270,8 +1257,7 @@ class DatasetDetail extends Component {
                                                                                                   <Linkify
                                                                                                       componentDecorator={
                                                                                                           componentDecorator
-                                                                                                      }
-                                                                                                  >
+                                                                                                      }>
                                                                                                       {relation.title}
                                                                                                   </Linkify>
                                                                                               ) : (
@@ -1287,8 +1273,7 @@ class DatasetDetail extends Component {
                                                                                               sm={11}
                                                                                               m={11}
                                                                                               lg={11}
-                                                                                              className='datasetLinked'
-                                                                                          >
+                                                                                              className='datasetLinked'>
                                                                                               <span className='gray800-14'>
                                                                                                   {relation.info}
                                                                                               </span>
@@ -1301,8 +1286,7 @@ class DatasetDetail extends Component {
                                                                                               variant='white'
                                                                                               href={'/search?search=' + relation.title}
                                                                                               target='_blank'
-                                                                                              className='gatewaySearchButton floatRightLinkedDataset'
-                                                                                          >
+                                                                                              className='gatewaySearchButton floatRightLinkedDataset'>
                                                                                               Search on gateway
                                                                                           </Button>
                                                                                       ) : (
@@ -1341,16 +1325,14 @@ class DatasetDetail extends Component {
                                                                                               sm={11}
                                                                                               m={11}
                                                                                               lg={11}
-                                                                                              className='datasetLinked'
-                                                                                          >
+                                                                                              className='datasetLinked'>
                                                                                               {relation.type === 'gatewaylink' ? (
                                                                                                   <span>
                                                                                                       <a
                                                                                                           href={'/dataset/' + relation.id}
                                                                                                           target='_blank'
                                                                                                           rel='noopener noreferrer'
-                                                                                                          className='gray800-14-bold pointer overflowWrap'
-                                                                                                      >
+                                                                                                          className='gray800-14-bold pointer overflowWrap'>
                                                                                                           {relation.title}
                                                                                                       </a>
                                                                                                   </span>
@@ -1358,8 +1340,7 @@ class DatasetDetail extends Component {
                                                                                                   <Linkify
                                                                                                       componentDecorator={
                                                                                                           componentDecorator
-                                                                                                      }
-                                                                                                  >
+                                                                                                      }>
                                                                                                       {relation.title}
                                                                                                   </Linkify>
                                                                                               ) : (
@@ -1375,8 +1356,7 @@ class DatasetDetail extends Component {
                                                                                               sm={11}
                                                                                               m={11}
                                                                                               lg={11}
-                                                                                              className='datasetLinked'
-                                                                                          >
+                                                                                              className='datasetLinked'>
                                                                                               <span className='gray800-14'>
                                                                                                   {relation.info}
                                                                                               </span>
@@ -1389,8 +1369,7 @@ class DatasetDetail extends Component {
                                                                                               variant='white'
                                                                                               href={'/search?search=' + relation.title}
                                                                                               target='_blank'
-                                                                                              className='gatewaySearchButton floatRightLinkedDataset'
-                                                                                          >
+                                                                                              className='gatewaySearchButton floatRightLinkedDataset'>
                                                                                               Search on gateway
                                                                                           </Button>
                                                                                       ) : (
@@ -1410,8 +1389,7 @@ class DatasetDetail extends Component {
                                                                 <div className='rectangle'>
                                                                     <span
                                                                         onClick={() => this.showAllLinkedDatasets()}
-                                                                        style={{ cursor: 'pointer' }}
-                                                                    >
+                                                                        style={{ cursor: 'pointer' }}>
                                                                         Show all linked datasets
                                                                     </span>
                                                                 </div>
@@ -1439,8 +1417,7 @@ class DatasetDetail extends Component {
                                                             <Button
                                                                 onClick={() => this.showHideAllEmpty()}
                                                                 variant='medium'
-                                                                className='datasetEmptyButton dark-14 mr-2'
-                                                            >
+                                                                className='datasetEmptyButton dark-14 mr-2'>
                                                                 {showEmpty === false
                                                                     ? `Show all empty fields (${emptyFieldsCount})`
                                                                     : `Hide all empty fields (${emptyFieldsCount})`}
@@ -1470,8 +1447,7 @@ class DatasetDetail extends Component {
                                                 ) : (
                                                     `Technical details`
                                                 )
-                                            }
-                                        >
+                                            }>
                                             {dataClassOpen === -1 ? (
                                                 <Fragment>
                                                     {this.state.isCohortDiscovery ? <CohortDiscoveryBanner userProps={userState[0]} /> : ''}
@@ -1502,8 +1478,7 @@ class DatasetDetail extends Component {
                                                                 technicalMetadata && technicalMetadata.length > 0
                                                                     ? 'margin-left-15 width-100'
                                                                     : 'width-100'
-                                                            }
-                                                        >
+                                                            }>
                                                             {technicalMetadata && technicalMetadata.length > 0 ? (
                                                                 technicalMetadata.map((techMetadata, index) => (
                                                                     <TechnicalMetadata
@@ -1623,8 +1598,7 @@ class DatasetDetail extends Component {
                                                             <Dropdown.Toggle
                                                                 variant='info'
                                                                 id='dropdown-menu-align-right'
-                                                                className='gray800-14'
-                                                            >
+                                                                className='gray800-14'>
                                                                 {(() => {
                                                                     if (sorting !== 'showAll')
                                                                         return `Show ${
@@ -1647,8 +1621,7 @@ class DatasetDetail extends Component {
                                                                         sorting === 'showAll'
                                                                             ? 'sort-dropdown-item sort-dropdown-item-selected sortingDropdown'
                                                                             : 'sort-dropdown-item sortingDropdown'
-                                                                    }
-                                                                >
+                                                                    }>
                                                                     <Col xs={12} className='p-0'>
                                                                         <Dropdown.Item eventKey={'showAll'} className='gray800-14'>
                                                                             Show all resources ({relatedResourcesSort.length})
@@ -1682,8 +1655,7 @@ class DatasetDetail extends Component {
                                                                                     sorting === item
                                                                                         ? 'sort-dropdown-item sort-dropdown-item-selected sortingDropdown'
                                                                                         : 'sort-dropdown-item sortingDropdown'
-                                                                                }
-                                                                            >
+                                                                                }>
                                                                                 <Col xs={12} className='p-0'>
                                                                                     <Dropdown.Item eventKey={item} className='gray800-14'>
                                                                                         Show{' '}

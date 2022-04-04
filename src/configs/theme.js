@@ -75,6 +75,10 @@ export const theme = {
         transparent: 'transparent',
         inherit: 'inherit',
         purple500: '#475DA7',
+        platinum50: '#E3F4FB',
+        platinum700: '#4682B4',
+        green50: '#E2F3F0',
+        green400: '#3DB28C',
         green600: '#329276',
         green700: '#2c8267',
         grey: '#F6F7F8',
@@ -85,11 +89,39 @@ export const theme = {
         grey700: '#53575A',
         grey700Alt: '#848E97',
         grey800: '#3C3C3B',
+        red50: '#FFECF1',
         red600: '#EF3F4B',
+        red700: '#DC3645',
         purple: '#475da7',
         teal: '#3db28c',
+        yellow700: '#F0BB24',
+        yellow50: '#FDFCE6',
     },
     components: {
+        Alert: {
+            variants: {
+                success: {
+                    background: 'green50',
+                    color: 'green400',
+                    borderColor: 'green400',
+                },
+                info: {
+                    background: 'platinum50',
+                    color: 'platinum700',
+                    borderColor: 'platinum700',
+                },
+                warning: {
+                    background: 'yellow50',
+                    color: 'yellow700',
+                    borderColor: 'yellow700',
+                },
+                danger: {
+                    background: 'red50',
+                    color: 'red700',
+                    borderColor: 'red700',
+                },
+            },
+        },
         Checkbox: {
             height: '20px',
             width: '20px',
