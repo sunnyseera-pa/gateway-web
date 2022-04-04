@@ -79,14 +79,14 @@ function AsyncTypeAheadUsers(props) {
             id='async-users'
             isLoading={isLoading}
             labelKey='name'
-            placeholder='Recently added'
+            placeholder={props.placeholder}
             onChange={handleChange}
             onInputChange={handleInputChange}
             onFocus={handleOnFocus}
             options={options}
             selected={selected}
-            iconPrepend={<Icon name='search' size='xl' fill='purple' />}
-            multiple
+            iconPrepend={<Icon svg={<SearchIcon />} size='xl' fill='purple' />}
+            multiple={props.multiple}
             renderMenu={(results, menuProps) => (
                 <Menu {...menuProps}>
                     {showRecentlyAdded && (
@@ -119,11 +119,15 @@ AsyncTypeAheadUsers.propTypes = {
     getUsersInfo: PropTypes.bool,
     changeHandler: PropTypes.func,
     currentUserId: PropTypes.number,
+    multiple: PropTypes.bool,
+    placeholder: PropTypes.string,
 };
 AsyncTypeAheadUsers.defaultProps = {
     selectedUsers: [],
     showAuthor: false,
     getUsersInfo: false,
+    multiple: true,
+    placeholder: 'Recently added',
 };
 
 export default AsyncTypeAheadUsers;
