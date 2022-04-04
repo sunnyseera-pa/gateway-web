@@ -1,12 +1,13 @@
 import { find, isEmpty, isUndefined, some } from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
-import { Alert, Col, Image, OverlayTrigger, Row, Tooltip } from 'react-bootstrap';
+import { Col, Image, OverlayTrigger, Row, Tooltip } from 'react-bootstrap';
 import { NotificationManager } from 'react-notifications';
 import { Link } from 'react-router-dom';
 import { SlideDown } from 'react-slidedown';
 import readXlsxFile from 'read-excel-file';
 import convertToJson from 'read-excel-file/schema';
+import Alert from '../../../components/Alert';
 import SVGIcon from '../../../images/SVGIcon';
 import dataUseRegistersService from '../../../services/data-use-registers';
 import dataUseSchema from './DataUseSchema';
@@ -163,10 +164,13 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
         setIsSubmitModalVisible(!isSubmitModalVisible);
     };
 
-    const showAlert = alert => {
-        setAlert(alert);
-        setTimeout(() => setAlert(''), 10000);
+    const showAlert = data => {
+        setAlert(data);
     };
+
+    const handleAlertAutoClose = React.useCallback(() => {
+        setAlert('');
+    }, []);
 
     const searchForDuplicates = checks => {
         const duplicateErrors = [];
@@ -297,8 +301,8 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
             ) : (
                 <Col>
                     {!isEmpty(alert) && (
-                        <Alert variant='success' className='main-alert'>
-                            <SVGIcon name='check' width={24} height={24} fill='#2C8267' /> {alert}
+                        <Alert variant='success' autoclose onClose={handleAlertAutoClose}>
+                            {alert}
                         </Alert>
                     )}
                     <div className='layoutCard p-4'>
@@ -336,24 +340,33 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
                                     <span className='gray700-alt-13'>{t('datause.upload.fileType')}</span>
                                 </div>
                             </div>
-
                             {!isEmpty(uploadedData.uploadErrors) && uploadedData.uploadErrors[0].error === 'fileSizeError' && (
-                                <Alert variant='danger'>{t('datause.upload.fileSizeLimit')}</Alert>
+                                <Alert variant='danger' dismissable>
+                                    {t('datause.upload.fileSizeLimit')}
+                                </Alert>
                             )}
                             {!isEmpty(uploadedData.uploadErrors) && uploadedData.uploadErrors[0].error === 'noEntries' && (
-                                <Alert variant='danger'>{t('datause.upload.emptyError')}</Alert>
+                                <Alert variant='danger' dismissable>
+                                    {t('datause.upload.emptyError')}
+                                </Alert>
                             )}
                             {!isEmpty(uploadedData.uploadErrors) && uploadedData.uploadErrors[0].error === 'errorLoading' && (
-                                <Alert variant='danger'>{t('datause.upload.errorLoading')}</Alert>
+                                <Alert variant='danger' dismissable>
+                                    {t('datause.upload.errorLoading')}
+                                </Alert>
                             )}
                             {!isEmpty(uploadedData.uploadErrors) &&
                                 uploadedData.uploadErrors[0].error !== 'fileSizeError' &&
                                 uploadedData.uploadErrors[0].error !== 'noEntries' &&
                                 uploadedData.uploadErrors[0].error !== 'errorLoading' && (
-                                    <Alert variant='danger'>{t('datause.upload.errors')}</Alert>
+                                    <Alert variant='danger' dismissable>
+                                        {t('datause.upload.errors')}
+                                    </Alert>
                                 )}
                             {!isEmpty(uploadedData.rows) && isEmpty(uploadedData.uploadErrors) && (
-                                <Alert variant='warning'>{t('datause.upload.warning')}</Alert>
+                                <Alert variant='danger' dismissable>
+                                    {t('datause.upload.warning')}
+                                </Alert>
                             )}
                         </>
                     </div>
@@ -365,13 +378,21 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
 
                     {!isEmpty(uploadedData.rows) ? (
                         <div className='layoutCard p-4'>
-                            {showEmptyError ? <Alert variant='danger'>{t('datause.upload.loadingtext')}</Alert> : ''}
+                            {showEmptyError ? (
+                                <Alert variant='danger' dismissable>
+                                    {t('datause.upload.loadingtext')}
+                                </Alert>
+                            ) : (
+                                ''
+                            )}
                             {isEmpty(uploadedData.uploadErrors) ? (
                                 <div className='black-20-semibold uploadDataTitle'>Upload Data</div>
                             ) : (
                                 <>
                                     <p className='dark-red-semibold-20'>Upload Data Errors</p>
-                                    <Alert variant='danger'>{uploadedData.uploadErrors.map(error => renderUploadError(error))}</Alert>
+                                    <Alert variant='danger' dismissable>
+                                        {uploadedData.uploadErrors.map(error => renderUploadError(error))}
+                                    </Alert>
                                 </>
                             )}
 
@@ -418,7 +439,6 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
                                                     ? find(filtered, ['column', 'Dataset(s) name*']).value
                                                     : renderDatasets(data)}
                                             </div>
-
                                             <div
                                                 className={
                                                     some(filtered, ['error', 'duplicate'])

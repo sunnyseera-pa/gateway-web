@@ -9,12 +9,12 @@ import contentService from '../../../services/content';
 import './DataSetModal.scss';
 
 const DataSetModal = ({ open, closed, context, userState, is5Safes, showLoginModal }) => {
-    let datasets = [],
-        title = '',
-        subTitle = '',
-        contactPoint = '',
-        dataRequestModalContent = { header: '', body: '' },
-        showActionButtons;
+    let datasets = [];
+    let title = '';
+    let subTitle = '';
+    let contactPoint = '';
+    let dataRequestModalContent = { header: '', body: '' };
+    let showActionButtons;
 
     const { loggedIn: isLoggedIn } = userState;
     const [screenData, setScreenData] = useState({});
@@ -58,8 +58,10 @@ const DataSetModal = ({ open, closed, context, userState, is5Safes, showLoginMod
         getNon5SafesModalContent();
     }, [open, context]);
 
+    console.log('screenData.dataRequestModalContent', screenData.dataRequestModalContent);
+
     return (
-        <Fragment>
+        <>
             <Modal show={open} onHide={closed} size='lg' aria-labelledby='contained-modal-title-vcenter' centered>
                 <div className={is5Safes ? 'appModal-header' : 'appModal-non-5safes-header'}>
                     <div className={is5Safes ? 'appModal-header--wrap' : 'appModal-non-5safes-header--wrap'}>
@@ -92,8 +94,7 @@ const DataSetModal = ({ open, closed, context, userState, is5Safes, showLoginMod
                                     className='button-secondary mr-2'
                                     onClick={() => {
                                         isLoggedIn ? onCloseModal('SUBMIT_APPLICATION') : showLoginModal();
-                                    }}
-                                >
+                                    }}>
                                     Start application
                                 </button>
                             ) : null}
@@ -102,15 +103,14 @@ const DataSetModal = ({ open, closed, context, userState, is5Safes, showLoginMod
                                 className='btn btn-primary addButton'
                                 onClick={() => {
                                     isLoggedIn ? onCloseModal('ENQUIRY') : showLoginModal();
-                                }}
-                            >
+                                }}>
                                 Make an enquiry
                             </button>
                         </div>
                     ) : null}
                 </div>
             </Modal>
-        </Fragment>
+        </>
     );
 };
 
