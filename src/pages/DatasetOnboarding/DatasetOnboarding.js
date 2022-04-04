@@ -126,6 +126,7 @@ class DatasetOnboarding extends Component {
 			inReviewMode: false,
 			updateRequestModal: false,
 			completion: {},
+			isFederated: false,
 		};
 
 		this.onChangeDebounced = _.debounce(this.onChangeDebounced, 300);
@@ -183,6 +184,7 @@ class DatasetOnboarding extends Component {
 					listOfDatasets,
 					jsonSchema: { ...formSchema },
 					applicationStatus: data.dataset.activeflag,
+					dataSource: data.dataset.source,
 				});
 			} catch (error) {
 				this.setState({ isLoading: false });
@@ -226,6 +228,7 @@ class DatasetOnboarding extends Component {
 			answeredAmendments = 0,
 			inReviewMode = false,
 			reviewSections = [],
+			dataSource,
 		} = context;
 
 		let { name, datasetVersion, activeflag } = dataset;
@@ -236,6 +239,7 @@ class DatasetOnboarding extends Component {
 		let showArchive = false;
 		let showUnArchive = false;
 		let showDeleteDraft = false;
+		let isFederated = false;
 
 		let publisher = dataset.datasetv2.summary.publisher.identifier;
 
@@ -261,6 +265,11 @@ class DatasetOnboarding extends Component {
 		} else if (applicationStatus !== DatasetOnboardingHelper.datasetStatus.inReview) {
 			if (isLatestVersion) showCreateNewVersion = true;
 			showArchive = true;
+			readOnly = true;
+		}
+
+		if (dataSource === 'federation') {
+			isFederated = true;
 			readOnly = true;
 		}
 
@@ -296,6 +305,7 @@ class DatasetOnboarding extends Component {
 			showDeleteDraft,
 			inReviewMode,
 			reviewSections,
+			isFederated,
 		});
 	};
 
@@ -1235,6 +1245,7 @@ class DatasetOnboarding extends Component {
 			roles,
 			completion,
 			dataset,
+			isFederated,
 		} = this.state;
 		const { userState } = this.props;
 
@@ -1279,7 +1290,8 @@ class DatasetOnboarding extends Component {
 				}
 			},
 			isMultiFieldURLRequired: value => {
-				const isMultiFieldURLRegEx = /^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)|in progress$/i;
+				const isMultiFieldURLRegEx =
+					/^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)|in progress$/i;
 				if (!_.isArray(value)) return !_.isEmpty(value) && !!value.match(isMultiFieldURLRegEx);
 
 				let isNoError = true;
@@ -1316,6 +1328,9 @@ class DatasetOnboarding extends Component {
 				</Container>
 			);
 		}
+
+		console.log('ihbeorvhbqreohfbqweoi');
+		console.log(this.props.userState[0]);
 
 		return (
 			<Sentry.ErrorBoundary fallback={<ErrorModal />}>
@@ -1520,6 +1535,7 @@ class DatasetOnboarding extends Component {
 										showDeleteDraft={this.state.showDeleteDraft}
 										onShowDeleteDraftModal={this.toggleDeleteDraftModal}
 										onShowDuplicateModal={this.toggleDuplicateModal}
+										isFederated={this.state.isFederated}
 									/>
 								) : (
 									<CustodianActionButtons
