@@ -1245,7 +1245,6 @@ class DatasetOnboarding extends Component {
 			roles,
 			completion,
 			dataset,
-			isFederated,
 		} = this.state;
 		const { userState } = this.props;
 
