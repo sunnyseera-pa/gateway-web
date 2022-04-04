@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Given the SearchResultsInfo When it is rendered Should match the snapshot 1`] = `
+<div>
+  Showing 60 results for 'covid'
+</div>
+`;

@@ -1,0 +1,16 @@
+import { Meta, Story, Canvas } from '@storybook/addon-docs';
+
+import SearchResultsInfo from './SearchResultsInfo';
+
+<Meta
+	title='SearchResultsInfo'
+	component={SearchResultsInfo}
+	args={{
+		count: 656,
+		searchTerm: 'covid',
+	}}
+/>
+
+<Canvas>
+	<Story name='Basic'>{props => <SearchResultsInfo {...props} />}</Story>
+</Canvas>
