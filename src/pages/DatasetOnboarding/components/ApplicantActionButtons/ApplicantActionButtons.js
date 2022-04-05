@@ -16,7 +16,8 @@ const ApplicantActionButtons = ({
 	showUnArchive,
 	showDeleteDraft,
 	onShowDeleteDraftModal,
-	onShowDuplicateModal
+	onShowDuplicateModal,
+	isFederated,
 }) => {
 	const options = [
 		{
@@ -26,7 +27,7 @@ const ApplicantActionButtons = ({
 					title: 'Duplicate dataset',
 					description: 'Copy metadata into a new dataset',
 					onClick: () => {
-						onShowDuplicateModal()
+						onShowDuplicateModal();
 					},
 					isVisible: true,
 				},
@@ -34,7 +35,7 @@ const ApplicantActionButtons = ({
 					title: 'Archive',
 					description: 'Hide this dataset from the main search on the Gateway',
 					onClick: () => {
-						onShowArchiveModal()
+						onShowArchiveModal();
 					},
 					isVisible: showArchive,
 				},
@@ -57,11 +58,15 @@ const ApplicantActionButtons = ({
 			) : (
 				''
 			)}
-			
-			<ActionBarMenu label='Manage dataset' options={availableOptions} disabled={!allowedNavigation} buttonClass='button-tertiary' />
+
+			{!isFederated ? (
+				<ActionBarMenu label='Manage dataset' options={availableOptions} disabled={!allowedNavigation} buttonClass='button-tertiary' />
+			) : (
+				''
+			)}
 
 			{/*  {showUnArchive ? <button className={`button-tertiary ${allowedNavigation ? '' : 'disabled'}`} onClick={e => onShowUnArchiveModal()}>Un-archive</button> : ''} */}
-			{showCreateNewVersion ? (
+			{showCreateNewVersion && !isFederated ? (
 				<button className={`button-tertiary ${allowedNavigation ? '' : 'disabled'}`} onClick={e => onShowCreateNewVersionModal()}>
 					Create a new version
 				</button>
