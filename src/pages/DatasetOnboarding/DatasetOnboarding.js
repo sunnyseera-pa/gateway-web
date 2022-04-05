@@ -38,15 +38,13 @@ import BeforeYouBegin from './components/BeforeYouBegin/BeforeYouBegin';
 import Guidance from './components/Guidance/Guidance';
 import StructuralMetadata from './components/StructuralMetadata/StructuralMetadata';
 import StatusDisplay from '../commonComponents/StatusDisplay';
-
 import ActionModal from './components/ActionModal/ActionModal';
-
 import Dropdown from 'react-bootstrap/Dropdown';
-
 import { formSchema } from './formSchema';
 import DatasetOnboardingHelperUtil from '../../utils/DatasetOnboardingHelper.util';
 import ActionBarStatus from '../../components/ActionBarStatus';
 import ErrorModal from '../commonComponents/errorModal';
+import datasetOnboardingServices from '../../services/dataset-onboarding';
 
 /* export const DatasetOnboarding = props => {
     const [id] = useState('');
@@ -176,6 +174,13 @@ class DatasetOnboarding extends Component {
 						listOfDatasets,
 					},
 				} = response;
+
+				let {
+					data: { publisher: publisherDetails },
+				} = await datasetOnboardingServices.getPublisherDetails(data.dataset.datasetv2.summary.publisher.identifier);
+				
+				if (!_.isEmpty(publisherDetails.federation) && publisherDetails.federation.active) this.setState({ isFederated: true });
+
 				// 3. Set up the DAR
 				this.setScreenData({
 					...data,
@@ -240,7 +245,6 @@ class DatasetOnboarding extends Component {
 		let showArchive = false;
 		let showUnArchive = false;
 		let showDeleteDraft = false;
-		let isFederated = false;
 
 		let publisher = dataset.datasetv2.summary.publisher.identifier;
 
@@ -269,11 +273,6 @@ class DatasetOnboarding extends Component {
 			readOnly = true;
 		}
 
-		if (dataSource === 'federation') {
-			isFederated = true;
-			readOnly = true;
-		}
-
 		let initialPanel = jsonSchema.formPanels[0].panelId;
 
 		// 9. Set state
@@ -294,7 +293,7 @@ class DatasetOnboarding extends Component {
 			datasetVersion,
 			activeflag,
 			publisher,
-			readOnly,
+			readOnly: this.state.isFederated ? true : readOnly,
 			answeredAmendments,
 			unansweredAmendments,
 			userType,
@@ -306,7 +305,6 @@ class DatasetOnboarding extends Component {
 			showDeleteDraft,
 			inReviewMode,
 			reviewSections,
-			isFederated,
 		});
 	};
 
