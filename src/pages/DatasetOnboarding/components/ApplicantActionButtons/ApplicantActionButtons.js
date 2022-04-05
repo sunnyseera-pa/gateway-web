@@ -66,7 +66,7 @@ const ApplicantActionButtons = ({
 			)}
 
 			{/*  {showUnArchive ? <button className={`button-tertiary ${allowedNavigation ? '' : 'disabled'}`} onClick={e => onShowUnArchiveModal()}>Un-archive</button> : ''} */}
-			{showCreateNewVersion ? (
+			{showCreateNewVersion && !isFederated ? (
 				<button className={`button-tertiary ${allowedNavigation ? '' : 'disabled'}`} onClick={e => onShowCreateNewVersionModal()}>
 					Create a new version
 				</button>
