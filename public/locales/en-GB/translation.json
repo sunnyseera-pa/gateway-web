@@ -88,6 +88,16 @@
                         "message": "There has been a problem getting the related object"
                     }
                 }
+            },
+            "publishers": {
+                "patchModalContent": {
+                    "404": {
+                        "message": "There has been a problem updating the content"
+                    },
+                    "500": {
+                        "message": "There has been a problem updating the content"
+                    }
+                }
             }
         }
     },

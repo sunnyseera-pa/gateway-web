@@ -8,6 +8,7 @@ import EditHowToRequestAccessPage from '../../commonComponents/EditHowToRequestA
 import ActionBar from '../../commonComponents/actionbar/ActionBar';
 import './CustomiseDAR.scss';
 import { useTranslation } from 'react-i18next';
+import CustomiseDAREditGuidance from '../Components/CustomiseDAREditGuidance';
 const baseURL = require('../../commonComponents/BaseURL').getURL();
 
 const CustomiseDAR = ({
@@ -106,8 +107,8 @@ const CustomiseDAR = ({
         onSelectTab();
     };
 
-    return !showHowToRequestAccessEditor ? (
-        <Fragment>
+    return (
+        <>
             {hasPublishedDARContent &&
             howToRequestAccessStatus === sectionStatuses.ACTIVE &&
             yourAppFormStatus === sectionStatuses.ACTIVE ? (
@@ -255,52 +256,19 @@ const CustomiseDAR = ({
                     )}
                 </div>
             </div>
-            <Modal
-                show={showGuidanceModal}
-                onHide={() => {
-                    setShowGuidanceModal(false);
-                }}>
-                <Modal.Header>
-                    <Modal.Title>
-                        <h1 className='black-20-semibold mb-3'>Applicant guidance for requesting access to data</h1>
-
-                        <div className='soft-black-14'>
-                            This guidance will be displayed to all data applicants. To ensure that applicants are prepared for the process,
-                            include all necessary information such as; what to do before they submit an application, when data can be
-                            released, the cost of accessing data, and any other resources that data applicants would find useful.
-                        </div>
-                    </Modal.Title>
-                </Modal.Header>
-                <Modal.Footer>
-                    <div>
-                        <a style={{ cursor: 'pointer' }} href={'/account?tab=customisedataaccessrequests'}>
-                            <Button variant='medium' className='cancelButton dark-14 mr-2'>
-                                Cancel
-                            </Button>
-                        </a>
-                    </div>
-                    <div className='d-flex justify-content-end flex-grow'>
-                        <Button
-                            data-test-id='add-collection-publish'
-                            variant='primary'
-                            className='publishButton white-14-semibold mr-2'
-                            type='submit'
-                            onClick={() => {
-                                this.setState({ showConfirmPublishModal: true });
-                            }}>
-                            Publish
-                        </Button>
-                    </div>
-                </Modal.Footer>
-            </Modal>
-        </Fragment>
-    ) : (
-        <EditHowToRequestAccessPage
-            userState={userState}
-            publisherDetails={publisherDetails}
-            showConfirmPublishModal={showConfirmPublishModal}
-            setShowConfirmPublishModal={setShowConfirmPublishModal}
-        />
+            {showGuidanceModal && (
+                <CustomiseDAREditGuidance
+                    userState={userState}
+                    publisherDetails={publisherDetails}
+                    showConfirmPublishModal={showConfirmPublishModal}
+                    setShowConfirmPublishModal={setShowConfirmPublishModal}
+                    show={showGuidanceModal}
+                    onHide={() => {
+                        setShowGuidanceModal(false);
+                    }}
+                />
+            )}
+        </>
     );
 };
 
