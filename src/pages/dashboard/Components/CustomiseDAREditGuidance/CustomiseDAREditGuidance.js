@@ -9,6 +9,8 @@ import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import axios from 'axios';
 import { has } from 'lodash';
 import { Button, Modal } from 'react-bootstrap';
+import './CustomiseDAREditGuidance.scss';
+import { useTranslation } from 'react-i18next';
 const baseURL = require('../../../commonComponents/BaseURL').getURL();
 
 export const EditHowToRequestAccessPage = ({ show, onHide, publisherDetails }) => {
@@ -16,6 +18,9 @@ export const EditHowToRequestAccessPage = ({ show, onHide, publisherDetails }) =
     const [contentState] = useState(convertFromRaw(markdownToDraft(body)));
     const [editorState, setEditorState] = useState(EditorState.createWithContent(contentState));
     const [showConfirm, setShowConfirm] = useState(false);
+    const [showCancel, setShowCancel] = useState(false);
+
+    const { t } = useTranslation();
 
     const publishersRequest = publishersService.usePatchModalContent(null, {
         onError: ({ title, message }) => {
@@ -23,7 +28,7 @@ export const EditHowToRequestAccessPage = ({ show, onHide, publisherDetails }) =
         },
     });
 
-    const handleConfirm = React.useCallback(async () => {
+    const handleConfirmOk = React.useCallback(async () => {
         const content = draftToMarkdown(convertToRaw(editorState.getCurrentContent()));
 
         const { _id } = publisherDetails;
@@ -42,59 +47,98 @@ export const EditHowToRequestAccessPage = ({ show, onHide, publisherDetails }) =
         setShowConfirm(true);
     }, []);
 
+    const handleConfirmCancel = React.useCallback(() => {
+        setShowConfirm(false);
+    }, []);
+
+    const handleCancel = React.useCallback(() => {
+        setShowCancel(true);
+    }, []);
+
+    const handleCancelCancel = React.useCallback(() => {
+        setShowCancel(false);
+    }, []);
+
+    const handleCancelOk = React.useCallback(() => {
+        onHide();
+    }, []);
+
+    let modalContent = {
+        header: `Edit 'Applicant guidance for requesting access to data'`,
+        body: `The guidance below will be displayed to all data applicants at the beginning of their access journey. To ensure that applicants are prepared for the process, include all necessary information such as; what to do before they submit an application, the cost of accessing data, and any other resources that data applicants would find useful.`,
+        cancel: (
+            <Button variant='medium' className='cancelButton dark-14 mr-2' onClick={handleCancel}>
+                {t('buttons.cancel')}
+            </Button>
+        ),
+        confirm: (
+            <Button
+                data-test-id='add-collection-publish'
+                variant='primary'
+                className='publishButton white-14-semibold'
+                type='submit'
+                onClick={handlePublish}>
+                {t('buttons.publish')}
+            </Button>
+        ),
+    };
+
+    if (showConfirm) {
+        modalContent = {
+            header: `Publish 'Applicant guidance for requesting access to data'`,
+            body: `Are you sure you want to publish your updates to the 'Applicant guidance for requesting access to data'?`,
+            cancel: (
+                <Button variant='medium' className='cancelButton dark-14 mr-2' onClick={handleConfirmCancel}>
+                    {t('buttons.neverMind')}
+                </Button>
+            ),
+            confirm: (
+                <Button
+                    data-test-id='add-collection-publish'
+                    variant='primary'
+                    className='publishButton white-14-semibold'
+                    type='submit'
+                    onClick={handleConfirmOk}>
+                    {t('buttons.confirm')}
+                </Button>
+            ),
+        };
+    } else if (showCancel) {
+        modalContent = {
+            header: `Cancel 'Applicant guidance for requesting access to data'`,
+            body: `Are you sure you want to leave this page? Any changes you have made have not been published and will not be saved.`,
+            cancel: (
+                <Button variant='medium' className='cancelButton dark-14 mr-2' onClick={handleCancelCancel}>
+                    {t('buttons.neverMind')}
+                </Button>
+            ),
+            confirm: (
+                <Button
+                    data-test-id='add-collection-publish'
+                    variant='primary'
+                    className='publishButton white-14-semibold'
+                    type='submit'
+                    onClick={handleCancelOk}>
+                    {t('buttons.cancel')}
+                </Button>
+            ),
+        };
+    }
+
     return (
-        <Modal show={show} onHide={onHide} className={showConfirm ? 'modal-md' : 'modal-xl'}>
+        <Modal show={show} onHide={onHide} className={showConfirm || showCancel ? 'modal-md' : 'modal-xl'}>
             <Modal.Header>
-                <h1 className='black-20-semibold'>
-                    {!showConfirm
-                        ? `Edit 'Applicant guidance for requesting access to data'`
-                        : `Publish ‘Applicant guidance for requesting access to data'`}
-                </h1>
+                <h1 className='black-20-semibold'>{modalContent.header}</h1>
             </Modal.Header>
             <Modal.Body>
-                {!showConfirm ? (
-                    <>
-                        <p className='soft-black-14'>
-                            The guidance below will be displayed to all data applicants at the beginning of their access journey. To ensure
-                            that applicants are prepared for the process, include all necessary information such as; what to do before they
-                            submit an application, the cost of accessing data, and any other resources that data applicants would find
-                            useful.
-                        </p>
-                        <WysiwygEditor data-testid='wysiwyg-editor' editorState={editorState} onEditorStateChange={setEditorState} />
-                    </>
-                ) : (
-                    <p className='soft-black-14'>
-                        Are you sure you want to publish your updates to the 'Applicant guidance for requesting access to data'?`
-                    </p>
+                <p className='soft-black-14'>{modalContent.body}</p>
+                {!showConfirm && !showCancel && (
+                    <WysiwygEditor data-testid='wysiwyg-editor' editorState={editorState} onEditorStateChange={setEditorState} />
                 )}
             </Modal.Body>
             <Modal.Footer>
-                <div>
-                    <Button variant='medium' className='cancelButton dark-14 mr-2' onClick={onHide}>
-                        Cancel
-                    </Button>
-                </div>
-                <div className='d-flex justify-content-end flex-grow'>
-                    {!showConfirm ? (
-                        <Button
-                            data-test-id='add-collection-publish'
-                            variant='primary'
-                            className='publishButton white-14-semibold'
-                            type='submit'
-                            onClick={handlePublish}>
-                            Publish
-                        </Button>
-                    ) : (
-                        <Button
-                            data-test-id='add-collection-publish'
-                            variant='primary'
-                            className='publishButton white-14-semibold'
-                            type='submit'
-                            onClick={handleConfirm}>
-                            Confirm
-                        </Button>
-                    )}
-                </div>
+                <div>{modalContent.cancel}</div>
+                <div className={!showCancel && !showConfirm && 'd-flex justify-content-end flex-grow'}>{modalContent.confirm}</div>
             </Modal.Footer>
         </Modal>
     );

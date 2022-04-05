@@ -1,14 +1,12 @@
 import axios from 'axios';
-import React, { Fragment, useState, useEffect } from 'react';
-import { isEmpty, has } from 'lodash';
-import { Row, Col, Alert, Tabs, Tab, Button, Modal } from 'react-bootstrap';
+import { has, isEmpty } from 'lodash';
 import moment from 'moment';
-import SVGIcon from '../../../images/SVGIcon';
-import EditHowToRequestAccessPage from '../../commonComponents/EditHowToRequestAccessPage/EditHowToRequestAccessPage';
-import ActionBar from '../../commonComponents/actionbar/ActionBar';
-import './CustomiseDAR.scss';
+import React, { Fragment, useEffect, useState } from 'react';
+import { Alert, Col, Row, Tab, Tabs } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
+import SVGIcon from '../../../images/SVGIcon';
 import CustomiseDAREditGuidance from '../Components/CustomiseDAREditGuidance';
+import './CustomiseDAR.scss';
 const baseURL = require('../../commonComponents/BaseURL').getURL();
 
 const CustomiseDAR = ({

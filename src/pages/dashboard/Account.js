@@ -769,7 +769,7 @@ class Account extends Component {
                                                                 variant='link'
                                                                 className='verticalNavBar gray700-13 navLinkButton'
                                                                 eventKey='0'>
-                                                                <SVGIcon name='dataaccessicon' fill={'#b3b8bd'} className='accountSvgs' />
+                                                                <Icon svg={<UsersIcon />} fill='grey500' size='2xl' />
                                                                 <span className='navLinkItem'>Data access requests</span>
                                                             </Accordion.Toggle>
                                                             <Accordion.Collapse eventKey='0'>
@@ -808,7 +808,7 @@ class Account extends Component {
                                                                 variant='link'
                                                                 className='verticalNavBar gray700-13 navLinkButton'
                                                                 eventKey='1'>
-                                                                <Icon svg={<UsersIcon />} fill='grey500' size='2xl' />
+                                                                <SVGIcon name='dataaccessicon' fill={'#b3b8bd'} className='accountSvgs' />
                                                                 <span className='navLinkItem'>Edit DAR Form</span>
                                                             </Accordion.Toggle>
                                                             <Accordion.Collapse eventKey='1'>

@@ -2,7 +2,7 @@ import { apiURL } from '../../configs/url.config';
 import { patchRequest, useMutationWithTranslations } from '../../utils/requests';
 
 const patchModalContent = (_id, data, options) => {
-    return patchRequest(`${apiURL}/publishers/dataRequestModaldContent/${_id}`, data, options);
+    return patchRequest(`${apiURL}/publishers/dataRequestModalContent/${_id}`, data, options);
 };
 
 const usePatchModalContent = (requestOptions, mutateOptions) => {

@@ -262,6 +262,12 @@
         "presubmissionGuidance": "Presubmission guidance",
         "applicationForm": "Application form"
     },
+    "buttons": {
+        "neverMind": "No, never mind",
+        "cancel": "Cancel",
+        "confirm": "Confirm",
+        "publish": "Publish"
+    },
     "sortby": {
         "selected": {
             "popularity": "Sort by number of views",
