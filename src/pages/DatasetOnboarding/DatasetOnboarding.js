@@ -190,7 +190,6 @@ class DatasetOnboarding extends Component {
 					listOfDatasets,
 					jsonSchema: { ...formSchema },
 					applicationStatus: data.dataset.activeflag,
-					dataSource: data.dataset.source,
 				});
 			} catch (error) {
 				this.setState({ isLoading: false });
@@ -234,7 +233,6 @@ class DatasetOnboarding extends Component {
 			answeredAmendments = 0,
 			inReviewMode = false,
 			reviewSections = [],
-			dataSource,
 		} = context;
 
 		let { name, datasetVersion, activeflag } = dataset;
@@ -275,6 +273,10 @@ class DatasetOnboarding extends Component {
 
 		let initialPanel = jsonSchema.formPanels[0].panelId;
 
+		if (this.state.isFederated) {
+			readOnly = true
+		}
+
 		// 9. Set state
 		this.setState({
 			jsonSchema: { ...jsonSchema, ...classSchema },
@@ -293,7 +295,7 @@ class DatasetOnboarding extends Component {
 			datasetVersion,
 			activeflag,
 			publisher,
-			readOnly: this.state.isFederated ? true : readOnly,
+			readOnly,
 			answeredAmendments,
 			unansweredAmendments,
 			userType,
