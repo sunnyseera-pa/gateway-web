@@ -3,9 +3,9 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Image from 'react-bootstrap/Image';
 import PropTypes from 'prop-types';
+import LoaderGIF from '../../images/Loader.gif';
 
-const Loading = props => {
-    const { text, subText, timeout } = { ...props };
+const Loading = ({ text, subText, timeout, ...outerProps }) => {
     const [showSubText, setShowSubText] = useState(false);
     useEffect(() => {
         setTimeout(() => {
@@ -13,11 +13,11 @@ const Loading = props => {
         }, timeout);
     });
     return (
-        <Row className='mt-2' {...props}>
+        <Row className='mt-2' {...outerProps}>
             <Col>
                 <div className='rectangle'>
                     <div className='gray800-14' style={{ textAlign: 'center' }}>
-                        <Image src={require('../../images/Loader.gif')} />
+                        <Image src={LoaderGIF} />
                     </div>
                     <div className='gray800-14' style={{ textAlign: 'center' }}>
                         <p>{text}</p>

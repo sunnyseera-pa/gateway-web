@@ -16,8 +16,6 @@ import Table from './DataUseTable';
 import DataUseApproveModal from './modals/DataUseApproveModal';
 import DataUseRejectModal from './modals/DataUseRejectModal';
 
-const baseURL = require('../commonComponents/BaseURL').getURL();
-
 const DataUsePage = React.forwardRef(({ onClickDataUseUpload, team }, ref) => {
     React.useImperativeHandle(ref, () => ({
         showAlert,
@@ -27,6 +25,7 @@ const DataUsePage = React.forwardRef(({ onClickDataUseUpload, team }, ref) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [rowsPerPage] = useState(40);
     const [alert, setAlert] = useState('');
+    const [activeTab, setActiveTab] = useState('');
     const [dataUseId, setDataUseId] = useState(-1);
     const [showApproveModal, setShowApproveModal] = useState(false);
     const [showRejectModal, setShowRejectModal] = useState(false);
@@ -106,8 +105,9 @@ const DataUsePage = React.forwardRef(({ onClickDataUseUpload, team }, ref) => {
         setShowUnarchiveModal(!showUnarchiveModal);
     };
 
-    const showAlert = message => {
+    const showAlert = (message, tab) => {
         setAlert(message);
+        setActiveTab(tab);
         setTimeout(() => {
             setAlert('');
         }, 5000);
@@ -189,8 +189,7 @@ const DataUsePage = React.forwardRef(({ onClickDataUseUpload, team }, ref) => {
                                     handleAnalytics('Clicked upload data use', 'Dashboard button');
 
                                     onClickDataUseUpload();
-                                }}
-                            >
+                                }}>
                                 + Upload
                             </Button>
                         </Col>
@@ -200,9 +199,10 @@ const DataUsePage = React.forwardRef(({ onClickDataUseUpload, team }, ref) => {
                 <Row className=''>
                     <Col sm={12} lg={12}>
                         <Tabs
-                            defaultActiveKey={team === 'user' || (team !== 'user' && team !== 'admin') ? 'Active' : 'Pending approval'}
-                            className='gray700-13 data-use-tabs'
-                        >
+                            defaultActiveKey={
+                                activeTab || (team === 'user' || (team !== 'user' && team !== 'admin') ? 'Active' : 'Pending approval')
+                            }
+                            className='gray700-13 data-use-tabs'>
                             {tabs.map(tabName => (
                                 <Tab
                                     eventKey={tabName}
@@ -218,8 +218,7 @@ const DataUsePage = React.forwardRef(({ onClickDataUseUpload, team }, ref) => {
                                             tabName === 'Rejected' &&
                                             `${tabName} (${rejected.length})`) ||
                                         (team !== 'user' && team !== 'admin' && tabName === 'Archived' && `${tabName} (${archived.length})`)
-                                    }
-                                >
+                                    }>
                                     {(team === 'user' || (team !== 'user' && team !== 'admin')) && tabName === 'Active' && (
                                         <Table data={currentActive} active team={team} onClickArchive={onClickArchive} />
                                     )}

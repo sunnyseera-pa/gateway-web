@@ -306,5 +306,25 @@
 	"searchResultsInfo": {
 		"withTerm": "Showing {{count}} results for '{{searchTerm}}'",
 		"withOutTerm": "Showing {{count}} results"
-	}
+	},
+    "datause": {
+        "upload": {
+            "successfulCheck": "Your file has been successfully uploaded.",
+            "SuccessfulUpload": "Your data uses have been successfully uploaded and are waiting for approval.",
+            "emptyError": "File Contains no entries",
+            "downloadTemplate": "Download template",
+            "downloadTemplateSubText": "Please use the template provided to add new approved data uses . You can also download your current data useregister from the Gateway, edit offline and uploading the edited file here:",
+            "downloadTemplateButtonTxt": "Download the data use template",
+            "selectFile": "Select file...",
+            "fileType": "Excel or xls. Max 10MB per file.",
+            "fileSizeLimit": "File exceeds 10MB limit",
+            "errorLoading": "There was an error loading the file",
+            "errors": "There are errors in the data you uploaded. Please correct these and try again. Errors are listed below.",
+            "warning": "Warning! Uploading a new file will delete any data uses that have not yet been submitted for admin checks by the gateway team.",
+            "loadingtext": "Uploading...",
+            "requiredError": "Error in row {{row}} Mandatory field “{{column}}” is empty",
+            "duplicateError": "Error in row {{row}} : Suspected data use duplicate",
+            "duplicateRowError": "Error in row {{row}}: Suspected data use duplicate of row {{duplicateRow}}"
+        }
+    }
 }
