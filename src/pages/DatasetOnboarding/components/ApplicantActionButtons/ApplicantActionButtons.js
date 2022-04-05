@@ -17,6 +17,7 @@ const ApplicantActionButtons = ({
     showDeleteDraft,
     onShowDeleteDraftModal,
     onShowDuplicateModal,
+    isFederated,
 }) => {
     const options = [
         {
@@ -58,10 +59,19 @@ const ApplicantActionButtons = ({
                 ''
             )}
 
-            <ActionBarMenu label='Manage dataset' options={availableOptions} disabled={!allowedNavigation} buttonClass='button-tertiary' />
+            {!isFederated ? (
+                <ActionBarMenu
+                    label='Manage dataset'
+                    options={availableOptions}
+                    disabled={!allowedNavigation}
+                    buttonClass='button-tertiary'
+                />
+            ) : (
+                ''
+            )}
 
             {/*  {showUnArchive ? <button className={`button-tertiary ${allowedNavigation ? '' : 'disabled'}`} onClick={e => onShowUnArchiveModal()}>Un-archive</button> : ''} */}
-            {showCreateNewVersion ? (
+            {showCreateNewVersion && !isFederated ? (
                 <button className={`button-tertiary ${allowedNavigation ? '' : 'disabled'}`} onClick={e => onShowCreateNewVersionModal()}>
                     Create a new version
                 </button>
