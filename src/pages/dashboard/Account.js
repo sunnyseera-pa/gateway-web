@@ -1104,29 +1104,6 @@ class Account extends Component {
                         </ActionBar>
                     )}
 
-                    {tabId === 'customisedataaccessrequests' && showHowToRequestAccessEditor && (
-                        <ActionBar userState={userState}>
-                            <div className='floatRight'>
-                                <a style={{ cursor: 'pointer' }} href={'/account?tab=customisedataaccessrequests'}>
-                                    <Button variant='medium' className='cancelButton dark-14 mr-2'>
-                                        Cancel
-                                    </Button>
-                                </a>
-
-                                <Button
-                                    data-test-id='add-collection-publish'
-                                    variant='primary'
-                                    className='publishButton white-14-semibold mr-2'
-                                    type='submit'
-                                    onClick={() => {
-                                        this.setState({ showConfirmPublishModal: true });
-                                    }}>
-                                    Publish
-                                </Button>
-                            </div>
-                        </ActionBar>
-                    )}
-
                     {showDataUseUploadPage && (
                         <ActionBar userState={userState}>
                             <div className='action-bar'>

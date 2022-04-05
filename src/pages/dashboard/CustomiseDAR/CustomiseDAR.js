@@ -1,10 +1,11 @@
 import axios from 'axios';
 import React, { Fragment, useState, useEffect } from 'react';
 import { isEmpty, has } from 'lodash';
-import { Row, Col, Alert, Tabs, Tab } from 'react-bootstrap';
+import { Row, Col, Alert, Tabs, Tab, Button, Modal } from 'react-bootstrap';
 import moment from 'moment';
 import SVGIcon from '../../../images/SVGIcon';
 import EditHowToRequestAccessPage from '../../commonComponents/EditHowToRequestAccessPage/EditHowToRequestAccessPage';
+import ActionBar from '../../commonComponents/actionbar/ActionBar';
 import './CustomiseDAR.scss';
 import { useTranslation } from 'react-i18next';
 const baseURL = require('../../commonComponents/BaseURL').getURL();
@@ -16,7 +17,6 @@ const CustomiseDAR = ({
     showConfirmPublishModal,
     setShowConfirmPublishModal,
     showHowToRequestAccessEditor,
-    setShowHowToRequestAccessEditor,
     activeTab,
     onSelectTab,
 }) => {
@@ -25,6 +25,7 @@ const CustomiseDAR = ({
     const [yourAppFormStatus, setYourAppFormStatus] = useState();
     const [howToRequestAccessPublisher, setHowToRequestAccessPublisher] = useState();
     const [yourApplicationFormPublisher, setYourApplicationFormPublisher] = useState();
+    const [showGuidanceModal, setShowGuidanceModal] = useState();
 
     const { t } = useTranslation();
 
@@ -95,6 +96,16 @@ const CustomiseDAR = ({
         window.location.href = `/data-access-request/customiseForm/${publisherId}`;
     };
 
+    const handleShowGuidanceModal = () => {
+        setShowGuidanceModal(true);
+    };
+
+    const handleSelectTab = () => {
+        setShowGuidanceModal(false);
+
+        onSelectTab();
+    };
+
     return !showHowToRequestAccessEditor ? (
         <Fragment>
             {hasPublishedDARContent &&
@@ -142,7 +153,7 @@ const CustomiseDAR = ({
                         </div>
                     </div>
                     <div className='tabsBackground mb-3'>
-                        <Tabs className='dataAccessTabs gray700-13' activeKey={activeTab} onSelect={onSelectTab}>
+                        <Tabs className='dataAccessTabs gray700-13' activeKey={activeTab} onSelect={handleSelectTab}>
                             <Tab eventKey='customisedataaccessrequests_guidance' title={t('tabs.presubmissionGuidance')}>
                                 {' '}
                             </Tab>
@@ -153,7 +164,7 @@ const CustomiseDAR = ({
                     </div>
 
                     {activeTab === 'customisedataaccessrequests_guidance' && (
-                        <div className='main-card cursorPointer' onClick={() => setShowHowToRequestAccessEditor(true)}>
+                        <div className='main-card cursorPointer' onClick={handleShowGuidanceModal}>
                             <div className='super-header'>
                                 <h1 className='black-20-semibold mb-3'>
                                     <SVGIcon name='info' fill={'#475da7'} className='accountSvgs mr-2' />
@@ -244,6 +255,44 @@ const CustomiseDAR = ({
                     )}
                 </div>
             </div>
+            <Modal
+                show={showGuidanceModal}
+                onHide={() => {
+                    setShowGuidanceModal(false);
+                }}>
+                <Modal.Header>
+                    <Modal.Title>
+                        <h1 className='black-20-semibold mb-3'>Applicant guidance for requesting access to data</h1>
+
+                        <div className='soft-black-14'>
+                            This guidance will be displayed to all data applicants. To ensure that applicants are prepared for the process,
+                            include all necessary information such as; what to do before they submit an application, when data can be
+                            released, the cost of accessing data, and any other resources that data applicants would find useful.
+                        </div>
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Footer>
+                    <div>
+                        <a style={{ cursor: 'pointer' }} href={'/account?tab=customisedataaccessrequests'}>
+                            <Button variant='medium' className='cancelButton dark-14 mr-2'>
+                                Cancel
+                            </Button>
+                        </a>
+                    </div>
+                    <div className='d-flex justify-content-end flex-grow'>
+                        <Button
+                            data-test-id='add-collection-publish'
+                            variant='primary'
+                            className='publishButton white-14-semibold mr-2'
+                            type='submit'
+                            onClick={() => {
+                                this.setState({ showConfirmPublishModal: true });
+                            }}>
+                            Publish
+                        </Button>
+                    </div>
+                </Modal.Footer>
+            </Modal>
         </Fragment>
     ) : (
         <EditHowToRequestAccessPage
