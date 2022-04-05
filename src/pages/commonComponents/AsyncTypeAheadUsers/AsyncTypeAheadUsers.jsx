@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/react';
 import React, { useState, useEffect } from 'react';
-import { find, remove } from 'lodash';
+import { find, remove, isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
 import { Menu, MenuItem } from 'react-bootstrap-typeahead';
 import Typeahead from '../../../components/Typeahead/Typeahead';
@@ -64,8 +64,11 @@ function AsyncTypeAheadUsers(props) {
     const handleOnFocus = async () => {
         const response = await serviceUsers.getUsers();
         const { data } = response.data;
+
         const currentUserInfo = remove(data, { id: props.currentUserId });
-        data.unshift(currentUserInfo[0]);
+        if (!isEmpty(currentUserInfo)) {
+            data.unshift(currentUserInfo[0]);
+        }
         setOptions(data);
         setShowRecentlyAdded(true);
     };
@@ -89,7 +92,7 @@ function AsyncTypeAheadUsers(props) {
             multiple={props.multiple}
             renderMenu={(results, menuProps) => (
                 <Menu {...menuProps}>
-                    {showRecentlyAdded && (
+                    {showRecentlyAdded && !isEmpty(results) && (
                         <Menu.Header>
                             <span className='header'>Recently added:</span>
                         </Menu.Header>
