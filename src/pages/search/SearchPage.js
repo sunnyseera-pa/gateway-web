@@ -35,6 +35,8 @@ import PeopleSearchSort from './components/PeopleSearchResult/PeopleSearchSort';
 import SearchFilters from './components/SearchFilters';
 import SearchUtilityBanner from './components/SearchUtilityBanner';
 import ToolsSearchSort from './components/ToolsSearchResults/ToolsSearchSort';
+import searchService from '../../services/search/search';
+import { getParams } from '../../utils/GeneralHelper.util';
 import './Search.scss';
 
 let baseURL = require('../commonComponents/BaseURL').getURL();
@@ -452,7 +454,9 @@ class SearchPage extends React.Component {
         queryParams.paperIndex ? this.setState({ paperIndex: queryParams.paperIndex }) : this.setState({ paperIndex: 0 });
         queryParams.personIndex ? this.setState({ personIndex: queryParams.personIndex }) : this.setState({ personIndex: 0 });
         queryParams.courseIndex ? this.setState({ courseIndex: queryParams.courseIndex }) : this.setState({ courseIndex: 0 });
-        queryParams.collectionIndex ? this.setState({ collectionIndex: queryParams.collectionIndex }) : this.setState({ collectionIndex: 0 });
+        queryParams.collectionIndex
+            ? this.setState({ collectionIndex: queryParams.collectionIndex })
+            : this.setState({ collectionIndex: 0 });
         // Sort for each tab
         queryParams.datasetSort ? this.setState({ datasetSort: queryParams.datasetSort }) : this.setState({ datasetSort: '' });
         queryParams.toolSort ? this.setState({ toolSort: queryParams.toolSort }) : this.setState({ toolSort: '' });
@@ -639,8 +643,10 @@ class SearchPage extends React.Component {
             // remove once full migration to v2 filters for all other entities 'Tools, Projects, Courses and Papers'
             const entityType = typeMapper[`${this.state.key}`];
 
-            axios
-                .get(`${baseURL}/api/v1/search/filter?search=${encodeURIComponent(textSearch ? textSearch : this.state.search)}${searchURL}`)
+            searchService
+                .getSearchFilters({
+                    params: getParams(`search=${encodeURIComponent(textSearch ? textSearch : this.state.search)}${searchURL}`),
+                })
                 .then(res => {
                     let filters = this.getFilterState(res);
                     // test the type and set relevant state
@@ -678,8 +684,10 @@ class SearchPage extends React.Component {
                 });
         }
         // search call brings back search results and now filters highlighting for v2
-        axios
-            .get(`${baseURL}/api/v1/search?search=${encodeURIComponent(textSearch ? textSearch : this.state.search)}${searchURL}`)
+        searchService
+            .getSearch({
+                params: getParams(`search=${encodeURIComponent(textSearch ? textSearch : this.state.search)}${searchURL}`),
+            })
             .then(res => {
                 // get the correct entity type from our mapper via the selected tab ie..'Dataset, Tools'
                 const entityType = typeMapper[`${this.state.key}`];
@@ -849,7 +857,7 @@ class SearchPage extends React.Component {
         try {
             const entityType = typeMapper[key];
             const filtersV2Entity = `filtersV2${key}`;
-            const response = await axios.get(`${baseURL}/api/v2/filters/${entityType}`);
+            const response = await searchService.getFilters(entityType);
             const {
                 data: { data },
             } = response;
@@ -1579,8 +1587,12 @@ class SearchPage extends React.Component {
                 'Common Law Duty Of Confidentiality': dataUse.dutyOfConfidentiality,
                 'National Data Opt-Out Applied': dataUse.nationalDataOptOut,
                 'Request Frequency': dataUse.requestFrequency,
-                'Dataset Linkage Description': dataUse.datasetLinkageDescription ? dataUse.datasetLinkageDescription.replace(/"/g, '""') : '',
-                'Confidential Data Description': dataUse.confidentialDataDescription ? dataUse.confidentialDataDescription.replace(/"/g, '""') : '',
+                'Dataset Linkage Description': dataUse.datasetLinkageDescription
+                    ? dataUse.datasetLinkageDescription.replace(/"/g, '""')
+                    : '',
+                'Confidential Data Description': dataUse.confidentialDataDescription
+                    ? dataUse.confidentialDataDescription.replace(/"/g, '""')
+                    : '',
                 'Access Date': moment(dataUse.accessDate).format('DD/MM/YY'),
                 'Access Type': dataUse.accessType,
                 'Privacy Enhancements': dataUse.privacyEnhancements ? dataUse.privacyEnhancements.replace(/"/g, '""') : '',
@@ -1839,7 +1851,10 @@ class SearchPage extends React.Component {
                                 <Col lg={8} className='saved-buttons'>
                                     {this.state.key === 'Datauses' && (
                                         <>
-                                            <Button variant='light' className='saved-preference button-tertiary' onClick={() => this.onClickDownloadResults()}>
+                                            <Button
+                                                variant='light'
+                                                className='saved-preference button-tertiary'
+                                                onClick={() => this.onClickDownloadResults()}>
                                                 {' '}
                                                 Download Results
                                             </Button>
@@ -1858,11 +1873,17 @@ class SearchPage extends React.Component {
                                             <SVGIcon width='15px' height='15px' name='tick' fill={'#fff'} /> Saved
                                         </Button>
                                     ) : this.state.userState[0].loggedIn === false ? (
-                                        <Button variant='outline-success' className='saved button-teal' onClick={() => this.showLoginModal()}>
+                                        <Button
+                                            variant='outline-success'
+                                            className='saved button-teal'
+                                            onClick={() => this.showLoginModal()}>
                                             Save
                                         </Button>
                                     ) : (
-                                        <Button variant='outline-success' className='saved button-teal' onClick={() => this.setState({ showSavedModal: true })}>
+                                        <Button
+                                            variant='outline-success'
+                                            className='saved button-teal'
+                                            onClick={() => this.setState({ showSavedModal: true })}>
                                             Save
                                         </Button>
                                     )}
