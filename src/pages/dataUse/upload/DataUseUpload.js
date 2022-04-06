@@ -301,7 +301,7 @@ const DataUseUpload = React.forwardRef(({ onSubmit, team, dataUsePage, userState
             ) : (
                 <Col>
                     {!isEmpty(alert) && (
-                        <Alert variant='success' autoclose onClose={handleAlertAutoClose}>
+                        <Alert variant='success' dismissable>
                             {alert}
                         </Alert>
                     )}
