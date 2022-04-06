@@ -1,8 +1,9 @@
 import { isEmpty } from 'lodash';
 import React, { Fragment, useEffect, useState } from 'react';
-import { Alert, Button, Col, Row, Tab, Tabs } from 'react-bootstrap';
+import { Button, Col, Row, Tab, Tabs } from 'react-bootstrap';
 import { NotificationManager } from 'react-notifications';
 import { LayoutContent } from '../../components/Layout';
+import Alert from '../../components/Alert';
 import SVGIcon from '../../images/SVGIcon';
 import dataUseRegistersService from '../../services/data-use-registers';
 import googleAnalytics from '../../tracking';
@@ -108,9 +109,6 @@ const DataUsePage = React.forwardRef(({ onClickDataUseUpload, team }, ref) => {
     const showAlert = (message, tab) => {
         setAlert(message);
         setActiveTab(tab);
-        setTimeout(() => {
-            setAlert('');
-        }, 5000);
     };
 
     const updataDataUseStatus = (oldStatus, newStatus, rejectionReason = '') => {
@@ -163,10 +161,10 @@ const DataUsePage = React.forwardRef(({ onClickDataUseUpload, team }, ref) => {
         <>
             <LayoutContent>
                 <Row>
-                    <Col className='pl-0 pr-0'>
+                    <Col className='mb-1'>
                         {!isEmpty(alert) && (
-                            <Alert variant='success' className='main-alert'>
-                                <SVGIcon name='check' width={24} height={24} fill='#2C8267' /> {alert}
+                            <Alert variant='success' dismissable>
+                                {alert}
                             </Alert>
                         )}
                     </Col>
