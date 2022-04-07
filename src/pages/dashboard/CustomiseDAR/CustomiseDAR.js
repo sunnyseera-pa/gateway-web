@@ -8,6 +8,7 @@ import { NotificationManager } from 'react-notifications';
 import SVGIcon from '../../../images/SVGIcon';
 import CustomiseDAREditGuidance from '../Components/CustomiseDAREditGuidance';
 import publishersService from '../../../services/publishers';
+import personService from '../../../services/person';
 import './CustomiseDAR.scss';
 
 const baseURL = require('../../commonComponents/BaseURL').getURL();
@@ -35,6 +36,12 @@ const CustomiseDAR = ({
         },
     });
 
+    const personGetRequest = personService.useGetPerson(null, {
+        onError: ({ title, message }) => {
+            NotificationManager.error(message, title, 10000);
+        },
+    });
+
     const { t } = useTranslation();
 
     const sectionStatuses = {
@@ -51,21 +58,25 @@ const CustomiseDAR = ({
 
     const getHowToRequestAccessPublisher = async publisherInfo => {
         if (has(publisherInfo, 'dataRequestModalContentUpdatedBy')) {
-            const response = await axios.get(`${baseURL}/api/v1/person/${publisherInfo.dataRequestModalContentUpdatedBy}`);
-            const {
-                data: { person },
-            } = response;
-            setHowToRequestAccessPublisher(`${person.firstname} ${person.lastname}`);
+            personGetRequest.mutateAsync(publisherInfo.dataRequestModalContentUpdatedBy).then(res => {
+                const {
+                    data: { person },
+                } = res;
+
+                setHowToRequestAccessPublisher(`${person.firstname} ${person.lastname}`);
+            });
         }
     };
 
     const getYourApplicationFormPublisher = async publisherInfo => {
         if (has(publisherInfo, 'applicationFormUpdatedBy')) {
-            const response = await axios.get(`${baseURL}/api/v1/person/${publisherInfo.applicationFormUpdatedBy}`);
-            const {
-                data: { person },
-            } = response;
-            setYourApplicationFormPublisher(`${person.firstname} ${person.lastname}`);
+            personGetRequest.mutateAsync(publisherInfo.applicationFormUpdatedBy).then(res => {
+                const {
+                    data: { person },
+                } = res;
+
+                setYourApplicationFormPublisher(`${person.firstname} ${person.lastname}`);
+            });
         }
     };
 
@@ -114,11 +125,13 @@ const CustomiseDAR = ({
         setShowGuidanceModal(true);
     };
 
-    const handleSelectTab = () => {
+    const handleSelectTab = tabId => {
         setShowGuidanceModal(false);
 
-        onSelectTab();
+        onSelectTab(tabId);
     };
+
+    console.log('Tab', activeTab);
 
     return (
         <>
