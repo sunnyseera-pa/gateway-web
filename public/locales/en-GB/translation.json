@@ -100,7 +100,7 @@
                 }
             },
             "publishers": {
-                "getPublisjher": {
+                "getPublisher": {
                     "404": {
                         "message": "There has been a problem getting the publisher"
                     },

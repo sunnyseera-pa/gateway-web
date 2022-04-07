@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { Col, Row, Tab, Tabs } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { NotificationManager } from 'react-notifications';
+import queryString from 'query-string';
 import SVGIcon from '../../../images/SVGIcon';
 import Alert from '../../../components/Alert';
 import personService from '../../../services/person';
@@ -13,22 +14,16 @@ import './CustomiseDAR.scss';
 
 const baseURL = require('../../commonComponents/BaseURL').getURL();
 
-const CustomiseDAR = ({
-    userState,
-    hasPublishedDARContent,
-    publisherId,
-    showConfirmPublishModal,
-    setShowConfirmPublishModal,
-    showHowToRequestAccessEditor,
-    activeTab,
-    onSelectTab,
-}) => {
+const CustomiseDAR = ({ userState, publisherId, showConfirmPublishModal, setShowConfirmPublishModal, activeTab, onSelectTab }) => {
     const [publisherDetails, setPublisherDetails] = useState({});
     const [howToRequestAccessStatus, setHowToRequestAccessStatus] = useState();
     const [yourAppFormStatus, setYourAppFormStatus] = useState();
     const [howToRequestAccessPublisher, setHowToRequestAccessPublisher] = useState();
     const [yourApplicationFormPublisher, setYourApplicationFormPublisher] = useState();
     const [showGuidanceModal, setShowGuidanceModal] = useState();
+    const [closeGuidanceMessage, setCloseGuidanceMessage] = useState('');
+
+    const { publishedDARContent } = queryString.parse(window.location.search);
 
     const publishersRequest = publishersService.useGetPublisher(null, {
         onError: ({ title, message }) => {
@@ -131,31 +126,29 @@ const CustomiseDAR = ({
         onSelectTab(tabId);
     };
 
+    const handleCloseGuidanceMessage = () => {
+        setCloseGuidanceMessage('');
+    };
+
     return (
         <>
-            {hasPublishedDARContent &&
-            howToRequestAccessStatus === sectionStatuses.ACTIVE &&
-            yourAppFormStatus === sectionStatuses.ACTIVE ? (
+            {closeGuidanceMessage && (
                 <Row className=''>
                     <Col sm={1} lg={1} />
                     <Col sm={10} lg={10}>
-                        <Alert variant='success' className='customise-dar-pending-banner mb-3'>
-                            <SVGIcon name='check' width={28} height={28} fill='#2c8267' />
-                            You have successfully updated and published the {publisherDetails.name} application form and ‘How to request
-                            access’ information
+                        <Alert variant='success' dismissable onClose={handleCloseGuidanceMessage} mb={3}>
+                            {closeGuidanceMessage}
                         </Alert>
                     </Col>
                     <Col sm={1} lg={10} />
                 </Row>
-            ) : (
-                ''
             )}
+
             {howToRequestAccessStatus === sectionStatuses.PENDING || yourAppFormStatus === sectionStatuses.PENDING ? (
                 <Row className=''>
                     <Col sm={1} lg={1} />
                     <Col sm={10} lg={10}>
-                        <Alert variant='warning' className='customise-dar-pending-banner mb-3'>
-                            <SVGIcon name='attention' className='pt-1' width={28} height={28} fill='#f0bb24' />
+                        <Alert variant='warning' mb={3}>
                             {howToRequestAccessStatus === sectionStatuses.PENDING
                                 ? `The ‘How to request access’ information for ${publisherDetails.name} applications is pending going live until the appication form is published`
                                 : `The application form for ${publisherDetails.name} applications is pending going live until the ‘How to request access’ information is published`}
@@ -287,7 +280,12 @@ const CustomiseDAR = ({
                     showConfirmPublishModal={showConfirmPublishModal}
                     setShowConfirmPublishModal={setShowConfirmPublishModal}
                     show={showGuidanceModal}
-                    onHide={() => {
+                    onHide={successMsg => {
+                        if (successMsg) {
+                            console.log('Success message', successMsg);
+                            setCloseGuidanceMessage(successMsg);
+                        }
+
                         setShowGuidanceModal(false);
                     }}
                 />

@@ -12,7 +12,7 @@ import './CustomiseDAREditGuidance.scss';
 
 const baseURL = require('../../../commonComponents/BaseURL').getURL();
 
-export const EditHowToRequestAccessPage = ({ show, onHide, publisherDetails }) => {
+export const CustomiseDAREditGuidance = ({ show, onHide, publisherDetails }) => {
     const body = has(publisherDetails, 'dataRequestModalContent.body') ? publisherDetails.dataRequestModalContent.body : '';
     const [contentState] = useState(convertFromRaw(markdownToDraft(body)));
     const [editorState, setEditorState] = useState(EditorState.createWithContent(contentState));
@@ -38,7 +38,9 @@ export const EditHowToRequestAccessPage = ({ show, onHide, publisherDetails }) =
                 content,
             })
             .then(() => {
-                window.location.href = '/account?tab=customisedataaccessrequests_guidance&publishedDARContent=true';
+                onHide(`
+                    You have successfully updated and published the ${publisherDetails.name} application form and ‘How to request access’ information
+                `);
             });
     }, [publisherDetails._id]);
 
@@ -143,4 +145,4 @@ export const EditHowToRequestAccessPage = ({ show, onHide, publisherDetails }) =
     );
 };
 
-export default EditHowToRequestAccessPage;
+export default CustomiseDAREditGuidance;

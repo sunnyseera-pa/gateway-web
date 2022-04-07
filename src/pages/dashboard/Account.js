@@ -109,7 +109,6 @@ class Account extends Component {
         teamManagementInternalTab: 'Notifications',
         accountUpdated: false,
         showDataUseUploadPage: false,
-        hasPublishedDARContent: false,
         dataaccessrequest: {},
         showConfirmPublishModal: false,
         showHowToRequestAccessEditor: false,
@@ -164,7 +163,6 @@ class Account extends Component {
                     isReviewApproved: values.reviewApproved,
                     isReviewRejected: values.reviewRejected,
                     accountUpdated: !!values.accountUpdated,
-                    hasPublishedDARContent: !!values.publishedDARContent,
                 });
                 this.toggleNav(tab);
             }
@@ -588,7 +586,6 @@ class Account extends Component {
             accountUpdated,
             showDataUseUploadPage,
             dataaccessrequest,
-            hasPublishedDARContent,
             showConfirmPublishModal,
             showHowToRequestAccessEditor,
         } = this.state;
@@ -1021,7 +1018,6 @@ class Account extends Component {
                                             tabId === 'customisedataaccessrequests_guidance') && (
                                             <CustomiseDAR
                                                 userState={userState}
-                                                hasPublishedDARContent={hasPublishedDARContent}
                                                 publisherId={team}
                                                 showConfirmPublishModal={showConfirmPublishModal}
                                                 setShowConfirmPublishModal={show => this.setState({ showConfirmPublishModal: show })}
