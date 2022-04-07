@@ -3,13 +3,14 @@ import axios from 'axios';
 import _ from 'lodash';
 import queryString from 'query-string';
 import React, { Component, Fragment, useState } from 'react';
-import { Accordion, Dropdown, Nav, Button } from 'react-bootstrap';
+import { Accordion, Dropdown, Nav } from 'react-bootstrap';
 import { Route, withRouter } from 'react-router-dom';
 import 'react-web-tabs/dist/react-web-tabs.css';
 import Icon from '../../components/Icon';
 import { DashboardProvider } from '../../context/DashboardContext';
 import { ReactComponent as CheckSVG } from '../../images/check.svg';
 import { ReactComponent as ChevronRightSvg } from '../../images/chevron-bottom.svg';
+import { ReactComponent as UsersIcon } from '../../images/icons/users.svg';
 import SVGIcon from '../../images/SVGIcon';
 import googleAnalytics from '../../tracking';
 import { getTeam } from '../../utils/auth';
@@ -43,8 +44,6 @@ import { tabTypes } from './Team/teamUtil';
 import TeamHelp from './TeamHelp/TeamHelp';
 import WorkflowDashboard from './Workflows/WorkflowDashboard';
 import YourAccount from './YourAccount';
-
-import { ReactComponent as UsersIcon } from '../../images/icons/users.svg';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -769,7 +768,7 @@ class Account extends Component {
                                                                 variant='link'
                                                                 className='verticalNavBar gray700-13 navLinkButton'
                                                                 eventKey='0'>
-                                                                <Icon svg={<UsersIcon />} fill='grey500' size='2xl' />
+                                                                <Icon svg={<UsersIcon />} fill='grey500' color='grey500' size='2xl' />
                                                                 <span className='navLinkItem'>Data access requests</span>
                                                             </Accordion.Toggle>
                                                             <Accordion.Collapse eventKey='0'>

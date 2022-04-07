@@ -4,9 +4,12 @@ import moment from 'moment';
 import React, { Fragment, useEffect, useState } from 'react';
 import { Alert, Col, Row, Tab, Tabs } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
+import { NotificationManager } from 'react-notifications';
 import SVGIcon from '../../../images/SVGIcon';
 import CustomiseDAREditGuidance from '../Components/CustomiseDAREditGuidance';
+import publishersService from '../../../services/publishers';
 import './CustomiseDAR.scss';
+
 const baseURL = require('../../commonComponents/BaseURL').getURL();
 
 const CustomiseDAR = ({
@@ -26,6 +29,12 @@ const CustomiseDAR = ({
     const [yourApplicationFormPublisher, setYourApplicationFormPublisher] = useState();
     const [showGuidanceModal, setShowGuidanceModal] = useState();
 
+    const publishersRequest = publishersService.useGetPublisher(null, {
+        onError: ({ title, message }) => {
+            NotificationManager.error(message, title, 10000);
+        },
+    });
+
     const { t } = useTranslation();
 
     const sectionStatuses = {
@@ -38,37 +47,6 @@ const CustomiseDAR = ({
         Live: 'green',
         Inactive: 'gray',
         Pending: 'amber',
-    };
-
-    useEffect(async () => {
-        let publisherInfo;
-        await axios.get(`${baseURL}/api/v1/publishers/${publisherId}`).then(res => {
-            publisherInfo = res.data.publisher;
-            setPublisherDetails(publisherInfo);
-            const body = has(publisherInfo, 'dataRequestModalContent.body') ? publisherInfo.dataRequestModalContent.body : '';
-            setSectionStatuses(body, publisherInfo.uses5Safes);
-        });
-
-        await getHowToRequestAccessPublisher(publisherInfo);
-        await getYourApplicationFormPublisher(publisherInfo);
-    }, []);
-
-    const setSectionStatuses = (htraContent, applicationContentComplete) => {
-        if (!isEmpty(htraContent)) {
-            if (applicationContentComplete) {
-                setHowToRequestAccessStatus(sectionStatuses.ACTIVE);
-                setYourAppFormStatus(sectionStatuses.ACTIVE);
-            } else {
-                setHowToRequestAccessStatus(sectionStatuses.PENDING);
-                setYourAppFormStatus(sectionStatuses.INACTIVE);
-            }
-        } else if (applicationContentComplete) {
-            setYourAppFormStatus(sectionStatuses.PENDING);
-            setHowToRequestAccessStatus(sectionStatuses.INACTIVE);
-        } else {
-            setYourAppFormStatus(sectionStatuses.INACTIVE);
-            setHowToRequestAccessStatus(sectionStatuses.INACTIVE);
-        }
     };
 
     const getHowToRequestAccessPublisher = async publisherInfo => {
@@ -90,6 +68,43 @@ const CustomiseDAR = ({
             setYourApplicationFormPublisher(`${person.firstname} ${person.lastname}`);
         }
     };
+
+    const setSectionStatuses = (htraContent, applicationContentComplete) => {
+        if (!isEmpty(htraContent)) {
+            if (applicationContentComplete) {
+                setHowToRequestAccessStatus(sectionStatuses.ACTIVE);
+                setYourAppFormStatus(sectionStatuses.ACTIVE);
+            } else {
+                setHowToRequestAccessStatus(sectionStatuses.PENDING);
+                setYourAppFormStatus(sectionStatuses.INACTIVE);
+            }
+        } else if (applicationContentComplete) {
+            setYourAppFormStatus(sectionStatuses.PENDING);
+            setHowToRequestAccessStatus(sectionStatuses.INACTIVE);
+        } else {
+            setYourAppFormStatus(sectionStatuses.INACTIVE);
+            setHowToRequestAccessStatus(sectionStatuses.INACTIVE);
+        }
+    };
+
+    useEffect(() => {
+        const init = async () => {
+            await publishersRequest.mutateAsync(publisherId).then(async res => {
+                const {
+                    data: { publisher },
+                } = res;
+                const body = has(publisher, 'dataRequestModalContent.body') ? publisher.dataRequestModalContent.body : '';
+
+                setSectionStatuses(body, publisher.uses5Safes);
+                setPublisherDetails(publisher);
+
+                await getHowToRequestAccessPublisher(publisher);
+                await getYourApplicationFormPublisher(publisher);
+            });
+        };
+
+        init();
+    }, [publisherId]);
 
     const loadCustomiseForm = () => {
         window.location.href = `/data-access-request/customiseForm/${publisherId}`;
@@ -114,7 +129,7 @@ const CustomiseDAR = ({
                     <Col sm={1} lg={1} />
                     <Col sm={10} lg={10}>
                         <Alert variant='success' className='customise-dar-pending-banner mb-3'>
-                            <SVGIcon name='check' width={28} height={28} fill={'#2c8267'} />
+                            <SVGIcon name='check' width={28} height={28} fill='#2c8267' />
                             You have successfully updated and published the {publisherDetails.name} application form and ‘How to request
                             access’ information
                         </Alert>
@@ -129,7 +144,7 @@ const CustomiseDAR = ({
                     <Col sm={1} lg={1} />
                     <Col sm={10} lg={10}>
                         <Alert variant='warning' className='customise-dar-pending-banner mb-3'>
-                            <SVGIcon name='attention' className='pt-1' width={28} height={28} fill={'#f0bb24'} />
+                            <SVGIcon name='attention' className='pt-1' width={28} height={28} fill='#f0bb24' />
                             {howToRequestAccessStatus === sectionStatuses.PENDING
                                 ? `The ‘How to request access’ information for ${publisherDetails.name} applications is pending going live until the appication form is published`
                                 : `The application form for ${publisherDetails.name} applications is pending going live until the ‘How to request access’ information is published`}
@@ -166,7 +181,7 @@ const CustomiseDAR = ({
                         <div className='main-card cursorPointer' onClick={handleShowGuidanceModal}>
                             <div className='super-header'>
                                 <h1 className='black-20-semibold mb-3'>
-                                    <SVGIcon name='info' fill={'#475da7'} className='accountSvgs mr-2' />
+                                    <SVGIcon name='info' fill='#475da7' className='accountSvgs mr-2' />
                                     <span className='ml-3'>Applicant guidance for requesting access to data</span>
                                     <div className={`status-chip sla-${sectionStatusColours[howToRequestAccessStatus]}`}>
                                         {howToRequestAccessStatus}
@@ -181,10 +196,10 @@ const CustomiseDAR = ({
                                     </div>
                                     <div className='customise-dar-body'>
                                         {publisherDetails.dataRequestModalContentUpdatedBy ? (
-                                            <Fragment>
+                                            <>
                                                 <span className='box gray200-14'>Published by</span>
                                                 <span className='box gray800-14'>{howToRequestAccessPublisher}</span>
-                                            </Fragment>
+                                            </>
                                         ) : (
                                             ''
                                         )}
@@ -203,7 +218,7 @@ const CustomiseDAR = ({
                         <div className='main-card cursorPointer' onClick={() => loadCustomiseForm()}>
                             <div className='super-header'>
                                 <h1 className='black-20-semibold mb-3'>
-                                    <SVGIcon name='dataaccessicon' fill={'#475da7'} className='accountSvgs mr-2' />
+                                    <SVGIcon name='dataaccessicon' fill='#475da7' className='accountSvgs mr-2' />
                                     <span className='ml-3'>
                                         {has(publisherDetails, 'publisherDetails.name') ? publisherDetails.publisherDetails.name : ''} data
                                         access application form
@@ -230,14 +245,14 @@ const CustomiseDAR = ({
                                     </div>
                                     <div className='customise-dar-body'>
                                         {publisherDetails.applicationFormUpdatedBy ? (
-                                            <Fragment>
+                                            <>
                                                 <span className='box gray200-14'>Updated by</span>
                                                 <span className='box gray800-14'>
                                                     {publisherDetails.applicationFormUpdatedBy
                                                         ? yourApplicationFormPublisher
                                                         : 'No customisations made'}
                                                 </span>
-                                            </Fragment>
+                                            </>
                                         ) : (
                                             ''
                                         )}

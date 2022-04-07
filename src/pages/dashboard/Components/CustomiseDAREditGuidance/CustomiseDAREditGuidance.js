@@ -1,16 +1,15 @@
-import React, { useState } from 'react';
-
-import { convertToRaw, convertFromRaw, EditorState } from 'draft-js';
+import { convertFromRaw, convertToRaw, EditorState } from 'draft-js';
+import { has } from 'lodash';
 import { draftToMarkdown, markdownToDraft } from 'markdown-draft-js';
+import React, { useState } from 'react';
+import { Button, Modal } from 'react-bootstrap';
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import { useTranslation } from 'react-i18next';
 import { NotificationManager } from 'react-notifications';
 import publishersService from '../../../../services/publishers';
 import { WysiwygEditor } from '../../../commonComponents/WysiwygEditor/WysiwygEditor';
-import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
-import axios from 'axios';
-import { has } from 'lodash';
-import { Button, Modal } from 'react-bootstrap';
 import './CustomiseDAREditGuidance.scss';
-import { useTranslation } from 'react-i18next';
+
 const baseURL = require('../../../commonComponents/BaseURL').getURL();
 
 export const EditHowToRequestAccessPage = ({ show, onHide, publisherDetails }) => {
@@ -39,7 +38,7 @@ export const EditHowToRequestAccessPage = ({ show, onHide, publisherDetails }) =
                 content,
             })
             .then(() => {
-                onHide();
+                window.location.href = '/account?tab=customisedataaccessrequests_guidance&publishedDARContent=true';
             });
     }, [publisherDetails._id]);
 

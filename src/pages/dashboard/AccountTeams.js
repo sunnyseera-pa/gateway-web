@@ -1,15 +1,15 @@
-import React, { Fragment, useState, useEffect } from 'react';
-import { Row, Col, Button, Pagination, Alert } from 'react-bootstrap';
 import axios from 'axios';
-import Loading from '../commonComponents/Loading';
-import { baseURL } from '../../configs/url.config';
-import { tabTypes } from './Team/teamUtil';
-import SVGIcon from '../../images/SVGIcon';
-import './Dashboard.scss';
-import TeamInfo from './Team/TeamInfo';
 import _ from 'lodash';
-import AddEditTeamsPage from './Team/AddEditTeamsPage';
+import React, { useEffect, useState } from 'react';
+import { Alert, Button, Col, Pagination, Row } from 'react-bootstrap';
 import { LayoutContent } from '../../components/Layout';
+import { baseURL } from '../../configs/url.config';
+import SVGIcon from '../../images/SVGIcon';
+import Loading from '../commonComponents/Loading';
+import './Dashboard.scss';
+import AddEditTeamsPage from './Team/AddEditTeamsPage';
+import TeamInfo from './Team/TeamInfo';
+import { tabTypes } from './Team/teamUtil';
 
 const maxResults = 40;
 
@@ -31,13 +31,12 @@ const AccountTeams = () => {
 
     const handlePaginatedItems = () => {
         // Returns the related resources that have the same object type as the current active tab and performs a chunk on them to ensure each page returns 24 results
-        let paginatedItems = _.chunk(teams, maxResults);
+        const paginatedItems = _.chunk(teams, maxResults);
         // If there are items to show based on search results, display them on the currently active page
         if (paginatedItems.length > 0) {
             return paginatedItems[activeIndex];
-        } else {
-            return [];
         }
+        return [];
     };
 
     const getTeams = () => {
@@ -45,11 +44,11 @@ const AccountTeams = () => {
         axios
             .get(`${baseURL}/api/v1/teams`)
             .then(res => {
-                let teams = res.data.teams;
-                let teamManagersIds = [];
+                const { teams } = res.data;
+                const teamManagersIds = [];
                 teams.map((team, index) => {
                     if (team.members.length > 0) {
-                        let teamManagers = team.members.filter(member => member.roles.includes('manager'));
+                        const teamManagers = team.members.filter(member => member.roles.includes('manager'));
                         teamManagers.map(memberId => {
                             teamManagersIds.push(memberId.memberid);
                         });
@@ -77,7 +76,7 @@ const AccountTeams = () => {
         setEditViewOrgName(publisher.publisherDetails.name);
 
         const teamManagerNames = teamManagers.map(teamManager => {
-            return teamManager.firstname + ' ' + teamManager.lastname;
+            return `${teamManager.firstname} ${teamManager.lastname}`;
         });
         setEditViewTeamManagers(teamManagerNames);
 
@@ -93,7 +92,7 @@ const AccountTeams = () => {
     const cancelCreateOrEditTeam = () => {
         setViewTeams(true);
     };
-    let paginationItems = [];
+    const paginationItems = [];
     for (let i = 1; i <= Math.ceil(teamsCount / maxResults); i++) {
         paginationItems.push(
             <Pagination.Item
@@ -101,8 +100,7 @@ const AccountTeams = () => {
                 active={i === activeIndex + 1}
                 onClick={e => {
                     setActiveIndex(i - 1);
-                }}
-            >
+                }}>
                 {i}
             </Pagination.Item>
         );
@@ -122,13 +120,13 @@ const AccountTeams = () => {
     }
 
     return (
-        <Fragment>
+        <>
             {viewTeams ? (
                 <LayoutContent>
                     {!_.isEmpty(alert) && (
                         <Row className='teams-alert'>
-                            <Alert variant={'success'} className='main-alert teams-alert'>
-                                <SVGIcon name='check' width={24} height={24} fill={'#2C8267'} /> {alert.message}
+                            <Alert variant='success' className='main-alert teams-alert'>
+                                <SVGIcon name='check' width={24} height={24} fill='#2C8267' /> {alert.message}
                             </Alert>
                         </Row>
                     )}
@@ -147,8 +145,8 @@ const AccountTeams = () => {
                                 variant='primary'
                                 href=''
                                 className='addButton'
-                                onClick={() => createTeam()}
-                            >
+                                onClick={() => createTeam()}>
+
                                 + Add a new team
                             </Button>
                         </Col>
@@ -158,7 +156,7 @@ const AccountTeams = () => {
                         <Col sm={3}>Data custodian</Col>
                         <Col sm={3}>Team manager(s)</Col>
                         <Col sm={2}>Members</Col>
-                        <Col sm={2}></Col>
+                        <Col sm={2} />
                     </Row>
                     <Row>
                         <Col sm={12} lg={12}>
@@ -192,7 +190,7 @@ const AccountTeams = () => {
                     setAlertFunction={setAlertFunction}
                 />
             )}
-        </Fragment>
+        </>
     );
 };
 

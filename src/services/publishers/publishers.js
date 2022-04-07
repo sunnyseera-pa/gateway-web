@@ -1,8 +1,24 @@
 import { apiURL } from '../../configs/url.config';
-import { patchRequest, useMutationWithTranslations } from '../../utils/requests';
+import { getRequest, patchRequest, useMutationWithTranslations } from '../../utils/requests';
+
+const getPublisher = (_id, options) => {
+    return getRequest(`${apiURL}/publishers/${_id}`, options);
+};
 
 const patchModalContent = (_id, data, options) => {
     return patchRequest(`${apiURL}/publishers/dataRequestModalContent/${_id}`, data, options);
+};
+
+const useGetPublisher = (requestOptions, mutateOptions) => {
+    return useMutationWithTranslations(
+        _id => {
+            return getPublisher(_id, requestOptions);
+        },
+        {
+            mutationKey: 'publishers.getPublisher',
+            ...mutateOptions,
+        }
+    );
 };
 
 const usePatchModalContent = (requestOptions, mutateOptions) => {
@@ -20,6 +36,8 @@ const usePatchModalContent = (requestOptions, mutateOptions) => {
 };
 
 export default {
+    getPublisher,
     patchModalContent,
+    useGetPublisher,
     usePatchModalContent,
 };

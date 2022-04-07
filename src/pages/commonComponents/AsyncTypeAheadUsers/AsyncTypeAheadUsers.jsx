@@ -1,15 +1,14 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/react';
-import React, { useState, useEffect } from 'react';
 import { find, remove } from 'lodash';
 import PropTypes from 'prop-types';
+import { useEffect, useState } from 'react';
 import { Menu, MenuItem } from 'react-bootstrap-typeahead';
-import Typeahead from '../../../components/Typeahead/Typeahead';
-import serviceUsers from '../../../services/users/users';
-import serviceAuth from '../../../services/auth/auth';
-import UploaderUtil from '../../../utils/Uploader.util';
 import Icon from '../../../components/Icon';
+import Typeahead from '../../../components/Typeahead/Typeahead';
 import { ReactComponent as SearchIcon } from '../../../images/search.svg';
+import serviceUsers from '../../../services/users/users';
+import UploaderUtil from '../../../utils/Uploader.util';
 import * as styles from './AsyncTypeAheadUsers.styles';
 
 function AsyncTypeAheadUsers(props) {
@@ -79,14 +78,14 @@ function AsyncTypeAheadUsers(props) {
             id='async-users'
             isLoading={isLoading}
             labelKey='name'
-            placeholder='Recently added'
+            placeholder={props.placeholder}
             onChange={handleChange}
             onInputChange={handleInputChange}
             onFocus={handleOnFocus}
             options={options}
             selected={selected}
-            iconPrepend={<Icon name='search' size='xl' fill='purple' />}
-            multiple
+            iconPrepend={<Icon svg={<SearchIcon />} size='xl' fill='purple' />}
+            multiple={props.multiple}
             renderMenu={(results, menuProps) => (
                 <Menu {...menuProps}>
                     {showRecentlyAdded && (
@@ -119,11 +118,15 @@ AsyncTypeAheadUsers.propTypes = {
     getUsersInfo: PropTypes.bool,
     changeHandler: PropTypes.func,
     currentUserId: PropTypes.number,
+    multiple: PropTypes.bool,
+    placeholder: PropTypes.string,
 };
 AsyncTypeAheadUsers.defaultProps = {
     selectedUsers: [],
     showAuthor: false,
     getUsersInfo: false,
+    multiple: true,
+    placeholder: 'Recently added',
 };
 
 export default AsyncTypeAheadUsers;
