@@ -1,14 +1,14 @@
-import axios from 'axios';
 import { has, isEmpty } from 'lodash';
 import moment from 'moment';
-import React, { Fragment, useEffect, useState } from 'react';
-import { Alert, Col, Row, Tab, Tabs } from 'react-bootstrap';
+import React, { useEffect, useState } from 'react';
+import { Col, Row, Tab, Tabs } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { NotificationManager } from 'react-notifications';
 import SVGIcon from '../../../images/SVGIcon';
-import CustomiseDAREditGuidance from '../Components/CustomiseDAREditGuidance';
-import publishersService from '../../../services/publishers';
+import Alert from '../../../components/Alert';
 import personService from '../../../services/person';
+import publishersService from '../../../services/publishers';
+import CustomiseDAREditGuidance from '../Components/CustomiseDAREditGuidance';
 import './CustomiseDAR.scss';
 
 const baseURL = require('../../commonComponents/BaseURL').getURL();
@@ -130,8 +130,6 @@ const CustomiseDAR = ({
 
         onSelectTab(tabId);
     };
-
-    console.log('Tab', activeTab);
 
     return (
         <>
