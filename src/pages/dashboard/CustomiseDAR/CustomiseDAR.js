@@ -282,7 +282,6 @@ const CustomiseDAR = ({ userState, publisherId, showConfirmPublishModal, setShow
                     show={showGuidanceModal}
                     onHide={successMsg => {
                         if (successMsg) {
-                            console.log('Success message', successMsg);
                             setCloseGuidanceMessage(successMsg);
                         }
 
