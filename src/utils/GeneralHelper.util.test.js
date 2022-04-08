@@ -1,17 +1,16 @@
-import { filterBranches, findAllByKey, isEditMode, iterateDeep } from './GeneralHelper.util';
-import { dateFormats } from './GeneralHelper.util';
+import { filterBranches, findAllByKey, isEditMode, iterateDeep, dateFormats, getParams } from './GeneralHelper.util';
 
 describe('Test GeneralHelper getUpdatesSubmittedLog', () => {
     it('should test isEditMode fn valid url', () => {
-        let validSrc = '/projects/edit/456765';
-        let isEdit = isEditMode(validSrc);
+        const validSrc = '/projects/edit/456765';
+        const isEdit = isEditMode(validSrc);
 
         expect(isEdit).toBe(true);
     });
 
     it('should test isEditMode fn inValid url', () => {
-        let invalidSrc = '/projects/465465';
-        let isEdit = isEditMode(invalidSrc);
+        const invalidSrc = '/projects/465465';
+        const isEdit = isEditMode(invalidSrc);
 
         expect(isEdit).toBe(false);
     });
@@ -19,7 +18,7 @@ describe('Test GeneralHelper getUpdatesSubmittedLog', () => {
 
 describe('dateFormats function', () => {
     it('should have dateOnly and timeOnly formats ', () => {
-        let dateFormat = dateFormats('2021-11-08T14:49:41.225Z');
+        const dateFormat = dateFormats('2021-11-08T14:49:41.225Z');
         expect(dateFormat).toHaveProperty('timeOnly', '14:49');
         expect(dateFormat).toHaveProperty('dateOnly', '8 November 2021');
     });
@@ -132,5 +131,25 @@ describe('filterBranches function', () => {
                 ],
             },
         ]);
+    });
+});
+
+describe('getParams function', () => {
+    it('should return correct object ', () => {
+        const urlString = '?search=test&tab=dataset&test=one';
+        const params = getParams(urlString);
+        expect(params).toEqual({
+            search: 'test',
+            tab: 'dataset',
+            test: 'one',
+        });
+    });
+    it('should return correct object key with empty string ', () => {
+        const urlString = 'tab=&test=one';
+        const params = getParams(urlString);
+        expect(params).toEqual({
+            tab: '',
+            test: 'one',
+        });
     });
 });

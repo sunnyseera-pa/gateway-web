@@ -1,4 +1,4 @@
-import { apiURL } from '../../configs/url.config';
+import { apiURL, apiV2URL } from '../../configs/url.config';
 import { getRequest, useMutationWithTranslations, useQueryWithTranslations } from '../../utils/requests';
 
 const getSearch = options => {
@@ -10,7 +10,11 @@ const getTopic = (topic, options) => {
 };
 
 const getFilters = (filter, options) => {
-    return getRequest(`${apiURL}/search/filters/${filter}`, options);
+    return getRequest(`${apiV2URL}/filters/${filter}`, options);
+};
+
+const getSearchFilters = options => {
+    return getRequest(`${apiURL}/search/filter`, options);
 };
 
 const useGetSearch = (requestOptions, mutateOptions) => {
@@ -43,11 +47,21 @@ const useGetFilters = (requestOptions, queryOptions) => {
     });
 };
 
+const useGetSearchFilters = (requestOptions, queryOptions) => {
+    return useQueryWithTranslations({
+        queryKey: 'search.getSearchFilters',
+        ...queryOptions,
+        queryFn: () => getSearchFilters(requestOptions),
+    });
+};
+
 export default {
     getSearch,
     getTopic,
     getFilters,
+    getSearchFilters,
     useGetSearch,
     useGetTopic,
     useGetFilters,
+    useGetSearchFilters,
 };
