@@ -10,12 +10,19 @@ import Icon from '../../components/Icon';
 import { DashboardProvider } from '../../context/DashboardContext';
 import { ReactComponent as CheckSVG } from '../../images/check.svg';
 import { ReactComponent as ChevronRightSvg } from '../../images/chevron-bottom.svg';
-import { ReactComponent as UsersIcon } from '../../images/icons/users.svg';
-import { ReactComponent as SettingsIcon } from '../../images/icons/settings.svg';
-import { ReactComponent as ServerIcon } from '../../images/icons/server.svg';
+import { ReactComponent as BarChartIcon } from '../../images/icons/bar-chart.svg';
+import { ReactComponent as BookmarkIcon } from '../../images/icons/bookmark.svg';
+import { ReactComponent as CommentsIcon } from '../../images/icons/comments.svg';
+import { ReactComponent as CoursesIcon } from '../../images/icons/courses.svg';
+import { ReactComponent as EditFolderIcon } from '../../images/icons/edit-folder.svg';
 import { ReactComponent as FlowIcon } from '../../images/icons/flow.svg';
 import { ReactComponent as HelpIcon } from '../../images/icons/help.svg';
-import { ReactComponent as EditFolderIcon } from '../../images/icons/edit-folder.svg';
+import { ReactComponent as PapersIcon } from '../../images/icons/papers.svg';
+import { ReactComponent as ServerIcon } from '../../images/icons/server.svg';
+import { ReactComponent as SettingsIcon } from '../../images/icons/settings.svg';
+import { ReactComponent as ToolsIcon } from '../../images/icons/tools.svg';
+import { ReactComponent as UserIcon } from '../../images/icons/user.svg';
+import { ReactComponent as UsersIcon } from '../../images/icons/users.svg';
 import SVGIcon from '../../images/SVGIcon';
 import googleAnalytics from '../../tracking';
 import { getTeam } from '../../utils/auth';
@@ -41,6 +48,8 @@ import AccountTools from './AccountTools';
 import AccountUsers from './AccountUsers';
 import AccountDataset from './Components/AccountDataset';
 import AccountDatasets from './Components/AccountDatasets';
+import DashboardNavItem from './Components/DashboardNavItem';
+import DashboardSubNavItem from './Components/DashboardSubNavItem';
 import CustomiseDAR from './CustomiseDAR/CustomiseDAR';
 import './Dashboard.scss';
 import DataAccessRequests from './DataAccessRequests/DataAccessRequests';
@@ -627,106 +636,98 @@ class Account extends Component {
                                     </Dropdown.Menu>
                                 </Dropdown>
 
-                                {team === 'user' ? (
-                                    <Fragment>
+                                {team === 'user' && (
+                                    <>
                                         <div className={this.getNavActiveClass('dashboard')} onClick={e => this.toggleNav('dashboard')}>
                                             <Nav.Link className='verticalNavBar gray700-13'>
-                                                <SVGIcon name='dashboard' fill={'#b3b8bd'} className='accountSvgs' />
+                                                <Icon svg={<BarChartIcon />} fill='grey500' color='grey500' size='2xl' />
                                                 <span className='navLinkItem'>Dashboard</span>
                                             </Nav.Link>
                                         </div>
 
                                         <div className={this.getNavActiveClass('youraccount')} onClick={e => this.toggleNav('youraccount')}>
                                             <Nav.Link className='verticalNavBar gray700-13'>
-                                                <SVGIcon name='accounticon' fill={'#b3b8bd'} className='accountSvgs' />
+                                                <Icon svg={<UserIcon />} fill='grey500' color='grey500' size='2xl' />
                                                 <span className='navLinkItem'>Account</span>
                                             </Nav.Link>
                                         </div>
 
-                                        <div className={this.getNavActiveClass('tools')} onClick={e => this.toggleNav('tools')}>
-                                            <Nav.Link className='verticalNavBar gray700-13'>
-                                                <SVGIcon name='newtoolicon' fill={'#b3b8bd'} className='accountSvgs' />
-                                                <span className='navLinkItem'>Tools</span>
-                                            </Nav.Link>
-                                        </div>
+                                        <DashboardNavItem
+                                            icon={<ToolsIcon />}
+                                            activeClassName={this.getNavActiveClass('tools')}
+                                            onClick={e => this.toggleNav('tools')}>
+                                            Tools
+                                        </DashboardNavItem>
 
-                                        <div className={this.getNavActiveClass('reviews')} onClick={e => this.toggleNav('reviews')}>
-                                            <Nav.Link className='verticalNavBar gray700-13'>
-                                                <SVGIcon name='reviewsicon' fill={'#b3b8bd'} className='accountSvgs' />
-                                                <span className='navLinkItem'>Reviews</span>
-                                            </Nav.Link>
-                                        </div>
+                                        <DashboardNavItem
+                                            icon={<CommentsIcon />}
+                                            activeClassName={this.getNavActiveClass('reviews')}
+                                            onClick={e => this.toggleNav('reviews')}>
+                                            Reviews
+                                        </DashboardNavItem>
 
-                                        <div className={this.getNavActiveClass('datause')} onClick={e => this.toggleNav('datause')}>
-                                            <Nav.Link eventKey={'datause'} className='verticalNavBar gray700-13'>
-                                                <SVGIcon name='datauseicon' fill={'#b3b8bd'} className='accountSvgs' />
-                                                <span className='navLinkItem'>Data Uses</span>
-                                            </Nav.Link>
-                                        </div>
+                                        <DashboardNavItem
+                                            icon={<FlowIcon />}
+                                            activeClassName={this.getNavActiveClass('datause')}
+                                            onClick={e => this.toggleNav('datause')}>
+                                            Data Uses
+                                        </DashboardNavItem>
 
-                                        <div className={this.getNavActiveClass('papers')} onClick={e => this.toggleNav('papers')}>
-                                            <Nav.Link eventKey={'papers'} className='verticalNavBar gray700-13'>
-                                                <SVGIcon name='newprojecticon' fill={'#b3b8bd'} className='accountSvgs' />
-                                                <span className='navLinkItem'>Papers</span>
-                                            </Nav.Link>
-                                        </div>
+                                        <DashboardNavItem
+                                            icon={<PapersIcon />}
+                                            activeClassName={this.getNavActiveClass('papers')}
+                                            onClick={e => this.toggleNav('papers')}>
+                                            Papers
+                                        </DashboardNavItem>
 
-                                        <div className={this.getNavActiveClass('courses')} onClick={e => this.toggleNav('courses')}>
-                                            <Nav.Link eventKey={'courses'} className='verticalNavBar gray700-13'>
-                                                <SVGIcon name='educationicon' fill={'#b3b8bd'} className='svg-20' />
-                                                <span className='navLinkItem'>Courses</span>
-                                            </Nav.Link>
-                                        </div>
+                                        <DashboardNavItem
+                                            icon={<CoursesIcon />}
+                                            activeClassName={this.getNavActiveClass('courses')}
+                                            onClick={e => this.toggleNav('courses')}>
+                                            Courses
+                                        </DashboardNavItem>
 
-                                        <div
-                                            className={this.getNavActiveClass('dataaccessrequests')}
+                                        <DashboardNavItem
+                                            icon={<PapersIcon />}
+                                            activeClassName={this.getNavActiveClass('dataaccessrequests')}
                                             onClick={e => this.toggleNav('dataaccessrequests')}>
-                                            <Nav.Link eventKey={'dataaccessrequests'} className='verticalNavBar gray700-13'>
-                                                <SVGIcon name='newprojecticon' fill={'#b3b8bd'} className='accountSvgs' />
-                                                <span className='navLinkItem'>Data access requests</span>
-                                            </Nav.Link>
-                                        </div>
+                                            Data access requests
+                                        </DashboardNavItem>
 
-                                        <div className={this.getNavActiveClass('collections')} onClick={e => this.toggleNav('collections')}>
-                                            <Nav.Link eventKey={'collections'} className='verticalNavBar gray700-13'>
-                                                <SVGIcon name='collections' fill={'#b3b8bd'} className='accountSvgs' />
-                                                <span className='navLinkItem'>Collections</span>
-                                            </Nav.Link>
-                                        </div>
+                                        <DashboardNavItem
+                                            icon={<BookmarkIcon />}
+                                            activeClassName={this.getNavActiveClass('collections')}
+                                            onClick={e => this.toggleNav('collections')}>
+                                            Collections
+                                        </DashboardNavItem>
 
-                                        {userState[0].role === 'Admin' ? (
-                                            <div
-                                                className={this.getNavActiveClass('usersroles')}
+                                        {userState[0].role === 'Admin' && (
+                                            <DashboardNavItem
+                                                icon={<UsersIcon />}
+                                                activeClassName={this.getNavActiveClass('usersroles')}
                                                 onClick={e => this.toggleNav('usersroles')}>
-                                                <Nav.Link eventKey={'usersroles'} className='verticalNavBar gray700-13'>
-                                                    <SVGIcon name='rolesicon' fill={'#b3b8bd'} className='accountSvgs' />
-                                                    <span className='navLinkItem'>Users and roles</span>
-                                                </Nav.Link>
-                                            </div>
-                                        ) : (
-                                            ''
+                                                Users and roles
+                                            </DashboardNavItem>
                                         )}
-                                    </Fragment>
-                                ) : (
-                                    ''
+                                    </>
                                 )}
 
-                                {team === 'admin' ? (
-                                    <Fragment>
-                                        <div
-                                            className={this.getNavActiveClass('datasets')}
-                                            onClick={e => this.toggleNav('datasets', '/account')}>
-                                            <Nav.Link className='verticalNavBar gray700-13' activeClassName='is-active' to='/account'>
-                                                <SVGIcon name='dataseticon' fill={'#b3b8bd'} className='accountSvgs' />
-                                                <span style={{ 'margin-left': '11px' }}>Datasets</span>
-                                            </Nav.Link>
-                                        </div>
-                                        <div className={this.getNavActiveClass('datause')} onClick={e => this.toggleNav('datause')}>
-                                            <Nav.Link eventKey={'datause'} className='verticalNavBar gray700-13'>
-                                                <SVGIcon name='datauseicon' fill={'#b3b8bd'} className='accountSvgs' />
-                                                <span className='navLinkItem'>Data Uses</span>
-                                            </Nav.Link>
-                                        </div>
+                                {team === 'admin' && (
+                                    <>
+                                        <DashboardNavItem
+                                            icon={<UsersIcon />}
+                                            activeClassName={this.getNavActiveClass('datasets')}
+                                            onClick={e => this.toggleNav('datasets', '/account')}
+                                            to='/account'>
+                                            Datasets
+                                        </DashboardNavItem>
+
+                                        <DashboardNavItem
+                                            icon={<FlowIcon />}
+                                            activeClassName={this.getNavActiveClass('datause')}
+                                            onClick={e => this.toggleNav('datause')}>
+                                            Data Uses
+                                        </DashboardNavItem>
 
                                         <div className={this.getNavActiveClass('teams')} onClick={e => this.toggleNav('teams')}>
                                             <Nav.Link className='verticalNavBar gray700-13'>
@@ -741,21 +742,18 @@ class Account extends Component {
                                                 <span style={{ 'margin-left': '5px' }}>Teams</span>
                                             </Nav.Link>
                                         </div>
-                                    </Fragment>
-                                ) : (
-                                    ''
+                                    </>
                                 )}
 
-                                {team !== 'user' && team !== 'admin' ? (
-                                    <Fragment>
-                                        <div
-                                            className={this.getNavActiveClass('teamManagement')}
+                                {team !== 'user' && team !== 'admin' && (
+                                    <>
+                                        <DashboardNavItem
+                                            icon={<SettingsIcon />}
+                                            activeClassName={this.getNavActiveClass('teamManagement')}
                                             onClick={e => this.toggleNav('teamManagement')}>
-                                            <Nav.Link className='verticalNavBar gray700-13'>
-                                                <Icon svg={<SettingsIcon />} fill='grey500' color='grey500' size='2xl' />
-                                                <span className='navLinkItem'>Team Management</span>
-                                            </Nav.Link>
-                                        </div>
+                                            Team Management
+                                        </DashboardNavItem>
+
                                         {allowAccessRequestManagement && this.userHasRole(team, ['manager', 'reviewer']) && (
                                             <>
                                                 <div
@@ -775,23 +773,18 @@ class Account extends Component {
                                                             </Accordion.Toggle>
                                                             <Accordion.Collapse eventKey='0'>
                                                                 <div>
-                                                                    <Nav.Link
-                                                                        onClick={e => this.toggleNav('dataaccessrequests')}
-                                                                        bsPrefix='nav-block'
-                                                                        className={`gray700-13 ${
-                                                                            tabId === 'dataaccessrequests' ? 'nav-item-active' : ''
-                                                                        }`}>
-                                                                        <span className='subLinkItem'>Applications</span>
-                                                                    </Nav.Link>
+                                                                    <DashboardSubNavItem
+                                                                        active={tabId === 'dataaccessrequests'}
+                                                                        onClick={() => this.toggleNav(`dataaccessrequests`)}>
+                                                                        Applications
+                                                                    </DashboardSubNavItem>
+
                                                                     {allowWorkflow && this.userHasRole(team, 'manager') && (
-                                                                        <Nav.Link
-                                                                            onClick={e => this.toggleNav(`workflows`)}
-                                                                            bsPrefix='nav-block'
-                                                                            className={`gray700-13 ${
-                                                                                tabId === 'workflows' ? 'nav-item-active' : ''
-                                                                            }`}>
-                                                                            <span className='subLinkItem'>Workflows</span>
-                                                                        </Nav.Link>
+                                                                        <DashboardSubNavItem
+                                                                            active={tabId === 'workflows'}
+                                                                            onClick={() => this.toggleNav(`workflows`)}>
+                                                                            Workflows
+                                                                        </DashboardSubNavItem>
                                                                     )}
                                                                 </div>
                                                             </Accordion.Collapse>
@@ -814,31 +807,21 @@ class Account extends Component {
                                                             </Accordion.Toggle>
                                                             <Accordion.Collapse eventKey='1'>
                                                                 <div>
-                                                                    <Nav.Link
-                                                                        onClick={e =>
+                                                                    <DashboardSubNavItem
+                                                                        active={tabId === 'customisedataaccessrequests_guidance'}
+                                                                        onClick={() =>
                                                                             this.toggleNav(`customisedataaccessrequests_guidance`)
-                                                                        }
-                                                                        bsPrefix='nav-block'
-                                                                        className={`gray700-13 ${
-                                                                            tabId === 'customisedataaccessrequests_guidance'
-                                                                                ? 'nav-item-active'
-                                                                                : ''
-                                                                        }`}>
-                                                                        <span className='subLinkItem'>Presubmission Guidance</span>
-                                                                    </Nav.Link>
+                                                                        }>
+                                                                        Presubmission Guidance
+                                                                    </DashboardSubNavItem>
 
-                                                                    <Nav.Link
-                                                                        onClick={e =>
+                                                                    <DashboardSubNavItem
+                                                                        active={tabId === 'customisedataaccessrequests_applicationform'}
+                                                                        onClick={() =>
                                                                             this.toggleNav(`customisedataaccessrequests_applicationform`)
-                                                                        }
-                                                                        bsPrefix='nav-block'
-                                                                        className={`gray700-13 ${
-                                                                            tabId === 'customisedataaccessrequests_applicationform'
-                                                                                ? 'nav-item-active'
-                                                                                : ''
-                                                                        }`}>
-                                                                        <span className='subLinkItem'>Application Form</span>
-                                                                    </Nav.Link>
+                                                                        }>
+                                                                        Application Form
+                                                                    </DashboardSubNavItem>
                                                                 </div>
                                                             </Accordion.Collapse>
                                                         </Fragment>
@@ -846,31 +829,31 @@ class Account extends Component {
                                                 </div>
                                             </>
                                         )}
+
                                         {this.userHasRole(team, ['manager', 'metadata_editor']) && (
-                                            <div
-                                                className={this.getNavActiveClass('datasets')}
-                                                onClick={e => this.toggleNav('datasets', '/account')}>
-                                                <Nav.Link className='verticalNavBar gray700-13' to='/account'>
-                                                    <Icon svg={<ServerIcon />} fill='grey500' color='grey500' size='2xl' />
-                                                    <span className='navLinkItem'>Datasets</span>
-                                                </Nav.Link>
-                                            </div>
+                                            <DashboardNavItem
+                                                icon={<ServerIcon />}
+                                                activeClassName={this.getNavActiveClass('datasets')}
+                                                onClick={e => this.toggleNav('datasets', '/account')}
+                                                to='/account'>
+                                                Datasets
+                                            </DashboardNavItem>
                                         )}
-                                        <div className={this.getNavActiveClass('datause')} onClick={e => this.toggleNav('datause')}>
-                                            <Nav.Link eventKey={'datause'} className='verticalNavBar gray700-13'>
-                                                <Icon svg={<FlowIcon />} fill='grey500' color='grey500' size='2xl' />
-                                                <span className='navLinkItem'>Data Uses</span>
-                                            </Nav.Link>
-                                        </div>
-                                        <div className={this.getNavActiveClass('help')} onClick={e => this.toggleNav('help')}>
-                                            <Nav.Link className='verticalNavBar gray700-13'>
-                                                <Icon svg={<HelpIcon />} fill='grey500' color='grey500' size='2xl' />
-                                                <span className='navLinkItem'>Help</span>
-                                            </Nav.Link>
-                                        </div>
-                                    </Fragment>
-                                ) : (
-                                    ''
+
+                                        <DashboardNavItem
+                                            icon={<FlowIcon />}
+                                            activeClassName={this.getNavActiveClass('datause')}
+                                            onClick={e => this.toggleNav('datause')}>
+                                            Data Uses
+                                        </DashboardNavItem>
+
+                                        <DashboardNavItem
+                                            icon={<HelpIcon />}
+                                            activeClassName={this.getNavActiveClass('help')}
+                                            onClick={e => this.toggleNav('help')}>
+                                            Help
+                                        </DashboardNavItem>
+                                    </>
                                 )}
                             </div>
                         </div>
