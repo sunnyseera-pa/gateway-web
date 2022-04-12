@@ -929,8 +929,8 @@ class Account extends Component {
                                     {allowAccessRequestManagement && this.userHasRole(team, ['manager', 'reviewer']) && (
                                         <>
                                             {' '}
-                                            {tabId === 'dataaccessrequests' ? (
-                                                _.isEmpty(dataaccessrequest) ? (
+                                            {tabId === 'dataaccessrequests' &&
+                                                (_.isEmpty(dataaccessrequest) ? (
                                                     <DataAccessRequests
                                                         setDataAccessRequest={this.setDataAccessRequest}
                                                         userState={userState}
@@ -946,38 +946,24 @@ class Account extends Component {
                                                         ref={this.activityLog}
                                                         onUpdateLogs={this.loadActivityLogNotifications}
                                                     />
-                                                )
-                                            ) : (
-                                                ''
-                                            )}
+                                                ))}
                                         </>
                                     )}
 
-                                    {(this.userHasRole(team, ['manager', 'metadata_editor']) || team === 'admin') && (
-                                        <>
-                                            {tabId === 'datasets' ? (
-                                                <AccountDatasets userState={userState} team={team} alert={alert} />
-                                            ) : (
-                                                ''
-                                            )}
-                                        </>
+                                    {(this.userHasRole(team, ['manager', 'metadata_editor']) || team === 'admin') &&
+                                        tabId === 'datasets' && <AccountDatasets userState={userState} team={team} alert={alert} />}
+
+                                    {team === 'admin' && tabId === 'teams' && (
+                                        <AccountTeams
+                                            userState={userState}
+                                            onTeamsTabChange={this.onTeamsTabChange}
+                                            team={team}
+                                            alert={alert}
+                                        />
                                     )}
 
-                                    {team === 'admin' && (
-                                        <>
-                                            {tabId === 'teams' && (
-                                                <AccountTeams
-                                                    userState={userState}
-                                                    onTeamsTabChange={this.onTeamsTabChange}
-                                                    team={team}
-                                                    alert={alert}
-                                                />
-                                            )}
-                                        </>
-                                    )}
-
-                                    {tabId === 'datause' ? (
-                                        showDataUseUploadPage ? (
+                                    {tabId === 'datause' &&
+                                        (showDataUseUploadPage ? (
                                             <DataUseUpload
                                                 userState={userState}
                                                 team={team}
@@ -992,13 +978,10 @@ class Account extends Component {
                                                 onClickDataUseUpload={this.toggleDataUseUploadPage}
                                                 ref={this.dataUsePage}
                                             />
-                                        )
-                                    ) : (
-                                        ''
-                                    )}
+                                        ))}
 
-                                    {allowWorkflow && this.userHasRole(team, 'manager') && (
-                                        <>{tabId === 'workflows' ? <WorkflowDashboard userState={userState} team={team} /> : ''}</>
+                                    {allowWorkflow && this.userHasRole(team, 'manager') && tabId === 'workflows' && (
+                                        <WorkflowDashboard userState={userState} team={team} />
                                     )}
 
                                     {(this.userHasRole(team, ['manager']) || team === 'admin') &&
@@ -1018,7 +1001,7 @@ class Account extends Component {
                                             />
                                         )}
 
-                                    {tabId === 'teamManagement' ? (
+                                    {tabId === 'teamManagement' && (
                                         <AccountTeamManagement
                                             userState={userState}
                                             team={team}
@@ -1030,9 +1013,8 @@ class Account extends Component {
                                             onTeamManagementTabChange={this.onTeamManagementTabChange}
                                             onClearInnerTab={this.onClearInnerTab}
                                         />
-                                    ) : (
-                                        ''
                                     )}
+
                                     {tabId === 'help' ? <TeamHelp /> : ''}
                                 </>
                             ) : (
