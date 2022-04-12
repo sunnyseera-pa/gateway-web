@@ -93,23 +93,23 @@ const CustomiseDAR = ({ userState, publisherId, showConfirmPublishModal, setShow
         }
     };
 
+    const getModalData = () => {
+        publishersRequest.mutateAsync(publisherId).then(async res => {
+            const {
+                data: { publisher },
+            } = res;
+            const body = has(publisher, 'dataRequestModalContent.body') ? publisher.dataRequestModalContent.body : '';
+
+            setSectionStatuses(body, publisher.uses5Safes);
+            setPublisherDetails(publisher);
+
+            await getHowToRequestAccessPublisher(publisher);
+            await getYourApplicationFormPublisher(publisher);
+        });
+    };
+
     useEffect(() => {
-        const init = async () => {
-            await publishersRequest.mutateAsync(publisherId).then(async res => {
-                const {
-                    data: { publisher },
-                } = res;
-                const body = has(publisher, 'dataRequestModalContent.body') ? publisher.dataRequestModalContent.body : '';
-
-                setSectionStatuses(body, publisher.uses5Safes);
-                setPublisherDetails(publisher);
-
-                await getHowToRequestAccessPublisher(publisher);
-                await getYourApplicationFormPublisher(publisher);
-            });
-        };
-
-        init();
+        getModalData();
     }, [publisherId]);
 
     const loadCustomiseForm = () => {
@@ -136,7 +136,7 @@ const CustomiseDAR = ({ userState, publisherId, showConfirmPublishModal, setShow
                 <Row className=''>
                     <Col sm={1} lg={1} />
                     <Col sm={10} lg={10}>
-                        <Alert variant='success' dismissable onClose={handleCloseGuidanceMessage} mb={3}>
+                        <Alert variant='success' autoclose onClose={handleCloseGuidanceMessage} mb={3}>
                             {closeGuidanceMessage}
                         </Alert>
                     </Col>
@@ -282,6 +282,8 @@ const CustomiseDAR = ({ userState, publisherId, showConfirmPublishModal, setShow
                     show={showGuidanceModal}
                     onHide={successMsg => {
                         if (successMsg) {
+                            getModalData();
+
                             setCloseGuidanceMessage(successMsg);
                         }
 

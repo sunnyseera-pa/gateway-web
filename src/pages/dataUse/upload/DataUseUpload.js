@@ -1,12 +1,13 @@
 import { find, isEmpty, isUndefined, some } from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
-import { Alert, Col, Image, OverlayTrigger, Row, Tooltip } from 'react-bootstrap';
+import { Col, Image, OverlayTrigger, Row, Tooltip } from 'react-bootstrap';
 import { NotificationManager } from 'react-notifications';
 import { Link } from 'react-router-dom';
 import { SlideDown } from 'react-slidedown';
 import readXlsxFile from 'read-excel-file';
 import convertToJson from 'read-excel-file/schema';
+import Alert from '../../../components/Alert/Alert';
 import SVGIcon from '../../../images/SVGIcon';
 import dataUseRegistersService from '../../../services/data-use-registers';
 import googleAnalytics from '../../../tracking';

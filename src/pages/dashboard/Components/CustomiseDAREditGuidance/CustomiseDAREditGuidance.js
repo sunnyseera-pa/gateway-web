@@ -27,7 +27,7 @@ export const CustomiseDAREditGuidance = ({ show, onHide, publisherDetails }) => 
         },
     });
 
-    const handleConfirmOk = React.useCallback(async () => {
+    const handleConfirmOk = React.useCallback(() => {
         const content = draftToMarkdown(convertToRaw(editorState.getCurrentContent()));
 
         const { _id } = publisherDetails;
@@ -42,7 +42,7 @@ export const CustomiseDAREditGuidance = ({ show, onHide, publisherDetails }) => 
                     You have successfully updated and published the ${publisherDetails.name} application form and ‘How to request access’ information
                 `);
             });
-    }, [publisherDetails._id]);
+    }, [publisherDetails._id, editorState.getCurrentContent()]);
 
     const handlePublish = React.useCallback(() => {
         setShowConfirm(true);

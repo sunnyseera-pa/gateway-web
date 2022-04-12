@@ -1,7 +1,8 @@
 import { isEmpty } from 'lodash';
 import React, { Fragment, useEffect, useState } from 'react';
-import { Alert, Button, Col, Row, Tab, Tabs } from 'react-bootstrap';
+import { Button, Col, Row, Tab, Tabs } from 'react-bootstrap';
 import { NotificationManager } from 'react-notifications';
+import Alert from '../../components/Alert';
 import { LayoutContent } from '../../components/Layout';
 import SVGIcon from '../../images/SVGIcon';
 import dataUseRegistersService from '../../services/data-use-registers';
@@ -165,8 +166,8 @@ const DataUsePage = React.forwardRef(({ onClickDataUseUpload, team }, ref) => {
                 <Row>
                     <Col className='pl-0 pr-0'>
                         {!isEmpty(alert) && (
-                            <Alert variant='success' className='main-alert'>
-                                <SVGIcon name='check' width={24} height={24} fill='#2C8267' /> {alert}
+                            <Alert variant='success' autoclose>
+                                {alert}
                             </Alert>
                         )}
                     </Col>
@@ -189,8 +190,7 @@ const DataUsePage = React.forwardRef(({ onClickDataUseUpload, team }, ref) => {
                                     handleAnalytics('Clicked upload data use', 'Dashboard button');
 
                                     onClickDataUseUpload();
-                                }}
-                            >
+                                }}>
                                 + Upload
                             </Button>
                         </Col>
@@ -201,8 +201,7 @@ const DataUsePage = React.forwardRef(({ onClickDataUseUpload, team }, ref) => {
                     <Col sm={12} lg={12}>
                         <Tabs
                             defaultActiveKey={team === 'user' || (team !== 'user' && team !== 'admin') ? 'Active' : 'Pending approval'}
-                            className='gray700-13 data-use-tabs'
-                        >
+                            className='gray700-13 data-use-tabs'>
                             {tabs.map(tabName => (
                                 <Tab
                                     eventKey={tabName}
@@ -218,8 +217,7 @@ const DataUsePage = React.forwardRef(({ onClickDataUseUpload, team }, ref) => {
                                             tabName === 'Rejected' &&
                                             `${tabName} (${rejected.length})`) ||
                                         (team !== 'user' && team !== 'admin' && tabName === 'Archived' && `${tabName} (${archived.length})`)
-                                    }
-                                >
+                                    }>
                                     {(team === 'user' || (team !== 'user' && team !== 'admin')) && tabName === 'Active' && (
                                         <Table data={currentActive} active team={team} onClickArchive={onClickArchive} />
                                     )}

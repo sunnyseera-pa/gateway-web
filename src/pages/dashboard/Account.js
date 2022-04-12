@@ -11,6 +11,11 @@ import { DashboardProvider } from '../../context/DashboardContext';
 import { ReactComponent as CheckSVG } from '../../images/check.svg';
 import { ReactComponent as ChevronRightSvg } from '../../images/chevron-bottom.svg';
 import { ReactComponent as UsersIcon } from '../../images/icons/users.svg';
+import { ReactComponent as SettingsIcon } from '../../images/icons/settings.svg';
+import { ReactComponent as ServerIcon } from '../../images/icons/server.svg';
+import { ReactComponent as FlowIcon } from '../../images/icons/flow.svg';
+import { ReactComponent as HelpIcon } from '../../images/icons/help.svg';
+import { ReactComponent as EditFolderIcon } from '../../images/icons/edit-folder.svg';
 import SVGIcon from '../../images/SVGIcon';
 import googleAnalytics from '../../tracking';
 import { getTeam } from '../../utils/auth';
@@ -747,8 +752,8 @@ class Account extends Component {
                                             className={this.getNavActiveClass('teamManagement')}
                                             onClick={e => this.toggleNav('teamManagement')}>
                                             <Nav.Link className='verticalNavBar gray700-13'>
-                                                <SVGIcon name='rolesicon' fill={'#b3b8bd'} className='accountSvgs' />
-                                                <span style={{ marginLeft: '11px' }}>Team Management</span>
+                                                <Icon svg={<SettingsIcon />} fill='grey500' color='grey500' size='2xl' />
+                                                <span className='navLinkItem'>Team Management</span>
                                             </Nav.Link>
                                         </div>
                                         {allowAccessRequestManagement && this.userHasRole(team, ['manager', 'reviewer']) && (
@@ -804,7 +809,7 @@ class Account extends Component {
                                                                 variant='link'
                                                                 className='verticalNavBar gray700-13 navLinkButton'
                                                                 eventKey='1'>
-                                                                <SVGIcon name='dataaccessicon' fill={'#b3b8bd'} className='accountSvgs' />
+                                                                <Icon svg={<EditFolderIcon />} fill='grey500' color='grey500' size='2xl' />
                                                                 <span className='navLinkItem'>Edit DAR Form</span>
                                                             </Accordion.Toggle>
                                                             <Accordion.Collapse eventKey='1'>
@@ -846,20 +851,20 @@ class Account extends Component {
                                                 className={this.getNavActiveClass('datasets')}
                                                 onClick={e => this.toggleNav('datasets', '/account')}>
                                                 <Nav.Link className='verticalNavBar gray700-13' to='/account'>
-                                                    <SVGIcon name='dataseticon' fill={'#b3b8bd'} className='accountSvgs' />
-                                                    <span style={{ 'margin-left': '11px' }}>Datasets</span>
+                                                    <Icon svg={<ServerIcon />} fill='grey500' color='grey500' size='2xl' />
+                                                    <span className='navLinkItem'>Datasets</span>
                                                 </Nav.Link>
                                             </div>
                                         )}
                                         <div className={this.getNavActiveClass('datause')} onClick={e => this.toggleNav('datause')}>
                                             <Nav.Link eventKey={'datause'} className='verticalNavBar gray700-13'>
-                                                <SVGIcon name='datauseicon' fill={'#b3b8bd'} className='accountSvgs' />
+                                                <Icon svg={<FlowIcon />} fill='grey500' color='grey500' size='2xl' />
                                                 <span className='navLinkItem'>Data Uses</span>
                                             </Nav.Link>
                                         </div>
                                         <div className={this.getNavActiveClass('help')} onClick={e => this.toggleNav('help')}>
                                             <Nav.Link className='verticalNavBar gray700-13'>
-                                                <SVGIcon name='info' fill={'#b3b8bd'} className='accountSvgs' />
+                                                <Icon svg={<HelpIcon />} fill='grey500' color='grey500' size='2xl' />
                                                 <span className='navLinkItem'>Help</span>
                                             </Nav.Link>
                                         </div>
