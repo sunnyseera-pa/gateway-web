@@ -85,6 +85,34 @@ const CustomMenu = React.forwardRef(({ children, style, className, 'aria-labelle
     );
 });
 
+const TEAM_USERS_MENU = [
+    {
+        id: 'dashboard',
+        children: 'Dashboard',
+        icon: <BarChartIcon />,
+    },
+    {
+        id: 'youraccount',
+        children: 'Account',
+        icon: <UserIcon />,
+    },
+    {
+        id: 'tools',
+        children: 'Tools',
+        icon: <ToolsIcon />,
+    },
+    {
+        id: 'review',
+        children: 'Reviews',
+        icon: <CommentsIcon />,
+    },
+    { id: 'datause', children: 'Data Uses', icon: <FlowIcon /> },
+    { id: 'papers', children: 'Papers', icon: <PapersIcon /> },
+    { id: 'courses', children: 'Courses', icon: <CoursesIcon /> },
+    { id: 'dataaccessrequests', children: 'Data access requests', icon: <UsersIcon /> },
+    { id: 'collections', children: 'Collections', icon: <BookmarkIcon /> },
+];
+
 class Account extends Component {
     // callback declare
     alertTimeOut;
@@ -638,68 +666,14 @@ class Account extends Component {
 
                                 {team === 'user' && (
                                     <>
-                                        <div className={this.getNavActiveClass('dashboard')} onClick={e => this.toggleNav('dashboard')}>
-                                            <Nav.Link className='verticalNavBar gray700-13'>
-                                                <Icon svg={<BarChartIcon />} fill='grey500' color='grey500' size='2xl' />
-                                                <span className='navLinkItem'>Dashboard</span>
-                                            </Nav.Link>
-                                        </div>
-
-                                        <div className={this.getNavActiveClass('youraccount')} onClick={e => this.toggleNav('youraccount')}>
-                                            <Nav.Link className='verticalNavBar gray700-13'>
-                                                <Icon svg={<UserIcon />} fill='grey500' color='grey500' size='2xl' />
-                                                <span className='navLinkItem'>Account</span>
-                                            </Nav.Link>
-                                        </div>
-
-                                        <DashboardNavItem
-                                            icon={<ToolsIcon />}
-                                            activeClassName={this.getNavActiveClass('tools')}
-                                            onClick={e => this.toggleNav('tools')}>
-                                            Tools
-                                        </DashboardNavItem>
-
-                                        <DashboardNavItem
-                                            icon={<CommentsIcon />}
-                                            activeClassName={this.getNavActiveClass('reviews')}
-                                            onClick={e => this.toggleNav('reviews')}>
-                                            Reviews
-                                        </DashboardNavItem>
-
-                                        <DashboardNavItem
-                                            icon={<FlowIcon />}
-                                            activeClassName={this.getNavActiveClass('datause')}
-                                            onClick={e => this.toggleNav('datause')}>
-                                            Data Uses
-                                        </DashboardNavItem>
-
-                                        <DashboardNavItem
-                                            icon={<PapersIcon />}
-                                            activeClassName={this.getNavActiveClass('papers')}
-                                            onClick={e => this.toggleNav('papers')}>
-                                            Papers
-                                        </DashboardNavItem>
-
-                                        <DashboardNavItem
-                                            icon={<CoursesIcon />}
-                                            activeClassName={this.getNavActiveClass('courses')}
-                                            onClick={e => this.toggleNav('courses')}>
-                                            Courses
-                                        </DashboardNavItem>
-
-                                        <DashboardNavItem
-                                            icon={<PapersIcon />}
-                                            activeClassName={this.getNavActiveClass('dataaccessrequests')}
-                                            onClick={e => this.toggleNav('dataaccessrequests')}>
-                                            Data access requests
-                                        </DashboardNavItem>
-
-                                        <DashboardNavItem
-                                            icon={<BookmarkIcon />}
-                                            activeClassName={this.getNavActiveClass('collections')}
-                                            onClick={e => this.toggleNav('collections')}>
-                                            Collections
-                                        </DashboardNavItem>
+                                        {TEAM_USERS_MENU.map(({ id, ...outerProps }) => (
+                                            <DashboardNavItem
+                                                icon={<BarChartIcon />}
+                                                activeClassName={this.getNavActiveClass(id)}
+                                                onClick={e => this.toggleNav(id)}
+                                                {...outerProps}
+                                            />
+                                        ))}
 
                                         {userState[0].role === 'Admin' && (
                                             <DashboardNavItem
