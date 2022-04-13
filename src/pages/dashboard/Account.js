@@ -3,12 +3,24 @@ import axios from 'axios';
 import _ from 'lodash';
 import queryString from 'query-string';
 import React, { Component, Fragment, useState } from 'react';
-import { Accordion, Dropdown, Nav } from 'react-bootstrap';
+import { Dropdown, Nav } from 'react-bootstrap';
 import { Route, withRouter } from 'react-router-dom';
 import 'react-web-tabs/dist/react-web-tabs.css';
 import { DashboardProvider } from '../../context/DashboardContext';
 import { ReactComponent as CheckSVG } from '../../images/check.svg';
 import { ReactComponent as ChevronRightSvg } from '../../images/chevron-bottom.svg';
+import { ReactComponent as BarChartIcon } from '../../images/icons/bar-chart.svg';
+import { ReactComponent as BookmarkIcon } from '../../images/icons/bookmark.svg';
+import { ReactComponent as CommentsIcon } from '../../images/icons/comments.svg';
+import { ReactComponent as CoursesIcon } from '../../images/icons/courses.svg';
+import { ReactComponent as FlowIcon } from '../../images/icons/flow.svg';
+import { ReactComponent as HelpIcon } from '../../images/icons/help.svg';
+import { ReactComponent as PapersIcon } from '../../images/icons/papers.svg';
+import { ReactComponent as ServerIcon } from '../../images/icons/server.svg';
+import { ReactComponent as SettingsIcon } from '../../images/icons/settings.svg';
+import { ReactComponent as ToolsIcon } from '../../images/icons/tools.svg';
+import { ReactComponent as UserIcon } from '../../images/icons/user.svg';
+import { ReactComponent as UsersIcon } from '../../images/icons/users.svg';
 import SVGIcon from '../../images/SVGIcon';
 import googleAnalytics from '../../tracking';
 import { getTeam } from '../../utils/auth';
@@ -34,6 +46,9 @@ import AccountTools from './AccountTools';
 import AccountUsers from './AccountUsers';
 import AccountDataset from './Components/AccountDataset';
 import AccountDatasets from './Components/AccountDatasets';
+import AccountDataUse from './Components/AccountDataUse';
+import DashboardNavAccordian from './Components/DashboardNavAccordian';
+import DashboardNavItem from './Components/DashboardNavItem';
 import './Dashboard.scss';
 import DataAccessRequests from './DataAccessRequests/DataAccessRequests';
 import ReviewTools from './ReviewTools';
@@ -51,8 +66,7 @@ const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
         onClick={e => {
             e.preventDefault();
             onClick(e);
-        }}
-    >
+        }}>
         {children}
     </a>
 ));
@@ -186,6 +200,14 @@ class Account extends Component {
                     team = localStorage.getItem('HDR_TEAM');
                 }
 
+                let activeAccordion = -1;
+
+                if (values.tab === 'dataaccessrequests' || values.tab === 'workflows') {
+                    activeAccordion = '0';
+                } else if (values.tab === 'datause' || values.tab === 'datause_widget') {
+                    activeAccordion = '2';
+                }
+
                 this.setState({
                     tabId: values.tab,
                     isDeleted: values.accountDeleted,
@@ -194,8 +216,20 @@ class Account extends Component {
                     isReviewApproved: values.reviewApproved,
                     isReviewRejected: values.reviewRejected,
                     team,
-                    activeAccordion: values.tab === 'dataaccessrequests' || values.tab === 'workflows' ? '0' : -1,
+                    activeAccordion,
                 });
+
+                if (team !== 'user' && team !== 'admin') {
+                    await axios.get(baseURL + `/api/v1/publishers/${team}`).then(res => {
+                        let publisherDetails = res.data.publisher;
+                        if (!publisherDetails.allowAccessRequestManagement && values.tab === 'dataaccessrequests')
+                            this.setState({ tabId: 'teamManagement' });
+                        this.setState({
+                            allowWorkflow: publisherDetails.workflowEnabled,
+                            allowAccessRequestManagement: publisherDetails.allowAccessRequestManagement,
+                        });
+                    });
+                }
 
                 if (team !== 'user' && team !== 'admin') {
                     this.setState({
@@ -323,8 +357,7 @@ class Account extends Component {
                                 onClick={e => {
                                     this.toggleNav(`${this.state.tabId}&team=${pub._id}`);
                                     this.setState({ team: pub._id });
-                                }}
-                            >
+                                }}>
                                 {pub.name}
                             </Dropdown.Item>
                         </>
@@ -355,8 +388,7 @@ class Account extends Component {
                     onClick={e => {
                         this.toggleNav(`datasets&team=admin`);
                         this.setState({ team: 'admin' });
-                    }}
-                >
+                    }}>
                     HDR Admin
                 </Dropdown.Item>
             );
@@ -409,12 +441,12 @@ class Account extends Component {
             // 3. need to check for teams returns {tabId: '', team: ''}; eg dataccessrequests&team=ALLIANCE
             let tab = this.generateTabObject(tabId);
             // 4. check if user has teams and the current nav is dataaccessrequests, keep expanded
-            if (
-                !_.isEmpty(user.teams) &&
-                (tab.tabId === 'dataaccessrequests' || tab.tabId === 'workflows' || tab.tabId === 'addeditworkflow') &&
-                activeAccordion !== '0'
-            ) {
-                activeAccordion = '0';
+            if (!_.isEmpty(user.teams)) {
+                if (tab.tabId === 'dataaccessrequests' || tab.tabId === 'workflows' || tab.tabId === 'addeditworkflow') {
+                    activeAccordion = '0';
+                } else if (tab.tabId === 'datause' || tab.tabId === 'datause_widget') {
+                    activeAccordion = '2';
+                }
             }
 
             if (!_.isEmpty(tab.team)) {
@@ -442,8 +474,8 @@ class Account extends Component {
         }
     };
 
-    accordionClick = () => {
-        this.setState({ activeAccordion: '0' });
+    accordionClick = activeAccordion => {
+        this.setState({ activeAccordion });
     };
 
     userHasRole(teamId, role) {
@@ -554,6 +586,69 @@ class Account extends Component {
             dataaccessrequest,
         } = this.state;
 
+        const TEAM_USERS_MENU = [
+            {
+                id: 'dashboard',
+                children: 'Dashboard',
+                icon: <BarChartIcon />,
+            },
+            {
+                id: 'youraccount',
+                children: 'Account',
+                icon: <UserIcon />,
+            },
+            {
+                id: 'tools',
+                children: 'Tools',
+                icon: <ToolsIcon />,
+            },
+            {
+                id: 'review',
+                children: 'Reviews',
+                icon: <CommentsIcon />,
+            },
+            { id: 'datause', children: 'Data Uses', icon: <FlowIcon /> },
+            { id: 'papers', children: 'Papers', icon: <PapersIcon /> },
+            { id: 'courses', children: 'Courses', icon: <CoursesIcon /> },
+            { id: 'dataaccessrequests', children: 'Data access requests', icon: <UsersIcon /> },
+            { id: 'collections', children: 'Collections', icon: <BookmarkIcon /> },
+            ...(userState[0].role === 'Admin' ? [{ id: 'usersroles', children: 'Users and roles', icon: <UsersIcon /> }] : []),
+        ];
+
+        const ACCORDIAN_DAR_MENU = {
+            text: 'Data access requests',
+            icon: <UsersIcon />,
+            children: [
+                {
+                    text: 'Applications',
+                    id: 'dataaccessrequests',
+                },
+                ...(allowWorkflow && this.userHasRole(team, 'manager')
+                    ? [
+                          {
+                              id: 'workflows',
+                              text: 'Workflows',
+                          },
+                      ]
+                    : []),
+            ],
+        };
+
+        const ACCORDIAN_DUR_MENU = {
+            text: 'Data Uses',
+            icon: <FlowIcon />,
+            children: [
+                {
+                    text: 'Dashboard',
+                    id: 'datause',
+                },
+                {
+                    text: 'Data use widget',
+                    id: 'datause_widget',
+                },
+            ],
+        };
+
         return (
             <Sentry.ErrorBoundary fallback={<ErrorModal />}>
                 <DashboardProvider value={this.state.dashboardState}>
@@ -586,109 +681,35 @@ class Account extends Component {
                                     </Dropdown.Menu>
                                 </Dropdown>
 
-                                {team === 'user' ? (
-                                    <Fragment>
-                                        <div className={this.getNavActiveClass('dashboard')} onClick={e => this.toggleNav('dashboard')}>
-                                            <Nav.Link className='verticalNavBar gray700-13'>
-                                                <SVGIcon name='dashboard' fill={'#b3b8bd'} className='accountSvgs' />
-                                                <span className='navLinkItem'>Dashboard</span>
-                                            </Nav.Link>
-                                        </div>
-
-                                        <div className={this.getNavActiveClass('youraccount')} onClick={e => this.toggleNav('youraccount')}>
-                                            <Nav.Link className='verticalNavBar gray700-13'>
-                                                <SVGIcon name='accounticon' fill={'#b3b8bd'} className='accountSvgs' />
-                                                <span className='navLinkItem'>Account</span>
-                                            </Nav.Link>
-                                        </div>
-
-                                        <div className={this.getNavActiveClass('tools')} onClick={e => this.toggleNav('tools')}>
-                                            <Nav.Link className='verticalNavBar gray700-13'>
-                                                <SVGIcon name='newtoolicon' fill={'#b3b8bd'} className='accountSvgs' />
-                                                <span className='navLinkItem'>Tools</span>
-                                            </Nav.Link>
-                                        </div>
-
-                                        <div className={this.getNavActiveClass('reviews')} onClick={e => this.toggleNav('reviews')}>
-                                            <Nav.Link className='verticalNavBar gray700-13'>
-                                                <SVGIcon name='reviewsicon' fill={'#b3b8bd'} className='accountSvgs' />
-                                                <span className='navLinkItem'>Reviews</span>
-                                            </Nav.Link>
-                                        </div>
-
-                                        <div className={this.getNavActiveClass('datause')} onClick={e => this.toggleNav('datause')}>
-                                            <Nav.Link eventKey={'datause'} className='verticalNavBar gray700-13'>
-                                                <SVGIcon name='datauseicon' fill={'#b3b8bd'} className='accountSvgs' />
-                                                <span className='navLinkItem'>Data Uses</span>
-                                            </Nav.Link>
-                                        </div>
-
-                                        <div className={this.getNavActiveClass('papers')} onClick={e => this.toggleNav('papers')}>
-                                            <Nav.Link eventKey={'papers'} className='verticalNavBar gray700-13'>
-                                                <SVGIcon name='newprojecticon' fill={'#b3b8bd'} className='accountSvgs' />
-                                                <span className='navLinkItem'>Papers</span>
-                                            </Nav.Link>
-                                        </div>
-
-                                        <div className={this.getNavActiveClass('courses')} onClick={e => this.toggleNav('courses')}>
-                                            <Nav.Link eventKey={'courses'} className='verticalNavBar gray700-13'>
-                                                <SVGIcon name='educationicon' fill={'#b3b8bd'} className='svg-20' />
-                                                <span className='navLinkItem'>Courses</span>
-                                            </Nav.Link>
-                                        </div>
-
-                                        <div
-                                            className={this.getNavActiveClass('dataaccessrequests')}
-                                            onClick={e => this.toggleNav('dataaccessrequests')}
-                                        >
-                                            <Nav.Link eventKey={'dataaccessrequests'} className='verticalNavBar gray700-13'>
-                                                <SVGIcon name='newprojecticon' fill={'#b3b8bd'} className='accountSvgs' />
-                                                <span className='navLinkItem'>Data access requests</span>
-                                            </Nav.Link>
-                                        </div>
-
-                                        <div className={this.getNavActiveClass('collections')} onClick={e => this.toggleNav('collections')}>
-                                            <Nav.Link eventKey={'collections'} className='verticalNavBar gray700-13'>
-                                                <SVGIcon name='collections' fill={'#b3b8bd'} className='accountSvgs' />
-                                                <span className='navLinkItem'>Collections</span>
-                                            </Nav.Link>
-                                        </div>
-
-                                        {userState[0].role === 'Admin' ? (
-                                            <div
-                                                className={this.getNavActiveClass('usersroles')}
-                                                onClick={e => this.toggleNav('usersroles')}
-                                            >
-                                                <Nav.Link eventKey={'usersroles'} className='verticalNavBar gray700-13'>
-                                                    <SVGIcon name='rolesicon' fill={'#b3b8bd'} className='accountSvgs' />
-                                                    <span className='navLinkItem'>Users and roles</span>
-                                                </Nav.Link>
-                                            </div>
-                                        ) : (
-                                            ''
-                                        )}
-                                    </Fragment>
-                                ) : (
-                                    ''
+                                {team === 'user' && (
+                                    <>
+                                        {TEAM_USERS_MENU.map(({ id, ...outerProps }) => (
+                                            <DashboardNavItem
+                                                icon={<BarChartIcon />}
+                                                activeClassName={this.getNavActiveClass(id)}
+                                                onClick={e => this.toggleNav(id)}
+                                                {...outerProps}
+                                            />
+                                        ))}
+                                    </>
                                 )}
 
-                                {team === 'admin' ? (
-                                    <Fragment>
-                                        <div
-                                            className={this.getNavActiveClass('datasets')}
+                                {team === 'admin' && (
+                                    <>
+                                        <DashboardNavItem
+                                            icon={<UsersIcon />}
+                                            activeClassName={this.getNavActiveClass('datasets')}
                                             onClick={e => this.toggleNav('datasets', '/account')}
-                                        >
-                                            <Nav.Link className='verticalNavBar gray700-13' activeClassName='is-active' to='/account'>
-                                                <SVGIcon name='dataseticon' fill={'#b3b8bd'} className='accountSvgs' />
-                                                <span style={{ 'margin-left': '11px' }}>Datasets</span>
-                                            </Nav.Link>
-                                        </div>
-                                        <div className={this.getNavActiveClass('datause')} onClick={e => this.toggleNav('datause')}>
-                                            <Nav.Link eventKey={'datause'} className='verticalNavBar gray700-13'>
-                                                <SVGIcon name='datauseicon' fill={'#b3b8bd'} className='accountSvgs' />
-                                                <span className='navLinkItem'>Data Uses</span>
-                                            </Nav.Link>
-                                        </div>
+                                            to='/account'>
+                                            Datasets
+                                        </DashboardNavItem>
+
+                                        <DashboardNavItem
+                                            icon={<FlowIcon />}
+                                            activeClassName={this.getNavActiveClass('datause')}
+                                            onClick={e => this.toggleNav('datause')}>
+                                            Data Uses
+                                        </DashboardNavItem>
 
                                         <div className={this.getNavActiveClass('teams')} onClick={e => this.toggleNav('teams')}>
                                             <Nav.Link className='verticalNavBar gray700-13'>
@@ -703,88 +724,59 @@ class Account extends Component {
                                                 <span style={{ 'margin-left': '5px' }}>Teams</span>
                                             </Nav.Link>
                                         </div>
-                                    </Fragment>
-                                ) : (
-                                    ''
+                                    </>
                                 )}
 
-                                {team !== 'user' && team !== 'admin' ? (
-                                    <Fragment>
-                                        <div
-                                            className={this.getNavActiveClass('teamManagement')}
-                                            onClick={e => this.toggleNav('teamManagement')}
-                                        >
-                                            <Nav.Link className='verticalNavBar gray700-13'>
-                                                <SVGIcon name='rolesicon' fill={'#b3b8bd'} className='accountSvgs' />
-                                                <span style={{ marginLeft: '11px' }}>Team Management</span>
-                                            </Nav.Link>
-                                        </div>
+                                {team !== 'user' && team !== 'admin' && (
+                                    <>
+                                        <DashboardNavItem
+                                            icon={<SettingsIcon />}
+                                            activeClassName={this.getNavActiveClass('teamManagement')}
+                                            onClick={e => this.toggleNav('teamManagement')}>
+                                            Team Management
+                                        </DashboardNavItem>
+
                                         {allowAccessRequestManagement && this.userHasRole(team, ['manager', 'reviewer']) && (
                                             <div className={this.getNavActiveClass(['dataaccessrequests', 'workflows', 'addeditworkflow'])}>
-                                                <Accordion activeKey={activeAccordion} onSelect={this.accordionClick}>
-                                                    <Fragment>
-                                                        <Accordion.Toggle
-                                                            variant='link'
-                                                            className='verticalNavBar gray700-13 navLinkButton'
-                                                            eventKey='0'
-                                                        >
-                                                            <SVGIcon name='dataaccessicon' fill={'#b3b8bd'} className='accountSvgs' />
-                                                            <span className='navLinkItem'>Data access requests</span>
-                                                        </Accordion.Toggle>
-                                                        <Accordion.Collapse eventKey='0'>
-                                                            <div>
-                                                                <Nav.Link
-                                                                    onClick={e => this.toggleNav('dataaccessrequests')}
-                                                                    bsPrefix='nav-block'
-                                                                    className={`gray700-13 ${
-                                                                        tabId === 'dataaccessrequests' ? 'nav-item-active' : ''
-                                                                    }`}
-                                                                >
-                                                                    <span className='subLinkItem'>Applications</span>
-                                                                </Nav.Link>
-                                                                {allowWorkflow && this.userHasRole(team, 'manager') && (
-                                                                    <Nav.Link
-                                                                        onClick={e => this.toggleNav(`workflows`)}
-                                                                        bsPrefix='nav-block'
-                                                                        className={`gray700-13 ${
-                                                                            tabId === 'workflows' ? 'nav-item-active' : ''
-                                                                        }`}
-                                                                    >
-                                                                        <span className='subLinkItem'>Workflows</span>
-                                                                    </Nav.Link>
-                                                                )}
-                                                            </div>
-                                                        </Accordion.Collapse>
-                                                    </Fragment>
-                                                </Accordion>
+                                                <DashboardNavAccordian
+                                                    onSelect={this.accordionClick}
+                                                    onClick={this.toggleNav}
+                                                    tabId={tabId}
+                                                    activeKey={activeAccordion}
+                                                    eventKey='0'
+                                                    data={ACCORDIAN_DAR_MENU}
+                                                />
                                             </div>
                                         )}
+
                                         {this.userHasRole(team, ['manager', 'metadata_editor']) && (
-                                            <div
-                                                className={this.getNavActiveClass('datasets')}
+                                            <DashboardNavItem
+                                                icon={<ServerIcon />}
+                                                activeClassName={this.getNavActiveClass('datasets')}
                                                 onClick={e => this.toggleNav('datasets', '/account')}
-                                            >
-                                                <Nav.Link className='verticalNavBar gray700-13' to='/account'>
-                                                    <SVGIcon name='dataseticon' fill={'#b3b8bd'} className='accountSvgs' />
-                                                    <span style={{ 'margin-left': '11px' }}>Datasets</span>
-                                                </Nav.Link>
-                                            </div>
+                                                to='/account'>
+                                                Datasets
+                                            </DashboardNavItem>
                                         )}
-                                        <div className={this.getNavActiveClass('datause')} onClick={e => this.toggleNav('datause')}>
-                                            <Nav.Link eventKey={'datause'} className='verticalNavBar gray700-13'>
-                                                <SVGIcon name='datauseicon' fill={'#b3b8bd'} className='accountSvgs' />
-                                                <span className='navLinkItem'>Data Uses</span>
-                                            </Nav.Link>
+
+                                        <div className={this.getNavActiveClass(['datause', 'datause_widget'])}>
+                                            <DashboardNavAccordian
+                                                onSelect={this.accordionClick}
+                                                onClick={this.toggleNav}
+                                                tabId={tabId}
+                                                activeKey={activeAccordion}
+                                                eventKey='2'
+                                                data={ACCORDIAN_DUR_MENU}
+                                            />
                                         </div>
-                                        <div className={this.getNavActiveClass('help')} onClick={e => this.toggleNav('help')}>
-                                            <Nav.Link className='verticalNavBar gray700-13'>
-                                                <SVGIcon name='info' fill={'#b3b8bd'} className='accountSvgs' />
-                                                <span className='navLinkItem'>Help</span>
-                                            </Nav.Link>
-                                        </div>
-                                    </Fragment>
-                                ) : (
-                                    ''
+
+                                        <DashboardNavItem
+                                            icon={<HelpIcon />}
+                                            activeClassName={this.getNavActiveClass('help')}
+                                            onClick={e => this.toggleNav('help')}>
+                                            Help
+                                        </DashboardNavItem>
+                                    </>
                                 )}
                             </div>
                         </div>
@@ -860,8 +852,8 @@ class Account extends Component {
                                     {allowAccessRequestManagement && this.userHasRole(team, ['manager', 'reviewer']) && (
                                         <>
                                             {' '}
-                                            {tabId === 'dataaccessrequests' ? (
-                                                _.isEmpty(dataaccessrequest) ? (
+                                            {tabId === 'dataaccessrequests' &&
+                                                (_.isEmpty(dataaccessrequest) ? (
                                                     <DataAccessRequests
                                                         setDataAccessRequest={this.setDataAccessRequest}
                                                         userState={userState}
@@ -877,61 +869,48 @@ class Account extends Component {
                                                         ref={this.activityLog}
                                                         onUpdateLogs={this.loadActivityLogNotifications}
                                                     />
-                                                )
-                                            ) : (
-                                                ''
-                                            )}
+                                                ))}
                                         </>
                                     )}
 
-                                    {(this.userHasRole(team, ['manager', 'metadata_editor']) || team === 'admin') && (
-                                        <>
-                                            {tabId === 'datasets' ? (
-                                                <AccountDatasets userState={userState} team={team} alert={alert} />
-                                            ) : (
-                                                ''
-                                            )}
-                                        </>
+                                    {(this.userHasRole(team, ['manager', 'metadata_editor']) || team === 'admin') &&
+                                        tabId === 'datasets' && <AccountDatasets userState={userState} team={team} alert={alert} />}
+
+                                    {team === 'admin' && tabId === 'teams' && (
+                                        <AccountTeams
+                                            userState={userState}
+                                            onTeamsTabChange={this.onTeamsTabChange}
+                                            team={team}
+                                            alert={alert}
+                                        />
                                     )}
 
-                                    {team === 'admin' && (
-                                        <>
-                                            {tabId === 'teams' && (
-                                                <AccountTeams
-                                                    userState={userState}
-                                                    onTeamsTabChange={this.onTeamsTabChange}
-                                                    team={team}
-                                                    alert={alert}
-                                                />
-                                            )}
-                                        </>
+                                    {tabId === 'datause' && showDataUseUploadPage && (
+                                        <DataUseUpload
+                                            userState={userState}
+                                            team={team}
+                                            ref={this.dataUseUpload}
+                                            dataUsePage={this.dataUsePage}
+                                            onSubmit={this.toggleDataUseUploadPage}
+                                        />
                                     )}
 
-                                    {tabId === 'datause' ? (
-                                        showDataUseUploadPage ? (
-                                            <DataUseUpload
-                                                userState={userState}
-                                                team={team}
-                                                ref={this.dataUseUpload}
-                                                dataUsePage={this.dataUsePage}
-                                                onSubmit={this.toggleDataUseUploadPage}
-                                            />
-                                        ) : (
-                                            <DataUsePage
-                                                userState={userState}
-                                                team={team}
-                                                onClickDataUseUpload={this.toggleDataUseUploadPage}
-                                                ref={this.dataUsePage}
-                                            />
-                                        )
-                                    ) : (
-                                        ''
+                                    {(tabId === 'datause' || tabId === 'datause_widget') && !showDataUseUploadPage && (
+                                        <AccountDataUse
+                                            tabId={tabId}
+                                            userState={userState}
+                                            team={team}
+                                            onClickDataUseUpload={this.toggleDataUseUploadPage}
+                                            ref={this.dataUsePage}
+                                            onSelectTab={this.toggleNav}
+                                        />
                                     )}
 
-                                    {allowWorkflow && this.userHasRole(team, 'manager') && (
-                                        <>{tabId === 'workflows' ? <WorkflowDashboard userState={userState} team={team} /> : ''}</>
+                                    {allowWorkflow && this.userHasRole(team, 'manager') && tabId === 'workflows' && (
+                                        <WorkflowDashboard userState={userState} team={team} />
                                     )}
-                                    {tabId === 'teamManagement' ? (
+
+                                    {tabId === 'teamManagement' && (
                                         <AccountTeamManagement
                                             userState={userState}
                                             team={team}
@@ -943,9 +922,8 @@ class Account extends Component {
                                             onTeamManagementTabChange={this.onTeamManagementTabChange}
                                             onClearInnerTab={this.onClearInnerTab}
                                         />
-                                    ) : (
-                                        ''
                                     )}
+
                                     {tabId === 'help' ? <TeamHelp /> : ''}
                                 </>
                             ) : (
@@ -986,8 +964,7 @@ class Account extends Component {
                                     className={savedTeamNotificationSuccess ? 'button-teal' : 'button-primary'}
                                     type='button'
                                     onClick={this.onSaveNotificationsClick}
-                                    disabled={isSubmitting}
-                                >
+                                    disabled={isSubmitting}>
                                     {' '}
                                     {savedTeamNotificationSuccess ? (
                                         <div>

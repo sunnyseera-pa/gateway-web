@@ -79,6 +79,7 @@ export const theme = {
         platinum700: '#4682B4',
         green50: '#E2F3F0',
         green400: '#3DB28C',
+        grey500: '#B3B8BD',
         green600: '#329276',
         green700: '#2c8267',
         grey: '#F6F7F8',
