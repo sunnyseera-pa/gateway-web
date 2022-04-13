@@ -49,17 +49,17 @@ export const THEME_INPUT = {
 };
 
 export const THEME_FONT_SIZES = {
-    xxs: '7.52px',
-    xs: '9.03px',
-    sm: '10.83px',
+    xxs: '8px',
+    xs: '10px',
+    sm: '12px',
     md: '13px',
     default: '13px',
-    lg: '15.6px',
-    xl: '18.72px',
-    '2xl': '22.46px',
-    '3xl': '26.96px',
-    '4xl': '32.35px',
-    '5xl': '38.82px',
+    lg: '16px',
+    xl: '20px',
+    '2xl': '24px',
+    '3xl': '28px',
+    '4xl': '32px',
+    '5xl': '40px',
 };
 
 export const theme = {
@@ -150,31 +150,34 @@ export const theme = {
         Typography: {
             variants: {
                 h1: {
-                    size: THEME_FONT_SIZES['5xl'],
+                    fontSize: THEME_FONT_SIZES['5xl'],
                 },
                 h2: {
-                    size: THEME_FONT_SIZES['4xl'],
+                    fontSize: THEME_FONT_SIZES['4xl'],
                 },
                 h3: {
-                    size: THEME_FONT_SIZES['3xl'],
+                    fontSize: THEME_FONT_SIZES['3xl'],
                 },
                 h4: {
-                    size: THEME_FONT_SIZES['2xl'],
+                    fontSize: THEME_FONT_SIZES['2xl'],
                 },
                 h5: {
-                    size: THEME_FONT_SIZES.xl,
+                    fontSize: THEME_FONT_SIZES.xl,
                 },
                 h6: {
-                    size: THEME_FONT_SIZES.lg,
+                    fontSize: THEME_FONT_SIZES.lg,
                 },
                 body: {
-                    size: THEME_FONT_SIZES.md,
+                    fontSize: THEME_FONT_SIZES.md,
+                    lineHeight: '20px',
                 },
                 caption: {
-                    size: THEME_FONT_SIZES.sm,
+                    fontSize: THEME_FONT_SIZES.sm,
+                    lineHeight: '16px',
                 },
                 tiny: {
-                    size: THEME_FONT_SIZES.xs,
+                    fontSize: THEME_FONT_SIZES.xs,
+                    lineHeight: '14px',
                 },
             },
         },
