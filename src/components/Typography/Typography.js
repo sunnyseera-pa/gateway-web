@@ -28,11 +28,13 @@ const Typography = ({ children, className, mt, mb, ml, mr, width, minWidth, maxW
 
 Typography.propTypes = {
     children: PropTypes.node,
+    variant: PropTypes.oneOf(['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'body', 'caption', 'tiny']),
     ...PROP_TYPES_LAYOUTBOX,
 };
 
 Typography.defaultProps = {
     children: null,
+    variant: 'body',
 };
 
 export default Typography;
