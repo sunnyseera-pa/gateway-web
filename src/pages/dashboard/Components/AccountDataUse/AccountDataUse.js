@@ -3,7 +3,7 @@ import { Tab, Tabs } from 'react-bootstrap';
 import { LayoutContent } from '../../../../components/Layout';
 import Typography from '../../../../components/Typography';
 import DataUsePage from '../../../dataUse/DataUsePage';
-import DataUseWidget from '../../../dataUse/DataUseWidget';
+import DataUseWidget from '../../../dataUse/widget/DataUseWidget';
 
 const AccountDataUse = ({ tabId, userState, team, onClickDataUseUpload, onSelectTab, ref }) => {
     const [activeTab, setActiveTab] = React.useState(tabId);

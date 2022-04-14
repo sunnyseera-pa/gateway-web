@@ -6,7 +6,7 @@ import LayoutBox from '../LayoutBox';
 import { PROP_TYPES_LAYOUTBOX } from '../LayoutBox/LayoutBox.propTypes';
 import * as styles from './Typography.styles';
 
-const Typography = ({ children, className, mt, mb, ml, mr, width, minWidth, maxWidth, variant }) => {
+const Typography = ({ children, color, className, mt, mb, ml, mr, width, minWidth, maxWidth, variant }) => {
     let tagName = variant;
 
     if (variant === 'body') {
@@ -20,7 +20,7 @@ const Typography = ({ children, className, mt, mb, ml, mr, width, minWidth, maxW
             {...{ mt, mb, ml, mr, width, minWidth, maxWidth }}
             as={tagName}
             className={cx('ui-Typography', className)}
-            css={styles.root({ variant })}>
+            css={styles.root({ variant, color })}>
             {children}
         </LayoutBox>
     );
@@ -29,12 +29,14 @@ const Typography = ({ children, className, mt, mb, ml, mr, width, minWidth, maxW
 Typography.propTypes = {
     children: PropTypes.node,
     variant: PropTypes.oneOf(['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'body', 'caption', 'tiny']),
+    color: PropTypes.string,
     ...PROP_TYPES_LAYOUTBOX,
 };
 
 Typography.defaultProps = {
     children: null,
     variant: 'body',
+    color: 'inherit',
 };
 
 export default Typography;

@@ -6,15 +6,21 @@ export const root =
         const {
             colors,
             components: {
-                Checkbox: { height, width, variants },
+                Checkbox: { height, width, variants, fontSize, disabledColor },
             },
         } = theme;
 
         return css`
             ${mixins.root({ width })}
 
+            font-size: ${fontSize};
+
             &::before {
                 ${mixins.before({ colors, variants, variant, width, height })}
+            }
+
+            input:disabled + span {
+                color: ${colors[disabledColor]};
             }
 
             input + .ui-Checkbox__label::after {
