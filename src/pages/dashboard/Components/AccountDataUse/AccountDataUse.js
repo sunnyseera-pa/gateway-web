@@ -1,8 +1,9 @@
 import React from 'react';
-import { Col, Row, Tab, Tabs } from 'react-bootstrap';
-import DataUsePage from '../../../dataUse/DataUsePage';
-import Typography from '../../../../components/Typography';
+import { Tab, Tabs } from 'react-bootstrap';
 import { LayoutContent } from '../../../../components/Layout';
+import Typography from '../../../../components/Typography';
+import DataUsePage from '../../../dataUse/DataUsePage';
+import DataUseWidget from '../../../dataUse/DataUseWidget';
 
 const AccountDataUse = ({ tabId, userState, team, onClickDataUseUpload, onSelectTab, ref }) => {
     const [activeTab, setActiveTab] = React.useState(tabId);
@@ -12,6 +13,10 @@ const AccountDataUse = ({ tabId, userState, team, onClickDataUseUpload, onSelect
 
         onSelectTab(activeKey);
     });
+
+    React.useEffect(() => {
+        setActiveTab(tabId);
+    }, [tabId]);
 
     return (
         <>
@@ -29,6 +34,9 @@ const AccountDataUse = ({ tabId, userState, team, onClickDataUseUpload, onSelect
             </LayoutContent>
 
             {tabId === 'datause' && <DataUsePage userState={userState} team={team} onClickDataUseUpload={onClickDataUseUpload} ref={ref} />}
+            {tabId === 'datause_widget' && (
+                <DataUseWidget userState={userState} team={team} onClickDataUseUpload={onClickDataUseUpload} ref={ref} />
+            )}
         </>
     );
 };
