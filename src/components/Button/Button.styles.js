@@ -45,6 +45,7 @@ export const root =
                 background: ${colors[disabledBackground]};
                 color: ${colors[disabledColor]};
                 border: 1px solid ${colors[disabledBorderColor]};
+                cursor: default;
             }
         `;
     };

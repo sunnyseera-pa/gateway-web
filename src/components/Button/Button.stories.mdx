@@ -8,27 +8,48 @@ import Button from './Button';
         {props => (
             <>
                 <div>
-                    <Button {...props} mb={4}>
+                    <Button {...props} mb={4} mr={2}>
                         Primary
                     </Button>
-                    <Button {...props} mb={4} mr={2}>
+                    <Button {...props} mb={4} disabled>
                         Primary (disabled)
                     </Button>
                 </div>
                 <div>
-                    <Button {...props} variant='secondary'>
+                    <Button {...props} variant='secondary' mb={4} mr={2}>
                         Secondary
                     </Button>
-                    <Button {...props} variant='secondary'>
+                    <Button {...props} variant='secondary' mb={4} disabled>
                         Secondary (disabled)
                     </Button>
                 </div>
                 <div>
-                    <Button {...props} variant='tertiary'>
+                    <Button {...props} variant='tertiary' mb={4} mr={2}>
                         Tertiary
                     </Button>
-                    <Button {...props} variant='tertiary'>
+                    <Button {...props} variant='tertiary' mb={4} disabled>
                         Tertiary (disabled)
+                    </Button>
+                </div>
+            </>
+        )}
+    </Story>
+    <Story name='Sizes'>
+        {props => (
+            <>
+                <div>
+                    <Button {...props} mb={4} size='large'>
+                        Primary
+                    </Button>
+                </div>
+                <div>
+                    <Button {...props} mb={4}>
+                        Primary
+                    </Button>
+                </div>
+                <div>
+                    <Button {...props} mb={4} size='small'>
+                        Primary
                     </Button>
                 </div>
             </>

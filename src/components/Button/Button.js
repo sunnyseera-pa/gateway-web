@@ -5,14 +5,9 @@ import LayoutBox from '../LayoutBox';
 import { PROP_TYPES_LAYOUTBOX } from '../LayoutBox/LayoutBox.propTypes';
 import * as styles from './Button.styles';
 
-const Button = ({ variant, disabled, children, size, mt, mb, ml, mr, width, minWidth, maxWidth, ...outerProps }) => {
+const Button = ({ variant, children, size, mt, mb, ml, mr, width, minWidth, maxWidth, ...outerProps }) => {
     return (
-        <LayoutBox
-            {...{ mt, mb, ml, mr, width, minWidth, maxWidth }}
-            as='button'
-            css={styles.root({ variant, size })}
-            type='button'
-            disabled={disabled}>
+        <LayoutBox {...{ mt, mb, ml, mr, width, minWidth, maxWidth }} as='button' css={styles.root({ variant, size })} {...outerProps}>
             {children}
         </LayoutBox>
     );

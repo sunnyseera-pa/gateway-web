@@ -130,10 +130,10 @@ export const theme = {
             sizes: {
                 small: {
                     fontSize: THEME_FONT_SIZES.xs,
-                    padding: '6px 10px',
+                    padding: '6px 12px',
                 },
-                default: { height: '40px', fontSize: THEME_FONT_SIZES.md, padding: '10px 16px' },
-                large: { height: '50px', fontSize: THEME_FONT_SIZES.xl, padding: '14px 22px' },
+                default: { fontSize: THEME_FONT_SIZES.md, padding: '10px 16px' },
+                large: { fontSize: THEME_FONT_SIZES.lg, padding: '14px 20px' },
             },
             variants: {
                 primary: {
@@ -159,12 +159,12 @@ export const theme = {
                 },
                 tertiary: {
                     background: 'grey200',
-                    disabledBackground: 'grey300',
+                    disabledBackground: 'grey200',
                     hoverBackground: 'grey300',
                     borderColor: 'grey200',
                     hoverBorderColor: 'grey300',
                     color: 'grey800',
-                    disabledBorderColor: 'grey300',
+                    disabledBorderColor: 'grey200',
                     disabledColor: 'grey500',
                 },
             },

@@ -23,7 +23,7 @@ import { ReactComponent as UserIcon } from '../../images/icons/user.svg';
 import { ReactComponent as UsersIcon } from '../../images/icons/users.svg';
 import SVGIcon from '../../images/SVGIcon';
 import googleAnalytics from '../../tracking';
-import { getTeam } from '../../utils/auth';
+import { getTeam, isAdmin, isCustodian, isUser } from '../../utils/auth';
 import { isRouteMatch } from '../../utils/router';
 import ActionBar from '../commonComponents/actionbar/ActionBar';
 import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
@@ -128,8 +128,7 @@ class Account extends Component {
         super(props);
         this.state.userState = props.userState;
         this.searchBar = React.createRef();
-        this.dataUseUpload = React.createRef();
-        this.dataUsePage = React.createRef();
+
         this.activityLog = React.createRef();
 
         // 1. used for DAR custodian update status of application
@@ -681,7 +680,7 @@ class Account extends Component {
                                     </Dropdown.Menu>
                                 </Dropdown>
 
-                                {team === 'user' && (
+                                {isUser(team) && (
                                     <>
                                         {TEAM_USERS_MENU.map(({ id, ...outerProps }) => (
                                             <DashboardNavItem
@@ -694,7 +693,7 @@ class Account extends Component {
                                     </>
                                 )}
 
-                                {team === 'admin' && (
+                                {isAdmin(team) && (
                                     <>
                                         <DashboardNavItem
                                             icon={<UsersIcon />}
@@ -727,7 +726,7 @@ class Account extends Component {
                                     </>
                                 )}
 
-                                {team !== 'user' && team !== 'admin' && (
+                                {isCustodian(team) && (
                                     <>
                                         <DashboardNavItem
                                             icon={<SettingsIcon />}
@@ -782,22 +781,22 @@ class Account extends Component {
                         </div>
 
                         <div className='col-sm-12 col-md-10 margin-top-32'>
-                            {team === 'user' && (
+                            {isUser(team) && (
                                 <>
-                                    {tabId === 'dashboard' ? <AccountAnalyticsDashboard userState={userState} /> : ''}
+                                    {tabId === 'dashboard' && <AccountAnalyticsDashboard userState={userState} />}
 
-                                    {tabId === 'youraccount' ? <YourAccount userState={userState} accountUpdated={accountUpdated} /> : ''}
+                                    {tabId === 'youraccount' && <YourAccount userState={userState} accountUpdated={accountUpdated} />}
 
-                                    {tabId === 'tools' ? <AccountTools userState={userState} /> : ''}
+                                    {tabId === 'tools' && <AccountTools userState={userState} />}
 
-                                    {tabId === 'reviews' ? <ReviewTools userState={userState} /> : ''}
+                                    {tabId === 'reviews' && <ReviewTools userState={userState} />}
 
-                                    {tabId === 'papers' ? <AccountPapers userState={userState} /> : ''}
+                                    {tabId === 'papers' && <AccountPapers userState={userState} />}
 
-                                    {tabId === 'courses' ? <AccountCourses userState={userState} /> : ''}
+                                    {tabId === 'courses' && <AccountCourses userState={userState} />}
 
-                                    {tabId === 'dataaccessrequests' ? (
-                                        _.isEmpty(dataaccessrequest) ? (
+                                    {tabId === 'dataaccessrequests' &&
+                                        (_.isEmpty(dataaccessrequest) ? (
                                             <DataAccessRequests
                                                 setDataAccessRequest={this.setDataAccessRequest}
                                                 userState={userState}
@@ -813,41 +812,17 @@ class Account extends Component {
                                                 ref={this.activityLog}
                                                 onUpdateLogs={this.loadActivityLogNotifications}
                                             />
-                                        )
-                                    ) : (
-                                        ''
-                                    )}
+                                        ))}
 
-                                    {tabId === 'datause' ? (
-                                        showDataUseUploadPage ? (
-                                            <DataUseUpload
-                                                userState={userState}
-                                                onSubmit={this.toggleDataUseUploadPage}
-                                                team={team}
-                                                ref={this.dataUseUpload}
-                                                dataUsePage={this.dataUsePage}
-                                            />
-                                        ) : (
-                                            <DataUsePage
-                                                userState={userState}
-                                                team={team}
-                                                onClickDataUseUpload={this.toggleDataUseUploadPage}
-                                                ref={this.dataUsePage}
-                                            />
-                                        )
-                                    ) : (
-                                        ''
-                                    )}
+                                    {tabId === 'collections' && <AccountCollections userState={userState} />}
 
-                                    {tabId === 'collections' ? <AccountCollections userState={userState} /> : ''}
-
-                                    {tabId === 'usersroles' ? <AccountUsers userState={userState} /> : ''}
+                                    {tabId === 'usersroles' && <AccountUsers userState={userState} />}
                                 </>
                             )}
 
                             <Route path='/account/datasets/:id' component={AccountDataset} />
 
-                            {team !== 'user' ? (
+                            {!isUser(team) && (
                                 <>
                                     {allowAccessRequestManagement && this.userHasRole(team, ['manager', 'reviewer']) && (
                                         <>
@@ -885,20 +860,9 @@ class Account extends Component {
                                         />
                                     )}
 
-                                    {tabId === 'datause' && showDataUseUploadPage && (
-                                        <DataUseUpload
-                                            userState={userState}
-                                            team={team}
-                                            ref={this.dataUseUpload}
-                                            dataUsePage={this.dataUsePage}
-                                            onSubmit={this.toggleDataUseUploadPage}
-                                        />
-                                    )}
-
                                     {(tabId === 'datause' || tabId === 'datause_widget') && !showDataUseUploadPage && (
                                         <AccountDataUse
                                             tabId={tabId}
-                                            userState={userState}
                                             team={team}
                                             onClickDataUseUpload={this.toggleDataUseUploadPage}
                                             ref={this.dataUsePage}
@@ -926,8 +890,6 @@ class Account extends Component {
 
                                     {tabId === 'help' ? <TeamHelp /> : ''}
                                 </>
-                            ) : (
-                                ''
                             )}
                         </div>
                     </div>
