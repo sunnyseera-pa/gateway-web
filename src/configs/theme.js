@@ -123,6 +123,48 @@ export const theme = {
                 },
             },
         },
+        Button: {
+            sizes: {
+                small: {
+                    height: '30px',
+                },
+                default: { height: '40px' },
+                large: { height: '50px' },
+            },
+            variants: {
+                primary: {
+                    background: 'purple500',
+                    disabledBackground: 'purple100',
+                    hoverBackground: 'purple700',
+                    borderColor: 'purple500',
+                    hoverBorderColor: 'purple700',
+                    disabledBorderColor: 'purple100',
+                    disabledColor: 'purple200',
+                    color: 'white',
+                },
+                secondary: {
+                    background: 'white',
+                    disabledBackground: 'white',
+                    hoverBackground: 'green400',
+                    borderColor: 'green400',
+                    hoverBorderColor: 'green400',
+                    disabledBorderColor: 'green200',
+                    color: 'grey800',
+                    hoverColor: 'white',
+                    disabledColor: 'grey500',
+                },
+                tertiary: {
+                    background: 'grey200',
+                    disabledBackground: 'grey300',
+                    hoverBackground: 'grey300',
+                    borderColor: 'grey200',
+                    hoverBorderColor: 'grey300',
+                    color: 'grey800',
+                    disabledBorderColor: 'grey300',
+                    disabledColor: 'grey500',
+                },
+            },
+        },
         Checkbox: {
             height: '20px',
             width: '20px',
