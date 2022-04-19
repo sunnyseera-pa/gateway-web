@@ -1,5 +1,6 @@
 import React from 'react';
 import { Tab, Tabs } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
 import { LayoutContent } from '../../../../components/Layout';
 import Typography from '../../../../components/Typography';
 import { useAuth } from '../../../../context/AuthContext';
@@ -8,7 +9,8 @@ import DataUsePage from '../../../dataUse/DataUsePage';
 import DataUseUpload from '../../../dataUse/upload/DataUseUpload';
 import DataUseWidget from '../../../dataUse/widget/DataUseWidget';
 
-const AccountDataUse = ({ tabId, team, onClickDataUseUpload, onSelectTab }) => {
+const AccountDataUse = ({ tabId, team, onClickDataUseUpload, onSelectTab, publisherDetails }) => {
+    const { t } = useTranslation();
     const { userState } = useAuth();
 
     const refUpload = React.createRef();
@@ -40,12 +42,8 @@ const AccountDataUse = ({ tabId, team, onClickDataUseUpload, onSelectTab }) => {
             {isCustodian(team) && (
                 <LayoutContent>
                     <div className='accountHeader'>
-                        <Typography variant='h5'>Data uses</Typography>
-                        <Typography>
-                            A data use widget is a great way of demonstrating transparency of how health data is being used, by connecting
-                            users of your website to the Gateway data use register. The widget will enable you to embed a link to the
-                            Gateway data use results page, pre-filtered on your organisation's data uses.
-                        </Typography>
+                        <Typography variant='h5'>{tabId == 'datause_widget' ? 'Data use widget' : ''}</Typography>
+                        <Typography>{t(`datause.tabDescription.${tabId}`)}</Typography>
                     </div>
                     <div className='tabsBackground'>
                         <Tabs className='gray700-13 data-use-tabs' activeKey={activeTab} onSelect={handleSelectTab}>
@@ -65,7 +63,13 @@ const AccountDataUse = ({ tabId, team, onClickDataUseUpload, onSelectTab }) => {
             )}
 
             {tabId === 'datause_widget' && isCustodian(team) && (
-                <DataUseWidget userState={userState} team={team} onClickDataUseUpload={onClickDataUseUpload} ref={ref} />
+                <DataUseWidget
+                    userState={userState}
+                    team={team}
+                    onClickDataUseUpload={onClickDataUseUpload}
+                    ref={ref}
+                    publisherName={publisherDetails.name}
+                />
             )}
         </>
     );

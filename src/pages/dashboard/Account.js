@@ -122,6 +122,7 @@ class Account extends Component {
         accountUpdated: false,
         showDataUseUploadPage: false,
         dataaccessrequest: {},
+        publisherDetails: {},
     };
 
     constructor(props) {
@@ -221,11 +222,13 @@ class Account extends Component {
                 if (team !== 'user' && team !== 'admin') {
                     await axios.get(baseURL + `/api/v1/publishers/${team}`).then(res => {
                         let publisherDetails = res.data.publisher;
+                        console.log(publisherDetails);
                         if (!publisherDetails.allowAccessRequestManagement && values.tab === 'dataaccessrequests')
                             this.setState({ tabId: 'teamManagement' });
                         this.setState({
                             allowWorkflow: publisherDetails.workflowEnabled,
                             allowAccessRequestManagement: publisherDetails.allowAccessRequestManagement,
+                            publisherDetails: publisherDetails.publisherDetails,
                         });
                     });
                 }
@@ -583,6 +586,7 @@ class Account extends Component {
             accountUpdated,
             showDataUseUploadPage,
             dataaccessrequest,
+            publisherDetails,
         } = this.state;
 
         const TEAM_USERS_MENU = [
@@ -867,6 +871,7 @@ class Account extends Component {
                                             onClickDataUseUpload={this.toggleDataUseUploadPage}
                                             ref={this.dataUsePage}
                                             onSelectTab={this.toggleNav}
+                                            publisherDetails={publisherDetails}
                                         />
                                     )}
 
