@@ -329,6 +329,18 @@
         "tabDescription": {
             "datause": "",
             "datause_widget": "A data use widget is a great way of demonstrating transparency of how health data is being used, by connecting users of your website to the Gateway data use register. The widget will enable you to embed a link to the Gateway data use results page, pre-filtered on your organisation's data uses."
+        },
+        "widget": {
+            "heading": "Data Use Widget",
+            "buttonHelp": "Click the button below to see your filtered data uses",
+            "modal": {
+                "accept": "Accept",
+                "cancel": "Cancel"
+            },
+            "howToHeader": "How to start using your widget",
+            "howToDesc": "Below is an interactive example of how your widget could look and be used. Please note that this design is compatible with mobile devices and can be resized to fit anywhere on your website. To start using this widget please accept the terms and conditions by clicking on the 'Get widget' button below.",
+            "getWidgetButton": "Get widget",
+            "tAndCHelp": "By embedding content in your website or app, you are agreeing to the Terms and Conditions"
         }
     }
 }

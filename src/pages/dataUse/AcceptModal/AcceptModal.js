@@ -1,6 +1,7 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/react';
 import React, { useState, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 import { Button, Modal } from 'react-bootstrap';
 import ReactMarkdown from 'react-markdown';
@@ -9,17 +10,19 @@ import { ReactComponent as CloseButtonSvg } from '../../../images/close-alt.svg'
 import * as styles from './AcceptModal.styles';
 
 const AcceptModal = ({ open, closed, acceptHandler }) => {
-    const [acceptStatus, setAcceptStatus] = useState(true);
+    const { t } = useTranslation();
+    const [disableAcceptStatus, setAcceptStatus] = useState(true);
     const listInnerRef = useRef();
     const onScroll = () => {
         if (listInnerRef.current) {
             const { scrollTop, scrollHeight, clientHeight } = listInnerRef.current;
             if (scrollTop + clientHeight >= scrollHeight - (scrollHeight / 100) * 5) {
                 setAcceptStatus(false);
+            } else {
+                setAcceptStatus(true);
             }
         }
     };
-
     return (
         <Modal show={open} onHide={closed} className='decisionModal' size='xl' aria-labelledby='contained-modal-title-vcenter' centered>
             <div className='decisionModal-header'>
@@ -27,7 +30,7 @@ const AcceptModal = ({ open, closed, acceptHandler }) => {
                     <div className='decisionModal-head'>
                         <div>
                             <h1 className='black-20-semibold'>HEALTH DATA RESEARCH UK</h1>
-                            <h3>Data Use Widget</h3>
+                            <h3>{t('datause.widget.heading')}</h3>
                         </div>
 
                         <CloseButtonSvg className='decisionModal-head--close' onClick={closed} />
@@ -53,15 +56,15 @@ const AcceptModal = ({ open, closed, acceptHandler }) => {
                         onClick={() => {
                             closed();
                         }}>
-                        Cancel
+                        {t('datause.widget.modal.cancel')}
                     </Button>
                     <Button
-                        disabled={acceptStatus}
+                        disabled={disableAcceptStatus}
                         type='submit'
                         data-testid='accept-button'
                         className='button-secondary float-right'
                         onClick={acceptHandler}>
-                        Accept
+                        {t('datause.widget.modal.accept')}
                     </Button>
                 </div>
             </div>
