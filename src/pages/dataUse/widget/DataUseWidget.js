@@ -17,7 +17,7 @@ const DataUseWidget = ({ userState, team, onClickDataUseUpload, ref, publisherNa
     const [state, setState] = useState({
         showAcceptModal: false,
     });
-    const codeString = `<script type="module"src="https://unpkg.com/hdruk-gateway-widgets?module"></script>\n<hdruk-data-uses id="${publisherName}"/>`;
+    const codeString = `<script type="module" src="https://unpkg.com/hdruk-gateway-widgets?module"></script>\n<hdruk-data-uses publisher="${publisherName}"/>`;
 
     useEffect(() => {}, [checkBoxStatus]);
 
@@ -62,11 +62,9 @@ const DataUseWidget = ({ userState, team, onClickDataUseUpload, ref, publisherNa
                 <Typography color='grey600'>
                     <i>{t('datause.widget.buttonHelp')}</i>
                 </Typography>
-                {showWidgetCode ? (
-                    <DataUseWidgetCode codeString={codeString} copyToClipBoard={copyToClipBoardHandler} />
-                ) : (
-                    <hdruk-data-uses id={publisherName} />
-                )}
+                <hdruk-data-uses publisher={publisherName} />
+                <br />
+                {showWidgetCode && <DataUseWidgetCode codeString={codeString} copyToClipBoard={copyToClipBoardHandler} />}
             </div>
         </LayoutContent>
     );
