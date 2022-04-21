@@ -176,11 +176,11 @@ const DataUsePage = React.forwardRef(({ onClickDataUseUpload, team }, ref) => {
                                 <span className='black-20'>Data uses</span>
                             </div>
                             <div>
-                                {team === 'user' ? (
-                                    <span className='gray700-13 '>Manage your data use register by editing data uses.</span>
-                                ) : (
-                                    <span className='gray700-13 '>Manage your data use register by uploading or editing data uses.</span>
-                                )}
+                                <span className='gray700-13 '>
+                                    {team === 'user'
+                                        ? 'Manage your data use register by editing data uses.'
+                                        : 'Manage your data use register by uploading or editing data uses.'}
+                                </span>
                             </div>
                         </Col>
                         <Col sm={12} md={4} style={{ textAlign: 'right' }}>
