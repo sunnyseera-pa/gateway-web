@@ -16,12 +16,14 @@ import Pagination from './DataUsePagination';
 import Table from './DataUseTable';
 import DataUseApproveModal from './modals/DataUseApproveModal';
 import DataUseRejectModal from './modals/DataUseRejectModal';
+import { useTranslation } from 'react-i18next';
 
 const DataUsePage = React.forwardRef(({ onClickDataUseUpload, team }, ref) => {
     React.useImperativeHandle(ref, () => ({
         showAlert,
     }));
 
+    const { t } = useTranslation();
     const [row, setRow] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [rowsPerPage] = useState(40);
@@ -177,9 +179,7 @@ const DataUsePage = React.forwardRef(({ onClickDataUseUpload, team }, ref) => {
                             </div>
                             <div>
                                 <span className='gray700-13 '>
-                                    {team === 'user'
-                                        ? 'Manage your data use register by editing data uses.'
-                                        : 'Manage your data use register by uploading or editing data uses.'}
+                                    {team === 'user' ? t('datause.upload.pageInfoUser') : t('datause.upload.pageInfoTeam')}
                                 </span>
                             </div>
                         </Col>
