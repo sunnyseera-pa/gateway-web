@@ -69,6 +69,7 @@ const AccountDataUse = ({ tabId, team, onClickDataUseUpload, onSelectTab, publis
                     onClickDataUseUpload={onClickDataUseUpload}
                     ref={ref}
                     publisherName={publisherDetails.name}
+                    accepted
                 />
             )}
         </>
