@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import { Button, Modal } from 'react-bootstrap';
 import ReactMarkdown from 'react-markdown';
 import leaglText from './TermsAndConditions';
-import { ReactComponent as CloseButtonSvg } from '../../../images/close-alt.svg';
+import { ReactComponent as CloseButtonSvg } from '../../../../images/close-alt.svg';
 import * as styles from './AcceptModal.styles';
 
 const AcceptModal = ({ open, closed, acceptHandler }) => {
