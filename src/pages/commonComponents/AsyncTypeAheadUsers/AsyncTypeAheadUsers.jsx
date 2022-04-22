@@ -10,6 +10,7 @@ import serviceAuth from '../../../services/auth/auth';
 import UploaderUtil from '../../../utils/Uploader.util';
 import Icon from '../../../components/Icon';
 import { ReactComponent as SearchIcon } from '../../../images/search.svg';
+import { ReactComponent as GreenTick } from '../../../images/tick.svg';
 import * as styles from './AsyncTypeAheadUsers.styles';
 
 function AsyncTypeAheadUsers(props) {
@@ -113,7 +114,7 @@ function AsyncTypeAheadUsers(props) {
 
                             {find(selected, { id: result.id }) && (
                                 <span className='icon' data-testid={`icon-${index}`}>
-                                    <Icon name='check' fill='green600' color='green600' ml={1} size='xl' />
+                                    <Icon ml={1} size='xl' svg={<GreenTick />} />
                                 </span>
                             )}
                         </MenuItem>
