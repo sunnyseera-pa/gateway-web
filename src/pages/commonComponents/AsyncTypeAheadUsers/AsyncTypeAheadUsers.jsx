@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/react';
 import React, { useState, useEffect } from 'react';
-import { find, remove, isEmpty } from 'lodash';
+import { find, remove, isEmpty, isUndefined } from 'lodash';
 import PropTypes from 'prop-types';
 import { Menu, MenuItem } from 'react-bootstrap-typeahead';
 import Typeahead from '../../../components/Typeahead/Typeahead';
@@ -16,6 +16,7 @@ function AsyncTypeAheadUsers(props) {
     const [isLoading, setIsLoading] = useState(false);
     const [options, setOptions] = useState([]);
     const [selected, setSelected] = useState([]);
+    const [recentlyAdded, setRecentlyadded] = useState([]);
     const [showRecentlyAdded, setShowRecentlyAdded] = useState(false);
 
     useEffect(() => {
@@ -51,26 +52,33 @@ function AsyncTypeAheadUsers(props) {
         }
     };
 
-    const handleInputChange = async value => {
-        if (value.length > 2) {
-            const users = await serviceUsers.searchUsers(value);
-            setOptions(users.data.data);
-            setShowRecentlyAdded(false);
+    const handleOnFocus = async e => {
+        if (!isUndefined(e) && e.type === 'focus' && isEmpty(recentlyAdded)) {
+            const response = await serviceUsers.getUsers();
+            const { data } = response.data;
+            const currentUserInfo = remove(data, { id: props.currentUserId });
+            if (!isEmpty(currentUserInfo)) {
+                data.unshift(currentUserInfo[0]);
+            }
+            setOptions(data);
+            setRecentlyadded(data);
+            setShowRecentlyAdded(true);
         } else {
-            handleOnFocus();
+            setShowRecentlyAdded(true);
+            setOptions(recentlyAdded);
         }
     };
 
-    const handleOnFocus = async () => {
-        const response = await serviceUsers.getUsers();
-        const { data } = response.data;
-
-        const currentUserInfo = remove(data, { id: props.currentUserId });
-        if (!isEmpty(currentUserInfo)) {
-            data.unshift(currentUserInfo[0]);
+    const handleInputChange = async value => {
+        if (value.length > 2) {
+            setIsLoading(true);
+            const users = await serviceUsers.searchUsers(value);
+            setOptions(users.data.data);
+            setShowRecentlyAdded(false);
+            setIsLoading(false);
+        } else if (value.length < 1) {
+            handleOnFocus();
         }
-        setOptions(data);
-        setShowRecentlyAdded(true);
     };
     const filterBy = () => true;
 
