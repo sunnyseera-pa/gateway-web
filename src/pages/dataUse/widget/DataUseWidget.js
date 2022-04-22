@@ -12,14 +12,11 @@ const WIDGET_MODULE = `https://unpkg.com/hdruk-gateway-widgets?module`;
 const DataUseWidget = ({ userState, team, onClickDataUseUpload, ref, publisherName, accepted }) => {
     const { t } = useTranslation();
     useScript(WIDGET_MODULE);
-    const [checkBoxStatus, setCheckBoxStatus] = useState(true);
     const [checked, setChecked] = useState(accepted || false);
     const [state, setState] = useState({
         showAcceptModal: false,
     });
     const codeString = `<script type="module" src="${WIDGET_MODULE}"></script>\n<hdruk-data-uses publisher="${publisherName}"/>`;
-
-    useEffect(() => {}, [checkBoxStatus]);
 
     const clickHandler = () => {
         setState({ ...state, showAcceptModal: true });
@@ -31,7 +28,6 @@ const DataUseWidget = ({ userState, team, onClickDataUseUpload, ref, publisherNa
 
     const acceptHandler = () => {
         setState({ ...state, showAcceptModal: false });
-        setCheckBoxStatus(false);
         setChecked(true);
     };
 
@@ -49,14 +45,14 @@ const DataUseWidget = ({ userState, team, onClickDataUseUpload, ref, publisherNa
                 <Button mb={3} onClick={clickHandler} disabled={checked} data-testid='getWidgetButton' type='button'>
                     {t('datause.widget.getWidgetButton')}
                 </Button>
-                <AcceptModal open={state.showAcceptModal} closed={modalCloseHandler} acceptHandler={acceptHandler} />
+
                 <Typography>{t('datause.widget.tAndCHelp')}</Typography>
                 <Checkbox
                     variant='primary'
                     label='I agree to the HDR Widget Terms and Conditions of use'
                     id='termCo  nditions'
                     mb={4}
-                    disabled={checkBoxStatus}
+                    disabled={checked}
                     checked={checked}
                 />
                 <Typography variant='h6'>{t('datause.widget.heading')}</Typography>
@@ -66,6 +62,7 @@ const DataUseWidget = ({ userState, team, onClickDataUseUpload, ref, publisherNa
                 <hdruk-data-uses publisher={publisherName} />
                 <br />
                 {checked && <DataUseWidgetCode codeString={codeString} copyToClipBoard={copyToClipBoardHandler} />}
+                <AcceptModal open={state.showAcceptModal} closed={modalCloseHandler} acceptHandler={acceptHandler} />
             </div>
         </LayoutContent>
     );

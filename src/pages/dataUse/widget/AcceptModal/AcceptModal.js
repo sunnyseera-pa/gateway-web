@@ -52,6 +52,7 @@ const AcceptModal = ({ open, closed, acceptHandler }) => {
                 <hr />
                 <div css={styles.footer}>
                     <Button
+                        data-testid='cancel-button'
                         className='btn-light float-left'
                         onClick={() => {
                             closed();

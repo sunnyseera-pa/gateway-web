@@ -41,7 +41,6 @@ exports[`Given the DataUseWidget component When it is rendered Then matches the 
           for="termCo  nditions"
         >
           <input
-            disabled=""
             id="termCo  nditions"
             type="checkbox"
           />

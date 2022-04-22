@@ -32,24 +32,8 @@ describe('Given the DataUseWidget component', () => {
             fireEvent.click(getWidgetButton);
             await waitFor(() => expect(screen.queryByText('HEALTH DATA RESEARCH UK WIDGET TERMS OF USE')).toBeInTheDocument());
             await waitFor(() => expect(screen.getByTestId('accept-button')).toBeDisabled());
-        });
-    });
-    describe('And when the T&C accepted  is true', () => {
-        beforeAll(() => {
-            wrapper.rerender(<DataUseWidget publisherName='Test Custodian' accepted />, {
-                wrapper: Providers,
-            });
-        });
-        it('Then has DataUseWidget code should be shown and GetWiget button disabled', () => {
-            const { rerender, container } = wrapper;
-            rerender(<DataUseWidget publisherName='Test Custodian' accepted />);
-            expect(wrapper.getByTestId('getWidgetButto')).toBeTruthy();
-            // expect(screen.getByTestId('getWidgetButton')).toBeDisabled();
-            // expect(
-            //     screen.queryByText(
-            //         'Copy the source code and share with your development team to display the widget above on your website'
-            //     )
-            // ).toBeInTheDocument();
+            fireEvent.click(screen.getByTestId('cancel-button'));
+            await waitFor(() => expect(screen.queryByText('HEALTH DATA RESEARCH UK WIDGET TERMS OF USE')).not.toBeInTheDocument());
         });
     });
 });
