@@ -49,17 +49,17 @@ export const THEME_INPUT = {
 };
 
 export const THEME_FONT_SIZES = {
-    xxs: '7.52px',
-    xs: '9.03px',
-    sm: '10.83px',
+    xxs: '8px',
+    xs: '10px',
+    sm: '12px',
     md: '13px',
     default: '13px',
-    lg: '15.6px',
-    xl: '18.72px',
-    '2xl': '22.46px',
-    '3xl': '26.96px',
-    '4xl': '32.35px',
-    '5xl': '38.82px',
+    lg: '16px',
+    xl: '20px',
+    '2xl': '24px',
+    '3xl': '28px',
+    '4xl': '32px',
+    '5xl': '40px',
 };
 
 export const theme = {
@@ -78,7 +78,9 @@ export const theme = {
         platinum50: '#E3F4FB',
         platinum700: '#4682B4',
         green50: '#E2F3F0',
+        green200: '#8CD1BF',
         green400: '#3DB28C',
+        grey500: '#B3B8BD',
         green600: '#329276',
         green700: '#2c8267',
         grey: '#F6F7F8',
@@ -86,6 +88,7 @@ export const theme = {
         grey200: '#EEE',
         grey300: '#E2E2E2',
         grey400: '#D0D3D4',
+        grey600: '#868E96',
         grey700: '#53575A',
         grey700Alt: '#848E97',
         grey800: '#3C3C3B',
@@ -93,6 +96,9 @@ export const theme = {
         red600: '#EF3F4B',
         red700: '#DC3645',
         purple: '#475da7',
+        purple100: '#C6CEE5',
+        purple200: '#A2AED3',
+        purple700: '#384B91',
         teal: '#3db28c',
         yellow700: '#F0BB24',
         yellow50: '#FDFCE6',
@@ -122,9 +128,54 @@ export const theme = {
                 },
             },
         },
+        Button: {
+            sizes: {
+                small: {
+                    fontSize: THEME_FONT_SIZES.xs,
+                    padding: '6px 12px',
+                },
+                default: { fontSize: THEME_FONT_SIZES.md, padding: '10px 16px' },
+                large: { fontSize: THEME_FONT_SIZES.lg, padding: '14px 20px' },
+            },
+            variants: {
+                primary: {
+                    background: 'purple500',
+                    disabledBackground: 'purple100',
+                    hoverBackground: 'purple700',
+                    borderColor: 'purple500',
+                    hoverBorderColor: 'purple700',
+                    disabledBorderColor: 'purple100',
+                    disabledColor: 'purple200',
+                    color: 'white',
+                },
+                secondary: {
+                    background: 'white',
+                    disabledBackground: 'white',
+                    hoverBackground: 'green400',
+                    borderColor: 'green400',
+                    hoverBorderColor: 'green400',
+                    disabledBorderColor: 'green200',
+                    color: 'grey800',
+                    hoverColor: 'white',
+                    disabledColor: 'grey500',
+                },
+                tertiary: {
+                    background: 'grey200',
+                    disabledBackground: 'grey200',
+                    hoverBackground: 'grey300',
+                    borderColor: 'grey200',
+                    hoverBorderColor: 'grey300',
+                    color: 'grey800',
+                    disabledBorderColor: 'grey200',
+                    disabledColor: 'grey500',
+                },
+            },
+        },
         Checkbox: {
             height: '20px',
             width: '20px',
+            fontSize: THEME_FONT_SIZES.md,
+            disabledColor: 'grey600',
             variants: {
                 primary: {
                     borderColor: 'grey200',
@@ -150,31 +201,34 @@ export const theme = {
         Typography: {
             variants: {
                 h1: {
-                    size: THEME_FONT_SIZES['5xl'],
+                    fontSize: THEME_FONT_SIZES['5xl'],
                 },
                 h2: {
-                    size: THEME_FONT_SIZES['4xl'],
+                    fontSize: THEME_FONT_SIZES['4xl'],
                 },
                 h3: {
-                    size: THEME_FONT_SIZES['3xl'],
+                    fontSize: THEME_FONT_SIZES['3xl'],
                 },
                 h4: {
-                    size: THEME_FONT_SIZES['2xl'],
+                    fontSize: THEME_FONT_SIZES['2xl'],
                 },
                 h5: {
-                    size: THEME_FONT_SIZES.xl,
+                    fontSize: THEME_FONT_SIZES.xl,
                 },
                 h6: {
-                    size: THEME_FONT_SIZES.lg,
+                    fontSize: THEME_FONT_SIZES.lg,
                 },
                 body: {
-                    size: THEME_FONT_SIZES.md,
+                    fontSize: THEME_FONT_SIZES.md,
+                    lineHeight: '20px',
                 },
                 caption: {
-                    size: THEME_FONT_SIZES.sm,
+                    fontSize: THEME_FONT_SIZES.sm,
+                    lineHeight: '16px',
                 },
                 tiny: {
-                    size: THEME_FONT_SIZES.xs,
+                    fontSize: THEME_FONT_SIZES.xs,
+                    lineHeight: '14px',
                 },
             },
         },
