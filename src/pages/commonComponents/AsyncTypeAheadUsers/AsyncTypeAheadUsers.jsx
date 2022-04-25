@@ -6,50 +6,28 @@ import PropTypes from 'prop-types';
 import { Menu, MenuItem } from 'react-bootstrap-typeahead';
 import Typeahead from '../../../components/Typeahead/Typeahead';
 import serviceUsers from '../../../services/users/users';
-import serviceAuth from '../../../services/auth/auth';
 import UploaderUtil from '../../../utils/Uploader.util';
+import useDebounce from '../../../hooks/useDebounce';
 import Icon from '../../../components/Icon';
 import { ReactComponent as SearchIcon } from '../../../images/search.svg';
 import { ReactComponent as GreenTick } from '../../../images/tick.svg';
 import * as styles from './AsyncTypeAheadUsers.styles';
 
 function AsyncTypeAheadUsers(props) {
+    const [value, setValue] = useState('');
+    const debouncedValue = useDebounce(value, 500);
     const [isLoading, setIsLoading] = useState(false);
     const [options, setOptions] = useState([]);
     const [selected, setSelected] = useState([]);
     const [recentlyAdded, setRecentlyadded] = useState([]);
     const [showRecentlyAdded, setShowRecentlyAdded] = useState(false);
-
-    useEffect(() => {
-        props.selectedUsers && props.getUsersInfo ? getUsersInfo(props.selectedUsers) : setSelected(props.selectedUsers);
-    }, [props.selectedUsers]);
-
-    const getUsersInfo = async contributors => {
-        const selectedUsers = await Promise.all(
-            contributors
-                .filter(id => id !== props.currentUserId)
-                .map(async id => {
-                    const userInfo = await UploaderUtil.getUserInfo(id);
-                    if (userInfo) {
-                        return { id: userInfo.id, name: `${userInfo.firstname} ${userInfo.lastname}` };
-                    }
-                })
-        );
-        setSelected(selectedUsers);
-    };
-
-    const handleChange = options => {
-        if (props.showAuthor) {
-            props.changeHandler(options);
-        } else {
-            props.changeHandler(options);
-            if (options.length) {
-                setSelected(options);
-                props.changeHandler(options);
-            } else {
-                setSelected([]);
-                props.changeHandler([]);
-            }
+    const handleSearch = async () => {
+        if (value.length > 2) {
+            setIsLoading(true);
+            const users = await serviceUsers.searchUsers(value);
+            setOptions(users.data.data);
+            setShowRecentlyAdded(false);
+            setIsLoading(false);
         }
     };
 
@@ -70,16 +48,46 @@ function AsyncTypeAheadUsers(props) {
         }
     };
 
-    const handleInputChange = async value => {
-        if (value.length > 2) {
-            setIsLoading(true);
-            const users = await serviceUsers.searchUsers(value);
-            setOptions(users.data.data);
-            setShowRecentlyAdded(false);
-            setIsLoading(false);
-        } else if (value.length < 1) {
+    useEffect(() => {
+        props.selectedUsers && props.getUsersInfo ? getUsersInfo(props.selectedUsers) : setSelected(props.selectedUsers);
+        if (value) {
+            handleSearch();
+        } else {
             handleOnFocus();
         }
+    }, [props.selectedUsers, debouncedValue]);
+
+    const getUsersInfo = async contributors => {
+        const selectedUsers = await Promise.all(
+            contributors
+                .filter(id => id !== props.currentUserId)
+                .map(async id => {
+                    const userInfo = await UploaderUtil.getUserInfo(id);
+                    if (userInfo) {
+                        return { id: userInfo.id, name: `${userInfo.firstname} ${userInfo.lastname}` };
+                    }
+                })
+        );
+        setSelected(selectedUsers);
+    };
+
+    const handleChange = optionValues => {
+        if (props.showAuthor) {
+            props.changeHandler(optionValues);
+        } else {
+            props.changeHandler(optionValues);
+            if (optionValues.length) {
+                setSelected(optionValues);
+                props.changeHandler(optionValues);
+            } else {
+                setSelected([]);
+                props.changeHandler([]);
+            }
+        }
+    };
+
+    const handleInputChange = inputValue => {
+        setValue(inputValue);
     };
     const filterBy = () => true;
 
