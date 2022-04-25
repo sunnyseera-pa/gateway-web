@@ -97,6 +97,8 @@ export const theme = {
         red700: '#DC3645',
         purple: '#475da7',
         purple100: '#C6CEE5',
+        purple200: '#A2AED3',
+        purple700: '#384B91',
         teal: '#3db28c',
         yellow700: '#F0BB24',
         yellow50: '#FDFCE6',
