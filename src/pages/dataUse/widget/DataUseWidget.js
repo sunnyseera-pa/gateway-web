@@ -18,6 +18,10 @@ const DataUseWidget = () => {
 
     return (
         <LayoutContent>
+            <div className='accountHeader mb-3'>
+                <Typography variant='h5'>{t(`datause.widget.heading`)}</Typography>
+                <Typography>{t(`datause.widget.description`)}</Typography>
+            </div>
             <div className='accountHeader'>
                 <Typography variant='h5' data-testid='howToHeader'>
                     {t('datause.widget.howToHeader')}
