@@ -39,21 +39,6 @@ const AccountDataUse = ({ tabId, team, onClickDataUseUpload, onSelectTab, publis
 
     return (
         <>
-            {isCustodian(team) && (
-                <LayoutContent>
-                    <div className='accountHeader'>
-                        <Typography variant='h5'>{tabId == 'datause_widget' ? 'Data use widget' : ''}</Typography>
-                        <Typography>{t(`datause.tabDescription.${tabId}`)}</Typography>
-                    </div>
-                    <div className='tabsBackground'>
-                        <Tabs className='gray700-13 data-use-tabs' activeKey={activeTab} onSelect={handleSelectTab}>
-                            <Tab eventKey='datause' title='Dashboard' />
-                            <Tab eventKey='datause_widget' title='Data use widget' />
-                        </Tabs>
-                    </div>
-                </LayoutContent>
-            )}
-
             {tabId === 'datause' && dataUseUpload && (
                 <DataUseUpload userState={userState} team={team} ref={refUpload} dataUsePage={ref} onSubmit={handleSubmitUpload} />
             )}

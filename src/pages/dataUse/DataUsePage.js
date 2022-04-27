@@ -175,7 +175,7 @@ const DataUsePage = React.forwardRef(({ onClickDataUseUpload, team }, ref) => {
                     <Row>
                         <Col sm={12} md={8}>
                             <div>
-                                <span className='black-20'>Data uses</span>
+                                <span className='black-20'>Dashboard</span>
                             </div>
                             <div>
                                 <span className='gray700-13 '>
