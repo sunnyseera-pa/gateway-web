@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { apiURL } from '../../configs/url.config';
+import { apiURL, apiV2URL } from '../../configs/url.config';
 import { getRequest } from '../../utils/requests';
 import service from './search';
 
@@ -58,8 +58,28 @@ describe('Given the search service', () => {
                 option1: true,
             });
 
-            expect(getRequest).toHaveBeenCalledWith(`${apiURL}/search/filters/paper`, {
+            expect(getRequest).toHaveBeenCalledWith(`${apiV2URL}/filters/paper`, {
                 option1: true,
+            });
+        });
+    });
+
+    describe('When getSearchFilters is called', () => {
+        it('Then calls getRequest with the correct arguments', async () => {
+            await service.getSearchFilters({
+                params: {
+                    search: 'test',
+                    tab: 'Dataset',
+                },
+                option1: true,
+            });
+
+            expect(getRequest).toHaveBeenCalledWith(`${apiURL}/search/filter`, {
+                option1: true,
+                params: {
+                    search: 'test',
+                    tab: 'Dataset',
+                },
             });
         });
     });
@@ -88,6 +108,14 @@ describe('Given the search service', () => {
             const rendered = renderHook(() => service.useGetFilters({ option1: true }), { wrapper });
 
             assertServiceRefetchCalled(rendered, getSpy, 'paper', { option1: true });
+        });
+    });
+
+    describe('When useGetSearchFilters is called', () => {
+        it('Then calls getTopic with the correct arguments', async () => {
+            const getSpy = jest.spyOn(service, 'getSearchFilters');
+            const rendered = renderHook(() => service.useGetSearchFilters({ option1: true }), { wrapper });
+            assertServiceRefetchCalled(rendered, getSpy, { option1: true });
         });
     });
 });

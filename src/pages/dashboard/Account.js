@@ -3,7 +3,7 @@ import axios from 'axios';
 import _ from 'lodash';
 import queryString from 'query-string';
 import React, { Component, Fragment, useState } from 'react';
-import { Accordion, Dropdown, Nav } from 'react-bootstrap';
+import { Dropdown, Nav } from 'react-bootstrap';
 import { Route, withRouter } from 'react-router-dom';
 import 'react-web-tabs/dist/react-web-tabs.css';
 import Icon from '../../components/Icon';
@@ -25,7 +25,7 @@ import { ReactComponent as UserIcon } from '../../images/icons/user.svg';
 import { ReactComponent as UsersIcon } from '../../images/icons/users.svg';
 import SVGIcon from '../../images/SVGIcon';
 import googleAnalytics from '../../tracking';
-import { getTeam } from '../../utils/auth';
+import { getTeam, isAdmin, isCustodian, isUser } from '../../utils/auth';
 import { isRouteMatch } from '../../utils/router';
 import ActionBar from '../commonComponents/actionbar/ActionBar';
 import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
@@ -48,8 +48,9 @@ import AccountTools from './AccountTools';
 import AccountUsers from './AccountUsers';
 import AccountDataset from './Components/AccountDataset';
 import AccountDatasets from './Components/AccountDatasets';
+import AccountDataUse from './Components/AccountDataUse';
+import DashboardNavAccordian from './Components/DashboardNavAccordian';
 import DashboardNavItem from './Components/DashboardNavItem';
-import DashboardSubNavItem from './Components/DashboardSubNavItem';
 import CustomiseDAR from './CustomiseDAR/CustomiseDAR';
 import './Dashboard.scss';
 import DataAccessRequests from './DataAccessRequests/DataAccessRequests';
@@ -154,14 +155,14 @@ class Account extends Component {
         dataaccessrequest: {},
         showConfirmPublishModal: false,
         showHowToRequestAccessEditor: false,
+        publisherDetails: {},
     };
 
     constructor(props) {
         super(props);
         this.state.userState = props.userState;
         this.searchBar = React.createRef();
-        this.dataUseUpload = React.createRef();
-        this.dataUsePage = React.createRef();
+
         this.activityLog = React.createRef();
 
         // 1. used for DAR custodian update status of application
@@ -241,6 +242,8 @@ class Account extends Component {
                     values.tab === 'customisedataaccessrequests_guidance'
                 ) {
                     activeAccordion = '1';
+                } else if (values.tab === 'datause' || values.tab === 'datause_widget') {
+                    activeAccordion = '2';
                 }
 
                 this.setState({
@@ -262,6 +265,7 @@ class Account extends Component {
                         this.setState({
                             allowWorkflow: publisherDetails.workflowEnabled,
                             allowAccessRequestManagement: publisherDetails.allowAccessRequestManagement,
+                            publisherDetails: publisherDetails.publisherDetails,
                         });
                     });
                 }
@@ -479,11 +483,8 @@ class Account extends Component {
             if (!_.isEmpty(user.teams)) {
                 if (tab.tabId === 'dataaccessrequests' || tab.tabId === 'workflows' || tab.tabId === 'addeditworkflow') {
                     activeAccordion = '0';
-                } else if (
-                    tab.tabId === 'customisedataaccessrequests_applicationform' ||
-                    tab.tabId === 'customisedataaccessrequests_guidance'
-                ) {
-                    activeAccordion = '1';
+                } else if (tab.tabId === 'datause' || tab.tabId === 'datause_widget') {
+                    activeAccordion = '2';
                 }
             }
 
@@ -630,7 +631,86 @@ class Account extends Component {
             dataaccessrequest,
             showConfirmPublishModal,
             showHowToRequestAccessEditor,
+            publisherDetails,
         } = this.state;
+
+        const TEAM_USERS_MENU = [
+            {
+                id: 'dashboard',
+                children: 'Dashboard',
+                icon: <BarChartIcon />,
+            },
+            {
+                id: 'youraccount',
+                children: 'Account',
+                icon: <UserIcon />,
+            },
+            {
+                id: 'tools',
+                children: 'Tools',
+                icon: <ToolsIcon />,
+            },
+            {
+                id: 'review',
+                children: 'Reviews',
+                icon: <CommentsIcon />,
+            },
+            { id: 'datause', children: 'Data Uses', icon: <FlowIcon /> },
+            { id: 'papers', children: 'Papers', icon: <PapersIcon /> },
+            { id: 'courses', children: 'Courses', icon: <CoursesIcon /> },
+            { id: 'dataaccessrequests', children: 'Data access requests', icon: <UsersIcon /> },
+            { id: 'collections', children: 'Collections', icon: <BookmarkIcon /> },
+            ...(userState[0].role === 'Admin' ? [{ id: 'usersroles', children: 'Users and roles', icon: <UsersIcon /> }] : []),
+        ];
+
+        const ACCORDIAN_DAR_MENU = {
+            text: 'Data access requests',
+            icon: <UsersIcon />,
+            children: [
+                {
+                    text: 'Applications',
+                    id: 'dataaccessrequests',
+                },
+                ...(allowWorkflow && this.userHasRole(team, 'manager')
+                    ? [
+                          {
+                              id: 'workflows',
+                              text: 'Workflows',
+                          },
+                      ]
+                    : []),
+            ],
+        };
+
+        const ACCORDIAN_CUSTOM_DAR_MENU = {
+            text: 'Edit DAR Form',
+            icon: <EditFolderIcon />,
+            children: [
+                {
+                    text: 'Presubmission Guidance',
+                    id: 'customisedataaccessrequests_guidance',
+                },
+                {
+                    text: 'Application Form',
+                    id: 'customisedataaccessrequests_applicationform',
+                },
+            ],
+        };
+
+        const ACCORDIAN_DUR_MENU = {
+            text: 'Data Uses',
+            icon: <FlowIcon />,
+            children: [
+                {
+                    text: 'Dashboard',
+                    id: 'datause',
+                },
+                {
+                    text: 'Data use widget',
+                    id: 'datause_widget',
+                },
+            ],
+        };
 
         return (
             <Sentry.ErrorBoundary fallback={<ErrorModal />}>
@@ -664,7 +744,7 @@ class Account extends Component {
                                     </Dropdown.Menu>
                                 </Dropdown>
 
-                                {team === 'user' && (
+                                {isUser(team) && (
                                     <>
                                         {TEAM_USERS_MENU.map(({ id, ...outerProps }) => (
                                             <DashboardNavItem
@@ -674,19 +754,10 @@ class Account extends Component {
                                                 {...outerProps}
                                             />
                                         ))}
-
-                                        {userState[0].role === 'Admin' && (
-                                            <DashboardNavItem
-                                                icon={<UsersIcon />}
-                                                activeClassName={this.getNavActiveClass('usersroles')}
-                                                onClick={e => this.toggleNav('usersroles')}>
-                                                Users and roles
-                                            </DashboardNavItem>
-                                        )}
                                     </>
                                 )}
 
-                                {team === 'admin' && (
+                                {isAdmin(team) && (
                                     <>
                                         <DashboardNavItem
                                             icon={<UsersIcon />}
@@ -719,7 +790,7 @@ class Account extends Component {
                                     </>
                                 )}
 
-                                {team !== 'user' && team !== 'admin' && (
+                                {isCustodian(team) && (
                                     <>
                                         <DashboardNavItem
                                             icon={<SettingsIcon />}
@@ -736,70 +807,28 @@ class Account extends Component {
                                                         'workflows',
                                                         'addeditworkflow',
                                                     ])}>
-                                                    <Accordion activeKey={activeAccordion} onSelect={this.accordionClick}>
-                                                        <Fragment>
-                                                            <Accordion.Toggle
-                                                                variant='link'
-                                                                className='verticalNavBar gray700-13 navLinkButton'
-                                                                eventKey='0'>
-                                                                <Icon svg={<UsersIcon />} fill='grey500' color='grey500' size='2xl' />
-                                                                <span className='navLinkItem'>Data access requests</span>
-                                                            </Accordion.Toggle>
-                                                            <Accordion.Collapse eventKey='0'>
-                                                                <div>
-                                                                    <DashboardSubNavItem
-                                                                        active={tabId === 'dataaccessrequests'}
-                                                                        onClick={() => this.toggleNav(`dataaccessrequests`)}>
-                                                                        Applications
-                                                                    </DashboardSubNavItem>
-
-                                                                    {allowWorkflow && this.userHasRole(team, 'manager') && (
-                                                                        <DashboardSubNavItem
-                                                                            active={tabId === 'workflows'}
-                                                                            onClick={() => this.toggleNav(`workflows`)}>
-                                                                            Workflows
-                                                                        </DashboardSubNavItem>
-                                                                    )}
-                                                                </div>
-                                                            </Accordion.Collapse>
-                                                        </Fragment>
-                                                    </Accordion>
+                                                    <DashboardNavAccordian
+                                                        onSelect={this.accordionClick}
+                                                        onClick={this.toggleNav}
+                                                        tabId={tabId}
+                                                        activeKey={activeAccordion}
+                                                        eventKey='0'
+                                                        data={ACCORDIAN_DAR_MENU}
+                                                    />
                                                 </div>
                                                 <div
                                                     className={this.getNavActiveClass([
                                                         'customisedataaccessrequests_guidance',
                                                         'customisedataaccessrequests_applicationform',
                                                     ])}>
-                                                    <Accordion activeKey={activeAccordion} onSelect={this.accordionClick}>
-                                                        <Fragment>
-                                                            <Accordion.Toggle
-                                                                variant='link'
-                                                                className='verticalNavBar gray700-13 navLinkButton'
-                                                                eventKey='1'>
-                                                                <Icon svg={<EditFolderIcon />} fill='grey500' color='grey500' size='2xl' />
-                                                                <span className='navLinkItem'>Edit DAR Form</span>
-                                                            </Accordion.Toggle>
-                                                            <Accordion.Collapse eventKey='1'>
-                                                                <div>
-                                                                    <DashboardSubNavItem
-                                                                        active={tabId === 'customisedataaccessrequests_guidance'}
-                                                                        onClick={() =>
-                                                                            this.toggleNav(`customisedataaccessrequests_guidance`)
-                                                                        }>
-                                                                        Presubmission Guidance
-                                                                    </DashboardSubNavItem>
-
-                                                                    <DashboardSubNavItem
-                                                                        active={tabId === 'customisedataaccessrequests_applicationform'}
-                                                                        onClick={() =>
-                                                                            this.toggleNav(`customisedataaccessrequests_applicationform`)
-                                                                        }>
-                                                                        Application Form
-                                                                    </DashboardSubNavItem>
-                                                                </div>
-                                                            </Accordion.Collapse>
-                                                        </Fragment>
-                                                    </Accordion>
+                                                    <DashboardNavAccordian
+                                                        onSelect={this.accordionClick}
+                                                        onClick={this.toggleNav}
+                                                        tabId={tabId}
+                                                        activeKey={activeAccordion}
+                                                        eventKey='1'
+                                                        data={ACCORDIAN_CUSTOM_DAR_MENU}
+                                                    />
                                                 </div>
                                             </>
                                         )}
@@ -814,12 +843,16 @@ class Account extends Component {
                                             </DashboardNavItem>
                                         )}
 
-                                        <DashboardNavItem
-                                            icon={<FlowIcon />}
-                                            activeClassName={this.getNavActiveClass('datause')}
-                                            onClick={e => this.toggleNav('datause')}>
-                                            Data Uses
-                                        </DashboardNavItem>
+                                        <div className={this.getNavActiveClass(['datause', 'datause_widget'])}>
+                                            <DashboardNavAccordian
+                                                onSelect={this.accordionClick}
+                                                onClick={this.toggleNav}
+                                                tabId={tabId}
+                                                activeKey={activeAccordion}
+                                                eventKey='2'
+                                                data={ACCORDIAN_DUR_MENU}
+                                            />
+                                        </div>
 
                                         <DashboardNavItem
                                             icon={<HelpIcon />}
@@ -833,22 +866,22 @@ class Account extends Component {
                         </div>
 
                         <div className='col-sm-12 col-md-10 margin-top-32'>
-                            {team === 'user' && (
+                            {isUser(team) && (
                                 <>
-                                    {tabId === 'dashboard' ? <AccountAnalyticsDashboard userState={userState} /> : ''}
+                                    {tabId === 'dashboard' && <AccountAnalyticsDashboard userState={userState} />}
 
-                                    {tabId === 'youraccount' ? <YourAccount userState={userState} accountUpdated={accountUpdated} /> : ''}
+                                    {tabId === 'youraccount' && <YourAccount userState={userState} accountUpdated={accountUpdated} />}
 
-                                    {tabId === 'tools' ? <AccountTools userState={userState} /> : ''}
+                                    {tabId === 'tools' && <AccountTools userState={userState} />}
 
-                                    {tabId === 'reviews' ? <ReviewTools userState={userState} /> : ''}
+                                    {tabId === 'reviews' && <ReviewTools userState={userState} />}
 
-                                    {tabId === 'papers' ? <AccountPapers userState={userState} /> : ''}
+                                    {tabId === 'papers' && <AccountPapers userState={userState} />}
 
-                                    {tabId === 'courses' ? <AccountCourses userState={userState} /> : ''}
+                                    {tabId === 'courses' && <AccountCourses userState={userState} />}
 
-                                    {tabId === 'dataaccessrequests' ? (
-                                        _.isEmpty(dataaccessrequest) ? (
+                                    {tabId === 'dataaccessrequests' &&
+                                        (_.isEmpty(dataaccessrequest) ? (
                                             <DataAccessRequests
                                                 setDataAccessRequest={this.setDataAccessRequest}
                                                 userState={userState}
@@ -864,41 +897,17 @@ class Account extends Component {
                                                 ref={this.activityLog}
                                                 onUpdateLogs={this.loadActivityLogNotifications}
                                             />
-                                        )
-                                    ) : (
-                                        ''
-                                    )}
+                                        ))}
 
-                                    {tabId === 'datause' ? (
-                                        showDataUseUploadPage ? (
-                                            <DataUseUpload
-                                                userState={userState}
-                                                onSubmit={this.toggleDataUseUploadPage}
-                                                team={team}
-                                                ref={this.dataUseUpload}
-                                                dataUsePage={this.dataUsePage}
-                                            />
-                                        ) : (
-                                            <DataUsePage
-                                                userState={userState}
-                                                team={team}
-                                                onClickDataUseUpload={this.toggleDataUseUploadPage}
-                                                ref={this.dataUsePage}
-                                            />
-                                        )
-                                    ) : (
-                                        ''
-                                    )}
+                                    {tabId === 'collections' && <AccountCollections userState={userState} />}
 
-                                    {tabId === 'collections' ? <AccountCollections userState={userState} /> : ''}
-
-                                    {tabId === 'usersroles' ? <AccountUsers userState={userState} /> : ''}
+                                    {tabId === 'usersroles' && <AccountUsers userState={userState} />}
                                 </>
                             )}
 
                             <Route path='/account/datasets/:id' component={AccountDataset} />
 
-                            {team !== 'user' ? (
+                            {!isUser(team) && (
                                 <>
                                     {allowAccessRequestManagement && this.userHasRole(team, ['manager', 'reviewer']) && (
                                         <>
@@ -936,23 +945,16 @@ class Account extends Component {
                                         />
                                     )}
 
-                                    {tabId === 'datause' &&
-                                        (showDataUseUploadPage ? (
-                                            <DataUseUpload
-                                                userState={userState}
-                                                team={team}
-                                                ref={this.dataUseUpload}
-                                                dataUsePage={this.dataUsePage}
-                                                onSubmit={this.toggleDataUseUploadPage}
-                                            />
-                                        ) : (
-                                            <DataUsePage
-                                                userState={userState}
-                                                team={team}
-                                                onClickDataUseUpload={this.toggleDataUseUploadPage}
-                                                ref={this.dataUsePage}
-                                            />
-                                        ))}
+                                    {(tabId === 'datause' || tabId === 'datause_widget') && !showDataUseUploadPage && (
+                                        <AccountDataUse
+                                            tabId={tabId}
+                                            team={team}
+                                            onClickDataUseUpload={this.toggleDataUseUploadPage}
+                                            ref={this.dataUsePage}
+                                            onSelectTab={this.toggleNav}
+                                            publisherDetails={publisherDetails}
+                                        />
+                                    )}
 
                                     {allowWorkflow && this.userHasRole(team, 'manager') && tabId === 'workflows' && (
                                         <WorkflowDashboard userState={userState} team={team} />
@@ -991,8 +993,6 @@ class Account extends Component {
 
                                     {tabId === 'help' ? <TeamHelp /> : ''}
                                 </>
-                            ) : (
-                                ''
                             )}
                         </div>
                     </div>

@@ -1,10 +1,10 @@
 import { isEmpty } from 'lodash';
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Col, Row, Tab, Tabs } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
 import { NotificationManager } from 'react-notifications';
 import Alert from '../../components/Alert';
 import { LayoutContent } from '../../components/Layout';
-import SVGIcon from '../../images/SVGIcon';
 import dataUseRegistersService from '../../services/data-use-registers';
 import googleAnalytics from '../../tracking';
 import DarHelperUtil from '../../utils/DarHelper.util';
@@ -17,17 +17,17 @@ import Table from './DataUseTable';
 import DataUseApproveModal from './modals/DataUseApproveModal';
 import DataUseRejectModal from './modals/DataUseRejectModal';
 
-const baseURL = require('../commonComponents/BaseURL').getURL();
-
 const DataUsePage = React.forwardRef(({ onClickDataUseUpload, team }, ref) => {
     React.useImperativeHandle(ref, () => ({
         showAlert,
     }));
 
+    const { t } = useTranslation();
     const [row, setRow] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [rowsPerPage] = useState(40);
     const [alert, setAlert] = useState('');
+    const [activeTab, setActiveTab] = useState('');
     const [dataUseId, setDataUseId] = useState(-1);
     const [showApproveModal, setShowApproveModal] = useState(false);
     const [showRejectModal, setShowRejectModal] = useState(false);
@@ -107,11 +107,9 @@ const DataUsePage = React.forwardRef(({ onClickDataUseUpload, team }, ref) => {
         setShowUnarchiveModal(!showUnarchiveModal);
     };
 
-    const showAlert = message => {
+    const showAlert = (message, tab) => {
         setAlert(message);
-        setTimeout(() => {
-            setAlert('');
-        }, 5000);
+        setActiveTab(tab);
     };
 
     const updataDataUseStatus = (oldStatus, newStatus, rejectionReason = '') => {
@@ -164,9 +162,9 @@ const DataUsePage = React.forwardRef(({ onClickDataUseUpload, team }, ref) => {
         <>
             <LayoutContent>
                 <Row>
-                    <Col className='pl-0 pr-0'>
+                    <Col className='mb-1'>
                         {!isEmpty(alert) && (
-                            <Alert variant='success' autoclose>
+                            <Alert variant='success' dismissable>
                                 {alert}
                             </Alert>
                         )}
@@ -176,10 +174,12 @@ const DataUsePage = React.forwardRef(({ onClickDataUseUpload, team }, ref) => {
                     <Row>
                         <Col sm={12} md={8}>
                             <div>
-                                <span className='black-20'>Data uses</span>
+                                <span className='black-20'>Dashboard</span>
                             </div>
                             <div>
-                                <span className='gray700-13 '>Manage your data use register by uploading or editing data uses.</span>
+                                <span className='gray700-13 '>
+                                    {team === 'user' ? t('datause.upload.pageInfoUser') : t('datause.upload.pageInfoTeam')}
+                                </span>
                             </div>
                         </Col>
                         <Col sm={12} md={4} style={{ textAlign: 'right' }}>
@@ -190,7 +190,8 @@ const DataUsePage = React.forwardRef(({ onClickDataUseUpload, team }, ref) => {
                                     handleAnalytics('Clicked upload data use', 'Dashboard button');
 
                                     onClickDataUseUpload();
-                                }}>
+                                }}
+                                hidden={team === 'user' ? 'hidden' : ''}>
                                 + Upload
                             </Button>
                         </Col>
@@ -200,7 +201,9 @@ const DataUsePage = React.forwardRef(({ onClickDataUseUpload, team }, ref) => {
                 <Row className=''>
                     <Col sm={12} lg={12}>
                         <Tabs
-                            defaultActiveKey={team === 'user' || (team !== 'user' && team !== 'admin') ? 'Active' : 'Pending approval'}
+                            defaultActiveKey={
+                                activeTab || (team === 'user' || (team !== 'user' && team !== 'admin') ? 'Active' : 'Pending approval')
+                            }
                             className='gray700-13 data-use-tabs'>
                             {tabs.map(tabName => (
                                 <Tab

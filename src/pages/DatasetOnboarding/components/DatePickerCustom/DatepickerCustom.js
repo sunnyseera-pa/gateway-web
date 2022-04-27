@@ -4,23 +4,28 @@ import moment from 'moment';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 class DatePickerCustom extends React.Component {
-    constructor(props) {
-        super(props);
-        let date = null;
-        if (moment(this.props.value, 'DD/MM/YYYY').isValid()) {
-            date = moment(this.props.value, 'DD/MM/YYYY').toDate();
-        }
-        this.state = {
-            date,
-        };
-        this.handleChange = this.handleChange.bind(this);
-        this.handleFocus = this.handleFocus.bind(this);
-        this.handleBlur = this.handleBlur.bind(this);
-    }
-    componentWillReceiveProps(nextProps) {
-        let { value } = nextProps;
 
-        if (!_.isNil(value)) value = moment(value, 'DD/MM/YYYY').toDate();
+	constructor(props) {
+		super(props);
+		let date = null;
+		if (moment(this.props.value, 'DD/MM/YYYY').isValid()) {
+			date = moment(this.props.value, 'DD/MM/YYYY').toDate();
+		}
+		if (moment(this.props.value, moment.ISO_8601).isValid()) {
+			date = moment(this.props.value, moment.ISO_8601).toDate();
+		}
+		this.state = {
+			date,
+		};
+		this.handleChange = this.handleChange.bind(this);
+		this.handleFocus = this.handleFocus.bind(this);
+		this.handleBlur = this.handleBlur.bind(this);
+	}
+	componentWillReceiveProps(nextProps) {
+		let { value } = nextProps;
+
+		if (!_.isNil(value) && moment(value, 'DD/MM/YYYY').isValid()) value = moment(value, 'DD/MM/YYYY').toDate();
+		if (!_.isNil(value) && moment(value, moment.ISO_8601).isValid()) value = moment(value, moment.ISO_8601).toDate();
 
         if (this.props.value !== value) this.setState({ date: value });
     }

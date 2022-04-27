@@ -1,49 +1,36 @@
 import { css } from '@emotion/react';
+import { getComponentSize, getComponentVariant } from '../../configs/theme';
+
+export const mixins = {
+    button: () =>
+        `
+        border-width: 2px;
+        border-style: solid;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        .ui-Icon,
+        svg {
+            height: 1em;
+            width: 1em;
+        }
+`,
+};
 
 export const root =
     ({ variant, size }) =>
     theme => {
         const {
-            colors,
-            components: {
-                Button: {
-                    sizes: {
-                        [size]: { height },
-                    },
-                    variants: {
-                        [variant]: {
-                            background,
-                            disabledBackground,
-                            hoverBackground,
-                            borderColor,
-                            hoverBorderColor,
-                            disabledBorderColor,
-                            color,
-                            hoverColor,
-                            disabledColor,
-                        },
-                    },
-                },
-            },
+            base: { unit, increment },
         } = theme;
 
         return css`
-            height: ${height};
-            background: ${colors[background]};
-            color: ${colors[color]};
-            border: 1px solid ${colors[borderColor]};
+            ${mixins.button()}
+            ${getComponentVariant('Button', variant, theme)}
+            ${getComponentSize('Button', size, theme)}
+
             border-radius: 4px;
-
-            &:hover {
-                background: ${colors[hoverBackground]};
-                color: ${colors[hoverColor]};
-                border: 1px solid ${colors[hoverBorderColor]};
-            }
-
-            &:disabled {
-                background: ${colors[disabledBackground]};
-                color: ${colors[disabledColor]};
-                border: 1px solid ${colors[disabledBorderColor]};
-            }
+            gap: ${increment * 1.5}${unit};
         `;
     };

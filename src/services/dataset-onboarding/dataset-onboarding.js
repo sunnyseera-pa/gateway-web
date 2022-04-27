@@ -21,6 +21,10 @@ const getPublisher = (_id, options) => {
     return getRequest(`${apiURL}/dataset-onboarding/publisher/${_id}`, options);
 };
 
+const getPublisherDetails = (_id, options) => {
+    return getRequest(`${apiURL}/publishers/${_id}`, options);
+};
+
 const postDatasetOnboarding = (data, options) => {
     return postRequest(`${apiURL}/dataset-onboarding`, data, options);
 };
@@ -106,6 +110,7 @@ export default {
     getDatasetOnboardings,
     getDatasetOnboarding,
     getPublisher,
+    getPublisherDetails,
     postDatasetOnboarding,
     postDuplicate,
     putDatasetOnboarding,

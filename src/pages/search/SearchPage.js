@@ -35,6 +35,8 @@ import PeopleSearchSort from './components/PeopleSearchResult/PeopleSearchSort';
 import SearchFilters from './components/SearchFilters';
 import SearchUtilityBanner from './components/SearchUtilityBanner';
 import ToolsSearchSort from './components/ToolsSearchResults/ToolsSearchSort';
+import searchService from '../../services/search/search';
+import { getParams } from '../../utils/GeneralHelper.util';
 import './Search.scss';
 
 let baseURL = require('../commonComponents/BaseURL').getURL();
@@ -198,7 +200,12 @@ class SearchPage extends React.Component {
     }
 
     toggleDataUtilityWizardModal = () => {
-        this.setState({ showDataUtilityWizardModal: false });
+        if (!this.state.showDataUtilityWizardModal) {
+            googleAnalytics.recordVirtualPageView('Data Utility Wizard');
+        }
+        this.setState(prevState => {
+            return { showDataUtilityWizardModal: !prevState.showDataUtilityWizardModal };
+        });
     };
 
     showLoginModal = () => {
@@ -254,6 +261,8 @@ class SearchPage extends React.Component {
             // 7. if openAdvancedSearch is true open the user messages
             else if (queryParams.openAdvancedSearch === 'true') {
                 this.toggleAdvancedSearchModal();
+            } else if (queryParams.openDataUtilityWizard === 'true') {
+                this.toggleDataUtilityWizardModal();
             }
             // 8. set the selectedFilter states from queryParams ** does not return anything **
             await this.updateFilterStates(queryParams);
@@ -634,10 +643,10 @@ class SearchPage extends React.Component {
             // remove once full migration to v2 filters for all other entities 'Tools, Projects, Courses and Papers'
             const entityType = typeMapper[`${this.state.key}`];
 
-            axios
-                .get(
-                    `${baseURL}/api/v1/search/filter?search=${encodeURIComponent(textSearch ? textSearch : this.state.search)}${searchURL}`
-                )
+            searchService
+                .getSearchFilters({
+                    params: getParams(`search=${encodeURIComponent(textSearch ? textSearch : this.state.search)}${searchURL}`),
+                })
                 .then(res => {
                     let filters = this.getFilterState(res);
                     // test the type and set relevant state
@@ -675,8 +684,10 @@ class SearchPage extends React.Component {
                 });
         }
         // search call brings back search results and now filters highlighting for v2
-        axios
-            .get(`${baseURL}/api/v1/search?search=${encodeURIComponent(textSearch ? textSearch : this.state.search)}${searchURL}`)
+        searchService
+            .getSearch({
+                params: getParams(`search=${encodeURIComponent(textSearch ? textSearch : this.state.search)}${searchURL}`),
+            })
             .then(res => {
                 // get the correct entity type from our mapper via the selected tab ie..'Dataset, Tools'
                 const entityType = typeMapper[`${this.state.key}`];
@@ -846,7 +857,7 @@ class SearchPage extends React.Component {
         try {
             const entityType = typeMapper[key];
             const filtersV2Entity = `filtersV2${key}`;
-            const response = await axios.get(`${baseURL}/api/v2/filters/${entityType}`);
+            const response = await searchService.getFilters(entityType);
             const {
                 data: { data },
             } = response;
@@ -1530,14 +1541,13 @@ class SearchPage extends React.Component {
 
         googleAnalytics.recordEvent('Data Use', `Download Results`, `Search values: ${url}`);
 
-        axios.get(`${baseURL}/api/v2/data-use-registers/${url}`).then(response => {
+        axios.get(`${baseURL}/api/v2/data-use-registers/search?${url}`).then(response => {
             this.formatDataUseRegisterForDownload(response.data.result);
         });
     };
 
     formatDataUseRegisterForDownload(dataUses) {
         let formattedDataUses = [];
-
         dataUses.forEach(dataUse => {
             const gatewayApplicants = dataUse.gatewayApplicantsDetails.map(applicant => {
                 return `${applicant.firstname} ${applicant.lastname} `;
@@ -1843,8 +1853,7 @@ class SearchPage extends React.Component {
                                             <Button
                                                 variant='light'
                                                 className='saved-preference button-tertiary'
-                                                onClick={() => this.onClickDownloadResults()}
-                                            >
+                                                onClick={() => this.onClickDownloadResults()}>
                                                 {' '}
                                                 Download Results
                                             </Button>
@@ -1866,16 +1875,14 @@ class SearchPage extends React.Component {
                                         <Button
                                             variant='outline-success'
                                             className='saved button-teal'
-                                            onClick={() => this.showLoginModal()}
-                                        >
+                                            onClick={() => this.showLoginModal()}>
                                             Save
                                         </Button>
                                     ) : (
                                         <Button
                                             variant='outline-success'
                                             className='saved button-teal'
-                                            onClick={() => this.setState({ showSavedModal: true })}
-                                        >
+                                            onClick={() => this.setState({ showSavedModal: true })}>
                                             Save
                                         </Button>
                                     )}
@@ -1901,8 +1908,7 @@ class SearchPage extends React.Component {
                                             this.state.userState[0].loggedIn === false
                                                 ? () => this.showLoginModal()
                                                 : () => this.setState({ showSavedPreferencesModal: true })
-                                        }
-                                    >
+                                        }>
                                         {' '}
                                         Saved preferences
                                     </Button>
