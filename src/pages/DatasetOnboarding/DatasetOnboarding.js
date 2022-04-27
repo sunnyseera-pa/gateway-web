@@ -7,9 +7,10 @@ import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
 import ActionBar from '../commonComponents/actionbar/ActionBar';
 import TypeaheadCustom from './components/TypeaheadCustom/TypeaheadCustom';
+import TypeaheadAsyncCustom from './components/TypeaheadAsyncCustom';
 import TypeaheadCustomKeyValue from './components/TypeaheadCustom/TypeaheadCustomKeyValue';
 import TypeaheadKeywords from './components/TypeaheadKeywords/TypeaheadKeywords';
-import TextareaInputCustom from './components/TextareaInputCustom/TextareaInputCustom';
+import TextareaInputCustom from '../commonComponents/TextareaInputCustom/TextareaInputCustom';
 import TypeaheadUser from './components/TypeaheadUser/TypeaheadUser';
 import DatePickerCustom from './components/DatePickerCustom/DatepickerCustom';
 import MultiField from './components/MultiField/MultiField';
@@ -37,15 +38,13 @@ import BeforeYouBegin from './components/BeforeYouBegin/BeforeYouBegin';
 import Guidance from './components/Guidance/Guidance';
 import StructuralMetadata from './components/StructuralMetadata/StructuralMetadata';
 import StatusDisplay from '../commonComponents/StatusDisplay';
-
 import ActionModal from './components/ActionModal/ActionModal';
-
 import Dropdown from 'react-bootstrap/Dropdown';
-
 import { formSchema } from './formSchema';
 import DatasetOnboardingHelperUtil from '../../utils/DatasetOnboardingHelper.util';
-import ActionBarStatus from '../commonComponents/ActionBarStatus';
+import ActionBarStatus from '../../components/ActionBarStatus';
 import ErrorModal from '../commonComponents/errorModal';
+import datasetOnboardingServices from '../../services/dataset-onboarding';
 
 /* export const DatasetOnboarding = props => {
     const [id] = useState('');
@@ -55,27 +54,28 @@ import ErrorModal from '../commonComponents/errorModal';
 } */
 
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
-	<a
-		href='javascript:void(0)'
-		ref={ref}
-		onClick={e => {
-			e.preventDefault();
-			onClick(e);
-		}}>
-		{children}
-	</a>
+    <a
+        href='javascript:void(0)'
+        ref={ref}
+        onClick={e => {
+            e.preventDefault();
+            onClick(e);
+        }}
+    >
+        {children}
+    </a>
 ));
 
 const CustomMenu = React.forwardRef(({ children, style, className, 'aria-labelledby': labeledBy }, ref) => {
-	const [value] = useState('');
+    const [value] = useState('');
 
-	return (
-		<div ref={ref} style={style} className={className} aria-labelledby={labeledBy}>
-			<ul className='list-unstyled margin-bottom-0'>
-				{React.Children.toArray(children).filter(child => !value || child.props.children.toLowerCase().startsWith(value))}
-			</ul>
-		</div>
-	);
+    return (
+        <div ref={ref} style={style} className={className} aria-labelledby={labeledBy}>
+            <ul className='list-unstyled margin-bottom-0'>
+                {React.Children.toArray(children).filter(child => !value || child.props.children.toLowerCase().startsWith(value))}
+            </ul>
+        </div>
+    );
 });
 
 class DatasetOnboarding extends Component {
@@ -125,6 +125,7 @@ class DatasetOnboarding extends Component {
 			inReviewMode: false,
 			updateRequestModal: false,
 			completion: {},
+			isFederated: false,
 		};
 
 		this.onChangeDebounced = _.debounce(this.onChangeDebounced, 300);
@@ -173,6 +174,13 @@ class DatasetOnboarding extends Component {
 						listOfDatasets,
 					},
 				} = response;
+
+				let {
+					data: { publisher: publisherDetails },
+				} = await datasetOnboardingServices.getPublisherDetails(data.dataset.datasetv2.summary.publisher.identifier);
+				
+				if (!_.isEmpty(publisherDetails.federation) && publisherDetails.federation.active) this.setState({ isFederated: true });
+
 				// 3. Set up the DAR
 				this.setScreenData({
 					...data,
@@ -264,6 +272,10 @@ class DatasetOnboarding extends Component {
 		}
 
 		let initialPanel = jsonSchema.formPanels[0].panelId;
+
+		if (this.state.isFederated) {
+			readOnly = true
+		}
 
 		// 9. Set state
 		this.setState({
@@ -455,579 +467,581 @@ class DatasetOnboarding extends Component {
 				this.setState({
 					...schemaUpdates
 				}); */
-			});
-		} catch (error) {
-			console.log(`API PUT ERROR ${error}`);
-		}
-	};
+            });
+        } catch (error) {
+            console.log(`API PUT ERROR ${error}`);
+        }
+    };
 
-	/**
-	 * [Form Submit]
-	 * @desc Submitting data access request
-	 * @params  Object{questionAnswers}
-	 */
-	onFormSubmit = async () => {
-		let invalidQuestions = DatasetOnboardingValidation.getQuestionPanelInvalidQuestions(
-			Winterfell,
-			this.state.jsonSchema.questionSets,
-			this.state.questionAnswers
-		);
-		let validationSectionMessages = DatasetOnboardingValidation.buildInvalidSectionMessages(Winterfell, invalidQuestions);
-		let inValidMessages = DatasetOnboardingValidation.buildInvalidMessages(Winterfell, invalidQuestions);
-		let errors = DatasetOnboardingValidation.formatValidationObj(inValidMessages, [...this.state.jsonSchema.questionPanels]);
-		let isValid = Object.keys(errors).length ? false : true;
+    /**
+     * [Form Submit]
+     * @desc Submitting data access request
+     * @params  Object{questionAnswers}
+     */
+    onFormSubmit = async () => {
+        let invalidQuestions = DatasetOnboardingValidation.getQuestionPanelInvalidQuestions(
+            Winterfell,
+            this.state.jsonSchema.questionSets,
+            this.state.questionAnswers
+        );
 
-		if (isValid) {
-			this.toggleActionModal('SUBMITFORREVIEW');
-		} else if (this.userRoleIsAdmin(this.state.publisher)) {
-			this.toggleActionModal('VALIDATIONERRORSADMIN');
-		} else {
-			let activePage = _.get(_.keys({ ...errors }), 0);
-			let activePanel = _.get(_.keys({ ...errors }[activePage]), 0);
-			let validationMessages = validationSectionMessages;
+        let validationSectionMessages = DatasetOnboardingValidation.buildInvalidSectionMessages(Winterfell, invalidQuestions);
+        let inValidMessages = DatasetOnboardingValidation.buildInvalidMessages(Winterfell, invalidQuestions);
+        let errors = DatasetOnboardingValidation.formatValidationObj(inValidMessages, [...this.state.jsonSchema.questionPanels]);
+        let isValid = Object.keys(errors).length ? false : true;
 
-			this.toggleActionModal('VALIDATIONERRORS');
+        if (isValid) {
+            this.toggleActionModal('SUBMITFORREVIEW');
+        } else if (this.userRoleIsAdmin(this.state.publisher)) {
+            this.toggleActionModal('VALIDATIONERRORSADMIN');
+        } else {
+            let activePage = _.get(_.keys({ ...errors }), 0);
+            let activePanel = _.get(_.keys({ ...errors }[activePage]), 0);
+            let validationMessages = validationSectionMessages;
 
-			//alert('Some validation issues have been found. Please see all items highlighted in red on this page.');
-			this.updateNavigation({ pageId: activePage, panelId: activePanel }, validationMessages);
-		}
-	};
+            this.toggleActionModal('VALIDATIONERRORS');
 
-	updateApplication = async (obj = {}) => {
-		try {
-			// 1. Data = {key: jsonSchema || questionAnswers, data: { object of data}}
-			let { key, data = {} } = obj;
-			// 2. Id of data access request
-			let { _id: id } = this.state;
-			// 3. Set up body params
-			let params = {
-				[`${key}`]: JSON.stringify(data),
-			};
-			// 4. PATCH the data
-			const response = await axios.patch(`${baseURL}/api/v1/dataset-onboarding/${id}`, params);
-			// 6. Get saved time
-			const lastSaved = DatasetOnboardingHelper.saveTime();
-			// 5. Set state
-			this.setState({ [`${key}`]: { ...data }, lastSaved });
-		} catch (err) {
-			console.log(err);
-		}
-	};
+            //alert('Some validation issues have been found. Please see all items highlighted in red on this page.');
+            this.updateNavigation({ pageId: activePage, panelId: activePanel }, validationMessages);
+        }
+    };
 
-	onNextClick = () => {
-		// 1. If in the about panel, we go to the next step.  Otherwise next panel.
-		if (this.state.activePanelId === 'beforeYouBegin') {
-			// 2. Set new state
-			let currentActiveAccordionCard = this.state.activeAccordionCard;
-			this.setState({
-				activeAccordionCard: ++currentActiveAccordionCard,
-			});
+    updateApplication = async (obj = {}) => {
+        try {
+            // 1. Data = {key: jsonSchema || questionAnswers, data: { object of data}}
+            let { key, data = {} } = obj;
+            // 2. Id of data access request
+            let { _id: id } = this.state;
+            // 3. Set up body params
+            let params = {
+                [`${key}`]: JSON.stringify(data),
+            };
+            // 4. PATCH the data
+            const response = await axios.patch(`${baseURL}/api/v1/dataset-onboarding/${id}`, params);
+            // 6. Get saved time
+            const lastSaved = DatasetOnboardingHelper.saveTime();
+            // 5. Set state
+            this.setState({ [`${key}`]: { ...data }, lastSaved });
+        } catch (err) {
+            console.log(err);
+        }
+    };
 
-			// 3. If we have reached the end of the about accordion, reset active accordion so all are closed
-			if (this.state.activeAccordionCard >= 4) {
-				this.setState({
-					activeAccordionCard: -1,
-				});
-				// 4. Move to the next step
-				this.onNextPanel();
-			}
-		} else {
-			this.onNextPanel();
-		}
-	};
+    onNextClick = () => {
+        // 1. If in the about panel, we go to the next step.  Otherwise next panel.
+        if (this.state.activePanelId === 'beforeYouBegin') {
+            // 2. Set new state
+            let currentActiveAccordionCard = this.state.activeAccordionCard;
+            this.setState({
+                activeAccordionCard: ++currentActiveAccordionCard,
+            });
 
-	onNextPanel = () => {
-		// 1. Copy formpanels
-		let formPanels = [...this.state.jsonSchema.formPanels];
-		// 2. Get activeIdx
-		let activeIdx = formPanels.findIndex(p => p.panelId === this.state.activePanelId);
-		// 3. Increment idx
-		let nextIdx = ++activeIdx;
-		// 4. Get activePanel - make sure newIdx doesnt exceed panels length
-		let { panelId, pageId } = formPanels[nextIdx > formPanels.length - 1 ? 0 : nextIdx];
-		// 5. Update the navigationState
-		this.updateNavigation({ panelId, pageId });
-	};
+            // 3. If we have reached the end of the about accordion, reset active accordion so all are closed
+            if (this.state.activeAccordionCard >= 4) {
+                this.setState({
+                    activeAccordionCard: -1,
+                });
+                // 4. Move to the next step
+                this.onNextPanel();
+            }
+        } else {
+            this.onNextPanel();
+        }
+    };
 
-	/**
-	 * [UpdateNavigation]
-	 * @desc - Update the navigation state sidebar
-	 */
-	updateNavigation = (newForm, validationErrors = {}) => {
-		if (this.state.allowedNavigation) {
-			// reset scroll to 0, 0
-			window.scrollTo(0, 0);
-			let panelId = '';
-			// copy state pages
-			const pages = [...this.state.jsonSchema.pages];
-			// get the index of new form
-			const newPageindex = pages.findIndex(page => page.pageId === newForm.pageId);
-			// reset the current state of active to false for all pages
-			const newFormState = [...this.state.jsonSchema.pages].map(item => {
-				return { ...item, active: false };
-			});
-			// update actual object model with property of active true
-			newFormState[newPageindex] = { ...pages[newPageindex], active: true };
+    onNextPanel = () => {
+        // 1. Copy formpanels
+        let formPanels = [...this.state.jsonSchema.formPanels];
+        // 2. Get activeIdx
+        let activeIdx = formPanels.findIndex(p => p.panelId === this.state.activePanelId);
+        // 3. Increment idx
+        let nextIdx = ++activeIdx;
+        // 4. Get activePanel - make sure newIdx doesnt exceed panels length
+        let { panelId, pageId } = formPanels[nextIdx > formPanels.length - 1 ? 0 : nextIdx];
+        // 5. Update the navigationState
+        this.updateNavigation({ panelId, pageId });
+    };
 
-			// get set the active panelId
-			({ panelId } = newForm);
-			if (_.isEmpty(panelId) || typeof panelId == 'undefined') {
-				({ panelId } = [...this.state.jsonSchema.formPanels].find(p => p.pageId === newFormState[newPageindex].pageId) || '');
-			}
+    /**
+     * [UpdateNavigation]
+     * @desc - Update the navigation state sidebar
+     */
+    updateNavigation = (newForm, validationErrors = {}) => {
+        if (this.state.allowedNavigation) {
+            // reset scroll to 0, 0
+            window.scrollTo(0, 0);
+            let panelId = '';
+            // copy state pages
+            const pages = [...this.state.jsonSchema.pages];
+            // get the index of new form
+            const newPageindex = pages.findIndex(page => page.pageId === newForm.pageId);
+            // reset the current state of active to false for all pages
+            const newFormState = [...this.state.jsonSchema.pages].map(item => {
+                return { ...item, active: false };
+            });
+            // update actual object model with property of active true
+            newFormState[newPageindex] = { ...pages[newPageindex], active: true };
 
-			let countedQuestionAnswers = {};
-			let totalQuestions = '';
-			// if in the about panel, retrieve question answers count for entire application
-			if (panelId === 'beforeYouBegin' || panelId === 'structural') {
-				countedQuestionAnswers = DatasetOnboardingHelperUtil.totalQuestionsAnswered(this);
-				totalQuestions = `${countedQuestionAnswers.totalAnsweredQuestions || 0}/${
-					countedQuestionAnswers.totalQuestions || 0
-				}  questions answered`;
-			} else {
-				countedQuestionAnswers = DatasetOnboardingHelperUtil.totalQuestionsAnswered(this, panelId);
-				totalQuestions = `${countedQuestionAnswers.totalAnsweredQuestions || 0}/${
-					countedQuestionAnswers.totalQuestions || 0
-				}  questions answered in this section`;
-			}
-			let percentageCompleted = DatasetOnboardingHelperUtil.getCompletionPercentages(this);
-			if (!_.isEmpty(this.state.structuralMetadata) && _.isEmpty(this.state.structuralMetadataErrors))
-				percentageCompleted.updatedCompletion.structural = 100;
-			else percentageCompleted.updatedCompletion.structural = 0;
+            // get set the active panelId
+            ({ panelId } = newForm);
+            if (_.isEmpty(panelId) || typeof panelId == 'undefined') {
+                ({ panelId } = [...this.state.jsonSchema.formPanels].find(p => p.pageId === newFormState[newPageindex].pageId) || '');
+            }
 
-			// reset guidance - due to on change of panel
-			let jsonSchema = this.state.jsonSchema;
-			this.setState({
-				jsonSchema: { ...jsonSchema, pages: newFormState },
-				activePanelId: panelId,
-				isWideForm: panelId === 'beforeYouBegin',
-				isTableForm: panelId === 'structural',
-				totalQuestions: totalQuestions,
-				validationErrors,
-				activeGuidance: '',
-				completion: percentageCompleted.updatedCompletion,
-			});
-		}
-	};
+            let countedQuestionAnswers = {};
+            let totalQuestions = '';
+            // if in the about panel, retrieve question answers count for entire application
+            if (panelId === 'beforeYouBegin' || panelId === 'structural') {
+                countedQuestionAnswers = DatasetOnboardingHelperUtil.totalQuestionsAnswered(this);
+                totalQuestions = `${countedQuestionAnswers.totalAnsweredQuestions || 0}/${
+                    countedQuestionAnswers.totalQuestions || 0
+                }  questions answered`;
+            } else {
+                countedQuestionAnswers = DatasetOnboardingHelperUtil.totalQuestionsAnswered(this, panelId);
+                totalQuestions = `${countedQuestionAnswers.totalAnsweredQuestions || 0}/${
+                    countedQuestionAnswers.totalQuestions || 0
+                }  questions answered in this section`;
+            }
+            let percentageCompleted = DatasetOnboardingHelperUtil.getCompletionPercentages(this);
+            if (!_.isEmpty(this.state.structuralMetadata) && _.isEmpty(this.state.structuralMetadataErrors))
+                percentageCompleted.updatedCompletion.structural = 100;
+            else percentageCompleted.updatedCompletion.structural = 0;
 
-	onClickSave = e => {
-		e.preventDefault();
-		const lastSaved = DatasetOnboardingHelper.saveTime();
-		this.setState({ lastSaved });
-	};
+            // reset guidance - due to on change of panel
+            let jsonSchema = this.state.jsonSchema;
+            this.setState({
+                jsonSchema: { ...jsonSchema, pages: newFormState },
+                activePanelId: panelId,
+                isWideForm: panelId === 'beforeYouBegin',
+                isTableForm: panelId === 'structural',
+                totalQuestions: totalQuestions,
+                validationErrors,
+                activeGuidance: '',
+                completion: percentageCompleted.updatedCompletion,
+            });
+        }
+    };
 
-	/**
-	 * [onQuestionClick]
-	 * @desc Add's or Removes applicants dynamically
-	 *
-	 * @param   {string}  questionSetId  [questionSetId]
-	 * @param   {string}  questionId     [questionId]
-	 */
-	onQuestionClick = async (questionSetId = '', questionId = '') => {
-		let questionSet, jsonSchema, questionAnswers, schema;
+    onClickSave = e => {
+        e.preventDefault();
+        const lastSaved = DatasetOnboardingHelper.saveTime();
+        this.setState({ lastSaved });
+    };
 
-		questionSet = DatasetOnboardingHelperUtil.findQuestionSet(questionSetId, {
-			...this.state.jsonSchema,
-		});
+    /**
+     * [onQuestionClick]
+     * @desc Add's or Removes applicants dynamically
+     *
+     * @param   {string}  questionSetId  [questionSetId]
+     * @param   {string}  questionId     [questionId]
+     */
+    onQuestionClick = async (questionSetId = '', questionId = '') => {
+        let questionSet, jsonSchema, questionAnswers, schema;
 
-		if (!_.isEmpty(questionSet) && !_.isEmpty(questionId)) {
-			// remove about and files from pages to stop duplicate, about / files added to DAR on init
-			schema = DatasetOnboardingHelperUtil.removeStaticPages({ ...this.state.jsonSchema });
+        questionSet = DatasetOnboardingHelperUtil.findQuestionSet(questionSetId, {
+            ...this.state.jsonSchema,
+        });
 
-			let {
-				input: { action },
-			} = DatasetOnboardingHelperUtil.findQuestion(questionId, questionSet);
-			switch (action) {
-				case 'addObservation':
-					let duplicateQuestionSet = DatasetOnboardingHelperUtil.questionSetToDuplicate(questionSetId, { ...schema });
-					jsonSchema = DatasetOnboardingHelperUtil.insertSchemaUpdates(questionSetId, duplicateQuestionSet, { ...schema });
-					this.setState({
-						jsonSchema,
-					});
-					break;
-				case 'removeObservation':
-					jsonSchema = DatasetOnboardingHelperUtil.removeQuestionReferences(questionSetId, questionId, { ...schema });
-					questionAnswers = DatasetOnboardingHelperUtil.removeQuestionAnswers(questionId, { ...this.state.questionAnswers });
-					await this.updateApplication({ key: 'questionAnswers', data: questionAnswers });
-					break;
-				default:
-					console.log(questionSetId);
-					break;
-			}
-		}
-	};
+        if (!_.isEmpty(questionSet) && !_.isEmpty(questionId)) {
+            // remove about and files from pages to stop duplicate, about / files added to DAR on init
+            schema = DatasetOnboardingHelperUtil.removeStaticPages({ ...this.state.jsonSchema });
 
-	/**
-	 * onQuestionAction
-	 * @desc 	Event raised from Winterfell for secondary question events
-	 * @params {event, questionSetId, questionId, key}
-	 */
-	onQuestionAction = async (e = '', questionSetId = '', questionId = '', key = '') => {
-		let mode, stateObj;
-		switch (key) {
-			case DatasetOnboardingHelper.actionKeys.GUIDANCE:
-				const activeGuidance = this.getActiveQuestionGuidance(questionId);
-				if (!_.isEmpty(e)) {
-					this.removeActiveQuestionClass();
-					this.addActiveQuestionClass(e);
-				}
-				this.setState({ activeGuidance });
-				break;
-			case DatasetOnboardingHelper.actionKeys.REQUESTAMENDMENT:
-				mode = DatasetOnboardingHelper.amendmentModes.ADDED;
-				stateObj = await this.postQuestionAction(questionSetId, questionId, mode);
-				this.setState({ ...stateObj });
-				break;
-			case DatasetOnboardingHelper.actionKeys.CANCELREQUEST:
-				mode = DatasetOnboardingHelper.amendmentModes.REMOVED;
-				stateObj = await this.postQuestionAction(questionSetId, questionId, mode);
-				this.setState({ ...stateObj });
-				break;
-			case DatasetOnboardingHelper.actionKeys.REVERTTOPREVIOUSANSWER:
-				mode = DatasetOnboardingHelper.amendmentModes.REVERTED;
-				stateObj = await this.postQuestionAction(questionSetId, questionId, mode);
-				this.setState({ ...stateObj });
-				break;
-			default:
-				console.log(questionId);
-				break;
-		}
-	};
+            let {
+                input: { action },
+            } = DatasetOnboardingHelperUtil.findQuestion(questionId, questionSet);
+            switch (action) {
+                case 'addObservation':
+                    let duplicateQuestionSet = DatasetOnboardingHelperUtil.questionSetToDuplicate(questionSetId, { ...schema });
+                    jsonSchema = DatasetOnboardingHelperUtil.insertSchemaUpdates(questionSetId, duplicateQuestionSet, { ...schema });
+                    this.setState({
+                        jsonSchema,
+                    });
+                    break;
+                case 'removeObservation':
+                    jsonSchema = DatasetOnboardingHelperUtil.removeQuestionReferences(questionSetId, questionId, { ...schema });
+                    questionAnswers = DatasetOnboardingHelperUtil.removeQuestionAnswers(questionId, { ...this.state.questionAnswers });
+                    await this.updateApplication({ key: 'questionAnswers', data: questionAnswers });
+                    break;
+                default:
+                    console.log(questionSetId);
+                    break;
+            }
+        }
+    };
 
-	/**
-	 * getActiveQuestionGuidance
-	 * @desc - Returns the guidance based on the active question
-	 * @param   {string}  questionId
-	 * @return  {string} guidance
-	 */
-	getActiveQuestionGuidance(questionId = '') {
-		let questions;
-		if (!_.isEmpty(questionId)) {
-			let {
-				jsonSchema: { questionSets },
-			} = this.state;
-			// 1. get active question set
-			let questionList = [...questionSets].filter(q => q.questionSetId.includes(this.state.activePanelId)) || [];
-			questions = questionList.map(({ questions }) => questions).flat();
-			if (!_.isEmpty(questions)) {
-				// 2. loop over and find active question
-				let activeQuestion = DatasetOnboardingHelper.getActiveQuestion([...questions], questionId);
-				if (!_.isEmpty(activeQuestion)) {
-					const { guidance } = activeQuestion;
-					return guidance;
-				}
-				return '';
-			}
-		}
-	}
+    /**
+     * onQuestionAction
+     * @desc 	Event raised from Winterfell for secondary question events
+     * @params {event, questionSetId, questionId, key}
+     */
+    onQuestionAction = async (e = '', questionSetId = '', questionId = '', key = '') => {
+        let mode, stateObj;
+        switch (key) {
+            case DatasetOnboardingHelper.actionKeys.GUIDANCE:
+                const activeGuidance = this.getActiveQuestionGuidance(questionId);
+                if (!_.isEmpty(e)) {
+                    this.removeActiveQuestionClass();
+                    this.addActiveQuestionClass(e);
+                }
+                this.setState({ activeGuidance });
+                break;
+            case DatasetOnboardingHelper.actionKeys.REQUESTAMENDMENT:
+                mode = DatasetOnboardingHelper.amendmentModes.ADDED;
+                stateObj = await this.postQuestionAction(questionSetId, questionId, mode);
+                this.setState({ ...stateObj });
+                break;
+            case DatasetOnboardingHelper.actionKeys.CANCELREQUEST:
+                mode = DatasetOnboardingHelper.amendmentModes.REMOVED;
+                stateObj = await this.postQuestionAction(questionSetId, questionId, mode);
+                this.setState({ ...stateObj });
+                break;
+            case DatasetOnboardingHelper.actionKeys.REVERTTOPREVIOUSANSWER:
+                mode = DatasetOnboardingHelper.amendmentModes.REVERTED;
+                stateObj = await this.postQuestionAction(questionSetId, questionId, mode);
+                this.setState({ ...stateObj });
+                break;
+            default:
+                console.log(questionId);
+                break;
+        }
+    };
 
-	postQuestionAction = async (questionSetId, questionId, mode) => {
-		let response = await axios.post(`${baseURL}/api/v1/data-access-request/${this.state._id}/amendments`, {
-			questionSetId,
-			questionId,
-			mode,
-		});
-		let {
-			accessRecord: { jsonSchema, questionAnswers = null, answeredAmendments, unansweredAmendments, amendmentIterations },
-		} = response.data;
-		jsonSchema = this.injectStaticContent(jsonSchema, this.state.inReviewMode, this.state.reviewSections);
+    /**
+     * getActiveQuestionGuidance
+     * @desc - Returns the guidance based on the active question
+     * @param   {string}  questionId
+     * @return  {string} guidance
+     */
+    getActiveQuestionGuidance(questionId = '') {
+        let questions;
+        if (!_.isEmpty(questionId)) {
+            let {
+                jsonSchema: { questionSets },
+            } = this.state;
+            // 1. get active question set
+            let questionList = [...questionSets].filter(q => q.questionSetId.includes(this.state.activePanelId)) || [];
+            questions = questionList.map(({ questions }) => questions).flat();
+            if (!_.isEmpty(questions)) {
+                // 2. loop over and find active question
+                let activeQuestion = DatasetOnboardingHelper.getActiveQuestion([...questions], questionId);
+                if (!_.isEmpty(activeQuestion)) {
+                    const { guidance } = activeQuestion;
+                    return guidance;
+                }
+                return '';
+            }
+        }
+    }
 
-		let stateObj = _.omitBy(
-			{
-				jsonSchema,
-				questionAnswers,
-				answeredAmendments,
-				unansweredAmendments,
-				amendmentIterations,
-			},
-			_.isNil
-		);
+    postQuestionAction = async (questionSetId, questionId, mode) => {
+        let response = await axios.post(`${baseURL}/api/v1/data-access-request/${this.state._id}/amendments`, {
+            questionSetId,
+            questionId,
+            mode,
+        });
+        let {
+            accessRecord: { jsonSchema, questionAnswers = null, answeredAmendments, unansweredAmendments, amendmentIterations },
+        } = response.data;
+        jsonSchema = this.injectStaticContent(jsonSchema, this.state.inReviewMode, this.state.reviewSections);
 
-		return stateObj;
-	};
+        let stateObj = _.omitBy(
+            {
+                jsonSchema,
+                questionAnswers,
+                answeredAmendments,
+                unansweredAmendments,
+                amendmentIterations,
+            },
+            _.isNil
+        );
 
-	/**
-	 * removeActiveQuestionClass
-	 * @desc Removes active class on a single question
-	 */
-	removeActiveQuestionClass = () => {
-		let fGroups = document.querySelectorAll('.question-wrap');
-		fGroups.forEach(key => key.classList.remove('active-group'));
-	};
+        return stateObj;
+    };
 
-	/**
-	 * addActiveQuestionClass
-	 * @desc Adds active border to question clicked upon
-	 * @param - (e) eventObject
-	 */
-	addActiveQuestionClass = e => {
-		if (!_.isEmpty(e)) {
-			let fGroup = e.target.closest('.question-wrap');
-			fGroup.classList.add('active-group');
-		}
-	};
+    /**
+     * removeActiveQuestionClass
+     * @desc Removes active class on a single question
+     */
+    removeActiveQuestionClass = () => {
+        let fGroups = document.querySelectorAll('.question-wrap');
+        fGroups.forEach(key => key.classList.remove('active-group'));
+    };
 
-	resetGuidance = () => {
-		// remove active question class
-		this.removeActiveQuestionClass();
-		// reset guidance state
-		this.setState({ activeGuidance: '' });
-	};
+    /**
+     * addActiveQuestionClass
+     * @desc Adds active border to question clicked upon
+     * @param - (e) eventObject
+     */
+    addActiveQuestionClass = e => {
+        if (!_.isEmpty(e)) {
+            let fGroup = e.target.closest('.question-wrap');
+            fGroup.classList.add('active-group');
+        }
+    };
 
-	onCustodianAction = value => {
-		this.toggleActionModal(value);
-	};
+    resetGuidance = () => {
+        // remove active question class
+        this.removeActiveQuestionClass();
+        // reset guidance state
+        this.setState({ activeGuidance: '' });
+    };
 
-	onStructuralMetaDataUpdate = (structuralMetadata, structuralMetadataErrors) => {
-		let percentageCompleted = DatasetOnboardingHelperUtil.getCompletionPercentages(this);
-		if (!_.isEmpty(structuralMetadata) && _.isEmpty(structuralMetadataErrors)) percentageCompleted.updatedCompletion.structural = 100;
-		else percentageCompleted.updatedCompletion.structural = 0;
-		this.setState({
-			structuralMetadata,
-			structuralMetadataErrors,
-			completion: percentageCompleted.updatedCompletion,
-		});
-	};
+    onCustodianAction = value => {
+        this.toggleActionModal(value);
+    };
 
-	toggleCard = (e, eventKey) => {
-		e.preventDefault();
-		// 1. Deconstruct current state
-		let { activeAccordionCard } = this.state;
-		if (activeAccordionCard === eventKey) {
-			eventKey = -1;
-		}
-		// 2. Set new state
-		this.setState({
-			activeAccordionCard: eventKey,
-		});
-	};
+    onStructuralMetaDataUpdate = (structuralMetadata, structuralMetadataErrors) => {
+        let percentageCompleted = DatasetOnboardingHelperUtil.getCompletionPercentages(this);
+        if (!_.isEmpty(structuralMetadata) && _.isEmpty(structuralMetadataErrors)) percentageCompleted.updatedCompletion.structural = 100;
+        else percentageCompleted.updatedCompletion.structural = 0;
+        this.setState({
+            structuralMetadata,
+            structuralMetadataErrors,
+            completion: percentageCompleted.updatedCompletion,
+        });
+    };
 
-	toggleDrawer = () => {
-		this.setState(prevState => {
-			if (prevState.showDrawer === true) {
-				this.searchBar.current.getNumberOfUnreadMessages();
-			}
-			return { showDrawer: !prevState.showDrawer };
-		});
-	};
+    toggleCard = (e, eventKey) => {
+        e.preventDefault();
+        // 1. Deconstruct current state
+        let { activeAccordionCard } = this.state;
+        if (activeAccordionCard === eventKey) {
+            eventKey = -1;
+        }
+        // 2. Set new state
+        this.setState({
+            activeAccordionCard: eventKey,
+        });
+    };
 
-	onEditForm = async () => {
-		this.setState({
-			readOnly: false,
-			showSubmit: false,
-			submitButtonText: 'Submit updates',
-		});
-	};
+    toggleDrawer = () => {
+        this.setState(prevState => {
+            if (prevState.showDrawer === true) {
+                this.searchBar.current.getNumberOfUnreadMessages();
+            }
+            return { showDrawer: !prevState.showDrawer };
+        });
+    };
 
-	toggleCreateNewVersionModal = () => {
-		this.toggleActionModal('CREATENEWVERSION');
-	};
+    onEditForm = async () => {
+        this.setState({
+            readOnly: false,
+            showSubmit: false,
+            submitButtonText: 'Submit updates',
+        });
+    };
 
-	toggleArchiveModal = () => {
-		this.toggleActionModal('ARCHIVE');
-	};
+    toggleCreateNewVersionModal = () => {
+        this.toggleActionModal('CREATENEWVERSION');
+    };
 
-	toggleUnArchiveModal = () => {
-		this.toggleActionModal('UNARCHIVE');
-	};
+    toggleArchiveModal = () => {
+        this.toggleActionModal('ARCHIVE');
+    };
 
-	toggleDeleteDraftModal = () => {
-		this.toggleActionModal('DELETEDRAFT');
-	};
+    toggleUnArchiveModal = () => {
+        this.toggleActionModal('UNARCHIVE');
+    };
 
-	toggleDuplicateModal = () => {
-		this.toggleActionModal('DUPLICATE');
-	};
+    toggleDeleteDraftModal = () => {
+        this.toggleActionModal('DELETEDRAFT');
+    };
 
-	toggleActionModal = (type = '') => {
-		let actionModalConfig = {};
-		// 1. get basic modal config
-		if (!_.isEmpty(type)) actionModalConfig = DatasetOnboardingHelper.configActionModal(type);
-		// 2. set state for hide/show/config modal
-		this.setState(prevState => {
-			return {
-				showActionModal: !prevState.showActionModal,
-				actionModalConfig,
-			};
-		});
-	};
+    toggleDuplicateModal = () => {
+        this.toggleActionModal('DUPLICATE');
+    };
 
-	redirectDashboard = e => {
-		e.preventDefault();
-		this.props.history.push({
-			pathname: `/account`,
-			search: '?tab=datasets',
-			state: { team: this.state.publisher },
-		});
-	};
+    toggleActionModal = (type = '') => {
+        let actionModalConfig = {};
+        // 1. get basic modal config
+        if (!_.isEmpty(type)) actionModalConfig = DatasetOnboardingHelper.configActionModal(type);
+        // 2. set state for hide/show/config modal
+        this.setState(prevState => {
+            return {
+                showActionModal: !prevState.showActionModal,
+                actionModalConfig,
+            };
+        });
+    };
 
-	datasetVersionAction = async (action = {}) => {
-		let { type, statusDesc } = action;
+    redirectDashboard = e => {
+        e.preventDefault();
+        this.props.history.push({
+            pathname: `/account`,
+            search: '?tab=datasets',
+            state: { team: this.state.publisher },
+        });
+    };
 
-		switch (type) {
-			case 'CONFIRMNEWVERSION':
-				try {
-					if (!_.isEmpty(this.state.dataset.pid) && !_.isEmpty(this.state.publisher)) {
-						axios
-							.post(baseURL + '/api/v1/dataset-onboarding', {
-								publisherID: this.state.publisher,
-								pid: this.state.dataset.pid,
-								currentVersionId: this.state._id,
-							})
-							.then(res => {
-								let { id } = res.data.data;
-								this.props.history.push({ pathname: `/dataset-onboarding/${id}` });
+    datasetVersionAction = async (action = {}) => {
+        let { type, statusDesc } = action;
 
-								//history.push({ pathname: `/dataset-onboarding/${id}` });
-								this.toggleActionModal();
-							});
-					}
-				} catch (err) {
-					console.log(err);
-				}
-				break;
-			case 'CONFIRMSUBMISSION':
-				try {
-					let { _id } = this.state;
-					// 1. POST
-					await axios.post(`${baseURL}/api/v1/dataset-onboarding/${_id}`, {});
-					const lastSaved = DatasetOnboardingHelper.saveTime();
-					this.setState({ lastSaved });
+        switch (type) {
+            case 'CONFIRMNEWVERSION':
+                try {
+                    if (!_.isEmpty(this.state.dataset.pid) && !_.isEmpty(this.state.publisher)) {
+                        axios
+                            .post(baseURL + '/api/v1/dataset-onboarding', {
+                                publisherID: this.state.publisher,
+                                pid: this.state.dataset.pid,
+                                currentVersionId: this.state._id,
+                            })
+                            .then(res => {
+                                let { id } = res.data.data;
+                                this.props.history.push({ pathname: `/dataset-onboarding/${id}` });
 
-					let alert = {
-						tab: 'inReview',
-						message: 'You have successfully submitted your dataset for review. You will be notified when a decision has been made.',
-					};
-					this.props.history.push({
-						pathname: '/account',
-						search: '?tab=datasets',
-						state: { alert, team: this.state.publisher },
-					});
-				} catch (err) {
-					console.log(err);
-				}
-				break;
-			case 'CONFIRMAPPROVALCONDITIONS':
-			case 'CONFIRMREJECTION':
-			case 'CONFIRMAPPROVAL':
-				let { _id } = this.state;
-				const body = {
-					applicationStatus: this.applicationState[type],
-					applicationStatusDesc: statusDesc,
-				};
+                                //history.push({ pathname: `/dataset-onboarding/${id}` });
+                                this.toggleActionModal();
+                            });
+                    }
+                } catch (err) {
+                    console.log(err);
+                }
+                break;
+            case 'CONFIRMSUBMISSION':
+                try {
+                    let { _id } = this.state;
+                    // 1. POST
+                    await axios.post(`${baseURL}/api/v1/dataset-onboarding/${_id}`, {});
+                    const lastSaved = DatasetOnboardingHelper.saveTime();
+                    this.setState({ lastSaved });
 
-				// 1. Update action status
-				await axios.put(`${baseURL}/api/v1/dataset-onboarding/${_id}`, body);
+                    let alert = {
+                        tab: 'inReview',
+                        message:
+                            'You have successfully submitted your dataset for review. You will be notified when a decision has been made.',
+                    };
+                    this.props.history.push({
+                        pathname: '/account',
+                        search: '?tab=datasets',
+                        state: { alert, team: this.state.publisher },
+                    });
+                } catch (err) {
+                    console.log(err);
+                }
+                break;
+            case 'CONFIRMAPPROVALCONDITIONS':
+            case 'CONFIRMREJECTION':
+            case 'CONFIRMAPPROVAL':
+                let { _id } = this.state;
+                const body = {
+                    applicationStatus: this.applicationState[type],
+                    applicationStatusDesc: statusDesc,
+                };
 
-				let alert = {
-					tab: 'inReview',
-					message: type !== 'CONFIRMREJECTION' ? 'You have approved the dataset.' : 'You have rejected the dataset.',
-				};
+                // 1. Update action status
+                await axios.put(`${baseURL}/api/v1/dataset-onboarding/${_id}`, body);
 
-				this.props.history.push({
-					pathname: '/account',
-					search: '?tab=datasets',
-					state: { alert, team: 'admin' },
-				});
-				break;
-			case 'ARCHIVE':
-				try {
-					let { _id } = this.state;
-					const body = {
-						applicationStatus: this.applicationState[type],
-					};
-					// 1. Update action status
-					await axios.put(`${baseURL}/api/v1/dataset-onboarding/${_id}`, body);
+                let alert = {
+                    tab: 'inReview',
+                    message: type !== 'CONFIRMREJECTION' ? 'You have approved the dataset.' : 'You have rejected the dataset.',
+                };
 
-					let alert = {
-						tab: 'archive',
-						message: 'You have successfully submitted archived your dataset.',
-					};
-					this.props.history.push({
-						pathname: '/account',
-						search: '?tab=datasets',
-						state: { alert, team: this.state.publisher },
-					});
-				} catch (err) {
-					console.log(err);
-				}
-				break;
-			case 'UNARCHIVE':
-				try {
-					let { _id } = this.state;
-					const body = {
-						applicationStatus: this.applicationState[type],
-					};
-					// 1. Update action status
-					const response = await axios.put(`${baseURL}/api/v1/dataset-onboarding/${_id}`, body);
-				} catch (err) {
-					console.log(err);
-				}
-				break;
-			case 'DELETEDRAFT':
-				try {
-					let id = this.state._id;
-					let draftDatasetName;
+                this.props.history.push({
+                    pathname: '/account',
+                    search: '?tab=datasets',
+                    state: { alert, team: 'admin' },
+                });
+                break;
+            case 'ARCHIVE':
+                try {
+                    let { _id } = this.state;
+                    const body = {
+                        applicationStatus: this.applicationState[type],
+                    };
+                    // 1. Update action status
+                    await axios.put(`${baseURL}/api/v1/dataset-onboarding/${_id}`, body);
 
-					await axios.delete(`${baseURL}/api/v1/dataset-onboarding/delete/${id}`).then(res => {
-						draftDatasetName = res.data.data;
-					});
+                    let alert = {
+                        tab: 'archive',
+                        message: 'You have successfully submitted archived your dataset.',
+                    };
+                    this.props.history.push({
+                        pathname: '/account',
+                        search: '?tab=datasets',
+                        state: { alert, team: this.state.publisher },
+                    });
+                } catch (err) {
+                    console.log(err);
+                }
+                break;
+            case 'UNARCHIVE':
+                try {
+                    let { _id } = this.state;
+                    const body = {
+                        applicationStatus: this.applicationState[type],
+                    };
+                    // 1. Update action status
+                    const response = await axios.put(`${baseURL}/api/v1/dataset-onboarding/${_id}`, body);
+                } catch (err) {
+                    console.log(err);
+                }
+                break;
+            case 'DELETEDRAFT':
+                try {
+                    let id = this.state._id;
+                    let draftDatasetName;
 
-					let alert = {
-						tab: 'active',
-						message: `You have deleted ${draftDatasetName} draft dataset`,
-					};
+                    await axios.delete(`${baseURL}/api/v1/dataset-onboarding/delete/${id}`).then(res => {
+                        draftDatasetName = res.data.data;
+                    });
 
-					this.props.history.push({
-						pathname: '/account',
-						search: '?tab=datasets',
-						state: { alert, team: this.state.publisher },
-					});
-				} catch (err) {
-					console.log(err);
-				}
+                    let alert = {
+                        tab: 'active',
+                        message: `You have deleted ${draftDatasetName} draft dataset`,
+                    };
 
-				break;
-			case 'DUPLICATE':
-				try {
-					let { _id } = this.state;
-					let duplicateDataset;
+                    this.props.history.push({
+                        pathname: '/account',
+                        search: '?tab=datasets',
+                        state: { alert, team: this.state.publisher },
+                    });
+                } catch (err) {
+                    console.log(err);
+                }
 
-					await axios.post(`${baseURL}/api/v1/dataset-onboarding/duplicate/${_id}`).then(res => {
-						duplicateDataset = res.data.datasetName;
-					});
+                break;
+            case 'DUPLICATE':
+                try {
+                    let { _id } = this.state;
+                    let duplicateDataset;
 
-					let alert = {
-						tab: 'active',
-						message: `You have successfully duplicated ${duplicateDataset}`,
-					};
+                    await axios.post(`${baseURL}/api/v1/dataset-onboarding/duplicate/${_id}`).then(res => {
+                        duplicateDataset = res.data.datasetName;
+                    });
 
-					this.props.history.push({
-						pathname: '/account',
-						search: '?tab=datasets',
-						state: { alert, team: this.state.publisher },
-					});
-				} catch (err) {
-					console.log(err);
-				}
-				break;
-			default:
-				this.toggleActionModal();
-		}
-	};
+                    let alert = {
+                        tab: 'active',
+                        message: `You have successfully duplicated ${duplicateDataset}`,
+                    };
 
-	updateApplicationStatus = async (action = {}) => {
-		let { type } = action;
-		switch (type) {
-			case 'CONFIRMAPPROVALCONDITIONS':
-			case 'CONFIRMREJECTION':
-			case 'CONFIRMAPPROVAL':
-				//let { _id } = this.state;
-				/*const body = {
+                    this.props.history.push({
+                        pathname: '/account',
+                        search: '?tab=datasets',
+                        state: { alert, team: this.state.publisher },
+                    });
+                } catch (err) {
+                    console.log(err);
+                }
+                break;
+            default:
+                this.toggleActionModal();
+        }
+    };
+
+    updateApplicationStatus = async (action = {}) => {
+        let { type } = action;
+        switch (type) {
+            case 'CONFIRMAPPROVALCONDITIONS':
+            case 'CONFIRMREJECTION':
+            case 'CONFIRMAPPROVAL':
+                //let { _id } = this.state;
+                /*const body = {
 					applicationStatus: this.applicationState[type],
 					applicationStatusDesc: statusDesc,
 				};*/
 
-				/* // 1. Update action status
+                /* // 1. Update action status
 				const response = await axios.put(`${baseURL}/api/v1/data-access-request/${_id}`, body);
 				// 2. set alert object for screen
 				let alert = {
@@ -1044,26 +1058,26 @@ class DatasetOnboarding extends Component {
 					search: '?tab=dataaccessrequests',
 					state: { alert },
 				}); */
-				break;
-			default:
-				this.toggleActionModal();
-		}
-	};
+                break;
+            default:
+                this.toggleActionModal();
+        }
+    };
 
-	getUserRoles() {
-		let { teams } = this.props.userState[0];
+    getUserRoles() {
+        let { teams } = this.props.userState[0];
 
-		let foundAdmin = teams.filter(x => x.type === 'admin');
-		if (!_.isEmpty(foundAdmin)) {
-			return ['admin'];
-		}
+        let foundAdmin = teams.filter(x => x.type === 'admin');
+        if (!_.isEmpty(foundAdmin)) {
+            return ['admin'];
+        }
 
-		let foundTeam = teams.filter(team => team.name === this.state.publisher);
-		if (_.isEmpty(teams) || _.isEmpty(foundTeam)) {
-			return ['applicant'];
-		}
+        let foundTeam = teams.filter(team => team.name === this.state.publisher);
+        if (_.isEmpty(teams) || _.isEmpty(foundTeam)) {
+            return ['applicant'];
+        }
 
-		/* let { teams } = props.userState[0];
+        /* let { teams } = props.userState[0];
 		let foundAdmin = teams.filter(x => x.type === team);
 		if (!_.isEmpty(foundAdmin)) {
 			return 'admin';
@@ -1074,23 +1088,23 @@ class DatasetOnboarding extends Component {
 		}
 
 		return foundTeam[0]._id; */
-	}
+    }
 
-	userHasRole = (teamId, role) => {
-		const team = this.props.userState[0].teams.filter(t => {
-			return t._id === teamId;
-		})[0];
-		return team && team.roles.includes(role);
-	};
+    userHasRole = (teamId, role) => {
+        const team = this.props.userState[0].teams.filter(t => {
+            return t._id === teamId;
+        })[0];
+        return team && team.roles.includes(role);
+    };
 
-	userRoleIsAdmin = teamId => {
-		const team = this.props.userState[0].teams.filter(t => {
-			return t._id === teamId;
-		})[0];
-		return team && team.isAdmin;
-	};
+    userRoleIsAdmin = teamId => {
+        const team = this.props.userState[0].teams.filter(t => {
+            return t._id === teamId;
+        })[0];
+        return team && team.isAdmin;
+    };
 
-	/* renderTooltip = props => (
+    /* renderTooltip = props => (
 		<Tooltip className='tool-tip' style={{ width: '240px' }}>
 			{props}
 		</Tooltip>
@@ -1192,6 +1206,7 @@ class DatasetOnboarding extends Component {
 				/>
 			);
 		} else {
+			console.log('this.state.jsonSchema', this.state.jsonSchema);
 			return (
 				<Winterfell
 					schema={this.state.jsonSchema}
@@ -1236,6 +1251,7 @@ class DatasetOnboarding extends Component {
 		const { userState } = this.props;
 
 		Winterfell.addInputType('typeaheadCustom', TypeaheadCustom);
+		Winterfell.addInputType('typeaheadAsyncCustom', TypeaheadAsyncCustom);
 		Winterfell.addInputType('typeaheadCustomKeyValue', TypeaheadCustomKeyValue);
 		Winterfell.addInputType('typeaheadKeywords', TypeaheadKeywords);
 		Winterfell.addInputType('datePickerCustom', DatePickerCustom);
@@ -1275,7 +1291,8 @@ class DatasetOnboarding extends Component {
 				}
 			},
 			isMultiFieldURLRequired: value => {
-				const isMultiFieldURLRegEx = /^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)|in progress$/i;
+				const isMultiFieldURLRegEx =
+					/^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)|in progress$/i;
 				if (!_.isArray(value)) return !_.isEmpty(value) && !!value.match(isMultiFieldURLRegEx);
 
 				let isNoError = true;
@@ -1395,86 +1412,88 @@ class DatasetOnboarding extends Component {
 											className={`${!this.state.inReviewMode ? 'black-16' : item.inReview ? 'black-16' : 'section-not-inreview'}
 										${item.active ? 'section-header-active' : 'section-header'} 
 										${this.state.allowedNavigation ? '' : 'disabled'}`}
-											onClick={e => this.updateNavigation(item)}>
-											<div>
-												<div className='completionIconHolder'>
-													{item.title === 'Before you begin' ? (
-														<div className='completionIconGap'></div>
-													) : (
-														<OverlayTrigger
-															key={item.title}
-															placement='top'
-															overlay={
-																<Tooltip id={`tooltip-top`}>
-																	{item.title}: {completion[item.pageId]}%
-																</Tooltip>
-															}>
-															<div>
-																<StatusDisplay section={item.title} status={completion[item.pageId]} />
-															</div>
-														</OverlayTrigger>
-													)}
-												</div>
-												<div className='titleHolder'>{item.title}</div>
+                                            onClick={e => this.updateNavigation(item)}
+                                        >
+                                            <div>
+                                                <div className='completionIconHolder'>
+                                                    {item.title === 'Before you begin' ? (
+                                                        <div className='completionIconGap'></div>
+                                                    ) : (
+                                                        <OverlayTrigger
+                                                            key={item.title}
+                                                            placement='top'
+                                                            overlay={
+                                                                <Tooltip id={`tooltip-top`}>
+                                                                    {item.title}: {completion[item.pageId]}%
+                                                                </Tooltip>
+                                                            }
+                                                        >
+                                                            <div>
+                                                                <StatusDisplay section={item.title} status={completion[item.pageId]} />
+                                                            </div>
+                                                        </OverlayTrigger>
+                                                    )}
+                                                </div>
+                                                <div className='titleHolder'>{item.title}</div>
 
-												{(() => {
-													let isSubPanel = false;
-													[...this.state.jsonSchema.questionPanels].map((item2, index) => {
-														if (item.pageId === item2.pageId && item2.navHeader) {
-															console.log(item.pageId + ' === ' + item2.pageId + ' && ' + item2.navHeader);
-															isSubPanel = true;
-														}
-													});
-													if (isSubPanel)
-														return (
-															<SVGIcon
-																name='chevronbottom'
-																width={14}
-																height={14}
-																fill={'#3c4e8c'}
-																className={item.active ? 'padding-left-4' : 'padding-left-4 flip180'}
-															/>
-														);
-												})()}
+                                                {(() => {
+                                                    let isSubPanel = false;
+                                                    [...this.state.jsonSchema.questionPanels].map((item2, index) => {
+                                                        if (item.pageId === item2.pageId && item2.navHeader) {
+                                                            console.log(item.pageId + ' === ' + item2.pageId + ' && ' + item2.navHeader);
+                                                            isSubPanel = true;
+                                                        }
+                                                    });
+                                                    if (isSubPanel)
+                                                        return (
+                                                            <SVGIcon
+                                                                name='chevronbottom'
+                                                                width={14}
+                                                                height={14}
+                                                                fill={'#3c4e8c'}
+                                                                className={item.active ? 'padding-left-4' : 'padding-left-4 flip180'}
+                                                            />
+                                                        );
+                                                })()}
 
-												<div> {item.flag && <i className={DatasetOnboardingHelper.flagIcons[item.flag]} />}</div>
-											</div>
-										</span>
-										{item.active && (
-											<ul className='list-unstyled section-subheader'>
-												<NavItem
-													parentForm={item}
-													questionPanels={this.state.jsonSchema.questionPanels}
-													onFormSwitchPanel={this.updateNavigation}
-													activePanelId={this.state.activePanelId}
-													enabled={allowedNavigation}
-													notForReview={!item.inReview && this.state.inReviewMode}
-													completion={completion}
-												/>
-											</ul>
-										)}
-									</div>
-								</div>
-							))}
-						</div>
+                                                <div> {item.flag && <i className={DatasetOnboardingHelper.flagIcons[item.flag]} />}</div>
+                                            </div>
+                                        </span>
+                                        {item.active && (
+                                            <ul className='list-unstyled section-subheader'>
+                                                <NavItem
+                                                    parentForm={item}
+                                                    questionPanels={this.state.jsonSchema.questionPanels}
+                                                    onFormSwitchPanel={this.updateNavigation}
+                                                    activePanelId={this.state.activePanelId}
+                                                    enabled={allowedNavigation}
+                                                    notForReview={!item.inReview && this.state.inReviewMode}
+                                                    completion={completion}
+                                                />
+                                            </ul>
+                                        )}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
 
-						<div id='darCenterCol' className={isWideForm ? 'extended' : '' || isTableForm ? 'table' : ''}>
-							<div style={{ backgroundColor: '#ffffff' }} className='dar__header'>
-								{this.state.jsonSchema.pages
-									? [...this.state.jsonSchema.pages].map((item, idx) =>
-											item.active ? (
-												<Fragment key={`pageContent-${idx}`}>
-													<p className='black-20-semibold mb-0'>{item.active ? item.title : ''}</p>
-													<ReactMarkdown className='gray800-14' source={item.description} />
-												</Fragment>
-											) : (
-												''
-											)
-									  )
-									: ''}
-							</div>
-							<div
-								className={`dar__questions ${this.state.activePanelId === 'beforeYouBegin' ? 'pad-bottom-0' : ''}
+                        <div id='darCenterCol' className={isWideForm ? 'extended' : '' || isTableForm ? 'table' : ''}>
+                            <div style={{ backgroundColor: '#ffffff' }} className='dar__header'>
+                                {this.state.jsonSchema.pages
+                                    ? [...this.state.jsonSchema.pages].map((item, idx) =>
+                                          item.active ? (
+                                              <Fragment key={`pageContent-${idx}`}>
+                                                  <p className='black-20-semibold mb-0'>{item.active ? item.title : ''}</p>
+                                                  <ReactMarkdown className='gray800-14' source={item.description} />
+                                              </Fragment>
+                                          ) : (
+                                              ''
+                                          )
+                                      )
+                                    : ''}
+                            </div>
+                            <div
+                                className={`dar__questions ${this.state.activePanelId === 'beforeYouBegin' ? 'pad-bottom-0' : ''}
 														${this.state.activePanelId === 'structural' ? 'margin-top-0 noPadding' : ''}`}
 								style={{ backgroundColor: '#ffffff' }}>
 								{this.renderApp()}
@@ -1516,6 +1535,7 @@ class DatasetOnboarding extends Component {
 										showDeleteDraft={this.state.showDeleteDraft}
 										onShowDeleteDraftModal={this.toggleDeleteDraftModal}
 										onShowDuplicateModal={this.toggleDuplicateModal}
+										isFederated={this.state.isFederated}
 									/>
 								) : (
 									<CustodianActionButtons

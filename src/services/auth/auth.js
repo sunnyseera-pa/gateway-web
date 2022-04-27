@@ -1,31 +1,46 @@
-import { useMutation, useQuery } from 'react-query';
-import { apiURL } from '../configs/url.config';
-import { getRequest, postRequest } from '../utils/requests';
+import { apiURL } from '../../configs/url.config';
+import { getRequest, postRequest, useMutationWithTranslations, useQueryWithTranslations } from '../../utils/requests';
+
+const getStatus = options => {
+    return getRequest(`${apiURL}/auth/status`, options);
+};
 
 const getLogout = options => {
-	return getRequest(`${apiURL}/auth/logout`, options);
+    return getRequest(`${apiURL}/auth/logout`, options);
 };
 
 const postRegister = (data, options) => {
-	return postRequest(`${apiURL}/auth/register`, data, options);
+    return postRequest(`${apiURL}/auth/register`, data, options);
 };
 
-const useGetLogout = (requestOptions, queryOptions = { queryKey: 'getLogout' }) => {
-	return useQuery({
-		...queryOptions,
-		queryFn: () => getLogout(requestOptions),
-	});
+const useGetStatus = (requestOptions, queryOptions) => {
+    return useQueryWithTranslations({
+        queryKey: 'auth.getStatus',
+        ...queryOptions,
+        queryFn: () => getStatus(requestOptions),
+    });
 };
 
-const usePostRegister = (requestOptions, mutateOptions = { queryKey: 'postRegister' }) => {
-	return useMutation(data => postRegister(data, requestOptions), {
-		mutateOptions,
-	});
+const useGetLogout = (requestOptions, queryOptions) => {
+    return useQueryWithTranslations({
+        queryKey: 'auth.getLogout',
+        ...queryOptions,
+        queryFn: () => getLogout(requestOptions),
+    });
+};
+
+const usePostRegister = (requestOptions, mutateOptions) => {
+    return useMutationWithTranslations(data => postRegister(data, requestOptions), {
+        mutationKey: 'auth.postRegister',
+        ...mutateOptions,
+    });
 };
 
 export default {
-	getLogout,
-	postRegister,
-	useGetLogout,
-	usePostRegister,
+    getStatus,
+    getLogout,
+    postRegister,
+    useGetStatus,
+    useGetLogout,
+    usePostRegister,
 };

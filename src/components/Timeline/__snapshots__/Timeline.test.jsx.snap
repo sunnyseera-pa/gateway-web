@@ -1,0 +1,74 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Given the Timeline component When it is rendered Then matches the previous snapshot 1`] = `
+<div>
+  <div
+    class="ui-LayoutBox css-1sivg29"
+  >
+    <ul
+      class="ui-Timeline additional-classname css-1rag44v-Timeline"
+    >
+      <li
+        class="css-2thmyz-Timeline"
+      >
+        <div
+          class="css-1joet7c-Timeline"
+        >
+          <div
+            class="timeline-icon css-ltao01-Timeline"
+          >
+            <div>
+              Icon 1
+            </div>
+          </div>
+          <div
+            class="css-ja54hi-Timeline"
+          >
+            <time
+              data-testid="event-time-0"
+              datetime="17:02"
+            >
+              17:02
+            </time>
+          </div>
+        </div>
+        <div
+          class="css-1sdr2xt-Timeline"
+        >
+          Content 1
+        </div>
+      </li>
+      <li
+        class="css-2thmyz-Timeline"
+      >
+        <div
+          class="css-1joet7c-Timeline"
+        >
+          <div
+            class="timeline-icon css-ltao01-Timeline"
+          >
+            <div>
+              Icon 2
+            </div>
+          </div>
+          <div
+            class="css-ja54hi-Timeline"
+          >
+            <time
+              data-testid="event-time-1"
+              datetime="16:07"
+            >
+              16:07
+            </time>
+          </div>
+        </div>
+        <div
+          class="css-1sdr2xt-Timeline"
+        >
+          Content 2
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>
+`;

@@ -1,15 +1,16 @@
 import React from 'react';
-import SortDropdown from '../SortDropdown';
+import SortDropdown from '../../../../components/SortDropdown';
 
 const ToolsSearchSort = ({ sort, onSort, search, ...outerProps }) => {
-	return (
-		<SortDropdown
-			handleSort={onSort}
-			sort={sort === '' ? (search === '' ? 'latest' : 'relevance') : sort}
-			dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
-			{...outerProps}
-		/>
-	);
+    return (
+        <SortDropdown
+            onSort={onSort}
+            defaultValue={search === '' ? 'latest' : 'relevance'}
+            value={sort}
+            options={['relevance', 'popularity', 'latest', 'resources']}
+            {...outerProps}
+        />
+    );
 };
 
 export default ToolsSearchSort;
