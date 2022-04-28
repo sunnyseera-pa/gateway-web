@@ -7,7 +7,6 @@ import contentService from '../../../services/content';
 import DataSetHelper from '../../../utils/DataSetHelper.util';
 import './DataSetModal.scss';
 
-
 const DataSetModal = ({ open, closed, context, userState, is5Safes, showLoginModal }) => {
     let datasets = [];
     let title = '';

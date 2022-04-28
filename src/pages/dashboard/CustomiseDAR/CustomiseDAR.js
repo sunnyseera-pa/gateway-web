@@ -186,18 +186,13 @@ const CustomiseDAR = ({ userState, publisherId, showConfirmPublishModal, setShow
                             <div className='super-header'>
                                 <h1 className='black-20-semibold mb-3'>
                                     <SVGIcon name='info' fill='#475da7' className='accountSvgs mr-2' />
-                                    <span className='ml-3'>Applicant guidance for requesting access to data</span>
+                                    <span className='ml-3'>{t('DAR.customise.presubmissionGuidance.title')}</span>
                                     <div className={`status-chip sla-${sectionStatusColours[howToRequestAccessStatus]}`}>
                                         {howToRequestAccessStatus}
                                     </div>
                                 </h1>
                                 <div className='main-header-desc'>
-                                    <div className='soft-black-14'>
-                                        This guidance will be displayed to all data applicants. To ensure that applicants are prepared for
-                                        the process, include all necessary information such as; what to do before they submit an
-                                        application, when data can be released, the cost of accessing data, and any other resources that
-                                        data applicants would find useful.
-                                    </div>
+                                    <div className='soft-black-14'>{t('DAR.customise.presubmissionGuidance.description')}</div>
                                     <div className='customise-dar-body'>
                                         {publisherDetails.dataRequestModalContentUpdatedBy ? (
                                             <>
