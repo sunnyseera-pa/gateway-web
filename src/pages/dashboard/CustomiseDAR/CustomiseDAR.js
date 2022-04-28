@@ -163,11 +163,8 @@ const CustomiseDAR = ({ userState, publisherId, showConfirmPublishModal, setShow
                 <div className='col-sm-12 col-md-10'>
                     <div className='accountHeader'>
                         <div>
-                            <h1 className='black-20-semibold'>Customise data access requests</h1>
-                            <div className='soft-black-14'>
-                                Manage and edit the guidance you provide to data applicants, your data access request form, and the
-                                workflows you use to manage the data access requests you receive.
-                            </div>
+                            <h1 className='black-20-semibold'>{t('DAR.customise.title')}</h1>
+                            <div className='soft-black-14'>{t('DAR.customise.description')}</div>
                         </div>
                     </div>
                     <div className='tabsBackground mb-3'>

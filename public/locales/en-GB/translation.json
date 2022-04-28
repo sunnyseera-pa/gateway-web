@@ -356,7 +356,7 @@
     "DAR": {
         "customise": {
             "title": "Customise data access requests",
-            "decription": "Manage and edit your 'how to request access' information, your data access request form and workflows",
+            "description": "Manage and edit your 'how to request access' information, your data access request form and workflows",
             "presubmissionGuidance": {
                 "title": "Presubmission guidance for data applicants",
                 "description": "The 'How to request access' information will be displayed to all users at the beginning of their access journey. To ensure that they are prepared for the process, include all necessary information such as; what to do before they submit an application",
