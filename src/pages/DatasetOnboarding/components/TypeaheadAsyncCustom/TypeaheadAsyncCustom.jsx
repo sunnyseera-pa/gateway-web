@@ -53,11 +53,11 @@ function TypeaheadAsyncCustom(props) {
     };
 
     const errorHandler = value => {
-        value ? (isNaN(value) ? setShowError(false) : setShowError(true)) : setShowError(false);
+        setShowError(!isNaN(value));
         setIsLoading(false);
     };
 
-    const handleInputChange = async value => {
+    const handleInputChange = value => {
         errorHandler(value);
     };
     const filterBy = () => true;
