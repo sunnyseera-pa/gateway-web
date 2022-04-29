@@ -8,7 +8,7 @@ class TextareaInputCustom extends React.Component {
 
         this.state = {
             value: this.props.value,
-            length: this.props.options[0],
+            length: this.props.length,
             readOnly: props.readOnly || false,
         };
     }
@@ -57,6 +57,7 @@ class TextareaInputCustom extends React.Component {
 TextareaInputCustom.defaultProps = {
     id: '',
     options: [],
+    length: 1500,
     onChange: () => {},
     onFocus: () => {},
     onBlur: () => {},
