@@ -8,7 +8,7 @@ export const root =
             components: {
                 Typography: {
                     variants: {
-                        [variant]: { fontSize, lineHeight },
+                        [variant]: { fontSize, fontWeight, lineHeight },
                     },
                 },
             },
@@ -17,7 +17,8 @@ export const root =
         return css`
             font-size: ${fontSize} !important;
             line-height: ${lineHeight || 'normal'};
-            color: ${colors[color]};
+            color: ${colors[color]} !important;
+            ${fontWeight && `font-weight: ${fontWeight}`};
 
             ${(variant === 'caption' || variant === 'tiny') && 'display: inline-block;'}
         `;

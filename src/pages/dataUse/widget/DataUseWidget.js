@@ -31,12 +31,12 @@ const DataUseWidget = () => {
                     {t('datause.widget.getWidgetButton')}
                 </Button>
 
-                <Typography>{t('datause.widget.tAndCHelp')}</Typography>
+                <Typography mb={2}>{t('datause.widget.tAndCHelp')}</Typography>
                 <Checkbox
                     variant='primary'
                     label='I agree to the HDR Widget Terms and Conditions of use'
                     id='termConditions'
-                    mb={4}
+                    mb={6}
                     disabled
                 />
                 <Typography variant='h6'>{t('datause.widget.heading')}</Typography>
