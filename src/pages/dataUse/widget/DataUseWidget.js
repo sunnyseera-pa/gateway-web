@@ -27,7 +27,7 @@ const DataUseWidget = () => {
                     {t('datause.widget.howToHeader')}
                 </Typography>
                 <Typography mb={3}>{t('datause.widget.howToDesc')}</Typography>
-                <Button mb={3} onClick={clickHandler} disabled data-testid='getWidgetButton' type='button'>
+                <Button mb={3} onClick={clickHandler} data-testid='getWidgetButton' type='button'>
                     {t('datause.widget.getWidgetButton')}
                 </Button>
 
