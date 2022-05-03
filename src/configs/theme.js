@@ -170,6 +170,7 @@ export const theme = {
         grey700: '#53575A',
         grey700Alt: '#848E97',
         grey800: '#3C3C3B',
+        grey900: '#262626',
         red50: '#FFECF1',
         red600: '#EF3F4B',
         red700: '#DC3645',
@@ -277,21 +278,27 @@ export const theme = {
             variants: {
                 h1: {
                     fontSize: THEME_FONT_SIZES['5xl'],
+                    fontWeight: '700',
                 },
                 h2: {
                     fontSize: THEME_FONT_SIZES['4xl'],
+                    fontWeight: '700',
                 },
                 h3: {
                     fontSize: THEME_FONT_SIZES['3xl'],
+                    fontWeight: '700',
                 },
                 h4: {
                     fontSize: THEME_FONT_SIZES['2xl'],
+                    fontWeight: '700',
                 },
                 h5: {
                     fontSize: THEME_FONT_SIZES.xl,
+                    fontWeight: '700',
                 },
                 h6: {
                     fontSize: THEME_FONT_SIZES.lg,
+                    fontWeight: '400',
                 },
                 body: {
                     fontSize: THEME_FONT_SIZES.md,
