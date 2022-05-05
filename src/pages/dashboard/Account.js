@@ -974,6 +974,7 @@ class Account extends Component {
                                                 }
                                                 activeTab={tabId}
                                                 onSelectTab={this.handleCustomiseDARSelectTab}
+                                                alert={alert}
                                             />
                                         )}
 

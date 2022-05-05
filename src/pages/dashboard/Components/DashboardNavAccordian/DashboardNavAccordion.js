@@ -4,7 +4,6 @@ import Icon from '../../../../components/Icon';
 import DashboardSubNavItem from '../DashboardSubNavItem';
 
 const DashboardNavItem = ({ activeKey, tabId, eventKey, onSelect, onClick, data }) => {
-    console.log(activeKey, tabId, eventKey);
     return (
         <Accordion activeKey={activeKey} onSelect={onSelect}>
             <Accordion.Toggle variant='link' className='verticalNavBar gray700-13 navLinkButton' eventKey={eventKey}>
