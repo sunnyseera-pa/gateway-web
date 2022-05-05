@@ -195,12 +195,14 @@ export const DataAccessRequestCustomiseForm = props => {
     const onSubmitClick = async () => {
         await axios.post(`${baseURL}/api/v2/questionbank/${schemaId}`);
 
-        const alert = {
-            message: `You have successfully published the data access application form for ${publisherDetails.publisherDetails.name} applications`,
-        };
         history.push({
             pathname: `/account`,
-            search: '?tab=customisedataaccessrequests',
+            search: '?tab=customisedataaccessrequests_applicationform',
+            state: {
+                alert: {
+                    message: `You have successfully published the data access application form for ${publisherDetails.publisherDetails.name} applications`,
+                },
+            },
         });
     };
 

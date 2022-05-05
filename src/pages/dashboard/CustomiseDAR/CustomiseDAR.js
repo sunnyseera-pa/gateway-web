@@ -11,10 +11,11 @@ import personService from '../../../services/person';
 import publishersService from '../../../services/publishers';
 import CustomiseDAREditGuidance from '../Components/CustomiseDAREditGuidance';
 import './CustomiseDAR.scss';
+import { LayoutContent } from '../../../components/Layout';
 
 const baseURL = require('../../commonComponents/BaseURL').getURL();
 
-const CustomiseDAR = ({ userState, publisherId, showConfirmPublishModal, setShowConfirmPublishModal, activeTab, onSelectTab }) => {
+const CustomiseDAR = ({ userState, publisherId, showConfirmPublishModal, setShowConfirmPublishModal, activeTab, onSelectTab, alert }) => {
     const [publisherDetails, setPublisherDetails] = useState({});
     const [howToRequestAccessStatus, setHowToRequestAccessStatus] = useState();
     const [yourAppFormStatus, setYourAppFormStatus] = useState();
@@ -132,33 +133,24 @@ const CustomiseDAR = ({ userState, publisherId, showConfirmPublishModal, setShow
 
     return (
         <>
-            {closeGuidanceMessage && (
-                <Row className=''>
-                    <Col sm={1} lg={1} />
-                    <Col sm={10} lg={10}>
-                        <Alert variant='success' autoclose onClose={handleCloseGuidanceMessage} mb={3}>
-                            {closeGuidanceMessage}
-                        </Alert>
-                    </Col>
-                    <Col sm={1} lg={10} />
-                </Row>
+            {(closeGuidanceMessage || alert.message) && (
+                <LayoutContent>
+                    <Alert variant='success' autoclose onClose={handleCloseGuidanceMessage} mb={3}>
+                        {closeGuidanceMessage || alert.message}
+                    </Alert>
+                </LayoutContent>
             )}
 
-            {howToRequestAccessStatus === sectionStatuses.PENDING || yourAppFormStatus === sectionStatuses.PENDING ? (
-                <Row className=''>
-                    <Col sm={1} lg={1} />
-                    <Col sm={10} lg={10}>
-                        <Alert variant='warning' mb={3}>
-                            {howToRequestAccessStatus === sectionStatuses.PENDING
-                                ? `The ‘How to request access’ information for ${publisherDetails.name} applications is pending going live until the appication form is published`
-                                : `The application form for ${publisherDetails.name} applications is pending going live until the ‘How to request access’ information is published`}
-                        </Alert>
-                    </Col>
-                    <Col sm={1} lg={10} />
-                </Row>
-            ) : (
-                ''
+            {(howToRequestAccessStatus === sectionStatuses.PENDING || yourAppFormStatus === sectionStatuses.PENDING) && (
+                <LayoutContent>
+                    <Alert variant='warning' mb={3}>
+                        {howToRequestAccessStatus === sectionStatuses.PENDING
+                            ? `The ‘How to request access’ information for ${publisherDetails.name} applications is pending going live until the appication form is published`
+                            : `The application form for ${publisherDetails.name} applications is pending going live until the ‘How to request access’ information is published`}
+                    </Alert>
+                </LayoutContent>
             )}
+
             <div className='row justify-content-md-center'>
                 <div className='col-sm-12 col-md-10'>
                     <div className='accountHeader'>
