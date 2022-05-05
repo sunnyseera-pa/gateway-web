@@ -11,8 +11,7 @@ const CustomToggleInner = React.forwardRef(({ children, onClick }, ref) => (
             e.preventDefault();
             onClick(e);
         }}
-        className='dropdown-sub-menu'
-    >
+        className='dropdown-sub-menu'>
         {children}
     </a>
 ));
@@ -42,14 +41,14 @@ const UserDropdownTeams = props => {
 
     return teams.map(team => {
         return (
-            <Fragment>
+            <>
                 <Dropdown.Divider className='mb-1 mt-1' />
                 <Dropdown>
                     <Dropdown.Toggle as={CustomToggleInner}>
                         <span className='black-14'>{team.type === 'admin' ? 'HDR Admin' : team.name}</span>
-                        <span className='addNewDropDownGap'></span>
+                        <span className='addNewDropDownGap' />
                         {props.isMobile ? (
-                            <SVGIcon name='chevronbottom' fill={'#475DA7'} className='svg-16 floatRightChevron' />
+                            <SVGIcon name='chevronbottom' fill='#475DA7' className='svg-16 floatRightChevron' />
                         ) : (
                             <ChevronBottom />
                         )}
@@ -57,37 +56,39 @@ const UserDropdownTeams = props => {
                     <Dropdown.Menu as={CustomSubMenu}>
                         {team.type === 'admin' ? (
                             <>
-                                <Dropdown.Item href={`/account?tab=datasets&team=admin`} className='black-14 user-dropdown-item'>
+                                <Dropdown.Item href='/account?tab=datasets&team=admin' className='black-14 user-dropdown-item'>
                                     Datasets
                                 </Dropdown.Item>
-                                <Dropdown.Item href={`/account?tab=datause&team=admin`} className='black-14 user-dropdown-item'>
+                                <Dropdown.Item href='/account?tab=datause&team=admin' className='black-14 user-dropdown-item'>
                                     Data Uses
                                 </Dropdown.Item>
                                 <Dropdown.Item
-                                    href={`/account?tab=teams&team=admin`}
+                                    href='/account?tab=teams&team=admin'
                                     className='black-14 user-dropdown-item'
-                                    data-test-id='optTeams'
-                                >
+                                    data-test-id='optTeams'>
                                     Teams
                                 </Dropdown.Item>
                             </>
                         ) : (
-                            <Fragment>
+                            <>
                                 <Dropdown.Item
                                     href={`/account?tab=teamManagement&team=${team._id}`}
-                                    className='black-14 user-dropdown-item'
-                                >
+                                    className='black-14 user-dropdown-item'>
                                     Team Management
                                 </Dropdown.Item>
-                                {userHasRole(team._id, ['manager', 'reviewer']) ? (
-                                    <Dropdown.Item
-                                        href={`/account?tab=dataaccessrequests&team=${team._id}`}
-                                        className='black-14 user-dropdown-item'
-                                    >
-                                        Data access requests
-                                    </Dropdown.Item>
-                                ) : (
-                                    ''
+                                {userHasRole(team._id, ['manager', 'reviewer']) && (
+                                    <>
+                                        <Dropdown.Item
+                                            href={`/account?tab=dataaccessrequests&team=${team._id}`}
+                                            className='black-14 user-dropdown-item'>
+                                            Data access requests
+                                        </Dropdown.Item>
+                                        <Dropdown.Item
+                                            href={`/account?tab=customisedataaccessrequests_guidance&team=${team._id}`}
+                                            className='black-14 user-dropdown-item'>
+                                            Edit DAR Form
+                                        </Dropdown.Item>
+                                    </>
                                 )}
                                 <Dropdown.Item href={`/account?tab=datause&team=${team._id}`} className='black-14 user-dropdown-item'>
                                     Data Uses
@@ -102,11 +103,11 @@ const UserDropdownTeams = props => {
                                 <Dropdown.Item href={`/account?tab=help&team=${team._id}`} className='black-14 user-dropdown-item'>
                                     Help
                                 </Dropdown.Item>
-                            </Fragment>
+                            </>
                         )}
                     </Dropdown.Menu>
                 </Dropdown>
-            </Fragment>
+            </>
         );
     });
 };
