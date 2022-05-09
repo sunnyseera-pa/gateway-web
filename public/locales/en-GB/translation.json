@@ -70,16 +70,6 @@
                     }
                 }
             },
-            "person": {
-                "getPerson": {
-                    "404": {
-                        "message": "There has been a problem getting the related person"
-                    },
-                    "500": {
-                        "message": "There has been a problem getting the related person"
-                    }
-                }
-            },
             "papers": {
                 "getPapers": {
                     "404": {
@@ -96,24 +86,6 @@
                 "getRelatedObjectByType": {
                     "404": {
                         "message": "There has been a problem getting the related object"
-                    }
-                }
-            },
-            "publishers": {
-                "getPublisher": {
-                    "404": {
-                        "message": "There has been a problem getting the publisher"
-                    },
-                    "500": {
-                        "message": "There has been a problem getting the publisher"
-                    }
-                },
-                "patchModalContent": {
-                    "404": {
-                        "message": "There has been a problem updating the modal content"
-                    },
-                    "500": {
-                        "message": "There has been a problem updating the modal content"
                     }
                 }
             }
@@ -281,7 +253,7 @@
         "applicationForm": "Application form"
     },
     "buttons": {
-        "neverMind": "No, never mind",
+        "neverMind": "No, nevermind",
         "cancel": "Cancel",
         "confirm": "Confirm",
         "publish": "Publish"

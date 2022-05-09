@@ -11,10 +11,11 @@ import personService from '../../../services/person';
 import publishersService from '../../../services/publishers';
 import CustomiseDAREditGuidance from '../Components/CustomiseDAREditGuidance';
 import './CustomiseDAR.scss';
+import { LayoutContent } from '../../../components/Layout';
 
 const baseURL = require('../../commonComponents/BaseURL').getURL();
 
-const CustomiseDAR = ({ userState, publisherId, showConfirmPublishModal, setShowConfirmPublishModal, activeTab, onSelectTab }) => {
+const CustomiseDAR = ({ userState, publisherId, showConfirmPublishModal, setShowConfirmPublishModal, activeTab, onSelectTab, alert }) => {
     const [publisherDetails, setPublisherDetails] = useState({});
     const [howToRequestAccessStatus, setHowToRequestAccessStatus] = useState();
     const [yourAppFormStatus, setYourAppFormStatus] = useState();
@@ -93,23 +94,23 @@ const CustomiseDAR = ({ userState, publisherId, showConfirmPublishModal, setShow
         }
     };
 
+    const getModalData = () => {
+        publishersRequest.mutateAsync(publisherId).then(async res => {
+            const {
+                data: { publisher },
+            } = res;
+            const body = has(publisher, 'dataRequestModalContent.body') ? publisher.dataRequestModalContent.body : '';
+
+            setSectionStatuses(body, publisher.uses5Safes);
+            setPublisherDetails(publisher);
+
+            await getHowToRequestAccessPublisher(publisher);
+            await getYourApplicationFormPublisher(publisher);
+        });
+    };
+
     useEffect(() => {
-        const init = async () => {
-            await publishersRequest.mutateAsync(publisherId).then(async res => {
-                const {
-                    data: { publisher },
-                } = res;
-                const body = has(publisher, 'dataRequestModalContent.body') ? publisher.dataRequestModalContent.body : '';
-
-                setSectionStatuses(body, publisher.uses5Safes);
-                setPublisherDetails(publisher);
-
-                await getHowToRequestAccessPublisher(publisher);
-                await getYourApplicationFormPublisher(publisher);
-            });
-        };
-
-        init();
+        getModalData();
     }, [publisherId]);
 
     const loadCustomiseForm = () => {
@@ -132,42 +133,30 @@ const CustomiseDAR = ({ userState, publisherId, showConfirmPublishModal, setShow
 
     return (
         <>
-            {closeGuidanceMessage && (
-                <Row className=''>
-                    <Col sm={1} lg={1} />
-                    <Col sm={10} lg={10}>
-                        <Alert variant='success' dismissable onClose={handleCloseGuidanceMessage} mb={3}>
-                            {closeGuidanceMessage}
-                        </Alert>
-                    </Col>
-                    <Col sm={1} lg={10} />
-                </Row>
+            {(closeGuidanceMessage || alert.message) && (
+                <LayoutContent>
+                    <Alert variant='success' autoclose onClose={handleCloseGuidanceMessage} mb={3}>
+                        {closeGuidanceMessage || alert.message}
+                    </Alert>
+                </LayoutContent>
             )}
 
-            {howToRequestAccessStatus === sectionStatuses.PENDING || yourAppFormStatus === sectionStatuses.PENDING ? (
-                <Row className=''>
-                    <Col sm={1} lg={1} />
-                    <Col sm={10} lg={10}>
-                        <Alert variant='warning' mb={3}>
-                            {howToRequestAccessStatus === sectionStatuses.PENDING
-                                ? `The ‘How to request access’ information for ${publisherDetails.name} applications is pending going live until the appication form is published`
-                                : `The application form for ${publisherDetails.name} applications is pending going live until the ‘How to request access’ information is published`}
-                        </Alert>
-                    </Col>
-                    <Col sm={1} lg={10} />
-                </Row>
-            ) : (
-                ''
+            {(howToRequestAccessStatus === sectionStatuses.PENDING || yourAppFormStatus === sectionStatuses.PENDING) && (
+                <LayoutContent>
+                    <Alert variant='warning' mb={3}>
+                        {howToRequestAccessStatus === sectionStatuses.PENDING
+                            ? `The ‘How to request access’ information for ${publisherDetails.name} applications is pending going live until the appication form is published`
+                            : `The application form for ${publisherDetails.name} applications is pending going live until the ‘How to request access’ information is published`}
+                    </Alert>
+                </LayoutContent>
             )}
+
             <div className='row justify-content-md-center'>
                 <div className='col-sm-12 col-md-10'>
                     <div className='accountHeader'>
                         <div>
-                            <h1 className='black-20-semibold'>Customise data access requests</h1>
-                            <div className='soft-black-14'>
-                                Manage and edit the guidance you provide to data applicants, your data access request form, and the
-                                workflows you use to manage the data access requests you receive.
-                            </div>
+                            <h1 className='black-20-semibold'>{t('DAR.customise.title')}</h1>
+                            <div className='soft-black-14'>{t('DAR.customise.description')}</div>
                         </div>
                     </div>
                     <div className='tabsBackground mb-3'>
@@ -186,18 +175,13 @@ const CustomiseDAR = ({ userState, publisherId, showConfirmPublishModal, setShow
                             <div className='super-header'>
                                 <h1 className='black-20-semibold mb-3'>
                                     <SVGIcon name='info' fill='#475da7' className='accountSvgs mr-2' />
-                                    <span className='ml-3'>Applicant guidance for requesting access to data</span>
+                                    <span className='ml-3'>{t('DAR.customise.presubmissionGuidance.title')}</span>
                                     <div className={`status-chip sla-${sectionStatusColours[howToRequestAccessStatus]}`}>
                                         {howToRequestAccessStatus}
                                     </div>
                                 </h1>
                                 <div className='main-header-desc'>
-                                    <div className='soft-black-14'>
-                                        This guidance will be displayed to all data applicants. To ensure that applicants are prepared for
-                                        the process, include all necessary information such as; what to do before they submit an
-                                        application, when data can be released, the cost of accessing data, and any other resources that
-                                        data applicants would find useful.
-                                    </div>
+                                    <div className='soft-black-14'>{t('DAR.customise.presubmissionGuidance.description')}</div>
                                     <div className='customise-dar-body'>
                                         {publisherDetails.dataRequestModalContentUpdatedBy ? (
                                             <>
@@ -271,6 +255,8 @@ const CustomiseDAR = ({ userState, publisherId, showConfirmPublishModal, setShow
                     show={showGuidanceModal}
                     onHide={successMsg => {
                         if (successMsg) {
+                            getModalData();
+
                             setCloseGuidanceMessage(successMsg);
                         }
 

@@ -24,6 +24,7 @@
         "escape-html": "^1.0.3",
         "form-data": "^3.0.0",
         "formik": "^2.1.4",
+        "hdruk-gateway-widgets": "^0.0.6",
         "history": "^5.1.0",
         "i18next": "^21.3.3",
         "i18next-browser-languagedetector": "^6.1.2",
@@ -51,7 +52,7 @@
         "react-gtm-module": "^2.0.11",
         "react-hotjar": "^4.0.0",
         "react-i18next": "^11.12.0",
-        "react-inlinesvg": "^2.3.0",
+        "react-inlinesvg": "^3.0.0",
         "react-linkify": "^1.0.0-alpha",
         "react-markdown": "4.3.1",
         "react-meta-tags": "^0.7.4",
@@ -65,6 +66,7 @@
         "react-select": "^5.1.0",
         "react-slidedown": "^2.4.5",
         "react-switch": "^6.0.0",
+        "react-syntax-highlighter": "^15.5.0",
         "react-tabs": "^3.1.0",
         "react-test-renderer": "^17.0.2",
         "react-textarea-autosize": "^8.3.3",
@@ -79,7 +81,7 @@
         "snyk": "^1.685.0",
         "uniqid": "^5.2.0",
         "uuid": "^8.3.1",
-        "winterfell": "github:HDRUK/Winterfell",
+        "winterfell": "github:HDRUK/Winterfell#story/GAT-922",
         "yup": "^0.28.1"
     },
     "scripts": {

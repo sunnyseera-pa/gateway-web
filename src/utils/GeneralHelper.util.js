@@ -5,7 +5,7 @@ import { DISPLAY_DATE_STANDARD } from '../configs/constants';
 
 export const isEditMode = (url = '') => {
     if (!_.isEmpty(url)) {
-        let src = url.toLowerCase();
+        const src = url.toLowerCase();
         if (src.includes('edit')) return true;
 
         return false;
@@ -14,7 +14,7 @@ export const isEditMode = (url = '') => {
 };
 
 export const toTitleCase = str => {
-    return str.replace(/\w\S*/g, function (txt) {
+    return str.replace(/\w\S*/g, txt => {
         return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
     });
 };
@@ -51,18 +51,7 @@ export const dateFormats = timestamp => {
 };
 
 export const getParams = querystring => {
-    const params = new URLSearchParams(querystring);
-    const obj = {};
-
-    for (const key of params.keys()) {
-        if (params.getAll(key).length > 1) {
-            obj[key] = params.getAll(key);
-        } else {
-            obj[key] = params.get(key);
-        }
-    }
-
-    return obj;
+    return Object.fromEntries(new URLSearchParams(`${querystring}`));
 };
 
 export const flattenObject = (data, key) => {
@@ -129,7 +118,7 @@ export const findAllByKey = (data, iteratee) => {
             obj.forEach(item => {
                 findDeep(item);
             });
-        } else if (!!obj) {
+        } else if (obj) {
             Object.keys(obj).forEach(key => {
                 if (iteratee(key, obj[key])) {
                     found.push(obj);
@@ -157,7 +146,7 @@ export const filterBranches = (filters, iteratee, children = 'children') => {
                     return iteratee(item, key, value);
                 });
 
-                if (!!foundNodes.length) {
+                if (foundNodes.length) {
                     const foundNode = {
                         ...item,
                         [children]: [],
