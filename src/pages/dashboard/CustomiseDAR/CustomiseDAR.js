@@ -223,29 +223,18 @@ const CustomiseDAR = ({ userState, publisherId, showConfirmPublishModal, setShow
                             <div className='super-header'>
                                 <h1 className='black-20-semibold mb-3'>
                                     <SVGIcon name='dataaccessicon' fill='#475da7' className='accountSvgs mr-2' />
-                                    <span className='ml-3'>
-                                        {has(publisherDetails, 'publisherDetails.name') ? publisherDetails.publisherDetails.name : ''} data
-                                        access application form
-                                    </span>
+                                    <span className='ml-3'>{t('DAR.customise.applicationForm.title')}</span>
                                     <div className={`status-chip sla-${sectionStatusColours[yourAppFormStatus]}`}>{yourAppFormStatus}</div>
                                 </h1>
                                 <div className='main-header-desc'>
                                     <div className='soft-black-14'>
-                                        <p>
-                                            You are able to customise the form that users need to complete to request access to your
-                                            datasets. You can remove certain questions from your form and edit the guidance. However some
-                                            questions and guidance are mandatory as they are based on National Data Guardian practices.
-                                        </p>
-                                        <p>
-                                            If you would like to add any additional questions to the form, please raise a support ticket at
-                                            the following link:{' '}
-                                            <a
-                                                href='https://hdruk.atlassian.net/servicedesk/customer/portal/1'
-                                                rel='noopener noreferrer'
-                                                target='_blank'>
-                                                https://hdruk.atlassian.net/servicedesk/customer/portal/1
-                                            </a>
-                                        </p>
+                                        <p
+                                            dangerouslySetInnerHTML={{
+                                                __html: t('DAR.customise.applicationForm.description', {
+                                                    publisherName: publisherDetails.publisherDetails.name,
+                                                }),
+                                            }}
+                                        />
                                     </div>
                                     <div className='customise-dar-body'>
                                         {publisherDetails.applicationFormUpdatedBy ? (
