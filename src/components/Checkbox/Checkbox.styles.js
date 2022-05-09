@@ -11,7 +11,7 @@ export const root =
         } = theme;
 
         return css`
-            ${mixins.root({ width, disabled })}
+            ${mixins.root({ width, height, disabled })}
 
             font-size: ${fontSize};
 
@@ -50,9 +50,10 @@ export const root =
     };
 
 export const mixins = {
-    root: ({ width, disabled }) => `
+    root: ({ width, height, disabled }) => `
 		position: relative;
 		padding-left: calc(${width} + 0.5rem);
+		min-height: ${height};
 
 		input {
 			display: none;

@@ -16,6 +16,7 @@ import DatasetPage from './pages/dataset/DatasetPage';
 import ViewDataUsePage from './pages/dataUse/view/ViewDataUse';
 import EditDataUsePage from './pages/dataUse/edit/EditDataUse';
 import SearchPage from './pages/search/SearchPage';
+import SchemaCreator from './pages/admin/components/SchemaCreator';
 import CollectionPage from './pages/collections/CollectionPage';
 import PublicAnalyticsDashboard from './pages/publicDashboard/PublicAnalyticsDashboard';
 import Account from './pages/dashboard/Account';
@@ -221,6 +222,7 @@ class HDRRouter extends Component {
                                         ) : (
                                             ''
                                         )}
+                                        <Route path='/admin/schema-creator' component={SchemaCreator} />
                                         <Route path='/search' render={props => <SearchPage {...props} userState={userState} />} />
                                         <Route path='/loginerror' render={props => <LoginErrorPage {...props} userState={userState} />} />
                                         <Route path='/person/:personID' render={props => <PersonPage {...props} userState={userState} />} />

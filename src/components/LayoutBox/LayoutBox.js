@@ -5,8 +5,38 @@ import PropTypes from 'prop-types';
 import useCommonStyles from '../../hooks/useCommonStyles';
 import { PROP_TYPES_LAYOUTBOX } from './LayoutBox.propTypes';
 
-const LayoutBox = ({ children, className, mt, mb, ml, mr, width, minWidth, maxWidth, as, ...outerProps }) => {
-    const commonStyles = useCommonStyles({ mt, mb, ml, mr, width, minWidth, maxWidth });
+const LayoutBox = ({
+    children,
+    className,
+    mt,
+    mb,
+    ml,
+    mr,
+    m,
+    width,
+    minWidth,
+    maxWidth,
+    as,
+    display,
+    flexDirection,
+    alignItems,
+    justifyContent,
+    ...outerProps
+}) => {
+    const commonStyles = useCommonStyles({
+        mt,
+        mb,
+        ml,
+        mr,
+        m,
+        width,
+        minWidth,
+        maxWidth,
+        display,
+        flexDirection,
+        alignItems,
+        justifyContent,
+    });
 
     const Tag = as;
 
