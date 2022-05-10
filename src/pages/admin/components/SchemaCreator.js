@@ -3,6 +3,7 @@ import { jsx } from '@emotion/react';
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
+import { Card } from 'react-bootstrap';
 import Dropdown from '../../../components/Dropdown';
 import Input from '../../../components/Input';
 import Checkbox from '../../../components/Checkbox';
@@ -18,7 +19,7 @@ import { ReactComponent as PencilIcon } from '../../../images/icons/pencil.svg';
 import LayoutBox from '../../../components/LayoutBox';
 import IconButton from '../../../components/IconButton/IconButton';
 
-const inputTypes = ['textInput', 'textareaInput', 'checkboxOptionsInput'];
+const inputTypes = ['textInput', 'textareaInput', 'checkboxOptionsInput', 'radioOptionsInput'];
 
 const SchemaCreator = ({ type }) => {
     const [schema, setSchema] = React.useState({
@@ -3840,22 +3841,25 @@ const SchemaCreator = ({ type }) => {
         [schema]
     );
 
-    const handleOnLockChange = React.useCallback((field, questionSetIndex, fieldIndex) => {
+    const handleOnSettingChange = React.useCallback((field, questionSetIndex, fieldIndex, actionKey) => {
         handleSave(
             {
                 ...field,
-                lockedQuestion: field.lockedQuestion ? 0 : 1,
+                [actionKey]: field[actionKey] ? 0 : 1,
             },
             questionSetIndex,
             fieldIndex
         );
     }, []);
 
-    const handleOnVisibleChange = React.useCallback((field, questionSetIndex, fieldIndex) => {
+    const handleOnRequiredChange = React.useCallback((field, questionSetIndex, fieldIndex) => {
         handleSave(
             {
                 ...field,
-                defaultQuestion: field.defaultQuestion ? 0 : 1,
+                input: {
+                    ...field.input,
+                    required: field.input.required ? 1 : 0,
+                },
             },
             questionSetIndex,
             fieldIndex
@@ -3897,7 +3901,7 @@ const SchemaCreator = ({ type }) => {
     return (
         <LayoutBox m={4}>
             {schema.questionSets.map(({ questionSetHeader, questionSetId, questions }, questionSetIndex) => (
-                <div>
+                <div className='main-card'>
                     <h3>
                         {questionSetHeader}{' '}
                         <IconButton
@@ -3905,85 +3909,110 @@ const SchemaCreator = ({ type }) => {
                             onClick={() => handleAddField(questionSetId, questionSetIndex)}
                         />
                     </h3>
-                    {questions.map((field, fieldIndex) => {
-                        const {
-                            question: label,
-                            input: { type, options },
-                            lockedQuestion,
-                            defaultQuestion,
-                            questionId,
-                        } = field;
 
-                        return (
-                            <LayoutBox display='flex' alignItems='flex-end' mb={6} key={questionId}>
-                                <div>
-                                    <LayoutBox display='flex' alignItems='center'>
-                                        <LayoutBox width='400px' display='flex' alignItems='center'>
-                                            {active.questionId !== field.questionId && (
-                                                <>
-                                                    <span>
+                    <div>
+                        {questions.map((field, fieldIndex) => {
+                            const {
+                                question: label,
+                                input: { type, options, required },
+                                lockedQuestion,
+                                defaultQuestion,
+                                questionId,
+                            } = field;
+
+                            return (
+                                <LayoutBox display='flex' alignItems='flex-end' mb={6} key={questionId} background='grey100' p={4}>
+                                    <div>
+                                        <LayoutBox display='flex' alignItems='center'>
+                                            <LayoutBox width='400px' display='flex' alignItems='center' mb={1}>
+                                                {active.questionId !== field.questionId && (
+                                                    <>
+                                                        <span>
+                                                            <IconButton
+                                                                icon={<Icon color='purple500' svg={<PencilIcon />} />}
+                                                                onClick={() => handleEditLabel(field)}
+                                                                size='small'
+                                                                mr={2}
+                                                            />
+                                                        </span>
+                                                        <Typography mb={0}>{label}</Typography>
+                                                    </>
+                                                )}
+
+                                                {active.questionId === field.questionId && (
+                                                    <>
                                                         <IconButton
-                                                            icon={<Icon color='purple500' svg={<PencilIcon />} />}
-                                                            onClick={() => handleEditLabel(field)}
-                                                            size='small'
-                                                            mr={2}
+                                                            icon={<Icon color='purple500' svg={<TickIcon />} />}
+                                                            onClick={() => handleSave(active, questionSetIndex, fieldIndex)}
                                                         />
-                                                    </span>
-                                                    <Typography mb={0}>{label}</Typography>
-                                                </>
+                                                        <Input
+                                                            value={active.question}
+                                                            variant='secondary'
+                                                            onChange={e => {
+                                                                handleOnLabelChange(e, field);
+                                                            }}
+                                                        />
+                                                    </>
+                                                )}
+                                            </LayoutBox>
+                                        </LayoutBox>
+                                        <LayoutBox width='400px'>
+                                            {type === 'textInput' && <Input disabled={!!lockedQuestion} />}
+                                            {type === 'textareaInput' && <Textarea disabled={!!lockedQuestion} />}
+                                            {type === 'checkboxOptionsInput' && (
+                                                <div>
+                                                    {options.map(({ value, text }) => (
+                                                        <div>
+                                                            <Checkbox label={text} value={value} mb={3} />
+                                                        </div>
+                                                    ))}
+                                                </div>
                                             )}
-
-                                            {active.questionId === field.questionId && (
-                                                <>
-                                                    <IconButton
-                                                        icon={<Icon color='purple500' svg={<TickIcon />} />}
-                                                        onClick={() => handleSave(active, questionSetIndex, fieldIndex)}
-                                                    />
-                                                    <Input
-                                                        value={active.question}
-                                                        variant='secondary'
-                                                        onChange={e => {
-                                                            handleOnLabelChange(e, field);
-                                                        }}
-                                                    />
-                                                </>
+                                            {type === 'radioOptionsInput' && (
+                                                <div>
+                                                    {options.map(({ value, text }) => (
+                                                        <div>
+                                                            <LayoutBox as='label' display='flex'>
+                                                                <input type='radio' value={value} />{' '}
+                                                                <Typography as='span' ml={4}>
+                                                                    {text}
+                                                                </Typography>
+                                                            </LayoutBox>
+                                                        </div>
+                                                    ))}
+                                                </div>
                                             )}
                                         </LayoutBox>
+                                    </div>
+                                    <Dropdown options={inputTypes} value={type} mr={2} ml={6} width='200px' />
+                                    <LayoutBox display='flex' flexDirection='column' mr={2}>
+                                        <Icon svg={<LockIcon />} size='xl' mb={1} />
+                                        <Checkbox
+                                            mb={0}
+                                            checked={lockedQuestion}
+                                            onChange={() => handleOnSettingChange(field, questionSetIndex, fieldIndex, 'lockedQuestion')}
+                                        />
                                     </LayoutBox>
-                                    <LayoutBox width='400px'>
-                                        {type === 'textInput' && <Input disabled={!!lockedQuestion} />}
-                                        {type === 'textareaInput' && <Textarea disabled={!!lockedQuestion} />}
-                                        {type === 'checkboxOptionsInput' && (
-                                            <div>
-                                                {options.map(({ value, text }) => (
-                                                    <div>
-                                                        <Checkbox label={text} value={value} />
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        )}{' '}
+                                    <LayoutBox display='flex' flexDirection='column' mr={2}>
+                                        <Icon svg={<EyeIcon />} size='xl' mb={1} fill='purple500' />
+                                        <Checkbox
+                                            mb={0}
+                                            checked={defaultQuestion}
+                                            onChange={() => handleOnSettingChange(field, questionSetIndex, fieldIndex, 'defaultQuestion')}
+                                        />
                                     </LayoutBox>
-                                </div>
-                                <Dropdown options={inputTypes} value={type} mr={2} ml={6} width='200px' />
-                                <LayoutBox display='flex' flexDirection='column'>
-                                    <Icon svg={<LockIcon />} size='xl' mb={1} />
-                                    <Checkbox
-                                        mb={0}
-                                        checked={lockedQuestion}
-                                        onChange={() => handleOnLockChange(field, questionSetIndex, fieldIndex)}
-                                    />
+                                    <LayoutBox display='flex' flexDirection='column' alignItems='center' mr={2}>
+                                        <Icon svg={<TickIcon />} mb={1} fill='purple500' />
+                                        <Checkbox
+                                            mb={0}
+                                            checked={required}
+                                            onChange={() => handleOnRequiredChange(field, questionSetIndex, fieldIndex)}
+                                        />
+                                    </LayoutBox>
                                 </LayoutBox>
-                                <LayoutBox display='flex' flexDirection='column'>
-                                    <Icon svg={<EyeIcon />} size='xl' mb={1} fill='purple500' />
-                                    <Checkbox
-                                        mb={0}
-                                        checked={defaultQuestion}
-                                        onChange={() => handleOnVisibleChange(field, questionSetIndex, fieldIndex)}
-                                    />
-                                </LayoutBox>
-                            </LayoutBox>
-                        );
-                    })}
+                            );
+                        })}
+                    </div>
                 </div>
             ))}
         </LayoutBox>

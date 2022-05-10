@@ -1,7 +1,7 @@
 import { css } from '@emotion/react';
 
 export const root =
-    ({ variant, disabled }) =>
+    ({ variant, disabled, textLabel }) =>
     theme => {
         const {
             colors,
@@ -11,7 +11,7 @@ export const root =
         } = theme;
 
         return css`
-            ${mixins.root({ width, height, disabled })}
+            ${mixins.root({ width, height, disabled, textLabel })}
 
             font-size: ${fontSize};
 
@@ -50,9 +50,9 @@ export const root =
     };
 
 export const mixins = {
-    root: ({ width, height, disabled }) => `
+    root: ({ width, height, disabled, textLabel }) => `
 		position: relative;
-		padding-left: calc(${width} + 0.5rem);
+		${textLabel ? `padding-left: calc(${width} + 0.5rem);` : `padding-left: ${width};`}
 		min-height: ${height};
 
 		input {

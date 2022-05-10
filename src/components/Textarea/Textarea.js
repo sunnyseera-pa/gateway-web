@@ -34,7 +34,7 @@ const Textarea = ({
     return (
         <LayoutBox {...{ mt, mb, ml, mr, width, minWidth, maxWidth }}>
             <Form.Group controlId={id} className={cx('ui-Textarea', className)} css={styles.formGroup}>
-                <Form.Label css={styles.label({ variant, disabled })}>{label}</Form.Label>
+                {label && <Form.Label css={styles.label({ variant, disabled })}>{label}</Form.Label>}
                 <InputGroup css={styles.inputGroup({ variant, rows, error, disabled })}>
                     {!!maxCharCount && (
                         <div className='ui-TextArea__charCount' css={styles.charCount}>

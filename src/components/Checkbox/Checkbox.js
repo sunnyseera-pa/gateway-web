@@ -24,12 +24,15 @@ const Checkbox = ({
 }) => {
     const commonStyles = useCommonStyles({ mt, mb, ml, mr, width, minWidth, maxWidth });
 
+    console.log('textLabel', textLabel);
+
     return (
-        <label htmlFor={id} css={styles.root({ variant, partial, disabled })} className={cx('ui-Checkbox', className, commonStyles)}>
+        <label
+            htmlFor={id}
+            css={styles.root({ variant, partial, disabled, textLabel })}
+            className={cx('ui-Checkbox', className, commonStyles)}>
             <input type='checkbox' id={id} {...outerProps} disabled={disabled} />
-            <span className='ui-Checkbox__label'>
-                <span>{textLabel}</span>
-            </span>
+            <span className='ui-Checkbox__label'>{textLabel && <span>{textLabel}</span>}</span>
         </label>
     );
 };

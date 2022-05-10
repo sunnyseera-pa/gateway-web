@@ -21,6 +21,12 @@ const LayoutBox = ({
     flexDirection,
     alignItems,
     justifyContent,
+    background,
+    p,
+    pr,
+    pl,
+    pt,
+    pb,
     ...outerProps
 }) => {
     const commonStyles = useCommonStyles({
@@ -29,6 +35,11 @@ const LayoutBox = ({
         ml,
         mr,
         m,
+        p,
+        pr,
+        pl,
+        pt,
+        pb,
         width,
         minWidth,
         maxWidth,
@@ -36,6 +47,7 @@ const LayoutBox = ({
         flexDirection,
         alignItems,
         justifyContent,
+        background,
     });
 
     const Tag = as;
