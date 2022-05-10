@@ -14,6 +14,8 @@ export const mixins = {
                 border-color: ${error ? colors.red600 : colors[variants[variant].borderColor]} !important;
                 border-radius: 0.25rem !important;
 
+                ${!error &&
+                `
                 &:focus,
                 &.focus,
                 &:focus-within,
@@ -21,11 +23,43 @@ export const mixins = {
                     border-color: ${colors.teal} !important;
                     outline: none;
                 }
+
+                &:hover {
+                    border-color: ${colors[variants[variant].hoverBorderColor]} !important;
+                    outline: none;
+                }`}
+
+                &:disabled,
+                &.disabled {
+                    border-color: ${colors[variants[variant].disabledBorderColor]} !important;
+                    outline: none;
+                }
             `;
         },
-    label: theme => css`
-        ${getSpacingStyle('margin-bottom', 2, theme)}
-    `,
+    label:
+        ({ variant, disabled }) =>
+        theme => {
+            const {
+                colors,
+                components: {
+                    Input: {
+                        variants: {
+                            [variant]: { disabledLabelColor },
+                        },
+                    },
+                },
+            } = theme;
+
+            return css`
+                ${getSpacingStyle('margin-bottom', 2, theme)}
+
+                ${disabled &&
+                `
+                    color: ${colors[disabledLabelColor]};
+                    
+                `}
+            `;
+        },
     formGroup: ({
         font: {
             size: { default: fontSize },
@@ -39,7 +73,7 @@ export const mixins = {
 };
 
 export const inputGroup =
-    ({ prepend, append, variant, size, error }) =>
+    ({ prepend, append, variant, size, error, disabled }) =>
     theme => {
         const {
             colors,
@@ -47,7 +81,13 @@ export const inputGroup =
                 size: { default: defaultSize },
             },
             components: {
-                Input: { sizes, variants },
+                Input: {
+                    sizes,
+                    variants,
+                    variants: {
+                        [variant]: { disabledLabelColor },
+                    },
+                },
             },
         } = theme;
 
@@ -64,6 +104,14 @@ export const inputGroup =
 
                 ${mixins.input({ variant, error })({ colors, variants })}
             }
+
+            ${disabled &&
+            `
+                .ui-Icon {
+                    color: ${colors[disabledLabelColor]};
+                    fill: ${colors[disabledLabelColor]};
+                }
+                `}
         `;
     };
 

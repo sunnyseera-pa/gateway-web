@@ -24,9 +24,9 @@ export const inputGroup =
         `;
     };
 
-export const formGroup = mixins.formGroup;
+export const { formGroup } = mixins;
 
-export const label = mixins.label;
+export const { label } = mixins;
 
 export const charCount = ({ colors: { grey700Alt } }) => css`
     display: flex;

@@ -28,13 +28,14 @@ const Textarea = ({
     id,
     rows,
     error,
+    disabled,
     ...outerProps
 }) => {
     return (
         <LayoutBox {...{ mt, mb, ml, mr, width, minWidth, maxWidth }}>
             <Form.Group controlId={id} className={cx('ui-Textarea', className)} css={styles.formGroup}>
-                <Form.Label css={styles.label}>{label}</Form.Label>
-                <InputGroup css={styles.inputGroup({ variant, rows, error })}>
+                <Form.Label css={styles.label({ variant, disabled })}>{label}</Form.Label>
+                <InputGroup css={styles.inputGroup({ variant, rows, error, disabled })}>
                     {!!maxCharCount && (
                         <div className='ui-TextArea__charCount' css={styles.charCount}>
                             {value.length} {charCountDescription}
@@ -44,8 +45,8 @@ const Textarea = ({
                             </span>
                         </div>
                     )}
-                    {autosize && <TextareaAutosize type='text' value={value} {...outerProps} ref={inputRef} />}
-                    {!autosize && <Form.Control as='textarea' {...outerProps} ref={inputRef} />}
+                    {autosize && <TextareaAutosize type='text' value={value} {...outerProps} ref={inputRef} disabled={disabled} />}
+                    {!autosize && <Form.Control as='textarea' {...outerProps} ref={inputRef} disabled={disabled} />}
                 </InputGroup>
                 {error && <div className='errorMessages'>{error}</div>}
             </Form.Group>

@@ -8,10 +8,13 @@ import Input from '../../../components/Input';
 import Checkbox from '../../../components/Checkbox';
 import Icon from '../../../components/Icon';
 import Textarea from '../../../components/Textarea';
+import Typography from '../../../components/Typography';
 
 import { ReactComponent as LockIcon } from '../../../images/icons/lock.svg';
 import { ReactComponent as PlusIcon } from '../../../images/icons/plus.svg';
 import { ReactComponent as EyeIcon } from '../../../images/icons/eye.svg';
+import { ReactComponent as TickIcon } from '../../../images/icons/tick.svg';
+import { ReactComponent as PencilIcon } from '../../../images/icons/pencil.svg';
 import LayoutBox from '../../../components/LayoutBox';
 import IconButton from '../../../components/IconButton/IconButton';
 
@@ -3837,18 +3840,26 @@ const SchemaCreator = ({ type }) => {
         [schema]
     );
 
-    const handleOnLockChange = React.useCallback(field => {
-        handleSave({
-            ...field,
-            lockedQuestion: field.lockedQuestion ? 0 : 1,
-        });
+    const handleOnLockChange = React.useCallback((field, questionSetIndex, fieldIndex) => {
+        handleSave(
+            {
+                ...field,
+                lockedQuestion: field.lockedQuestion ? 0 : 1,
+            },
+            questionSetIndex,
+            fieldIndex
+        );
     }, []);
 
-    const handleOnVisibleChange = React.useCallback(field => {
-        handleSave({
-            ...field,
-            defaultQuestion: field.defaultQuestion ? 0 : 1,
-        });
+    const handleOnVisibleChange = React.useCallback((field, questionSetIndex, fieldIndex) => {
+        handleSave(
+            {
+                ...field,
+                defaultQuestion: field.defaultQuestion ? 0 : 1,
+            },
+            questionSetIndex,
+            fieldIndex
+        );
     }, []);
 
     const handleAddField = React.useCallback(
@@ -3904,59 +3915,71 @@ const SchemaCreator = ({ type }) => {
                         } = field;
 
                         return (
-                            <LayoutBox display='flex' alignItems='flex-end' mb={4} key={questionId}>
+                            <LayoutBox display='flex' alignItems='flex-end' mb={6} key={questionId}>
                                 <div>
                                     <LayoutBox display='flex' alignItems='center'>
-                                        {active.questionId !== field.questionId && (
-                                            <>
-                                                <span>{label}</span>
-                                                <span>
-                                                    <IconButton
-                                                        icon={<Icon color='purple500' svg={<PlusIcon />} />}
-                                                        onClick={() => handleEditLabel(field)}
-                                                        size='small'
-                                                        ml={2}
-                                                    />
-                                                </span>
-                                            </>
-                                        )}
+                                        <LayoutBox width='400px' display='flex' alignItems='center'>
+                                            {active.questionId !== field.questionId && (
+                                                <>
+                                                    <span>
+                                                        <IconButton
+                                                            icon={<Icon color='purple500' svg={<PencilIcon />} />}
+                                                            onClick={() => handleEditLabel(field)}
+                                                            size='small'
+                                                            mr={2}
+                                                        />
+                                                    </span>
+                                                    <Typography mb={0}>{label}</Typography>
+                                                </>
+                                            )}
 
-                                        {active.questionId === field.questionId && (
-                                            <>
-                                                <Input
-                                                    value={active.question}
-                                                    variant='secondary'
-                                                    onChange={e => {
-                                                        handleOnLabelChange(e, field);
-                                                    }}
-                                                />
-                                                <IconButton
-                                                    icon={<Icon color='purple500' svg={<PlusIcon />} />}
-                                                    onClick={() => handleSave(active, questionSetIndex, fieldIndex)}
-                                                />
-                                            </>
-                                        )}
+                                            {active.questionId === field.questionId && (
+                                                <>
+                                                    <IconButton
+                                                        icon={<Icon color='purple500' svg={<TickIcon />} />}
+                                                        onClick={() => handleSave(active, questionSetIndex, fieldIndex)}
+                                                    />
+                                                    <Input
+                                                        value={active.question}
+                                                        variant='secondary'
+                                                        onChange={e => {
+                                                            handleOnLabelChange(e, field);
+                                                        }}
+                                                    />
+                                                </>
+                                            )}
+                                        </LayoutBox>
                                     </LayoutBox>
-                                    {type === 'textInput' && <Input mr={6} minWidth='400px' />}
-                                    {type === 'textareaInput' && <Textarea mr={6} />}
-                                    {type === 'checkboxOptionsInput' && (
-                                        <ul>
-                                            {options.map(({ value, text }) => (
-                                                <li>
-                                                    <Checkbox label={text} value={value} />
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    )}
+                                    <LayoutBox width='400px'>
+                                        {type === 'textInput' && <Input disabled={!!lockedQuestion} />}
+                                        {type === 'textareaInput' && <Textarea disabled={!!lockedQuestion} />}
+                                        {type === 'checkboxOptionsInput' && (
+                                            <div>
+                                                {options.map(({ value, text }) => (
+                                                    <div>
+                                                        <Checkbox label={text} value={value} />
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}{' '}
+                                    </LayoutBox>
                                 </div>
-                                <Dropdown options={inputTypes} value={type} mr={2} on />
+                                <Dropdown options={inputTypes} value={type} mr={2} ml={6} width='200px' />
                                 <LayoutBox display='flex' flexDirection='column'>
                                     <Icon svg={<LockIcon />} size='xl' mb={1} />
-                                    <Checkbox mb={0} checked={lockedQuestion} onChange={() => handleOnLockChange(field)} />
+                                    <Checkbox
+                                        mb={0}
+                                        checked={lockedQuestion}
+                                        onChange={() => handleOnLockChange(field, questionSetIndex, fieldIndex)}
+                                    />
                                 </LayoutBox>
                                 <LayoutBox display='flex' flexDirection='column'>
                                     <Icon svg={<EyeIcon />} size='xl' mb={1} fill='purple500' />
-                                    <Checkbox mb={0} checked={defaultQuestion} onChange={() => handleOnVisibleChange(field)} />
+                                    <Checkbox
+                                        mb={0}
+                                        checked={defaultQuestion}
+                                        onChange={() => handleOnVisibleChange(field, questionSetIndex, fieldIndex)}
+                                    />
                                 </LayoutBox>
                             </LayoutBox>
                         );

@@ -78,11 +78,17 @@ export const THEME_INPUT = {
     variants: {
         primary: {
             background: 'white',
-            borderColor: 'grey200',
+            borderColor: 'grey400',
+            hoverBorderColor: 'green400',
+            disabledBorderColor: 'grey400',
+            disabledLabelColor: 'grey400',
         },
         secondary: {
             background: 'grey100',
-            borderColor: 'grey100',
+            borderColor: 'grey400',
+            hoverBorderColor: 'green400',
+            disabledBorderColor: 'grey400',
+            disabledLabelColor: 'grey400',
         },
     },
 };
