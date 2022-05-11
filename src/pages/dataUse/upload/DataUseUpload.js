@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 import { SlideDown } from 'react-slidedown';
 import readXlsxFile from 'read-excel-file';
 import convertToJson from 'read-excel-file/schema';
-import Alert from '../../../components/Alert';
+import Alert from '../../../components/Alert/Alert';
 import SVGIcon from '../../../images/SVGIcon';
 import dataUseRegistersService from '../../../services/data-use-registers';
 import dataUseSchema from './DataUseSchema';

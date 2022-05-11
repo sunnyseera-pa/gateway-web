@@ -1,10 +1,10 @@
 import { isEmpty } from 'lodash';
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Col, Row, Tab, Tabs } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
 import { NotificationManager } from 'react-notifications';
-import { LayoutContent } from '../../components/Layout';
 import Alert from '../../components/Alert';
-import SVGIcon from '../../images/SVGIcon';
+import { LayoutContent } from '../../components/Layout';
 import dataUseRegistersService from '../../services/data-use-registers';
 import googleAnalytics from '../../tracking';
 import DarHelperUtil from '../../utils/DarHelper.util';
@@ -16,7 +16,6 @@ import Pagination from './DataUsePagination';
 import Table from './DataUseTable';
 import DataUseApproveModal from './modals/DataUseApproveModal';
 import DataUseRejectModal from './modals/DataUseRejectModal';
-import { useTranslation } from 'react-i18next';
 
 const DataUsePage = React.forwardRef(({ onClickDataUseUpload, team }, ref) => {
     React.useImperativeHandle(ref, () => ({

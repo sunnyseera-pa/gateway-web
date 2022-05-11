@@ -1,15 +1,15 @@
-import React, { Fragment, useState, useEffect } from 'react';
-import { Row, Col, Button, Pagination, Alert } from 'react-bootstrap';
 import axios from 'axios';
-import Loading from '../commonComponents/Loading';
-import { baseURL } from '../../configs/url.config';
-import { tabTypes } from './Team/teamUtil';
-import SVGIcon from '../../images/SVGIcon';
-import './Dashboard.scss';
-import TeamInfo from './Team/TeamInfo';
 import _ from 'lodash';
-import AddEditTeamsPage from './Team/AddEditTeamsPage';
+import React, { useEffect, useState } from 'react';
+import { Alert, Button, Col, Pagination, Row } from 'react-bootstrap';
 import { LayoutContent } from '../../components/Layout';
+import { baseURL } from '../../configs/url.config';
+import SVGIcon from '../../images/SVGIcon';
+import Loading from '../commonComponents/Loading';
+import './Dashboard.scss';
+import AddEditTeamsPage from './Team/AddEditTeamsPage';
+import TeamInfo from './Team/TeamInfo';
+import { tabTypes } from './Team/teamUtil';
 
 const maxResults = 40;
 
