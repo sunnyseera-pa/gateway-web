@@ -92,6 +92,7 @@ export const THEME_INPUT = {
             hoverBorderColor: 'green400',
             disabledBorderColor: 'grey400',
             disabledLabelColor: 'grey400',
+            disabledBackground: 'white',
         },
         secondary: {
             background: 'grey100',
@@ -99,6 +100,7 @@ export const THEME_INPUT = {
             hoverBorderColor: 'green400',
             disabledBorderColor: 'grey400',
             disabledLabelColor: 'grey400',
+            disabledBackground: 'grey100',
         },
     },
 };

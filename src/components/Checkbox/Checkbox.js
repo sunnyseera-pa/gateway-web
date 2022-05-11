@@ -24,8 +24,6 @@ const Checkbox = ({
 }) => {
     const commonStyles = useCommonStyles({ mt, mb, ml, mr, width, minWidth, maxWidth });
 
-    console.log('textLabel', textLabel);
-
     return (
         <label
             htmlFor={id}

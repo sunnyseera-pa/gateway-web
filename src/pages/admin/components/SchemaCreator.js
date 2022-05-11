@@ -3,7 +3,6 @@ import { jsx } from '@emotion/react';
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import { Card } from 'react-bootstrap';
 import Dropdown from '../../../components/Dropdown';
 import Input from '../../../components/Input';
 import Checkbox from '../../../components/Checkbox';
@@ -18,6 +17,8 @@ import { ReactComponent as TickIcon } from '../../../images/icons/tick.svg';
 import { ReactComponent as PencilIcon } from '../../../images/icons/pencil.svg';
 import LayoutBox from '../../../components/LayoutBox';
 import IconButton from '../../../components/IconButton/IconButton';
+import SchemaCreatorConditionalQuestions from './SchemaCreatorConditionalQuestions';
+import SchemaCreatorCheckbox from './SchemaCreatorCheckbox';
 
 const inputTypes = ['textInput', 'textareaInput', 'checkboxOptionsInput', 'radioOptionsInput'];
 
@@ -3858,7 +3859,7 @@ const SchemaCreator = ({ type }) => {
                 ...field,
                 input: {
                     ...field.input,
-                    required: field.input.required ? 1 : 0,
+                    required: !field.input.required ? 1 : 0,
                 },
             },
             questionSetIndex,
@@ -3921,7 +3922,13 @@ const SchemaCreator = ({ type }) => {
                             } = field;
 
                             return (
-                                <LayoutBox display='flex' alignItems='flex-end' mb={6} key={questionId} background='grey100' p={4}>
+                                <LayoutBox
+                                    display='flex'
+                                    alignItems={type !== 'checkboxOptionsInput' && type !== 'radioOptionsInput' ? 'flex-end' : 'center'}
+                                    mb={6}
+                                    key={questionId}
+                                    background='grey100'
+                                    p={4}>
                                     <div>
                                         <LayoutBox display='flex' alignItems='center'>
                                             <LayoutBox width='400px' display='flex' alignItems='center' mb={1}>
@@ -3961,9 +3968,15 @@ const SchemaCreator = ({ type }) => {
                                             {type === 'textareaInput' && <Textarea disabled={!!lockedQuestion} />}
                                             {type === 'checkboxOptionsInput' && (
                                                 <div>
-                                                    {options.map(({ value, text }) => (
+                                                    {options.map(({ value, text, conditionalQuestions }) => (
                                                         <div>
                                                             <Checkbox label={text} value={value} mb={3} />
+                                                            {conditionalQuestions && (
+                                                                <SchemaCreatorConditionalQuestions
+                                                                    questions={conditionalQuestions}
+                                                                    lockedQuestion={lockedQuestion}
+                                                                />
+                                                            )}
                                                         </div>
                                                     ))}
                                                 </div>
@@ -3985,30 +3998,33 @@ const SchemaCreator = ({ type }) => {
                                         </LayoutBox>
                                     </div>
                                     <Dropdown options={inputTypes} value={type} mr={2} ml={6} width='200px' />
-                                    <LayoutBox display='flex' flexDirection='column' mr={2}>
-                                        <Icon svg={<LockIcon />} size='xl' mb={1} />
-                                        <Checkbox
-                                            mb={0}
-                                            checked={lockedQuestion}
-                                            onChange={() => handleOnSettingChange(field, questionSetIndex, fieldIndex, 'lockedQuestion')}
-                                        />
-                                    </LayoutBox>
-                                    <LayoutBox display='flex' flexDirection='column' mr={2}>
-                                        <Icon svg={<EyeIcon />} size='xl' mb={1} fill='purple500' />
-                                        <Checkbox
-                                            mb={0}
-                                            checked={defaultQuestion}
-                                            onChange={() => handleOnSettingChange(field, questionSetIndex, fieldIndex, 'defaultQuestion')}
-                                        />
-                                    </LayoutBox>
-                                    <LayoutBox display='flex' flexDirection='column' alignItems='center' mr={2}>
-                                        <Icon svg={<TickIcon />} mb={1} fill='purple500' />
-                                        <Checkbox
-                                            mb={0}
-                                            checked={required}
-                                            onChange={() => handleOnRequiredChange(field, questionSetIndex, fieldIndex)}
-                                        />
-                                    </LayoutBox>
+                                    <SchemaCreatorCheckbox
+                                        field={field}
+                                        questionSetIndex={questionSetIndex}
+                                        fieldIndex={fieldIndex}
+                                        checked={lockedQuestion}
+                                        onChange={handleOnSettingChange}
+                                        type='lockedQuestion'
+                                        icon={<LockIcon />}
+                                    />
+                                    <SchemaCreatorCheckbox
+                                        field={field}
+                                        questionSetIndex={questionSetIndex}
+                                        fieldIndex={fieldIndex}
+                                        checked={defaultQuestion}
+                                        onChange={handleOnSettingChange}
+                                        type='defaultQuestion'
+                                        icon={<EyeIcon />}
+                                    />
+                                    <SchemaCreatorCheckbox
+                                        field={field}
+                                        questionSetIndex={questionSetIndex}
+                                        fieldIndex={fieldIndex}
+                                        checked={required}
+                                        onChange={handleOnRequiredChange}
+                                        type='required'
+                                        icon={<TickIcon />}
+                                    />
                                 </LayoutBox>
                             );
                         })}
