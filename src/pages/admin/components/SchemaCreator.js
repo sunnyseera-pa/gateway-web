@@ -20,7 +20,7 @@ import IconButton from '../../../components/IconButton/IconButton';
 import SchemaCreatorConditionalQuestions from './SchemaCreatorConditionalQuestions';
 import SchemaCreatorCheckbox from './SchemaCreatorCheckbox';
 
-const inputTypes = ['textInput', 'textareaInput', 'checkboxOptionsInput', 'radioOptionsInput'];
+const inputTypes = ['textInput', 'textareaInput', 'datePickerCustom', 'checkboxOptionsInput', 'radioOptionsInput'];
 
 const SchemaCreator = ({ type }) => {
     const [schema, setSchema] = React.useState({
@@ -3965,35 +3965,46 @@ const SchemaCreator = ({ type }) => {
                                         </LayoutBox>
                                         <LayoutBox width='400px'>
                                             {type === 'textInput' && <Input disabled={!!lockedQuestion} />}
+                                            {type === 'datePickerCustom' && <Input disabled={!!lockedQuestion} type='date' />}
                                             {type === 'textareaInput' && <Textarea disabled={!!lockedQuestion} />}
                                             {type === 'checkboxOptionsInput' && (
-                                                <div>
+                                                <>
                                                     {options.map(({ value, text, conditionalQuestions }) => (
-                                                        <div>
-                                                            <Checkbox label={text} value={value} mb={3} />
-                                                            {conditionalQuestions && (
-                                                                <SchemaCreatorConditionalQuestions
-                                                                    questions={conditionalQuestions}
-                                                                    lockedQuestion={lockedQuestion}
-                                                                />
+                                                        <LayoutBox mb={2}>
+                                                            <Checkbox label={text} value={value} mb={0} />
+                                                            {conditionalQuestions && conditionalQuestions.length && (
+                                                                <LayoutBox mb={5} mt={3}>
+                                                                    <SchemaCreatorConditionalQuestions
+                                                                        questions={conditionalQuestions}
+                                                                        lockedQuestion={lockedQuestion}
+                                                                    />
+                                                                </LayoutBox>
                                                             )}
-                                                        </div>
+                                                        </LayoutBox>
                                                     ))}
-                                                </div>
+                                                </>
                                             )}
                                             {type === 'radioOptionsInput' && (
-                                                <div>
-                                                    {options.map(({ value, text }) => (
-                                                        <div>
+                                                <>
+                                                    {options.map(({ value, text, conditionalQuestions }) => (
+                                                        <LayoutBox mb={3}>
                                                             <LayoutBox as='label' display='flex'>
                                                                 <input type='radio' value={value} />{' '}
                                                                 <Typography as='span' ml={4}>
                                                                     {text}
                                                                 </Typography>
                                                             </LayoutBox>
-                                                        </div>
+                                                            {conditionalQuestions && conditionalQuestions.length && (
+                                                                <LayoutBox mb={8} mt={3}>
+                                                                    <SchemaCreatorConditionalQuestions
+                                                                        questions={conditionalQuestions}
+                                                                        lockedQuestion={lockedQuestion}
+                                                                    />
+                                                                </LayoutBox>
+                                                            )}
+                                                        </LayoutBox>
                                                     ))}
-                                                </div>
+                                                </>
                                             )}
                                         </LayoutBox>
                                     </div>
