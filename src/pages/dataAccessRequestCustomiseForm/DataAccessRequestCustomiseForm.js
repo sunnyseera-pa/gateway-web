@@ -27,6 +27,7 @@ import DatePickerCustom from './components/DatePickerCustom/DatepickerCustom';
 import NavItem from './components/NavItem/NavItem';
 import NavDropdown from './components/NavDropdown/NavDropdown';
 import CustomiseGuidance from './components/CustomiseGuidance/CustomiseGuidance';
+import Button from '../../components/Button';
 
 import 'react-tabs/style/react-tabs.css';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
@@ -490,7 +491,7 @@ export const DataAccessRequestCustomiseForm = props => {
                     doSearchMethod={e =>
                         e.key === 'Enter' ? (window.location.href = `/search?search=${encodeURIComponent(searchString)}`) : null
                     }
-                    doUpdateSearchString={searchString => setSearchString(searchString)}
+                    doUpdateSearchString={setSearchString}
                     doToggleDrawer={toggleDrawer}
                     userState={userState}
                 />
@@ -505,7 +506,7 @@ export const DataAccessRequestCustomiseForm = props => {
                         <a className='linkButton white-14-semibold ml-2' onClick={onClickSave} href='javascript:void(0)'>
                             Save now
                         </a>
-                        <CloseButtonSvg width='16px' height='16px' fill='#fff' onClick={e => redirectDashboard(e)} />
+                        <CloseButtonSvg width='16px' height='16px' fill='#fff' onClick={redirectDashboard} />
                     </Col>
                 </Row>
 
@@ -586,16 +587,8 @@ export const DataAccessRequestCustomiseForm = props => {
                                             </header>
                                             <main className='gray800-14'>
                                                 <CustomiseGuidance
-                                                    activeGuidance={
-                                                        typeof newGuidance[activeQuestion] !== 'undefined'
-                                                            ? newGuidance[activeQuestion]
-                                                            : activeGuidance
-                                                    }
-                                                    isLocked={
-                                                        typeof questionStatus[activeQuestion] !== 'undefined'
-                                                            ? questionStatus[activeQuestion] === 2
-                                                            : false
-                                                    }
+                                                    activeGuidance={newGuidance[activeQuestion] || activeGuidance}
+                                                    isLocked={questionStatus[activeQuestion] === 2}
                                                     onGuidanceChange={onGuidanceChange}
                                                     activeQuestion={activeQuestion}
                                                 />
@@ -613,32 +606,22 @@ export const DataAccessRequestCustomiseForm = props => {
                 <ActionBar userState={userState}>
                     <div className='action-bar'>
                         <div className='action-bar--questions'>
-                            <button
-                                className='button-tertiary'
-                                onClick={() => {
-                                    onNextClick();
-                                }}>
+                            <Button variant='tertiary' onClick={onNextClick}>
                                 Clear updates
-                            </button>
+                            </Button>
                         </div>
                         <div className='action-bar-actions'>
                             <div className='amendment-count mr-3'>{countOfChanges} unpublished update</div>
 
-                            <button
-                                className='button-secondary'
+                            <Button
+                                variant='secondary'
                                 onClick={() => {
                                     setShowConfirmPublishModal(true);
                                 }}>
                                 Publish
-                            </button>
+                            </Button>
 
-                            <button
-                                className='button-primary'
-                                onClick={() => {
-                                    onNextClick();
-                                }}>
-                                Next
-                            </button>
+                            <Button onClick={onNextClick}>Next</Button>
                         </div>
                     </div>{' '}
                 </ActionBar>
@@ -676,22 +659,16 @@ export const DataAccessRequestCustomiseForm = props => {
                     <div className='removeUploaderModal-footer'>
                         {countOfChanges > 0 ? (
                             <div className='removeUploaderModal-footer--wrap'>
-                                <button className='button-secondary' onClick={() => setShowConfirmPublishModal(false)}>
+                                <Button variant='secondary' onClick={() => setShowConfirmPublishModal(false)}>
                                     No, nevermind
-                                </button>
-                                <button
-                                    className='button-primary'
-                                    onClick={() => {
-                                        onSubmitClick();
-                                    }}>
-                                    Publish
-                                </button>
+                                </Button>
+                                <Button onClick={onSubmitClick}>Publish</Button>
                             </div>
                         ) : (
                             <div className='removeUploaderModal-footer--wrap'>
-                                <button className='button-primary' onClick={() => setShowConfirmPublishModal(false)}>
+                                <Button className='button-primary' onClick={() => setShowConfirmPublishModal(false)}>
                                     Close
-                                </button>
+                                </Button>
                             </div>
                         )}
                     </div>
