@@ -68,6 +68,7 @@ export const DataAccessRequestCustomiseForm = props => {
     const [countOfChanges, setCountOfChanges] = useState({});
     const [existingCountOfChanges, setExistingCountOfChanges] = useState(0);
     const [showConfirmPublishModal, setShowConfirmPublishModal] = useState(false);
+    const [guidanceChanged, setGuidanceChanged] = React.useState([]);
 
     useEffect(() => {
         if (window.location.search) {
@@ -362,40 +363,45 @@ export const DataAccessRequestCustomiseForm = props => {
         setActiveGuidance('');
     };
 
-    const onGuidanceChange = (questionId, changedGuidance) => {
-        if (typeof newGuidance[questionId] !== 'undefined') {
-            newGuidance[questionId] = changedGuidance;
-        } else {
-            newGuidance[questionId] = changedGuidance;
-        }
-        setNewGuidance(newGuidance);
+    const onGuidanceChange = React.useCallback(
+        (questionId, changedGuidance) => {
+            if (typeof newGuidance[questionId] !== 'undefined') {
+                newGuidance[questionId] = changedGuidance;
+            } else {
+                newGuidance[questionId] = changedGuidance;
+            }
+            setNewGuidance(newGuidance);
 
-        const numberOfChangesQuestions = reduce(
-            questionStatus,
-            (result, value, key) => {
-                return isEqual(value, existingQuestionStatus[key]) ? result : result.concat(key);
-            },
-            []
-        ).length;
+            const numberOfChangesQuestions = reduce(
+                questionStatus,
+                (result, value, key) => {
+                    return isEqual(value, existingQuestionStatus[key]) ? result : result.concat(key);
+                },
+                []
+            ).length;
 
-        const numberOfChangesGuidance = reduce(
-            newGuidance,
-            (result, value, key) => {
-                return isEqual(value, existingGuidance[key]) ? result : result.concat(key);
-            },
-            []
-        ).length;
+            const numberOfChangesGuidance = reduce(
+                newGuidance,
+                (result, value, key) => {
+                    return isEqual(value, existingGuidance[key]) ? result : result.concat(key);
+                },
+                []
+            ).length;
 
-        setCountOfChanges(numberOfChangesGuidance + numberOfChangesQuestions + existingCountOfChanges);
-        setLastSaved(saveTime);
+            setCountOfChanges(numberOfChangesGuidance + numberOfChangesQuestions + existingCountOfChanges);
+            setLastSaved(saveTime);
 
-        const params = {
-            guidance: newGuidance,
-            countOfChanges: numberOfChangesGuidance + numberOfChangesQuestions + existingCountOfChanges,
-        };
+            const params = {
+                guidance: newGuidance,
+                countOfChanges: numberOfChangesGuidance + numberOfChangesQuestions + existingCountOfChanges,
+            };
 
-        axios.patch(`${baseURL}/api/v1/data-access-request/schema/${schemaId}`, params);
-    };
+            axios.patch(`${baseURL}/api/v1/data-access-request/schema/${schemaId}`, params);
+
+            setGuidanceChanged([...guidanceChanged, questionId]);
+        },
+        [guidanceChanged]
+    );
 
     const renderApp = () => {
         if (activePanelId === 'about') {
@@ -452,6 +458,7 @@ export const DataAccessRequestCustomiseForm = props => {
                     customiseView
                     onSwitchChange={onSwitchChange}
                     onQuestionAction={onQuestionAction}
+                    onGuidanceChange={onGuidanceChange}
                     // readOnly={true}
                     /* onQuestionClick={onQuestionSetAction}
 					onQuestionAction={onQuestionAction}
