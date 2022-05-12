@@ -115,9 +115,14 @@ export const root =
                 cursor: pointer;
             }
 
-            label:hover,
+            .rct-disabled label {
+                cursor: default;
+            }
+
             label:hover input:disabled ~ *,
-            label:hover input:disabled ~ * * {
+            label:hover input:disabled ~ * *,
+            label:hover input:disabled + .rct-checkbox .rct-icon::after,
+            label:hover input:disabled + .rct-checkbox .rct-icon::before {
                 cursor: default;
             }
 
