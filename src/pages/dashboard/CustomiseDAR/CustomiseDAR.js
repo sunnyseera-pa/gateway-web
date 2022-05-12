@@ -215,7 +215,7 @@ const CustomiseDAR = ({ userState, publisherId, showConfirmPublishModal, setShow
                                         <p
                                             dangerouslySetInnerHTML={{
                                                 __html: t('DAR.customise.applicationForm.description', {
-                                                    publisherName: publisherDetails.publisherDetails.name,
+                                                    publisherName: publisherDetails?.publisherDetails?.name,
                                                 }),
                                             }}
                                         />
