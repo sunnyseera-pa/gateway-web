@@ -462,6 +462,7 @@ export const DataAccessRequestCustomiseForm = props => {
                     customiseView
                     onSwitchChange={onSwitchChange}
                     onQuestionAction={onQuestionAction}
+                    changedGuidance={changedGuidance}
                     // readOnly={true}
                     /* onQuestionClick={onQuestionSetAction}
 					onQuestionAction={onQuestionAction}
