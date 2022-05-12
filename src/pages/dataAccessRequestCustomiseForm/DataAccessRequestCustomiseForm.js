@@ -68,6 +68,7 @@ export const DataAccessRequestCustomiseForm = props => {
     const [countOfChanges, setCountOfChanges] = useState({});
     const [existingCountOfChanges, setExistingCountOfChanges] = useState(0);
     const [showConfirmPublishModal, setShowConfirmPublishModal] = useState(false);
+    const [activeQuestionData, setActiveQuestionData] = React.useState();
 
     useEffect(() => {
         if (window.location.search) {
@@ -281,23 +282,31 @@ export const DataAccessRequestCustomiseForm = props => {
 		}); */
     };
 
-    const onQuestionAction = async (e = '', questionSetId = '', questionId = '', key = '') => {
+    const onQuestionAction = async (e = '', questionSetId = '', questionId = '', key = '', blah) => {
         const activeGuidance = getActiveQuestionGuidance(questionId);
+        const questions = getQuestionsList();
+
         if (!isEmpty(e)) {
             removeActiveQuestionClass();
             addActiveQuestionClass(e);
         }
+
         setActiveGuidance(activeGuidance);
         setActiveQuestion(questionId);
+        setActiveQuestionData(getActiveQuestion(questions, questionId));
+    };
+
+    const getQuestionsList = () => {
+        const { questionSets } = jsonSchema;
+        const questionList = [...questionSets].filter(q => q.questionSetId.includes(activePanelId)) || [];
+        return questionList.map(({ questions }) => questions).flat();
     };
 
     const getActiveQuestionGuidance = (questionId = '') => {
-        let questions;
         if (!isEmpty(questionId)) {
             const { questionSets } = jsonSchema;
-            // 1. get active question set
-            const questionList = [...questionSets].filter(q => q.questionSetId.includes(activePanelId)) || [];
-            questions = questionList.map(({ questions }) => questions).flat();
+            const questions = getQuestionsList();
+
             if (!isEmpty(questions)) {
                 // 2. loop over and find active question
                 const activeQuestion = getActiveQuestion([...questions], questionId);
@@ -360,6 +369,7 @@ export const DataAccessRequestCustomiseForm = props => {
         removeActiveQuestionClass();
         // reset guidance state
         setActiveGuidance('');
+        setActiveQuestionData(null);
     };
 
     const onGuidanceChange = (questionId, changedGuidance) => {
@@ -482,6 +492,8 @@ export const DataAccessRequestCustomiseForm = props => {
         );
     }
 
+    console.log('activeQuestion', activeQuestion);
+
     return (
         <Sentry.ErrorBoundary fallback={<ErrorModal />}>
             <div>
@@ -581,7 +593,7 @@ export const DataAccessRequestCustomiseForm = props => {
                                             <header>
                                                 <div>
                                                     <i className='far fa-question-circle mr-2' />
-                                                    <p className='gray800-14-bold'>Guidance</p>
+                                                    <p className='gray800-14-bold'>{activeQuestionData.question}</p>
                                                 </div>
                                                 <CloseButtonSvg width='16px' height='16px' fill='#475da' onClick={resetGuidance} />
                                             </header>
