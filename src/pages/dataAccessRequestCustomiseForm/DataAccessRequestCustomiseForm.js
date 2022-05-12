@@ -282,7 +282,7 @@ export const DataAccessRequestCustomiseForm = props => {
 		}); */
     };
 
-    const onQuestionAction = async (e = '', questionSetId = '', questionId = '', key = '', blah) => {
+    const onQuestionAction = async (e = '', questionSetId = '', questionId = '', key = '') => {
         const activeGuidance = getActiveQuestionGuidance(questionId);
         const questions = getQuestionsList();
 
