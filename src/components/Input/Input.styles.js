@@ -7,8 +7,6 @@ export const mixins = {
         config => {
             const { colors, variants } = config;
 
-            console.log('BACKGROUND', variants[variant].background);
-
             return css`
                 background: ${colors[variants[variant].background]};
                 border-style: solid !important;

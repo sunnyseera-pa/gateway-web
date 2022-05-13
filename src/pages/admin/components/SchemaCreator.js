@@ -2,7 +2,7 @@
 import { jsx } from '@emotion/react';
 import React from 'react';
 import PropTypes from 'prop-types';
-import _ from 'lodash';
+import _, { merge } from 'lodash';
 import Dropdown from '../../../components/Dropdown';
 import Input from '../../../components/Input';
 import Checkbox from '../../../components/Checkbox';
@@ -3834,6 +3834,7 @@ const SchemaCreator = ({ type }) => {
 
     const handleSave = React.useCallback(
         (field, questionSetIndex, fieldIndex) => {
+            console.log('FIELD', field);
             const updatedSchema = _.update(schema, `questionSets[${questionSetIndex}].questions[${fieldIndex}]`, () => field);
 
             setSchema({ ...updatedSchema });
@@ -3841,31 +3842,6 @@ const SchemaCreator = ({ type }) => {
         },
         [schema]
     );
-
-    const handleOnSettingChange = React.useCallback((field, questionSetIndex, fieldIndex, actionKey) => {
-        handleSave(
-            {
-                ...field,
-                [actionKey]: field[actionKey] ? 0 : 1,
-            },
-            questionSetIndex,
-            fieldIndex
-        );
-    }, []);
-
-    const handleOnRequiredChange = React.useCallback((field, questionSetIndex, fieldIndex) => {
-        handleSave(
-            {
-                ...field,
-                input: {
-                    ...field.input,
-                    required: !field.input.required ? 1 : 0,
-                },
-            },
-            questionSetIndex,
-            fieldIndex
-        );
-    }, []);
 
     const handleAddField = React.useCallback(
         (questionSetId, questionSetIndex) => {
@@ -3877,20 +3853,16 @@ const SchemaCreator = ({ type }) => {
                             params: [1],
                             message: 'Please enter a value',
                         },
-                        {
-                            type: 'isEmail',
-                        },
                     ],
                     input: {
                         required: true,
                         type: 'textInput',
                     },
                     lockedQuestion: 0,
-                    question: 'Email',
-                    guidance:
-                        'Please provide an email address for the person who can sign the Data Sharing Agreement on behalf of your organisation.',
+                    question: '[Label]',
+                    guidance: 'Default guidance',
                     defaultQuestion: 1,
-                    questionId: `${questionSetId}email`,
+                    questionId: `${questionSetId}new`,
                 });
             });
 
@@ -3899,17 +3871,21 @@ const SchemaCreator = ({ type }) => {
         [schema]
     );
 
+    const handleOnSettingChange = React.useCallback((field, questionSetIndex, fieldIndex, data) => {
+        handleSave(merge(field, data), questionSetIndex, fieldIndex);
+    }, []);
+
     return (
         <LayoutBox m={4}>
             {schema.questionSets.map(({ questionSetHeader, questionSetId, questions }, questionSetIndex) => (
                 <div className='main-card'>
-                    <h3>
+                    <h1>
                         {questionSetHeader}{' '}
                         <IconButton
                             icon={<Icon color='purple500' svg={<PlusIcon />} />}
                             onClick={() => handleAddField(questionSetId, questionSetIndex)}
                         />
-                    </h3>
+                    </h1>
 
                     <div>
                         {questions.map((field, fieldIndex) => {
@@ -4008,14 +3984,30 @@ const SchemaCreator = ({ type }) => {
                                             )}
                                         </LayoutBox>
                                     </div>
-                                    <Dropdown options={inputTypes} value={type} mr={2} ml={6} width='200px' />
+                                    <Dropdown
+                                        options={inputTypes}
+                                        value={type}
+                                        mr={2}
+                                        ml={6}
+                                        width='200px'
+                                        onSelect={value =>
+                                            handleOnSettingChange(field, questionSetIndex, fieldIndex, {
+                                                input: {
+                                                    type: value,
+                                                },
+                                            })
+                                        }
+                                    />
                                     <SchemaCreatorCheckbox
                                         field={field}
                                         questionSetIndex={questionSetIndex}
                                         fieldIndex={fieldIndex}
                                         checked={lockedQuestion}
-                                        onChange={handleOnSettingChange}
-                                        type='lockedQuestion'
+                                        onChange={() =>
+                                            handleOnSettingChange(field, questionSetIndex, fieldIndex, {
+                                                lockedQuestion: field.lockedQuestion ? 0 : 1,
+                                            })
+                                        }
                                         icon={<LockIcon />}
                                     />
                                     <SchemaCreatorCheckbox
@@ -4023,8 +4015,11 @@ const SchemaCreator = ({ type }) => {
                                         questionSetIndex={questionSetIndex}
                                         fieldIndex={fieldIndex}
                                         checked={defaultQuestion}
-                                        onChange={handleOnSettingChange}
-                                        type='defaultQuestion'
+                                        onChange={() =>
+                                            handleOnSettingChange(field, questionSetIndex, fieldIndex, {
+                                                defaultQuestion: field.defaultQuestion ? 0 : 1,
+                                            })
+                                        }
                                         icon={<EyeIcon />}
                                     />
                                     <SchemaCreatorCheckbox
@@ -4032,8 +4027,13 @@ const SchemaCreator = ({ type }) => {
                                         questionSetIndex={questionSetIndex}
                                         fieldIndex={fieldIndex}
                                         checked={required}
-                                        onChange={handleOnRequiredChange}
-                                        type='required'
+                                        onChange={() =>
+                                            handleOnSettingChange(field, questionSetIndex, fieldIndex, {
+                                                input: {
+                                                    required: !field.input.required,
+                                                },
+                                            })
+                                        }
                                         icon={<TickIcon />}
                                     />
                                 </LayoutBox>

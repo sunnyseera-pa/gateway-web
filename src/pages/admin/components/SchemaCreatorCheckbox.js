@@ -3,10 +3,13 @@ import Checkbox from '../../../components/Checkbox';
 import Icon from '../../../components/Icon';
 import LayoutBox from '../../../components/LayoutBox';
 
-const SchemaCreatorCheckbox = ({ field, questionSetIndex, fieldIndex, checked, onChange, icon, type }) => {
-    const handleOnChange = React.useCallback(() => {
-        onChange(field, questionSetIndex, fieldIndex, type);
-    }, [field, questionSetIndex, fieldIndex, type]);
+const SchemaCreatorCheckbox = ({ field, questionSetIndex, fieldIndex, checked, onChange, icon }) => {
+    const handleOnChange = React.useCallback(
+        data => {
+            onChange(field, questionSetIndex, fieldIndex, data);
+        },
+        [field, questionSetIndex, fieldIndex]
+    );
 
     return (
         <LayoutBox display='flex' flexDirection='column' alignItems='center' mr={2}>
