@@ -121,6 +121,8 @@
     },
     "next": "Next",
     "previous": "Previous",
+    "guidance.uneditted": "Guidance uneditted",
+    "guidance.editted": "Guidance editted",
     "dataset": {
         "inReview": "pending approval",
         "active": "Active",

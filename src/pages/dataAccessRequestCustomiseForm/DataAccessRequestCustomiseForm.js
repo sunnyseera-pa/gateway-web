@@ -8,7 +8,7 @@ import ReactMarkdown from 'react-markdown';
 import { useHistory } from 'react-router-dom';
 
 import Winterfell from 'winterfell';
-import { Row, Col, Container, Modal } from 'react-bootstrap';
+import { Row, Col, Container, Modal, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import ErrorModal from '../commonComponents/errorModal';
 import Loading from '../commonComponents/Loading';
 import SearchBar from '../commonComponents/searchBar/SearchBar';
@@ -35,6 +35,7 @@ import './DataAccessRequestCustomiseForm.scss';
 import Icon from '../../components/Icon';
 import { ReactComponent as TickIcon } from '../../images/icons/tick.svg';
 import { ReactComponent as DotIcon } from '../../images/icons/dot.svg';
+import { useTranslation } from 'react-i18next';
 
 export const DataAccessRequestCustomiseForm = props => {
     const history = useHistory();
@@ -72,6 +73,8 @@ export const DataAccessRequestCustomiseForm = props => {
     const [existingCountOfChanges, setExistingCountOfChanges] = useState(0);
     const [showConfirmPublishModal, setShowConfirmPublishModal] = useState(false);
     const [guidanceChanged, setGuidanceChanged] = React.useState([]);
+
+    const { t } = useTranslation();
 
     useEffect(() => {
         if (window.location.search) {
@@ -407,19 +410,28 @@ export const DataAccessRequestCustomiseForm = props => {
         return questionStatus === 2;
     };
 
-    const isQuestionOn = questionStatus => {
-        return questionStatus === 1;
-    };
-
     const getQuestionIcon = ({ questionId, questionStatus }) => {
+        let tooltipContent;
+        let icon;
+
         if (guidanceChanged.includes(questionId)) {
-            return <Icon svg={<TickIcon />} fill='green400' ml={2} />;
+            tooltipContent = t('guidance.editted');
+
+            icon = <Icon svg={<TickIcon />} fill='green400' ml={2} />;
         }
-        if (!isQuestionLocked(questionStatus) && isQuestionOn(questionStatus)) {
-            return <Icon svg={<DotIcon />} fill='grey400' ml={2} />;
+        if (!isQuestionLocked(questionStatus)) {
+            tooltipContent = t('guidance.uneditted');
+
+            icon = <Icon svg={<DotIcon />} fill='grey400' ml={2} />;
         }
 
-        return null;
+        return (
+            icon && (
+                <OverlayTrigger placement='top' overlay={<Tooltip id='tooltip-top'>{tooltipContent}</Tooltip>}>
+                    <div>{icon}</div>
+                </OverlayTrigger>
+            )
+        );
     };
 
     const renderApp = () => {
