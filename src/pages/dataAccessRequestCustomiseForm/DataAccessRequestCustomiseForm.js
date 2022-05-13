@@ -2,7 +2,7 @@ import React, { useState, useEffect, Fragment } from 'react';
 import axios from 'axios';
 import queryString from 'query-string';
 import * as Sentry from '@sentry/react';
-import { isEmpty, isNil, reduce, isEqual, cloneDeep } from 'lodash';
+import { isEmpty, isNil, reduce, isEqual, cloneDeep, uniq } from 'lodash';
 import moment from 'moment';
 import ReactMarkdown from 'react-markdown';
 import { useHistory } from 'react-router-dom';
@@ -32,6 +32,8 @@ import Button from '../../components/Button';
 import 'react-tabs/style/react-tabs.css';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import './DataAccessRequestCustomiseForm.scss';
+import Icon from '../../components/Icon';
+import { ReactComponent as TickIcon } from '../../images/icons/tick.svg';
 
 export const DataAccessRequestCustomiseForm = props => {
     const history = useHistory();
@@ -363,45 +365,42 @@ export const DataAccessRequestCustomiseForm = props => {
         setActiveGuidance('');
     };
 
-    const onGuidanceChange = React.useCallback(
-        (questionId, changedGuidance) => {
-            if (typeof newGuidance[questionId] !== 'undefined') {
-                newGuidance[questionId] = changedGuidance;
-            } else {
-                newGuidance[questionId] = changedGuidance;
-            }
-            setNewGuidance(newGuidance);
+    const onGuidanceChange = (questionId, changedGuidance) => {
+        if (typeof newGuidance[questionId] !== 'undefined') {
+            newGuidance[questionId] = changedGuidance;
+        } else {
+            newGuidance[questionId] = changedGuidance;
+        }
+        setNewGuidance(newGuidance);
 
-            const numberOfChangesQuestions = reduce(
-                questionStatus,
-                (result, value, key) => {
-                    return isEqual(value, existingQuestionStatus[key]) ? result : result.concat(key);
-                },
-                []
-            ).length;
+        const numberOfChangesQuestions = reduce(
+            questionStatus,
+            (result, value, key) => {
+                return isEqual(value, existingQuestionStatus[key]) ? result : result.concat(key);
+            },
+            []
+        ).length;
 
-            const numberOfChangesGuidance = reduce(
-                newGuidance,
-                (result, value, key) => {
-                    return isEqual(value, existingGuidance[key]) ? result : result.concat(key);
-                },
-                []
-            ).length;
+        const numberOfChangesGuidance = reduce(
+            newGuidance,
+            (result, value, key) => {
+                return isEqual(value, existingGuidance[key]) ? result : result.concat(key);
+            },
+            []
+        ).length;
 
-            setCountOfChanges(numberOfChangesGuidance + numberOfChangesQuestions + existingCountOfChanges);
-            setLastSaved(saveTime);
+        setCountOfChanges(numberOfChangesGuidance + numberOfChangesQuestions + existingCountOfChanges);
+        setLastSaved(saveTime);
 
-            const params = {
-                guidance: newGuidance,
-                countOfChanges: numberOfChangesGuidance + numberOfChangesQuestions + existingCountOfChanges,
-            };
+        const params = {
+            guidance: newGuidance,
+            countOfChanges: numberOfChangesGuidance + numberOfChangesQuestions + existingCountOfChanges,
+        };
 
-            axios.patch(`${baseURL}/api/v1/data-access-request/schema/${schemaId}`, params);
+        axios.patch(`${baseURL}/api/v1/data-access-request/schema/${schemaId}`, params);
 
-            setGuidanceChanged([...guidanceChanged, questionId]);
-        },
-        [guidanceChanged]
-    );
+        setGuidanceChanged(uniq([...guidanceChanged, questionId]));
+    };
 
     const renderApp = () => {
         if (activePanelId === 'about') {
@@ -459,6 +458,7 @@ export const DataAccessRequestCustomiseForm = props => {
                     onSwitchChange={onSwitchChange}
                     onQuestionAction={onQuestionAction}
                     onGuidanceChange={onGuidanceChange}
+                    icons={questionId => guidanceChanged.includes(questionId) && <Icon svg={<TickIcon />} fill='green400' ml={2} />}
                     // readOnly={true}
                     /* onQuestionClick={onQuestionSetAction}
 					onQuestionAction={onQuestionAction}

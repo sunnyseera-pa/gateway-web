@@ -10,16 +10,23 @@ const CustomiseGuidance = ({ activeGuidance, isLocked, onGuidanceChange, activeQ
     const [contentState] = useState(convertFromRaw(markdownToDraft(activeGuidance)));
     const [editorState, setEditorState] = useState(EditorState.createWithContent(contentState));
 
-    const debounceChange = useCallback(
-        debounce(guidanceAsMarkdown => onGuidanceChange(activeQuestion, guidanceAsMarkdown), 1500),
-        []
-    );
+    const debounceChange = useCallback(() => {
+        console.log('debounce');
+        return debounce(guidanceAsMarkdown => {
+            console.log('guidanceAsMarkdown', guidanceAsMarkdown);
+            return onGuidanceChange(activeQuestion, guidanceAsMarkdown);
+        }, 1500);
+    }, []);
 
     const handleGuidanceChange = editorState => {
         setEditorState(editorState);
         const guidanceAsMarkdown = draftToMarkdown(convertToRaw(editorState.getCurrentContent()));
 
-        debounceChange(guidanceAsMarkdown);
+        // debounceChange(guidanceAsMarkdown);
+
+        console.log(activeQuestion, guidanceAsMarkdown);
+
+        onGuidanceChange(activeQuestion, guidanceAsMarkdown);
     };
 
     return (
