@@ -34,6 +34,7 @@ import 'react-bootstrap-typeahead/css/Typeahead.css';
 import './DataAccessRequestCustomiseForm.scss';
 import Icon from '../../components/Icon';
 import { ReactComponent as TickIcon } from '../../images/icons/tick.svg';
+import { ReactComponent as DotIcon } from '../../images/icons/dot.svg';
 
 export const DataAccessRequestCustomiseForm = props => {
     const history = useHistory();
@@ -402,6 +403,25 @@ export const DataAccessRequestCustomiseForm = props => {
         setGuidanceChanged(uniq([...guidanceChanged, questionId]));
     };
 
+    const isQuestionLocked = questionStatus => {
+        return questionStatus === 2;
+    };
+
+    const isQuestionOn = questionStatus => {
+        return questionStatus === 1;
+    };
+
+    const getQuestionIcon = ({ questionId, questionStatus }) => {
+        if (guidanceChanged.includes(questionId)) {
+            return <Icon svg={<TickIcon />} fill='green400' ml={2} />;
+        }
+        if (!isQuestionLocked(questionStatus) && isQuestionOn(questionStatus)) {
+            return <Icon svg={<DotIcon />} fill='grey400' ml={2} />;
+        }
+
+        return null;
+    };
+
     const renderApp = () => {
         if (activePanelId === 'about') {
             /* return (
@@ -458,7 +478,7 @@ export const DataAccessRequestCustomiseForm = props => {
                     onSwitchChange={onSwitchChange}
                     onQuestionAction={onQuestionAction}
                     onGuidanceChange={onGuidanceChange}
-                    icons={questionId => guidanceChanged.includes(questionId) && <Icon svg={<TickIcon />} fill='green400' ml={2} />}
+                    icons={question => getQuestionIcon(question)}
                     // readOnly={true}
                     /* onQuestionClick={onQuestionSetAction}
 					onQuestionAction={onQuestionAction}
@@ -595,7 +615,7 @@ export const DataAccessRequestCustomiseForm = props => {
                                             <main className='gray800-14'>
                                                 <CustomiseGuidance
                                                     activeGuidance={newGuidance[activeQuestion] || activeGuidance}
-                                                    isLocked={questionStatus[activeQuestion] === 2}
+                                                    isLocked={isQuestionLocked(activeQuestion)}
                                                     onGuidanceChange={onGuidanceChange}
                                                     activeQuestion={activeQuestion}
                                                 />
