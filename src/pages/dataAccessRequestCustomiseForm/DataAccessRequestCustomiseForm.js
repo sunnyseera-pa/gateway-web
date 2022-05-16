@@ -2,13 +2,13 @@ import React, { useState, useEffect, Fragment } from 'react';
 import axios from 'axios';
 import queryString from 'query-string';
 import * as Sentry from '@sentry/react';
-import { isEmpty, isNil, reduce, isEqual, cloneDeep } from 'lodash';
+import { isEmpty, isNil, reduce, isEqual, cloneDeep, uniq, pluck } from 'lodash';
 import moment from 'moment';
 import ReactMarkdown from 'react-markdown';
 import { useHistory } from 'react-router-dom';
 
 import Winterfell from 'winterfell';
-import { Row, Col, Container, Modal } from 'react-bootstrap';
+import { Row, Col, Container, Modal, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import ErrorModal from '../commonComponents/errorModal';
 import Loading from '../commonComponents/Loading';
 import SearchBar from '../commonComponents/searchBar/SearchBar';
@@ -32,6 +32,12 @@ import Button from '../../components/Button';
 import 'react-tabs/style/react-tabs.css';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import './DataAccessRequestCustomiseForm.scss';
+import Icon from '../../components/Icon';
+import { ReactComponent as TickIcon } from '../../images/icons/tick.svg';
+import { ReactComponent as DotIcon } from '../../images/icons/dot.svg';
+import { useTranslation } from 'react-i18next';
+import UnpublishedQuestionIcon from './components/UnpublishedQuestionIcon';
+import helpers from '../../utils/DarHelper.util';
 
 export const DataAccessRequestCustomiseForm = props => {
     const history = useHistory();
@@ -57,6 +63,7 @@ export const DataAccessRequestCustomiseForm = props => {
     const [showModal, setShowModal] = useState(false);
     const [activeGuidance, setActiveGuidance] = useState('');
     const [activeQuestion, setActiveQuestion] = useState('');
+    const [unpublishedGuidance, setUnpublishedGuidance] = useState([]);
     const [context, setContext] = useState({});
     const [activePanelId, setActivePanelId] = useState('');
     const [jsonSchema, setJsonSchema] = useState({});
@@ -68,6 +75,9 @@ export const DataAccessRequestCustomiseForm = props => {
     const [countOfChanges, setCountOfChanges] = useState({});
     const [existingCountOfChanges, setExistingCountOfChanges] = useState(0);
     const [showConfirmPublishModal, setShowConfirmPublishModal] = useState(false);
+    const [guidanceChanged, setGuidanceChanged] = React.useState([]);
+
+    const { t } = useTranslation();
 
     useEffect(() => {
         if (window.location.search) {
@@ -82,7 +92,8 @@ export const DataAccessRequestCustomiseForm = props => {
         });
         const {
             data: {
-                result: { masterSchema, questionStatus, guidance, countOfChanges, schemaId },
+                result: { masterSchema, questionStatus, guidance, countOfChanges, schemaId, unpublishedGuidance },
+                result,
             },
         } = await axios.get(`${baseURL}/api/v2/questionbank/${props.match.params.publisherID}`);
 
@@ -93,6 +104,7 @@ export const DataAccessRequestCustomiseForm = props => {
             ],
         };
 
+        setUnpublishedGuidance(unpublishedGuidance || []);
         setSchemaId(schemaId);
         setJsonSchema({ ...masterSchema, ...classSchema, ...questionActions });
         setQuestionStatus(questionStatus);
@@ -287,6 +299,7 @@ export const DataAccessRequestCustomiseForm = props => {
             removeActiveQuestionClass();
             addActiveQuestionClass(e);
         }
+
         setActiveGuidance(activeGuidance);
         setActiveQuestion(questionId);
     };
@@ -386,15 +399,20 @@ export const DataAccessRequestCustomiseForm = props => {
             []
         ).length;
 
+        const unpublishedGuidanceChange = uniq([...unpublishedGuidance, questionId]);
+
         setCountOfChanges(numberOfChangesGuidance + numberOfChangesQuestions + existingCountOfChanges);
         setLastSaved(saveTime);
 
         const params = {
             guidance: newGuidance,
             countOfChanges: numberOfChangesGuidance + numberOfChangesQuestions + existingCountOfChanges,
+            unpublishedGuidance: unpublishedGuidanceChange,
         };
 
         axios.patch(`${baseURL}/api/v1/data-access-request/schema/${schemaId}`, params);
+
+        setUnpublishedGuidance(unpublishedGuidanceChange);
     };
 
     const renderApp = () => {
@@ -452,6 +470,8 @@ export const DataAccessRequestCustomiseForm = props => {
                     customiseView
                     onSwitchChange={onSwitchChange}
                     onQuestionAction={onQuestionAction}
+                    onGuidanceChange={onGuidanceChange}
+                    icons={question => <UnpublishedQuestionIcon question={question} unpublishedGuidance={unpublishedGuidance} />}
                     // readOnly={true}
                     /* onQuestionClick={onQuestionSetAction}
 					onQuestionAction={onQuestionAction}
@@ -588,7 +608,7 @@ export const DataAccessRequestCustomiseForm = props => {
                                             <main className='gray800-14'>
                                                 <CustomiseGuidance
                                                     activeGuidance={newGuidance[activeQuestion] || activeGuidance}
-                                                    isLocked={questionStatus[activeQuestion] === 2}
+                                                    isLocked={helpers.isQuestionLocked(activeQuestion)}
                                                     onGuidanceChange={onGuidanceChange}
                                                     activeQuestion={activeQuestion}
                                                 />
