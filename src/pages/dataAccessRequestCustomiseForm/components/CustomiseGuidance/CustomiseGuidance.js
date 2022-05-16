@@ -1,30 +1,35 @@
-import React, { Fragment, useState, useCallback } from 'react';
-import { convertToRaw, convertFromRaw, EditorState } from 'draft-js';
-import { draftToMarkdown, markdownToDraft } from 'markdown-draft-js';
-
-import ReactMarkdown from 'react-markdown';
+import { convertFromRaw, EditorState } from 'draft-js';
 import { debounce } from 'lodash';
+import { markdownToDraft } from 'markdown-draft-js';
+import React, { useCallback, useState } from 'react';
+import ReactMarkdown from 'react-markdown';
 import { WysiwygEditor } from '../../../commonComponents/WysiwygEditor/WysiwygEditor';
 
 const CustomiseGuidance = ({ activeGuidance, isLocked, onGuidanceChange, activeQuestion }) => {
-    const [contentState] = useState(convertFromRaw(markdownToDraft(activeGuidance)));
-    const [editorState, setEditorState] = useState(EditorState.createWithContent(contentState));
+    const [editorState, setEditorState] = useState(null);
 
     const debounceChange = useCallback(
         debounce(guidanceAsMarkdown => {
             return onGuidanceChange(activeQuestion, guidanceAsMarkdown);
         }, 1500),
-        []
+        [activeQuestion]
     );
 
-    const handleGuidanceChange = editorState => {
-        setEditorState(editorState);
-        const guidanceAsMarkdown = draftToMarkdown(convertToRaw(editorState.getCurrentContent()));
-
-        if (activeGuidance !== guidanceAsMarkdown) {
-            debounceChange(guidanceAsMarkdown);
-        }
+    const handleGuidanceChange = markdown => {
+        debounceChange(markdown);
     };
+
+    const handleEditorStateChange = React.useCallback(
+        editorStateChanged => {
+            setEditorState(editorStateChanged);
+        },
+        [activeQuestion]
+    );
+
+    React.useEffect(() => {
+        const contentState = convertFromRaw(markdownToDraft(activeGuidance));
+        setEditorState(EditorState.createWithContent(contentState));
+    }, [activeQuestion]);
 
     return (
         <>
@@ -33,7 +38,14 @@ const CustomiseGuidance = ({ activeGuidance, isLocked, onGuidanceChange, activeQ
                     {isLocked ? (
                         <ReactMarkdown source={activeGuidance} linkTarget='_blank' />
                     ) : (
-                        <WysiwygEditor data-testid='wysiwyg-editor' editorState={editorState} onEditorStateChange={handleGuidanceChange} />
+                        editorState && (
+                            <WysiwygEditor
+                                data-testid='wysiwyg-editor'
+                                editorState={editorState}
+                                onEditorStateChange={handleEditorStateChange}
+                                onMarkdownChange={handleGuidanceChange}
+                            />
+                        )
                     )}
                 </>
             ) : (
