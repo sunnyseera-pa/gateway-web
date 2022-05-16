@@ -3834,7 +3834,6 @@ const SchemaCreator = ({ type }) => {
 
     const handleSave = React.useCallback(
         (field, questionSetIndex, fieldIndex) => {
-            console.log('FIELD', field);
             const updatedSchema = _.update(schema, `questionSets[${questionSetIndex}].questions[${fieldIndex}]`, () => field);
 
             setSchema({ ...updatedSchema });
@@ -3909,37 +3908,30 @@ const SchemaCreator = ({ type }) => {
                                         <LayoutBox display='flex' alignItems='center'>
                                             <LayoutBox width='400px' display='flex' alignItems='center' mb={1}>
                                                 {active.questionId !== field.questionId && (
-                                                    <>
-                                                        <span>
-                                                            <IconButton
-                                                                icon={<Icon color='purple500' svg={<PencilIcon />} />}
-                                                                onClick={() => handleEditLabel(field)}
-                                                                size='small'
-                                                                mr={2}
-                                                            />
-                                                        </span>
-                                                        <Typography mb={0}>{label}</Typography>
-                                                    </>
+                                                    <Typography onClick={() => handleEditLabel(field)} mb={0}>
+                                                        {label}
+                                                    </Typography>
                                                 )}
 
                                                 {active.questionId === field.questionId && (
-                                                    <>
-                                                        <IconButton
-                                                            icon={<Icon color='purple500' svg={<TickIcon />} />}
-                                                            onClick={() => handleSave(active, questionSetIndex, fieldIndex)}
-                                                        />
-                                                        <Input
-                                                            value={active.question}
-                                                            variant='secondary'
-                                                            onChange={e => {
-                                                                handleOnLabelChange(e, field);
-                                                            }}
-                                                        />
-                                                    </>
+                                                    <Input
+                                                        value={active.question}
+                                                        variant='tertiary'
+                                                        onChange={e => {
+                                                            handleOnLabelChange(e, field);
+                                                        }}
+                                                        iconRight={
+                                                            <Icon
+                                                                color='purple500'
+                                                                svg={<TickIcon />}
+                                                                onClick={() => handleSave(active, questionSetIndex, fieldIndex)}
+                                                            />
+                                                        }
+                                                    />
                                                 )}
                                             </LayoutBox>
                                         </LayoutBox>
-                                        <LayoutBox width='400px'>
+                                        <LayoutBox width='500px'>
                                             {type === 'textInput' && <Input disabled={!!lockedQuestion} />}
                                             {type === 'datePickerCustom' && <Input disabled={!!lockedQuestion} type='date' />}
                                             {type === 'textareaInput' && <Textarea disabled={!!lockedQuestion} />}
@@ -3984,58 +3976,66 @@ const SchemaCreator = ({ type }) => {
                                             )}
                                         </LayoutBox>
                                     </div>
-                                    <Dropdown
-                                        options={inputTypes}
-                                        value={type}
-                                        mr={2}
-                                        ml={6}
-                                        width='200px'
-                                        onSelect={value =>
-                                            handleOnSettingChange(field, questionSetIndex, fieldIndex, {
-                                                input: {
-                                                    type: value,
-                                                },
-                                            })
-                                        }
-                                    />
-                                    <SchemaCreatorCheckbox
-                                        field={field}
-                                        questionSetIndex={questionSetIndex}
-                                        fieldIndex={fieldIndex}
-                                        checked={lockedQuestion}
-                                        onChange={() =>
-                                            handleOnSettingChange(field, questionSetIndex, fieldIndex, {
-                                                lockedQuestion: field.lockedQuestion ? 0 : 1,
-                                            })
-                                        }
-                                        icon={<LockIcon />}
-                                    />
-                                    <SchemaCreatorCheckbox
-                                        field={field}
-                                        questionSetIndex={questionSetIndex}
-                                        fieldIndex={fieldIndex}
-                                        checked={defaultQuestion}
-                                        onChange={() =>
-                                            handleOnSettingChange(field, questionSetIndex, fieldIndex, {
-                                                defaultQuestion: field.defaultQuestion ? 0 : 1,
-                                            })
-                                        }
-                                        icon={<EyeIcon />}
-                                    />
-                                    <SchemaCreatorCheckbox
-                                        field={field}
-                                        questionSetIndex={questionSetIndex}
-                                        fieldIndex={fieldIndex}
-                                        checked={required}
-                                        onChange={() =>
-                                            handleOnSettingChange(field, questionSetIndex, fieldIndex, {
-                                                input: {
-                                                    required: !field.input.required,
-                                                },
-                                            })
-                                        }
-                                        icon={<TickIcon />}
-                                    />
+                                    <LayoutBox display='flex' alignItems='center'>
+                                        <Dropdown
+                                            options={inputTypes}
+                                            value={type}
+                                            mr={2}
+                                            ml={6}
+                                            width='200px'
+                                            onSelect={value =>
+                                                handleOnSettingChange(field, questionSetIndex, fieldIndex, {
+                                                    input: {
+                                                        type: value,
+                                                    },
+                                                })
+                                            }
+                                        />
+                                        <SchemaCreatorCheckbox
+                                            field={field}
+                                            questionSetIndex={questionSetIndex}
+                                            fieldIndex={fieldIndex}
+                                            checked={lockedQuestion}
+                                            onChange={() =>
+                                                handleOnSettingChange(field, questionSetIndex, fieldIndex, {
+                                                    lockedQuestion: field.lockedQuestion ? 0 : 1,
+                                                })
+                                            }
+                                            icon={<LockIcon />}
+                                        />
+                                        <SchemaCreatorCheckbox
+                                            field={field}
+                                            questionSetIndex={questionSetIndex}
+                                            fieldIndex={fieldIndex}
+                                            checked={defaultQuestion}
+                                            onChange={() =>
+                                                handleOnSettingChange(field, questionSetIndex, fieldIndex, {
+                                                    defaultQuestion: field.defaultQuestion ? 0 : 1,
+                                                })
+                                            }
+                                            icon={<EyeIcon />}
+                                        />
+                                        <SchemaCreatorCheckbox
+                                            field={field}
+                                            questionSetIndex={questionSetIndex}
+                                            fieldIndex={fieldIndex}
+                                            checked={required}
+                                            onChange={() =>
+                                                handleOnSettingChange(field, questionSetIndex, fieldIndex, {
+                                                    input: {
+                                                        required: !field.input.required,
+                                                    },
+                                                })
+                                            }
+                                            icon={<TickIcon />}
+                                        />
+                                        {(type === 'textInput' || type === 'textareaInput') && (
+                                            <LayoutBox display='flex' ml={5} width='200px'>
+                                                <Input mr={5} label='Min length:' variant='tertiary' size='small' inline />
+                                                <Input variant='tertiary' size='small' label='Max length:' inline />
+                                            </LayoutBox>
+                                        )}
+                                    </LayoutBox>
                                 </LayoutBox>
                             );
                         })}

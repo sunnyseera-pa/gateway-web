@@ -102,6 +102,10 @@ export const THEME_INPUT = {
             disabledLabelColor: 'grey400',
             disabledBackground: 'grey100',
         },
+        tertiary: {
+            background: 'transparent',
+            borderColor: 'grey700',
+        },
     },
 };
 

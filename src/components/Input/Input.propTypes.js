@@ -11,10 +11,11 @@ export const PROP_TYPES_INPUT = {
     onChange: PropTypes.func,
     debounceDelay: PropTypes.number,
     inputRef: PropTypes.shape({ current: PropTypes.instanceOf(Element) }),
-    variant: PropTypes.oneOf(['primary', 'secondary']),
+    variant: PropTypes.oneOf(['primary', 'secondary', 'tertiary']),
     id: PropTypes.string,
     name: PropTypes.string,
     size: PropTypes.oneOf(['small', 'default', 'large']),
     error: PropTypes.node,
     disabled: PropTypes.bool,
+    inline: PropTypes.bool,
 };

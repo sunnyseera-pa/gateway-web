@@ -7,38 +7,53 @@ export const mixins = {
         config => {
             const { colors, variants } = config;
 
+            const bottom = variant === 'tertiary' ? 'bottom-' : '';
+
             return css`
                 background: ${colors[variants[variant].background]};
-                border-style: solid !important;
-                border-width: 2px !important;
-                border-color: ${error ? colors.red600 : colors[variants[variant].borderColor]} !important;
-                border-radius: 0.25rem !important;
 
-                ${!error &&
+                ${
+                    variant === 'primary' || variant === 'secondary'
+                        ? 'border-radius: 0.25rem !important;'
+                        : `
+                border-radius: 0;
+                border: none !important;
+                padding-left: 0;
+                padding-right: 0;
                 `
+                }
+
+                border-${bottom}style: solid !important;
+                border-${bottom}width: 2px !important;         
+                border-${bottom}color: ${error ? colors.red600 : colors[variants[variant].borderColor]} !important;  
+
+                ${
+                    !error &&
+                    `
                 &:focus,
                 &.focus,
                 &:focus-within,
                 &:focus-visible {
-                    border-color: ${colors.teal} !important;
+                    border-${bottom}color: ${colors.teal} !important;
                     outline: none;
                 }
 
                 &:hover {
-                    border-color: ${colors[variants[variant].hoverBorderColor]} !important;
+                    border-${bottom}color: ${colors[variants[variant].hoverBorderColor]} !important;
                     outline: none;
-                }`}
+                }`
+                }
 
                 &:disabled,
                 &.disabled {
                     background: ${colors[variants[variant].disabledBackground]};
-                    border-color: ${colors[variants[variant].disabledBorderColor]} !important;
+                    border-${bottom}color: ${colors[variants[variant].disabledBorderColor]} !important;
                     outline: none;
                 }
             `;
         },
     label:
-        ({ variant, disabled }) =>
+        ({ variant, disabled, inline }) =>
         theme => {
             const {
                 colors,
@@ -52,7 +67,8 @@ export const mixins = {
             } = theme;
 
             return css`
-                ${getSpacingStyle('margin-bottom', 2, theme)}
+                ${!inline ? getSpacingStyle('margin-bottom', 2, theme) : 'margin-bottom: 0;'}
+                ${inline && getSpacingStyle('margin-right', 2, theme)}
 
                 ${disabled &&
                 `
@@ -61,16 +77,20 @@ export const mixins = {
                 `}
             `;
         },
-    formGroup: ({
-        font: {
-            size: { default: fontSize },
-        },
-    }) => css`
-        font-size: ${fontSize};
-        display: flex;
-        flex-direction: column;
-        margin-bottom: 0;
-    `,
+    formGroup:
+        ({ inline }) =>
+        ({
+            font: {
+                size: { default: fontSize },
+            },
+        }) =>
+            css`
+                font-size: ${fontSize};
+                display: flex;
+                flex-direction: ${inline ? 'row' : 'column'};
+                ${inline && `align-items: center;`}
+                margin-bottom: 0;
+            `,
 };
 
 export const inputGroup =
@@ -93,7 +113,7 @@ export const inputGroup =
         } = theme;
 
         return css`
-            width: 100%;
+            ${variant !== 'tertiary' ? `width: 100%` : `width: auto;`};
 
             input.form-control,
             .rbt-input.form-control {

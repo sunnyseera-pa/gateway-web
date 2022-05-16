@@ -6,7 +6,7 @@ import LayoutBox from '../LayoutBox';
 import { PROP_TYPES_LAYOUTBOX } from '../LayoutBox/LayoutBox.propTypes';
 import * as styles from './Typography.styles';
 
-const Typography = ({ children, color, className, mt, mb, ml, mr, width, minWidth, maxWidth, variant, as }) => {
+const Typography = ({ children, color, className, mt, mb, ml, mr, width, minWidth, maxWidth, variant, as, ...outerProps }) => {
     let tagName = as || variant;
 
     if (!as) {
@@ -19,6 +19,7 @@ const Typography = ({ children, color, className, mt, mb, ml, mr, width, minWidt
 
     return (
         <LayoutBox
+            {...outerProps}
             {...{ mt, mb, ml, mr, width, minWidth, maxWidth }}
             as={tagName}
             className={cx('ui-Typography', className)}

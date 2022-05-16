@@ -34,6 +34,7 @@ const Input = ({
     size,
     error,
     disabled,
+    inline,
     ...outerProps
 }) => {
     const prependRef = useRef(null);
@@ -51,8 +52,8 @@ const Input = ({
 
     return (
         <LayoutBox {...{ mt, mb, ml, mr, width, minWidth, maxWidth }}>
-            <Form.Group controlId={id} css={styles.formGroup}>
-                {label && <Form.Label css={styles.label({ disabled, variant })}>{label}</Form.Label>}
+            <Form.Group controlId={id} css={styles.formGroup({ inline })}>
+                {label && <Form.Label css={styles.label({ disabled, variant, inline })}>{label}</Form.Label>}
                 <InputGroup
                     css={styles.inputGroup({ prepend: domPrependChanged, append: domAppendChanged, variant, size, error, disabled })}
                     className={cx('ui-Input', className)}>
@@ -98,6 +99,7 @@ Input.defaultProps = {
     debounceDelay: 300,
     onDebounce: () => {},
     disabled: false,
+    inline: false,
 };
 
 export default Input;
