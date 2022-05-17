@@ -1,0 +1,16 @@
+import { Meta, Story, Canvas } from '@storybook/addon-docs';
+import { convertFromRaw, EditorState } from 'draft-js';
+import { markdownToDraft } from 'markdown-draft-js';
+
+import WysiwygEditor from './WysiwygEditor';
+
+<Meta title='Core/WysiwygEditor' component={WysiwygEditor} />
+
+<Canvas>
+    <Story name='Default'>
+        {props => {
+            const contentState = convertFromRaw(markdownToDraft('Some sample markup'));
+            return <WysiwygEditor editorState={EditorState.createWithContent(contentState)} />;
+        }}
+    </Story>
+</Canvas>
