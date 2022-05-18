@@ -23,7 +23,6 @@ export const CustomiseDAREditGuidance = ({ show, onHide, publisherDetails }) => 
     const [editorState, setEditorState] = useState(EditorState.createWithContent(contentState));
     const [showConfirm, setShowConfirm] = useState(false);
     const [showCancel, setShowCancel] = useState(false);
-    const [disabled, setDisabled] = useState(true);
 
     const publishersRequest = publishersService.usePatchModalContent(null, {
         onError: ({ title, message }) => {
@@ -78,7 +77,6 @@ export const CustomiseDAREditGuidance = ({ show, onHide, publisherDetails }) => 
         ),
         confirm: (
             <Button
-                disabled={disabled}
                 data-testid='publish-guidance'
                 variant='primary'
                 className='publishButton white-14-semibold'
@@ -135,8 +133,6 @@ export const CustomiseDAREditGuidance = ({ show, onHide, publisherDetails }) => 
         };
     }
 
-
-
     return (
         <Modal show={show} onHide={onHide} className={showConfirm || showCancel ? 'modal-md' : 'modal-xl'}>
             <Modal.Header>
@@ -149,7 +145,7 @@ export const CustomiseDAREditGuidance = ({ show, onHide, publisherDetails }) => 
                     <span dangerouslySetInnerHTML={{ __html: modalContent.body }} />
                 </p>
                 {!showConfirm && !showCancel && (
-                    <WysiwygEditor data-testid='wysiwyg-editor' editorState={editorState} onEditorStateChange={setEditorState} onMarkdownChange={()=>setDisabled(false)}/>
+                    <WysiwygEditor data-testid='wysiwyg-editor' editorState={editorState} onEditorStateChange={setEditorState} />
                 )}
             </Modal.Body>
             <Modal.Footer>

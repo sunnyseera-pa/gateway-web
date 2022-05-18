@@ -17,7 +17,6 @@ export const WysiwygEditor = ({ editorState, onEditorStateChange, onContentState
         if (markdown !== guidanceAsMarkdown) onMarkdownChange(guidanceAsMarkdown, editorStateChanged);
     };
 
-
     React.useEffect(() => {
         setMarkdown(draftToMarkdown(convertToRaw(editorState.getCurrentContent())));
     }, []);
@@ -32,7 +31,6 @@ export const WysiwygEditor = ({ editorState, onEditorStateChange, onContentState
             onEditorStateChange={handleOnEditorStateChange}
             onContentStateChange={onContentStateChange}
             ref={ref}
-
             toolbar={{
                 options: ['inline', 'blockType', 'list', 'link', 'history'],
                 inline: {
@@ -61,7 +59,6 @@ WysiwygEditor.defaultProps = {
     onMarkdownChange: () => {},
     onEditorStateChange: () => {},
     onContentStateChange: () => {},
-
 };
 
 export default WysiwygEditor;

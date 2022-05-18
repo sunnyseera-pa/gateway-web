@@ -109,25 +109,5 @@ export const root =
             input:disabled + .rct-checkbox .rct-icon::after {
                 ${mixins.disabled({ colors, variants, variant })}
             }
-
-            label:hover input ~ *,
-            label:hover input ~ * * {
-                cursor: pointer;
-            }
-
-            .rct-disabled label {
-                cursor: default;
-            }
-
-            label:hover input:disabled ~ *,
-            label:hover input:disabled ~ * *,
-            label:hover input:disabled + .rct-checkbox .rct-icon::after,
-            label:hover input:disabled + .rct-checkbox .rct-icon::before {
-                cursor: default;
-            }
-
-            label:hover input:disabled + .rct-checkbox .rct-icon-uncheck::before {
-                background: none;
-            }
         `;
     };
