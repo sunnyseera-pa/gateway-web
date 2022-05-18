@@ -31,6 +31,7 @@ export const WysiwygEditor = ({
     const ref = React.createRef(null);
 
     const handleOnEditorStateChange = editorStateChanged => {
+        console.log('************************* CHANGING');
         const guidanceAsMarkdown = draftToMarkdown(convertToRaw(editorStateChanged.getCurrentContent()));
 
         onEditorStateChange(editorStateChanged);
