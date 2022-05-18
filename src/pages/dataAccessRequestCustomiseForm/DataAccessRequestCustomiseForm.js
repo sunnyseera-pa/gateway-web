@@ -493,8 +493,6 @@ export const DataAccessRequestCustomiseForm = props => {
         );
     }
 
-    console.log('activeQuestion', activeQuestion);
-
     return (
         <Sentry.ErrorBoundary fallback={<ErrorModal />}>
             <div>
