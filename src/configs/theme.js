@@ -70,11 +70,15 @@ export const THEME_INPUT = {
     variants: {
         primary: {
             background: 'white',
-            borderColor: 'grey200',
+            borderColor: 'grey400',
+            hoverBorderColor: 'green400',
+            focusBorderColor: 'green400',
         },
         secondary: {
             background: 'grey100',
             borderColor: 'grey100',
+            hoverBorderColor: 'green400',
+            focusBorderColor: 'green400',
         },
     },
 };

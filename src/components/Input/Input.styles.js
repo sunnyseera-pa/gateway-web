@@ -14,11 +14,15 @@ export const mixins = {
                 border-color: ${error ? colors.red600 : colors[variants[variant].borderColor]} !important;
                 border-radius: 0.25rem !important;
 
+                &:hover {
+                    border-color: ${error ? colors.red600 : colors[variants[variant].hoverBorderColor]} !important;
+                }
+
                 &:focus,
                 &.focus,
                 &:focus-within,
                 &:focus-visible {
-                    border-color: ${colors.teal} !important;
+                    border-color: ${error ? colors.red600 : colors[variants[variant].focusBorderColor]} !important;
                     outline: none;
                 }
             `;
