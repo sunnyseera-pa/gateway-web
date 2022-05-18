@@ -2,13 +2,13 @@ import React, { useState, useEffect, Fragment } from 'react';
 import axios from 'axios';
 import queryString from 'query-string';
 import * as Sentry from '@sentry/react';
-import { isEmpty, isNil, reduce, isEqual, cloneDeep } from 'lodash';
+import { isEmpty, isNil, reduce, isEqual, cloneDeep, uniq, pluck } from 'lodash';
 import moment from 'moment';
 import ReactMarkdown from 'react-markdown';
 import { useHistory } from 'react-router-dom';
 
 import Winterfell from 'winterfell';
-import { Row, Col, Container, Modal } from 'react-bootstrap';
+import { Row, Col, Container, Modal, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import ErrorModal from '../commonComponents/errorModal';
 import Loading from '../commonComponents/Loading';
 import SearchBar from '../commonComponents/searchBar/SearchBar';
@@ -27,10 +27,17 @@ import DatePickerCustom from './components/DatePickerCustom/DatepickerCustom';
 import NavItem from './components/NavItem/NavItem';
 import NavDropdown from './components/NavDropdown/NavDropdown';
 import CustomiseGuidance from './components/CustomiseGuidance/CustomiseGuidance';
+import Button from '../../components/Button';
 
 import 'react-tabs/style/react-tabs.css';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import './DataAccessRequestCustomiseForm.scss';
+import Icon from '../../components/Icon';
+import { ReactComponent as TickIcon } from '../../images/icons/tick.svg';
+import { ReactComponent as DotIcon } from '../../images/icons/dot.svg';
+import { useTranslation } from 'react-i18next';
+import UnpublishedQuestionIcon from './components/UnpublishedQuestionIcon';
+import helpers from '../../utils/DarHelper.util';
 
 export const DataAccessRequestCustomiseForm = props => {
     const history = useHistory();
@@ -56,6 +63,7 @@ export const DataAccessRequestCustomiseForm = props => {
     const [showModal, setShowModal] = useState(false);
     const [activeGuidance, setActiveGuidance] = useState('');
     const [activeQuestion, setActiveQuestion] = useState('');
+    const [unpublishedGuidance, setUnpublishedGuidance] = useState([]);
     const [context, setContext] = useState({});
     const [activePanelId, setActivePanelId] = useState('');
     const [jsonSchema, setJsonSchema] = useState({});
@@ -67,6 +75,9 @@ export const DataAccessRequestCustomiseForm = props => {
     const [countOfChanges, setCountOfChanges] = useState({});
     const [existingCountOfChanges, setExistingCountOfChanges] = useState(0);
     const [showConfirmPublishModal, setShowConfirmPublishModal] = useState(false);
+    const [activeQuestionData, setActiveQuestionData] = React.useState();
+
+    const { t } = useTranslation();
 
     useEffect(() => {
         if (window.location.search) {
@@ -81,7 +92,8 @@ export const DataAccessRequestCustomiseForm = props => {
         });
         const {
             data: {
-                result: { masterSchema, questionStatus, guidance, countOfChanges, schemaId },
+                result: { masterSchema, questionStatus, guidance, countOfChanges, schemaId, unpublishedGuidance },
+                result,
             },
         } = await axios.get(`${baseURL}/api/v2/questionbank/${props.match.params.publisherID}`);
 
@@ -92,6 +104,7 @@ export const DataAccessRequestCustomiseForm = props => {
             ],
         };
 
+        setUnpublishedGuidance(unpublishedGuidance || []);
         setSchemaId(schemaId);
         setJsonSchema({ ...masterSchema, ...classSchema, ...questionActions });
         setQuestionStatus(questionStatus);
@@ -282,21 +295,29 @@ export const DataAccessRequestCustomiseForm = props => {
 
     const onQuestionAction = async (e = '', questionSetId = '', questionId = '', key = '') => {
         const activeGuidance = getActiveQuestionGuidance(questionId);
+        const questions = getQuestionsList();
+
         if (!isEmpty(e)) {
             removeActiveQuestionClass();
             addActiveQuestionClass(e);
         }
+
         setActiveGuidance(activeGuidance);
         setActiveQuestion(questionId);
+        setActiveQuestionData(getActiveQuestion(questions, questionId));
+    };
+
+    const getQuestionsList = () => {
+        const { questionSets } = jsonSchema;
+        const questionList = [...questionSets].filter(q => q.questionSetId.includes(activePanelId)) || [];
+        return questionList.map(({ questions }) => questions).flat();
     };
 
     const getActiveQuestionGuidance = (questionId = '') => {
-        let questions;
         if (!isEmpty(questionId)) {
             const { questionSets } = jsonSchema;
-            // 1. get active question set
-            const questionList = [...questionSets].filter(q => q.questionSetId.includes(activePanelId)) || [];
-            questions = questionList.map(({ questions }) => questions).flat();
+            const questions = getQuestionsList();
+
             if (!isEmpty(questions)) {
                 // 2. loop over and find active question
                 const activeQuestion = getActiveQuestion([...questions], questionId);
@@ -359,6 +380,7 @@ export const DataAccessRequestCustomiseForm = props => {
         removeActiveQuestionClass();
         // reset guidance state
         setActiveGuidance('');
+        setActiveQuestionData(null);
     };
 
     const onGuidanceChange = (questionId, changedGuidance) => {
@@ -385,15 +407,20 @@ export const DataAccessRequestCustomiseForm = props => {
             []
         ).length;
 
+        const unpublishedGuidanceChange = uniq([...unpublishedGuidance, questionId]);
+
         setCountOfChanges(numberOfChangesGuidance + numberOfChangesQuestions + existingCountOfChanges);
         setLastSaved(saveTime);
 
         const params = {
             guidance: newGuidance,
             countOfChanges: numberOfChangesGuidance + numberOfChangesQuestions + existingCountOfChanges,
+            unpublishedGuidance: unpublishedGuidanceChange,
         };
 
         axios.patch(`${baseURL}/api/v1/data-access-request/schema/${schemaId}`, params);
+
+        setUnpublishedGuidance(unpublishedGuidanceChange);
     };
 
     const renderApp = () => {
@@ -451,6 +478,8 @@ export const DataAccessRequestCustomiseForm = props => {
                     customiseView
                     onSwitchChange={onSwitchChange}
                     onQuestionAction={onQuestionAction}
+                    onGuidanceChange={onGuidanceChange}
+                    icons={question => <UnpublishedQuestionIcon question={question} unpublishedGuidance={unpublishedGuidance} />}
                     // readOnly={true}
                     /* onQuestionClick={onQuestionSetAction}
 					onQuestionAction={onQuestionAction}
@@ -490,7 +519,7 @@ export const DataAccessRequestCustomiseForm = props => {
                     doSearchMethod={e =>
                         e.key === 'Enter' ? (window.location.href = `/search?search=${encodeURIComponent(searchString)}`) : null
                     }
-                    doUpdateSearchString={searchString => setSearchString(searchString)}
+                    doUpdateSearchString={setSearchString}
                     doToggleDrawer={toggleDrawer}
                     userState={userState}
                 />
@@ -505,7 +534,7 @@ export const DataAccessRequestCustomiseForm = props => {
                         <a className='linkButton white-14-semibold ml-2' onClick={onClickSave} href='javascript:void(0)'>
                             Save now
                         </a>
-                        <CloseButtonSvg width='16px' height='16px' fill='#fff' onClick={e => redirectDashboard(e)} />
+                        <CloseButtonSvg width='16px' height='16px' fill='#fff' onClick={redirectDashboard} />
                     </Col>
                 </Row>
 
@@ -580,22 +609,14 @@ export const DataAccessRequestCustomiseForm = props => {
                                             <header>
                                                 <div>
                                                     <i className='far fa-question-circle mr-2' />
-                                                    <p className='gray800-14-bold'>Guidance</p>
+                                                    <p className='gray800-14-bold'>{activeQuestionData.question}</p>
                                                 </div>
                                                 <CloseButtonSvg width='16px' height='16px' fill='#475da' onClick={resetGuidance} />
                                             </header>
                                             <main className='gray800-14'>
                                                 <CustomiseGuidance
-                                                    activeGuidance={
-                                                        typeof newGuidance[activeQuestion] !== 'undefined'
-                                                            ? newGuidance[activeQuestion]
-                                                            : activeGuidance
-                                                    }
-                                                    isLocked={
-                                                        typeof questionStatus[activeQuestion] !== 'undefined'
-                                                            ? questionStatus[activeQuestion] === 2
-                                                            : false
-                                                    }
+                                                    activeGuidance={newGuidance[activeQuestion] || activeGuidance}
+                                                    isLocked={helpers.isQuestionLocked(activeQuestion)}
                                                     onGuidanceChange={onGuidanceChange}
                                                     activeQuestion={activeQuestion}
                                                 />
@@ -613,32 +634,22 @@ export const DataAccessRequestCustomiseForm = props => {
                 <ActionBar userState={userState}>
                     <div className='action-bar'>
                         <div className='action-bar--questions'>
-                            <button
-                                className='button-tertiary'
-                                onClick={() => {
-                                    onNextClick();
-                                }}>
+                            <Button variant='tertiary' onClick={onNextClick}>
                                 Clear updates
-                            </button>
+                            </Button>
                         </div>
                         <div className='action-bar-actions'>
                             <div className='amendment-count mr-3'>{countOfChanges} unpublished update</div>
 
-                            <button
-                                className='button-secondary'
+                            <Button
+                                variant='secondary'
                                 onClick={() => {
                                     setShowConfirmPublishModal(true);
                                 }}>
                                 Publish
-                            </button>
+                            </Button>
 
-                            <button
-                                className='button-primary'
-                                onClick={() => {
-                                    onNextClick();
-                                }}>
-                                Next
-                            </button>
+                            <Button onClick={onNextClick}>Next</Button>
                         </div>
                     </div>{' '}
                 </ActionBar>
@@ -676,22 +687,16 @@ export const DataAccessRequestCustomiseForm = props => {
                     <div className='removeUploaderModal-footer'>
                         {countOfChanges > 0 ? (
                             <div className='removeUploaderModal-footer--wrap'>
-                                <button className='button-secondary' onClick={() => setShowConfirmPublishModal(false)}>
+                                <Button variant='secondary' onClick={() => setShowConfirmPublishModal(false)}>
                                     No, nevermind
-                                </button>
-                                <button
-                                    className='button-primary'
-                                    onClick={() => {
-                                        onSubmitClick();
-                                    }}>
-                                    Publish
-                                </button>
+                                </Button>
+                                <Button onClick={onSubmitClick}>Publish</Button>
                             </div>
                         ) : (
                             <div className='removeUploaderModal-footer--wrap'>
-                                <button className='button-primary' onClick={() => setShowConfirmPublishModal(false)}>
+                                <Button className='button-primary' onClick={() => setShowConfirmPublishModal(false)}>
                                     Close
-                                </button>
+                                </Button>
                             </div>
                         )}
                     </div>
