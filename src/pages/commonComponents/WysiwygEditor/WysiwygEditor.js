@@ -1,9 +1,26 @@
+import { convertToRaw } from 'draft-js';
+import { draftToMarkdown } from 'markdown-draft-js';
 import React from 'react';
 import { Editor } from 'react-draft-wysiwyg';
-import './Wysiwyg.scss';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import './Wysiwyg.scss';
 
-export const WysiwygEditor = ({ editorState, onEditorStateChange }) => {
+export const WysiwygEditor = ({ editorState, onEditorStateChange, onContentStateChange, onMarkdownChange }) => {
+    const [markdown, setMarkdown] = React.useState();
+    const ref = React.createRef(null);
+
+    const handleOnEditorStateChange = editorStateChanged => {
+        const guidanceAsMarkdown = draftToMarkdown(convertToRaw(editorStateChanged.getCurrentContent()));
+
+        onEditorStateChange(editorStateChanged);
+
+        if (markdown !== guidanceAsMarkdown) onMarkdownChange(guidanceAsMarkdown, editorStateChanged);
+    };
+
+    React.useEffect(() => {
+        setMarkdown(draftToMarkdown(convertToRaw(editorState.getCurrentContent())));
+    }, []);
+
     return (
         <Editor
             data-testid='wysiwyg-editor-main'
@@ -11,7 +28,9 @@ export const WysiwygEditor = ({ editorState, onEditorStateChange }) => {
             editorClassName='wysiwyg-wrapper'
             toolbarClassName='rdw-editor-toolbar'
             editorState={editorState}
-            onEditorStateChange={onEditorStateChange}
+            onEditorStateChange={handleOnEditorStateChange}
+            onContentStateChange={onContentStateChange}
+            ref={ref}
             toolbar={{
                 options: ['inline', 'blockType', 'list', 'link', 'history'],
                 inline: {
@@ -34,6 +53,12 @@ export const WysiwygEditor = ({ editorState, onEditorStateChange }) => {
             }}
         />
     );
+};
+
+WysiwygEditor.defaultProps = {
+    onMarkdownChange: () => {},
+    onEditorStateChange: () => {},
+    onContentStateChange: () => {},
 };
 
 export default WysiwygEditor;
