@@ -2,15 +2,36 @@ import { Meta, Story, Canvas } from '@storybook/addon-docs';
 import { convertFromRaw, EditorState } from 'draft-js';
 import { markdownToDraft } from 'markdown-draft-js';
 
+import Typography from '../Typography';
 import WysiwygEditor from './WysiwygEditor';
 
-<Meta title='Core/WysiwygEditor' component={WysiwygEditor} />
+import { Title, Subtitle, Description, Primary, ArgsTable, Stories, PRIMARY_STORY } from '@storybook/addon-docs';
+
+<Meta title='Core/WysiwygEditor' component={WysiwygEditor} parameters={{ docs: { page: null } }} />
 
 <Canvas>
     <Story name='Default'>
         {props => {
-            const contentState = convertFromRaw(markdownToDraft('Some sample markup'));
-            return <WysiwygEditor editorState={EditorState.createWithContent(contentState)} />;
+            const [message, setMessage] = React.useState('');
+            const [editorState, setEditorState] = React.useState(EditorState.createWithContent(convertFromRaw(markdownToDraft(''))));
+            const handleMarkdownChange = () => {
+                setMessage('Markdown has changed');
+            };
+            const handleEditorStateChange = editorStateChanged => {
+                setEditorState(editorStateChanged);
+            };
+            return (
+                <div>
+                    <WysiwygEditor
+                        {...props}
+                        editorState={editorState}
+                        onEditorStateChange={handleEditorStateChange}
+                        onMarkdownChange={handleMarkdownChange}
+                        mb={2}
+                    />
+                    {message && <Typography color='green400'>{message}</Typography>}
+                </div>
+            );
         }}
     </Story>
 </Canvas>

@@ -40,9 +40,14 @@ export const root =
                 color: ${colors.grey700};
             }
 
+            .dropdown-toggle:hover {
+                box-shadow: none;
+                border-color: ${colors[variants[variant].hoverBorderColor]};
+            }
+
             .dropdown-toggle:focus {
                 box-shadow: none;
-                border-color: ${colors.green700};
+                border-color: ${colors[variants[variant].focusBorderColor]};
             }
 
             .dropdown-menu {
