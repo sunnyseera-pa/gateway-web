@@ -138,8 +138,6 @@ const CustomiseDAR = ({ userState, publisherId, showConfirmPublishModal, setShow
         setCloseGuidanceMessage('');
     };
 
-    console.log("hey", closeGuidanceMessage)
-
     return (
         <>
             {(closeGuidanceMessage || alert.message) && (
@@ -194,13 +192,13 @@ const CustomiseDAR = ({ userState, publisherId, showConfirmPublishModal, setShow
                                     <div className='customise-dar-body'>
                                         {publisherDetails.dataRequestModalContentUpdatedBy ? (
                                             <>
-                                                <span className='box gray200-14'>Published by</span>
+                                                <span className='box gray200-14'>Last updated by</span>
                                                 <span className='box gray800-14'>{howToRequestAccessPublisher}</span>
                                             </>
                                         ) : (
                                             ''
                                         )}
-                                        <span className='box gray200-14'>Last activity</span>
+                                        <span className='box gray200-14'>Last updated on</span>
                                         <span className='box gray800-14'>
                                             {publisherDetails.dataRequestModalContentUpdatedOn
                                                 ? moment(publisherDetails.dataRequestModalContentUpdatedOn).format('DD MMM YYYY HH:mm')
