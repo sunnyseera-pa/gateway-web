@@ -12,6 +12,13 @@ import publishersService from '../../../services/publishers';
 import CustomiseDAREditGuidance from '../Components/CustomiseDAREditGuidance';
 import './CustomiseDAR.scss';
 import { LayoutContent } from '../../../components/Layout';
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
+
+const renderTooltip = props => (
+    <Tooltip className='tool-tip' style={{ width: '240px' }}>
+        {props}
+    </Tooltip>
+);
 
 const baseURL = require('../../commonComponents/BaseURL').getURL();
 
@@ -127,7 +134,7 @@ const CustomiseDAR = ({ userState, publisherId, showConfirmPublishModal, setShow
         onSelectTab(tabId);
     };
 
-    const handleCloseGuidanceMessage = () => {
+    const handleCloseGuidanceMessage = () => { 
         setCloseGuidanceMessage('');
     };
 
@@ -144,9 +151,7 @@ const CustomiseDAR = ({ userState, publisherId, showConfirmPublishModal, setShow
             {(howToRequestAccessStatus === sectionStatuses.PENDING || yourAppFormStatus === sectionStatuses.PENDING) && (
                 <LayoutContent>
                     <Alert variant='warning' mb={3}>
-                        {howToRequestAccessStatus === sectionStatuses.PENDING
-                            ? `The ‘How to request access’ information for ${publisherDetails.name} applications is pending going live until the appication form is published`
-                            : `The application form for ${publisherDetails.name} applications is pending going live until the ‘How to request access’ information is published`}
+                        <p>Please note that both <b>Presubmission Guidance</b> and <b>DAR Application Form</b> must be completed before they can be published.</p>
                     </Alert>
                 </LayoutContent>
             )}
@@ -176,22 +181,24 @@ const CustomiseDAR = ({ userState, publisherId, showConfirmPublishModal, setShow
                                 <h1 className='black-20-semibold mb-3'>
                                     <SVGIcon name='info' fill='#475da7' className='accountSvgs mr-2' />
                                     <span className='ml-3'>{t('DAR.customise.presubmissionGuidance.title')}</span>
-                                    <div className={`status-chip sla-${sectionStatusColours[howToRequestAccessStatus]}`}>
+                                    <OverlayTrigger placement='top' overlay={renderTooltip("Please note that both Presubmission Guidance and DAR Application Form must be completed before they can be published.")}>
+                                    <div className={`status-chip sla-${sectionStatusColours[howToRequestAccessStatus]}` } >
                                         {howToRequestAccessStatus}
                                     </div>
+                                    </OverlayTrigger>
                                 </h1>
                                 <div className='main-header-desc'>
                                     <div className='soft-black-14'>{t('DAR.customise.presubmissionGuidance.description')}</div>
                                     <div className='customise-dar-body'>
                                         {publisherDetails.dataRequestModalContentUpdatedBy ? (
                                             <>
-                                                <span className='box gray200-14'>Published by</span>
+                                                <span className='box gray200-14'>Last updated by</span>
                                                 <span className='box gray800-14'>{howToRequestAccessPublisher}</span>
                                             </>
                                         ) : (
                                             ''
                                         )}
-                                        <span className='box gray200-14'>Last activity</span>
+                                        <span className='box gray200-14'>Last updated on</span>
                                         <span className='box gray800-14'>
                                             {publisherDetails.dataRequestModalContentUpdatedOn
                                                 ? moment(publisherDetails.dataRequestModalContentUpdatedOn).format('DD MMM YYYY HH:mm')
