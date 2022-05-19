@@ -94,10 +94,10 @@ const CustomiseDAR = ({ userState, publisherId, showConfirmPublishModal, setShow
             }
         } else if (applicationContentComplete) {
             setYourAppFormStatus(sectionStatuses.PENDING);
-            setHowToRequestAccessStatus(sectionStatuses.INACTIVE);
+            setHowToRequestAccessStatus(sectionStatuses.PENDING);
         } else {
-            setYourAppFormStatus(sectionStatuses.INACTIVE);
-            setHowToRequestAccessStatus(sectionStatuses.INACTIVE);
+            setYourAppFormStatus(sectionStatuses.PENDING);
+            setHowToRequestAccessStatus(sectionStatuses.PENDING);
         }
     };
 
@@ -140,7 +140,7 @@ const CustomiseDAR = ({ userState, publisherId, showConfirmPublishModal, setShow
 
     return (
         <>
-            {(closeGuidanceMessage || alert.message) && (
+            {(howToRequestAccessStatus === sectionStatuses.ACTIVE || yourAppFormStatus === sectionStatuses.ACTIVE) && (
                 <LayoutContent>
                     <Alert variant='success' autoclose onClose={handleCloseGuidanceMessage} mb={3}>
                         {closeGuidanceMessage || alert.message}
@@ -181,11 +181,13 @@ const CustomiseDAR = ({ userState, publisherId, showConfirmPublishModal, setShow
                                 <h1 className='black-20-semibold mb-3'>
                                     <SVGIcon name='info' fill='#475da7' className='accountSvgs mr-2' />
                                     <span className='ml-3'>{t('DAR.customise.presubmissionGuidance.title')}</span>
-                                    <OverlayTrigger placement='top' overlay={renderTooltip("Please note that both Presubmission Guidance and DAR Application Form must be completed before they can be published.")}>
+                                    {howToRequestAccessStatus === sectionStatuses.PENDING ? <OverlayTrigger placement='top' overlay={renderTooltip("Please note that both Presubmission Guidance and DAR Application Form must be completed before they can be published.")}>
                                     <div className={`status-chip sla-${sectionStatusColours[howToRequestAccessStatus]}` } >
                                         {howToRequestAccessStatus}
                                     </div>
-                                    </OverlayTrigger>
+                                    </OverlayTrigger> : <div className={`status-chip sla-${sectionStatusColours[howToRequestAccessStatus]}` } >
+                                        {howToRequestAccessStatus}
+                                    </div>}
                                 </h1>
                                 <div className='main-header-desc'>
                                     <div className='soft-black-14'>{t('DAR.customise.presubmissionGuidance.description')}</div>
