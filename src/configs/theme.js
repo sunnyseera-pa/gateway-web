@@ -1,3 +1,4 @@
+import { isObject } from 'lodash';
 import isNil from 'lodash/isNil';
 import merge from 'lodash/merge';
 
@@ -25,26 +26,30 @@ export const getCommonStyles = ({ ml, mr, mb, mt, width, maxWidth, minWidth }, t
 	`;
 };
 
-export const getComponentStylesFromTheme = (props, theme) => {
-    const styles = Object.keys(props).map(prop => {
-        const propParts = prop.replace(/([a-z])([A-Z])/g, '$1,$2').split(',');
-        const isColor = Object.keys(theme.colors).includes(props[prop]);
-        const pseudoSelector = propParts[0];
+export const isPseudoType = value => {
+    ['disabled', 'focus'].includes(value);
+};
 
-        if (pseudoSelector === 'hover' || pseudoSelector === 'disabled' || pseudoSelector === 'focus') {
-            propParts.shift();
+const getComponentStyle = (prop, value, theme, important) => {
+    const propParts = prop.replace(/([a-z])([A-Z])/g, '$1,$2').split(',');
+    const isColor = Object.keys(theme.colors).includes(value);
 
-            return `
-                :${pseudoSelector} {
-                    ${propParts.join('-')}: ${isColor ? theme.colors[props[prop]] : props[prop]};
-                }
-            `;
-        }
+    return `${propParts.join('-')}: ${isColor ? theme.colors[value] : value}${important ? ' !important' : ''};`;
+};
 
-        return `${propParts.join('-')}: ${isColor ? theme.colors[props[prop]] : props[prop]};`;
-    });
+export const getComponentStylesFromTheme = (props, theme, important) => {
+    const getStyles = nextProps => {
+        return Object.keys(nextProps).map(prop => {
+            if (isObject(nextProps[prop])) {
+                return `${prop} {
+                    ${getStyles(nextProps[prop])}
+                }`;
+            }
+            return getComponentStyle(prop, nextProps[prop], theme, important);
+        });
+    };
 
-    return styles.join('\n');
+    return getStyles(props).join('\n');
 };
 
 export const getComponentVariant = (component, variant, theme) => {
@@ -53,6 +58,29 @@ export const getComponentVariant = (component, variant, theme) => {
 
 export const getComponentSize = (component, size, theme) => {
     return getComponentStylesFromTheme(theme.components[component].sizes[size], theme);
+};
+
+export const getComponentGlobals = (component, key, config, theme) => {
+    const props = theme.components[component].globals[key];
+    let validProps = {};
+
+    Object.keys(props).forEach(prop => {
+        const propParts = prop.replace(/([a-z])([A-Z])/g, '$1,$2').split(',');
+
+        if (config[propParts[0]]) {
+            propParts.shift();
+
+            let newProp = propParts.join('');
+            newProp = newProp.charAt(0).toLowerCase() + newProp.slice(1);
+
+            validProps = {
+                ...validProps,
+                [newProp]: props[prop],
+            };
+        }
+    });
+
+    return getComponentStylesFromTheme(validProps, theme);
 };
 
 export const THEME_INPUT = {
@@ -67,18 +95,37 @@ export const THEME_INPUT = {
             height: '50px',
         },
     },
+    globals: {
+        label: {
+            disabledColor: 'grey500',
+        },
+    },
     variants: {
         primary: {
             background: 'white',
             borderColor: 'grey400',
-            hoverBorderColor: 'green400',
-            focusBorderColor: 'green400',
+            ':hover': {
+                borderColor: 'green400',
+            },
+            ':focus': {
+                borderColor: 'green400',
+            },
+            ':disabled': {
+                borderColor: 'grey400',
+            },
         },
         secondary: {
             background: 'grey100',
             borderColor: 'grey100',
-            hoverBorderColor: 'green400',
-            focusBorderColor: 'green400',
+            ':hover': {
+                borderColor: 'green400',
+            },
+            ':focus': {
+                borderColor: 'green400',
+            },
+            ':disabled': {
+                borderColor: 'grey100',
+            },
         },
     },
 };

@@ -1,4 +1,5 @@
 import { css } from '@emotion/react';
+import { getComponentStylesFromTheme } from '../../configs/theme';
 
 export const root =
     ({ variant, size }) =>
@@ -35,19 +36,15 @@ export const root =
             &.show .dropdown-toggle {
                 border-width: 2px;
                 border-style: solid;
-                background: ${colors[variants[variant].background]};
-                border-color: ${colors[variants[variant].borderColor]};
+
                 color: ${colors.grey700};
+
+                ${getComponentStylesFromTheme(variants[variant], theme, true)};
             }
 
-            .dropdown-toggle:hover {
-                box-shadow: none;
-                border-color: ${colors[variants[variant].hoverBorderColor]};
-            }
-
+            .dropdown-toggle:hover,
             .dropdown-toggle:focus {
                 box-shadow: none;
-                border-color: ${colors[variants[variant].focusBorderColor]};
             }
 
             .dropdown-menu {

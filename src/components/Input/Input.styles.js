@@ -1,5 +1,5 @@
 import { css } from '@emotion/react';
-import { getSpacingStyle } from '../../configs/theme';
+import { getComponentGlobals, getComponentStylesFromTheme, getSpacingStyle } from '../../configs/theme';
 
 export const mixins = {
     input:
@@ -8,28 +8,33 @@ export const mixins = {
             const { colors, variants } = config;
 
             return css`
-                background: ${colors[variants[variant].background]};
                 border-style: solid !important;
                 border-width: 2px !important;
-                border-color: ${error ? colors.red600 : colors[variants[variant].borderColor]} !important;
                 border-radius: 0.25rem !important;
 
-                &:hover {
-                    border-color: ${error ? colors.red600 : colors[variants[variant].hoverBorderColor]} !important;
-                }
+                ${getComponentStylesFromTheme(variants[variant], config, true)};
 
-                &:focus,
-                &.focus,
-                &:focus-within,
-                &:focus-visible {
-                    border-color: ${error ? colors.red600 : colors[variants[variant].focusBorderColor]} !important;
-                    outline: none;
-                }
+                ${error &&
+                `
+                    border-color: ${colors.red600} !important;
+
+                    &:hover,
+                    &:focus,
+                    &.focus,
+                    &:focus-within,
+                    &:focus-visible {
+                        border-color: ${colors.red600} !important;
+                        outline: none;
+                    }
+                `}
             `;
         },
-    label: theme => css`
-        ${getSpacingStyle('margin-bottom', 2, theme)}
-    `,
+    label:
+        ({ component, disabled }) =>
+        theme =>
+            css`
+                ${getComponentGlobals(component, 'label', { disabled }, theme)}
+            `,
     formGroup: ({
         font: {
             size: { default: fontSize },
@@ -62,7 +67,7 @@ export const inputGroup =
             .rbt-input.form-control {
                 ${prepend.offsetWidth ? `padding-left: calc(${prepend.offsetWidth}px + 1.2em);` : ''}
                 ${append.offsetWidth ? `padding-right: calc(${append.offsetWidth}px + 1.2em);` : ''}
-			font-size: ${defaultSize};
+			    font-size: ${defaultSize};
                 height: ${sizes[size].height};
                 width: 100%;
 

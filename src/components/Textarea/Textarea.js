@@ -6,6 +6,7 @@ import { Form, InputGroup } from 'react-bootstrap';
 import TextareaAutosize from 'react-textarea-autosize';
 import { addCommonPropTypes } from '../../configs/propTypes';
 import LayoutBox from '../LayoutBox';
+import { mixins } from '../Input/Input.styles';
 import { PROP_TYPES_LAYOUTBOX } from '../LayoutBox/LayoutBox.propTypes';
 import * as styles from './Textarea.styles';
 
@@ -28,12 +29,13 @@ const Textarea = ({
     id,
     rows,
     error,
+    disabled,
     ...outerProps
 }) => {
     return (
         <LayoutBox {...{ mt, mb, ml, mr, width, minWidth, maxWidth }}>
             <Form.Group controlId={id} className={cx('ui-Textarea', className)} css={styles.formGroup}>
-                <Form.Label css={styles.label}>{label}</Form.Label>
+                <Form.Label css={mixins.label({ component: 'Textarea', disabled })}>{label}</Form.Label>
                 <InputGroup css={styles.inputGroup({ variant, rows, error })}>
                     {!!maxCharCount && (
                         <div className='ui-TextArea__charCount' css={styles.charCount}>
@@ -44,8 +46,8 @@ const Textarea = ({
                             </span>
                         </div>
                     )}
-                    {autosize && <TextareaAutosize type='text' value={value} {...outerProps} ref={inputRef} />}
-                    {!autosize && <Form.Control as='textarea' {...outerProps} ref={inputRef} />}
+                    {autosize && <TextareaAutosize type='text' value={value} {...outerProps} ref={inputRef} disabled={disabled} />}
+                    {!autosize && <Form.Control as='textarea' {...outerProps} ref={inputRef} disabled={disabled} />}
                 </InputGroup>
                 {error && <div className='errorMessages'>{error}</div>}
             </Form.Group>
@@ -59,6 +61,7 @@ Textarea.defaultProps = {
     charCountDescription: 'character limit',
     value: '',
     rows: 5,
+    disabled: false,
     ...PROP_TYPES_LAYOUTBOX,
 };
 
@@ -77,6 +80,7 @@ Textarea.propTypes = addCommonPropTypes({
     name: PropTypes.string,
     autosize: PropTypes.bool,
     rows: PropTypes.number,
+    disabled: PropTypes.bool,
 });
 
 export default Textarea;

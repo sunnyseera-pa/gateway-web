@@ -5,26 +5,27 @@ import Textarea from './Textarea';
 <Meta title='Core/Textarea' component={Textarea} />
 
 <Canvas>
-	<Story name='Basic'>
-		{props => (
-			<div>
-				<Textarea label='Basic label' mb={10} />
-				<Textarea label='Basic with error' error='Must have a value' />
-			</div>
-		)}
-	</Story>
-	<Story name='With count'>
-		{props => (
-			<div>
-				<Textarea label='Count label' maxCharCount={255} charCountDescription='characters of (example)' />
-			</div>
-		)}
-	</Story>
-	<Story name='Autosize'>
-		{props => (
-			<div>
-				<Textarea label='Autosize label' autosize />
-			</div>
-		)}
-	</Story>
+    <Story name='Basic'>
+        {props => (
+            <div>
+                <Textarea label='Basic label' mb={4} />
+                <Textarea label='Basic with error' error='Must have a value' mb={4} />
+                <Textarea label='Basic disabled' disabled />
+            </div>
+        )}
+    </Story>
+    <Story name='With count'>
+        {props => (
+            <div>
+                <Textarea label='Count label' maxCharCount={255} charCountDescription='characters of (example)' />
+            </div>
+        )}
+    </Story>
+    <Story name='Autosize'>
+        {props => (
+            <div>
+                <Textarea label='Autosize label' autosize />
+            </div>
+        )}
+    </Story>
 </Canvas>

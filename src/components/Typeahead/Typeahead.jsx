@@ -28,12 +28,14 @@ const Typeahead = ({
     width,
     async,
     isLoading,
+    disabled,
+    label,
     ...outerProps
 }) => {
     const iconsAppend =
         isLoading || iconAppend ? (
             <>
-                {isLoading && <div class='rbt-loader'></div>}
+                {isLoading && <div className='rbt-loader' />}
                 {iconAppend}
             </>
         ) : null;
@@ -53,9 +55,10 @@ const Typeahead = ({
             width={width}
             maxWidth={maxWidth}
             minWidth={minWidth}
-        >
-            {!async && <BootstrapTypeahead {...outerProps} selected={selected} />}
-            {async && <BootstrapTypeaheadAsync {...outerProps} selected={selected} />}
+            disabled={disabled}
+            label={label}>
+            {!async && <BootstrapTypeahead {...outerProps} selected={selected} disabled={disabled} />}
+            {async && <BootstrapTypeaheadAsync {...outerProps} selected={selected} disabled={disabled} />}
         </Input>
     );
 };

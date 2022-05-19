@@ -33,6 +33,7 @@ const Input = ({
     id,
     size,
     error,
+    disabled,
     ...outerProps
 }) => {
     const prependRef = useRef(null);
@@ -51,24 +52,22 @@ const Input = ({
     return (
         <LayoutBox {...{ mt, mb, ml, mr, width, minWidth, maxWidth }}>
             <Form.Group controlId={id} css={styles.formGroup}>
-                {label && <Form.Label css={styles.label}>{label}</Form.Label>}
+                {label && <Form.Label css={styles.label({ component: 'Input', disabled })}>{label}</Form.Label>}
                 <InputGroup
                     css={styles.inputGroup({ prepend: domPrependChanged, append: domAppendChanged, variant, size, error })}
-                    className={cx('ui-Input', className)}
-                >
+                    className={cx('ui-Input', className)}>
                     {(iconPrepend || textPrepend) && (
                         <InputGroup.Prepend
                             css={css`
                                 ${styles.decorators};
                                 ${styles.prepend};
                             `}
-                            ref={prependRef}
-                        >
+                            ref={prependRef}>
                             {textPrepend && <InputGroup.Text>{textPrepend}</InputGroup.Text>}
                             {iconPrepend}
                         </InputGroup.Prepend>
                     )}
-                    {!children && <Form.Control {...outerProps} onChange={handleChange} ref={inputRef} />}
+                    {!children && <Form.Control {...outerProps} disabled={disabled} onChange={handleChange} ref={inputRef} />}
                     {children}
                     {(iconAppend || textAppend) && (
                         <InputGroup.Append
@@ -76,8 +75,7 @@ const Input = ({
                                 ${styles.decorators};
                                 ${styles.append};
                             `}
-                            ref={appendRef}
-                        >
+                            ref={appendRef}>
                             {iconAppend}
                             {textAppend && <InputGroup.Text>{textAppend}</InputGroup.Text>}
                         </InputGroup.Append>
@@ -99,6 +97,7 @@ Input.defaultProps = {
     variant: 'primary',
     debounceDelay: 300,
     onDebounce: () => {},
+    disabled: false,
 };
 
 export default Input;
