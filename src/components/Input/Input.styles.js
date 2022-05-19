@@ -33,6 +33,7 @@ export const mixins = {
         ({ component, disabled }) =>
         theme =>
             css`
+                ${getSpacingStyle('margin-bottom', 1, theme)}
                 ${getComponentGlobals(component, 'label', { disabled }, theme)}
             `,
     formGroup: ({
