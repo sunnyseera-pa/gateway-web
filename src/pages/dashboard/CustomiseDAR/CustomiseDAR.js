@@ -140,15 +140,16 @@ const CustomiseDAR = ({ userState, publisherId, showConfirmPublishModal, setShow
 
     return (
         <>
-            {(howToRequestAccessStatus === sectionStatuses.ACTIVE || yourAppFormStatus === sectionStatuses.ACTIVE) && (
+            {(howToRequestAccessStatus === sectionStatuses.ACTIVE &&  yourAppFormStatus === sectionStatuses.ACTIVE) ?
+            (closeGuidanceMessage || alert.message) && (
                 <LayoutContent>
                     <Alert variant='success' autoclose onClose={handleCloseGuidanceMessage} mb={3}>
                         {closeGuidanceMessage || alert.message}
                     </Alert>
                 </LayoutContent>
-            )}
+            ) :
 
-            {(howToRequestAccessStatus === sectionStatuses.PENDING || yourAppFormStatus === sectionStatuses.PENDING) && (
+            (howToRequestAccessStatus === sectionStatuses.PENDING || yourAppFormStatus === sectionStatuses.PENDING) && (
                 <LayoutContent>
                     <Alert variant='warning' mb={3}>
                         <p>Please note that both <b>Presubmission Guidance</b> and <b>DAR Application Form</b> must be completed before they can be published.</p>
