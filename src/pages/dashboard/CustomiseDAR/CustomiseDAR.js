@@ -87,10 +87,10 @@ const CustomiseDAR = ({ userState, publisherId, showConfirmPublishModal, setShow
             }
         } else if (applicationContentComplete) {
             setYourAppFormStatus(sectionStatuses.PENDING);
-            setHowToRequestAccessStatus(sectionStatuses.PENDING);
+            setHowToRequestAccessStatus(sectionStatuses.INACTIVE);
         } else {
-            setYourAppFormStatus(sectionStatuses.PENDING);
-            setHowToRequestAccessStatus(sectionStatuses.PENDING);
+            setYourAppFormStatus(sectionStatuses.INACTIVE);
+            setHowToRequestAccessStatus(sectionStatuses.INACTIVE);
         }
     };
 
