@@ -869,8 +869,6 @@ class DataAccessRequest extends Component {
             // update actual object model with property of active true
             newFormState[newPageindex] = { ...pages[newPageindex], active: true };
 
-            console.log('New form', newForm);
-
             // get set the active panelId
             ({ panelId } = newForm);
             if (_.isEmpty(panelId) || typeof panelId == 'undefined') {
@@ -905,6 +903,7 @@ class DataAccessRequest extends Component {
                 validationErrors,
                 reviewWarning,
                 activeGuidance: '',
+                activePanelGuidance: newForm.panelGuidance,
                 actionTabSettings: { key: '', questionSetId: '', questionId: '' },
             });
         }
@@ -1849,8 +1848,6 @@ class DataAccessRequest extends Component {
     renderApp = () => {
         let { activePanelId } = this.state;
 
-        console.log('activePanelId', activePanelId);
-
         if (activePanelId === 'about') {
             return (
                 <AboutApplication
@@ -1932,6 +1929,7 @@ class DataAccessRequest extends Component {
             totalQuestions,
             isLoading,
             activeGuidance,
+            activePanelGuidance,
             datasets,
             showDrawer,
             showModal,
@@ -2118,6 +2116,7 @@ class DataAccessRequest extends Component {
                                         userState={userState}
                                         settings={this.state.actionTabSettings}
                                         activeGuidance={activeGuidance}
+                                        activePanelGuidance={activePanelGuidance}
                                         onHandleActionTabChange={this.onHandleActionTabChange}
                                         toggleDrawer={this.toggleDrawer}
                                         setMessageDescription={this.setMessageDescription}

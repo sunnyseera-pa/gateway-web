@@ -1,16 +1,17 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import { Tabs, Tab } from 'react-bootstrap/';
+import { capitalize, isEmpty } from 'lodash';
 import Guidance from './Guidance/Guidance';
 import Messages from './Messages/Messages';
 import Notes from './Notes/Notes';
 import DarHelper from '../../../utils/DarHelper.util';
-import { capitalize, isEmpty } from 'lodash';
 
 const QuestionActionTabs = ({
     applicationId,
     userState,
     settings,
     activeGuidance,
+    activePanelGuidance,
     resetGuidance,
     onHandleActionTabChange,
     toggleDrawer,
@@ -42,18 +43,17 @@ const QuestionActionTabs = ({
                 <Tab
                     eventKey={DarHelper.actionKeys.GUIDANCE}
                     title={
-                        <Fragment>
+                        <>
                             <i
                                 className={`far fa-question-circle mr-2 ${
                                     activeSettings.key === DarHelper.actionKeys.GUIDANCE ? 'tab-is-active' : ''
                                 }`}
                             />
                             {capitalize(DarHelper.actionKeys.GUIDANCE)}
-                        </Fragment>
-                    }
-                >
-                    {!isEmpty(activeSettings.questionId) ? (
-                        <Guidance activeGuidance={activeGuidance}></Guidance>
+                        </>
+                    }>
+                    {!!activePanelGuidance || !isEmpty(activeSettings.questionId) ? (
+                        <Guidance activeGuidance={activeGuidance || activePanelGuidance} />
                     ) : (
                         <div className='darTab-guidance'>Click on a question guidance to view details</div>
                     )}
@@ -61,7 +61,7 @@ const QuestionActionTabs = ({
                 <Tab
                     eventKey={DarHelper.actionKeys.MESSAGES}
                     title={
-                        <Fragment>
+                        <>
                             <i
                                 className={`far fa-comment-alt mr-2 ${
                                     activeSettings.key === DarHelper.actionKeys.MESSAGES ? 'tab-is-active' : ''
@@ -73,9 +73,9 @@ const QuestionActionTabs = ({
                             ) : (
                                 ''
                             )}
-                        </Fragment>
+                        </>
                     }
-                >
+                    disabled={!!activePanelGuidance}>
                     {activeSettings.key === DarHelper.actionKeys.MESSAGES ? (
                         <>
                             {!isEmpty(activeSettings.questionId) ? (
@@ -103,13 +103,13 @@ const QuestionActionTabs = ({
                 <Tab
                     eventKey={DarHelper.actionKeys.NOTES}
                     title={
-                        <Fragment>
+                        <>
                             <i className={`far fa-edit mr-2 ${activeSettings.key === DarHelper.actionKeys.NOTES ? 'tab-is-active' : ''}`} />
                             {capitalize(DarHelper.actionKeys.NOTES)}
                             {!isEmpty(activeSettings.questionId) && notesCount > 0 ? <span className='tab-count'>{notesCount}</span> : ''}
-                        </Fragment>
+                        </>
                     }
-                >
+                    disabled={!!activePanelGuidance}>
                     {activeSettings.key === DarHelper.actionKeys.NOTES ? (
                         <>
                             {!isEmpty(activeSettings.questionId) ? (

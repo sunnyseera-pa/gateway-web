@@ -53,6 +53,7 @@ const staticContent = {
         panelId: 'additionalinformationfiles-files',
         questionSets: [],
         pageId: 'additionalinformationfiles',
+        panelGuidance: 'Please upload all additional documentation as requested in the DAR form.',
     },
 };
 
