@@ -550,16 +550,24 @@ class DataAccessRequest extends Component {
         let formPanel = {};
         let currentPageIdx = 0;
         // check if About page has been injected
-        let navElementsExist = [...pages].find(page => page.pageId === DarHelper.darStaticPageIds.ABOUT) || false;
-        // 2. About page does not exist
-        if (!navElementsExist) {
-            // Append 'about' & 'files' panel and nav item
+
+        let aboutNavElementsExist = [...pages].find(page => page.pageId === DarHelper.darStaticPageIds.ABOUT);
+        let additionalfilesNavElementsExist = [...pages].find(page => page.pageId === DarHelper.darStaticPageIds.ADDITIONALFILES);
+
+        if (!aboutNavElementsExist && !additionalfilesNavElementsExist) {
             jsonSchema.pages.unshift(DarHelper.staticContent.aboutPageNav);
-            jsonSchema.pages.push(DarHelper.staticContent.filesNav);
-            // Add form panel for 'about' & 'files'
-            jsonSchema.formPanels.unshift(DarHelper.staticContent.aboutPanel);
-            jsonSchema.formPanels.push(DarHelper.staticContent.filesPanel);
         }
+
+        jsonSchema.pages.push(DarHelper.staticContent.filesPageNav);
+
+        if (additionalfilesNavElementsExist) {
+            jsonSchema.formPanels.push(DarHelper.staticContent.additionalFilesPanel);
+
+            jsonSchema.questionPanels.push(DarHelper.staticContent.additionalFilesQuestionPanel);
+        }
+
+        console.log(jsonSchema.formPanels);
+
         // if amendment has been made to datasets mark about application navigation with warning
         if (userType === DarHelper.userTypes.CUSTODIAN && areDatasetsAmended) {
             jsonSchema.pages[0].flag = 'WARNING';
@@ -579,12 +587,15 @@ class DataAccessRequest extends Component {
             let inReview =
                 [...reviewSections].includes(page.pageId.toLowerCase()) ||
                 page.pageId === DarHelper.darStaticPageIds.ABOUT ||
-                page.pageId === DarHelper.darStaticPageIds.FILES;
+                page.pageId === DarHelper.darStaticPageIds.FILES ||
+                page.pageId === DarHelper.darStaticPageIds.ADDITIONALFILES;
 
             return { ...page, inReview: inReviewMode && inReview };
         });
         // add in the classes for winterfell, important
         jsonSchema = { ...jsonSchema, ...classSchema };
+
+        console.log('jsonSchema', jsonSchema);
 
         return jsonSchema;
     }
@@ -635,7 +646,7 @@ class DataAccessRequest extends Component {
             let countedQuestionAnswers = {};
             let totalQuestions = '';
             // 3. total questions answered
-            if (activePanelId === 'about' || activePanelId === 'files') {
+            if (activePanelId === 'about' || activePanelId === 'additionalinformationfiles-files') {
                 countedQuestionAnswers = DarHelper.totalQuestionsAnswered(this);
                 totalQuestions = `${countedQuestionAnswers.totalAnsweredQuestions}/${countedQuestionAnswers.totalQuestions}  questions answered`;
             } else {
@@ -858,6 +869,8 @@ class DataAccessRequest extends Component {
             // update actual object model with property of active true
             newFormState[newPageindex] = { ...pages[newPageindex], active: true };
 
+            console.log('New form', newForm);
+
             // get set the active panelId
             ({ panelId } = newForm);
             if (_.isEmpty(panelId) || typeof panelId == 'undefined') {
@@ -867,7 +880,7 @@ class DataAccessRequest extends Component {
             let countedQuestionAnswers = {};
             let totalQuestions = '';
             // if in the about panel, retrieve question answers count for entire application
-            if (panelId === 'about' || panelId === 'files') {
+            if (panelId === 'about' || panelId === 'additionalinformationfiles-files' || panelId === 'files') {
                 countedQuestionAnswers = DarHelper.totalQuestionsAnswered(this);
                 totalQuestions = `${countedQuestionAnswers.totalAnsweredQuestions || 0}/${
                     countedQuestionAnswers.totalQuestions || 0
@@ -884,6 +897,9 @@ class DataAccessRequest extends Component {
             this.setState({
                 jsonSchema: { ...jsonSchema, pages: newFormState },
                 activePanelId: panelId,
+                activePanelHeader: newForm.panelHeader,
+                activeQuestionPanelHeaderText: newForm.questionPanelHeaderText,
+                activePageId: 0,
                 isWideForm: panelId === 'about' || panelId === 'files',
                 totalQuestions: totalQuestions,
                 validationErrors,
@@ -1832,6 +1848,9 @@ class DataAccessRequest extends Component {
 
     renderApp = () => {
         let { activePanelId } = this.state;
+
+        console.log('activePanelId', activePanelId);
+
         if (activePanelId === 'about') {
             return (
                 <AboutApplication
@@ -1871,9 +1890,16 @@ class DataAccessRequest extends Component {
                     datasetsAmendedDate={this.state.datasetsAmendedDate}
                 />
             );
-        } else if (activePanelId === 'files') {
+        } else if (activePanelId === 'additionalinformationfiles-files' || activePanelId === 'files') {
             return (
-                <Uploads onFilesUpdate={this.onFilesUpdate} id={this.state._id} files={this.state.files} readOnly={this.state.readOnly} />
+                <Uploads
+                    onFilesUpdate={this.onFilesUpdate}
+                    id={this.state._id}
+                    files={this.state.files}
+                    readOnly={this.state.readOnly}
+                    description={this.state.activePanelHeader}
+                    header={this.state.activeQuestionPanelHeaderText}
+                />
             );
         } else {
             return (
@@ -1953,6 +1979,8 @@ class DataAccessRequest extends Component {
                 </Container>
             );
         }
+
+        console.log('this.state.jsonSchema.questionPanels', this.state.jsonSchema.questionPanels);
 
         return (
             <Sentry.ErrorBoundary fallback={<ErrorModal />}>
@@ -2052,7 +2080,7 @@ class DataAccessRequest extends Component {
                                     <SVGIcon name='check' width={24} height={24} fill={'#2C8267'} /> {alert.message}
                                 </Alert>
                             )}
-                            <div id='darDropdownNav'>
+                            {/* <div id='darDropdownNav'>
                                 <NavDropdown
                                     options={{
                                         ...this.state.jsonSchema,
@@ -2061,7 +2089,7 @@ class DataAccessRequest extends Component {
                                     onFormSwitchPanel={this.updateNavigation}
                                     enabled={allowedNavigation}
                                 />
-                            </div>
+                            </div> */}
                             <div style={{ backgroundColor: '#ffffff' }} className='dar__header'>
                                 {this.state.jsonSchema.pages
                                     ? [...this.state.jsonSchema.pages].map((item, idx) =>
