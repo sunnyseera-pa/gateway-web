@@ -38,7 +38,7 @@ const CustomiseGuidance = ({ activeGuidance, isLocked, onGuidanceChange, activeQ
                     {activeGuidance ? (
                         <ReactMarkdown source={activeGuidance} linkTarget='_blank' />
                     ) : (
-                        'There is currently no guidance for this quesdtion'
+                        'There is currently no guidance for this question'
                     )}
                 </>
             ) : (
