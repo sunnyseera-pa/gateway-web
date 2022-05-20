@@ -640,8 +640,9 @@ export const DataAccessRequestCustomiseForm = props => {
                         </div>
                         <div className='action-bar-actions'>
                             <div className='amendment-count mr-3'>{countOfChanges} unpublished update</div>
-
+                            {console.log()}
                             <Button
+                                disabled={!!countOfChanges < 1}
                                 variant='secondary'
                                 onClick={() => {
                                     setShowConfirmPublishModal(true);
@@ -668,15 +669,6 @@ export const DataAccessRequestCustomiseForm = props => {
                     centered>
                     <div className='removeUploaderModal-header'>
                         <div className='removeUploaderModal-header--wrap'>
-                            <div className='removeUploaderModal-head'>
-                                <h1 className='black-20-semibold'>
-                                    {countOfChanges > 0 ? 'Publish application form' : 'You must make an update before publishing'}
-                                </h1>
-                                <CloseButtonSvg
-                                    className='removeUploaderModal-head--close'
-                                    onClick={() => setShowConfirmPublishModal(false)}
-                                />
-                            </div>
                             <div className='gray700-13 new-line'>
                                 {countOfChanges > 0
                                     ? 'Are you sure you want to publish your updates to this application form? Any applications which are already in process will not be updated.'
