@@ -203,6 +203,7 @@ export const DataAccessRequestCustomiseForm = props => {
         setActivePanelId(panelId);
         setIsWideForm(panelId === 'about' || panelId === 'files');
         setActiveGuidance('');
+        setActiveQuestion('');
     };
 
     const onSubmitClick = async () => {
@@ -604,7 +605,7 @@ export const DataAccessRequestCustomiseForm = props => {
                         <div id='darRightCol' className='scrollable-sticky-column'>
                             <div className='darTab'>
                                 <>
-                                    {activeGuidance ? (
+                                    {activeQuestion ? (
                                         <>
                                             <header>
                                                 <div>
@@ -623,7 +624,9 @@ export const DataAccessRequestCustomiseForm = props => {
                                             </main>
                                         </>
                                     ) : (
-                                        <div className='darTab-guidance'>Hover on a question to edit or view locked guidance</div>
+                                        <div className='darTab-guidance'>
+                                            Hover on a question and click the icon to edit or view locked guidance
+                                        </div>
                                     )}
                                 </>
                             </div>
