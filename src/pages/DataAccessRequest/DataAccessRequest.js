@@ -556,17 +556,17 @@ class DataAccessRequest extends Component {
 
         if (!aboutNavElementsExist && !additionalfilesNavElementsExist) {
             jsonSchema.pages.unshift(DarHelper.staticContent.aboutPageNav);
-        }
+            jsonSchema.pages.push(DarHelper.staticContent.filesPageNav);
 
-        jsonSchema.pages.push(DarHelper.staticContent.filesPageNav);
+            jsonSchema.formPanels.unshift(DarHelper.staticContent.aboutPanel);
+            jsonSchema.formPanels.push(DarHelper.staticContent.filesPanel);
+        }
 
         if (additionalfilesNavElementsExist) {
             jsonSchema.formPanels.push(DarHelper.staticContent.additionalFilesPanel);
 
             jsonSchema.questionPanels.push(DarHelper.staticContent.additionalFilesQuestionPanel);
         }
-
-        console.log(jsonSchema.formPanels);
 
         // if amendment has been made to datasets mark about application navigation with warning
         if (userType === DarHelper.userTypes.CUSTODIAN && areDatasetsAmended) {
