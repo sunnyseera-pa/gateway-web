@@ -74,11 +74,10 @@ const QuestionActionTabs = ({
                                 ''
                             )}
                         </>
-                    }
-                    disabled={!!activePanelGuidance}>
-                    {activeSettings.key === DarHelper.actionKeys.MESSAGES ? (
+                    }>
+                    {activeSettings.key === DarHelper.actionKeys.MESSAGES && (
                         <>
-                            {!isEmpty(activeSettings.questionId) ? (
+                            {!isEmpty(activeSettings.questionId) || (!!activePanelGuidance && activeSettings?.panel?.panelId) ? (
                                 <Messages
                                     applicationId={applicationId}
                                     userState={userState}
@@ -95,8 +94,6 @@ const QuestionActionTabs = ({
                                 <div className='darTab-guidance'>Click on a question message to view messages</div>
                             )}
                         </>
-                    ) : (
-                        ''
                     )}
                 </Tab>
 
@@ -108,11 +105,10 @@ const QuestionActionTabs = ({
                             {capitalize(DarHelper.actionKeys.NOTES)}
                             {!isEmpty(activeSettings.questionId) && notesCount > 0 ? <span className='tab-count'>{notesCount}</span> : ''}
                         </>
-                    }
-                    disabled={!!activePanelGuidance}>
-                    {activeSettings.key === DarHelper.actionKeys.NOTES ? (
+                    }>
+                    {activeSettings.key === DarHelper.actionKeys.NOTES && (
                         <>
-                            {!isEmpty(activeSettings.questionId) ? (
+                            {!isEmpty(activeSettings.questionId) || (!!activePanelGuidance && activeSettings?.panel?.panelId) ? (
                                 <Notes
                                     applicationId={applicationId}
                                     userState={userState}
@@ -124,8 +120,6 @@ const QuestionActionTabs = ({
                                 <div className='darTab-guidance'>Click on a question note to view notes</div>
                             )}
                         </>
-                    ) : (
-                        ''
                     )}
                 </Tab>
             </Tabs>

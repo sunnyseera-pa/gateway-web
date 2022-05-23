@@ -1,11 +1,11 @@
 import React, { Fragment, useState, useEffect, useRef } from 'react';
 import isEmpty from 'lodash';
 import '../Messages/Messages.scss';
-import SVGIcon from '../../../../images/SVGIcon';
 import axios from 'axios';
+import TextareaAutosize from 'react-textarea-autosize';
+import SVGIcon from '../../../../images/SVGIcon';
 import Loading from '../../../commonComponents/Loading';
 import { baseURL } from '../../../../configs/url.config';
-import TextareaAutosize from 'react-textarea-autosize';
 
 const Notes = ({ applicationId, settings, userState, userType, updateCount }) => {
     const [currentNote, setCurrentNote] = useState('');
@@ -14,7 +14,7 @@ const Notes = ({ applicationId, settings, userState, userType, updateCount }) =>
 
     const noteType = userType.toUpperCase() === 'APPLICANT' ? 'DAR_Notes_Applicant' : 'DAR_Notes_Custodian';
     const notesEndRef = useRef(null);
-    let btnRef = useRef();
+    const btnRef = useRef();
 
     useEffect(() => {
         setIsLoading(true);
@@ -40,26 +40,35 @@ const Notes = ({ applicationId, settings, userState, userType, updateCount }) =>
         if (btnRef.current) {
             btnRef.current.setAttribute('disabled', 'disabled');
         }
-        // TODO: Post message to API
-        const { questionId, questionSetId } = settings;
+
+        const { questionId, questionSetId, panel } = settings;
+
         await axios.post(`${baseURL}/api/v1/data-access-request/${applicationId}/messages`, {
             questionId,
+            panel,
             messageType: noteType,
             messageBody: currentNote,
         });
-        setNotesThread([...notesThread, { name: userState[0].name, date: '01/01/2021', content: currentNote, userType: userType }]);
+
+        setNotesThread([...notesThread, { name: userState[0].name, date: '01/01/2021', content: currentNote, userType }]);
         setCurrentNote('');
+
         if (btnRef.current) {
             btnRef.current.removeAttribute('disabled');
         }
+
         updateCount(questionId, questionSetId, 'note');
     };
 
     const retrieveNotesThread = async () => {
-        const { questionId } = settings;
+        const { questionId, panel } = settings;
+
         const response = await axios.get(
-            `${baseURL}/api/v1/data-access-request/${applicationId}/messages?messageType=${noteType}&questionId=${questionId}`
+            `${baseURL}/api/v1/data-access-request/${applicationId}/messages?messageType=${noteType}&${
+                questionId ? `questionId=${questionId}` : `panelId=${panel.panelId}`
+            }`
         );
+
         setIsLoading(false);
         setNotesThread(response.data.messages);
     };
@@ -67,7 +76,7 @@ const Notes = ({ applicationId, settings, userState, userType, updateCount }) =>
     const buildNotesThread = () => {
         if (isEmpty(notesThread) && notesThread.length < 1) {
             return (
-                <Fragment>
+                <>
                     <div className='info-msg no-messages'>
                         {userType.toUpperCase() === 'APPLICANT'
                             ? 'Use notes to organise your thoughts and share ideas with your collaborators before sending the application.'
@@ -76,52 +85,53 @@ const Notes = ({ applicationId, settings, userState, userType, updateCount }) =>
                         <br />
                         There are no notes relating to this question.
                     </div>
-                </Fragment>
+                </>
             );
-        } else {
-            // Map over messages and return each as a bubble styled depending on who sent it
-            return notesThread.map(note => {
-                return (
-                    <div className='message-sent'>
-                        <div className='notes-bubble-sent message-bubble'>
-                            <div className='message-metadata'>
-                                <span>{note.name}</span>
-                                <span>{note.date}</span>
-                            </div>
-                            {note.content}
-                        </div>
-                    </div>
-                );
-            });
         }
+        // Map over messages and return each as a bubble styled depending on who sent it
+        return notesThread.map(note => {
+            return (
+                <div className='message-sent'>
+                    <div className='notes-bubble-sent message-bubble'>
+                        <div className='message-metadata'>
+                            <span>{note.name}</span>
+                            <span>{note.date}</span>
+                        </div>
+                        {note.content}
+                    </div>
+                </div>
+            );
+        });
     };
 
     const getInfoMessage = () => {
         let message = 'Applicants cannot see your notes, reviewers can.';
+
         if (userType.toUpperCase() === 'APPLICANT') {
             message = 'Data custodians cannot see your notes, collaborators can.';
         }
+
         return (
             <div className='info-note'>
-                <SVGIcon name='eyeCrossed' width={16} height={16} fill={'#53575a'} className={'margin-right-8'} />
+                <SVGIcon name='eyeCrossed' width={16} height={16} fill='#53575a' className='margin-right-8' />
                 {message}
             </div>
         );
     };
 
     return (
-        <Fragment>
+        <>
             {getInfoMessage()}
             <div className='darTab-notes'>
                 <div className='messages'>
                     {isLoading ? (
-                        <Fragment>
+                        <>
                             <Loading />
-                        </Fragment>
+                        </>
                     ) : (
                         buildNotesThread()
                     )}
-                    <div ref={notesEndRef} id='messageEndRef'></div>
+                    <div ref={notesEndRef} id='messageEndRef' />
                 </div>
             </div>
             <form
@@ -129,8 +139,7 @@ const Notes = ({ applicationId, settings, userState, userType, updateCount }) =>
                 onSubmit={e => {
                     e.preventDefault();
                     handleSendNote(currentNote);
-                }}
-            >
+                }}>
                 <div className='messages-textarea'>
                     <TextareaAutosize
                         className='form-control messages-textarea2 textarea-darpanel'
@@ -147,7 +156,7 @@ const Notes = ({ applicationId, settings, userState, userType, updateCount }) =>
                     Add
                 </button>
             </form>
-        </Fragment>
+        </>
     );
 };
 

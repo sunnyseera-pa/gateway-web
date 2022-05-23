@@ -904,7 +904,15 @@ class DataAccessRequest extends Component {
                 reviewWarning,
                 activeGuidance: '',
                 activePanelGuidance: newForm.panelGuidance,
-                actionTabSettings: { key: '', questionSetId: '', questionId: '' },
+                actionTabSettings: {
+                    key: '',
+                    questionSetId: '',
+                    questionId: '',
+                    panel: {
+                        panelId,
+                        panelHeader: newForm.questionPanelHeaderText,
+                    },
+                },
             });
         }
     };
@@ -1149,27 +1157,31 @@ class DataAccessRequest extends Component {
     };
 
     updateCount = (questionId, questionSetId, messageType) => {
-        //Get the question that the count needs to be updated on
-        let { jsonSchema } = this.state;
-        let questionSet = DarHelper.findQuestionSet(questionSetId, jsonSchema);
-        let question = DarHelper.findQuestion(questionId, questionSet.questions);
+        if (questionId) {
+            //Get the question that the count needs to be updated on
+            let { jsonSchema } = this.state;
+            let questionSet = DarHelper.findQuestionSet(questionSetId, jsonSchema);
+            let question = DarHelper.findQuestion(questionId, questionSet.questions);
 
-        //If question has no previous counts add in the defaults
-        if (!question.counts) {
-            question.counts = { messagesCount: 0, notesCount: 0 };
+            //If question has no previous counts add in the defaults
+            if (!question.counts) {
+                question.counts = { messagesCount: 0, notesCount: 0 };
+            }
+
+            //Update the count based on the messageType
+            if (messageType === 'message') {
+                question.counts.messagesCount = question.counts.messagesCount + 1;
+            } else if (messageType === 'note') {
+                question.counts.notesCount = question.counts.notesCount + 1;
+            }
+
+            //Update state
+            this.setState({
+                jsonSchema,
+                messagesCount: question.counts.messagesCount,
+                notesCount: question.counts.notesCount,
+            });
         }
-        //Update the count based on the messageType
-        if (messageType === 'message') {
-            question.counts.messagesCount = question.counts.messagesCount + 1;
-        } else if (messageType === 'note') {
-            question.counts.notesCount = question.counts.notesCount + 1;
-        }
-        //Update state
-        this.setState({
-            jsonSchema,
-            messagesCount: question.counts.messagesCount,
-            notesCount: question.counts.notesCount,
-        });
     };
 
     onHandleDataSetChange = (value = []) => {

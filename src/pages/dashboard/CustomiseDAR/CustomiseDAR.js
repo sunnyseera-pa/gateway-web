@@ -1,7 +1,7 @@
 import { has, isEmpty } from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
-import { Col, Row, Tab, Tabs } from 'react-bootstrap';
+import { Col, Row, Tab, Tabs, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { NotificationManager } from 'react-notifications';
 import queryString from 'query-string';
@@ -12,7 +12,6 @@ import publishersService from '../../../services/publishers';
 import CustomiseDAREditGuidance from '../Components/CustomiseDAREditGuidance';
 import './CustomiseDAR.scss';
 import { LayoutContent } from '../../../components/Layout';
-import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 const renderTooltip = props => (
     <Tooltip className='tool-tip' style={{ width: '240px' }}>
@@ -30,6 +29,7 @@ const CustomiseDAR = ({ userState, publisherId, showConfirmPublishModal, setShow
     const [yourApplicationFormPublisher, setYourApplicationFormPublisher] = useState();
     const [showGuidanceModal, setShowGuidanceModal] = useState();
     const [closeGuidanceMessage, setCloseGuidanceMessage] = useState('');
+    const [alertMessage, setAlertMessage] = useState(alert?.message);
 
     const { publishedDARContent } = queryString.parse(window.location.search);
 
@@ -117,6 +117,10 @@ const CustomiseDAR = ({ userState, publisherId, showConfirmPublishModal, setShow
     };
 
     useEffect(() => {
+        setAlertMessage(alert?.message);
+    }, [alert?.message]);
+
+    useEffect(() => {
         getModalData();
     }, [publisherId]);
 
@@ -134,16 +138,28 @@ const CustomiseDAR = ({ userState, publisherId, showConfirmPublishModal, setShow
         onSelectTab(tabId);
     };
 
-    const handleCloseGuidanceMessage = () => { 
+    const handleCloseGuidanceMessage = () => {
         setCloseGuidanceMessage('');
+    };
+
+    const handleCloseAlertMessage = () => {
+        setAlertMessage('');
     };
 
     return (
         <>
-            {(howToRequestAccessStatus === sectionStatuses.ACTIVE || yourAppFormStatus === sectionStatuses.ACTIVE) && (
+            {alertMessage && (
+                <LayoutContent>
+                    <Alert variant='success' autoclose onClose={handleCloseAlertMessage} mb={3}>
+                        {alertMessage}
+                    </Alert>
+                </LayoutContent>
+            )}
+
+            {closeGuidanceMessage && (howToRequestAccessStatus === sectionStatuses.ACTIVE || yourAppFormStatus === sectionStatuses.ACTIVE) && (
                 <LayoutContent>
                     <Alert variant='success' autoclose onClose={handleCloseGuidanceMessage} mb={3}>
-                        {closeGuidanceMessage || alert.message}
+                        {closeGuidanceMessage}
                     </Alert>
                 </LayoutContent>
             )}
@@ -151,7 +167,10 @@ const CustomiseDAR = ({ userState, publisherId, showConfirmPublishModal, setShow
             {(howToRequestAccessStatus === sectionStatuses.PENDING || yourAppFormStatus === sectionStatuses.PENDING) && (
                 <LayoutContent>
                     <Alert variant='warning' mb={3}>
-                        <p>Please note that both <b>Presubmission Guidance</b> and <b>DAR Application Form</b> must be completed before they can be published.</p>
+                        <p>
+                            Please note that both <b>Presubmission Guidance</b> and <b>DAR Application Form</b> must be completed before
+                            they can be published.
+                        </p>
                     </Alert>
                 </LayoutContent>
             )}
@@ -181,13 +200,21 @@ const CustomiseDAR = ({ userState, publisherId, showConfirmPublishModal, setShow
                                 <h1 className='black-20-semibold mb-3'>
                                     <SVGIcon name='info' fill='#475da7' className='accountSvgs mr-2' />
                                     <span className='ml-3'>{t('DAR.customise.presubmissionGuidance.title')}</span>
-                                    {howToRequestAccessStatus === sectionStatuses.PENDING ? <OverlayTrigger placement='top' overlay={renderTooltip("Please note that both Presubmission Guidance and DAR Application Form must be completed before they can be published.")}>
-                                    <div className={`status-chip sla-${sectionStatusColours[howToRequestAccessStatus]}` } >
-                                        {howToRequestAccessStatus}
-                                    </div>
-                                    </OverlayTrigger> : <div className={`status-chip sla-${sectionStatusColours[howToRequestAccessStatus]}` } >
-                                        {howToRequestAccessStatus}
-                                    </div>}
+                                    {howToRequestAccessStatus === sectionStatuses.PENDING ? (
+                                        <OverlayTrigger
+                                            placement='top'
+                                            overlay={renderTooltip(
+                                                'Please note that both Presubmission Guidance and DAR Application Form must be completed before they can be published.'
+                                            )}>
+                                            <div className={`status-chip sla-${sectionStatusColours[howToRequestAccessStatus]}`}>
+                                                {howToRequestAccessStatus}
+                                            </div>
+                                        </OverlayTrigger>
+                                    ) : (
+                                        <div className={`status-chip sla-${sectionStatusColours[howToRequestAccessStatus]}`}>
+                                            {howToRequestAccessStatus}
+                                        </div>
+                                    )}
                                 </h1>
                                 <div className='main-header-desc'>
                                     <div className='soft-black-14'>{t('DAR.customise.presubmissionGuidance.description')}</div>
