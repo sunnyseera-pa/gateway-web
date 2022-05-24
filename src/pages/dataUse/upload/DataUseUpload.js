@@ -143,8 +143,6 @@ const DataUseUpload = ({ onSubmit, team, dataUsePage, userState }) => {
     }, [uploadedData]);
 
     const submitDataUse = () => {
-        console.log('Submitting');
-
         setIsSubmitModalVisible(false);
         setSubmitted(true);
         setIsLoading(true);
@@ -167,7 +165,7 @@ const DataUseUpload = ({ onSubmit, team, dataUsePage, userState }) => {
                 search: '?tab=datause',
                 state: {
                     alert: {
-                        message: 'Pending approval. ' + t('datause.upload.SuccessfulUpload'),
+                        message: `Pending approval. ${t('datause.upload.SuccessfulUpload')}`,
                     },
                 },
             });

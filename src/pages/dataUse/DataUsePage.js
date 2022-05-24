@@ -162,15 +162,12 @@ const DataUsePage = ({ onClickDataUseUpload, team }) => {
     return (
         <>
             <LayoutContent>
-                <Row>
-                    <Col className='mb-1'>
-                        {!isEmpty(alert) && (
-                            <Alert variant='success' dismissable onClose={closeAlert}>
-                                {alert}
-                            </Alert>
-                        )}
-                    </Col>
-                </Row>
+                {!isEmpty(alert) && (
+                    <Alert variant='success' dismissable onClose={closeAlert} mb={1}>
+                        {alert}
+                    </Alert>
+                )}
+
                 <div className='accountHeader'>
                     <Row>
                         <Col sm={12} md={8}>
