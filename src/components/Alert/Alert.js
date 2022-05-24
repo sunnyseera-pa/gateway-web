@@ -79,7 +79,7 @@ Alert.propTypes = {
 
 Alert.defaultProps = {
     autoclose: false,
-    autocloseDuration: 5000,
+    autocloseDuration: 10000,
     dismissable: false,
     className: 'ui-Alert',
     onClose: () => {},

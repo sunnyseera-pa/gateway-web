@@ -1,29 +1,17 @@
 import React from 'react';
-import { Tab, Tabs } from 'react-bootstrap';
-import { useTranslation } from 'react-i18next';
+import Alert from '../../../../components/Alert';
 import { LayoutContent } from '../../../../components/Layout';
-import Typography from '../../../../components/Typography';
 import { useAuth } from '../../../../context/AuthContext';
-import { isAdmin, isCustodian } from '../../../../utils/auth';
+import { isCustodian } from '../../../../utils/auth';
 import DataUsePage from '../../../dataUse/DataUsePage';
 import DataUseUpload from '../../../dataUse/upload/DataUseUpload';
 import DataUseWidget from '../../../dataUse/widget/DataUseWidget';
 
-const AccountDataUse = ({ tabId, team, onClickDataUseUpload, onSelectTab, publisherDetails }) => {
-    const { t } = useTranslation();
+const AccountDataUse = ({ tabId, team, publisherDetails, alert = {} }) => {
     const { userState } = useAuth();
 
-    const refUpload = React.createRef();
-    const ref = React.createRef();
-
-    const [activeTab, setActiveTab] = React.useState(tabId);
-    const [dataUseUpload, setDataUseUpload] = React.useState();
-
-    const handleSelectTab = React.useCallback(activeKey => {
-        setActiveTab(activeKey);
-
-        onSelectTab(activeKey);
-    });
+    const [dataUseUpload, setDataUseUpload] = React.useState(false);
+    const [alertMessage, setAlertMessage] = React.useState(false);
 
     const handleClickUpload = React.useCallback(() => {
         setDataUseUpload(true);
@@ -33,28 +21,32 @@ const AccountDataUse = ({ tabId, team, onClickDataUseUpload, onSelectTab, publis
         setDataUseUpload(false);
     }, []);
 
+    const handleAlertClose = React.useCallback(() => {
+        setAlertMessage('');
+    }, []);
+
     React.useEffect(() => {
-        setActiveTab(tabId);
-    }, [tabId]);
+        setAlertMessage(alert.message);
+    }, [alert.message]);
 
     return (
         <>
-            {tabId === 'datause' && dataUseUpload && (
-                <DataUseUpload userState={userState} team={team} ref={refUpload} dataUsePage={ref} onSubmit={handleSubmitUpload} />
+            {alertMessage && (
+                <LayoutContent>
+                    <Alert variant='success' autoclose onClose={handleAlertClose}>
+                        {alertMessage}
+                    </Alert>
+                </LayoutContent>
             )}
 
+            {tabId === 'datause' && dataUseUpload && <DataUseUpload userState={userState} team={team} onSubmit={handleSubmitUpload} />}
+
             {tabId === 'datause' && !dataUseUpload && (
-                <DataUsePage userState={userState} team={team} onClickDataUseUpload={handleClickUpload} ref={ref} />
+                <DataUsePage userState={userState} team={team} onClickDataUseUpload={handleClickUpload} />
             )}
 
             {tabId === 'datause_widget' && isCustodian(team) && (
-                <DataUseWidget
-                    userState={userState}
-                    team={team}
-                    onClickDataUseUpload={onClickDataUseUpload}
-                    ref={ref}
-                    publisherName={publisherDetails.name}
-                />
+                <DataUseWidget userState={userState} team={team} publisherName={publisherDetails.name} />
             )}
         </>
     );

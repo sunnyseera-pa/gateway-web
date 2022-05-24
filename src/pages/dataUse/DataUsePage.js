@@ -2,6 +2,7 @@ import { isEmpty } from 'lodash';
 import React, { Fragment, useEffect, useState } from 'react';
 import { Button, Col, Row, Tab, Tabs } from 'react-bootstrap';
 import { NotificationManager } from 'react-notifications';
+import { useTranslation } from 'react-i18next';
 import { LayoutContent } from '../../components/Layout';
 import Alert from '../../components/Alert';
 import SVGIcon from '../../images/SVGIcon';
@@ -16,13 +17,8 @@ import Pagination from './DataUsePagination';
 import Table from './DataUseTable';
 import DataUseApproveModal from './modals/DataUseApproveModal';
 import DataUseRejectModal from './modals/DataUseRejectModal';
-import { useTranslation } from 'react-i18next';
 
-const DataUsePage = React.forwardRef(({ onClickDataUseUpload, team }, ref) => {
-    React.useImperativeHandle(ref, () => ({
-        showAlert,
-    }));
-
+const DataUsePage = ({ onClickDataUseUpload, team }) => {
     const { t } = useTranslation();
     const [row, setRow] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
@@ -285,6 +281,6 @@ const DataUsePage = React.forwardRef(({ onClickDataUseUpload, team }, ref) => {
             </LayoutContent>
         </>
     );
-});
+};
 
 export default DataUsePage;
