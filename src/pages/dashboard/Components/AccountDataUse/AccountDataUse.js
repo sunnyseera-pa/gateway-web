@@ -43,7 +43,7 @@ const AccountDataUse = ({ tabId, team, publisherDetails }) => {
         <>
             {alertMessage && (
                 <LayoutContent>
-                    <Alert variant='success' autoclose onClose={handleAlertClose} mb={2}>
+                    <Alert variant='success' autoclose dismissable onClose={handleAlertClose} mb={2}>
                         {alertMessage}
                     </Alert>
                 </LayoutContent>

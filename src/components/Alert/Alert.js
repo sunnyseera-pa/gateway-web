@@ -47,7 +47,7 @@ const Alert = ({
                 clearTimeout(showTimeout);
             };
         }
-    }, [show]);
+    }, [show, autoclose]);
 
     return (
         show && (

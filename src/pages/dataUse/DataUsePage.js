@@ -109,22 +109,26 @@ const DataUsePage = ({ onClickDataUseUpload, team }) => {
         setActiveTab(tab);
     };
 
+    const closeAlert = () => {
+        setAlert('');
+    };
+
     const updataDataUseStatus = (oldStatus, newStatus, rejectionReason = '') => {
         dataUseRegistersUpdate.mutateAsync({ _id: dataUseId, activeflag: newStatus, rejectionReason }).then(() => {
             if (oldStatus === DarHelperUtil.dataUseRegisterStatus.INREVIEW && newStatus === DarHelperUtil.dataUseRegisterStatus.ACTIVE) {
-                showAlert('Your data use have been successfully approved.');
+                showAlert('Your data use has been successfully approved.');
                 toggleApproveModal();
             } else if (
                 oldStatus === DarHelperUtil.dataUseRegisterStatus.ARCHIVED &&
                 newStatus === DarHelperUtil.dataUseRegisterStatus.ACTIVE
             ) {
-                showAlert('Your data use have been successfully unarchived.');
+                showAlert('Your data use has been successfully unarchived.');
                 toggleUnarchiveModal();
             } else if (newStatus === DarHelperUtil.dataUseRegisterStatus.REJECTED) {
-                showAlert('Your data use have been successfully rejected.');
+                showAlert('Your data use has been successfully rejected.');
                 toggleRejectModal();
             } else if (newStatus === DarHelperUtil.dataUseRegisterStatus.ARCHIVED) {
-                showAlert('Your data use have been successfully archived.');
+                showAlert('Your data use has been successfully archived.');
                 toggleArchiveModal();
             }
         });
@@ -158,15 +162,15 @@ const DataUsePage = ({ onClickDataUseUpload, team }) => {
     return (
         <>
             <LayoutContent>
-                {/* <Row>
+                <Row>
                     <Col className='mb-1'>
                         {!isEmpty(alert) && (
-                            <Alert variant='success' dismissable>
+                            <Alert variant='success' autoclose dismissable onClose={closeAlert}>
                                 {alert}
                             </Alert>
                         )}
                     </Col>
-                </Row> */}
+                </Row>
                 <div className='accountHeader'>
                     <Row>
                         <Col sm={12} md={8}>
