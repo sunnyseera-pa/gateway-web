@@ -1,11 +1,10 @@
 import { isEmpty } from 'lodash';
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Col, Row, Tab, Tabs } from 'react-bootstrap';
-import { NotificationManager } from 'react-notifications';
 import { useTranslation } from 'react-i18next';
-import { LayoutContent } from '../../components/Layout';
+import { NotificationManager } from 'react-notifications';
 import Alert from '../../components/Alert';
-import SVGIcon from '../../images/SVGIcon';
+import { LayoutContent } from '../../components/Layout';
 import dataUseRegistersService from '../../services/data-use-registers';
 import googleAnalytics from '../../tracking';
 import DarHelperUtil from '../../utils/DarHelper.util';

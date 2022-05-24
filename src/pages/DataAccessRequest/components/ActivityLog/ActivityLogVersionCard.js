@@ -1,21 +1,21 @@
-import React, { useState } from 'react';
-import moment from 'moment';
-import { SlideDown } from 'react-slidedown';
 import { groupBy, isEmpty, startCase } from 'lodash';
-import { ReactComponent as VersionCreated } from '../../../../images/Versions_created.svg';
-import { ReactComponent as VersionAccepted } from '../../../../images/check.svg';
-import { ReactComponent as ApplicationRejected } from '../../../../images/Application_rejected.svg';
-import { ReactComponent as Workflow } from '../../../../images/Workflows.svg';
-import { ReactComponent as Collaborators } from '../../../../images/Collaborators.svg';
-import { ReactComponent as UpdateRequested } from '../../../../images/Updates_requested.svg';
+import moment from 'moment';
+import React, { useState } from 'react';
+import { SlideDown } from 'react-slidedown';
 import { ReactComponent as ActionRequired } from '../../../../images/Action_required.svg';
+import { ReactComponent as ApplicationRejected } from '../../../../images/Application_rejected.svg';
+import { ReactComponent as VersionAccepted } from '../../../../images/check.svg';
+import { ReactComponent as Clock } from '../../../../images/clock.svg';
+import { ReactComponent as Collaborators } from '../../../../images/Collaborators.svg';
 import { ReactComponent as ManualEvent } from '../../../../images/Manual_input.svg';
 import { ReactComponent as Message } from '../../../../images/Messages.svg';
 import { ReactComponent as Notes } from '../../../../images/Notes.svg';
 import SVGIcon from '../../../../images/SVGIcon';
+import { ReactComponent as UpdateRequested } from '../../../../images/Updates_requested.svg';
+import { ReactComponent as VersionCreated } from '../../../../images/Versions_created.svg';
+import { ReactComponent as Workflow } from '../../../../images/Workflows.svg';
 import DarHelperUtil from '../../../../utils/DarHelper.util';
 import SLA from '../../../commonComponents/sla/SLA';
-import { ReactComponent as Clock } from '../../../../images/clock.svg';
 import './ActivityLog.scss';
 
 const ActivityLogVersionCard = ({ version, team, onDeleteEventClick }) => {
@@ -27,8 +27,6 @@ const ActivityLogVersionCard = ({ version, team, onDeleteEventClick }) => {
             : [...activityLogIds, id];
         setActivityLogIds(newArray);
     };
-
-    console.log('version', version);
 
     const {
         version: versionNumber,

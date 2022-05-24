@@ -1,19 +1,19 @@
-import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Row, Col, Alert } from 'react-bootstrap';
 import _ from 'lodash';
 import moment from 'moment';
+import React, { useEffect, useState } from 'react';
+import { Alert, Col, Row } from 'react-bootstrap';
 import { baseURL } from '../../../../configs/url.config';
+import SVGIcon from '../../../../images/SVGIcon';
 import DarHelperUtil from '../../../../utils/DarHelper.util';
 // import VersionSelector from '../../../commonComponents/versionSelector/VersionSelector';
 import SLA from '../../../commonComponents/sla/SLA';
-import AccessActivity from '../../../dashboard/DataAccessRequests/AccessActivity/AccessActivity';
 import WorkflowReviewStepsModal from '../../../commonComponents/workflowReviewStepsModal/WorkflowReviewStepsModal';
+import AccessActivity from '../../../dashboard/DataAccessRequests/AccessActivity/AccessActivity';
 import './ActivityLog.scss';
 import ActivityLogVersionCard from './ActivityLogVersionCard';
-import SVGIcon from '../../../../images/SVGIcon';
-import DeleteManualEventModal from './DeleteManualEventModal';
 import AddNewEventModal from './AddNewEventModal';
+import DeleteManualEventModal from './DeleteManualEventModal';
 
 const ActivityLog = React.forwardRef(({ dataaccessrequest, team, onClickStartReview, onUpdateLogs }, ref) => {
     React.useImperativeHandle(ref, () => ({
@@ -72,6 +72,7 @@ const ActivityLog = React.forwardRef(({ dataaccessrequest, team, onClickStartRev
                 toggleAddNewEventModal();
                 updateVersion(res.data.affectedVersion);
                 showAlert('You have successfully added a new event');
+
                 onUpdateLogs();
             })
             .catch(err => {

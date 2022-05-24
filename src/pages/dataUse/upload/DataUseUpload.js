@@ -1,22 +1,22 @@
 import { find, isEmpty, isUndefined, some } from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
-import { Col, Image, OverlayTrigger, Row, Tooltip } from 'react-bootstrap';
+import { Col, OverlayTrigger, Row, Tooltip } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
 import { NotificationManager } from 'react-notifications';
 import { Link, useHistory } from 'react-router-dom';
 import { SlideDown } from 'react-slidedown';
 import readXlsxFile from 'read-excel-file';
 import convertToJson from 'read-excel-file/schema';
 import Alert from '../../../components/Alert';
+import Loading from '../../../components/Loading';
 import SVGIcon from '../../../images/SVGIcon';
 import dataUseRegistersService from '../../../services/data-use-registers';
-import dataUseSchema from './DataUseSchema';
-import { useTranslation } from 'react-i18next';
-import Loading from '../../../components/Loading';
 import googleAnalytics from '../../../tracking';
+import ActionBar from '../../commonComponents/actionbar/ActionBar';
+import dataUseSchema from './DataUseSchema';
 import DataUseSubmitModal from './DataUseSubmitModal';
 import './DataUseUpload.scss';
-import ActionBar from '../../commonComponents/actionbar/ActionBar';
 import DataUseUploadActionButtons from './DataUseUploadActionButtons';
 
 const DataUseUpload = ({ onSubmit, team, dataUsePage, userState }) => {
