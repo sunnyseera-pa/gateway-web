@@ -633,10 +633,10 @@ class Account extends Component {
                     text: 'Dashboard',
                     id: 'datause',
                 },
-                {
-                    text: 'Data use widget',
-                    id: 'datause_widget',
-                },
+                // {
+                //     text: 'Data use widget',
+                //     id: 'datause_widget',
+                // },
             ],
         };
 
