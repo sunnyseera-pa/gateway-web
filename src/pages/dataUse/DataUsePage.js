@@ -165,7 +165,7 @@ const DataUsePage = ({ onClickDataUseUpload, team }) => {
                 <Row>
                     <Col className='mb-1'>
                         {!isEmpty(alert) && (
-                            <Alert variant='success' autoclose dismissable onClose={closeAlert}>
+                            <Alert variant='success' dismissable onClose={closeAlert}>
                                 {alert}
                             </Alert>
                         )}

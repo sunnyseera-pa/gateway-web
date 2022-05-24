@@ -307,6 +307,10 @@ const DataUseUpload = ({ onSubmit, team, dataUsePage, userState }) => {
         return dataUseCheck;
     };
 
+    const handleAlertClose = () => {
+        setAlert('');
+    };
+
     return (
         <Row>
             <Col xs={1} />
@@ -319,7 +323,7 @@ const DataUseUpload = ({ onSubmit, team, dataUsePage, userState }) => {
             ) : (
                 <Col>
                     {!isEmpty(alert) && (
-                        <Alert variant='success' dismissable>
+                        <Alert variant='success' dismissable onClose={handleAlertClose}>
                             {alert}
                         </Alert>
                     )}
