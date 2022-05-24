@@ -98,7 +98,7 @@ const Messages = ({
 
         setCurrentMessage('');
         setSendButtonDisabled(false);
-        updateCount(questionId, questionSetId, 'message');
+        updateCount(questionId, questionSetId || panel.panelId, 'message');
     };
 
     const retrieveMessageThread = async () => {

@@ -6,10 +6,14 @@ import TextareaAutosize from 'react-textarea-autosize';
 import SVGIcon from '../../../../images/SVGIcon';
 import Loading from '../../../commonComponents/Loading';
 import { baseURL } from '../../../../configs/url.config';
+import LayoutBox from '../../../../components/LayoutBox';
+import Textarea from '../../../../components/Textarea/Textarea';
+import Button from '../../../../components/Button';
 
 const Notes = ({ applicationId, settings, userState, userType, updateCount }) => {
     const [currentNote, setCurrentNote] = useState('');
     const [notesThread, setNotesThread] = useState([]);
+    const [addButtonDisabled, setAddButtonDisabled] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
 
     const noteType = userType.toUpperCase() === 'APPLICANT' ? 'DAR_Notes_Applicant' : 'DAR_Notes_Custodian';
@@ -57,7 +61,7 @@ const Notes = ({ applicationId, settings, userState, userType, updateCount }) =>
             btnRef.current.removeAttribute('disabled');
         }
 
-        updateCount(questionId, questionSetId, 'note');
+        updateCount(questionId, questionSetId || panel.panelId, 'note');
     };
 
     const retrieveNotesThread = async () => {
@@ -119,6 +123,10 @@ const Notes = ({ applicationId, settings, userState, userType, updateCount }) =>
         );
     };
 
+    const handleChangeNote = ({ target: { value } }) => {
+        setCurrentNote(value);
+    };
+
     return (
         <>
             {getInfoMessage()}
@@ -134,28 +142,21 @@ const Notes = ({ applicationId, settings, userState, userType, updateCount }) =>
                     <div ref={notesEndRef} id='messageEndRef' />
                 </div>
             </div>
-            <form
-                className='messages-form'
+            <LayoutBox
+                p={3}
+                display='flex'
+                as='form'
                 onSubmit={e => {
                     e.preventDefault();
                     handleSendNote(currentNote);
                 }}>
-                <div className='messages-textarea'>
-                    <TextareaAutosize
-                        className='form-control messages-textarea2 textarea-darpanel'
-                        type='text'
-                        value={currentNote}
-                        name='name'
-                        onChange={e => {
-                            e.preventDefault();
-                            setCurrentNote(e.target.value);
-                        }}
-                    />
-                </div>
-                <button ref={btnRef} className='button-secondary messages-button' type='submit'>
-                    Add
-                </button>
-            </form>
+                <LayoutBox flexGrow='1'>
+                    <Textarea autosize value={currentNote} onChange={handleChangeNote} mb={0} width='100%' minHeight='42px' />
+                </LayoutBox>
+                <Button variant='secondary' type='submit' disabled={addButtonDisabled} ml={2}>
+                    Send
+                </Button>
+            </LayoutBox>
         </>
     );
 };

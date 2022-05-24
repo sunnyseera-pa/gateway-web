@@ -1157,10 +1157,13 @@ class DataAccessRequest extends Component {
     };
 
     updateCount = (questionId, questionSetId, messageType) => {
+        console.log('questionSetId', questionSetId);
+        let { jsonSchema } = this.state;
+        let questionSet = DarHelper.findQuestionSet(questionSetId, jsonSchema);
+
         if (questionId) {
             //Get the question that the count needs to be updated on
-            let { jsonSchema } = this.state;
-            let questionSet = DarHelper.findQuestionSet(questionSetId, jsonSchema);
+
             let question = DarHelper.findQuestion(questionId, questionSet.questions);
 
             //If question has no previous counts add in the defaults
@@ -1180,6 +1183,12 @@ class DataAccessRequest extends Component {
                 jsonSchema,
                 messagesCount: question.counts.messagesCount,
                 notesCount: question.counts.notesCount,
+            });
+        } else {
+            this.setState({
+                jsonSchema,
+                messagesCount: 2,
+                notesCount: 2,
             });
         }
     };

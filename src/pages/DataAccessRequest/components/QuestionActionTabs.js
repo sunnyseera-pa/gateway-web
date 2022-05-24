@@ -30,6 +30,10 @@ const QuestionActionTabs = ({
         onHandleActionTabChange({ ...activeSettings, key });
     };
 
+    const hasSettings = () => {
+        return !isEmpty(activeSettings.questionId) || (!!activePanelGuidance && activeSettings?.panel?.panelId);
+    };
+
     useEffect(() => {
         if (!isEmpty(settings)) {
             if (settings.key === '') settings.key = DarHelper.actionKeys.GUIDANCE;
@@ -68,16 +72,12 @@ const QuestionActionTabs = ({
                                 }`}
                             />
                             {capitalize(DarHelper.actionKeys.MESSAGES)}
-                            {!isEmpty(activeSettings.questionId) && messagesCount > 0 ? (
-                                <span className='tab-count'>{messagesCount}</span>
-                            ) : (
-                                ''
-                            )}
+                            {hasSettings() && messagesCount > 0 ? <span className='tab-count'>{messagesCount}</span> : ''}
                         </>
                     }>
                     {activeSettings.key === DarHelper.actionKeys.MESSAGES && (
                         <>
-                            {!isEmpty(activeSettings.questionId) || (!!activePanelGuidance && activeSettings?.panel?.panelId) ? (
+                            {hasSettings() ? (
                                 <Messages
                                     applicationId={applicationId}
                                     userState={userState}
@@ -103,12 +103,12 @@ const QuestionActionTabs = ({
                         <>
                             <i className={`far fa-edit mr-2 ${activeSettings.key === DarHelper.actionKeys.NOTES ? 'tab-is-active' : ''}`} />
                             {capitalize(DarHelper.actionKeys.NOTES)}
-                            {!isEmpty(activeSettings.questionId) && notesCount > 0 ? <span className='tab-count'>{notesCount}</span> : ''}
+                            {hasSettings() && notesCount > 0 ? <span className='tab-count'>{notesCount}</span> : ''}
                         </>
                     }>
                     {activeSettings.key === DarHelper.actionKeys.NOTES && (
                         <>
-                            {!isEmpty(activeSettings.questionId) || (!!activePanelGuidance && activeSettings?.panel?.panelId) ? (
+                            {hasSettings() ? (
                                 <Notes
                                     applicationId={applicationId}
                                     userState={userState}
