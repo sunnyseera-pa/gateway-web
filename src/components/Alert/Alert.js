@@ -38,16 +38,16 @@ const Alert = ({
     }, []);
 
     React.useEffect(() => {
-        const showTimeout = setTimeout(() => {
-            if (autoclose && show) {
+        if (show && autoclose) {
+            const showTimeout = setTimeout(() => {
                 handleClose();
-            }
-        }, autocloseDuration);
+            }, autocloseDuration);
 
-        return () => {
-            clearTimeout(showTimeout);
-        };
-    }, [show, dismissable]);
+            return () => {
+                clearTimeout(showTimeout);
+            };
+        }
+    }, [show]);
 
     return (
         show && (

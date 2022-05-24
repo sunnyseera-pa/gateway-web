@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { Row, Col, Alert } from 'react-bootstrap';
+import _ from 'lodash';
+import moment from 'moment';
 import { baseURL } from '../../../../configs/url.config';
 import DarHelperUtil from '../../../../utils/DarHelper.util';
-//import VersionSelector from '../../../commonComponents/versionSelector/VersionSelector';
+// import VersionSelector from '../../../commonComponents/versionSelector/VersionSelector';
 import SLA from '../../../commonComponents/sla/SLA';
-import { Row, Col, Alert } from 'react-bootstrap';
 import AccessActivity from '../../../dashboard/DataAccessRequests/AccessActivity/AccessActivity';
 import WorkflowReviewStepsModal from '../../../commonComponents/workflowReviewStepsModal/WorkflowReviewStepsModal';
-import _ from 'lodash';
 import './ActivityLog.scss';
 import ActivityLogVersionCard from './ActivityLogVersionCard';
 import SVGIcon from '../../../../images/SVGIcon';
 import DeleteManualEventModal from './DeleteManualEventModal';
 import AddNewEventModal from './AddNewEventModal';
-import moment from 'moment';
 
 const ActivityLog = React.forwardRef(({ dataaccessrequest, team, onClickStartReview, onUpdateLogs }, ref) => {
     React.useImperativeHandle(ref, () => ({
@@ -107,7 +107,7 @@ const ActivityLog = React.forwardRef(({ dataaccessrequest, team, onClickStartRev
     };
 
     const getLogsAsArray = () => {
-        let formattedLogs = [];
+        const formattedLogs = [];
         activityLogs.forEach(activityLog => {
             activityLog.events.forEach(event => {
                 formattedLogs.push({
@@ -130,7 +130,7 @@ const ActivityLog = React.forwardRef(({ dataaccessrequest, team, onClickStartRev
         return `${dataaccessrequest.projectName}-activityLog-${moment().format('DDMMYYYYHHmmss')}.csv`;
     };
 
-    let {
+    const {
         datasets = [],
         updatedAt,
         applicants = '',
@@ -152,15 +152,17 @@ const ActivityLog = React.forwardRef(({ dataaccessrequest, team, onClickStartRev
         applicationType = 'initial',
     } = dataaccessrequest;
 
+    console.log('activityLogs', activityLogs);
+
     return (
         <>
             <Row>
-                <Col xs={1}></Col>
+                <Col xs={1} />
                 <Col>
                     <div className='col-md-12'>
                         {!_.isEmpty(alert) && (
-                            <Alert variant={'success'} className='main-alert'>
-                                <SVGIcon name='check' width={24} height={24} fill={'#2C8267'} /> {alert}
+                            <Alert variant='success' className='main-alert'>
+                                <SVGIcon name='check' width={24} height={24} fill='#2C8267' /> {alert}
                             </Alert>
                         )}
                         <div className='layoutCard'>
@@ -183,8 +185,8 @@ const ActivityLog = React.forwardRef(({ dataaccessrequest, team, onClickStartRev
                                                 }
                                             />
                                             <SLA
-                                                classProperty={DarHelperUtil.darStatusColours['approved']}
-                                                text={DarHelperUtil.darSLAText['approved']}
+                                                classProperty={DarHelperUtil.darStatusColours.approved}
+                                                text={DarHelperUtil.darSLAText.approved}
                                             />
                                         </>
                                     ) : (
@@ -218,22 +220,22 @@ const ActivityLog = React.forwardRef(({ dataaccessrequest, team, onClickStartRev
                                     navigateToLocation={onClickStartReview}
                                     latestVersion={dataaccessrequest}
                                     amendmentStatus={amendmentStatus}
-                                    isStartReviewEnabled={true}
+                                    isStartReviewEnabled
                                 />
                             </div>
                         </div>
                     </div>
                 </Col>
-                <Col xs={1}></Col>
+                <Col xs={1} />
             </Row>
             <Row>
-                <Col xs={1}></Col>
+                <Col xs={1} />
                 <Col>
                     {activityLogs.map(version => {
                         return <ActivityLogVersionCard version={version} team={team} onDeleteEventClick={onDeleteEventClick} />;
                     })}
                 </Col>
-                <Col xs={1}></Col>
+                <Col xs={1} />
             </Row>
             <WorkflowReviewStepsModal open={showWorkflowReviewModal} close={toggleWorkflowReviewModal} workflow={workflow} />
             <DeleteManualEventModal open={showDeleteEventModal} close={toggleDeleteEventModal} confirm={deleteManualEvent} />

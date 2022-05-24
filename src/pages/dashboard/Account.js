@@ -856,7 +856,7 @@ class Account extends Component {
                                     )}
 
                                     {(tabId === 'datause' || tabId === 'datause_widget') && (
-                                        <AccountDataUse tabId={tabId} team={team} publisherDetails={publisherDetails} alert={alert} />
+                                        <AccountDataUse tabId={tabId} team={team} publisherDetails={publisherDetails} />
                                     )}
 
                                     {allowWorkflow && this.userHasRole(team, 'manager') && tabId === 'workflows' && (

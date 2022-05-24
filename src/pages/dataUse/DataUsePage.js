@@ -158,7 +158,7 @@ const DataUsePage = ({ onClickDataUseUpload, team }) => {
     return (
         <>
             <LayoutContent>
-                <Row>
+                {/* <Row>
                     <Col className='mb-1'>
                         {!isEmpty(alert) && (
                             <Alert variant='success' dismissable>
@@ -166,7 +166,7 @@ const DataUsePage = ({ onClickDataUseUpload, team }) => {
                             </Alert>
                         )}
                     </Col>
-                </Row>
+                </Row> */}
                 <div className='accountHeader'>
                     <Row>
                         <Col sm={12} md={8}>
