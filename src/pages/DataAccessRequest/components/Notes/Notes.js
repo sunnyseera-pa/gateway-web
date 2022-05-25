@@ -10,7 +10,7 @@ import LayoutBox from '../../../../components/LayoutBox';
 import Textarea from '../../../../components/Textarea/Textarea';
 import Button from '../../../../components/Button';
 
-const Notes = ({ applicationId, settings, userState, userType, updateCount }) => {
+const Notes = ({ applicationId, settings, userState, userType, updateCount, count, onLoad }) => {
     const [currentNote, setCurrentNote] = useState('');
     const [notesThread, setNotesThread] = useState([]);
     const [addButtonDisabled, setAddButtonDisabled] = useState(false);
@@ -72,6 +72,8 @@ const Notes = ({ applicationId, settings, userState, userType, updateCount }) =>
                 questionId ? `questionId=${questionId}` : `panelId=${panel.panelId}`
             }`
         );
+
+        onLoad(response);
 
         setIsLoading(false);
         setNotesThread(response.data.messages);

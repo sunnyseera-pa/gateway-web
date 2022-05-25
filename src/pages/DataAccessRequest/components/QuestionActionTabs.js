@@ -17,14 +17,14 @@ const QuestionActionTabs = ({
     toggleDrawer,
     setMessageDescription,
     userType,
-    messagesCount,
-    notesCount,
     isShared,
     updateCount,
     publisher,
     applicationStatus,
 }) => {
     const [activeSettings, setActiveSettings] = useState({ key: '', questionSetId: '', questionId: '' });
+    const [messagesCount, setMessagesCount] = useState(0);
+    const [notesCount, setNotesCount] = useState(0);
 
     const onHandleSelect = key => {
         onHandleActionTabChange({ ...activeSettings, key });
@@ -33,6 +33,32 @@ const QuestionActionTabs = ({
     const hasSettings = () => {
         return !isEmpty(activeSettings.questionId) || (!!activePanelGuidance && activeSettings?.panel?.panelId);
     };
+
+    const handleMessagesLoad = ({ data: { messages } }) => {
+        setMessagesCount(messages.length);
+    };
+
+    const handleNotesLoad = ({ data: { messages } }) => {
+        setNotesCount(messages.length);
+    };
+
+    const handleUpdateMessagesCount = React.useCallback(
+        (questionId, questionSetId, type) => {
+            setMessagesCount(messagesCount + 1);
+
+            updateCount(questionId, questionSetId, type);
+        },
+        [messagesCount]
+    );
+
+    const handleUpdateNotesCount = React.useCallback(
+        (questionId, questionSetId, type) => {
+            setNotesCount(notesCount + 1);
+
+            updateCount(questionId, questionSetId, type);
+        },
+        [notesCount]
+    );
 
     useEffect(() => {
         if (!isEmpty(settings)) {
@@ -75,25 +101,23 @@ const QuestionActionTabs = ({
                             {hasSettings() && messagesCount > 0 ? <span className='tab-count'>{messagesCount}</span> : ''}
                         </>
                     }>
-                    {activeSettings.key === DarHelper.actionKeys.MESSAGES && (
-                        <>
-                            {hasSettings() ? (
-                                <Messages
-                                    applicationId={applicationId}
-                                    userState={userState}
-                                    settings={settings}
-                                    applicationShared={isShared}
-                                    applicationStatus={applicationStatus}
-                                    toggleDrawer={toggleDrawer}
-                                    setMessageDescription={setMessageDescription}
-                                    userType={userType}
-                                    updateCount={updateCount}
-                                    publisher={publisher}
-                                />
-                            ) : (
-                                <div className='darTab-guidance'>Click on a question message to view messages</div>
-                            )}
-                        </>
+                    {hasSettings() ? (
+                        <Messages
+                            applicationId={applicationId}
+                            userState={userState}
+                            settings={settings}
+                            applicationShared={isShared}
+                            applicationStatus={applicationStatus}
+                            toggleDrawer={toggleDrawer}
+                            setMessageDescription={setMessageDescription}
+                            userType={userType}
+                            updateCount={handleUpdateMessagesCount}
+                            publisher={publisher}
+                            onLoad={handleMessagesLoad}
+                            count={messagesCount}
+                        />
+                    ) : (
+                        <div className='darTab-guidance'>Click on a question message to view messages</div>
                     )}
                 </Tab>
 
@@ -106,20 +130,18 @@ const QuestionActionTabs = ({
                             {hasSettings() && notesCount > 0 ? <span className='tab-count'>{notesCount}</span> : ''}
                         </>
                     }>
-                    {activeSettings.key === DarHelper.actionKeys.NOTES && (
-                        <>
-                            {hasSettings() ? (
-                                <Notes
-                                    applicationId={applicationId}
-                                    userState={userState}
-                                    settings={settings}
-                                    userType={userType}
-                                    updateCount={updateCount}
-                                />
-                            ) : (
-                                <div className='darTab-guidance'>Click on a question note to view notes</div>
-                            )}
-                        </>
+                    {hasSettings() ? (
+                        <Notes
+                            applicationId={applicationId}
+                            userState={userState}
+                            settings={settings}
+                            userType={userType}
+                            updateCount={handleUpdateNotesCount}
+                            onLoad={handleNotesLoad}
+                            count={notesCount}
+                        />
+                    ) : (
+                        <div className='darTab-guidance'>Click on a question note to view notes</div>
                     )}
                 </Tab>
             </Tabs>

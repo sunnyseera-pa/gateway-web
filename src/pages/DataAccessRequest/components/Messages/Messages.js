@@ -2,12 +2,13 @@ import React, { Fragment, useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import moment from 'moment';
 import { isEmpty, isBoolean } from 'lodash';
+import { onLoad } from '@sentry/react';
+import TextareaAutosize from 'react-textarea-autosize';
 import ShareFormModal from './ShareFormModal';
 import Loading from '../../../commonComponents/Loading';
 import './Messages.scss';
 import { baseURL } from '../../../../configs/url.config';
 import DarHelper from '../../../../utils/DarHelper.util';
-import TextareaAutosize from 'react-textarea-autosize';
 import Button from '../../../../components/Button';
 import Textarea from '../../../../components/Textarea/Textarea';
 import LayoutBox from '../../../../components/LayoutBox';
@@ -23,6 +24,8 @@ const Messages = ({
     userType,
     updateCount,
     publisher,
+    onLoad,
+    count,
 }) => {
     const [showShareFormModal, setShowShareFormModal] = useState(false);
     const [currentMessage, setCurrentMessage] = useState('');
@@ -109,6 +112,8 @@ const Messages = ({
                 questionId ? `questionId=${questionId}` : `panelId=${panel.panelId}`
             }`
         );
+
+        onLoad(response);
 
         setIsloading(false);
         setMessageThread(response.data.messages);
