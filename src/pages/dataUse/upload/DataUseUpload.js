@@ -105,9 +105,8 @@ const DataUseUpload = ({ onSubmit, team, dataUsePage, userState }) => {
 
                             if (isEmpty(uploadErrors)) {
                                 showAlert(t('datause.upload.successfulCheck'));
-                                setShowSubmit(true);
                             }
-
+                            setShowSubmit(true);
                             setIsLoading(false);
                         });
                     }
