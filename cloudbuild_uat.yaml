@@ -19,4 +19,4 @@ steps:
       ]
 images:
   - gcr.io/$PROJECT_ID/${_APP_NAME}:uat
-timeout: 1200s
+timeout: 2400s
