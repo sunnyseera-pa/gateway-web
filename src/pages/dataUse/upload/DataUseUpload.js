@@ -32,7 +32,7 @@ const DataUseUpload = ({ onSubmit, team, dataUsePage, userState }) => {
     const [dataUseRegisterIndexes, setdataUseRegisterIndexes] = useState([]);
     const [recommendedFieldsMissing, setRecommendedFieldsMissing] = useState(false);
     const [showEmptyError, setShowEmptyError] = useState(false);
-    const [showSubmit, setShowSubmit] = React.useState(false);
+    const [showSubmit, setShowSubmit] = React.useState(true);
 
     const dataUseRegistersUpload = dataUseRegistersService.usePostDataUseRegisterUpload(null, {
         onError: ({ title, message }) => {
