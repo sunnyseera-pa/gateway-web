@@ -1,5 +1,5 @@
 import axios from 'axios';
-import _ from 'lodash';
+import { isEmpty, isUndefined } from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { Alert, Col, Row } from 'react-bootstrap';
@@ -31,31 +31,32 @@ const ActivityLog = React.forwardRef(({ dataaccessrequest, team, onClickStartRev
     const [showAddNewEventModal, setShowAddNewEventModal] = useState(false);
     const [eventToDeleteId, setEventToDeleteId] = useState(null);
     const [alert, setAlert] = useState('');
+    const getActivityLogs = async () => {
+        const versionIds = (Object.values(dataaccessrequest.versionTree) || []).map(version => {
+            return version.iterationId ? version.iterationId : version.applicationId;
+        });
+
+        const type = 'data_request';
+
+        const response = await axios.post(`${baseURL}/api/v2/activitylog`, {
+            versionIds,
+            type,
+        });
+
+        const { logs = [] } = response.data;
+        setActivityLogs(logs);
+    };
 
     useEffect(() => {
-        const getActivityLogs = async () => {
-            const versionIds = (Object.values(dataaccessrequest.versionTree) || []).map(version => {
-                return version.iterationId ? version.iterationId : version.applicationId;
-            });
-
-            const type = 'data_request';
-
-            const response = await axios.post(`${baseURL}/api/v2/activitylog`, {
-                versionIds,
-                type,
-            });
-
-            const { logs = [] } = response.data;
-            setActivityLogs(logs);
-        };
         getActivityLogs();
-    }, [dataaccessrequest]);
+    }, [dataaccessrequest, activityLogs.length]);
 
     const deleteManualEvent = () => {
         axios
             .delete(`${baseURL}/api/v2/activitylog/data_request/${eventToDeleteId}`, {})
             .then(res => {
                 toggleDeleteEventModal();
+                getActivityLogs();
                 updateVersion(res.data.affectedVersion);
                 showAlert('You have successfully deleted a new event');
                 onUpdateLogs();
@@ -70,9 +71,11 @@ const ActivityLog = React.forwardRef(({ dataaccessrequest, team, onClickStartRev
             .post(`${baseURL}/api/v2/activitylog/data_request`, newEvent)
             .then(res => {
                 toggleAddNewEventModal();
-                updateVersion(res.data.affectedVersion);
+                getActivityLogs();
+                if (!isUndefined(res.data.affectedVersion)) {
+                    updateVersion(res.data.affectedVersion);
+                }
                 showAlert('You have successfully added a new event');
-
                 onUpdateLogs();
             })
             .catch(err => {
@@ -153,15 +156,13 @@ const ActivityLog = React.forwardRef(({ dataaccessrequest, team, onClickStartRev
         applicationType = 'initial',
     } = dataaccessrequest;
 
-    console.log('activityLogs', activityLogs);
-
     return (
         <>
             <Row>
                 <Col xs={1} />
                 <Col>
                     <div className='col-md-12'>
-                        {!_.isEmpty(alert) && (
+                        {!isEmpty(alert) && (
                             <Alert variant='success' className='main-alert'>
                                 <SVGIcon name='check' width={24} height={24} fill='#2C8267' /> {alert}
                             </Alert>
